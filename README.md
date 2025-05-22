@@ -61,7 +61,7 @@
     <img alt="Screenshot 8" src="fastlane/metadata/android/en-US/images/phoneScreenshots/9.png" height="350px" />
 </div>
 
-### UI/UX Improvements Thx to @OrangeZXZ for the ideas
+# 📱 UI/UX Improvements 
 - Enhanced **Album search** layout with optimized grid/list view switching for smoother navigation.
 - Improved **Playlist search** interface featuring persistent view mode preferences, keeping your choice across sessions.
 - Refined **Podcasts search** experience with smoother transitions and better user feedback.
@@ -69,17 +69,17 @@
 - See related UX discussion and suggestions: #10 #5 
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/02531036-00b2-4be3-b605-26535a86a7cc" width="200" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/8932a511-c412-4086-b571-71f9dd64437a" width="200" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/3f2fa603-acce-4712-bb51-301d4f8fc4db" width="200" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/8c6358fa-c1e2-406d-afe7-5380c3f23650" width="200" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/02531036-00b2-4be3-b605-26535a86a7cc" height="350px" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/8932a511-c412-4086-b571-71f9dd64437a" height="350px" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/3f2fa603-acce-4712-bb51-301d4f8fc4db" height="350px" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/8c6358fa-c1e2-406d-afe7-5380c3f23650" height="350px" style="margin:4px" />
 </p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/3a801c5e-4538-4c7a-85eb-2482061a16fc" width="200" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/a7baa01b-b8c8-4109-801f-c1d990c1a9d3" width="200" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/9b5d1947-ab41-4de3-b1ea-d852eed26a37" width="200" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/405ebf9f-33dd-47c9-824d-ebb0a7da1e2e" width="200" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/3a801c5e-4538-4c7a-85eb-2482061a16fc" height="350px" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/a7baa01b-b8c8-4109-801f-c1d990c1a9d3" height="350px" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/9b5d1947-ab41-4de3-b1ea-d852eed26a37" height="350px" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/405ebf9f-33dd-47c9-824d-ebb0a7da1e2e" height="350px" style="margin:4px" />
 </p>
 
 
