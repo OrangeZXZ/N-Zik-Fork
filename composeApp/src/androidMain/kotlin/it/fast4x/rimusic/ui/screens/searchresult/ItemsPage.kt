@@ -1,5 +1,4 @@
 package it.fast4x.rimusic.ui.screens.searchresult
-//test
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
