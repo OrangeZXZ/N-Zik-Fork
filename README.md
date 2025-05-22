@@ -66,7 +66,6 @@
 - Improved **Playlist search** interface featuring persistent view mode preferences, keeping your choice across sessions.
 - Refined **Podcasts search** experience with smoother transitions and better user feedback.
 - Upgraded **Featured content** display, introducing a clearer visual hierarchy for easier content discovery.
-- See related UX discussion and suggestions: #10 #5 
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/02531036-00b2-4be3-b605-26535a86a7cc" height="350px" style="margin:4px" />
