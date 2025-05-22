@@ -126,11 +126,16 @@ To **translate** or **improve a translation**, **fix typo**, or to **request new
 
 # 💸 Donation
 
-> **Help me keep the project running longer.**  
-> This is completely optional — you don’t have to pay to use or unlock any feature.  
+> **Help me keep the project running longer.**
+
+> This is completely optional - you don’t have to pay to use or unlock any feature.
+
 > Donations help support the project but **don’t guarantee faster progress**, as development depends solely on my motivation and available time.
 
-[Patreon](https://patreon.com/nevarlevrai)
+<a href="https://patreon.com/nevarlevrai" style="display: inline-flex; align-items: center; text-decoration: none;">
+  <img src="./assets/get-it-on/patreon.png" alt="Patreon" style="height: 50px; margin-right: 10px;">
+  <span style="font-weight: bold; font-size: 16px; color: black;">Support me on Patreon</span>
+</a>
 
 # 🫂 Acknowledgements
 
