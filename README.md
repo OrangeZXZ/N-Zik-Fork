@@ -58,8 +58,7 @@
     <img alt="Screenshot 5" src="fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" height="350px" />
     <img alt="Screenshot 6" src="fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" height="350px" />
     <img alt="Screenshot 7" src="fastlane/metadata/android/en-US/images/phoneScreenshots/7.png" height="350px" />
-    <img alt="Screenshot 8" src="fastlane/metadata/android/en-US/images/phoneScreenshots/8.png" height="350px" />
-    <img alt="Screenshot 9" src="fastlane/metadata/android/en-US/images/phoneScreenshots/9.png" height="350px" />
+    <img alt="Screenshot 8" src="fastlane/metadata/android/en-US/images/phoneScreenshots/9.png" height="350px" />
 </div>
 
 # 🌐 Supported languages
