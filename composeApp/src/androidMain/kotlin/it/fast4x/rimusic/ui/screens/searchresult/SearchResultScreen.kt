@@ -18,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -90,6 +89,10 @@ import it.fast4x.rimusic.thumbnailShape
 import me.knighthat.coil.ImageCacheFactory
 
 
+fun String.toBooleanArray(): BooleanArray = this.map { it == '1' }.toBooleanArray()
+fun BooleanArray.toPrefString(): String = joinToString(separator = "") { if (it) "1" else "0" }
+val searchResultGridStatesKey = it.fast4x.rimusic.utils.Preference.Key("searchResultGridStates", "1111111")
+
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalFoundationApi
@@ -114,6 +117,14 @@ fun SearchResultScreen(
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+
+    val gridStates = rememberSaveable("searchResultGridStates") { mutableStateOf(BooleanArray(7) { true }) }
+    val useGrid = gridStates.value[tabIndex]
+    val setUseGrid: (Boolean) -> Unit = { newValue ->
+        val arr = gridStates.value.copyOf()
+        arr[tabIndex] = newValue
+        gridStates.value = arr
+    }
 
     val headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit = {
         Title(
@@ -222,7 +233,6 @@ fun SearchResultScreen(
                 1 -> {
                     val thumbnailSizeDp = Dimensions.thumbnails.album + 8.dp
                     val thumbnailSizePx = thumbnailSizeDp.px
-                    var useGrid by rememberSaveable { mutableStateOf(true) }
 
                     val albumItemContentGrid: @Composable androidx.compose.foundation.lazy.grid.LazyGridItemScope.(Innertube.AlbumItem) -> Unit = { album ->
                         Column(
@@ -328,7 +338,7 @@ fun SearchResultScreen(
                             },
                             verticalPadding = 4.dp,
                             trailingIcon = {
-                                IconButton(onClick = { useGrid = !useGrid }) {
+                                IconButton(onClick = { setUseGrid(!useGrid) }) {
                                     Icon(
                                         painter = painterResource(id = if (useGrid) R.drawable.sort_vertical else R.drawable.sort_grid),
                                         contentDescription = "Switch Mode",
@@ -519,7 +529,6 @@ fun SearchResultScreen(
                 4 -> {
                     val thumbnailSizeDp = Dimensions.thumbnails.playlist + 8.dp
                     val thumbnailSizePx = thumbnailSizeDp.px
-                    var useGrid by rememberSaveable { mutableStateOf(true) }
 
                     val playlistItemContentGrid: @Composable androidx.compose.foundation.lazy.grid.LazyGridItemScope.(Innertube.PlaylistItem) -> Unit = { playlist ->
                         Column(
@@ -598,7 +607,7 @@ fun SearchResultScreen(
                             },
                             verticalPadding = 4.dp,
                             trailingIcon = {
-                                IconButton(onClick = { useGrid = !useGrid }) {
+                                IconButton(onClick = { setUseGrid(!useGrid) }) {
                                     Icon(
                                         painter = painterResource(id = if (useGrid) R.drawable.sort_vertical else R.drawable.sort_grid),
                                         contentDescription = "Switch Mode",
@@ -658,7 +667,6 @@ fun SearchResultScreen(
                 5 -> {
                     val thumbnailSizeDp = Dimensions.thumbnails.playlist + 8.dp
                     val thumbnailSizePx = thumbnailSizeDp.px
-                    var useGrid by rememberSaveable { mutableStateOf(true) }
 
                     val playlistItemContentGrid: @Composable androidx.compose.foundation.lazy.grid.LazyGridItemScope.(Innertube.PlaylistItem) -> Unit = { playlist ->
                         Column(
@@ -737,7 +745,7 @@ fun SearchResultScreen(
                             },
                             verticalPadding = 4.dp,
                             trailingIcon = {
-                                IconButton(onClick = { useGrid = !useGrid }) {
+                                IconButton(onClick = { setUseGrid(!useGrid) }) {
                                     Icon(
                                         painter = painterResource(id = if (useGrid) R.drawable.sort_vertical else R.drawable.sort_grid),
                                         contentDescription = "Switch Mode",
@@ -797,7 +805,6 @@ fun SearchResultScreen(
                 6 -> {
                     val thumbnailSizeDp = Dimensions.thumbnails.playlist + 8.dp
                     val thumbnailSizePx = thumbnailSizeDp.px
-                    var useGrid by rememberSaveable { mutableStateOf(true) }
 
                     val playlistItemContentGrid: @Composable androidx.compose.foundation.lazy.grid.LazyGridItemScope.(Innertube.PlaylistItem) -> Unit = { playlist ->
                         Column(
@@ -876,7 +883,7 @@ fun SearchResultScreen(
                             },
                             verticalPadding = 4.dp,
                             trailingIcon = {
-                                IconButton(onClick = { useGrid = !useGrid }) {
+                                IconButton(onClick = { setUseGrid(!useGrid) }) {
                                     Icon(
                                         painter = painterResource(id = if (useGrid) R.drawable.sort_vertical else R.drawable.sort_grid),
                                         contentDescription = "Switch Mode",
