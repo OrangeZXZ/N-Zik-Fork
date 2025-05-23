@@ -68,18 +68,19 @@
 - Upgraded **Featured content** display, introducing a clearer visual hierarchy for easier content discovery.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/02531036-00b2-4be3-b605-26535a86a7cc" height="350px" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/8932a511-c412-4086-b571-71f9dd64437a" height="350px" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/3f2fa603-acce-4712-bb51-301d4f8fc4db" height="350px" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/8c6358fa-c1e2-406d-afe7-5380c3f23650" height="350px" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/dd98ca24-9d1b-4205-8ee7-c35519590cb5" width="150" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/17128f78-7c27-4676-b34b-ca9d21b7982b" width="150" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/d3a7270b-ee8a-46c3-a9f3-c8f0fe2c7f07" width="150" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/e670ba5c-cd5f-4a1b-a1c0-1f2ad90b0dfe" width="150" style="margin:4px" />
 </p>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/3a801c5e-4538-4c7a-85eb-2482061a16fc" height="350px" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/a7baa01b-b8c8-4109-801f-c1d990c1a9d3" height="350px" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/9b5d1947-ab41-4de3-b1ea-d852eed26a37" height="350px" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/405ebf9f-33dd-47c9-824d-ebb0a7da1e2e" height="350px" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/c16fbf03-5710-407e-881d-e7b592d1d87c" width="150" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/fc0b81be-5889-4196-afc1-980a36192005" width="150" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/186c2a6b-363e-4531-8ce5-eb8c1770ab00" width="150" style="margin:4px" />
+  <img src="https://github.com/user-attachments/assets/153920f6-baa7-47f4-b3b8-bd9d4563c01a" width="150" style="margin:4px" />
 </p>
+
 
 
 
