@@ -3,16 +3,19 @@ import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
@@ -43,11 +46,9 @@ import it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import it.fast4x.rimusic.ui.components.themed.Title
 import it.fast4x.rimusic.ui.items.AlbumItem
-import it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import it.fast4x.rimusic.ui.items.ArtistItem
 import it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
 import it.fast4x.rimusic.ui.items.PlaylistItem
-import it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.items.VideoItem
 import it.fast4x.rimusic.ui.items.VideoItemPlaceholder
@@ -76,7 +77,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import it.fast4x.rimusic.colorPalette
-import it.fast4x.rimusic.ui.items.AlbumPlaceholder
+import it.fast4x.rimusic.ui.items.AlbumItemGridPlaceholder
+import androidx.compose.foundation.layout.Arrangement
+import it.fast4x.rimusic.utils.conditional
+import it.fast4x.rimusic.ui.items.AlbumItemListPlaceholder
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import it.fast4x.rimusic.thumbnailShape
+import me.knighthat.coil.ImageCacheFactory
+
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -215,7 +227,11 @@ fun SearchResultScreen(
                     val albumItemContentGrid: @Composable androidx.compose.foundation.lazy.grid.LazyGridItemScope.(Innertube.AlbumItem) -> Unit = { album ->
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(vertical = 8.dp)
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.padding(
+                                vertical = Dimensions.itemsVerticalPadding,
+                                horizontal = 0.dp
+                            )
                         ) {
                             AlbumItem(
                                 yearCentered = false,
@@ -231,17 +247,22 @@ fun SearchResultScreen(
                                     ),
                                 disableScrollingText = disableScrollingText
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
                             BasicText(
                                 text = album.title ?: "",
                                 style = typography().s.copy(textAlign = TextAlign.Center),
-                                maxLines = 2
+                                maxLines = 2,
+                                modifier = Modifier
+                                    .width((thumbnailSizeDp - 8.dp) * 0.8f)
+                                    .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                             )
                             album.year?.let { year ->
                                 if (year.isNotBlank()) {
                                     BasicText(
                                         text = year,
-                                        style = typography().xs.copy(color = Color.Gray, textAlign = TextAlign.Center)
+                                        style = typography().xs.copy(color = Color.Gray, textAlign = TextAlign.Center),
+                                        maxLines = 1,
+                                        modifier = Modifier
+                                            .width((thumbnailSizeDp - 8.dp) * 0.4f)
                                     )
                                 }
                             }
@@ -249,36 +270,46 @@ fun SearchResultScreen(
                     }
 
                     val albumItemContentList: @Composable androidx.compose.foundation.lazy.LazyItemScope.(Innertube.AlbumItem) -> Unit = { album ->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(vertical = 8.dp)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            AlbumItem(
-                                yearCentered = false,
-                                album = album,
-                                thumbnailSizePx = thumbnailSizePx,
-                                thumbnailSizeDp = thumbnailSizeDp,
-                                modifier = Modifier
-                                    .combinedClickable(
-                                        onClick = {
-                                            navController.navigate("${NavRoutes.album.name}/${album.key}")
-                                        },
-                                        onLongClick = {}
-                                    ),
-                                disableScrollingText = disableScrollingText
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            BasicText(
-                                text = album.title ?: "",
-                                style = typography().s.copy(textAlign = TextAlign.Center),
-                                maxLines = 2
-                            )
-                            album.year?.let { year ->
-                                if (year.isNotBlank()) {
-                                    BasicText(
-                                        text = year,
-                                        style = typography().xs.copy(color = Color.Gray, textAlign = TextAlign.Center)
-                                    )
+                            Box {
+                                ImageCacheFactory.Thumbnail(
+                                    thumbnailUrl = album.thumbnail?.url,
+                                    contentScale = ContentScale.FillWidth,
+                                    modifier = Modifier
+                                        .size(thumbnailSizeDp - 8.dp)
+                                        .clip(thumbnailShape())
+                                )
+                            }
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                BasicText(
+                                    text = album.title ?: "",
+                                    style = typography().s,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
+                                )
+                                album.year?.let { year ->
+                                    if (year.isNotBlank()) {
+                                        BasicText(
+                                            text = year,
+                                            style = typography().xs.copy(color = Color.Gray),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier
+                                                .fillMaxWidth(0.6f)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -329,7 +360,7 @@ fun SearchResultScreen(
                                 emptyItemsText = emptyItemsText,
                                 headerContent = {},
                                 itemContent = albumItemContentGrid,
-                                itemPlaceholderContent = { PlaylistItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp) },
+                                itemPlaceholderContent = { AlbumItemGridPlaceholder(thumbnailSizeDp = thumbnailSizeDp) },
                                 thumbnailSizeDp = thumbnailSizeDp
                             )
                         } else {
@@ -354,7 +385,7 @@ fun SearchResultScreen(
                                 emptyItemsText = emptyItemsText,
                                 headerContent = {},
                                 itemContent = albumItemContentList,
-                                itemPlaceholderContent = { PlaylistItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp) }
+                                itemPlaceholderContent = { AlbumItemListPlaceholder(thumbnailSizeDp = thumbnailSizeDp) }
                             )
                         }
                     }
@@ -493,7 +524,11 @@ fun SearchResultScreen(
                     val playlistItemContentGrid: @Composable androidx.compose.foundation.lazy.grid.LazyGridItemScope.(Innertube.PlaylistItem) -> Unit = { playlist ->
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(vertical = 8.dp)
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.padding(
+                                vertical = Dimensions.itemsVerticalPadding,
+                                horizontal = 0.dp
+                            )
                         ) {
                             PlaylistItem(
                                 playlist = playlist,
@@ -505,36 +540,48 @@ fun SearchResultScreen(
                                 },
                                 disableScrollingText = disableScrollingText
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
                             BasicText(
                                 text = playlist.title ?: "",
                                 style = typography().s.copy(textAlign = TextAlign.Center),
-                                maxLines = 2
+                                maxLines = 2,
+                                modifier = Modifier
+                                    .width((thumbnailSizeDp - 8.dp) * 0.8f)
+                                    .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                             )
                         }
                     }
 
                     val playlistItemContentList: @Composable androidx.compose.foundation.lazy.LazyItemScope.(Innertube.PlaylistItem) -> Unit = { playlist ->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(vertical = 8.dp)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            PlaylistItem(
-                                playlist = playlist,
-                                thumbnailSizePx = thumbnailSizePx,
-                                thumbnailSizeDp = thumbnailSizeDp,
-                                showSongsCount = false,
-                                modifier = Modifier.clickable {
-                                    navController.navigate("${NavRoutes.playlist.name}/${playlist.key}")
-                                },
-                                disableScrollingText = disableScrollingText
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            BasicText(
-                                text = playlist.title ?: "",
-                                style = typography().s.copy(textAlign = TextAlign.Center),
-                                maxLines = 2
-                            )
+                            Box {
+                                ImageCacheFactory.Thumbnail(
+                                    thumbnailUrl = playlist.thumbnail?.url,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .size(thumbnailSizeDp - 8.dp)
+                                        .clip(thumbnailShape())
+                                )
+                            }
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                BasicText(
+                                    text = playlist.title ?: "",
+                                    style = typography().s,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
+                                )
+                            }
                         }
                     }
 
@@ -580,7 +627,7 @@ fun SearchResultScreen(
                                 emptyItemsText = emptyItemsText,
                                 headerContent = {},
                                 itemContent = playlistItemContentGrid,
-                                itemPlaceholderContent = { PlaylistItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp) },
+                                itemPlaceholderContent = { AlbumItemGridPlaceholder(thumbnailSizeDp = thumbnailSizeDp) },
                                 thumbnailSizeDp = thumbnailSizeDp
                             )
                         } else {
@@ -602,7 +649,7 @@ fun SearchResultScreen(
                                 emptyItemsText = emptyItemsText,
                                 headerContent = {},
                                 itemContent = playlistItemContentList,
-                                itemPlaceholderContent = { PlaylistItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp) }
+                                itemPlaceholderContent = { AlbumItemListPlaceholder(thumbnailSizeDp = thumbnailSizeDp) }
                             )
                         }
                     }
@@ -616,7 +663,11 @@ fun SearchResultScreen(
                     val playlistItemContentGrid: @Composable androidx.compose.foundation.lazy.grid.LazyGridItemScope.(Innertube.PlaylistItem) -> Unit = { playlist ->
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(vertical = 8.dp)
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.padding(
+                                vertical = Dimensions.itemsVerticalPadding,
+                                horizontal = 0.dp
+                            )
                         ) {
                             PlaylistItem(
                                 playlist = playlist,
@@ -628,36 +679,48 @@ fun SearchResultScreen(
                                 },
                                 disableScrollingText = disableScrollingText
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
                             BasicText(
                                 text = playlist.title ?: "",
                                 style = typography().s.copy(textAlign = TextAlign.Center),
-                                maxLines = 2
+                                maxLines = 2,
+                                modifier = Modifier
+                                    .width((thumbnailSizeDp - 8.dp) * 0.8f)
+                                    .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                             )
                         }
                     }
 
                     val playlistItemContentList: @Composable androidx.compose.foundation.lazy.LazyItemScope.(Innertube.PlaylistItem) -> Unit = { playlist ->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(vertical = 8.dp)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            PlaylistItem(
-                                playlist = playlist,
-                                thumbnailSizePx = thumbnailSizePx,
-                                thumbnailSizeDp = thumbnailSizeDp,
-                                showSongsCount = false,
-                                modifier = Modifier.clickable {
-                                    navController.navigate("${NavRoutes.playlist.name}/${playlist.key}")
-                                },
-                                disableScrollingText = disableScrollingText
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            BasicText(
-                                text = playlist.title ?: "",
-                                style = typography().s.copy(textAlign = TextAlign.Center),
-                                maxLines = 2
-                            )
+                            Box {
+                                ImageCacheFactory.Thumbnail(
+                                    thumbnailUrl = playlist.thumbnail?.url,
+                                    contentScale = ContentScale.FillWidth,
+                                    modifier = Modifier
+                                        .size(thumbnailSizeDp - 8.dp)
+                                        .clip(thumbnailShape())
+                                )
+                            }
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                BasicText(
+                                    text = playlist.title ?: "",
+                                    style = typography().s,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
+                                )
+                            }
                         }
                     }
 
@@ -703,7 +766,7 @@ fun SearchResultScreen(
                                 emptyItemsText = emptyItemsText,
                                 headerContent = {},
                                 itemContent = playlistItemContentGrid,
-                                itemPlaceholderContent = { PlaylistItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp) },
+                                itemPlaceholderContent = { AlbumItemGridPlaceholder(thumbnailSizeDp = thumbnailSizeDp) },
                                 thumbnailSizeDp = thumbnailSizeDp
                             )
                         } else {
@@ -725,7 +788,7 @@ fun SearchResultScreen(
                                 emptyItemsText = emptyItemsText,
                                 headerContent = {},
                                 itemContent = playlistItemContentList,
-                                itemPlaceholderContent = { PlaylistItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp) }
+                                itemPlaceholderContent = { AlbumItemListPlaceholder(thumbnailSizeDp = thumbnailSizeDp) }
                             )
                         }
                     }
@@ -739,7 +802,11 @@ fun SearchResultScreen(
                     val playlistItemContentGrid: @Composable androidx.compose.foundation.lazy.grid.LazyGridItemScope.(Innertube.PlaylistItem) -> Unit = { playlist ->
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(vertical = 8.dp)
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.padding(
+                                vertical = Dimensions.itemsVerticalPadding,
+                                horizontal = 0.dp
+                            )
                         ) {
                             PlaylistItem(
                                 playlist = playlist,
@@ -751,36 +818,48 @@ fun SearchResultScreen(
                                 },
                                 disableScrollingText = disableScrollingText
                             )
-                            Spacer(modifier = Modifier.height(4.dp))
                             BasicText(
                                 text = playlist.title ?: "",
                                 style = typography().s.copy(textAlign = TextAlign.Center),
-                                maxLines = 2
+                                maxLines = 2,
+                                modifier = Modifier
+                                    .width((thumbnailSizeDp - 8.dp) * 0.8f)
+                                    .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                             )
                         }
                     }
 
                     val playlistItemContentList: @Composable androidx.compose.foundation.lazy.LazyItemScope.(Innertube.PlaylistItem) -> Unit = { playlist ->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(vertical = 8.dp)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            PlaylistItem(
-                                playlist = playlist,
-                                thumbnailSizePx = thumbnailSizePx,
-                                thumbnailSizeDp = thumbnailSizeDp,
-                                showSongsCount = false,
-                                modifier = Modifier.clickable {
-                                    navController.navigate("${NavRoutes.podcast.name}/${playlist.key}")
-                                },
-                                disableScrollingText = disableScrollingText
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            BasicText(
-                                text = playlist.title ?: "",
-                                style = typography().s.copy(textAlign = TextAlign.Center),
-                                maxLines = 2
-                            )
+                            Box {
+                                ImageCacheFactory.Thumbnail(
+                                    thumbnailUrl = playlist.thumbnail?.url,
+                                    contentScale = ContentScale.FillWidth,
+                                    modifier = Modifier
+                                        .size(thumbnailSizeDp - 8.dp)
+                                        .clip(thumbnailShape())
+                                )
+                            }
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                BasicText(
+                                    text = playlist.title ?: "",
+                                    style = typography().s,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
+                                )
+                            }
                         }
                     }
 
@@ -826,7 +905,7 @@ fun SearchResultScreen(
                                 emptyItemsText = emptyItemsText,
                                 headerContent = {},
                                 itemContent = playlistItemContentGrid,
-                                itemPlaceholderContent = { PlaylistItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp) },
+                                itemPlaceholderContent = { AlbumItemGridPlaceholder(thumbnailSizeDp = thumbnailSizeDp) },
                                 thumbnailSizeDp = thumbnailSizeDp
                             )
                         } else {
@@ -848,7 +927,7 @@ fun SearchResultScreen(
                                 emptyItemsText = emptyItemsText,
                                 headerContent = {},
                                 itemContent = playlistItemContentList,
-                                itemPlaceholderContent = { PlaylistItemPlaceholder(thumbnailSizeDp = thumbnailSizeDp) }
+                                itemPlaceholderContent = { AlbumItemListPlaceholder(thumbnailSizeDp = thumbnailSizeDp) }
                             )
                         }
                     }
