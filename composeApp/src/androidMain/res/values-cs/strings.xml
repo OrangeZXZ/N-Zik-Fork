@@ -965,4 +965,6 @@
     <string name="title_playback_speed">Rychlost přehrávání</string>
     <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
     <string name="log_in_to_ytm">Pro více obsahu se přihlaste ke svému účtu YTM</string>
+    <string name="title_appearance_changes">Změny vzhledu</string>
+    <string name="appearance_changes_message">Pokud změníte nastavení přehrávače nebo uživatelského rozhraní,\nje důrazně doporučeno aplikaci restartovat.</string>
 </resources>
