@@ -965,4 +965,6 @@
     <string name="title_playback_speed">Viteza redării</string>
     <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
     <string name="log_in_to_ytm">Conectează-te la contul tău YTM pentru mai mult conținut</string>
+    <string name="title_appearance_changes">Aspectul modificărilor</string>
+    <string name="appearance_changes_message">Dacă schimbi setările Player sau UI,\neste recomandat să repornești aplicația.</string>
 </resources>
