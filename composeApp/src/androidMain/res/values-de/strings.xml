@@ -965,4 +965,6 @@
     <string name="title_playback_speed">Wiedergabegeschwindigkeit</string>
     <string name="description_playback_speed">Festlegen, wie langsam oder schnell der Titel laufen soll</string>
     <string name="log_in_to_ytm">Melden Sie sich bei Ihrem YTM-Konto für weitere Inhalte an</string>
+    <string name="title_appearance_changes">Erscheinungsänderungen</string>
+    <string name="appearance_changes_message">Wenn Sie die Spieler- oder UI-Einstellungen ändern, wird\ndringend empfohlen, die Anwendung neu zu starten.</string>
 </resources>
