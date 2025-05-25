@@ -965,4 +965,6 @@
     <string name="title_playback_speed">Velocità di riproduzione</string>
     <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
     <string name="log_in_to_ytm">Accedi al tuo account YTM per maggiori contenuti</string>
+    <string name="title_appearance_changes">Modifiche Aspetto</string>
+    <string name="appearance_changes_message">Se cambi le impostazioni Player o UI,\nè fortemente raccomandato di riavviare l\'applicazione.</string>
 </resources>

@@ -965,4 +965,6 @@
     <string name="title_playback_speed">Avspillingshastighet</string>
     <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
     <string name="log_in_to_ytm">Logg inn på din YTM-konto for mer innhold</string>
+    <string name="title_appearance_changes">Utseende endringer</string>
+    <string name="appearance_changes_message">Hvis du endrer spiller eller brukergrensesnitt, anbefales\npå det sterkeste å restarte applikasjonen.</string>
 </resources>

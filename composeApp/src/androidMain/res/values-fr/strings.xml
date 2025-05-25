@@ -968,4 +968,6 @@ Volume BAS : titre précédent</string>
     <string name="title_playback_speed">Vitesse de lecture</string>
     <string name="description_playback_speed">Ajuster la vitesse / la lenteur du titre</string>
     <string name="log_in_to_ytm">Connectez-vous à votre compte YTM pour voir plus de contenu</string>
+    <string name="title_appearance_changes">Changements d\'apparence</string>
+    <string name="appearance_changes_message">Si vous modifiez les paramètres du Lecteur ou de l’UI,\nil est fortement recommandé de redémarrer l’application.</string>
 </resources>

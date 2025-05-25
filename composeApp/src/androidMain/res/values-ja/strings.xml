@@ -965,4 +965,6 @@
     <string name="title_playback_speed">再生速度</string>
     <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
     <string name="log_in_to_ytm">YTMアカウントにログインしてより多くのコンテンツを見る</string>
+    <string name="title_appearance_changes">外観の変更</string>
+    <string name="appearance_changes_message">プレイヤーやUIの設定を変更した場合、\nアプリケーションを再起動することを強くお勧めします。</string>
 </resources>
