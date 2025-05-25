@@ -965,4 +965,6 @@
     <string name="title_playback_speed">Toistonopeus</string>
     <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
     <string name="log_in_to_ytm">Kirjaudu sisään YTM-tilillesi saadaksesi lisää sisältöä</string>
+    <string name="title_appearance_changes">Ulkoasun Muutokset</string>
+    <string name="appearance_changes_message">Jos muutat pelaajan tai käyttöliittymän asetuksia,\non erittäin suositeltavaa käynnistää sovellus uudelleen.</string>
 </resources>
