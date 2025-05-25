@@ -965,4 +965,6 @@
     <string name="title_playback_speed">재생 속도</string>
     <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
     <string name="log_in_to_ytm">Log in to your YTM account for more content</string>
+    <string name="title_appearance_changes">Appearance Changes</string>
+    <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
 </resources>
