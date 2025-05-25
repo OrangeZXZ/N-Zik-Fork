@@ -965,4 +965,6 @@
     <string name="title_playback_speed">Playback speed</string>
     <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
     <string name="log_in_to_ytm">Συνδεθείτε στον λογαριασμό σας YTM για περισσότερο περιεχόμενο</string>
+    <string name="title_appearance_changes">Αλλαγές Εμφάνισης</string>
+    <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
 </resources>
