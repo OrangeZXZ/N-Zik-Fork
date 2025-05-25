@@ -965,4 +965,6 @@
     <string name="title_playback_speed">Playback speed</string>
     <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
     <string name="log_in_to_ytm">Log in op je YTM account voor meer inhoud</string>
+    <string name="title_appearance_changes">Uiterlijk wijzigingen</string>
+    <string name="appearance_changes_message">Als je de speler- of UI-instellingen wijzigt,\nwordt aangeraden om de applicatie opnieuw te starten.</string>
 </resources>
