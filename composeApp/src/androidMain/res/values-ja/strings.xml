@@ -967,4 +967,6 @@
     <string name="log_in_to_ytm">YTMアカウントにログインしてより多くのコンテンツを見る</string>
     <string name="title_appearance_changes">外観の変更</string>
     <string name="appearance_changes_message">プレイヤーやUIの設定を変更した場合、\nアプリケーションを再起動することを強くお勧めします。</string>
+    <string name="title_import_settings_migration">移行ファイルをインポート</string>
+    <string name="description_import_settings_migration">変換前の古いユーザーの場合。\n古いアプリを使用して移行用のバックアップを作成します。</string>
 </resources>

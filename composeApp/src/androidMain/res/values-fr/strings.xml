@@ -970,4 +970,6 @@ Volume BAS : titre précédent</string>
     <string name="log_in_to_ytm">Connectez-vous à votre compte YTM pour voir plus de contenu</string>
     <string name="title_appearance_changes">Changements d\'apparence</string>
     <string name="appearance_changes_message">Si vous modifiez les paramètres du Lecteur ou de l’UI,\nil est fortement recommandé de redémarrer l’application.</string>
+    <string name="title_import_settings_migration">Importer un fichier de migration.</string>
+    <string name="description_import_settings_migration">Pour les anciens utilisateurs avant la conversion.\nUtilisez l\'ancienne application pour faire une sauvegarde pour la migration.</string>
 </resources>

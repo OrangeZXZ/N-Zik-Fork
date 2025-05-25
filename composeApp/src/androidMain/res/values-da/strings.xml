@@ -967,4 +967,6 @@
     <string name="log_in_to_ytm">Log ind på din YTM-konto for mere indhold</string>
     <string name="title_appearance_changes">Ændringer I Udseende</string>
     <string name="appearance_changes_message">Hvis du ændrer Player eller UI indstillinger,\nanbefales det kraftigt at genstarte programmet.</string>
+    <string name="title_import_settings_migration">Importér migrationsfil.</string>
+    <string name="description_import_settings_migration">For gamle brugere før konvertering.\nBrug gammel app til at lave en sikkerhedskopi til migration.</string>
 </resources>

@@ -967,4 +967,6 @@
     <string name="log_in_to_ytm">Увійдіть у свій YTM акаунт для додаткової інформації</string>
     <string name="title_appearance_changes">Зміни зовнішнього вигляду</string>
     <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
+    <string name="title_import_settings_migration">Імпорт файлу міграції.</string>
+    <string name="description_import_settings_migration">Для старих користувачів до перетворення.\nВикористовувати стару програму, щоб зробити резервну копію міграції.</string>
 </resources>

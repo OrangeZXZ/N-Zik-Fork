@@ -967,4 +967,6 @@
     <string name="log_in_to_ytm">تسجيل الدخول إلى حساب YTM الخاص بك للحصول على المزيد من المحتوى</string>
     <string name="title_appearance_changes">تغييرات المظهر</string>
     <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
+    <string name="title_import_settings_migration">استيراد ملف الترحيل.</string>
+    <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
 </resources>

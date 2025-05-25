@@ -967,4 +967,6 @@
     <string name="log_in_to_ytm">Logg inn på din YTM-konto for mer innhold</string>
     <string name="title_appearance_changes">Utseende endringer</string>
     <string name="appearance_changes_message">Hvis du endrer spiller eller brukergrensesnitt, anbefales\npå det sterkeste å restarte applikasjonen.</string>
+    <string name="title_import_settings_migration">Importer overføringsfil.</string>
+    <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
 </resources>

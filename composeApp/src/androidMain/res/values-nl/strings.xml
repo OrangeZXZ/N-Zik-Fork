@@ -967,4 +967,6 @@
     <string name="log_in_to_ytm">Log in op je YTM account voor meer inhoud</string>
     <string name="title_appearance_changes">Uiterlijk wijzigingen</string>
     <string name="appearance_changes_message">Als je de speler- of UI-instellingen wijzigt,\nwordt aangeraden om de applicatie opnieuw te starten.</string>
+    <string name="title_import_settings_migration">Migratiebestand importeren.</string>
+    <string name="description_import_settings_migration">Voor oude gebruikers vóór conversie.\nGebruik oude app om een back-up te maken voor migratie.</string>
 </resources>
