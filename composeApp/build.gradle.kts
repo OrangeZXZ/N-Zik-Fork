@@ -192,6 +192,13 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
 
+        create( "beta" ) {
+            initWith( maybeCreate("minified") )
+            versionNameSuffix = "-beta"
+            signingConfig = signingConfigs.getByName("debug")
+            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
+        }
+
         /**
          * For convenience only.
          * "Forkers" want to change app name across builds
