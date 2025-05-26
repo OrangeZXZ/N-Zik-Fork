@@ -313,7 +313,6 @@
     <string name="lang_finnish">Finnish (Suomalainen)</string>
     <string name="listening_time">播放持续时间</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">显示听到的歌曲总数和播放时间</string>
-    <string name="app_update_dialog_new">The new version %s can be downloaded!</string>
     <string name="enable_language_in_discovery">Enable language in Discovery</string>
     <string name="if_possible_allows_discovery_content_language">If possible, it allows to receive Discovery content in your own language.</string>
     <string name="set_to">Set to</string>
@@ -970,4 +969,10 @@
     <string name="title_import_settings_migration">导入迁移文件。</string>
     <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
     <string name="log_in_to_ytm">登录到您的 YTM 帐户获取更多内容</string>
+    <string name="close">Close</string>
+    <string name="view_changelog">View changelog of the version %s</string>
+    <string name="no_changelog_available">No changelog available</string>
+    <string name="app_update_dialog_new">The new version %s can be downloaded!</string>
+    <string name="app_update_dialog_size">The file size is %s</string>
+    <string name="app_update_dialog_version">The new version %s can be downloaded!</string>
 </resources>

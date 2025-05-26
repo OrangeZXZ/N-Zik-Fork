@@ -313,7 +313,6 @@
     <string name="lang_finnish">Finnish (Suomalainen)</string>
     <string name="listening_time">Durata riproduzione</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Mostra il numero totale di brani ascoltati e la durata di riproduzione</string>
-    <string name="app_update_dialog_new">La nuova versione %s può essere scaricata!</string>
     <string name="enable_language_in_discovery">Abilita lingua in Scopri</string>
     <string name="if_possible_allows_discovery_content_language">Se possibile, permette di ricevere contenuti in Scopri nella propria lingua.</string>
     <string name="set_to">Imposta a</string>
@@ -970,4 +969,10 @@
     <string name="title_import_settings_migration">Importa file di migrazione.</string>
     <string name="description_import_settings_migration">Per i vecchi utenti prima della conversione.\nUsa la vecchia app per fare un backup per la migrazione.</string>
     <string name="log_in_to_ytm">Accedi al tuo account YTM per maggiori contenuti</string>
+    <string name="close">Chiudi</string>
+    <string name="view_changelog">Visualizza il changelog della versione %s</string>
+    <string name="no_changelog_available">Nessun changelog disponibile</string>
+    <string name="app_update_dialog_new">La nuova versione %s può essere scaricata!</string>
+    <string name="app_update_dialog_size">La dimensione del file è %s</string>
+    <string name="app_update_dialog_version">La nuova versione %s può essere scaricata!</string>
 </resources>

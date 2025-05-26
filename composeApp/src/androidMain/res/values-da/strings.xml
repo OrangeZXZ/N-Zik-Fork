@@ -313,7 +313,6 @@
     <string name="lang_finnish">Finsk</string>
     <string name="listening_time">Lyttetid</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Viser antallet af hørte sange og deres lyttetid</string>
-    <string name="app_update_dialog_new">Den nye version %s kan hentes!</string>
     <string name="enable_language_in_discovery">Aktivér sprog i Opdag</string>
     <string name="if_possible_allows_discovery_content_language">Hvis muligt, lader det dig se Opdag-indhold på dit eget sprog.</string>
     <string name="set_to">Indstil til</string>
@@ -970,4 +969,10 @@
     <string name="title_import_settings_migration">Importér migrationsfil.</string>
     <string name="description_import_settings_migration">For gamle brugere før konvertering.\nBrug gammel app til at lave en sikkerhedskopi til migration.</string>
     <string name="log_in_to_ytm">Log ind på din YTM-konto for mere indhold</string>
+    <string name="close">Luk</string>
+    <string name="view_changelog">Se ændringslog til version %s</string>
+    <string name="no_changelog_available">Ingen ændringslog tilgængelig</string>
+    <string name="app_update_dialog_new">Den nye version %s kan hentes!</string>
+    <string name="app_update_dialog_size">Filstørrelsen er %s</string>
+    <string name="app_update_dialog_version">Den nye version %s kan hentes!</string>
 </resources>

@@ -313,7 +313,6 @@
     <string name="lang_finnish">Finnish (Suomalainen)</string>
     <string name="listening_time">Toiston kesto</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Näytä kuulemiesi kappaleiden määrä ja soiton kesto</string>
-    <string name="app_update_dialog_new">Uusi versio %s ladattavissa!</string>
     <string name="enable_language_in_discovery">Ota kieli käyttöön \'Löydä uutta\' -toiminnossa</string>
     <string name="if_possible_allows_discovery_content_language">Jos mahdollista, \'Löydä uutta\' -sisältöä voidaan näyttää valitulla kielellä.</string>
     <string name="set_to">Asetettu</string>
@@ -970,4 +969,10 @@
     <string name="title_import_settings_migration">Tuo siirtotiedosto.</string>
     <string name="description_import_settings_migration">Vanhoille käyttäjille ennen muuntamista.\nKäytä vanhaa sovellusta varmuuskopion tekemiseen muuttoa varten.</string>
     <string name="log_in_to_ytm">Kirjaudu sisään YTM-tilillesi saadaksesi lisää sisältöä</string>
+    <string name="close">Sulje</string>
+    <string name="view_changelog">Näytä version %s muutosloki</string>
+    <string name="no_changelog_available">Ei muutoslokia saatavilla</string>
+    <string name="app_update_dialog_new">Uusi versio %s ladattavissa!</string>
+    <string name="app_update_dialog_size">Tiedoston koko on %s</string>
+    <string name="app_update_dialog_version">Uusi versio %s ladattavissa!</string>
 </resources>

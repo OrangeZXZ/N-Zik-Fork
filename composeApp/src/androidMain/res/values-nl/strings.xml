@@ -313,7 +313,6 @@
     <string name="lang_finnish">Finnish (Suomalainen)</string>
     <string name="listening_time">Afspeelduur</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Toon totaal aantal gehoorde nummers en afspeelduur</string>
-    <string name="app_update_dialog_new">De nieuwe versie %s kan worden gedownload!</string>
     <string name="enable_language_in_discovery">Taal in Discovery inschakelen</string>
     <string name="if_possible_allows_discovery_content_language">Indien mogelijk, maakt het mogelijk om Discovery-inhoud in uw eigen taal te ontvangen.</string>
     <string name="set_to">Instellen naar</string>
@@ -970,4 +969,10 @@
     <string name="title_import_settings_migration">Migratiebestand importeren.</string>
     <string name="description_import_settings_migration">Voor oude gebruikers vóór conversie.\nGebruik oude app om een back-up te maken voor migratie.</string>
     <string name="log_in_to_ytm">Log in op je YTM account voor meer inhoud</string>
+    <string name="close">Afsluiten</string>
+    <string name="view_changelog">Bekijk wijzigingen van versie %s</string>
+    <string name="no_changelog_available">Geen logboek beschikbaar</string>
+    <string name="app_update_dialog_new">De nieuwe versie %s kan worden gedownload!</string>
+    <string name="app_update_dialog_size">De bestandsgrootte is %s</string>
+    <string name="app_update_dialog_version">De nieuwe versie %s kan worden gedownload!</string>
 </resources>

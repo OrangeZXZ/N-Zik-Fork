@@ -313,7 +313,6 @@
     <string name="lang_finnish">Finnish (Suomalainen)</string>
     <string name="listening_time">Тривалість відтворення</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Показувати загальну кількість пісень які прочули і тривалість відтворення</string>
-    <string name="app_update_dialog_new">Нову версію %s можна завантажити!</string>
     <string name="enable_language_in_discovery">Увімкнути мову в Discovery</string>
     <string name="if_possible_allows_discovery_content_language">Якщо можливо, це дозволяє отримувати вміст Discovery вашою мовою.</string>
     <string name="set_to">Встановити на</string>
@@ -970,4 +969,10 @@
     <string name="title_import_settings_migration">Імпорт файлу міграції.</string>
     <string name="description_import_settings_migration">Для старих користувачів до перетворення.\nВикористовувати стару програму, щоб зробити резервну копію міграції.</string>
     <string name="log_in_to_ytm">Увійдіть у свій YTM акаунт для додаткової інформації</string>
+    <string name="close">Закрити</string>
+    <string name="view_changelog">Перегляд змін версії %s</string>
+    <string name="no_changelog_available">Список змін недоступний</string>
+    <string name="app_update_dialog_new">Нову версію %s можна завантажити!</string>
+    <string name="app_update_dialog_size">Розмір файлу %s</string>
+    <string name="app_update_dialog_version">Нову версію %s можна завантажити!</string>
 </resources>

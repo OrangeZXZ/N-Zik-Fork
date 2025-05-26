@@ -313,7 +313,6 @@
     <string name="lang_finnish">Finnish (Suomalainen)</string>
     <string name="listening_time">再生時間</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">合計曲数と再生時間を表示する</string>
-    <string name="app_update_dialog_new">最新のバージョン %s をダウンロードできます！</string>
     <string name="enable_language_in_discovery">ディスカバリーで言語を有効にする</string>
     <string name="if_possible_allows_discovery_content_language">可能であれば、探索コンテンツをあなたの使用言語で受け取る。</string>
     <string name="set_to">設定</string>
@@ -970,4 +969,10 @@
     <string name="title_import_settings_migration">移行ファイルをインポート</string>
     <string name="description_import_settings_migration">変換前の古いユーザーの場合。\n古いアプリを使用して移行用のバックアップを作成します。</string>
     <string name="log_in_to_ytm">YTMアカウントにログインしてより多くのコンテンツを見る</string>
+    <string name="close">閉じる</string>
+    <string name="view_changelog">バージョン %sの更新履歴を表示</string>
+    <string name="no_changelog_available">更新履歴はありません</string>
+    <string name="app_update_dialog_new">最新のバージョン %s をダウンロードできます！</string>
+    <string name="app_update_dialog_size">ファイルサイズは %s です</string>
+    <string name="app_update_dialog_version">最新のバージョン %s をダウンロードできます！</string>
 </resources>
