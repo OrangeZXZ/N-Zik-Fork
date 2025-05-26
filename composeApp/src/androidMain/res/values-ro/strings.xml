@@ -969,4 +969,4 @@
     <string name="appearance_changes_message">Dacă schimbi setările Player sau UI,\neste recomandat să repornești aplicația.</string>
     <string name="title_import_settings_migration">Fișier migrare importat.</string>
     <string name="description_import_settings_migration">Pentru utilizatorii în vârstă înainte de conversie.\nUtilizează o aplicație veche pentru a face o copie de rezervă pentru migrare.</string>
-</resources>
+<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>

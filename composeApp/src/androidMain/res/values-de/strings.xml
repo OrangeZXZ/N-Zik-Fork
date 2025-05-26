@@ -969,4 +969,4 @@
     <string name="appearance_changes_message">Wenn Sie die Spieler- oder UI-Einstellungen ändern, wird\ndringend empfohlen, die Anwendung neu zu starten.</string>
     <string name="title_import_settings_migration">Migrationsdatei importieren.</string>
     <string name="description_import_settings_migration">Für alte Benutzer vor der Konvertierung.\nalte App verwenden, um eine Sicherung für die Migration zu erstellen.</string>
-</resources>
+<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>

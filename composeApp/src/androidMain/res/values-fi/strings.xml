@@ -969,4 +969,4 @@
     <string name="appearance_changes_message">Jos muutat pelaajan tai käyttöliittymän asetuksia,\non erittäin suositeltavaa käynnistää sovellus uudelleen.</string>
     <string name="title_import_settings_migration">Tuo siirtotiedosto.</string>
     <string name="description_import_settings_migration">Vanhoille käyttäjille ennen muuntamista.\nKäytä vanhaa sovellusta varmuuskopion tekemiseen muuttoa varten.</string>
-</resources>
+<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>

@@ -969,4 +969,4 @@
     <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
     <string name="title_import_settings_migration">Import pliku migracyjnego.</string>
     <string name="description_import_settings_migration">Dla starych użytkowników przed konwersją.\nUżyj starej aplikacji, aby utworzyć kopię zapasową dla migracji.</string>
-</resources>
+<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>

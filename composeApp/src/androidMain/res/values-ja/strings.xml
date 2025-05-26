@@ -969,4 +969,4 @@
     <string name="appearance_changes_message">プレイヤーやUIの設定を変更した場合、\nアプリケーションを再起動することを強くお勧めします。</string>
     <string name="title_import_settings_migration">移行ファイルをインポート</string>
     <string name="description_import_settings_migration">変換前の古いユーザーの場合。\n古いアプリを使用して移行用のバックアップを作成します。</string>
-</resources>
+<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>

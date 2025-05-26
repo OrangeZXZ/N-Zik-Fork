@@ -969,4 +969,4 @@
     <string name="appearance_changes_message">如果您更改玩家或界面设置，强烈建议\n重启应用程序。</string>
     <string name="title_import_settings_migration">导入迁移文件。</string>
     <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
-</resources>
+<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>

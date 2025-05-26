@@ -969,4 +969,4 @@
     <string name="appearance_changes_message">Se você alterar as configurações do Player ou da UI,\né altamente recomendável reiniciar o aplicativo.</string>
     <string name="title_import_settings_migration">Importar arquivo de migração.</string>
     <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
-</resources>
+<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>

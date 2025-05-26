@@ -969,4 +969,4 @@
     <string name="appearance_changes_message">Pokud změníte nastavení přehrávače nebo uživatelského rozhraní,\nje důrazně doporučeno aplikaci restartovat.</string>
     <string name="title_import_settings_migration">Importovat migrační soubor.</string>
     <string name="description_import_settings_migration">Pro staré uživatele před převodem.\nPoužijte starou aplikaci k zálohování pro migraci.</string>
-</resources>
+<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>

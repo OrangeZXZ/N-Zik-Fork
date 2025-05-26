@@ -969,4 +969,4 @@
     <string name="appearance_changes_message">Om du ändrar inställningar för spelare eller UI rekommenderas\natt starta om programmet.</string>
     <string name="title_import_settings_migration">Importera migreringsfil.</string>
     <string name="description_import_settings_migration">För gamla användare före konvertering.\nAnvänd gamla appar för att göra en säkerhetskopia för migrering.</string>
-</resources>
+<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>
