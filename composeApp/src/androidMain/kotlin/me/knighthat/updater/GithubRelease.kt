@@ -11,6 +11,7 @@ data class GithubRelease(
     val id: UInt,
     @SerialName("tag_name") val tagName: String,
     val name: String,
+    val body: String,
     @SerialName("assets") val builds: List<Build>
 ) {
 

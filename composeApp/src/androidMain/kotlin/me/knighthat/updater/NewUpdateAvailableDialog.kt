@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,6 +40,21 @@ import it.fast4x.rimusic.utils.color
 import it.fast4x.rimusic.utils.medium
 import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.utils.Repository
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+
+@Composable
+fun DialogText(
+    text: String,
+    style: TextStyle,
+    spacerHeight: Dp = 10.dp
+) {
+    BasicText(
+        text = text,
+        style = style,
+    )
+    Spacer(Modifier.height(spacerHeight))
+}
 
 object NewUpdateAvailableDialog: Dialog {
 
@@ -59,6 +75,9 @@ object NewUpdateAvailableDialog: Dialog {
      */
     var isCancelled: Boolean by mutableStateOf( !BuildConfig.IS_AUTOUPDATE )
 
+    private var showChangelog by mutableStateOf(false)
+    private var changelogText by mutableStateOf("")
+
     override val dialogTitle: String
         @Composable
         get() = stringResource( R.string.update_available )
@@ -68,6 +87,7 @@ object NewUpdateAvailableDialog: Dialog {
     fun onDismiss() {
         isCancelled = true
         isActive = false
+        showChangelog = false
     }
 
     @Composable
@@ -76,48 +96,82 @@ object NewUpdateAvailableDialog: Dialog {
 
         val uriHandler = LocalUriHandler.current
 
-        @Composable
-        fun DialogText(
-            text: String,
-            style: TextStyle,
-            spacerHeight: Dp = 10.dp
-        ) {
-            BasicText(
-                text = text,
-                style = style,
-            )
-            Spacer( Modifier.height(spacerHeight) )
+        if (showChangelog) {
+            DefaultDialog(::onDismiss) {
+                DialogText(
+                    text = stringResource(
+                        R.string.update_changelogs,
+                        Updater.githubRelease?.tagName ?: BuildConfig.VERSION_NAME
+                    ),
+                    style = typography().s.bold.copy(color = colorPalette().text)
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f, fill = false)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    DialogText(
+                        text = if (changelogText.isNotEmpty()) changelogText else stringResource(R.string.no_changelog_available),
+                        style = typography().xs.semiBold.copy(color = colorPalette().textSecondary)
+                    )
+                }
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(20))
+                            .border(3.dp, colorPalette().background2)
+                            .clickable { showChangelog = false }
+                    ) {
+                        BasicText(
+                            text = stringResource(R.string.close),
+                            style = typography().xs.medium.color(colorPalette().text),
+                            modifier = Modifier.padding(vertical = 16.dp)
+                        )
+                    }
+                }
+            }
+            return
         }
 
-        DefaultDialog( ::onDismiss ) {
+        DefaultDialog(::onDismiss) {
             // Title
             DialogText(
                 text = dialogTitle,
-                style = typography().s.bold.copy( color = colorPalette().text )
+                style = typography().s.bold.copy(color = colorPalette().text)
             )
 
             // Update information
             DialogText(
-                text = stringResource( R.string.app_update_dialog_new, Updater.build.readableSize ),
-                style = typography().xs.semiBold.copy( color = colorPalette().text )
+                text = stringResource(R.string.app_update_dialog_version, Updater.githubRelease?.tagName ?: BuildConfig.VERSION_NAME),
+                style = typography().xs.semiBold.copy(color = colorPalette().text)
+            )
+            DialogText(
+                text = stringResource(R.string.app_update_dialog_size, Updater.build.readableSize.ifEmpty { "?" }),
+                style = typography().xs.semiBold.copy(color = colorPalette().text)
             )
 
             // Available actions
             DialogText(
-                text = stringResource( R.string.actions_you_can_do ),
-                style = typography().xs.semiBold.copy( color = colorPalette().textSecondary )
+                text = stringResource(R.string.actions_you_can_do),
+                style = typography().xs.semiBold.copy(color = colorPalette().textSecondary)
             )
 
             // Option 1: Go to github page to download
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding( bottom = 20.dp )
-                                   .fillMaxWidth()
+                modifier = Modifier.padding(bottom = 20.dp)
+                    .fillMaxWidth()
             ) {
                 BasicText(
-                    text = stringResource( R.string.open_the_github_releases_web_page_and_download_latest_version ),
-                    style = typography().xxs.semiBold.copy( color = colorPalette().textSecondary ),
+                    text = stringResource(R.string.open_the_github_releases_web_page_and_download_latest_version),
+                    style = typography().xxs.semiBold.copy(color = colorPalette().textSecondary),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.fillMaxWidth(0.8f)
@@ -126,23 +180,22 @@ object NewUpdateAvailableDialog: Dialog {
                     painter = painterResource(R.drawable.globe),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(colorPalette().shimmer),
-                    modifier = Modifier.size( 30.dp )
-                                       .clickable {
-                                           onDismiss()
-
-                                           val tagUrl = "${Repository.GITHUB}/${Repository.LATEST_TAG_URL}"
-                                           uriHandler.openUri( tagUrl )
-                                       }
+                    modifier = Modifier.size(30.dp)
+                        .clickable {
+                            onDismiss()
+                            val tagUrl = "${Repository.GITHUB}/${Repository.LATEST_TAG_URL}"
+                            uriHandler.openUri(tagUrl)
+                        }
                 )
             }
-            Spacer( Modifier.height(10.dp) )
+            Spacer(Modifier.height(10.dp))
 
             // Option 2: Go straight to download page to start the download
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding( bottom = 20.dp )
-                                   .fillMaxWidth()
+                modifier = Modifier.padding(bottom = 20.dp)
+                    .fillMaxWidth()
             ) {
                 BasicText(
                     text = stringResource(R.string.download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it),
@@ -152,30 +205,56 @@ object NewUpdateAvailableDialog: Dialog {
                     modifier = Modifier.fillMaxWidth(0.8f)
                 )
                 Image(
-                    painter = painterResource(R.drawable.downloaded),
+                    painter = painterResource(R.drawable.download),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(colorPalette().shimmer),
-                    modifier = Modifier.size( 30.dp )
-                                       .clickable {
-                                           onDismiss()
-
-                                           uriHandler.openUri( Updater.build.downloadUrl )
-                                       }
+                    modifier = Modifier.size(30.dp)
+                        .clickable {
+                            onDismiss()
+                            uriHandler.openUri(Updater.build.downloadUrl)
+                        }
                 )
             }
-            Spacer( Modifier.height(10.dp) )
+            Spacer(Modifier.height(10.dp))
+
+            // Option 3: View Changelog
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = 20.dp)
+                    .fillMaxWidth()
+            ) {
+                BasicText(
+                    text = stringResource(R.string.view_changelog, Updater.githubRelease?.tagName ?: BuildConfig.VERSION_NAME),
+                    style = typography().xxs.semiBold.copy(color = colorPalette().textSecondary),
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth(0.8f)
+                )
+                Image(
+                    painter = painterResource(R.drawable.sort_grid),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(colorPalette().shimmer),
+                    modifier = Modifier.size(30.dp)
+                        .clickable {
+                            changelogText = Updater.githubRelease?.body ?: ""
+                            showChangelog = true
+                        }
+                )
+            }
+            Spacer(Modifier.height(10.dp))
 
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
-                                   .clip( RoundedCornerShape(20) )
-                                   .border( 3.dp, colorPalette().background2 )
-                                   .clickable { onDismiss() }
+                    .clip(RoundedCornerShape(20))
+                    .border(3.dp, colorPalette().background2)
+                    .clickable { onDismiss() }
             ) {
                 BasicText(
-                    text = stringResource( R.string.cancel ),
-                    style = typography().xs.medium.color( colorPalette().text ),
-                    modifier = Modifier.padding( vertical = 16.dp )
+                    text = stringResource(R.string.cancel),
+                    style = typography().xs.medium.color(colorPalette().text),
+                    modifier = Modifier.padding(vertical = 16.dp)
                 )
             }
         }

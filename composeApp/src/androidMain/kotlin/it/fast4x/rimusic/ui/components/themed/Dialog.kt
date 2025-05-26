@@ -1149,7 +1149,7 @@ fun NewVersionDialog (
             )
             Spacer(modifier = Modifier.height(10.dp))
             BasicText(
-                text = String.format(stringResource(R.string.app_update_dialog_new),updatedVersionName),
+                text = String.format(stringResource(R.string.app_update_dialog_version),updatedVersionName),
                 style = typography().xs.semiBold.copy(color = colorPalette().text),
             )
             Spacer(modifier = Modifier.height(10.dp))
