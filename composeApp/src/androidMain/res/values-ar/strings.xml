@@ -121,7 +121,7 @@
     <string name="synchronized_lyrics">synchronized lyrics</string>
     <string name="provided_by">Provided by</string>
     <string name="delete_playback_events">Delete %1$s playback events</string>
-    <string name="existing_data_will_be_overwritten">Existing data will be overwritten. %1$s will automatically close itself after restoring the database.</string>
+    <string name="existing_data_will_be_overwritten">سيتم الكتابة فوق البيانات الموجودة. سيتم إغلاق %1$s تلقائياً بعد استعادة قاعدة البيانات.</string>
     <string name="folder_cache">FOLDER CACHE</string>
     <string name="cache_reset_by_clicking_button">Attention by clicking on the button below, the cache location folder will be reset to the default</string>
     <string name="cache_location_folder">Location folder</string>
@@ -371,7 +371,7 @@
     <string name="add_folder">Add folder</string>
     <string name="this_folder_already_exists">This folder already exists.</string>
     <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Are you sure you want to remove this folder from the blacklist?</string>
-    <string name="player_appearance">Player Appearance</string>
+    <string name="player_appearance">مظهر اللاعب</string>
     <string name="player_action_bar">PLAYER ACTION BAR</string>
     <string name="tab_data">Data</string>
     <string name="image_cache_max_size">Image cache max size</string>
@@ -609,7 +609,7 @@
     <string name="timelinesize">Player Timeline Size</string>
     <string name="actionspacedevenly">Spaced Evenly</string>
     <string name="expandedplayer">Expanded Player</string>
-    <string name="expandedlyrics">Expanded view of lyrics</string>
+    <string name="expandedlyrics">عرض موسع لكلمات الأغاني</string>
     <string name="expandedlyricsinfo">Works only when lyrics thumbnail is disabled</string>
     <string name="info_connect_your_piped_account_first">Connect your piped account first or disable piped synchronization</string>
     <string name="piped_playlists">Piped</string>
@@ -639,7 +639,7 @@
     <string name="buttonzoomout">Button Zoom Out Animation</string>
     <string name="thumbnailpause">Shrink thumbnail when paused</string>
     <string name="upnext">Up Next</string>
-    <string name="showtwosongs">Show Next two Songs in Queue</string>
+    <string name="showtwosongs">إظهار الأغنيتين التاليتين في قائمة الانتظار</string>
     <string name="showalbumcover">Show Album Cover</string>
     <string name="do_not_translate">Do not translate</string>
     <string name="info_sleep_timer_delayed_at_end_of_song">Sleep timer delayed at end of song</string>
@@ -647,7 +647,7 @@
     <string name="landscapelayout">Landscape Layout</string>
     <string name="layout">Layout</string>
     <string name="layoutinfo">Layout 2 is Recommended only for Big Screens</string>
-    <string name="hideprevnext">Hide Previous and Next Songs</string>
+    <string name="hideprevnext">إخفاء الأغاني السابقة و التالية</string>
     <string name="onesong">One Song</string>
     <string name="twosongs">Two Songs</string>
     <string name="info_debug_mode_enabled">Debug Mode Enabled</string>
@@ -719,7 +719,7 @@
     <string name="error_no_internet">No network connection</string>
     <string name="error_timeout">Connection timeout</string>
     <string name="error_unknown">Unknown error</string>
-    <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+    <string name="delete_song">هل تريد حقاً حذف هذه الأغنية؟ سيتم حذفها من قاعدة البيانات.\\nهذا الإجراء لا رجعة فيه.</string>
     <string name="update_album">Updates the Album</string>
     <string name="info_check_update_now">Check Now</string>
     <string name="info_no_update_available">No update available</string>
@@ -774,7 +774,7 @@
     <string name="player_auto_load_songs_in_queue">Auto load songs in queue</string>
     <string name="player_auto_load_songs_in_queue_description">Adds songs when the queue is about to end</string>
     <string name="show_vinyl_thumbnail_animation">Show Vinyl animation as thumbnail</string>
-    <string name="toggle_romanization">Toggle Romanization</string>
+    <string name="toggle_romanization">تبديل الكتابة اللاتينية</string>
     <string name="edit_thumbnail">Edit Thumbnail</string>
     <string name="thumbnail_not_selected">Thumbnail Not Selected</string>
     <string name="reset_thumbnail">Reset Thumbnail</string>
@@ -875,7 +875,7 @@
     <string name="info_use_ytm_login_only_for_browse">To be used if the songs are not played when logged in</string>
     <string name="disliked_this_song">Cannot Perform this Action with the Disliked Songs</string>
     <string name="removed_from_disliked">Removed from Dislike</string>
-    <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are Disliked</string>
+    <string name="disliked_this_collection">لا يمكن تنفيذ هذا الإجراء عندما تكون جميع الأغاني غير معجوبة</string>
     <string name="toggle_controls_landscape">Toggle On-screen Controls</string>
     <string name="delete_songs_not_in_library">Delete Songs not in the Library</string>
     <string name="delete_in_process">Deleting the Songs which are not in your Library. The App will Close After the Process is Over</string>
@@ -897,7 +897,7 @@
     <string name="syncing">Syncing...</string>
     <string name="autosync_channels">Auto Sync Subscribed Channels</string>
     <string name="autosync_albums">Auto Sync Saved Albums</string>
-    <string name="save_youtube_library">Save in the Youtube Library</string>
+    <string name="save_youtube_library">حفظ في مكتبة اليوتيوب</string>
     <string name="cant_rename_Saved_albums">Cannot Rename Albums saved in the Youtube Music Library</string>
     <string name="ytm_library">YTM Library</string>
     <string name="cannot_delete_from_online_playlists">Cannot Delete Songs from an Online Playlist</string>
@@ -951,7 +951,7 @@
     <string name="store_settings_in_a_file">Store your settings in a single file</string>
     <string name="description_exclude_credentials">Credentials such as YouTube login are excluded for security reasons</string>
     <string name="title_import_settings">Import settings</string>
-    <string name="restore_settings_from_file">Restore your settings from file created by \&quot;%s\&quot;</string>
+    <string name="restore_settings_from_file">استعادة الإعدادات الخاصة بك من الملف الذي تم إنشاؤه بواسطة \&quot;%s\&quot;</string>
     <string name="title_import_migration_file">Import migration file</string>
     <string name="description_import_migration_file">For old users before conversion. \nUse old app to make a backup for migration</string>
     <string name="description_app_not_installed_by_apk">App installed by an APK distributor should let its distributor update the app!</string>
@@ -964,9 +964,9 @@
     <string name="rotating_cover_title">Rotating album cover</string>
     <string name="title_playback_speed">Playback speed</string>
     <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
-    <string name="opens_link_in_web_browser">Opens link in web browser</string>
-    <string name="title_appearance_changes">Appearance Change</string>
+    <string name="opens_link_in_web_browser">فتح الرابط في متصفح الويب</string>
+    <string name="title_appearance_changes">تغيير المظهر</string>
     <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
-    <string name="title_import_settings_migration">Import migration file.</string>
+    <string name="title_import_settings_migration">استيراد ملف الترحيل.</string>
     <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
 </resources>
