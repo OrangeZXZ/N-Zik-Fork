@@ -102,7 +102,7 @@ kotlin {
             implementation(libs.coil.mp)
 
             implementation(libs.translator)
-            implementation(libs.github.jeziellago.compose.markdown)
+
         }
     }
 }
@@ -301,6 +301,7 @@ dependencies {
     implementation(libs.gson)
     implementation (libs.hypnoticcanvas)
     implementation (libs.hypnoticcanvas.shaders)
+    implementation(libs.github.jeziellago.compose.markdown)
 
     implementation(libs.room)
     ksp(libs.room.compiler)

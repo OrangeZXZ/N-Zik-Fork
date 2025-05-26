@@ -229,13 +229,13 @@ object NewUpdateAvailableDialog: Dialog {
             ) {
                 BasicText(
                     text = stringResource(R.string.view_changelog, Updater.githubRelease?.tagName ?: BuildConfig.VERSION_NAME),
-                    style = typography().xxs.semiBold.copy(color = colorPalette().textSecondary),
+                    style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.fillMaxWidth(0.8f)
                 )
                 Image(
-                    painter = painterResource(R.drawable.sort_grid),
+                    painter = painterResource(R.drawable.changelog_list),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(colorPalette().shimmer),
                     modifier = Modifier.size(30.dp)
