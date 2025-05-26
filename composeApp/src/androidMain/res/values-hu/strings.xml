@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">Vissza</string>
     <string name="done">Kész</string>
@@ -85,7 +85,7 @@
     <string name="restore_1">Visszaállítás</string>
     <string name="import_the_database">Exportálja az adatbázist a külső tárolóra</string>
     <string name="android_auto">ANDROID AUTÓ</string>
-    <string name="enable_unknown_sources">Remember to enable \"Unknown sources\" in the Developer Settings of Android Auto.</string>
+    <string name="enable_unknown_sources">Ne felejtsd el engedélyezni az „Ismeretlen források” lehetőséget az Android Auto fejlesztői beállításaiban.</string>
     <string name="android_auto_1">Android Autó</string>
     <string name="enable_android_auto_support">Engedélyezd az Android Auto támogatását</string>
     <string name="search_history">KERESÉSI ELŐZMÉNYEK</string>
@@ -127,7 +127,7 @@
     <string name="cache_location_folder">Folder location</string>
     <string name="custom_cache_from_android_10_may_not_be_available">Since Android 10, this feature may not be available</string>
     <string name="reset_cache_location_folder">RESET CACHE FOLDER LOCATION</string>
-    <string name="used">" used"</string>
+    <string name="used">" használt"</string>
     <string name="close_background_player">Zárja be a háttérlejátszót</string>
     <string name="when_app_swipe_out_from_task_manager">Amikor az alkalmazás ki lett húzza a feladatkezelőből</string>
     <string name="opening_url">betöltődik...</string>
@@ -193,7 +193,7 @@
     <string name="mood">Hangulat</string>
     <string name="new_albums">Új albumok</string>
     <string name="moods_and_genres">Hangulatok és műfajok</string>
-    <string name="search_queries">" search queries"</string>
+    <string name="search_queries">" keresési lekérdezések"</string>
     <string name="not_find_battery_optimization_settings">Nem találhatók az akkumulátor-optimalizálási beállítások, kérjük, tegye fel manuálisan az engedélyezési listára</string>
     <string name="search">Keresés</string>
     <string name="no">Nem</string>
@@ -235,7 +235,7 @@
     <string name="set_custom_cache">Egyéni gyorsítótárméret beállítása</string>
     <string name="enter_value_in_mb">Ad meg az értéket MB-ban</string>
     <string name="value_cannot_be_empty">Az érték nem lehet üres</string>
-    <string name="value_must_be_greater_than">"Value must be greater than "</string>
+    <string name="value_must_be_greater_than">"Az értéknek nagyobnak kell lennie a következőnél "</string>
     <string name="custom">Egyéni</string>
     <string name="custom_cache_size">Egyedi gyorsítótár méret</string>
     <string name="listen_on">Meghallgatás a következőn</string>
@@ -969,4 +969,5 @@
     <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
     <string name="title_import_settings_migration">Import migration file.</string>
     <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
-<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>
+    <string name="log_in_to_ytm">Log in to your YTM account for more content</string>
+</resources>
