@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">Annuler</string>
     <string name="done">Fait</string>
@@ -269,7 +269,7 @@
     <string name="persian">Persan (فارسی)</string>
     <string name="hungarian">Hongrois (Magyar)</string>
     <string name="korean">Coréen (한국인)</string>
-    <string name="background_player">"LECTEUR D\'ARRIÈRE PLAN "</string>
+    <string name="background_player">"LECTEUR D'ARRIÈRE PLAN "</string>
     <string name="show_favorite_button">Afficher le bouton des favoris</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Afficher le bouton des favoris dans l\'écran de verrouillage et la zone des notifications</string>
     <string name="show_download_button">Affiche le bouton de téléchargement</string>
@@ -971,4 +971,5 @@ Volume BAS : titre précédent</string>
     <string name="appearance_changes_message">Si vous modifiez les paramètres du Lecteur ou de l’UI,\nil est fortement recommandé de redémarrer l’application.</string>
     <string name="title_import_settings_migration">Importer un fichier de migration.</string>
     <string name="description_import_settings_migration">Pour les anciens utilisateurs avant la conversion.\nUtilisez l\'ancienne application pour faire une sauvegarde pour la migration.</string>
-<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>
+    <string name="log_in_to_ytm">Connectez-vous à votre compte YTM pour voir plus de contenu</string>
+</resources>
