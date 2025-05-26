@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">Cancelar</string>
     <string name="done">Terminar</string>
@@ -85,7 +85,7 @@
     <string name="restore_1">Restauração</string>
     <string name="import_the_database">Importar a base de dados do armazenamento externo</string>
     <string name="android_auto">ANDROID AUTO</string>
-    <string name="enable_unknown_sources">Lembre-se de habilitar \"Fontes desconhecidas \" nas Configurações de Desenvolvedor do Android Auto.</string>
+    <string name="enable_unknown_sources">Lembre-se de ativar \"Fontes desconhecidas\" nas Configurações do programador do Android Auto.</string>
     <string name="android_auto_1">Android Auto</string>
     <string name="enable_android_auto_support">Ativar suporte automático para Android Auto</string>
     <string name="search_history">HISTÓRICO DE PESQUISA</string>
@@ -95,7 +95,7 @@
     <string name="history_is_empty">O histórico está vazio!</string>
     <string name="service_lifetime">SERVIÇO PERMANENTE</string>
     <string name="battery_optimizations_applied">Se as otimizações da bateria forem aplicadas, a notificação de reprodução pode desaparecer repentinamente quando pausada.</string>
-    <string name="is_android12">Since Android 12, disabling battery optimizations is required for the \"Invisible service\" option to take effect.</string>
+    <string name="is_android12">Desde o Android 12, desativar otimizações de bateria é necessário para que a opção \"Serviço invisível\" tenha efeito.</string>
     <string name="ignore_battery_optimizations">Ignorar otimizações de bateria</string>
     <string name="already_unrestricted">Já irrestrito</string>
     <string name="disable_background_restrictions">Desativar restrições de fundo</string>
@@ -235,7 +235,7 @@
     <string name="set_custom_cache">Definir cache personalizado</string>
     <string name="enter_value_in_mb">Insira o valor em MB</string>
     <string name="value_cannot_be_empty">Valor não pode ser vazio</string>
-    <string name="value_must_be_greater_than">"Valor deve ser maior que "</string>
+    <string name="value_must_be_greater_than">"Valor deve ser superior a "</string>
     <string name="custom">Personalizado</string>
     <string name="custom_cache_size">Tamanho do cache personalizado</string>
     <string name="listen_on">Ouvir no</string>
@@ -269,7 +269,7 @@
     <string name="persian">Pérsico</string>
     <string name="hungarian">Húngaro (Magyar)</string>
     <string name="korean">Coreano (「├├├├├├├)</string>
-    <string name="background_player">"BACKGROUND PLAYER"</string>
+    <string name="background_player">"JOGADOR DE FUNDO"</string>
     <string name="show_favorite_button">Mostrar botão dos Favoritos</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Mostrar o botão favorito na tela de bloqueio e na área de notificação</string>
     <string name="show_download_button">Exibir botão de download</string>
@@ -418,7 +418,7 @@
     <string name="max_songs_in_queue">Máximo de músicas na fila</string>
     <string name="back">Voltar</string>
     <string name="folders">Pastas</string>
-    <string name="show_folders_in_on_device_page">Show folders in \"On Device\" page</string>
+    <string name="show_folders_in_on_device_page">Mostrar pastas na página \"No Dispositivo\"</string>
     <string name="lang_danish">Danish (Dansk)</string>
     <string name="lang_serbian_latin">Serbian Latin (Gajeva latinica)</string>
     <string name="item_deselect">Desselecionar</string>
@@ -951,7 +951,7 @@
     <string name="store_settings_in_a_file">Armazene suas configurações em um único arquivo</string>
     <string name="description_exclude_credentials">Credenciais como login do YouTube são excluídas por razões de segurança</string>
     <string name="title_import_settings">Importar configurações</string>
-    <string name="restore_settings_from_file">Restaure suas configurações do arquivo criado por \"%s\"</string>
+    <string name="restore_settings_from_file">Restaurar suas configurações do arquivo criado por \"%s\"</string>
     <string name="title_import_migration_file">Importar arquivo de migração</string>
     <string name="description_import_migration_file">Para usuários antigos, antes da conversão. \nUse o aplicativo antigo para fazer um backup para a migração</string>
     <string name="description_app_not_installed_by_apk">O aplicativo instalado por um distribuidor APK deve permitir que o distribuidor atualize o aplicativo!</string>
@@ -969,4 +969,5 @@
     <string name="appearance_changes_message">Se você alterar as configurações do Player ou da UI,\né altamente recomendável reiniciar o aplicativo.</string>
     <string name="title_import_settings_migration">Importar arquivo de migração.</string>
     <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
-<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>
+    <string name="log_in_to_ytm">Faça login na sua conta YTM para mais conteúdo</string>
+</resources>

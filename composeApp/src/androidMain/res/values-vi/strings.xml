@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">Hủy</string>
     <string name="done">Xong</string>
@@ -127,7 +127,7 @@
     <string name="cache_location_folder">Folder location</string>
     <string name="custom_cache_from_android_10_may_not_be_available">Since Android 10, this feature may not be available</string>
     <string name="reset_cache_location_folder">RESET CACHE FOLDER LOCATION</string>
-    <string name="used">" used"</string>
+    <string name="used">" đã dùng"</string>
     <string name="close_background_player">Đóng trình phát nền</string>
     <string name="when_app_swipe_out_from_task_manager">When app swipe out from task manager</string>
     <string name="opening_url">is loading...</string>
@@ -969,4 +969,5 @@
     <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
     <string name="title_import_settings_migration">Import migration file.</string>
     <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
-<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>
+    <string name="log_in_to_ytm">Log in to your YTM account for more content</string>
+</resources>

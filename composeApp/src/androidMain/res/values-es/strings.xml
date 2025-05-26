@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">Cancelar</string>
     <string name="done">Hecho</string>
@@ -969,4 +969,5 @@
     <string name="appearance_changes_message">Si cambia la configuración del reproductor o de la interfaz de usuario,\nse recomienda encarecidamente reiniciar la aplicación.</string>
     <string name="title_import_settings_migration">Importar archivo de migración.</string>
     <string name="description_import_settings_migration">Para usuarios antiguos antes de la conversión.\nUtilice la aplicación antigua para hacer una copia de seguridad para la migración.</string>
-<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>
+    <string name="log_in_to_ytm">Inicia sesión en tu cuenta de YTM para más contenido</string>
+</resources>

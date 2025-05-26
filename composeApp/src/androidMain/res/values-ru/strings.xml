@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">Отмена</string>
     <string name="done">Готово</string>
@@ -85,7 +85,7 @@
     <string name="restore_1">Восстановить</string>
     <string name="import_the_database">Восстановление данных из локального хранилища</string>
     <string name="android_auto">ANDROID AUTO</string>
-    <string name="enable_unknown_sources">Не забудьте включить \"неизвестных источников\" в настройках разработчика Android Auto.</string>
+    <string name="enable_unknown_sources">Не забудьте включить функцию \"Неизвестные источники\" в настройках разработчика в Андроид Авто.</string>
     <string name="android_auto_1">Android Auto</string>
     <string name="enable_android_auto_support">Включение поддержки Андроид Авто</string>
     <string name="search_history">ИСТОРИЯ ПОИСКА</string>
@@ -95,7 +95,7 @@
     <string name="history_is_empty">История пуста</string>
     <string name="service_lifetime">СРОК СЛУЖБЫ</string>
     <string name="battery_optimizations_applied">Если включена экономия батареи, уведомление плеера может внезапно исчезнуть.</string>
-    <string name="is_android12">Начиная с Android 12, для опции \"Невидимый сервис\" требуется отключение оптимизации заряда батареи.</string>
+    <string name="is_android12">Начиная с Android 12, отключение оптимизации заряда батареи требуется для опции «Невидимый сервис».</string>
     <string name="ignore_battery_optimizations">Игнор. экономии батареи</string>
     <string name="already_unrestricted">Уже неограничено</string>
     <string name="disable_background_restrictions">Отключить ограничения на фоне</string>
@@ -235,7 +235,7 @@
     <string name="set_custom_cache">Установить пользовательский кэш</string>
     <string name="enter_value_in_mb">Введите значение в MB</string>
     <string name="value_cannot_be_empty">Значение не может быть пустым</string>
-    <string name="value_must_be_greater_than">"Значение должно быть больше "</string>
+    <string name="value_must_be_greater_than">"Значение должно быть больше 0"</string>
     <string name="custom">Пользовательский</string>
     <string name="custom_cache_size">Пользовательский размер кэша</string>
     <string name="listen_on">Слушать в</string>
@@ -269,7 +269,7 @@
     <string name="persian">Персидский (فارس&lt;unk&gt; )</string>
     <string name="hungarian">Венгерский (Magyar)</string>
     <string name="korean">Корейский (&lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; )</string>
-    <string name="background_player">"BACKGROUND PLAYER"</string>
+    <string name="background_player">"ИГРОКА ЗАЩИТЫ"</string>
     <string name="show_favorite_button">Показать кнопку Мне нравится</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Показывать кнопку Избранное на экране блокировки и области уведомлений</string>
     <string name="show_download_button">Показать кнопку загрузки</string>
@@ -418,7 +418,7 @@
     <string name="max_songs_in_queue">Макс. кол-во треков в очереди</string>
     <string name="back">Назад</string>
     <string name="folders">Папки</string>
-    <string name="show_folders_in_on_device_page">Показать папки на \"на устройстве\" странице</string>
+    <string name="show_folders_in_on_device_page">Показывать папки на странице \"На устройстве\"</string>
     <string name="lang_danish">Danish (Dansk)</string>
     <string name="lang_serbian_latin">Serbian Latin (Gajeva latinica)</string>
     <string name="item_deselect">Отменить выделение</string>
@@ -951,7 +951,7 @@
     <string name="store_settings_in_a_file">Store your settings in a single file</string>
     <string name="description_exclude_credentials">Credentials such as YouTube login are excluded for security reasons</string>
     <string name="title_import_settings">Import settings</string>
-    <string name="restore_settings_from_file">Восстановить настройки из файла, созданного \"%s\"</string>
+    <string name="restore_settings_from_file">Restore your settings from file created by \"%s\"</string>
     <string name="title_import_migration_file">Import migration file</string>
     <string name="description_import_migration_file">For old users before conversion. \nUse old app to make a backup for migration</string>
     <string name="description_app_not_installed_by_apk">App installed by an APK distributor should let its distributor update the app!</string>
@@ -969,4 +969,5 @@
     <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
     <string name="title_import_settings_migration">Импортировать файл миграции.</string>
     <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
-<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>
+    <string name="log_in_to_ytm">Войдите в свою учетную запись YTM для большего содержания</string>
+</resources>

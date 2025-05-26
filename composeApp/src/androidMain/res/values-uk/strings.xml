@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">Скасовувати</string>
     <string name="done">Зроблено</string>
@@ -85,7 +85,7 @@
     <string name="restore_1">Відновити</string>
     <string name="import_the_database">Імпортуйте базу даних із зовнішнього сховища</string>
     <string name="android_auto">ANDROID AUTO</string>
-    <string name="enable_unknown_sources">Не забудьте увімкнути \"Невідомі джерела\" в параметрах розробників Android Auto.</string>
+    <string name="enable_unknown_sources">Не забудьте увімкнути \"Невідомі джерела\" в Налаштуваннях розробника Android Auto.</string>
     <string name="android_auto_1">Android Auto</string>
     <string name="enable_android_auto_support">Увімкнути підтримку Android Auto</string>
     <string name="search_history">ІСТОРІЯ ПОШУКУ</string>
@@ -95,7 +95,7 @@
     <string name="history_is_empty">Історія порожня</string>
     <string name="service_lifetime">ТЕРМІН СЛУЖБИ</string>
     <string name="battery_optimizations_applied">Якщо застосовано оптимізацію заряду акумулятора, сповіщення про відтворення може раптово зникати під час паузи.</string>
-    <string name="is_android12">Починаючи з Android 12, відключення оптимізації батареї необхідний для \"Невидиме обслуговування\" можливість набути чинності.</string>
+    <string name="is_android12">Починаючи з Android 12, для набуття чинності параметра \"Невидимий сервіс\" потрібна підтримка оптимізації.</string>
     <string name="ignore_battery_optimizations">Ігноруйте оптимізацію акумулятора</string>
     <string name="already_unrestricted">Вже без обмежень</string>
     <string name="disable_background_restrictions">Вимкнути фонові обмеження</string>
@@ -127,7 +127,7 @@
     <string name="cache_location_folder">Розташування теки</string>
     <string name="custom_cache_from_android_10_may_not_be_available">Починаючи з Android 10, ця функція недоступна</string>
     <string name="reset_cache_location_folder">СКИНУТИ СТВОРЕННЯ МІСЦЯ</string>
-    <string name="used">" використано"</string>
+    <string name="used">" зайнято"</string>
     <string name="close_background_player">Закрийте фоновий програвач</string>
     <string name="when_app_swipe_out_from_task_manager">Коли програма вилучається з диспетчера завдань</string>
     <string name="opening_url">завантажується...</string>
@@ -235,7 +235,7 @@
     <string name="set_custom_cache">Встановіть власний кеш</string>
     <string name="enter_value_in_mb">Введіть значення в МБ</string>
     <string name="value_cannot_be_empty">Значення не може бути порожнім</string>
-    <string name="value_must_be_greater_than">"Значення має бути більше за "</string>
+    <string name="value_must_be_greater_than">"Значення повинно бути більше, ніж "</string>
     <string name="custom">Користувальницькі</string>
     <string name="custom_cache_size">Користувацький розмір кешу</string>
     <string name="listen_on">Слухайте на</string>
@@ -269,7 +269,7 @@
     <string name="persian">Персидська (ди-цзю)</string>
     <string name="hungarian">Угорська (Magyar)</string>
     <string name="korean">Корейська (ди-цзюй цзиґ)</string>
-    <string name="background_player">"BACKGROUND PLAYER"</string>
+    <string name="background_player">"РЕЗЕРВОВАНИЙ ГРАВЕР"</string>
     <string name="show_favorite_button">Показати кнопку Вибране</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Показати кнопку Вибране на екрані блокування та в області сповіщень</string>
     <string name="show_download_button">Показувати кнопку звантаження</string>
@@ -418,7 +418,7 @@
     <string name="max_songs_in_queue">Макс. к-сть пісень у черзі</string>
     <string name="back">Назад</string>
     <string name="folders">Теки</string>
-    <string name="show_folders_in_on_device_page">Show folders in \"On Device\" page</string>
+    <string name="show_folders_in_on_device_page">Відображати папки на сторінці \"На пристрої\"</string>
     <string name="lang_danish">Danish (Dansk)</string>
     <string name="lang_serbian_latin">Serbian Latin (Gajeva latinica)</string>
     <string name="item_deselect">Скасовувати виділення</string>
@@ -969,4 +969,5 @@
     <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
     <string name="title_import_settings_migration">Імпорт файлу міграції.</string>
     <string name="description_import_settings_migration">Для старих користувачів до перетворення.\nВикористовувати стару програму, щоб зробити резервну копію міграції.</string>
-<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>
+    <string name="log_in_to_ytm">Увійдіть у свій YTM акаунт для додаткової інформації</string>
+</resources>
