@@ -154,27 +154,5 @@ if __name__ == '__main__':
         for string in tree.getroot().findall("string"):
             if string.text:
                 string.text = string.text.replace('&quot;', '"')
-        tree_as_str: str = ET.tostring(tree.getroot(), encoding="utf-8")
-        # Re-beautify .xml file (for indentation)
-        reparsed = minidom.parseString(tree_as_str)
-        pretty_xml = reparsed.toprettyxml(indent="    ")
-        pretty_xml = "\n".join([line for line in pretty_xml.splitlines() if line.strip()])  # Remove blank lines
-
-        # Ensure correct XML header
-        correct_header = '<?xml version="1.0" encoding="utf-8"?>'
-        lines = pretty_xml.splitlines()
-        if not lines[0].strip().startswith('<?xml') or lines[0].strip() != correct_header:
-            # Replace or insert the correct header
-            if lines[0].strip().startswith('<?xml'):
-                lines[0] = correct_header
-            else:
-                lines.insert(0, correct_header)
-        pretty_xml = "\n".join(lines)
-
-        with open(file_path, 'w', encoding="utf-8") as file:
-            file.write(pretty_xml)
-
+        tree.write(file_path, encoding="utf-8", xml_declaration=True)
         print(f"Saved changes to {file_path}")
-
-
-

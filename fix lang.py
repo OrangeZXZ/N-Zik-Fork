@@ -22,6 +22,3 @@ def fix_quot_and_header():
 
 if __name__ == '__main__':
     fix_quot_and_header()
-
-
-
