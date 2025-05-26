@@ -313,7 +313,6 @@
     <string name="lang_finnish">Finština (Suomalainen)</string>
     <string name="listening_time">Doba poslechu</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Zobrazit počet poslechnutých skladeb a dobu jejich poslechu</string>
-    <string name="app_update_dialog_new">Novou verzi %s lze stáhnout!</string>
     <string name="enable_language_in_discovery">Povolení jazyka v Objevit</string>
     <string name="if_possible_allows_discovery_content_language">Pokud je to možné, umožňuje přijímat obsah Objevit ve vašem vlastním jazyce.</string>
     <string name="set_to">Nastavit na</string>
@@ -970,4 +969,10 @@
     <string name="title_import_settings_migration">Importovat migrační soubor.</string>
     <string name="description_import_settings_migration">Pro staré uživatele před převodem.\nPoužijte starou aplikaci k zálohování pro migraci.</string>
     <string name="log_in_to_ytm">Pro více obsahu se přihlaste ke svému účtu YTM</string>
+    <string name="close">Zavřít</string>
+    <string name="view_changelog">Zobrazit seznam změn ve verzi %s</string>
+    <string name="no_changelog_available">Není k dispozici žádný seznam změn</string>
+    <string name="app_update_dialog_new">Novou verzi %s lze stáhnout!</string>
+    <string name="app_update_dialog_size">Velikost souboru je %s</string>
+    <string name="app_update_dialog_version">Novou verzi %s lze stáhnout!</string>
 </resources>
