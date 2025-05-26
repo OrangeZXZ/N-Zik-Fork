@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">Annuler</string>
     <string name="done">Fait</string>
@@ -966,7 +966,6 @@ Volume BAS : titre précédent</string>
     <string name="rotating_cover_title">Pochette d\'album rotative</string>
     <string name="title_playback_speed">Vitesse de lecture</string>
     <string name="description_playback_speed">Ajuster la vitesse / la lenteur du titre</string>
-    <string name="word_documentation">Documentation</string>
     <string name="opens_link_in_web_browser">Opens link in web browser</string>
     <string name="title_appearance_changes">Appearance Change</string>
     <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>

@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">Zrušit</string>
     <string name="done">Hotovo</string>
@@ -964,7 +964,6 @@
     <string name="rotating_cover_title">Rotating album cover</string>
     <string name="title_playback_speed">Rychlost přehrávání</string>
     <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
-    <string name="word_documentation">Documentation</string>
     <string name="opens_link_in_web_browser">Opens link in web browser</string>
     <string name="title_appearance_changes">Appearance Change</string>
     <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>

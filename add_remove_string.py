@@ -68,13 +68,66 @@ def sanitize_name(name: str) -> str:
     return name
 
 
-def main() -> None:
-    # Get user input for string name and value
-    string_name = input("Enter the name (ID) of the string: ")
-    string_value = input("Enter the value of the string: ")
+def remove_string(tree: ET, name: str) -> bool:
+    """
+    Remove a string from the XML file if it exists.
+    :param tree: XML tree of the strings.xml file
+    :param name: name (ID) of the string to remove
+    :return: True if the string was removed, False otherwise
+    """
+    root = tree.getroot()
+    for string in root.findall("string"):
+        if string.get("name") == name:
+            root.remove(string)
+            return True
+    return False
 
-    for file_path, tree in strings_files.items():
-        add_string(tree, sanitize_name(string_name), string_value)
+
+def edit_string(tree: ET, name: str, new_value: str) -> bool:
+    """
+    Edit the value of a string in the XML file if it exists.
+    :param tree: XML tree of the strings.xml file
+    :param name: name (ID) of the string to edit
+    :param new_value: new value for the string
+    :return: True if the string was edited, False otherwise
+    """
+    root = tree.getroot()
+    for string in root.findall("string"):
+        if string.get("name") == name:
+            string.text = new_value
+            return True
+    return False
+
+
+def main() -> None:
+    # Ask the user if they want to add, remove, or edit a string
+    action = input("Do you want to add (a), remove (s), or edit (e) a string? [a/s/e]: ").strip().lower()
+    if action == "s":
+        string_name = input("Enter the name (ID) of the string to remove: ")
+        sanitized_name = sanitize_name(string_name)
+        found = False
+        for file_path, tree in strings_files.items():
+            if remove_string(tree, sanitized_name):
+                print(f"String '{sanitized_name}' removed from {file_path}")
+                found = True
+        if not found:
+            print(f"String '{sanitized_name}' not found in any file.")
+    elif action == "e":
+        string_name = input("Enter the name (ID) of the string to edit: ")
+        sanitized_name = sanitize_name(string_name)
+        new_value = input("Enter the new value for the string: ")
+        found = False
+        for file_path, tree in strings_files.items():
+            if edit_string(tree, sanitized_name, new_value):
+                print(f"String '{sanitized_name}' updated in {file_path}")
+                found = True
+        if not found:
+            print(f"String '{sanitized_name}' not found in any file.")
+    else:
+        string_name = input("Enter the name (ID) of the string: ")
+        string_value = input("Enter the value of the string: ")
+        for file_path, tree in strings_files.items():
+            add_string(tree, sanitize_name(string_name), string_value)
 
 
 
@@ -98,6 +151,17 @@ if __name__ == '__main__':
         reparsed = minidom.parseString(tree_as_str)
         pretty_xml = reparsed.toprettyxml(indent="    ")
         pretty_xml = "\n".join([line for line in pretty_xml.splitlines() if line.strip()])  # Remove blank lines
+
+        # Ensure correct XML header
+        correct_header = '<?xml version="1.0" encoding="utf-8"?>'
+        lines = pretty_xml.splitlines()
+        if not lines[0].strip().startswith('<?xml') or lines[0].strip() != correct_header:
+            # Replace or insert the correct header
+            if lines[0].strip().startswith('<?xml'):
+                lines[0] = correct_header
+            else:
+                lines.insert(0, correct_header)
+        pretty_xml = "\n".join(lines)
 
         with open(file_path, 'w', encoding="utf-8") as file:
             file.write(pretty_xml)
