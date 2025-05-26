@@ -57,30 +57,30 @@ class MainApplication : Application(), ImageLoaderFactory {
             // Channel for music player
             val playerChannel = NotificationChannel(
                 PlayerServiceModern.NotificationChannelId,
-                "Music Player",
+                getString(R.string.player),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Music player notifications"
+                description = getString(R.string.player)
                 setShowBadge(false)
             }
 
             // Channel for sleep timer
             val sleepTimerChannel = NotificationChannel(
                 PlayerServiceModern.SleepTimerNotificationChannelId,
-                "Sleep Timer",
+                getString(R.string.sleep_timer),
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = "Sleep timer notifications"
+                description = getString(R.string.sleep_timer)
                 setShowBadge(false)
             }
 
             // Channel for downloads
             val downloadChannel = NotificationChannel(
                 MyDownloadHelper.DOWNLOAD_NOTIFICATION_CHANNEL_ID,
-                "Downloads",
+                getString(R.string.download),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Download notifications"
+                description = getString(R.string.download)
                 setShowBadge(false)
             }
 
