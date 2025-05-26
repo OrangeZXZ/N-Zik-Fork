@@ -2,6 +2,7 @@
 [versions]
 compose-plugin = "1.8.0"
 agp = "8.10.0"
+composeMarkdownVersion = "0.5.7"
 kotlin = "2.0.21"
 kotlin-ksp = "2.0.21-1.0.26"
 kotlin-datetime = "0.6.2"
@@ -50,6 +51,7 @@ newpipe-extractor = "0.24.6"
 
 [libraries]
 # Kotlinx
+github-jeziellago-compose-markdown = { module = "com.github.jeziellago:compose-markdown", version.ref = "composeMarkdownVersion" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version = "kotlinxCoroutines" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swings", version = "kotlinxCoroutines" }
@@ -164,5 +166,3 @@ room = { id = "androidx.room", version.ref = "room" }
 # Others
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
-
-

@@ -42,6 +42,7 @@ import it.fast4x.rimusic.utils.semiBold
 import me.knighthat.utils.Repository
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun DialogText(
@@ -111,9 +112,11 @@ object NewUpdateAvailableDialog: Dialog {
                         .weight(1f, fill = false)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    DialogText(
-                        text = if (changelogText.isNotEmpty()) changelogText else stringResource(R.string.no_changelog_available),
-                        style = typography().xs.semiBold.copy(color = colorPalette().textSecondary)
+                    MarkdownText(
+                        modifier = Modifier.padding(8.dp),
+                        markdown = changelogText.ifEmpty { stringResource(R.string.no_changelog_available) },
+                        maxLines = 100,
+                        style = typography().xs.semiBold.copy(color = colorPalette().text)
                     )
                 }
                 Row(
