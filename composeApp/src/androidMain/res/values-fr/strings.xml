@@ -968,7 +968,7 @@ Volume BAS : titre précédent</string>
     <string name="description_playback_speed">Ajuster la vitesse / la lenteur du titre</string>
     <string name="word_documentation">Documentation</string>
     <string name="opens_link_in_web_browser">Opens link in web browser</string>
-    <string name="title_appearance_changes">Appearance Changes</string>
+    <string name="title_appearance_changes">Appearance Change</string>
     <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
     <string name="title_import_settings_migration">Import migration file.</string>
     <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
