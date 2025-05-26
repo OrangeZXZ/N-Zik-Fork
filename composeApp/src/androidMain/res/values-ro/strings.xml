@@ -313,7 +313,6 @@
     <string name="lang_finnish">Finlandeză (Suomalainen)</string>
     <string name="listening_time">Durata redării</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Afișează numărul total de melodii ascultate și durata redării</string>
-    <string name="app_update_dialog_new">Noua versiune %s poate fi descărcată!</string>
     <string name="enable_language_in_discovery">Activează limba în „Descoperiri”</string>
     <string name="if_possible_allows_discovery_content_language">Dacă este posibil, permite primirea conținutului din „Descoperiri” în limba ta.</string>
     <string name="set_to">Setează la</string>
@@ -970,4 +969,10 @@
     <string name="title_import_settings_migration">Fișier migrare importat.</string>
     <string name="description_import_settings_migration">Pentru utilizatorii în vârstă înainte de conversie.\nUtilizează o aplicație veche pentru a face o copie de rezervă pentru migrare.</string>
     <string name="log_in_to_ytm">Conectează-te la contul tău YTM pentru mai mult conținut</string>
+    <string name="close">Inchide</string>
+    <string name="view_changelog">Vezi jurnalul modificărilor versiunii %s</string>
+    <string name="no_changelog_available">Niciun jurnal de modificări disponibil</string>
+    <string name="app_update_dialog_new">Noua versiune %s poate fi descărcată!</string>
+    <string name="app_update_dialog_size">Dimensiunea fişierului este %s</string>
+    <string name="app_update_dialog_version">Noua versiune %s poate fi descărcată!</string>
 </resources>
