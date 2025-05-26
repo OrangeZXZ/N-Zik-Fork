@@ -103,6 +103,12 @@ def edit_string(tree: ET, name: str, new_value: str) -> bool:
     return False
 
 
+def pretty_write(tree, file_path):
+    xmlstr = minidom.parseString(ET.tostring(tree.getroot(), encoding="utf-8")).toprettyxml(indent="    ", encoding="utf-8")
+    with open(file_path, "wb") as f:
+        f.write(xmlstr)
+
+
 def main() -> None:
     # Ask the user if they want to add, remove, or edit a string
     action = input("Do you want to add (a), remove (s), or edit (e) a string? [a/s/e]: ").strip().lower()
@@ -154,5 +160,5 @@ if __name__ == '__main__':
         for string in tree.getroot().findall("string"):
             if string.text:
                 string.text = string.text.replace('&quot;', '"')
-        tree.write(file_path, encoding="utf-8", xml_declaration=True)
+        pretty_write(tree, file_path)
         print(f"Saved changes to {file_path}")

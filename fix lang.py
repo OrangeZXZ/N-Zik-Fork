@@ -17,8 +17,13 @@ def fix_quot_and_header():
                 for string in root_elem.findall("string"):
                     if string.text:
                         string.text = string.text.replace('&quot;', '"')
-                tree.write(file_path, encoding="utf-8", xml_declaration=True)
-                print(f"Fichier corrigé : {file_path}")
+
+                rough_string = ET.tostring(root_elem, encoding="utf-8")
+                reparsed = minidom.parseString(b'<?xml version="1.0" encoding="utf-8"?>' + rough_string)
+                pretty_xml = reparsed.toprettyxml(indent="    ", encoding="utf-8")
+                with open(file_path, "wb") as f:
+                    f.write(pretty_xml)
+                print(f"File fixed : {file_path}")
 
 if __name__ == '__main__':
     fix_quot_and_header()
