@@ -180,6 +180,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -236,15 +237,6 @@ class PlayerServiceModern : MediaLibraryService(),
     private var isclosebackgroundPlayerEnabled = false
     private var audioManager: AudioManager? = null
     private var audioDeviceCallback: AudioDeviceCallback? = null
-    private lateinit var downloadListener: DownloadManager.Listener
-
-    var loudnessEnhancer: LoudnessEnhancer? = null
-    private var binder = Binder()
-    private var bassBoost: BassBoost? = null
-    private var reverbPreset: PresetReverb? = null
-    private var showLikeButton = true
-    private var showDownloadButton = true
-
     lateinit var audioQualityFormat: AudioQualityFormat
     lateinit var sleepTimer: SleepTimer
     private var timerJob: TimerJob? = null
@@ -270,6 +262,8 @@ class PlayerServiceModern : MediaLibraryService(),
     @kotlin.OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
+
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // Enable Android Auto if disabled, REQUIRE ENABLING DEV MODE IN ANDROID AUTO
         try {
@@ -1632,8 +1626,6 @@ class PlayerServiceModern : MediaLibraryService(),
         fun startSleepTimer(delayMillis: Long) {
             timerJob?.cancel()
 
-
-
             timerJob = coroutineScope.timer(delayMillis) {
                 val notification = NotificationCompat
                     .Builder(this@PlayerServiceModern, SleepTimerNotificationChannelId)
@@ -1647,8 +1639,11 @@ class PlayerServiceModern : MediaLibraryService(),
 
                 notificationManager?.notify(SleepTimerNotificationId, notification)
 
-                stopSelf()
-                exitProcess(0)
+                coroutineScope.launch {
+                    kotlinx.coroutines.delay(1000)
+                    stopSelf()
+                    exitProcess(0)
+                }
             }
         }
 

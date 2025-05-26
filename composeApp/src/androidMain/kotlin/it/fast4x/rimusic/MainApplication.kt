@@ -3,11 +3,10 @@ package it.fast4x.rimusic
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Intent
 import android.os.Build
-import android.provider.Settings
 import coil.ImageLoader
 import coil.ImageLoaderFactory
+import app.kreate.android.R
 import it.fast4x.rimusic.service.modern.PlayerServiceModern
 import it.fast4x.rimusic.service.MyDownloadHelper
 import it.fast4x.rimusic.utils.CaptureCrash
@@ -17,10 +16,6 @@ import it.fast4x.rimusic.utils.preferences
 import me.knighthat.coil.ImageCacheFactory
 import timber.log.Timber
 import java.io.File
-import android.Manifest
-import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 
 class MainApplication : Application(), ImageLoaderFactory {
 
@@ -57,30 +52,30 @@ class MainApplication : Application(), ImageLoaderFactory {
             // Channel for music player
             val playerChannel = NotificationChannel(
                 PlayerServiceModern.NotificationChannelId,
-                getString(R.string.player),
+                applicationContext.getString(R.string.player),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = getString(R.string.player)
+                description = applicationContext.getString(R.string.player)
                 setShowBadge(false)
             }
 
             // Channel for sleep timer
             val sleepTimerChannel = NotificationChannel(
                 PlayerServiceModern.SleepTimerNotificationChannelId,
-                getString(R.string.sleep_timer),
+                applicationContext.getString(R.string.sleep_timer),
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = getString(R.string.sleep_timer)
+                description = applicationContext.getString(R.string.sleep_timer)
                 setShowBadge(false)
             }
 
             // Channel for downloads
             val downloadChannel = NotificationChannel(
                 MyDownloadHelper.DOWNLOAD_NOTIFICATION_CHANNEL_ID,
-                getString(R.string.download),
+                applicationContext.getString(R.string.download),
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = getString(R.string.download)
+                description = applicationContext.getString(R.string.download)
                 setShowBadge(false)
             }
 
