@@ -313,7 +313,6 @@
     <string name="lang_finnish">Finnish</string>
     <string name="listening_time">Listening time</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Shows the number of songs heard and their listening time</string>
-    <string name="app_update_dialog_new">The new version %s can be downloaded!</string>
     <string name="enable_language_in_discovery">Enable language in Discovery</string>
     <string name="if_possible_allows_discovery_content_language">If possible, it allows to receive Discovery content in your own language.</string>
     <string name="set_to">Set to</string>
@@ -970,4 +969,10 @@
     <string name="title_import_settings_migration">Αρχείο μεταφοράς εισαγωγών.</string>
     <string name="description_import_settings_migration">Για παλιούς χρήστες πριν από τη μετατροπή.\nΧρησιμοποιήστε την παλιά εφαρμογή για να δημιουργήσετε ένα αντίγραφο ασφαλείας για τη μετεγκατάσταση.</string>
     <string name="log_in_to_ytm">Συνδεθείτε στον λογαριασμό σας YTM για περισσότερο περιεχόμενο</string>
+    <string name="close">Κλείσιμο</string>
+    <string name="view_changelog">Προβολή αρχείου αλλαγών της έκδοσης %s</string>
+    <string name="no_changelog_available">Δεν υπάρχουν διαθέσιμα αρχεία αλλαγών</string>
+    <string name="app_update_dialog_new">The new version %s can be downloaded!</string>
+    <string name="app_update_dialog_size">Το μέγεθος του αρχείου είναι %s</string>
+    <string name="app_update_dialog_version">The new version %s can be downloaded!</string>
 </resources>
