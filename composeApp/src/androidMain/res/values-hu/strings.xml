@@ -313,7 +313,6 @@
     <string name="lang_finnish">Finnish (Suomalainen)</string>
     <string name="listening_time">Playback duration</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Show total number of songs heard and playback duration</string>
-    <string name="app_update_dialog_new">Az új verzió %s letölthető!</string>
     <string name="enable_language_in_discovery">Nyelv engedélyezése a Felfedezésben</string>
     <string name="if_possible_allows_discovery_content_language">Ha lehetséges, lehetővé teszi, hogy a Felfedezés tartalmát az saját nyelvén kapd meg.</string>
     <string name="set_to">Beállítva</string>
@@ -970,4 +969,10 @@
     <string name="title_import_settings_migration">Import migration file.</string>
     <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
     <string name="log_in_to_ytm">Log in to your YTM account for more content</string>
+    <string name="close">Close</string>
+    <string name="view_changelog">View changelog of the version %s</string>
+    <string name="no_changelog_available">No changelog available</string>
+    <string name="app_update_dialog_new">Az új verzió %s letölthető!</string>
+    <string name="app_update_dialog_size">The file size is %s</string>
+    <string name="app_update_dialog_version">Az új verzió %s letölthető!</string>
 </resources>
