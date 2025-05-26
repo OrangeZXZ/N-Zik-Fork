@@ -338,7 +338,7 @@
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">Du kannst es in den Einstellungen immer noch ein- oder ausschalten.</string>
     <string name="enable">Aktivieren</string>
     <string name="don_t_enable">Nicht aktivieren</string>
-    <string name="lang_hindi">Hindi (हिन्दी)</string>
+    <string name="lang_hindi">Hindi (&lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; )</string>
     <string name="default_page">Standard-Seite</string>
     <string name="keep_screen_on">Bildschirm eingeschaltet lassen</string>
     <string name="prevents_screen_timeout">Verhindert Bildschirm-Timeout</string>
@@ -613,7 +613,7 @@
     <string name="expandedlyricsinfo">Funktioniert nur, wenn die Miniaturansicht der Liedtexte deaktiviert ist</string>
     <string name="info_connect_your_piped_account_first">Verbinde zuerst dein Piped-Konto oder deaktiviere die Piped-Synchronisierung</string>
     <string name="piped_playlists">Piped</string>
-    <string name="lang_bengali">Bengali (বাংলা)</string>
+    <string name="lang_bengali">Bengali (&lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; )</string>
     <string name="lang_irish">Irisch (Gaeilge)</string>
     <string name="lyricsoutline">Songtext-Umrandung</string>
     <string name="fluidrainbow">Fluid-Regenbogen</string>
@@ -875,7 +875,7 @@
     <string name="info_use_ytm_login_only_for_browse">Zu verwenden, wenn Lieder nicht abgespielt werden, während man eingeloggt ist</string>
     <string name="disliked_this_song">Diese Aktion kann nicht mit den mit \&quot;Mag ich nicht\&quot; markierten Titeln durchgeführt werden</string>
     <string name="removed_from_disliked">Von \&quot;Gefällt mir nicht\&quot; entfernt</string>
-    <string name="disliked_this_collection">Cannot Perform this Action when all the Songs are Disliked</string>
+    <string name="disliked_this_collection">Diese Aktion kann nicht ausgeführt werden, wenn alle Lieder nicht gefällt werden</string>
     <string name="toggle_controls_landscape">Bildschirmsteuerung Ein-/Ausblenden</string>
     <string name="delete_songs_not_in_library">Titel außerhalb der Bibliothek löschen</string>
     <string name="delete_in_process">Titel löschen, die nicht in der Bibliothek vorhanden sind. Die Anwendung wird nach Abschluss des Vorgangs geschlossen</string>
@@ -897,7 +897,7 @@
     <string name="syncing">Synchronisiere...</string>
     <string name="autosync_channels">Abonnierte Kanäle automatisch synchronisieren</string>
     <string name="autosync_albums">Gespeicherte Alben automatisch synchronisieren</string>
-    <string name="save_youtube_library">Save in the Youtube Library</string>
+    <string name="save_youtube_library">In der YouTube-Bibliothek speichern</string>
     <string name="cant_rename_Saved_albums">Alben aus der YouTube Musikbibliothek können nicht unbenannt werden</string>
     <string name="ytm_library">YTM-Bibliothek</string>
     <string name="cannot_delete_from_online_playlists">Löschen von Titeln aus einer Online-Wiedergabeliste nicht möglich</string>
@@ -964,9 +964,9 @@
     <string name="rotating_cover_title">Albumcover drehen</string>
     <string name="title_playback_speed">Wiedergabegeschwindigkeit</string>
     <string name="description_playback_speed">Festlegen, wie langsam oder schnell der Titel laufen soll</string>
-    <string name="opens_link_in_web_browser">Opens link in web browser</string>
-    <string name="title_appearance_changes">Appearance Change</string>
-    <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
-    <string name="title_import_settings_migration">Import migration file.</string>
-    <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
+    <string name="opens_link_in_web_browser">Öffnet Link im Webbrowser</string>
+    <string name="title_appearance_changes">Aussehen ändern</string>
+    <string name="appearance_changes_message">Wenn Sie die Spieler- oder UI-Einstellungen ändern, wird\ndringend empfohlen, die Anwendung neu zu starten.</string>
+    <string name="title_import_settings_migration">Migrationsdatei importieren.</string>
+    <string name="description_import_settings_migration">Für alte Benutzer vor der Konvertierung.\nalte App verwenden, um eine Sicherung für die Migration zu erstellen.</string>
 </resources>
