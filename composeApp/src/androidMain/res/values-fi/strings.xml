@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">Peruuta</string>
     <string name="done">Valmis</string>
@@ -269,7 +269,7 @@
     <string name="persian">Persia (kk.v)</string>
     <string name="hungarian">Unkari (Magyar)</string>
     <string name="korean">Korealainen (kk.vvvvvvvvv)</string>
-    <string name="background_player">"BACKGROUND PLAYER"</string>
+    <string name="background_player">"TAUSTA PELAAJAN"</string>
     <string name="show_favorite_button">Näytä Suosikki -nappi</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Näytä Suosikki -nappi lukitusnäytössä ja ilmoituksissa</string>
     <string name="show_download_button">Näytä latauspainike</string>
@@ -969,4 +969,5 @@
     <string name="appearance_changes_message">Jos muutat pelaajan tai käyttöliittymän asetuksia,\non erittäin suositeltavaa käynnistää sovellus uudelleen.</string>
     <string name="title_import_settings_migration">Tuo siirtotiedosto.</string>
     <string name="description_import_settings_migration">Vanhoille käyttäjille ennen muuntamista.\nKäytä vanhaa sovellusta varmuuskopion tekemiseen muuttoa varten.</string>
-<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>
+    <string name="log_in_to_ytm">Kirjaudu sisään YTM-tilillesi saadaksesi lisää sisältöä</string>
+</resources>
