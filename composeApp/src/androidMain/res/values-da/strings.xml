@@ -964,9 +964,9 @@
     <string name="rotating_cover_title">Roterende albumcover</string>
     <string name="title_playback_speed">Afspilningshastighed</string>
     <string name="description_playback_speed">Juster, hvor langsomt/hurtigt sangen går</string>
-    <string name="opens_link_in_web_browser">Opens link in web browser</string>
-    <string name="title_appearance_changes">Appearance Change</string>
-    <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
-    <string name="title_import_settings_migration">Import migration file.</string>
-    <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
+    <string name="opens_link_in_web_browser">Åbner link i webbrowseren</string>
+    <string name="title_appearance_changes">Ændring Af Udseende</string>
+    <string name="appearance_changes_message">Hvis du ændrer Player eller UI indstillinger,\nanbefales det kraftigt at genstarte programmet.</string>
+    <string name="title_import_settings_migration">Importér migrationsfil.</string>
+    <string name="description_import_settings_migration">For gamle brugere før konvertering.\nBrug gammel app til at lave en sikkerhedskopi til migration.</string>
 </resources>
