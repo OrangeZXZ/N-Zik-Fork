@@ -1857,7 +1857,7 @@ fun Player(
                             )
 
                         Image(
-                            bitmap = APP_ICON_IMAGE_BITMAP,
+                            painter = painterResource(R.drawable.ic_launcher_monochrome),
                             contentDescription = "app icon in player",
                             modifier = Modifier.size( 24.dp )
                                                .clickable {
