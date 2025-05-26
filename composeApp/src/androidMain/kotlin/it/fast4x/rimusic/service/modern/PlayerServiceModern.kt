@@ -237,6 +237,15 @@ class PlayerServiceModern : MediaLibraryService(),
     private var isclosebackgroundPlayerEnabled = false
     private var audioManager: AudioManager? = null
     private var audioDeviceCallback: AudioDeviceCallback? = null
+    private lateinit var downloadListener: DownloadManager.Listener
+
+    var loudnessEnhancer: LoudnessEnhancer? = null
+    private var binder = Binder()
+    private var bassBoost: BassBoost? = null
+    private var reverbPreset: PresetReverb? = null
+    private var showLikeButton = true
+    private var showDownloadButton = true
+
     lateinit var audioQualityFormat: AudioQualityFormat
     lateinit var sleepTimer: SleepTimer
     private var timerJob: TimerJob? = null
@@ -1640,7 +1649,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 notificationManager?.notify(SleepTimerNotificationId, notification)
 
                 coroutineScope.launch {
-                    kotlinx.coroutines.delay(1000)
+                    delay(1000)
                     stopSelf()
                     exitProcess(0)
                 }
