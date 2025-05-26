@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">Cancellar</string>
     <string name="done">Preste</string>
@@ -85,7 +85,7 @@
     <string name="restore_1">Restaurar</string>
     <string name="import_the_database">Importar le base de datos ab un immagazinage externe</string>
     <string name="android_auto">ANDROID AUTO</string>
-    <string name="enable_unknown_sources">Remember to enable \"Unknown sources\" in the Developer Settings of Android Auto.</string>
+    <string name="enable_unknown_sources">Rememora activar le \"Fontes incognite\" in le Parametros de disveloppator de Android Auto.</string>
     <string name="android_auto_1">Android Auto</string>
     <string name="enable_android_auto_support">Activar le supporto de Android Auto</string>
     <string name="search_history">CHRONOLOGIA DE RECERCA</string>
@@ -127,7 +127,7 @@
     <string name="cache_location_folder">Folder location</string>
     <string name="custom_cache_from_android_10_may_not_be_available">Since Android 10, this feature may not be available</string>
     <string name="reset_cache_location_folder">RESET CACHE FOLDER LOCATION</string>
-    <string name="used">" used"</string>
+    <string name="used">" usate"</string>
     <string name="close_background_player">Clauder le reproductor in secunde plano</string>
     <string name="when_app_swipe_out_from_task_manager">Quando le application es glissate foras del gestor de processos</string>
     <string name="opening_url">es cargante...</string>
@@ -193,7 +193,7 @@
     <string name="mood">Humor</string>
     <string name="new_albums">Nove albumes</string>
     <string name="moods_and_genres">Humores e generos</string>
-    <string name="search_queries">" search queries"</string>
+    <string name="search_queries">" requestas de cerca"</string>
     <string name="not_find_battery_optimization_settings">Couldn\'t find battery optimization settings, please whitelist manually</string>
     <string name="search">Cercar</string>
     <string name="no">No</string>
@@ -969,4 +969,5 @@
     <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
     <string name="title_import_settings_migration">Import migration file.</string>
     <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
-<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>
+    <string name="log_in_to_ytm">Log in to your YTM account for more content</string>
+</resources>
