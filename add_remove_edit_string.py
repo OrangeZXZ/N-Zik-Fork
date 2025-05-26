@@ -50,6 +50,9 @@ def add_string(tree: ET, name: str, value: str) -> None:
             print(f"String '{name}' already exists in {file_path}")
             return
 
+    # Replace &quot; by " in value
+    value = value.replace('&quot;', '"')
+
     # Add the new string element
     new_string = ET.Element("string", name=name)
     new_string.text = value
@@ -94,7 +97,8 @@ def edit_string(tree: ET, name: str, new_value: str) -> bool:
     root = tree.getroot()
     for string in root.findall("string"):
         if string.get("name") == name:
-            string.text = new_value
+            # Replace &quot; by " in new_value
+            string.text = new_value.replace('&quot;', '"')
             return True
     return False
 
@@ -146,6 +150,10 @@ if __name__ == '__main__':
 
     # Save all strings.xml files
     for file_path, tree in strings_files.items():
+        # Replace &quot; by " in all string values before saving
+        for string in tree.getroot().findall("string"):
+            if string.text:
+                string.text = string.text.replace('&quot;', '"')
         tree_as_str: str = ET.tostring(tree.getroot(), encoding="utf-8")
         # Re-beautify .xml file (for indentation)
         reparsed = minidom.parseString(tree_as_str)
