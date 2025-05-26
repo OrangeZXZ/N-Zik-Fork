@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="cancel">Kanselleer</string>
     <string name="done">Klaar</string>
@@ -13,7 +13,7 @@
     <string name="remove_from_queue">Verwyder vanuit lys</string>
     <string name="remove_from_playlist">Verwyder van speellys</string>
     <string name="hide">Versteek</string>
-    <string name="hide_from_quick_picks">Versteek van \&quot;Vinnige voorstelle\&quot;</string>
+    <string name="hide_from_quick_picks">Versteek van \"Vinnige voorstelle\"</string>
     <string name="related_albums">Verwante albums</string>
     <string name="similar_artists">Soortgelyke kunstenaars</string>
     <string name="playlists_you_might_like">Speellyste waarvan jy dalk sal hou</string>
@@ -85,7 +85,7 @@
     <string name="restore_1">Herstel</string>
     <string name="import_the_database">Import the database from the external storage</string>
     <string name="android_auto">ANDROID AUTO</string>
-    <string name="enable_unknown_sources">Remember to enable \&quot;Unknown sources\&quot; in the Developer Settings of Android Auto.</string>
+    <string name="enable_unknown_sources">Remember to enable \"Unknown sources\" in the Developer Settings of Android Auto.</string>
     <string name="android_auto_1">Android Auto</string>
     <string name="enable_android_auto_support">Enable Android Auto support</string>
     <string name="search_history">SOEKGESKIEDENIS</string>
@@ -95,7 +95,7 @@
     <string name="history_is_empty">Geskiedenis is leeg</string>
     <string name="service_lifetime">DIENS LEEFTYD</string>
     <string name="battery_optimizations_applied">As battery optimalisering aan is dan kan die musiek kennisgewing skielik verdwyn as die liedjie onderbreek word.</string>
-    <string name="is_android12">Sedert Android 12, moet battery optimalisering afgeskakel word vir die \&quot;Invincible diens\&quot; opsie om te kan werk.</string>
+    <string name="is_android12">Sedert Android 12, moet battery optimalisering afgeskakel word vir die \"Invincible diens\" opsie om te kan werk.</string>
     <string name="ignore_battery_optimizations">Ignoreer battery optimaliserings</string>
     <string name="already_unrestricted">Alklaar onbeperk</string>
     <string name="disable_background_restrictions">Verwyder agtergrond beperkings</string>
@@ -127,7 +127,7 @@
     <string name="cache_location_folder">Lêer Ligging</string>
     <string name="custom_cache_from_android_10_may_not_be_available">Vanaf Android 10 mag die funksie nie beskikbaar wees nie</string>
     <string name="reset_cache_location_folder">HERSTEL CACHE LÊER LIGGING</string>
-    <string name="used">&quot; gebruik&quot;</string>
+    <string name="used">" gebruik"</string>
     <string name="close_background_player">Maak agtergrondspeler toe</string>
     <string name="when_app_swipe_out_from_task_manager">When app swipe out from task manager</string>
     <string name="opening_url">besig om te laai...</string>
@@ -193,7 +193,7 @@
     <string name="mood">Gemoed</string>
     <string name="new_albums">New albums</string>
     <string name="moods_and_genres">Moods and genres</string>
-    <string name="search_queries">&quot; search queries&quot;</string>
+    <string name="search_queries">" search queries"</string>
     <string name="not_find_battery_optimization_settings">Couldn\'t find battery optimization settings, please whitelist manually</string>
     <string name="search">Soek</string>
     <string name="no">Nee</string>
@@ -235,7 +235,7 @@
     <string name="set_custom_cache">Stel aangepasde cache</string>
     <string name="enter_value_in_mb">Enter value in MB</string>
     <string name="value_cannot_be_empty">Value cannot be empty</string>
-    <string name="value_must_be_greater_than">&quot;Value must be greater than &quot;</string>
+    <string name="value_must_be_greater_than">"Value must be greater than "</string>
     <string name="custom">Custom</string>
     <string name="custom_cache_size">Custom cache size</string>
     <string name="listen_on">Listen on</string>
@@ -269,7 +269,7 @@
     <string name="persian">Persies</string>
     <string name="hungarian">Hongaars</string>
     <string name="korean">Koreaans</string>
-    <string name="background_player">&quot;AGTERGROND SPELER &quot;</string>
+    <string name="background_player">"AGTERGROND SPELER "</string>
     <string name="show_favorite_button">Wys Gunsteling-knoppie</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Show Favorite button in lock screen and notification area</string>
     <string name="show_download_button">Wys Aflaai-knoppie</string>
@@ -951,7 +951,7 @@
     <string name="store_settings_in_a_file">Store your settings in a single file</string>
     <string name="description_exclude_credentials">Credentials such as YouTube login are excluded for security reasons</string>
     <string name="title_import_settings">Import settings</string>
-    <string name="restore_settings_from_file">Restore your settings from file created by \&quot;%s\&quot;</string>
+    <string name="restore_settings_from_file">Restore your settings from file created by \"%s\"</string>
     <string name="title_import_migration_file">Import migration file</string>
     <string name="description_import_migration_file">For old users before conversion. \nUse old app to make a backup for migration</string>
     <string name="description_app_not_installed_by_apk">App installed by an APK distributor should let its distributor update the app!</string>

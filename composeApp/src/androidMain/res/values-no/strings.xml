@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="cancel">Avbryt</string>
     <string name="done">Ferdig</string>
@@ -85,7 +85,7 @@
     <string name="restore_1">Gjenopprett</string>
     <string name="import_the_database">Importer database fra ekstern lagring</string>
     <string name="android_auto">ANDROID AUTO</string>
-    <string name="enable_unknown_sources">Husk å aktivere \&quot;Ukjente kilder\&quot; i utviklerinnstillingene for Android Auto.</string>
+    <string name="enable_unknown_sources">Husk å aktivere \"Ukjente kilder\" i utviklerinnstillingene for Android Auto.</string>
     <string name="android_auto_1">Android Auto</string>
     <string name="enable_android_auto_support">Aktiver Android auto støtte</string>
     <string name="search_history">SØKEHISTORIKK</string>
@@ -95,7 +95,7 @@
     <string name="history_is_empty">Historikken er tom</string>
     <string name="service_lifetime">LEVETID</string>
     <string name="battery_optimizations_applied">Hvis batterioptimaliseringer brukes, kan avspillingsvarselet plutselig forsvinne ved pausing.</string>
-    <string name="is_android12">Siden Android 12 er det nødvendig å deaktivere batterioptimaliseringer for \&quot;usynlig tjeneste\&quot; valg for å tre i kraft.</string>
+    <string name="is_android12">Siden Android 12 er det nødvendig å deaktivere batterioptimaliseringer for \"usynlig tjeneste\" valg for å tre i kraft.</string>
     <string name="ignore_battery_optimizations">Ignorer batterioptimaliseringer</string>
     <string name="already_unrestricted">Allerede ubegrenset</string>
     <string name="disable_background_restrictions">Deaktiver bakgrunnsrestriksjoner</string>
@@ -127,7 +127,7 @@
     <string name="cache_location_folder">Mappe plassering</string>
     <string name="custom_cache_from_android_10_may_not_be_available">Siden Android 10 kan det være at denne funksjonen ikke er tilgjengelig</string>
     <string name="reset_cache_location_folder">TILBAKESTILL SPØRSMÅL FOR MAPPEN</string>
-    <string name="used">&quot; brukt&quot;</string>
+    <string name="used">" brukt"</string>
     <string name="close_background_player">Lukk bakgrunnsspiller</string>
     <string name="when_app_swipe_out_from_task_manager">Når appen sveipes ut fra oppgaveadministreringen</string>
     <string name="opening_url">laster inn...</string>
@@ -193,7 +193,7 @@
     <string name="mood">Stemning</string>
     <string name="new_albums">Nye album</string>
     <string name="moods_and_genres">Stemninger og sjangre</string>
-    <string name="search_queries">&quot; søk spørringer&quot;</string>
+    <string name="search_queries">" søk spørringer"</string>
     <string name="not_find_battery_optimization_settings">Kunne ikke finne innstillinger for batterioptimalisering, vennligst hviteliste manuelt</string>
     <string name="search">Search...</string>
     <string name="no">Nei</string>
@@ -235,7 +235,7 @@
     <string name="set_custom_cache">Angi egendefinert hurtigbuffer</string>
     <string name="enter_value_in_mb">Angi verdi i MB</string>
     <string name="value_cannot_be_empty">Verdien kan ikke være tom</string>
-    <string name="value_must_be_greater_than">&quot;Verdien må være større enn &quot;</string>
+    <string name="value_must_be_greater_than">"Verdien må være større enn "</string>
     <string name="custom">Egendefinert</string>
     <string name="custom_cache_size">Egendefinert mellomlagerstørrelse</string>
     <string name="listen_on">Hør på</string>
@@ -269,7 +269,7 @@
     <string name="persian">Persian</string>
     <string name="hungarian">Ungarsk (Magyar)</string>
     <string name="korean">Koreansk (″″εεεε########################)-</string>
-    <string name="background_player">&quot;SIKKERHETSKOPIERTE SPILLER&quot;</string>
+    <string name="background_player">"SIKKERHETSKOPIERTE SPILLER"</string>
     <string name="show_favorite_button">Vis Favorittknapp</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Vis Favorittknappen på låseskjermen og i varslingsområdet</string>
     <string name="show_download_button">Vis nedlastingsknappen</string>
@@ -418,7 +418,7 @@
     <string name="max_songs_in_queue">Maks sanger i kø</string>
     <string name="back">Tilbake</string>
     <string name="folders">Mapper</string>
-    <string name="show_folders_in_on_device_page">Vis mapper i \&quot;på enhet\&quot; side</string>
+    <string name="show_folders_in_on_device_page">Vis mapper i \"på enhet\" side</string>
     <string name="lang_danish">Danish (Dansk)</string>
     <string name="lang_serbian_latin">Serbian Latin (Gajeva latinica)</string>
     <string name="item_deselect">Velg bort</string>
@@ -951,7 +951,7 @@
     <string name="store_settings_in_a_file">Store your settings in a single file</string>
     <string name="description_exclude_credentials">Credentials such as YouTube login are excluded for security reasons</string>
     <string name="title_import_settings">Import settings</string>
-    <string name="restore_settings_from_file">Gjenopprett innstillinger fra filen opprettet av \&quot;%s\&quot;</string>
+    <string name="restore_settings_from_file">Gjenopprett innstillinger fra filen opprettet av \"%s\"</string>
     <string name="title_import_migration_file">Import migration file</string>
     <string name="description_import_migration_file">For old users before conversion. \nUse old app to make a backup for migration</string>
     <string name="description_app_not_installed_by_apk">App installed by an APK distributor should let its distributor update the app!</string>

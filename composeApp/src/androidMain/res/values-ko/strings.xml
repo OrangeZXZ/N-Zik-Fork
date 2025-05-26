@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="cancel">취소</string>
     <string name="done">완료</string>
@@ -85,7 +85,7 @@
     <string name="restore_1">복원하기</string>
     <string name="import_the_database">데이터베이스를 외부 저장소에서 가져오기</string>
     <string name="android_auto">안드로이드 오토</string>
-    <string name="enable_unknown_sources">Remember to enable \&quot;Unknown sources\&quot; in the Developer Settings of Android Auto.</string>
+    <string name="enable_unknown_sources">Remember to enable \"Unknown sources\" in the Developer Settings of Android Auto.</string>
     <string name="android_auto_1">안드로이드 오토</string>
     <string name="enable_android_auto_support">안드로이드 오토 지원 활성화</string>
     <string name="search_history">검색 기록</string>
@@ -95,7 +95,7 @@
     <string name="history_is_empty">기록이 없습니다</string>
     <string name="service_lifetime">서비스 수명</string>
     <string name="battery_optimizations_applied">배터리 최적화가 적용되면 일시정지 시 재생 알림이 갑자기 사라질 수 있습니다.</string>
-    <string name="is_android12">Since Android 12, disabling battery optimizations is required for the \&quot;Invisible service\&quot; option to take effect.</string>
+    <string name="is_android12">Since Android 12, disabling battery optimizations is required for the \"Invisible service\" option to take effect.</string>
     <string name="ignore_battery_optimizations">배터리 최적화 무시</string>
     <string name="already_unrestricted">제한이 해제되었습니다</string>
     <string name="disable_background_restrictions">백그라운드 실행 제한 해제</string>
@@ -127,7 +127,7 @@
     <string name="cache_location_folder">Folder location</string>
     <string name="custom_cache_from_android_10_may_not_be_available">Since Android 10, this feature may not be available</string>
     <string name="reset_cache_location_folder">RESET CACHE FOLDER LOCATION</string>
-    <string name="used">&quot; used&quot;</string>
+    <string name="used">" used"</string>
     <string name="close_background_player">백그라운드 플레이어 닫기</string>
     <string name="when_app_swipe_out_from_task_manager">알림창에서 스와이프할 때</string>
     <string name="opening_url">로딩 중...</string>
@@ -193,7 +193,7 @@
     <string name="mood">분위기</string>
     <string name="new_albums">새 앨범</string>
     <string name="moods_and_genres">분위기 및 장르</string>
-    <string name="search_queries">&quot; search queries&quot;</string>
+    <string name="search_queries">" search queries"</string>
     <string name="not_find_battery_optimization_settings">배터리 최적화 설정을 찾지 못했습니다, 수동으로 해제해주세요</string>
     <string name="search">검색</string>
     <string name="no">아니요</string>
@@ -235,7 +235,7 @@
     <string name="set_custom_cache">맞춤 캐시 설정</string>
     <string name="enter_value_in_mb">MB 단위로 입력하기</string>
     <string name="value_cannot_be_empty">값을 비워둘 수 없습니다</string>
-    <string name="value_must_be_greater_than">&quot;Value must be greater than &quot;</string>
+    <string name="value_must_be_greater_than">"Value must be greater than "</string>
     <string name="custom">맞춤 설정</string>
     <string name="custom_cache_size">맞춤 캐시 크기</string>
     <string name="listen_on">다른 곳에서 듣기</string>
@@ -269,7 +269,7 @@
     <string name="persian">Persian (فارسی)</string>
     <string name="hungarian">Hungarian (Magyar)</string>
     <string name="korean">Korean (한국인)</string>
-    <string name="background_player">&quot;BACKGROUND PLAYER&quot;</string>
+    <string name="background_player">"BACKGROUND PLAYER"</string>
     <string name="show_favorite_button">즐겨찾기 버튼 표시</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">잠금화면과 알림창에서 즐겨찾기 버튼 표시하기</string>
     <string name="show_download_button">Show download button</string>
@@ -418,7 +418,7 @@
     <string name="max_songs_in_queue">재생목록 노래 최대 갯수</string>
     <string name="back">뒤로가기</string>
     <string name="folders">폴더</string>
-    <string name="show_folders_in_on_device_page">Show folders in \&quot;On Device\&quot; page</string>
+    <string name="show_folders_in_on_device_page">Show folders in \"On Device\" page</string>
     <string name="lang_danish">Danish (Dansk)</string>
     <string name="lang_serbian_latin">Serbian Latin (Gajeva latinica)</string>
     <string name="item_deselect">선택 해제</string>
@@ -951,7 +951,7 @@
     <string name="store_settings_in_a_file">Store your settings in a single file</string>
     <string name="description_exclude_credentials">Credentials such as YouTube login are excluded for security reasons</string>
     <string name="title_import_settings">Import settings</string>
-    <string name="restore_settings_from_file">Restore your settings from file created by \&quot;%s\&quot;</string>
+    <string name="restore_settings_from_file">Restore your settings from file created by \"%s\"</string>
     <string name="title_import_migration_file">Import migration file</string>
     <string name="description_import_migration_file">For old users before conversion. \nUse old app to make a backup for migration</string>
     <string name="description_app_not_installed_by_apk">App installed by an APK distributor should let its distributor update the app!</string>

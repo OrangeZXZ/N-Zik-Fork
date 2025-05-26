@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
     <string name="cancel">キャンセル</string>
     <string name="done">完了</string>
@@ -85,7 +85,7 @@
     <string name="restore_1">復元</string>
     <string name="import_the_database">外部の記憶装置からデータベースをインポート</string>
     <string name="android_auto">Android Auto</string>
-    <string name="enable_unknown_sources">Android Auto の開発者設定で \&quot;不明なソース\&quot; を有効にしてください。</string>
+    <string name="enable_unknown_sources">Android Auto の開発者設定で \"不明なソース\" を有効にしてください。</string>
     <string name="android_auto_1">Android Auto</string>
     <string name="enable_android_auto_support">Android Auto への対応を有効化</string>
     <string name="search_history">検索履歴</string>
@@ -95,7 +95,7 @@
     <string name="history_is_empty">履歴なし</string>
     <string name="service_lifetime">サービスの稼働時間を伸ばす</string>
     <string name="battery_optimizations_applied">充電最適化を使用中、一時停止時に再生通知が突然消えることがあります。</string>
-    <string name="is_android12">Android 12 以降では、\&quot;不可視のサービス\&quot; オプションを有効にするにはバッテリーの最適化を無効にする必要があります。</string>
+    <string name="is_android12">Android 12 以降では、\"不可視のサービス\" オプションを有効にするにはバッテリーの最適化を無効にする必要があります。</string>
     <string name="ignore_battery_optimizations">充電最適化を無視</string>
     <string name="already_unrestricted">既に無制限になっています</string>
     <string name="disable_background_restrictions">バックグラウンド制限を無効にする</string>
@@ -127,7 +127,7 @@
     <string name="cache_location_folder">フォルダの場所</string>
     <string name="custom_cache_from_android_10_may_not_be_available">Android 10以降、この機能は利用できない可能性があります</string>
     <string name="reset_cache_location_folder">キャッシュフォルダーの位置をリセット</string>
-    <string name="used">&quot; used&quot;</string>
+    <string name="used">" used"</string>
     <string name="close_background_player">バックグラウンドのプレイヤーを閉じる</string>
     <string name="when_app_swipe_out_from_task_manager">アプリがタスクマネージャーから消去されたとき</string>
     <string name="opening_url">読み込み中...</string>
@@ -193,7 +193,7 @@
     <string name="mood">ムード</string>
     <string name="new_albums">新しいアルバム</string>
     <string name="moods_and_genres">ムードとジャンル</string>
-    <string name="search_queries">&quot; search queries&quot;</string>
+    <string name="search_queries">" search queries"</string>
     <string name="not_find_battery_optimization_settings">充電最適化の設定を見つけられませんでした。手動でホワイトリストに登録してください</string>
     <string name="search">検索...</string>
     <string name="no">いいえ</string>
@@ -235,7 +235,7 @@
     <string name="set_custom_cache">カスタムキャッシュを設定</string>
     <string name="enter_value_in_mb">MB単位で値を入力</string>
     <string name="value_cannot_be_empty">値を空にすることはできません。</string>
-    <string name="value_must_be_greater_than">&quot;値は &quot; より大きくなければなりません</string>
+    <string name="value_must_be_greater_than">"値は " より大きくなければなりません</string>
     <string name="custom">カスタム</string>
     <string name="custom_cache_size">カスタムキャッシュサイズ</string>
     <string name="listen_on">別のサービス上で聴く</string>
@@ -269,7 +269,7 @@
     <string name="persian">ペルシャ語（&lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; ）</string>
     <string name="hungarian">ハンガリー語(マグヤール)</string>
     <string name="korean">朝鮮語 (&lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; )</string>
-    <string name="background_player">&quot;BACKGROUND PLAYER&quot;</string>
+    <string name="background_player">"BACKGROUND PLAYER"</string>
     <string name="show_favorite_button">お気に入りボタンを表示</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">ロック画面と通知領域にお気に入りボタンを表示する</string>
     <string name="show_download_button">ダウンロードボタンを表示</string>
@@ -418,7 +418,7 @@
     <string name="max_songs_in_queue">キューの最大曲数</string>
     <string name="back">戻る</string>
     <string name="folders">フォルダー</string>
-    <string name="show_folders_in_on_device_page">Show folders in \&quot;On Device\&quot; page</string>
+    <string name="show_folders_in_on_device_page">Show folders in \"On Device\" page</string>
     <string name="lang_danish">Danish (Dansk)</string>
     <string name="lang_serbian_latin">Serbian Latin (Gajeva latinica)</string>
     <string name="item_deselect">選択を解除</string>
@@ -951,7 +951,7 @@
     <string name="store_settings_in_a_file">Store your settings in a single file</string>
     <string name="description_exclude_credentials">Credentials such as YouTube login are excluded for security reasons</string>
     <string name="title_import_settings">Import settings</string>
-    <string name="restore_settings_from_file">\&quot;%s\&quot; で作成されたファイルから設定を復元します。</string>
+    <string name="restore_settings_from_file">\"%s\" で作成されたファイルから設定を復元します。</string>
     <string name="title_import_migration_file">Import migration file</string>
     <string name="description_import_migration_file">For old users before conversion. \nUse old app to make a backup for migration</string>
     <string name="description_app_not_installed_by_apk">App installed by an APK distributor should let its distributor update the app!</string>
