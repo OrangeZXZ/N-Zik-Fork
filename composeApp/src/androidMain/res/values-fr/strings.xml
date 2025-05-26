@@ -269,7 +269,7 @@
     <string name="persian">Persan (فارسی)</string>
     <string name="hungarian">Hongrois (Magyar)</string>
     <string name="korean">Coréen (한국인)</string>
-    <string name="background_player">&quot;LECTEUR D'ARRIÈRE PLAN &quot;</string>
+    <string name="background_player">&quot;LECTEUR D\'ARRIÈRE PLAN &quot;</string>
     <string name="show_favorite_button">Afficher le bouton des favoris</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Afficher le bouton des favoris dans l\'écran de verrouillage et la zone des notifications</string>
     <string name="show_download_button">Affiche le bouton de téléchargement</string>
@@ -614,7 +614,7 @@
     <string name="expandedlyricsinfo">Le Lecteur étendu ne fonctionne que lorsque les paroles sont activées</string>
     <string name="info_connect_your_piped_account_first">Connectez d\'abord votre compte piped ou désactivez la synchronisation piped</string>
     <string name="piped_playlists">Piped</string>
-    <string name="lang_bengali">Bengali (বাংলা)</string>
+    <string name="lang_bengali">Bengali (&lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; )</string>
     <string name="lang_irish">Irlandais (Gaeilge)</string>
     <string name="lyricsoutline">Contour des paroles</string>
     <string name="fluidrainbow">Arc en Ciel Fluide</string>
@@ -966,9 +966,9 @@ Volume BAS : titre précédent</string>
     <string name="rotating_cover_title">Pochette d\'album rotative</string>
     <string name="title_playback_speed">Vitesse de lecture</string>
     <string name="description_playback_speed">Ajuster la vitesse / la lenteur du titre</string>
-    <string name="opens_link_in_web_browser">Opens link in web browser</string>
-    <string name="title_appearance_changes">Appearance Change</string>
-    <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
-    <string name="title_import_settings_migration">Import migration file.</string>
-    <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
+    <string name="opens_link_in_web_browser">Ouvre le lien dans le navigateur web</string>
+    <string name="title_appearance_changes">Changement d\'apparence</string>
+    <string name="appearance_changes_message">Si vous modifiez les paramètres du Lecteur ou de l’UI,\nil est fortement recommandé de redémarrer l’application.</string>
+    <string name="title_import_settings_migration">Importer un fichier de migration.</string>
+    <string name="description_import_settings_migration">Pour les anciens utilisateurs avant la conversion.\nUtilisez l\'ancienne application pour faire une sauvegarde pour la migration.</string>
 </resources>
