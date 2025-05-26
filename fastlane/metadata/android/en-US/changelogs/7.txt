@@ -19,6 +19,7 @@ Optimization:
 - Enhanced language detection logic
 - System language is now prioritized
 - The toggle now defaults to the system language on first install
+- Vynil icon
 
 Bug Fixes:
 - Fixed a crash when changing the app language due to a null locale reference in `AppCompatDelegate.getApplicationLocales()`
@@ -32,3 +33,4 @@ Bug Fixes:
 - Fixed local songs not showing up on older Android versions
 - Fixed app crash when permission to view local files is denied on older Android versions
 - Fixed immediate play when persistent queue is enabled
+- Fixed Language
