@@ -313,7 +313,6 @@
     <string name="lang_finnish">Finnish (Suomalainen)</string>
     <string name="listening_time">Duração da reprodução</string>
     <string name="shows_the_number_of_songs_heard_and_their_listening_time">Mostrar número total de músicas ouvidas e duração da reprodução</string>
-    <string name="app_update_dialog_new">A nova versão %s pode ser transferida!</string>
     <string name="enable_language_in_discovery">Ativar a linguagem na descoberta</string>
     <string name="if_possible_allows_discovery_content_language">Se possível, permite receber conteúdo de Descoberta na sua própria língua.</string>
     <string name="set_to">Definir para</string>
@@ -917,7 +916,7 @@
     <string name="please_wait">Por favor, aguarde</string>
     <string name="songs_liked_yt">Músicas são curtidas no YouTube</string>
     <string name="song_unliked_yt">Música não está curtida no YouTube</string>
-    <string name="add_rimusic_to_ytm_favorites">Like RiMusic Liked songs in Youtube</string>
+    <string name="add_rimusic_to_ytm_favorites">Como músicas curtidas por N-Zik no Youtube</string>
     <string name="do_you_really_want_to_like_all_rimusictoytmusic">(estimated time) is required to like all the songs. This action cannot be resumed if cancelled in between. You need to close the app to cancel this process. Do you want to continue?</string>
     <string name="do_you_really_want_to_like_all">(estimated time) is required to like all the songs. You need to close the app to cancel this process. Do you want to continue?</string>
     <string name="songs_liked_yt_failed">Falha ao curtir a música no YouTube</string>
@@ -970,4 +969,10 @@
     <string name="title_import_settings_migration">Importar arquivo de migração.</string>
     <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
     <string name="log_in_to_ytm">Faça login na sua conta YTM para mais conteúdo</string>
+    <string name="close">FECHAR</string>
+    <string name="view_changelog">Ver changelog da versão %s</string>
+    <string name="no_changelog_available">Nenhum changelog disponível</string>
+    <string name="app_update_dialog_new">A nova versão %s pode ser transferida!</string>
+    <string name="app_update_dialog_size">O tamanho do arquivo é %s</string>
+    <string name="app_update_dialog_version">A nova versão %s pode ser transferida!</string>
 </resources>
