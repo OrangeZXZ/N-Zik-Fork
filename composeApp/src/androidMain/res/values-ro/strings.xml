@@ -338,7 +338,7 @@
     <string name="you_can_still_turn_it_on_or_off_from_the_settings">Poți să-l activezi/dezactivezi din setări.</string>
     <string name="enable">Activează</string>
     <string name="don_t_enable">Dezactivează</string>
-    <string name="lang_hindi">Hindi (हिन्दी)</string>
+    <string name="lang_hindi">Hindi (corespunzator)</string>
     <string name="default_page">Pagina implicită</string>
     <string name="keep_screen_on">Menține ecranul aprins</string>
     <string name="prevents_screen_timeout">Previne oprirea automată a ecranului</string>
@@ -613,7 +613,7 @@
     <string name="expandedlyricsinfo">Disponibil doar când miniatura versurilor este dezactivată</string>
     <string name="info_connect_your_piped_account_first">Conectează-ți mai întâi contul Piped sau dezactivează sincronizarea Piped</string>
     <string name="piped_playlists">Piped</string>
-    <string name="lang_bengali">Bengali (বাংলা)</string>
+    <string name="lang_bengali">Bengalez (&lt;unk&gt; &lt;unk&gt; Ε)</string>
     <string name="lang_irish">Irlandeză (Gaeilge)</string>
     <string name="lyricsoutline">Conturul versurilor</string>
     <string name="fluidrainbow">Curcubeu lichid</string>
@@ -951,7 +951,7 @@
     <string name="store_settings_in_a_file">Store your settings in a single file</string>
     <string name="description_exclude_credentials">Credentials such as YouTube login are excluded for security reasons</string>
     <string name="title_import_settings">Import settings</string>
-    <string name="restore_settings_from_file">Restore your settings from file created by \&quot;%s\&quot;</string>
+    <string name="restore_settings_from_file">Restabiliți setările din fișierul creat de \&quot;%s\&quot;</string>
     <string name="title_import_migration_file">Import migration file</string>
     <string name="description_import_migration_file">For old users before conversion. \nUse old app to make a backup for migration</string>
     <string name="description_app_not_installed_by_apk">App installed by an APK distributor should let its distributor update the app!</string>
@@ -964,9 +964,9 @@
     <string name="rotating_cover_title">Rotating album cover</string>
     <string name="title_playback_speed">Viteza redării</string>
     <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
-    <string name="opens_link_in_web_browser">Opens link in web browser</string>
-    <string name="title_appearance_changes">Appearance Change</string>
-    <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
-    <string name="title_import_settings_migration">Import migration file.</string>
-    <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
+    <string name="opens_link_in_web_browser">Deschide link-ul în browser-ul web</string>
+    <string name="title_appearance_changes">Schimbare aspect</string>
+    <string name="appearance_changes_message">Dacă schimbi setările Player sau UI,\neste recomandat să repornești aplicația.</string>
+    <string name="title_import_settings_migration">Fișier migrare importat.</string>
+    <string name="description_import_settings_migration">Pentru utilizatorii în vârstă înainte de conversie.\nUtilizează o aplicație veche pentru a face o copie de rezervă pentru migrare.</string>
 </resources>
