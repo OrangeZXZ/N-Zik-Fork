@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">Annulla</string>
     <string name="done">Ok</string>
@@ -969,4 +969,5 @@
     <string name="appearance_changes_message">Se cambi le impostazioni Player o UI,\nè fortemente raccomandato di riavviare l\'applicazione.</string>
     <string name="title_import_settings_migration">Importa file di migrazione.</string>
     <string name="description_import_settings_migration">Per i vecchi utenti prima della conversione.\nUsa la vecchia app per fare un backup per la migrazione.</string>
-<string name="log_in_to_ytm">Log in to your YTM account for more content</string></resources>
+    <string name="log_in_to_ytm">Accedi al tuo account YTM per maggiori contenuti</string>
+</resources>
