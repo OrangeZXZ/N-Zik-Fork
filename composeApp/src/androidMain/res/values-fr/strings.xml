@@ -975,6 +975,6 @@ Volume BAS : titre précédent</string>
     <string name="view_changelog">Voir le journal des modifications de la version %s</string>
     <string name="no_changelog_available">Aucun changelog disponible</string>
     <string name="app_update_dialog_new">La nouvelle version %s peut être téléchargée !</string>
-    <string name="app_update_dialog_size">La taille du fichier est %s</string>
+    <string name="app_update_dialog_size">La taille du fichier est de %s</string>
     <string name="app_update_dialog_version">La nouvelle version %s peut être téléchargée !</string>
 </resources>
