@@ -950,7 +950,7 @@
   <string name="store_settings_in_a_file">Store your settings in a single file</string>
   <string name="description_exclude_credentials">Credentials such as YouTube login are excluded for security reasons</string>
   <string name="title_import_settings">Import settings</string>
-  <string name="restore_settings_from_file">Restore your settings from file created by \"%s\"</string>
+  <string name="restore_settings_from_file">从 \"%s \" 创建的文件恢复您的设置</string>
   <string name="title_import_migration_file">Import migration file</string>
   <string name="description_import_migration_file">For old users before conversion. \nUse old app to make a backup for migration</string>
   <string name="description_app_not_installed_by_apk">App installed by an APK distributor should let its distributor update the app!</string>
@@ -975,6 +975,6 @@
   <string name="app_update_dialog_new">The new version %s can be downloaded!</string>
   <string name="app_update_dialog_size">文件大小为 %s</string>
   <string name="app_update_dialog_version">新版本 %s 可以下载！</string>
-  <string name="view_changelog_settings_title">View changelogs</string>
-  <string name="view_changelog_settings_text">View changelogs of the version currently installed</string>
+  <string name="view_changelog_settings_title">查看更新日志</string>
+  <string name="view_changelog_settings_text">查看当前安装版本的更新日志</string>
 </resources>
