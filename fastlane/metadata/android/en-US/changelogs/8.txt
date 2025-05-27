@@ -1,0 +1,16 @@
+Changed: 
+- Updated the changelog pop-up.
+- The new app name and size are now visible, and you can open the latest changelog directly in-app.
+- You can now view the changelog for the currently installed version from Settings > About.
+- Updated the app icon to a monochrome version in the player.
+- Added new translations.
+
+Optimizations: 
+- Improved color transitions in the action bar.
+- Optimized notifications for Android 12 and above.
+
+Bug Fixes: 
+- Fixed various crashes caused by missing notification permissions.
+- A permission prompt for notifications now appears on first launch.
+- Added a fallback to ensure notification channels are created at app startup to prevent crashes.
+- Shortcuts (long press on app icon) are now working properly.

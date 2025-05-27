@@ -22,6 +22,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -209,7 +210,17 @@ fun About() {
         val changelogs = remember {
             ChangelogsDialog(seenChangelogs)
         }
-        changelogs.isActive = true
+        
+        LaunchedEffect(Unit) {
+            changelogs.isActive = true
+        }
+        
         changelogs.Render()
+        
+        LaunchedEffect(changelogs.isActive) {
+            if (!changelogs.isActive) {
+                showChangelog.value = false
+            }
+        }
     }
 }
