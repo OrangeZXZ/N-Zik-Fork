@@ -32,6 +32,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
@@ -43,7 +44,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -67,6 +67,7 @@ import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.kreate.android.R
+import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.cleanPrefix
 import it.fast4x.rimusic.colorPalette
@@ -128,15 +129,12 @@ import it.fast4x.rimusic.utils.tapqueueKey
 import it.fast4x.rimusic.utils.textoutlineKey
 import it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import it.fast4x.rimusic.utils.visualizerEnabledKey
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.first
 import me.knighthat.coil.ImageCacheFactory
 import me.knighthat.component.player.PlaybackSpeed
 import me.knighthat.utils.Toaster
-import it.fast4x.rimusic.Database
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 private class PagerViewPort(
     private val showSongsState: MutableState<SongsNumber>,
@@ -520,18 +518,13 @@ fun BoxScope.ActionBar(
                     val showPlaylistIndicator by rememberPreference( playlistindicatorKey, false )
                     val colorPaletteName by rememberPreference( colorPaletteNameKey, ColorPaletteName.Dynamic )
                     val color = colorPalette()
-                    var isSongMappedToPlaylist by remember { mutableStateOf(false) }
-
-                    LaunchedEffect(mediaItem.mediaId) {
-                        Database.songPlaylistMapTable.isMapped(mediaItem.mediaId)
-                            .collect { isMapped ->
-                                isSongMappedToPlaylist = isMapped
-                            }
-                    }
+                    val isSongMappedToPlaylist by remember( mediaItem.mediaId ) {
+                        Database.songPlaylistMapTable.isMapped( mediaItem.mediaId )
+                    }.collectAsState( false, Dispatchers.IO )
 
                     IconButton(
                         icon = R.drawable.add_in_playlist,
-                        color = if (isSongMappedToPlaylist) color.accent else Color.Gray,
+                        color = if (isSongMappedToPlaylist && showPlaylistIndicator) Color.White else color.accent,
                         onClick = {
                             menuState.display {
                                 AddToPlaylistPlayerMenu(
@@ -543,7 +536,11 @@ fun BoxScope.ActionBar(
                                 )
                             }
                         },
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier
+                            .size(24.dp)
+                            .conditional(isSongMappedToPlaylist && showPlaylistIndicator) {
+                                background(color.accent, CircleShape).padding(all = 5.dp)
+                            }
                     )
                 }
 
