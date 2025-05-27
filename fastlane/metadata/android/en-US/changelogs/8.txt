@@ -7,6 +7,7 @@ Changed:
 
 Optimizations: 
 - Improved color transitions in the action bar.
+- The playlist icon is colored when the song is included in at least one playlist; otherwise, it appears grey.
 - Optimized notifications for Android 12 and above.
 
 Bug Fixes: 
