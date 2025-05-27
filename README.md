@@ -161,7 +161,7 @@ To **translate** or **improve a translation**, **fix typo**, or to **request new
 - [**LrcLib**](https://lrclib.net): Lyrics provider
 - [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): A shader modifier for Compose Multiplatform / Jetpack Compose
 - [**MedieroAF**](https://github.com/MedieroAF): App logo
-- [**jeziellago**](https://github.com/jeziellago/compose-markdown): Used to show Markdown content in app
+- [**compose-markdown**](https://github.com/jeziellago/compose-markdown): Used to show Markdown content in app
 
 
 # ⚠️ Disclaimer
