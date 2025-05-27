@@ -22,6 +22,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -47,11 +48,16 @@ import it.fast4x.rimusic.utils.bold
 import it.fast4x.rimusic.utils.getVersionName
 import it.fast4x.rimusic.utils.secondary
 import me.knighthat.utils.Repository
+import androidx.compose.runtime.remember
+import it.fast4x.rimusic.utils.rememberPreference
+import it.fast4x.rimusic.utils.seenChangelogsVersionKey
+import me.knighthat.updater.ChangelogsDialog
 
 @ExperimentalAnimationApi
 @Composable
 fun About() {
     val uriHandler = LocalUriHandler.current
+    val showChangelog = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -142,6 +148,15 @@ fun About() {
 
         SettingsEntryGroupText(title = stringResource(R.string.troubleshooting))
 
+
+        SettingsEntry(
+            title = stringResource( R.string.view_changelog_settings_title ),
+            text = stringResource( R.string.view_changelog_settings_text ),
+            onClick = {
+                showChangelog.value = true
+            }
+        )
+
         SettingsEntry(
             title = stringResource( R.string.view_the_source_code ),
             text = stringResource( R.string.you_will_be_redirected_to_github ),
@@ -187,5 +202,14 @@ fun About() {
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)
         )
+    }
+
+    if (showChangelog.value) {
+        val seenChangelogs = rememberPreference(seenChangelogsVersionKey, "")
+        val changelogs = remember {
+            ChangelogsDialog(seenChangelogs)
+        }
+        changelogs.isActive = true
+        changelogs.Render()
     }
 }
