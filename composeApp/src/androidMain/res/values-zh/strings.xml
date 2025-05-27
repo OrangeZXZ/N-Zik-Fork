@@ -95,7 +95,7 @@
     <string name="history_is_empty">历史记录为空</string>
     <string name="service_lifetime">服务期限</string>
     <string name="battery_optimizations_applied">如果应用了电池优化，暂停时播放通知可能会突然消失。</string>
-    <string name="is_android12">Since Android 12, disabling battery optimizations is required for the \"Invisible service\" option to take effect.</string>
+    <string name="is_android12">自Android 12以来，“隐身服务”选项需要禁用电池优化才能生效。</string>
     <string name="ignore_battery_optimizations">忽视电池优化</string>
     <string name="already_unrestricted">已经解除限制</string>
     <string name="disable_background_restrictions">禁用背景限制</string>
@@ -269,7 +269,7 @@
     <string name="persian">波斯语 (繁体字)</string>
     <string name="hungarian">匈牙利语(Magyar)</string>
     <string name="korean">韩语(从每秒到每秒每秒)</string>
-    <string name="background_player">"BACKGROUND PLAYER"</string>
+    <string name="background_player">"战场玩家"</string>
     <string name="show_favorite_button">Show Favorite button</string>
     <string name="show_favorite_button_in_lock_screen_and_notification_area">Show Favorite button in lock screen and notification area</string>
     <string name="show_download_button">显示下载按钮</string>
@@ -417,7 +417,7 @@
     <string name="max_songs_in_queue">Max songs in queue</string>
     <string name="back">Back</string>
     <string name="folders">Folders</string>
-    <string name="show_folders_in_on_device_page">Show folders in \"On Device\" page</string>
+    <string name="show_folders_in_on_device_page">在“设备上”页面中显示文件夹</string>
     <string name="lang_danish">Danish (Dansk)</string>
     <string name="lang_serbian_latin">Serbian Latin (Gajeva latinica)</string>
     <string name="item_deselect">Deselect</string>
@@ -969,10 +969,10 @@
     <string name="title_import_settings_migration">导入迁移文件。</string>
     <string name="description_import_settings_migration">For old users before conversion.\nUse old app to make a backup for migration.</string>
     <string name="log_in_to_ytm">登录到您的 YTM 帐户获取更多内容</string>
-    <string name="close">Close</string>
-    <string name="view_changelog">View changelog of the version %s</string>
-    <string name="no_changelog_available">No changelog available</string>
+    <string name="close">关闭</string>
+    <string name="view_changelog">查看版本 %s的更新日志</string>
+    <string name="no_changelog_available">无可用更新日志</string>
     <string name="app_update_dialog_new">The new version %s can be downloaded!</string>
-    <string name="app_update_dialog_size">The file size is %s</string>
-    <string name="app_update_dialog_version">The new version %s can be downloaded!</string>
+    <string name="app_update_dialog_size">文件大小为 %s</string>
+    <string name="app_update_dialog_version">新版本 %s 可以下载！</string>
 </resources>
