@@ -4,6 +4,7 @@ Changed:
 - You can now view the changelog for the currently installed version from Settings > About.
 - Updated the app icon to a monochrome version in the player.
 - Added new translations.
+- Changed the default green to purple to match the N-Zik palette
 
 Optimizations: 
 - Improved color transitions in the action bar, playlist icon not following the color
