@@ -5,6 +5,7 @@ Changed:
 - Updated the app icon to a monochrome version in the player.
 - Added new translations.
 - Changed the default green to purple to match the N-Zik palette.
+- Extension of the swipe gestures for stats screen and history screen
 
 Optimizations:
 - Improved color transitions in the action bar; playlist icon not following the color.
