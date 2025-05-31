@@ -67,20 +67,16 @@
 - Refined **Podcasts search** experience with smoother transitions and better user feedback.
 - Upgraded **Featured content** display, introducing a clearer visual hierarchy for easier content discovery.
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/dd98ca24-9d1b-4205-8ee7-c35519590cb5" width="150" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/17128f78-7c27-4676-b34b-ca9d21b7982b" width="150" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/d3a7270b-ee8a-46c3-a9f3-c8f0fe2c7f07" width="150" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/e670ba5c-cd5f-4a1b-a1c0-1f2ad90b0dfe" width="150" style="margin:4px" />
-</p>
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/c16fbf03-5710-407e-881d-e7b592d1d87c" width="150" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/fc0b81be-5889-4196-afc1-980a36192005" width="150" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/186c2a6b-363e-4531-8ce5-eb8c1770ab00" width="150" style="margin:4px" />
-  <img src="https://github.com/user-attachments/assets/153920f6-baa7-47f4-b3b8-bd9d4563c01a" width="150" style="margin:4px" />
-</p>
-
+<div align="center">
+    <img alt="Screenshot 1" src="fastlane/metadata/android/en-US/images/phoneScreenshots/9.png" height="350px"/>
+    <img alt="Screenshot 2" src="fastlane/metadata/android/en-US/images/phoneScreenshots/10.png" height="350px" />
+    <img alt="Screenshot 3" src="fastlane/metadata/android/en-US/images/phoneScreenshots/11.png" height="350px" />
+    <img alt="Screenshot 4" src="fastlane/metadata/android/en-US/images/phoneScreenshots/12.png" height="350px" />
+    <img alt="Screenshot 5" src="fastlane/metadata/android/en-US/images/phoneScreenshots/13.png" height="350px" />
+    <img alt="Screenshot 6" src="fastlane/metadata/android/en-US/images/phoneScreenshots/14.png" height="350px" />
+    <img alt="Screenshot 7" src="fastlane/metadata/android/en-US/images/phoneScreenshots/15.png" height="350px" />
+    <img alt="Screenshot 8" src="fastlane/metadata/android/en-US/images/phoneScreenshots/16.png" height="350px" />
+</div>
 
 
 
