@@ -6,6 +6,8 @@ Changed:
 - Added new translations.
 - Changed the default green to purple to match the N-Zik palette.
 - Extension of the swipe gestures for stats screen and history screen
+- Reintroduced the old RiMusic local artist library system, now integrated with the new Artist UI.
+
 
 Optimizations:
 - Improved color transitions in the action bar; playlist icon not following the color.

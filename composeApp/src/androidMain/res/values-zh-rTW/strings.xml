@@ -977,4 +977,5 @@
 <string name="app_update_dialog_version">The new version %s can be downloaded!</string>
 <string name="view_changelog_settings_title">View changelogs</string>
 <string name="view_changelog_settings_text">View changelogs of the version currently installed</string>
+<string name="artist_songs_count_duration">%1$d Songs • %2$s</string>
 </resources>
