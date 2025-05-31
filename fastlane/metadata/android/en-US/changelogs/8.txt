@@ -14,6 +14,7 @@ Optimizations:
 - Extracted skip time button to separate function.
 - Extracted text with outline to separate function.
 - Added locator button to queue actions.
+- shorten call + improve readability of code in MainActivity.kt
 
 Bug Fixes:
 - Fixed various crashes caused by missing notification permissions.
