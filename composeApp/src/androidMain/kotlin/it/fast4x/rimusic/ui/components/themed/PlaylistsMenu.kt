@@ -1,6 +1,5 @@
 ﻿package it.fast4x.rimusic.ui.components.themed
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -32,11 +31,13 @@ import it.fast4x.rimusic.ui.components.MenuState
 import it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import it.fast4x.rimusic.ui.styling.favoritesIcon
 import it.fast4x.rimusic.utils.menuStyleKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import me.knighthat.component.playlist.NewPlaylistDialog
+import me.knighthat.component.tab.Search
 import me.knighthat.utils.Toaster
 
 class PlaylistsMenu private constructor(
@@ -135,12 +136,15 @@ class PlaylistsMenu private constructor(
                     !it.playlist.name.startsWith(MONTHLY_PREFIX, 0, true)
         }
 
+        val search = Search()
+        val filteredPinnedPlaylists = pinnedPlaylists.filter { it.playlist.name.contains(search.inputValue, true) }
+        val filteredUnpinnedPlaylists = unpinnedPlaylists.filter { it.playlist.name.contains(search.inputValue, true) }
+
         val newPlaylistButton = NewPlaylistDialog()
         newPlaylistButton.Render()
 
         Menu {
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -154,27 +158,40 @@ class PlaylistsMenu private constructor(
                         .padding(all = 4.dp)
                         .size(20.dp)
                 )
-
+                IconButton(
+                    onClick = { search.isVisible = !search.isVisible },
+                    icon = R.drawable.search_circle,
+                    color = colorPalette().favoritesIcon,
+                    modifier = Modifier
+                        .padding(all = 4.dp)
+                        .size(24.dp)
+                )
+                BasicText(
+                    text = stringResource(R.string.playlists),
+                    style = typography().m.semiBold,
+                    modifier = Modifier.weight(1f).padding(start = 8.dp)
+                )
                 newPlaylistButton.ToolBarButton()
             }
-            if (pinnedPlaylists.isNotEmpty()) {
+            search.SearchBar(this)
+            if (filteredPinnedPlaylists.isNotEmpty()) {
                 BasicText(
                     text = stringResource(R.string.pinned_playlists),
                     style = typography().m.semiBold,
                     modifier = Modifier.padding(start = 20.dp, top = 5.dp)
                 )
 
-                pinnedPlaylists.forEach { PlaylistCard(it) }
+                filteredPinnedPlaylists.forEach { PlaylistCard(it) }
             }
 
-            if (unpinnedPlaylists.isNotEmpty()) {
+            if (filteredUnpinnedPlaylists.isNotEmpty()) {
                 BasicText(
                     text = stringResource(R.string.playlists),
                     style = typography().m.semiBold,
                     modifier = Modifier.padding(start = 20.dp, top = 5.dp)
                 )
 
-                unpinnedPlaylists.forEach { PlaylistCard(it) }
+                filteredUnpinnedPlaylists.forEach { PlaylistCard(it) }
             }
         }
     }
