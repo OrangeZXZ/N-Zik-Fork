@@ -979,5 +979,5 @@ Volume BAS : titre précédent</string>
   <string name="app_update_dialog_version">La nouvelle version %s peut être téléchargée !</string>
   <string name="view_changelog_settings_title">Voir le changelogs</string>
   <string name="view_changelog_settings_text">Voir le journal des modifications de la version actuellement installée</string>
-  <string name="artist_songs_count_duration">Chansons %1$d • %2$s</string>
+  <string name="artist_songs_count_duration">Titres %1$d • %2$s</string>
 </resources>
