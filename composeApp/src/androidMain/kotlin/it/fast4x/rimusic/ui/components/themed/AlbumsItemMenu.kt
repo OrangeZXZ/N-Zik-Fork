@@ -65,6 +65,7 @@ import it.fast4x.rimusic.utils.playlistSortOrderKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
+import me.knighthat.component.tab.Search
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -195,7 +196,7 @@ fun AlbumsItemMenu(
                     modifier = modifier
                         .requiredHeight(height)
                 ) {
-                    val search = me.knighthat.component.tab.Search()
+                    val search = Search()
                     val title = stringResource(R.string.playlists)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
