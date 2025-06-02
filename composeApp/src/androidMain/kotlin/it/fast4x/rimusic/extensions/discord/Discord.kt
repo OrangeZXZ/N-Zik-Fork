@@ -1,13 +1,16 @@
 package it.fast4x.rimusic.extensions.discord
 
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.JsResult
 import android.webkit.WebResourceRequest
 import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.webkit.WebChromeClient
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -31,6 +34,13 @@ import it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import it.fast4x.rimusic.ui.components.themed.IconButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.view.View
+import androidx.compose.ui.platform.LocalContext
+import android.content.Context
+
+private const val JS_SNIPPET = "javascript:(function(){var i=document.createElement('iframe');document.body.appendChild(i);alert(i.contentWindow.localStorage.token.slice(1,-1))})()"
+private const val MOTOROLA = "motorola"
+private const val SAMSUNG_USER_AGENT = "Mozilla/5.0 (Linux; Android 14; SM-S921U; Build/UP1A.231005.007) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.363"
 
 @SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,7 +50,6 @@ fun DiscordLoginAndGetToken(
     onGetToken: (String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
-
     var webView: WebView? = null
 
     AndroidView(
@@ -53,39 +62,47 @@ fun DiscordLoginAndGetToken(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
-
                 webViewClient = object : WebViewClient() {
-                    override fun shouldOverrideUrlLoading(
-                        webView: WebView,
-                        request: WebResourceRequest,
-                    ): Boolean {
-                        stopLoading()
-                        if (request.url.toString().endsWith("/app")) {
-                            loadUrl("javascript:Android.onRetrieveToken((webpackChunkdiscord_app.push([[''],{},e=>{m=[];for(let c in e.c)m.push(e.c[c])}]),m).find(m=>m?.exports?.default?.getToken!==void 0).exports.default.getToken());")
+                    @Deprecated("Deprecated in Java")
+                    override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
+                        webView.stopLoading()
+                        if (url.endsWith("/app")) {
+                            webView.loadUrl(JS_SNIPPET)
+                            webView.visibility = View.GONE
                         }
                         return false
                     }
+                    override fun onPageFinished(view: WebView, url: String) {
+                        if (url.contains("/app")) {
+                            view.loadUrl(JS_SNIPPET)
+                        }
+                    }
                 }
-                settings.apply {
-                    javaScriptEnabled = true
-                    domStorageEnabled = true
-                    setSupportZoom(true)
-                    builtInZoomControls = true
+                webChromeClient = object : WebChromeClient() {
+                    override fun onJsAlert(
+                        view: WebView,
+                        url: String,
+                        message: String,
+                        result: JsResult,
+                    ): Boolean {
+                        scope.launch(Dispatchers.Main) {
+                            onGetToken(message)
+                            navController.navigateUp()
+                        }
+                        this@apply.visibility = View.GONE
+                        result.confirm()
+                        return true
+                    }
+                }
+                settings.javaScriptEnabled = true
+                settings.domStorageEnabled = true
+                if (android.os.Build.MANUFACTURER.equals(MOTOROLA, ignoreCase = true)) {
+                    settings.userAgentString = SAMSUNG_USER_AGENT
                 }
                 val cookieManager = CookieManager.getInstance()
                 cookieManager.removeAllCookies(null)
                 cookieManager.flush()
-
                 WebStorage.getInstance().deleteAllData()
-                addJavascriptInterface(object {
-                    @JavascriptInterface
-                    fun onRetrieveToken(token: String) {
-                        scope.launch(Dispatchers.Main) {
-                            onGetToken(token)
-                        }
-                    }
-                }, "Android")
-
                 webView = this
                 loadUrl("https://discord.com/login")
             }
@@ -108,8 +125,18 @@ fun DiscordLoginAndGetToken(
     }
 }
 
+fun getVersionName(context: Context): String {
+    return try {
+        val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        pInfo.versionName ?: ""
+    } catch (e: Exception) {
+        ""
+    }
+}
+
 @UnstableApi
 fun sendDiscordPresence(
+    context: Context,
     token: String,
     mediaItem: MediaItem,
     timeStart: Long,
@@ -120,8 +147,8 @@ fun sendDiscordPresence(
     val rpc = KizzyRPC(token)
     rpc.setActivity(
         activity = Activity(
-            applicationId = "1281989764358082570",
-            name = "RiMusic",
+            applicationId = "1379051016007454760",
+            name = "N-Zik",
             details = mediaItem.mediaMetadata.title.toString(),
             state = mediaItem.mediaMetadata.artist.toString(),
             type = TypeDiscordActivity.LISTENING.value,
@@ -130,15 +157,15 @@ fun sendDiscordPresence(
                 end = timeEnd
             ),
             assets = Assets(
-                largeImage = "https://i.ytimg.com/vi/${mediaItem.mediaId}/maxresdefault.jpg",
-                smallImage = "mp:{icona_rimusic}",
-                //largeText = mediaItem.mediaMetadata.title.toString(),
-                //smallText = mediaItem.mediaMetadata.artist.toString(),
+                largeImage = "mp:attachments/1231921505923760150/1379168513796608040/music-folder.png?ex=683f4245&is=683df0c5&hm=e05b1a294c073f8d8eb6a55a462c4b5c41d63221b151a0d5e9e9321ec761848e&",
+                smallImage = "mp:attachments/1231921505923760150/1379166057809575997/N-Zik_Discord.png?ex=683f3ffb&is=683dee7b&hm=73a1edc08f7f657ef36c4f49ff8a6a22fbf3d0121eaf08d4fe3d28032edaea79&",
+                largeText = mediaItem.mediaMetadata.title.toString() + " - " + mediaItem.mediaMetadata.artist.toString(),
+                smallText = "v${getVersionName(context)}",
             ),
-            buttons = listOf("Get RiMusic", "Listen to YTMusic"),
+            buttons = listOf("Get N-Zik", "Listen to YTMusic"),
             metadata = com.my.kizzyrpc.model.Metadata(
                 listOf(
-                    "https://rimusic.xyz/",
+                    "https://github.com/NEVARLeVrai/N-Zik/",
                     "https://music.youtube.com/watch?v=${mediaItem.mediaId}",
                 )
             )

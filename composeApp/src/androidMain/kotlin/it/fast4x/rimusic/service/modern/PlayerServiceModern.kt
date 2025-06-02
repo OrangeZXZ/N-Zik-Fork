@@ -1259,6 +1259,7 @@ class PlayerServiceModern : MediaLibraryService(),
             if (!discordPersonalAccessToken.isNullOrEmpty()) {
                 player.currentMediaItem?.let {
                     sendDiscordPresence(
+                        this,
                         discordPersonalAccessToken,
                         it,
                         timeStart = if (player.isPlaying)
