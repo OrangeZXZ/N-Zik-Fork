@@ -1,5 +1,6 @@
 ﻿package it.fast4x.rimusic.ui.components.themed
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
@@ -39,6 +41,10 @@ import kotlinx.coroutines.Dispatchers
 import me.knighthat.component.playlist.NewPlaylistDialog
 import me.knighthat.component.tab.Search
 import me.knighthat.utils.Toaster
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.compositeOver
+import it.fast4x.rimusic.PIPED_PREFIX
 
 class PlaylistsMenu private constructor(
     private val navController: NavController,
@@ -98,6 +104,23 @@ class PlaylistsMenu private constructor(
                 onAdd( playlistPreview )
             },
             trailingContent = {
+                if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
+                    Image(
+                        painter = painterResource(R.drawable.piped_logo),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(colorPalette().red),
+                        modifier = Modifier.size(18.dp)
+                    )
+                if (playlistPreview.playlist.isYoutubePlaylist) {
+                    Image(
+                        painter = painterResource(R.drawable.ytmusic),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(
+                            Color.Red.copy(0.75f).compositeOver(Color.White)
+                        ),
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
                 IconButton(
                     icon = R.drawable.open,
                     color = colorPalette().text,
