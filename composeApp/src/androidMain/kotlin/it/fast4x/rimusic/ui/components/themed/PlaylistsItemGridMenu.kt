@@ -8,7 +8,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -67,6 +66,7 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import me.knighthat.component.tab.Search
+import me.knighthat.utils.Toaster
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -184,6 +184,7 @@ fun PlaylistsItemGridMenu(
                                 )
                             )
                         }
+                        Toaster.done()
                     }
                 )
             }
@@ -258,13 +259,14 @@ fun PlaylistsItemGridMenu(
                                     R.string.songs
                                 ),
                                 onClick = {
-                                    onDismiss()
                                     onAddToPlaylist(
                                         PlaylistPreview(
                                             playlistPreview.playlist,
                                             playlistPreview.songCount
                                         )
                                     )
+                                    Toaster.done()
+                                    onDismiss()
                                 },
                                 trailingContent = {
                                     if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
@@ -319,13 +321,14 @@ fun PlaylistsItemGridMenu(
                                 text = cleanPrefix(playlistPreview.playlist.name),
                                 secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                                 onClick = {
-                                    onDismiss()
                                     onAddToPlaylist(
                                         PlaylistPreview(
                                             playlistPreview.playlist,
                                             playlistPreview.songCount
                                         )
                                     )
+                                    Toaster.done()
+                                    onDismiss()
                                 },
                                 trailingContent = {
                                     IconButton(
@@ -363,13 +366,14 @@ fun PlaylistsItemGridMenu(
                                     R.string.songs
                                 ),
                                 onClick = {
-                                    onDismiss()
                                     onAddToPlaylist(
                                         PlaylistPreview(
                                             playlistPreview.playlist,
                                             playlistPreview.songCount
                                         )
                                     )
+                                    Toaster.done()
+                                    onDismiss()
                                 },
                                 trailingContent = {
                                     if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))

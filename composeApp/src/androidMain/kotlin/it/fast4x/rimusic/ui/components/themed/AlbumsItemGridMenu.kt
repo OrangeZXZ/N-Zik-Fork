@@ -74,6 +74,8 @@ import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import me.knighthat.component.tab.Search
 import me.knighthat.component.playlist.NewPlaylistDialog
+import me.knighthat.utils.Toaster
+
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -231,13 +233,14 @@ fun AlbumsItemGridMenu(
                                     text = cleanPrefix(playlistPreview.playlist.name),
                                     secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                                     onClick = {
-                                        onDismiss()
                                         onAddToPlaylist(
                                             PlaylistPreview(
                                                 playlistPreview.playlist,
                                                 playlistPreview.songCount
                                             )
                                         )
+                                        Toaster.done()
+                                        onDismiss()
                                     },
                                     trailingContent = {
                                         if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
@@ -288,13 +291,14 @@ fun AlbumsItemGridMenu(
                                     text = cleanPrefix(playlistPreview.playlist.name),
                                     secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                                     onClick = {
-                                        onDismiss()
                                         onAddToPlaylist(
                                             PlaylistPreview(
                                                 playlistPreview.playlist,
                                                 playlistPreview.songCount
                                             )
                                         )
+                                        Toaster.done()
+                                        onDismiss()
                                     },
                                     trailingContent = {
                                         if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
@@ -345,13 +349,14 @@ fun AlbumsItemGridMenu(
                                     text = cleanPrefix(playlistPreview.playlist.name),
                                     secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                                     onClick = {
-                                        onDismiss()
                                         onAddToPlaylist(
                                             PlaylistPreview(
                                                 playlistPreview.playlist,
                                                 playlistPreview.songCount
                                             )
                                         )
+                                        Toaster.done()
+                                        onDismiss()
                                     },
                                     trailingContent = {
                                         if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))

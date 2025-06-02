@@ -64,6 +64,8 @@ import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import me.knighthat.component.tab.Search
+import me.knighthat.utils.Toaster
+
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -209,6 +211,7 @@ fun PlaylistsItemMenu(
                                     )
                                 )
                             }
+                            Toaster.done()
                         }
                     )
                 }
@@ -282,13 +285,14 @@ fun PlaylistsItemMenu(
                                         R.string.songs
                                     ),
                                     onClick = {
-                                        onDismiss()
                                         onAddToPlaylist(
                                             PlaylistPreview(
                                                 playlistPreview.playlist,
                                                 playlistPreview.songCount
                                             )
                                         )
+                                        Toaster.done()
+                                        onDismiss()
                                     },
                                     trailingContent = {
                                         if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
@@ -343,13 +347,14 @@ fun PlaylistsItemMenu(
                                     text = cleanPrefix(playlistPreview.playlist.name),
                                     secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                                     onClick = {
-                                        onDismiss()
                                         onAddToPlaylist(
                                             PlaylistPreview(
                                                 playlistPreview.playlist,
                                                 playlistPreview.songCount
                                             )
                                         )
+                                        Toaster.done()
+                                        onDismiss()
                                     },
                                     trailingContent = {
                                         IconButton(
@@ -387,13 +392,14 @@ fun PlaylistsItemMenu(
                                         R.string.songs
                                     ),
                                     onClick = {
-                                        onDismiss()
                                         onAddToPlaylist(
                                             PlaylistPreview(
                                                 playlistPreview.playlist,
                                                 playlistPreview.songCount
                                             )
                                         )
+                                        Toaster.done()
+                                        onDismiss()
                                     },
                                     trailingContent = {
                                         if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
