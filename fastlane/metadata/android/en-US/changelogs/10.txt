@@ -1,0 +1,13 @@
+Changed:
+- Added search UI in add to playlist + toat confirmation
+- Discord RPC show images now
+
+Optimizations:
+- Optimized Discord RPC
+- Optimized Playlist UI
+
+Bug Fixes:
+- Fixed the issue where the Pitchblack and System themes were reversed.
+- Fixed Grid view in album when you long press an album
+- Fixed Discord login for RPC
+- Fixed Playlist UI
