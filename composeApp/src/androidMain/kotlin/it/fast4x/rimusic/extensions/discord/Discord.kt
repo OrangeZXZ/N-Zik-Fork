@@ -157,7 +157,7 @@ fun sendDiscordPresence(
                 end = timeEnd
             ),
             assets = Assets(
-                largeImage = "mp:attachments/1231921505923760150/1379168513796608040/music-folder.png?ex=683f4245&is=683df0c5&hm=e05b1a294c073f8d8eb6a55a462c4b5c41d63221b151a0d5e9e9321ec761848e&",
+                largeImage = "mp:attachments/1231921505923760150/1379170235298615377/album.png?ex=683f43df&is=683df25f&hm=cd08ce130264f2da98b8d2b0065ba58e39a0b0c125556fd7862f5155f110ce4b&",
                 smallImage = "mp:attachments/1231921505923760150/1379166057809575997/N-Zik_Discord.png?ex=683f3ffb&is=683dee7b&hm=73a1edc08f7f657ef36c4f49ff8a6a22fbf3d0121eaf08d4fe3d28032edaea79&",
                 largeText = mediaItem.mediaMetadata.title.toString() + " - " + mediaItem.mediaMetadata.artist.toString(),
                 smallText = "v${getVersionName(context)}",
