@@ -358,7 +358,7 @@ class MainActivity :
             }
         }
 
-        // Demander la permission de notification si nécessaire
+        // Ask for notification permission if necessary
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
         }
