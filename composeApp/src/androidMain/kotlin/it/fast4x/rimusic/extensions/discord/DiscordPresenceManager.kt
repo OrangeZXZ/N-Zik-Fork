@@ -307,7 +307,7 @@ class DiscordPresenceManager(
     ) {
         refreshJob = discordScope.launch {
             while (isActive && !isStopped) {
-                delay(40_000L)
+                delay(20_000L)
                 val isPlaying = isPlayingProvider()
                 if (isPlaying) {
                     val pos = getCurrentPosition()
