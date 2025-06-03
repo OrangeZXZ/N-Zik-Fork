@@ -20,6 +20,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Bitmap
 import java.io.FileOutputStream
 import androidx.core.graphics.scale
+import timber.log.Timber
+import java.util.UUID
 
 class DiscordPresenceManager(
     private val context: Context,
@@ -33,7 +35,6 @@ class DiscordPresenceManager(
     private var isStopped = false
     private val discordScope = externalScope
     private var refreshJob: Job? = null
-
     private val client = OkHttpClient.Builder()
         .connectTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
         .readTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
@@ -52,16 +53,17 @@ class DiscordPresenceManager(
         if (isStopped) return
         val token = getToken() ?: return
 
+        refreshJob?.cancel()
+        refreshJob = null
+
         if (token != lastToken) {
             rpc?.closeRPC()
             rpc = KizzyRPC(token)
             lastToken = token
         }
-        
+
         lastMediaItem = mediaItem
         lastPosition = position
-        refreshJob?.cancel()
-        refreshJob = null
         if (mediaItem == null) {
             sendPausedPresence(duration, now, position)
             return
@@ -159,7 +161,7 @@ class DiscordPresenceManager(
                 since = System.currentTimeMillis()
             )
         }.onFailure {
-            android.util.Log.e("DiscordPresence", "Erreur setActivity: ${it.message}", it)
+            Timber.tag("DiscordPresence").e(it, "Error setActivity: ${it.message}")
         }
     }
 
@@ -212,7 +214,7 @@ class DiscordPresenceManager(
                     json.decodeFromString<ApiResponse>(body).data.url
                 }
             }.onFailure {
-                android.util.Log.e("DiscordPresence", "Erreur upload: ${it.message}", it)
+                Timber.tag("DiscordPresence").e(it, "Error upload: ${it.message}")
             }.getOrNull()?.replace("https://tmpfiles.org/", "https://tmpfiles.org/dl/")
         } finally {
             if (compressed != null && compressed != file) compressed.delete()
@@ -246,14 +248,14 @@ class DiscordPresenceManager(
                 val body = response.body?.string() ?: return@runCatching null
                 val jsonArr = runCatching { Json.parseToJsonElement(body).jsonArray }
                     .getOrElse {
-                        android.util.Log.e("DiscordPresence", "Erreur parsing JSON: ${it.message}", it)
+                        Timber.tag("DiscordPresence").e(it, "Error parsing JSON: ${it.message}")
                         return@runCatching null
-                    } ?: return@runCatching null
+                    }
                 val externalAssetPath = jsonArr.firstOrNull()?.jsonObject?.get("external_asset_path")?.toString()?.replace("\"", "")
                 externalAssetPath?.let { "mp:$it" }
             }
         }.onFailure {
-            android.util.Log.e("DiscordPresence", "Erreur assetUri: ${it.message}", it)
+            Timber.tag("DiscordPresence").e(it, "Error assetUri: ${it.message}")
         }.getOrNull()
     }
 
@@ -263,12 +265,14 @@ class DiscordPresenceManager(
     private suspend fun getLargeImageUrl(mediaItem: MediaItem): String? {
         val token = getToken() ?: return null
         val artworkFile = getArtworkFile(mediaItem)
+
         val url = if (artworkFile != null && artworkFile.exists()) {
             uploadImage(artworkFile)
         } else {
             mediaItem.mediaMetadata.artworkUri?.toString()?.takeIf { it.startsWith("http") }
         }
-        return if (url != null) getDiscordAssetUri(url, token) else null
+        val asset = if (url != null) getDiscordAssetUri(url, token) else null
+        return asset
     }
 
     /**
@@ -290,6 +294,10 @@ class DiscordPresenceManager(
         }
     }
 
+
+    /**
+     * Start the refresh job
+     */
     private fun startRefreshJob(
         isPlayingProvider: () -> Boolean,
         mediaItem: MediaItem,
@@ -311,12 +319,11 @@ class DiscordPresenceManager(
         }
     }
 
-       /**
+    /**
      * Compress an image
      */
     private fun compressImage(file: File, maxSize: Int = 512): File? {
         return try {
-
             val options = BitmapFactory.Options().apply { inJustDecodeBounds = false }
             var bitmap = BitmapFactory.decodeFile(file.absolutePath, options)
 
@@ -329,7 +336,7 @@ class DiscordPresenceManager(
 
             val compressedFile = File.createTempFile("compressed_", ".jpg", file.parentFile)
             FileOutputStream(compressedFile).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 30, out)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 5, out)
             }
             compressedFile
         } catch (e: Exception) {
@@ -339,9 +346,6 @@ class DiscordPresenceManager(
     }
 }
 
-/**
- * Api response
- */
 @Serializable
 data class ApiResponse(val status: String, val data: Data) {
     @Serializable
