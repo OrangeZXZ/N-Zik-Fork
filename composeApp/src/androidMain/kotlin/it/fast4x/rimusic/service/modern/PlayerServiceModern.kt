@@ -141,8 +141,6 @@ import it.fast4x.rimusic.utils.isAtLeastAndroid10
 import it.fast4x.rimusic.utils.isAtLeastAndroid6
 import it.fast4x.rimusic.utils.isAtLeastAndroid7
 import it.fast4x.rimusic.utils.isAtLeastAndroid8
-import it.fast4x.rimusic.utils.isAtLeastAndroid81
-import it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
 import it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
 import it.fast4x.rimusic.utils.loudnessBaseGainKey
 import it.fast4x.rimusic.utils.manageDownload
@@ -630,6 +628,11 @@ class PlayerServiceModern : MediaLibraryService(),
     @UnstableApi
     override fun onDestroy() {
         runCatching {
+            /**
+             * Discord presence cleanup
+             */
+            Toaster.i("[DiscordPresence] onStop: call the manager (close discord presence)")
+            discordPresenceManager.onStop()
             maybeSavePlayerQueue()
             preferences.unregisterOnSharedPreferenceChangeListener(this)
             stopService(intent<MyDownloadService>())
@@ -655,13 +658,6 @@ class PlayerServiceModern : MediaLibraryService(),
             notificationManager = null
             coroutineScope.cancel()
 
-            /**
-             * Discord presence
-             */
-
-            // Discord presence cleanup
-            Toaster.i("[DiscordPresence] onStop: call the manager (close discord presence)")
-            discordPresenceManager.onStop()
         }.onFailure {
             Timber.e("Failed onDestroy in PlayerService "+it.stackTraceToString())
         }
@@ -744,7 +740,15 @@ class PlayerServiceModern : MediaLibraryService(),
         val duration = player.duration
         val now = System.currentTimeMillis()
 
-        discordPresenceManager.onPlayingStateChanged(mediaItem, player.isPlaying, player.currentPosition, duration, now)
+        discordPresenceManager.onPlayingStateChanged(
+            mediaItem,
+            player.isPlaying,
+            player.currentPosition,
+            duration,
+            now,
+            getCurrentPosition = { player.currentPosition },
+            isPlayingProvider = { player.isPlaying }
+        )
     }
 
     override fun onTimelineChanged(timeline: Timeline, reason: Int) {
@@ -775,7 +779,15 @@ class PlayerServiceModern : MediaLibraryService(),
         val title = item?.mediaMetadata?.title ?: "<none>"
         val duration = player.duration
         val now = System.currentTimeMillis()
-        discordPresenceManager.onPlayingStateChanged(item, isPlaying, player.currentPosition, duration, now)
+        discordPresenceManager.onPlayingStateChanged(
+            item,
+            isPlaying,
+            player.currentPosition,
+            duration,
+            now,
+            getCurrentPosition = { player.currentPosition },
+            isPlayingProvider = { player.isPlaying }
+        )
         updateWidgets()
     }
 
@@ -1350,8 +1362,18 @@ class PlayerServiceModern : MediaLibraryService(),
         newPosition: Player.PositionInfo,
         reason: Int
     ) {
-        Timber.d("PlayerServiceModern onPositionDiscontinuity oldPosition ${oldPosition.mediaItemIndex} newPosition ${newPosition.mediaItemIndex} reason $reason")
-        println("PlayerServiceModern onPositionDiscontinuity oldPosition ${oldPosition.mediaItemIndex} newPosition ${newPosition.mediaItemIndex} reason $reason")
+        Timber.d("PlayerServiceModern onPositionDiscontinuity oldPosition "+oldPosition.mediaItemIndex+" newPosition "+newPosition.mediaItemIndex+" reason "+reason)
+        println("PlayerServiceModern onPositionDiscontinuity oldPosition "+oldPosition.mediaItemIndex+" newPosition "+newPosition.mediaItemIndex+" reason "+reason)
+        // Discord presence: update on seek/skip
+        discordPresenceManager.onPlayingStateChanged(
+            player.currentMediaItem,
+            player.isPlaying,
+            player.currentPosition,
+            player.duration,
+            System.currentTimeMillis(),
+            getCurrentPosition = { player.currentPosition },
+            isPlayingProvider = { player.isPlaying }
+        )
         super.onPositionDiscontinuity(oldPosition, newPosition, reason)
     }
 

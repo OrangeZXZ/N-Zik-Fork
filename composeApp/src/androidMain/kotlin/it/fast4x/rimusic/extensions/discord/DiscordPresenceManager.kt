@@ -16,19 +16,20 @@ import kotlinx.serialization.json.jsonObject
 import java.io.File
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import kotlinx.coroutines.SupervisorJob
+import me.knighthat.utils.Toaster
 
 class DiscordPresenceManager(
     private val context: Context,
     private val getToken: () -> String?,
-    private val pauseWaitTime: Long = 15_000L
 ) {
-    private var pauseTimer: Timer? = null
-    private var playingJob: Job? = null
     private var rpc: KizzyRPC? = null
     private var lastToken: String? = null
     private var lastMediaItem: MediaItem? = null
     private var lastPosition: Long = 0L
     private var isStopped = false
+    private val discordScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private var refreshJob: Job? = null
 
     private val client = OkHttpClient()
     private val json = Json { ignoreUnknownKeys = true }
@@ -39,70 +40,54 @@ class DiscordPresenceManager(
      * - isPlaying = true : send the "playing" presence and refresh it every 10s
      * - isPlaying = false : launch a timer, then send the "paused" presence (frozen time)
      */
-    fun onPlayingStateChanged(mediaItem: MediaItem?, isPlaying: Boolean, position: Long = 0L, duration: Long = 0L, now: Long = System.currentTimeMillis()) {
+    fun onPlayingStateChanged(mediaItem: MediaItem?, isPlaying: Boolean, position: Long = 0L, duration: Long = 0L, now: Long = System.currentTimeMillis(), getCurrentPosition: (() -> Long)? = null, isPlayingProvider: (() -> Boolean)? = null) {
+        if (isStopped) return
         val token = getToken() ?: return
         if (token != lastToken || rpc == null) {
+            rpc?.closeRPC()
+            Toaster.i("[DiscordPresenceManager] KizzyRPC fermé avant nouvelle instance")
             rpc = KizzyRPC(token)
             lastToken = token
+            Toaster.i("[DiscordPresenceManager] Nouvelle instance KizzyRPC créée")
         }
         lastMediaItem = mediaItem
         lastPosition = position
+        refreshJob?.cancel()
+        refreshJob = null
         if (mediaItem == null) {
-            stopPlayingJob()
-            sendPausedPresence(duration, now)
+            sendPausedPresence(duration, now, position)
             return
         }
         if (isPlaying) {
-            pauseTimer?.cancel()
-            pauseTimer = null
-            startPlayingJob(mediaItem, token, position, duration, now)
+            sendPlayingPresence(mediaItem, position, duration, now)
+            startRefreshJob(
+                isPlayingProvider = isPlayingProvider ?: { true },
+                mediaItem = mediaItem,
+                getCurrentPosition = getCurrentPosition ?: { position },
+                pausedPosition = position,
+                duration = duration
+            )
         } else {
-            stopPlayingJob()
-            pauseTimer?.cancel()
-            pauseTimer = Timer()
-            pauseTimer?.schedule(object : TimerTask() {
-                override fun run() {
-                    sendPausedPresence(duration, now)
-                }
-            }, pauseWaitTime)
+            sendPausedPresence(duration, now, position)
+            startRefreshJob(
+                isPlayingProvider = isPlayingProvider ?: { false },
+                mediaItem = mediaItem,
+                getCurrentPosition = getCurrentPosition ?: { position },
+                pausedPosition = position,
+                duration = duration
+            )
         }
-    }
-
-    /**
-     * Refresh the "playing" presence every 10s.
-     */
-    private fun startPlayingJob(mediaItem: MediaItem, token: String, position: Long, duration: Long, now: Long) {
-        stopPlayingJob()
-        playingJob = CoroutineScope(Dispatchers.IO).launch {
-            while (isActive) {
-                val start = now - position
-                val end = start + duration
-                sendActivity(
-                    mediaItem = mediaItem,
-                    details = mediaItem.mediaMetadata.title?.toString() ?: "N-Zik",
-                    state = mediaItem.mediaMetadata.artist?.toString() ?: "N-Zik",
-                    start = start,
-                    end = end,
-                    status = "online",
-                    paused = false
-                )
-                delay(10_000L)
-            }
-        }
-    }
-
-    private fun stopPlayingJob() {
-        playingJob?.cancel()
-        playingJob = null
     }
 
     /**
      * Send the "Paused" presence with the frozen time.
      */
-    private fun sendPausedPresence(duration: Long, now: Long) {
+    private fun sendPausedPresence(duration: Long, now: Long, pausedPosition: Long) {
+        if (isStopped) return
         val mediaItem = lastMediaItem ?: return
-        val frozenTimestamp = now - lastPosition
-        CoroutineScope(Dispatchers.IO).launch {
+        val frozenTimestamp = now - pausedPosition
+        discordScope.launch {
+            if (isStopped) return@launch
             sendActivity(
                 mediaItem = mediaItem,
                 details = "⏸️ Paused: ${mediaItem.mediaMetadata.title}",
@@ -116,7 +101,7 @@ class DiscordPresenceManager(
     }
 
     /**
-     * Send a custom discord activity (playing, paused, etc.)
+     * Send a custom discord activity
      */
     private suspend fun sendActivity(
         mediaItem: MediaItem,
@@ -165,22 +150,15 @@ class DiscordPresenceManager(
      */
     fun onStop() {
         isStopped = true
-        rpc?.closeRPC()
-        stopPlayingJob()
-        pauseTimer?.cancel()
-        pauseTimer = null
+        refreshJob?.cancel()
+        try {
+            rpc?.closeRPC()
+            Toaster.i("[DiscordPresenceManager] KizzyRPC fermé dans onStop")
+        } catch (e: Exception) {
+            Toaster.i("[DiscordPresenceManager] closeRPC exception: ${e.message}")
+        }
+        discordScope.cancel()
     }
-
-
-    /**
-     * Temp the discord presence
-     */
-    fun cancel() {
-        stopPlayingJob()
-        pauseTimer?.cancel()
-        pauseTimer = null
-    }
-
 
     /**
      * Get the version name of the app
@@ -194,7 +172,7 @@ class DiscordPresenceManager(
         }
     }
     
-     /**
+    /**
      * Get the type of the discord activity
      */
     enum class TypeDiscordActivity (val value: Int) {
@@ -205,6 +183,9 @@ class DiscordPresenceManager(
         COMPETING(5)
     }
 
+    /**
+     * Upload an image to the tmpfiles.org
+     */
     private suspend fun uploadImage(file: File): String? = withContext(Dispatchers.IO) {
         val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
             .addFormDataPart("file", file.name, file.readBytes().toRequestBody("image/*".toMediaType()))
@@ -218,11 +199,17 @@ class DiscordPresenceManager(
         }.getOrNull()?.replace("https://tmpfiles.org/", "https://tmpfiles.org/dl/")
     }
 
+    /**
+     * Get the artwork file
+     */
     private fun getArtworkFile(mediaItem: MediaItem): File? {
         val uri = mediaItem.mediaMetadata.artworkUri ?: return null
         return if (uri.scheme == "file" || uri.scheme == null) File(uri.path!!) else null
     }
 
+    /**
+     * Get the discord asset uri
+     */
     private suspend fun getDiscordAssetUri(imageUrl: String, token: String): String? = withContext(Dispatchers.IO) {
         if (imageUrl.startsWith("mp:")) return@withContext imageUrl
         val api = "https://discord.com/api/v9/applications/1379051016007454760/external-assets"
@@ -240,6 +227,9 @@ class DiscordPresenceManager(
         }.getOrNull()
     }
 
+    /**
+     * Get the large image url
+     */
     private suspend fun getLargeImageUrl(mediaItem: MediaItem): String? {
         val token = getToken() ?: return null
         val artworkFile = getArtworkFile(mediaItem)
@@ -250,8 +240,53 @@ class DiscordPresenceManager(
         }
         return if (url != null) getDiscordAssetUri(url, token) else null
     }
+
+    /**
+     * Send a custom discord activity
+     */
+    private fun sendPlayingPresence(mediaItem: MediaItem, position: Long, duration: Long, now: Long) {
+        val start = now - position
+        val end = start + duration
+        discordScope.launch {
+            sendActivity(
+                mediaItem = mediaItem,
+                details = mediaItem.mediaMetadata.title?.toString() ?: "N-Zik",
+                state = mediaItem.mediaMetadata.artist?.toString() ?: "N-Zik",
+                start = start,
+                end = end,
+                status = "online",
+                paused = false
+            )
+        }
+    }
+
+    private fun startRefreshJob(
+        isPlayingProvider: () -> Boolean,
+        mediaItem: MediaItem,
+        getCurrentPosition: () -> Long,
+        pausedPosition: Long,
+        duration: Long
+    ) {
+        refreshJob = discordScope.launch {
+            while (isActive && !isStopped) {
+                delay(40_000L)
+                val isPlaying = isPlayingProvider()
+                if (isPlaying) {
+                    val pos = getCurrentPosition()
+                    Toaster.i("[DiscordPresenceManager] Refresh tick: PLAY for ${mediaItem.mediaMetadata.title}")
+                    sendPlayingPresence(mediaItem, pos, duration, System.currentTimeMillis())
+                } else {
+                    Toaster.i("[DiscordPresenceManager] Refresh tick: PAUSE for ${mediaItem.mediaMetadata.title}")
+                    sendPausedPresence(duration, System.currentTimeMillis(), pausedPosition)
+                }
+            }
+        }
+    }
 }
 
+/**
+ * Api response
+ */
 @Serializable
 data class ApiResponse(val status: String, val data: Data) {
     @Serializable
