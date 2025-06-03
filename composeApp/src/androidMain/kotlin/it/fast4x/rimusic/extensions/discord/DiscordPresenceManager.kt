@@ -8,6 +8,14 @@ import com.my.kizzyrpc.model.Assets
 import com.my.kizzyrpc.model.Timestamps
 import kotlinx.coroutines.*
 import java.util.*
+import okhttp3.*
+import kotlinx.serialization.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import java.io.File
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class DiscordPresenceManager(
     private val context: Context,
@@ -21,6 +29,10 @@ class DiscordPresenceManager(
     private var lastMediaItem: MediaItem? = null
     private var lastPosition: Long = 0L
     private var isStopped = false
+
+    private val client = OkHttpClient()
+    private val json = Json { ignoreUnknownKeys = true }
+    private val uploadApi = "https://tmpfiles.org/api/v1/upload"
 
     /**
      * Call this method when the playing state changes.
@@ -90,21 +102,23 @@ class DiscordPresenceManager(
     private fun sendPausedPresence(duration: Long, now: Long) {
         val mediaItem = lastMediaItem ?: return
         val frozenTimestamp = now - lastPosition
-        sendActivity(
-            mediaItem = mediaItem,
-            details = "⏸️ Paused: ${mediaItem.mediaMetadata.title}",
-            state = mediaItem.mediaMetadata.artist?.toString() ?: "N-Zik",
-            start = frozenTimestamp,
-            end = frozenTimestamp,
-            status = "idle",
-            paused = true
-        )
+        CoroutineScope(Dispatchers.IO).launch {
+            sendActivity(
+                mediaItem = mediaItem,
+                details = "⏸️ Paused: ${mediaItem.mediaMetadata.title}",
+                state = mediaItem.mediaMetadata.artist?.toString() ?: "N-Zik",
+                start = frozenTimestamp,
+                end = frozenTimestamp,
+                status = "idle",
+                paused = true
+            )
+        }
     }
 
     /**
      * Send a custom discord activity (playing, paused, etc.)
      */
-    private fun sendActivity(
+    private suspend fun sendActivity(
         mediaItem: MediaItem,
         details: String,
         state: String,
@@ -114,6 +128,8 @@ class DiscordPresenceManager(
         paused: Boolean
     ) {
         if (isStopped) return
+        val largeImageUrl = getLargeImageUrl(mediaItem)
+            ?: "mp:attachments/1231921505923760150/1379170235298615377/album.png?ex=683f43df&is=683df25f&hm=cd08ce130264f2da98b8d2b0065ba58e39a0b0c125556fd7862f5155f110ce4b&="
         rpc?.setActivity(
             activity = Activity(
                 applicationId = "1379051016007454760",
@@ -126,8 +142,8 @@ class DiscordPresenceManager(
                     end = end
                 ),
                 assets = Assets(
-                    largeImage = "mp:attachments/1231921505923760150/1379170235298615377/album.png?ex=683f43df&is=683df25f&hm=cd08ce130264f2da98b8d2b0065ba58e39a0b0c125556fd7862f5155f110ce4b&",
-                    smallImage = "mp:attachments/1231921505923760150/1379166057809575997/N-Zik_Discord.png?ex=683f3ffb&is=683dee7b&hm=73a1edc08f7f657ef36c4f49ff8a6a22fbf3d0121eaf08d4fe3d28032edaea79&",
+                    largeImage = largeImageUrl,
+                    smallImage = "mp:attachments/1231921505923760150/1379166057809575997/N-Zik_Discord.png?ex=683fe8bb&is=683e973b&hm=20d40b8f9fc926cbc94de732dd06128abcc6126d7b58285650ded02bd7fd07a6&",
                     largeText = mediaItem.mediaMetadata.title?.toString() + " - " + mediaItem.mediaMetadata.artist?.toString(),
                     smallText = "v${getVersionName(context)}",
                 ),
@@ -188,4 +204,56 @@ class DiscordPresenceManager(
         WATCHING(3),
         COMPETING(5)
     }
+
+    private suspend fun uploadImage(file: File): String? = withContext(Dispatchers.IO) {
+        val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
+            .addFormDataPart("file", file.name, file.readBytes().toRequestBody("image/*".toMediaType()))
+            .build()
+        val request = Request.Builder().url(uploadApi).post(requestBody).build()
+        runCatching {
+            client.newCall(request).execute().use { response ->
+                val body = response.body?.string() ?: return@runCatching null
+                json.decodeFromString<ApiResponse>(body).data.url
+            }
+        }.getOrNull()?.replace("https://tmpfiles.org/", "https://tmpfiles.org/dl/")
+    }
+
+    private fun getArtworkFile(mediaItem: MediaItem): File? {
+        val uri = mediaItem.mediaMetadata.artworkUri ?: return null
+        return if (uri.scheme == "file" || uri.scheme == null) File(uri.path!!) else null
+    }
+
+    private suspend fun getDiscordAssetUri(imageUrl: String, token: String): String? = withContext(Dispatchers.IO) {
+        if (imageUrl.startsWith("mp:")) return@withContext imageUrl
+        val api = "https://discord.com/api/v9/applications/1379051016007454760/external-assets"
+        val request = Request.Builder().url(api)
+            .header("Authorization", token)
+            .post("{\"urls\":[\"$imageUrl\"]}".toRequestBody("application/json".toMediaType()))
+            .build()
+        runCatching {
+            client.newCall(request).execute().use { response ->
+                val body = response.body?.string() ?: return@runCatching null
+                val jsonArr = kotlinx.serialization.json.Json.parseToJsonElement(body).jsonArray
+                val externalAssetPath = jsonArr.firstOrNull()?.jsonObject?.get("external_asset_path")?.toString()?.replace("\"", "")
+                externalAssetPath?.let { "mp:$it" }
+            }
+        }.getOrNull()
+    }
+
+    private suspend fun getLargeImageUrl(mediaItem: MediaItem): String? {
+        val token = getToken() ?: return null
+        val artworkFile = getArtworkFile(mediaItem)
+        val url = if (artworkFile != null && artworkFile.exists()) {
+            uploadImage(artworkFile)
+        } else {
+            mediaItem.mediaMetadata.artworkUri?.toString()?.takeIf { it.startsWith("http") }
+        }
+        return if (url != null) getDiscordAssetUri(url, token) else null
+    }
+}
+
+@Serializable
+data class ApiResponse(val status: String, val data: Data) {
+    @Serializable
+    data class Data(val url: String)
 }
