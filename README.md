@@ -167,6 +167,8 @@ To **translate** or **improve a translation**, **fix typo**, or to **request new
 - [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): A shader modifier for Compose Multiplatform / Jetpack Compose
 - [**MedieroAF**](https://github.com/MedieroAF): App logo
 - [**compose-markdown**](https://github.com/jeziellago/compose-markdown): Used to show Markdown content in app
+- [**Kizzy-RPC**](https://github.com/dead8309/KizzyRPC): Used for Discord RPC presets — thanks to **@bdead8309** for their work.
+- [**echo-discord**](https://github.com/brahmkshatriya/echo-discord): Thanks to **@brahmkshatriya** for the code that fixed artwork upload and loading issues.
 
 
 # ⚠️ Disclaimer
