@@ -13,22 +13,31 @@
 [![Total Downloads](https://img.shields.io/github/downloads/NEVARLeVrai/N-Zik/total?label=Total%20Downloads)](https://github.com/NEVARLeVrai/N-Zik/releases) [![Latest Release Downloads](https://img.shields.io/github/downloads/NEVARLeVrai/N-Zik/latest/total?label=Latest%20Release%20Downloads)](https://github.com/NEVARLeVrai/N-Zik/releases/latest) 
 
 [![Localization Progress](https://badges.crowdin.net/N-Zik/localized.svg)](https://crowdin.com/project/N-Zik) [![License: GPL v3](https://img.shields.io/github/license/NEVARLeVrai/N-Zik?color=blue)](https://www.gnu.org/licenses/gpl-3.0)
-
+[![CodeFactor](https://www.codefactor.io/repository/github/nevarlevrai/n-zik/badge)](https://www.codefactor.io/repository/github/nevarlevrai/n-zik)
 
 
 </div>
 
 
-# ✨ Features
+# 🎧 Features
 
-- **Multilingual:** English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian and more. Contributions for other languages are welcome
-- Friendly designs
-- UI Mode, switch from RiMusic to classic ViMusic style, and vice versa.
-- Auto cache songs for offline playback with a custom cache size
-- Download songs or entire playlists for offline playback (not cache)
-- Background playback
-- Listening statistics
-- Audio visualizer on player with many type of effects.
+- 🌍 **Multilingual**: English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian and more. Contributions are welcome!
+- 🎨 **Friendly designs**
+- 🌓 **UI Mode**: Switch between **RiMusic** and classic **ViMusic** styles
+- 💾 **Auto cache** songs for offline playback with customizable cache size
+- 📥 **Download** songs or entire playlists for full offline access (not just cache)
+- ▶️ **Background playback**
+- 📊 **Listening statistics**
+- 🌈 **Audio visualizer** with many visual effects
+- 🕹️ **Discord Rich Presence**  
+  Show your currently playing music directly in your Discord profile!
+
+<p align="left">
+  <img src="https://github.com/user-attachments/assets/7936ecd4-7870-4651-96ad-1b784f251b75" width="400" />
+  <img src="https://github.com/user-attachments/assets/572edaf3-f9ea-4907-99bc-21d509ca0f20" width="400" />
+  <img src="https://github.com/user-attachments/assets/a3412625-8634-4153-9260-3380d7695b93" width="400" />
+  <img src="https://github.com/user-attachments/assets/f740e34f-5ac6-477f-bd98-aee909ec1d16" width="400" />
+</p>
 
 > [!NOTE]
 > THIS FEATURE REQUIRES MIC PERMISSION, ONLY AVAILABLE IF ACTIVATED FROM SETTINGS. Full list of permissions (available soon)
