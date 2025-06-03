@@ -16,22 +16,31 @@ import java.io.File
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import kotlinx.coroutines.SupervisorJob
+import android.graphics.BitmapFactory
+import android.graphics.Bitmap
+import java.io.FileOutputStream
+import androidx.core.graphics.scale
 
 class DiscordPresenceManager(
     private val context: Context,
     private val getToken: () -> String?,
+    private val externalScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 ) {
     private var rpc: KizzyRPC? = null
     private var lastToken: String? = null
     private var lastMediaItem: MediaItem? = null
     private var lastPosition: Long = 0L
     private var isStopped = false
-    private val discordScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val discordScope = externalScope
     private var refreshJob: Job? = null
 
-    private val client = OkHttpClient()
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
+        .readTimeout(10, java.util.concurrent.TimeUnit.SECONDS)
+        .build()
     private val json = Json { ignoreUnknownKeys = true }
     private val uploadApi = "https://tmpfiles.org/api/v1/upload"
+    @Volatile private var isUpdatingPresence = false
 
     /**
      * THIS IS STILL IN BETA AND MAY NOT WORK AS EXPECTED AND CAUSE CRASH
@@ -43,8 +52,11 @@ class DiscordPresenceManager(
         if (isStopped) return
         val token = getToken() ?: return
 
-        rpc = KizzyRPC(token)
-        lastToken = token
+        if (token != lastToken) {
+            rpc?.closeRPC()
+            rpc = KizzyRPC(token)
+            lastToken = token
+        }
         
         lastMediaItem = mediaItem
         lastPosition = position
@@ -90,7 +102,7 @@ class DiscordPresenceManager(
                 state = mediaItem.mediaMetadata.artist?.toString() ?: "N-Zik",
                 start = frozenTimestamp,
                 end = frozenTimestamp,
-                status = "idle",
+                status = "online",
                 paused = true
             )
         }
@@ -109,36 +121,46 @@ class DiscordPresenceManager(
         paused: Boolean
     ) {
         if (isStopped) return
+        val token = getToken() ?: return
+        if (token != lastToken) {
+            rpc?.closeRPC()
+            rpc = KizzyRPC(token)
+            lastToken = token
+        }
         val largeImageUrl = getLargeImageUrl(mediaItem)
             ?: "mp:attachments/1231921505923760150/1379170235298615377/album.png?ex=683f43df&is=683df25f&hm=cd08ce130264f2da98b8d2b0065ba58e39a0b0c125556fd7862f5155f110ce4b&="
-        rpc?.setActivity(
-            activity = Activity(
-                applicationId = "1379051016007454760",
-                name = "N-Zik",
-                details = details,
-                state = state,
-                type = TypeDiscordActivity.LISTENING.value,
-                timestamps = Timestamps(
-                    start = start,
-                    end = end
-                ),
-                assets = Assets(
-                    largeImage = largeImageUrl,
-                    smallImage = "mp:attachments/1231921505923760150/1379166057809575997/N-Zik_Discord.png?ex=683fe8bb&is=683e973b&hm=20d40b8f9fc926cbc94de732dd06128abcc6126d7b58285650ded02bd7fd07a6&",
-                    largeText = mediaItem.mediaMetadata.title?.toString() + " - " + mediaItem.mediaMetadata.artist?.toString(),
-                    smallText = "v${getVersionName(context)}",
-                ),
-                buttons = listOf("Get N-Zik", "Listen to YTMusic"),
-                metadata = com.my.kizzyrpc.model.Metadata(
-                    listOf(
-                        "https://github.com/NEVARLeVrai/N-Zik/",
-                        "https://music.youtube.com/watch?v=${mediaItem.mediaId}",
+        runCatching {
+            rpc?.setActivity(
+                activity = Activity(
+                    applicationId = "1379051016007454760",
+                    name = "N-Zik",
+                    details = details,
+                    state = state,
+                    type = TypeDiscordActivity.LISTENING.value,
+                    timestamps = Timestamps(
+                        start = start,
+                        end = end
+                    ),
+                    assets = Assets(
+                        largeImage = largeImageUrl,
+                        smallImage = "mp:attachments/1231921505923760150/1379166057809575997/N-Zik_Discord.png?ex=683fe8bb&is=683e973b&hm=20d40b8f9fc926cbc94de732dd06128abcc6126d7b58285650ded02bd7fd07a6&=",
+                        largeText = mediaItem.mediaMetadata.title?.toString() + " - " + mediaItem.mediaMetadata.artist?.toString(),
+                        smallText = "v${getVersionName(context)}",
+                    ),
+                    buttons = listOf("Get N-Zik", "Listen to YTMusic"),
+                    metadata = com.my.kizzyrpc.model.Metadata(
+                        listOf(
+                            "https://github.com/NEVARLeVrai/N-Zik/",
+                            "https://music.youtube.com/watch?v=${mediaItem.mediaId}",
+                        )
                     )
-                )
-            ),
-            status = status,
-            since = System.currentTimeMillis()
-        )
+                ),
+                status = status,
+                since = System.currentTimeMillis()
+            )
+        }.onFailure {
+            android.util.Log.e("DiscordPresence", "Erreur setActivity: ${it.message}", it)
+        }
     }
 
     /**
@@ -178,16 +200,23 @@ class DiscordPresenceManager(
      * Upload an image to the tmpfiles.org
      */
     private suspend fun uploadImage(file: File): String? = withContext(Dispatchers.IO) {
-        val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
-            .addFormDataPart("file", file.name, file.readBytes().toRequestBody("image/*".toMediaType()))
-            .build()
-        val request = Request.Builder().url(uploadApi).post(requestBody).build()
-        runCatching {
-            client.newCall(request).execute().use { response ->
-                val body = response.body?.string() ?: return@runCatching null
-                json.decodeFromString<ApiResponse>(body).data.url
-            }
-        }.getOrNull()?.replace("https://tmpfiles.org/", "https://tmpfiles.org/dl/")
+        val compressed = if (file.length() > 1_000_000) compressImage(file) else file
+        try {
+            val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("file", compressed!!.name, compressed.readBytes().toRequestBody("image/*".toMediaType()))
+                .build()
+            val request = Request.Builder().url(uploadApi).post(requestBody).build()
+            runCatching {
+                client.newCall(request).execute().use { response ->
+                    val body = response.body?.string() ?: return@runCatching null
+                    json.decodeFromString<ApiResponse>(body).data.url
+                }
+            }.onFailure {
+                android.util.Log.e("DiscordPresence", "Erreur upload: ${it.message}", it)
+            }.getOrNull()?.replace("https://tmpfiles.org/", "https://tmpfiles.org/dl/")
+        } finally {
+            if (compressed != null && compressed != file) compressed.delete()
+        }
     }
 
     /**
@@ -195,7 +224,11 @@ class DiscordPresenceManager(
      */
     private fun getArtworkFile(mediaItem: MediaItem): File? {
         val uri = mediaItem.mediaMetadata.artworkUri ?: return null
-        return if (uri.scheme == "file" || uri.scheme == null) File(uri.path!!) else null
+        val file = if (uri.scheme == "file" || uri.scheme == null) File(uri.path!!) else null
+        if (file != null && file.length() > 1_000_000) {
+            return compressImage(file)
+        }
+        return file
     }
 
     /**
@@ -211,10 +244,16 @@ class DiscordPresenceManager(
         runCatching {
             client.newCall(request).execute().use { response ->
                 val body = response.body?.string() ?: return@runCatching null
-                val jsonArr = kotlinx.serialization.json.Json.parseToJsonElement(body).jsonArray
+                val jsonArr = runCatching { Json.parseToJsonElement(body).jsonArray }
+                    .getOrElse {
+                        android.util.Log.e("DiscordPresence", "Erreur parsing JSON: ${it.message}", it)
+                        return@runCatching null
+                    } ?: return@runCatching null
                 val externalAssetPath = jsonArr.firstOrNull()?.jsonObject?.get("external_asset_path")?.toString()?.replace("\"", "")
                 externalAssetPath?.let { "mp:$it" }
             }
+        }.onFailure {
+            android.util.Log.e("DiscordPresence", "Erreur assetUri: ${it.message}", it)
         }.getOrNull()
     }
 
@@ -269,6 +308,33 @@ class DiscordPresenceManager(
                     sendPausedPresence(duration, System.currentTimeMillis(), pausedPosition)
                 }
             }
+        }
+    }
+
+       /**
+     * Compress an image
+     */
+    private fun compressImage(file: File, maxSize: Int = 512): File? {
+        return try {
+
+            val options = BitmapFactory.Options().apply { inJustDecodeBounds = false }
+            var bitmap = BitmapFactory.decodeFile(file.absolutePath, options)
+
+            if (bitmap.width > maxSize || bitmap.height > maxSize) {
+                val ratio = minOf(maxSize.toFloat() / bitmap.width, maxSize.toFloat() / bitmap.height)
+                val width = (bitmap.width * ratio).toInt()
+                val height = (bitmap.height * ratio).toInt()
+                bitmap = bitmap.scale(width, height)
+            }
+
+            val compressedFile = File.createTempFile("compressed_", ".jpg", file.parentFile)
+            FileOutputStream(compressedFile).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 30, out)
+            }
+            compressedFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 }
