@@ -746,8 +746,8 @@ class PlayerServiceModern : MediaLibraryService(),
             player.currentPosition,
             duration,
             now,
-            getCurrentPosition = { player.currentPosition },
-            isPlayingProvider = { player.isPlaying }
+            getCurrentPosition = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.currentPosition } },
+            isPlayingProvider = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.isPlaying } }
         )
     }
 
@@ -785,8 +785,8 @@ class PlayerServiceModern : MediaLibraryService(),
             player.currentPosition,
             duration,
             now,
-            getCurrentPosition = { player.currentPosition },
-            isPlayingProvider = { player.isPlaying }
+            getCurrentPosition = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.currentPosition } },
+            isPlayingProvider = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.isPlaying } }
         )
         updateWidgets()
     }
@@ -1371,8 +1371,8 @@ class PlayerServiceModern : MediaLibraryService(),
             player.currentPosition,
             player.duration,
             System.currentTimeMillis(),
-            getCurrentPosition = { player.currentPosition },
-            isPlayingProvider = { player.isPlaying }
+            getCurrentPosition = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.currentPosition } },
+            isPlayingProvider = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.isPlaying } }
         )
         super.onPositionDiscontinuity(oldPosition, newPosition, reason)
     }

@@ -43,12 +43,15 @@ class DiscordPresenceManager(
     fun onPlayingStateChanged(mediaItem: MediaItem?, isPlaying: Boolean, position: Long = 0L, duration: Long = 0L, now: Long = System.currentTimeMillis(), getCurrentPosition: (() -> Long)? = null, isPlayingProvider: (() -> Boolean)? = null) {
         if (isStopped) return
         val token = getToken() ?: return
-        if (token != lastToken || rpc == null) {
-            rpc?.closeRPC()
-            Toaster.i("[DiscordPresenceManager] KizzyRPC fermé avant nouvelle instance")
+        if (rpc == null) {
             rpc = KizzyRPC(token)
             lastToken = token
-            Toaster.i("[DiscordPresenceManager] Nouvelle instance KizzyRPC créée")
+            Toaster.i("[DiscordPresenceManager] Using old instance KizzyRPC")
+        } else if (token != lastToken) {
+            rpc?.closeRPC()
+            rpc = KizzyRPC(token)
+            lastToken = token
+            Toaster.i("[DiscordPresenceManager] Using new instance KizzyRPC (token changed)")
         }
         lastMediaItem = mediaItem
         lastPosition = position
