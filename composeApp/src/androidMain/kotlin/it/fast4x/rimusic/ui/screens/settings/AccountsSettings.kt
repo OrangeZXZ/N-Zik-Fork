@@ -537,6 +537,7 @@ fun AccountsSettings() {
             key = discordPersonalAccessTokenKey,
             defaultValue = ""
         )
+        var restartDiscordService by rememberSaveable { mutableStateOf(false) }
         SettingsGroupSpacer()
         SettingsEntryGroupText(
             title = stringResource(R.string.social_discord) + " " + stringResource(R.string.beta_title)
@@ -592,9 +593,14 @@ fun AccountsSettings() {
                             loginDiscord = false
                             discordPersonalAccessToken = token
                             Toaster.i( token )
+                            restartDiscordService = true
                         }
                     )
                 }
+                RestartPlayerService(restartDiscordService, onRestart = {
+                    restartDiscordService = false
+                    restartActivity = !restartActivity
+                })
             }
         }
     }
