@@ -527,7 +527,7 @@ fun AccountsSettings() {
 
     /****** PIPED ******/
 
-    /****** DISCORD ******/
+    /****** DISCORD BETA ******/
 
     // rememberEncryptedPreference only works correct with API 24 and up
     if (isAtLeastAndroid7) {
@@ -538,14 +538,17 @@ fun AccountsSettings() {
             defaultValue = ""
         )
         SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.social_discord))
+        SettingsEntryGroupText(
+            title = stringResource(R.string.social_discord) + " " + stringResource(R.string.beta_title)
+        )
         SwitchSettingEntry(
             isEnabled = isAtLeastAndroid81,
             title = stringResource(R.string.discord_enable_rich_presence),
-            text = "",
+            text = stringResource(R.string.beta_text),
             isChecked = isDiscordPresenceEnabled,
             onCheckedChange = { isDiscordPresenceEnabled = it }
         )
+
 
         AnimatedVisibility(visible = isDiscordPresenceEnabled) {
             Column {

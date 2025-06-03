@@ -7,7 +7,6 @@ import com.my.kizzyrpc.model.Activity
 import com.my.kizzyrpc.model.Assets
 import com.my.kizzyrpc.model.Timestamps
 import kotlinx.coroutines.*
-import java.util.*
 import okhttp3.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
@@ -17,7 +16,6 @@ import java.io.File
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import kotlinx.coroutines.SupervisorJob
-import me.knighthat.utils.Toaster
 
 class DiscordPresenceManager(
     private val context: Context,
@@ -36,6 +34,7 @@ class DiscordPresenceManager(
     private val uploadApi = "https://tmpfiles.org/api/v1/upload"
 
     /**
+     * THIS IS STILL IN BETA AND MAY NOT WORK AS EXPECTED AND CAUSE CRASH
      * Call this method when the playing state changes.
      * - isPlaying = true : send the "playing" presence and refresh it every 10s
      * - isPlaying = false : launch a timer, then send the "paused" presence (frozen time)
@@ -43,16 +42,10 @@ class DiscordPresenceManager(
     fun onPlayingStateChanged(mediaItem: MediaItem?, isPlaying: Boolean, position: Long = 0L, duration: Long = 0L, now: Long = System.currentTimeMillis(), getCurrentPosition: (() -> Long)? = null, isPlayingProvider: (() -> Boolean)? = null) {
         if (isStopped) return
         val token = getToken() ?: return
-        if (rpc == null) {
-            rpc = KizzyRPC(token)
-            lastToken = token
-            Toaster.i("[DiscordPresenceManager] Using old instance KizzyRPC")
-        } else if (token != lastToken) {
-            rpc?.closeRPC()
-            rpc = KizzyRPC(token)
-            lastToken = token
-            Toaster.i("[DiscordPresenceManager] Using new instance KizzyRPC (token changed)")
-        }
+
+        rpc = KizzyRPC(token)
+        lastToken = token
+        
         lastMediaItem = mediaItem
         lastPosition = position
         refreshJob?.cancel()
@@ -154,12 +147,7 @@ class DiscordPresenceManager(
     fun onStop() {
         isStopped = true
         refreshJob?.cancel()
-        try {
-            rpc?.closeRPC()
-            Toaster.i("[DiscordPresenceManager] KizzyRPC fermé dans onStop")
-        } catch (e: Exception) {
-            Toaster.i("[DiscordPresenceManager] closeRPC exception: ${e.message}")
-        }
+        rpc?.closeRPC()
         discordScope.cancel()
     }
 
@@ -276,10 +264,8 @@ class DiscordPresenceManager(
                 val isPlaying = isPlayingProvider()
                 if (isPlaying) {
                     val pos = getCurrentPosition()
-                    Toaster.i("[DiscordPresenceManager] Refresh tick: PLAY for ${mediaItem.mediaMetadata.title}")
                     sendPlayingPresence(mediaItem, pos, duration, System.currentTimeMillis())
                 } else {
-                    Toaster.i("[DiscordPresenceManager] Refresh tick: PAUSE for ${mediaItem.mediaMetadata.title}")
                     sendPausedPresence(duration, System.currentTimeMillis(), pausedPosition)
                 }
             }
