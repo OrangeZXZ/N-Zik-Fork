@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.password
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.rememberNavController
@@ -88,6 +89,8 @@ import it.fast4x.rimusic.utils.ytVisitorDataKey
 import kotlinx.coroutines.launch
 import me.knighthat.utils.Toaster
 import timber.log.Timber
+import androidx.compose.material3.Text
+import androidx.compose.ui.graphics.Color
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -567,6 +570,12 @@ fun AccountsSettings() {
                         else
                             loginDiscord = true
                     }
+                )
+
+                Text(
+                    text = stringResource(R.string.discord_token_text),
+                    color = colorPalette().red,
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp)
                 )
 
                 CustomModalBottomSheet(
