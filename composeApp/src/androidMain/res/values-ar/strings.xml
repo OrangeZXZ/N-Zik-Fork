@@ -981,6 +981,4 @@
   <string name="beta_title"> بيتا</string>
   <string name="beta_text">هذا لا يزال في بيتا وقد يحتوي على أخطاء وتحطم</string>
   <string name="discord_token_text">إذا لاحظت أن الـ RPC لا يعمل ، حاول تسجيل الخروج وتسجيل العودة إلى حساب ديسكورد الخاص بك ، يمكن أن تنتهي صلاحية الرمز في سيناريو معين</string>
-  <string name="quick_selection_type">إظهار عدد الأغاني المحلية التي ستظهر في الاختيارات السريعة</string>
-  <string name="quick_selection">%s أغنية محلية</string>
 </resources>
