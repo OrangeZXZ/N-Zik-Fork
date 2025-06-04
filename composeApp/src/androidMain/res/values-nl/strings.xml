@@ -981,4 +981,6 @@
   <string name="beta_title"> Bèta</string>
   <string name="beta_text">Dit is nog steeds in Bèta en kan bugs en crash bevatten</string>
   <string name="discord_token_text">Als je merkt dat de RPC niet werkt, probeer dan uit te loggen en log terug in je Discord account dat de token kan verlopen in een bepaald scenario</string>
+  <string name="quick_selection_type">Toon hoeveel lokale nummers bij de snelle keuzes getoond kunnen worden</string>
+  <string name="quick_selection">%s lokaal nummer</string>
 </resources>
