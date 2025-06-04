@@ -981,4 +981,6 @@
   <string name="beta_title"> Бета</string>
   <string name="beta_text">Это все еще находится в бета-версии и может содержать ошибки и ошибки</string>
   <string name="discord_token_text">Если вы заметили, что RPC не работает, попробуйте выйти и войти в свою учётную запись Discord, токен может истечь в определённом сценарии</string>
+  <string name="quick_selection_type">Показать, сколько локальных песен будет отображаться в быстрых решениях</string>
+  <string name="quick_selection">%s local song</string>
 </resources>
