@@ -981,6 +981,4 @@
   <string name="beta_title"> Beta</string>
   <string name="beta_text">Aceasta este încă în Beta și poate conține erori și crash</string>
   <string name="discord_token_text">Dacă observi că RPC nu funcționează, încearcă să te deconectezi și să te autentifici din nou în contul tău de Discord, token-ul poate expira în anumite scenarii</string>
-  <string name="quick_selection_type">Show how many local songs will be shown in the quick picks</string>
-  <string name="quick_selection">%s local song</string>
 </resources>
