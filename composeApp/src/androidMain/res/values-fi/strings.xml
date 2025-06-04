@@ -981,6 +981,4 @@
   <string name="beta_title"> Beeta</string>
   <string name="beta_text">Tämä on vielä Betassa ja saattaa sisältää vikoja ja kaatumisia</string>
   <string name="discord_token_text">Jos huomaat, että RPC ei toimi, kokeile kirjautua pois ja kirjautua takaisin Discord-tilisi tunnus voi vanhentua tietyissä tilanteissa</string>
-  <string name="quick_selection_type">Näytä kuinka monta paikallista kappaletta näytetään pikavalinnoissa</string>
-  <string name="quick_selection">%s paikallinen kappale</string>
 </resources>
