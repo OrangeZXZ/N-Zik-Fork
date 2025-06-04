@@ -98,24 +98,24 @@ fun HistoryList(
      * and **remember** it.
      */
     val events by remember {
-        val currentMillis = System.currentTimeMillis()
-
         Database.eventTable
                 .allWithSong()
                 .distinctUntilChanged()
                 .map { list ->
+                    val today = java.time.LocalDate.now()
+                    val yesterday = today.minusDays(1)
                     list.filter { !parentalControlEnabled || it.song.title.startsWith( EXPLICIT_PREFIX, true ) }
                         .reversed()
                         .groupBy {
-                            val diffMillis = currentMillis - it.event.timestamp
-                            val daysAgo = TimeUnit.MILLISECONDS.toDays( diffMillis )
-
-                            when (daysAgo) {
-                                0L -> context.getString( R.string.today )
-                                1L -> context.getString( R.string.yesterday )
-                                in 2..6 -> context.getString( R.string.last_week )
-                                in 7..13 -> context.getString( R.string.last_week )
-                                else -> SimpleDateFormat( "MMM yyyy", Locale.getDefault() ).format( Date(it.event.timestamp) )
+                            val eventDate = java.time.Instant.ofEpochMilli(it.event.timestamp)
+                                .atZone(java.time.ZoneId.systemDefault())
+                                .toLocalDate()
+                            when {
+                                eventDate.isEqual(today) -> context.getString(R.string.today)
+                                eventDate.isEqual(yesterday) -> context.getString(R.string.yesterday)
+                                eventDate.isAfter(today.minusWeeks(1)) -> context.getString(R.string.last_week)
+                                eventDate.isAfter(today.minusWeeks(2)) -> context.getString(R.string.last_week)
+                                else -> SimpleDateFormat("MMM yyyy", Locale.getDefault()).format(Date(it.event.timestamp))
                             }
                         }
                 }
