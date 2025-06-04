@@ -981,4 +981,6 @@
   <string name="beta_title"> Beta</string>
   <string name="beta_text">To jest nadal w wersji beta i może zawierać błędy i awarię</string>
   <string name="discord_token_text">Jeśli zauważysz, że RPC nie działa, spróbuj zalogować się i zalogować na swoje konto Discord, token może wygasnąć w określonym scenariuszu</string>
+  <string name="quick_selection_type">Pokaż, ile piosenek zostanie wyświetlonych w szybkich pikselach</string>
+  <string name="quick_selection">%s lokalny utwór</string>
 </resources>
