@@ -916,7 +916,7 @@
   <string name="please_wait">Por favor, aguarde</string>
   <string name="songs_liked_yt">Músicas são curtidas no YouTube</string>
   <string name="song_unliked_yt">Música não está curtida no YouTube</string>
-  <string name="add_rimusic_to_ytm_favorites">Like RiMusic Liked songs in Youtube</string>
+  <string name="add_rimusic_to_ytm_favorites">Como músicas curtidas por N-Zik no Youtube</string>
   <string name="do_you_really_want_to_like_all_rimusictoytmusic">(estimated time) is required to like all the songs. This action cannot be resumed if cancelled in between. You need to close the app to cancel this process. Do you want to continue?</string>
   <string name="do_you_really_want_to_like_all">(estimated time) is required to like all the songs. You need to close the app to cancel this process. Do you want to continue?</string>
   <string name="songs_liked_yt_failed">Falha ao curtir a música no YouTube</string>
@@ -981,6 +981,4 @@
   <string name="beta_title"> Beta</string>
   <string name="beta_text">Isso ainda está em Beta e pode conter bugs e travar</string>
   <string name="discord_token_text">Se você notar que o RPC não funciona, tente se desconectar e logar de volta da sua conta do Discord, o token pode expirar em determinado cenário</string>
-  <string name="quick_selection_type">Mostrar quantas músicas locais serão mostradas nas escolhas rápidas</string>
-  <string name="quick_selection">%s música local</string>
 </resources>
