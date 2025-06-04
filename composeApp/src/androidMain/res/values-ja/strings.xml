@@ -981,4 +981,6 @@
   <string name="beta_title"> Beta</string>
   <string name="beta_text">これはベータ版であり、バグやクラッシュが含まれている可能性があります</string>
   <string name="discord_token_text">RPCが動作しないことに気付いたら、トークンが特定のシナリオで期限切れになる可能性があるDiscordアカウントをログオフしてログインしてください</string>
+  <string name="quick_selection_type">クイックピックに表示されるローカル曲数を表示する</string>
+  <string name="quick_selection">%s local song</string>
 </resources>
