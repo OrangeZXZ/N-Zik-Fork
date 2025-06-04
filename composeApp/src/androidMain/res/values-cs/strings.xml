@@ -981,4 +981,6 @@
   <string name="beta_title"> Beta</string>
   <string name="beta_text">Toto je stále v Beta verzi a může obsahovat chyby a pád</string>
   <string name="discord_token_text">Pokud si všimneš toho, že RPC nefunguje, zkus se odhlásit a odhlásit se zpět z tvého Discord účtu, token může vypršet v určitém scénáři</string>
+  <string name="quick_selection_type">Zobrazit počet lokálních skladeb v rychlém výběru</string>
+  <string name="quick_selection">%s místní skladba</string>
 </resources>
