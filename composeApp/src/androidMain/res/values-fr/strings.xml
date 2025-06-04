@@ -983,4 +983,6 @@ Volume BAS : titre précédent</string>
   <string name="beta_title"> Bêta</string>
   <string name="beta_text">Ceci est toujours en bêta et peut contenir des bugs et des plantages</string>
   <string name="discord_token_text">Si vous remarquez que le RPC ne fonctionne pas, essayez de vous déconnecter et de vous reconnecter de votre compte Discord le jeton peut expirer dans certains scénarios</string>
+  <string name="quick_selection_type">Show how many local songs will be shown in the quick picks</string>
+  <string name="quick_selection">%s local song</string>
 </resources>
