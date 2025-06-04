@@ -981,6 +981,4 @@
   <string name="beta_title"> Βήτα</string>
   <string name="beta_text">Αυτό είναι ακόμα σε Beta και μπορεί να περιέχει σφάλματα και συντριβή</string>
   <string name="discord_token_text">Εάν παρατηρήσετε ότι το RPC δεν λειτουργεί, δοκιμάστε να αποσυνδεθείτε και να συνδεθείτε πίσω από τον λογαριασμό σας στο Discord το διακριτικό μπορεί να λήξει σε συγκεκριμένο σενάριο</string>
-  <string name="quick_selection_type">Εμφάνιση πόσα τοπικά τραγούδια θα εμφανιστούν στις γρήγορες επιλογές</string>
-  <string name="quick_selection">Τοπικό τραγούδι %s</string>
 </resources>
