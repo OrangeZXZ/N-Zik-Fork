@@ -1,7 +1,8 @@
 Changed:
-- Added: Search UI in add to playlist + toat confirmation
+- Added: Search UI in add to playlist + toast confirmation
 - Added: Discord RPC show images now (still in beta)
 - Changed: Star icon
+- Monochrome logo in player use accent color
 
 Optimizations:
 - Optimized: Discord RPC (play, pause, kill)
