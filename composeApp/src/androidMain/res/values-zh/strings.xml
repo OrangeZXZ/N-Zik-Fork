@@ -978,9 +978,9 @@
   <string name="view_changelog_settings_title">查看更新日志</string>
   <string name="view_changelog_settings_text">查看当前安装版本的更新日志</string>
   <string name="artist_songs_count_duration">%1$d 歌曲 • %2$s</string>
-  <string name="beta_title"> Beta</string>
-  <string name="beta_text">This is still in Beta and may contain bugs and crash</string>
-  <string name="discord_token_text">If you notice that the RPC doesnt work, try log off and log back of your Discord account the token can expire in certain scenario</string>
-  <string name="quick_selection_type">Show how many local songs will be shown in the quick picks</string>
-  <string name="quick_selection">%s local song</string>
+  <string name="beta_title"> 测试版</string>
+  <string name="beta_text">这仍然是测试版，可能包含bug和故障</string>
+  <string name="discord_token_text">如果您注意到RPC不起作用，请尝试注销并重新登录您的 Discord 帐户，在某些情况下令牌可能过期</string>
+  <string name="quick_selection_type">显示快速选择中将显示多少本地歌曲</string>
+  <string name="quick_selection">%s 本地歌曲</string>
 </resources>
