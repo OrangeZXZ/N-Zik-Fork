@@ -398,9 +398,9 @@ fun HomeQuickPicks(
         ) {
             val quickPicksLazyGridItemWidthFactor =
                 if (isLandscape && maxWidth * 0.475f >= 320.dp) {
-                    0.475f
+                    0.375f
                 } else {
-                    0.9f
+                    0.7f
                 }
             val itemInHorizontalGridWidth = maxWidth * quickPicksLazyGridItemWidthFactor
 
