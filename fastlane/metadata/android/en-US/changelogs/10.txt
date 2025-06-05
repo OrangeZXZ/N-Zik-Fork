@@ -20,3 +20,4 @@ Bug Fixes:
 - Fixed: Stats and History now correctly show date
 - Fixed: Most played songs filter in Quick Picks
 - Fixed: No more duplicate or missing songs when switching recommendation type
+- Fixed: textfield colors in general settings
