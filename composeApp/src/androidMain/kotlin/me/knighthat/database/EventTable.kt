@@ -196,4 +196,14 @@ interface EventTable {
 
     @Query("DELETE FROM Event")
     fun deleteAll(): Int
+
+    /**
+     * return the sum of playtime for a given song over a given period.
+     * @param songId song id
+     * @param from start of the period (epoch millis)
+     * @param to end of the period (epoch millis)
+     * @return sum of playtime in ms
+     */
+    @Query("SELECT IFNULL(SUM(E.playtime), 0) FROM Event E WHERE E.songId = :songId AND E.timestamp BETWEEN :from AND :to")
+    fun getSongPlayTimeBetween(songId: String, from: Long, to: Long = System.currentTimeMillis()): Flow<Long>
 }
