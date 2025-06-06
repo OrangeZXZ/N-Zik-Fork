@@ -1,0 +1,23 @@
+Changed:
+- Added: Search UI in add to playlist + toast confirmation
+- Added: Discord RPC show images now (still in beta)
+- Changed: Star icon
+- Monochrome logo in player use accent color
+
+Optimizations:
+- Optimized: Discord RPC (play, pause, kill)
+- Optimized: Playlist UI
+- Optimized: song recommendations in Quick Picks
+-   You can choose how many local songs to show (1–6)
+-   Switching between Most Played, Last Played, and Random is correct and instant
+- Optimized: Changelog text size
+
+Bug Fixes:
+- Fixed: Pitchblack and System themes were reversed
+- Fixed: Grid view in album after long press
+- Fixed: Discord login for RPC (still in beta)
+- Fixed: Playlist UI bugs
+- Fixed: Stats and History now correctly show date
+- Fixed: Most played songs filter in Quick Picks
+- Fixed: No more duplicate or missing songs when switching recommendation type
+- Fixed: textfield colors in general settings

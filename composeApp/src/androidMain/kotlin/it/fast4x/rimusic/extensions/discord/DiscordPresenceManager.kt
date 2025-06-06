@@ -130,7 +130,7 @@ class DiscordPresenceManager(
             lastToken = token
         }
         val largeImageUrl = getLargeImageUrl(mediaItem)
-            ?: "mp:attachments/1231921505923760150/1379170235298615377/album.png?ex=683f43df&is=683df25f&hm=cd08ce130264f2da98b8d2b0065ba58e39a0b0c125556fd7862f5155f110ce4b&="
+            ?: "mp:attachments/1231921505923760150/1379170235298615377/album.png?ex=6843e11f&is=68428f9f&hm=eaeede43ecac89039749913711b09871adb61f92bc234ed688048d8bd1285f6c&="
         runCatching {
             rpc?.setActivity(
                 activity = Activity(
@@ -145,7 +145,7 @@ class DiscordPresenceManager(
                     ),
                     assets = Assets(
                         largeImage = largeImageUrl,
-                        smallImage = "mp:attachments/1231921505923760150/1379166057809575997/N-Zik_Discord.png?ex=683fe8bb&is=683e973b&hm=20d40b8f9fc926cbc94de732dd06128abcc6126d7b58285650ded02bd7fd07a6&=",
+                        smallImage = "mp:attachments/1231921505923760150/1379166057809575997/N-Zik_Discord.png?ex=6843dd3b&is=68428bbb&hm=c812f13ede8f4fbe757f95290099124a372f1f05abd58184eac3900a25ffafc4&=",
                         largeText = mediaItem.mediaMetadata.title?.toString() + " - " + mediaItem.mediaMetadata.artist?.toString(),
                         smallText = "v${getVersionName(context)}",
                     ),
