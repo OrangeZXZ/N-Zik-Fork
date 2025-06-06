@@ -143,7 +143,7 @@ android {
         }
     }
 
-    namespace = "app.kreate.android"
+    namespace = "com.nevar.nzik"
 
     buildTypes {
         debug {
