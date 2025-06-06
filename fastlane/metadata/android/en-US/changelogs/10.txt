@@ -3,6 +3,7 @@ Changed:
 - Added: Discord RPC show images now (still in beta)
 - Changed: Star icon
 - Monochrome logo in player use accent color
+- Darker background for visualizer if thumbnail is visible
 
 Optimizations:
 - Optimized: Discord RPC (play, pause, kill)
