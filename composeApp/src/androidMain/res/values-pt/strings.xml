@@ -981,6 +981,6 @@
   <string name="beta_title"> Beta</string>
   <string name="beta_text">Isso ainda está em Beta e pode conter bugs e travar</string>
   <string name="discord_token_text">Se você notar que o RPC não funciona, tente se desconectar e logar de volta da sua conta do Discord, o token pode expirar em determinado cenário</string>
-  <string name="quick_selection_type">Mostrar quantas músicas locais serão mostradas nas escolhas rápidas</string>
-  <string name="quick_selection">%s música local</string>
+  <string name="quick_selection_type">Escolha quantas músicas recomendadas serão mostradas nas Escolhas Rápidas</string>
+  <string name="quick_selection">%s recomendada música</string>
 </resources>

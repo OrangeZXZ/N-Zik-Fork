@@ -981,6 +981,6 @@
   <string name="beta_title"> 测试版</string>
   <string name="beta_text">这仍然是测试版，可能包含bug和故障</string>
   <string name="discord_token_text">如果您注意到RPC不起作用，请尝试注销并重新登录您的 Discord 帐户，在某些情况下令牌可能过期</string>
-  <string name="quick_selection_type">显示快速选择中将显示多少本地歌曲</string>
-  <string name="quick_selection">%s 本地歌曲</string>
+  <string name="quick_selection_type">Choose how many recommended songs to show in Quick Picks</string>
+  <string name="quick_selection">%s recommended song</string>
 </resources>
