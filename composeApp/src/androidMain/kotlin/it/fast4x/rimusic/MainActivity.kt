@@ -670,7 +670,7 @@ class MainActivity :
                         when (key) {
 
                             languageAppKey -> {
-                                val lang = sharedPreferences.getEnum( languageAppKey, Languages.English )
+                                val lang = sharedPreferences.getEnum( languageAppKey, Languages.System )
                                 val languageTag: String = lang.code.ifEmpty {
                                     AppCompatDelegate.getApplicationLocales()[0]?.toLanguageTag().orEmpty()
                                 }
