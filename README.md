@@ -32,10 +32,8 @@
 - 🕹️ **Discord Rich Presence** — Show your currently playing track directly on your Discord profile
 
 <p align="left">
-  <img src="https://github.com/user-attachments/assets/7936ecd4-7870-4651-96ad-1b784f251b75" width="400" />
-  <img src="https://github.com/user-attachments/assets/572edaf3-f9ea-4907-99bc-21d509ca0f20" width="400" />
-  <img src="https://github.com/user-attachments/assets/a3412625-8634-4153-9260-3380d7695b93" width="400" />
-  <img src="https://github.com/user-attachments/assets/f740e34f-5ac6-477f-bd98-aee909ec1d16" width="400" />
+  <img src="https://github.com/user-attachments/assets/c656b9e1-f46d-4599-91dc-576eb3ba8657"/><br/>
+  <img src="https://github.com/user-attachments/assets/90658d59-6c80-4f7f-95f1-8b6f9b73f78f"/><br/>
 </p>
 
 > [!NOTE]
