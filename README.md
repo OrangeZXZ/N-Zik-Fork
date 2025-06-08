@@ -152,6 +152,7 @@ Join us on Crowdin!
 - [**RiMusic**](https://github.com/fast4x/RiMusic)
 
 ### 🎨 Design & UI Contributions:
+- Current banner and logo [OrangeZXZ](https://github.com/OrangeZXZ), [NEVARLeVrai](https://github.com/NEVARLeVrai)
 - RiMusic previous logo and many current icons: [jaimtres](https://github.com/jaimtres)
 - Player design: [aneesh1122](https://github.com/aneesh1122)
 - App logo: [MedieroAF](https://github.com/MedieroAF)
@@ -166,8 +167,8 @@ Join us on Crowdin!
 - [**Translator**](https://github.com/therealbush/translator): Google Translate wrapper for Kotlin/JVM.
 - [**compose-markdown**](https://github.com/jeziellago/compose-markdown): Markdown rendering in app.
 - [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): Shader effects for Compose.
-- [**Kizzy-RPC**](https://github.com/dead8309/KizzyRPC): Discord RPC presets by **@bdead8309**.
-- [**echo-discord**](https://github.com/brahmkshatriya/echo-discord): Fixes for Discord artwork upload/loading by **@brahmkshatriya**.
+- [**Kizzy-RPC**](https://github.com/dead8309/KizzyRPC): Discord RPC presets by [brahmkshatriya](https://github.com/dead8309).
+- [**echo-discord**](https://github.com/brahmkshatriya/echo-discord): Fixes for Discord artwork upload/loading by [brahmkshatriya](https://github.com/brahmkshatriya).
   
 # ⚠️ Disclaimer
 
