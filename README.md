@@ -137,7 +137,7 @@
 - **Telugu** thanks to [SureshTimma](https://crowdin.com/profile/sureshtimma)
 - **Ukrainian:** thanks to [Avin](https://crowdin.com/profile/avinateachip), [Michael Müller](https://crowdin.com/profile/xqzme1337), [NiXT0y](https://crowdin.com/profile/nixt0y), [Crayz310](https://github.com/Crayz310)
 - **Vietnamese:** thanks to [teaminh](https://crowdin.com/profile/teaminh)
-
+> Don't see your langague here? [Request one](https://crowdin.com/project/N-Zik) now.
 
 # 🤝 Contributing
 
