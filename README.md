@@ -4,8 +4,8 @@
     <b>N-Zik</b> is a <a href="https://github.com/knighthat/Kreate">Kreate</a> fork with UI and UX performance in mind
   </p>
 
-<p><b>N-Zik</b> might not be as stable as <a href="https://github.com/knighthat/Kreate">Kreate</a>, but you can use Kreate if needed. I'm still learning Kotlin and will update the project when I have time.</p>
-    
+<p>While <strong>N-Zik</strong> may not be as stable as the original <a href="https://github.com/knighthat/Kreate">Kreate</a>, feel free to use the original if you prefer a more polished experience. I'm currently learning Kotlin, and updates will be made as time allows.</p>
+
   <br>
   
 [![Latest Version](https://img.shields.io/github/v/release/NEVARLeVrai/N-Zik?label=Latest%20Version)](https://github.com/NEVARLeVrai/N-Zik/releases/latest) 
