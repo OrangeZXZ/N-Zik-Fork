@@ -146,6 +146,7 @@ Join us on Crowdin!
 ### 🛠 Based on / Inspired by:
 - [**Kreate**](https://github.com/knighthat/Kreate)
 - [**RiMusic**](https://github.com/fast4x/RiMusic)
+- [**ViMusic**](https://github.com/vfsfitvnm/ViMusic)
 
 ### 🎨 Design & UI Contributions:
 - Current banner and logo [OrangeZXZ](https://github.com/OrangeZXZ), [NEVARLeVrai](https://github.com/NEVARLeVrai)
