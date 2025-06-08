@@ -880,7 +880,11 @@ class PlayerServiceModern : MediaLibraryService(),
         val isEnabled = preferences.getBoolean( autoLoadSongsInQueueKey, true )
         val isRepeatTransition = reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT
 
-        if( isEnabled && !isRepeatTransition && !binder.isLoadingRadio )
+        // Don't fetch more item if:
+        // - Feature is disabled
+        // - When song is repeated
+        // - Start new queue
+        if( isEnabled && !isRepeatTransition && !binder.isLoadingRadio && player.mediaItemCount > 1 && preferences.getBoolean(autoLoadSongsInQueueKey, true) )
             player.currentMediaItem?.let {
                 binder.startRadio( it, true )
             }
