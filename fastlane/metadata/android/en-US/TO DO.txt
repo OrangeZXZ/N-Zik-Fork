@@ -1,0 +1,21 @@
+rework open from shortcuts a faire
+
+fixup! optimize conversion with checks TROP COMPLIQUER NON
+move int settings to new settings implementation TROP COMPLIQUER NON
+move long settings to new settings implementation TROP COMPLIQUER NON
+move float settings to new settings implementation TROP COMPLIQUER NON
+move string settings to new settings implementation TROP COMPLIQUER NON
+move boolean settings to new settings implementation TROP COMPLIQUER NON
+load Settings.preferences when PlayerServiceModern is created TROP COMPLIQUER NON
+move register to after initialization of ExoPlayer TROP COMPLIQUER NON
+move enum settings to new settings implementation TROP COMPLIQUER NON
+new robust implementation of mutable préférences TROP COMPLIQUER NON
+
+
+use built-in listener's parameters for up-to-date data environ
+remove unused preference keys OK
+merge default values to constructor OK
+fix error with empty path OK
+fix "On device" chip shows despite disabled OK
+remove redundant log messages OK
+prevent constant fail message when there's no internet connection  OK
