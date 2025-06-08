@@ -3,8 +3,8 @@
   <p>
     <b>N-Zik</b> is a <a href="https://github.com/knighthat/Kreate">Kreate</a> fork with UI and UX performance in mind
   </p>
-
-<p>While <strong>N-Zik</strong> may not be as stable as the original <a href="https://github.com/knighthat/Kreate">Kreate</a>, feel free to use the original if you prefer a more polished experience. I'm currently learning Kotlin, and updates will be made as time allows.</p>
+<p><strong>N-Zik</strong> may not yet be as stable as the original <a href="https://github.com/knighthat/Kreate">Kreate</a>, so feel free to use the original if you need a more mature alternative.</p>
+<p>I'm still learning Kotlin, but I typically push updates every Saturday when possible.</p>
 
   <br>
   
@@ -15,9 +15,7 @@
 [![Localization Progress](https://badges.crowdin.net/N-Zik/localized.svg)](https://crowdin.com/project/N-Zik) [![License: GPL v3](https://img.shields.io/github/license/NEVARLeVrai/N-Zik?color=blue)](https://www.gnu.org/licenses/gpl-3.0)
 [![CodeFactor](https://www.codefactor.io/repository/github/nevarlevrai/n-zik/badge)](https://www.codefactor.io/repository/github/nevarlevrai/n-zik)
 
-
 </div>
-
 
 # 🎧 Features
 
