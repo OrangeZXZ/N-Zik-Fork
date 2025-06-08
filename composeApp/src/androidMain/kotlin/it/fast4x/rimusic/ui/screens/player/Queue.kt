@@ -64,7 +64,6 @@ import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.QueueLoopType
 import it.fast4x.rimusic.enums.QueueType
-import it.fast4x.rimusic.enums.SortOrder
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.modern.isLocal
 import it.fast4x.rimusic.typography
@@ -78,7 +77,6 @@ import it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import it.fast4x.rimusic.ui.styling.Dimensions
 import it.fast4x.rimusic.utils.DisposableListener
-import it.fast4x.rimusic.utils.PositionLock
 import it.fast4x.rimusic.utils.addNext
 import it.fast4x.rimusic.utils.asMediaItem
 import it.fast4x.rimusic.utils.asSong
@@ -105,6 +103,7 @@ import me.knighthat.component.ui.screens.player.Repeat
 import me.knighthat.component.ui.screens.player.ShuffleQueue
 import me.knighthat.utils.Toaster
 import timber.log.Timber
+import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 
 
 @ExperimentalTextApi
@@ -148,7 +147,7 @@ fun Queue(
             extraItemCount = 0
         )
 
-        val positionLock = PositionLock.init( SortOrder.Ascending )
+        val positionLock = remember { PositionLock() }
 
         val itemSelector = ItemSelector<Song>()
         LaunchedEffect( itemSelector.isActive ) {
