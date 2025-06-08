@@ -21,16 +21,15 @@
 
 # 🎧 Features
 
-- 🌍 **Multilingual**: English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian and more. Contributions are welcome!
-- 🎨 **Friendly designs**
-- 🌓 **UI Mode**: Switch between **RiMusic** and classic **ViMusic** styles
-- 💾 **Auto cache** songs for offline playback with customizable cache size
-- 📥 **Download** songs or entire playlists for full offline access (not just cache)
-- ▶️ **Background playback**
-- 📊 **Listening statistics**
-- 🌈 **Audio visualizer** with many visual effects
-- 🕹️ **Discord Rich Presence**  
-  Show your currently playing music directly in your Discord profile!
+- 🌍 **Multilingual support** — English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian, and more. Contributions welcome!
+- 🎨 **Modern & friendly UI design**
+- 🌓 **UI Mode toggle** — Switch between **RiMusic** and classic **ViMusic** styles
+- 💾 **Automatic caching** — Songs are auto-cached for offline playback with customizable cache size
+- 📥 **Downloads** — Download individual songs or entire playlists for full offline access (beyond cache)
+- ▶️ **Background playback** — Keep the music going while using other apps
+- 📊 **Listening stats** — Track your listening habits and preferences
+- 🌈 **Audio visualizer** — Stunning effects and real-time animations
+- 🕹️ **Discord Rich Presence** — Show your currently playing track directly on your Discord profile
 
 <p align="left">
   <img src="https://github.com/user-attachments/assets/7936ecd4-7870-4651-96ad-1b784f251b75" width="400" />
@@ -40,25 +39,22 @@
 </p>
 
 > [!NOTE]
-> THIS FEATURE REQUIRES MIC PERMISSION, ONLY AVAILABLE IF ACTIVATED FROM SETTINGS. Full list of permissions (available soon)
+> 🎤 This feature requires **microphone access** and must be enabled in settings.
 
-- News, mood, musical genres, new albums from favourite artists
-- Import/Export online, RiMusic playlists, can be shared with friends
-- Fetch, display, edit, translate synchronized, or not, songs lyrics
-- Customizable themes
-- Sleep timer with customizable time
-- Audio control: volume app, device, playback speed, pitch, normalization, skip silence
-- Support for Android Auto, Android TV, and YouTube video
-- Widgets (experimental)
-- Check for Updates, which can be enabled or disabled in settings
-- Export cached/downloaded media
-- Export settings
-- Weekly update
-- Plays music even with no internet connection
-
+- 📰 **News feed** — Discover moods, genres, and new albums from your favorite artists
+- 🔄 **Import/Export playlists** — Share RiMusic playlists online with friends
+- ✍️ **Lyrics** — Fetch, display, edit, and translate synced or unsynced song lyrics
+- 🎭 **Custom themes** — Personalize your experience with theme options
+- ⏲️ **Sleep timer** — Auto-stop playback after a customizable duration
+- 🎚️ **Audio controls** — App & device volume, playback speed, pitch, normalization, skip silence
+- 📺 **Wide compatibility** — Android Auto, Android TV, and YouTube video support
+- 🧪 **Experimental widgets**
+- 🔁 **Update checker** — Optional automatic update notifications
+- 📤 **Export media** — Save your cached/downloaded music externally
+- ⚙️ **Export settings** — Back up and restore your preferences
+- 📡 **Offline ready** — Enjoy your music even without an internet connection
 
 # 📷 Screenshots
-
 <div align="center">
     <img alt="Screenshot 1" src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" height="350px"/>
     <img alt="Screenshot 2" src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" height="350px" />
@@ -68,15 +64,6 @@
     <img alt="Screenshot 6" src="fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" height="350px" />
     <img alt="Screenshot 7" src="fastlane/metadata/android/en-US/images/phoneScreenshots/7.png" height="350px" />
     <img alt="Screenshot 8" src="fastlane/metadata/android/en-US/images/phoneScreenshots/8.png" height="350px" />
-</div>
-
-# 📱 UI/UX Improvements 
-- Enhanced **Album search** layout with optimized grid/list view switching for smoother navigation.
-- Improved **Playlist search** interface featuring persistent view mode preferences, keeping your choice across sessions.
-- Refined **Podcasts search** experience with smoother transitions and better user feedback.
-- Upgraded **Featured content** display, introducing a clearer visual hierarchy for easier content discovery.
-
-<div align="center">
     <img alt="Screenshot 1" src="fastlane/metadata/android/en-US/images/phoneScreenshots/9.png" height="350px"/>
     <img alt="Screenshot 2" src="fastlane/metadata/android/en-US/images/phoneScreenshots/10.png" height="350px" />
     <img alt="Screenshot 3" src="fastlane/metadata/android/en-US/images/phoneScreenshots/11.png" height="350px" />
@@ -87,94 +74,106 @@
     <img alt="Screenshot 8" src="fastlane/metadata/android/en-US/images/phoneScreenshots/16.png" height="350px" />
 </div>
 
+# 🌐 Supported Languages
 
+Thanks to all our amazing contributors!  
+Here are the languages currently supported:
 
-# 🌐 Supported languages
+- 🇿🇦 **Afrikaans** — [HelloZebra1133](https://crowdin.com/profile/HelloZebra1133)  
+- 🇸🇦 **Arabic** — [ABS zarzis](https://crowdin.com/profile/abszar), [Ahmad Al Juwaisri](https://crowdin.com/profile/juwaisri)  
+- 🇦🇿 **Azerbaijani** — [Nizami Səmidov](https://crowdin.com/profile/nizamismidov4), [Notesuree](https://github.com/Notesuree)  
+- 🇧🇩 **Bangla** — [Ann Naser Nabil](https://github.com/AnnNaserNabil)  
+- 🇷🇺 **Bashkir** — [Shilave malay](https://crowdin.com/profile/Bash.boy)  
+- 🇪🇸 **Catalan** — [Adrià Martínez](https://crowdin.com/profile/marxally), [Aniol](https://crowdin.com/profile/aniol), [EMC_Translator](https://crowdin.com/profile/EMC_Translator)  
+- 🇨🇳 **Chinese (Simplified)** — [benhaotang](https://crowdin.com/profile/benhaotang), [SharkChan0622](https://github.com/SharkChan0622)  
+- 🇹🇼 **Chinese (Traditional)** — [YeeTW](https://github.com/yjcTW), [SharkChan0622](https://github.com/SharkChan0622)  
+- 🇨🇿 **Czech** — [ikanakova](https://github.com/ikanakova), [JZITNIK-github](https://github.com/JZITNIK-github)  
+- 🇩🇰 **Danish** — [cultcats](https://crowdin.com/profile/cultcats)  
+- 🇳🇱 **Dutch** — [BabyBenefactor](https://crowdin.com/profile/BabyBenefactor)  
+- 🇺🇸 **English** — [Alejandro Moctezuma](https://crowdin.com/profile/alejandromoc), [twistios](https://crowdin.com/profile/twistios), [Smk90](https://crowdin.com/profile/smk90), [CanIn](https://crowdin.com/profile/canin), [koliwan](https://crowdin.com/profile/koliwan), [Glich440](https://github.com/Glich440), [fast4x](https://github.com/fast4x)  
+- 🌍 **Esperanto** — [kefiiris](https://github.com/kefiiris)  
+- 🇪🇪 **Estonian** — [beez276](https://crowdin.com/profile/beez276)  
+- 🇵🇭 **Filipino** — [Clyde-Timonera](https://github.com/Clyde-Timonera)  
+- 🇫🇮 **Finnish** — [Smk90](https://crowdin.com/profile/smk90), [rikalaj](https://crowdin.com/profile/rikalaj)  
+- 🇫🇷 **French** — [Mickael81](https://crowdin.com/profile/mickael81), [esophagusdecency](https://crowdin.com/profile/esophagusdecency), [NEVARLeVrai](https://github.com/NEVARLeVrai)  
+- 🇪🇸 **Galician** — [zordor](https://crowdin.com/profile/zordor), [ninjum](https://crowdin.com/profile/ninjum)  
+- 🇩🇪 **German** — [twistqj](https://crowdin.com/profile/twistqj), [nitro4542](https://crowdin.com/profile/nitro4542), [twistios](https://crowdin.com/profile/twistios), [Eddisch](https://crowdin.com/profile/eddisch2010), and more...  
+- 🇬🇷 **Greek** — [Marinkas](https://github.com/Marinkas)  
+- 🇮🇱 **Hebrew** — [opcitgv](https://crowdin.com/profile/opcitgv), [TheCreeperDuck](https://crowdin.com/profile/thecreeperduck)  
+- 🇮🇳 **Hindi** — [NikunjKhangwal](https://crowdin.com/profile/nikunjkhangwal), [Sharunkumar](https://crowdin.com/profile/sharunkumar), [Th3-C0der](https://github.com/Th3-C0der)  
+- 🇭🇺 **Hungarian** — [Zan1456](https://crowdin.com/profile/Zan1456), [Ndvok](https://crowdin.com/profile/ndvok)  
+- 🇮🇹 **Italian** — [Fabio Iotti](https://crowdin.com/profile/bruce965), [CiccioDerole](https://crowdin.com/profile/CiccioDerole), [fast4x](https://github.com/fast4x)  
+- 🇮🇩 **Indonesian** — [luthfialfarabi](https://crowdin.com/profile/luthfialfarabi), [teddysulaimanGL](https://github.com/teddysulaimanGL)  
+- 🌐 **Interlingua** — [softinterlingua](https://github.com/softinterlingua)  
+- 🇯🇵 **Japanese** — [maboroshin](https://crowdin.com/profile/maboroshin), [Mid_Vur_Shaan](https://crowdin.com/profile/Mid_Vur_Shaan)  
+- 🇰🇷 **Korean** — [ZeroZero00](https://crowdin.com/profile/ZeroZero00), [TsyQax](https://crowdin.com/profile/TsyQax)  
+- 🇳🇴 **Norwegian** — [Xyrcon](https://crowdin.com/profile/xyrcon)  
+- 🇮🇷 **Persian** — [CUMOON](https://github.com/CUMOON)  
+- 🇵🇱 **Polish** — [Krzysztof](https://crowdin.com/profile/scrummybingus), [AntoniNowak](https://crowdin.com/profile/AntoniNowak), and more...  
+- 🇵🇹 **Portuguese (Portugal)** — [ManuelCoimbra](https://crowdin.com/profile/ManuelCoimbra)  
+- 🇧🇷 **Portuguese (Brazil)** — [vs-machado](https://crowdin.com/profile/vs-machado), [xSyntheticWave](https://crowdin.com/profile/xSyntheticWave), [NEVARLeVrai](https://github.com/NEVARLeVrai)  
+- 🇷🇴 **Romanian** — [OrangeZXZ](https://github.com/OrangeZxZ)  
+- 🇷🇺 **Russian** — [Eddisch](https://crowdin.com/profile/eddisch2010), [Alnoer](https://crowdin.com/profile/Alnoer), [siggi1984](https://github.com/siggi1984), and more...  
+- 🇷🇸 **Serbian (Cyrillic & Latin)** — [IvanMaksimovic77](https://github.com/IvanMaksimovic77)  
+- 🇪🇸 **Spanish** — [Alejandro Moctezuma](https://crowdin.com/profile/alejandromoc), [DanielSevillano](https://github.com/DanielSevillano), and more...  
+- 🇱🇰 **Sinhala** — [VINULA2007](https://crowdin.com/profile/VINULA2007)  
+- 🇸🇪 **Swedish** — [sebbe.ekman](https://crowdin.com/profile/sebbe.ekman)  
+- 🇹🇷 **Turkish** — [abfreeman](https://github.com/abfreeman), [mikropsoft](https://github.com/mikropsoft), and more...  
+- 🇺🇦 **Ukrainian** — [Avin](https://crowdin.com/profile/avinateachip), [Crayz310](https://github.com/Crayz310), and more...  
+- 🇻🇳 **Vietnamese** — [teaminh](https://crowdin.com/profile/teaminh)  
 
-- **Afrikaans** thanks to [HelloZebra1133](https://crowdin.com/profile/HelloZebra1133)
-- **Arabic:** thanks to [ABS zarzis](https://crowdin.com/profile/abszar), [Ahmad Al Juwaisri](https://crowdin.com/profile/juwaisri)
-- **Azerbaijani** thanks to [Nizami Səmidov](https://crowdin.com/profile/nizamismidov4), [Notesuree](https://github.com/Notesuree)
-- **Bangla:** thanks to [Ann Naser Nabil](https://github.com/AnnNaserNabil)
-- **Bashkir:** thanks to [Shilave malay](https://crowdin.com/profile/Bash.boy)
-- **Catalan:** thanks to [Adrià Martínez](https://crowdin.com/profile/marxally), [Aniol](https://crowdin.com/profile/aniol), [EMC_Translator](https://crowdin.com/profile/EMC_Translator)
-- **Chinese Simplified:** thanks to [benhaotang](https://crowdin.com/profile/benhaotang), [SharkChan0622](https://github.com/SharkChan0622)
-- **Chinese Traditional:** thanks to [YeeTW](https://github.com/yjcTW), [SharkChan0622](https://github.com/SharkChan0622)
-- **Czech:** thanks to [ikanakova](https://github.com/ikanakova), [JZITNIK-github](https://github.com/JZITNIK-github)
-- **Danish** thanks to [cultcats](https://crowdin.com/profile/cultcats)
-- **Dutch:** thanks to [BabyBenefactor](https://crowdin.com/profile/BabyBenefactor)
-- **English:** thanks to [Alejandro Moctezuma](https://crowdin.com/profile/alejandromoc), [twistios](https://crowdin.com/profile/twistios), [Smk90](https://crowdin.com/profile/smk90), [CanIn](https://crowdin.com/profile/canin), [koliwan](https://crowdin.com/profile/koliwan), [Glich440](https://github.com/Glich440), [fast4x](https://github.com/fast4x)
-- **Esperanto:** thanks to [kefiiris](https://github.com/kefiiris)
-- **Estonian** thanks to [beez276](https://crowdin.com/profile/beez276)
-- **Filipino** thanks to [Clyde-Timonera](https://github.com/Clyde-Timonera)
-- **Finnish:** thanks to [Smk90](https://crowdin.com/profile/smk90), [rikalaj](https://crowdin.com/profile/rikalaj)
-- **French:** thanks to [Mickael81](https://crowdin.com/profile/mickael81), [esophagusdecency](https://crowdin.com/profile/esophagusdecency), [Mickael81](https://github.com/Mickael81), [NEVARLeVrai](https://github.com/NEVARLeVrai)
-- **Galician:** thanks to [zordor](https://crowdin.com/profile/zordor), [ninjum](https://crowdin.com/profile/ninjum)
-- **German:** thanks to [twistqj](https://crowdin.com/profile/twistqj), [nitro4542](https://crowdin.com/profile/nitro4542), [twistios](https://crowdin.com/profile/twistios), [Eddisch](https://crowdin.com/profile/eddisch2010), [materialred](https://crowdin.com/profile/materialred), [OlimitLolli](https://crowdin.com/profile/OlimitLolli), [Lolozweipunktnull](https://crowdin.com/profile/Lolozweipunktnull), [Seryoga1984](https://crowdin.com/profile/Seryoga1984), [Conk](https://crowdin.com/profile/conk), [siggi1984](https://github.com/siggi1984)
-- **Greek:** thanks to [Marinkas](https://github.com/Marinkas)
-- **Hebrew:** thanks to [opcitgv](https://crowdin.com/profile/opcitgv), [TheCreeperDuck](https://crowdin.com/profile/thecreeperduck)
-- **Hindi:** thanks to [NikunjKhangwal](https://crowdin.com/profile/nikunjkhangwal), [Sharunkumar](https://crowdin.com/profile/sharunkumar), [Th3-C0der](https://github.com/Th3-C0der)
-- **Hungarìan:** thanks to [Zan1456](https://crowdin.com/profile/Zan1456), [Ndvok](https://crowdin.com/profile/ndvok)
-- **Italian:** thanks to [Fabio Iotti](https://crowdin.com/profile/bruce965), [agefcgo](https://crowdin.com/profile/agefcgo), [CiccioDerole](https://crowdin.com/profile/CiccioDerole), [fast4x](https://github.com/fast4x), [Strange-IPmart ](https://github.com/Strange-IPmart)
-- **Indonesian:** thanks to [luthfialfarabi](https://crowdin.com/profile/luthfialfarabi), [teddysulaimanGL](https://github.com/teddysulaimanGL), [Fausta Ahmad](https://crowdin.com/profile/faustaahmad)
-- **Interlingua** thanks to [softinterlingua](https://github.com/softinterlingua)
-- **Japanese:** thanks to [maboroshin](https://crowdin.com/profile/maboroshin), [Mid_Vur_Shaan](https://crowdin.com/profile/Mid_Vur_Shaan)
-- **Malayalam** thanks to [XDreamist](https://crowdin.com/profile/xdreamist)
-- **Korean:** thanks to [ZeroZero00](https://crowdin.com/profile/ZeroZero00), [TsyQax](https://crowdin.com/profile/TsyQax)
-- **Norwegian:** thanks to [Xyrcon](https://crowdin.com/profile/xyrcon)
-- **Odia:** thanks to [redpanda9348](https://crowdin.com/profile/redpanda9348), [Get100percent](https://github.com/Get100percent)
-- **Persian:** thanks to [CUMOON](https://github.com/CUMOON)
-- **Polish:** thanks to [Krzysztof](https://crowdin.com/profile/scrummybingus), [severitysingular](https://crowdin.com/profile/severitysingular), [Zduniusz](https://crowdin.com/profile/zduniusz), [AntoniNowak](https://crowdin.com/profile/AntoniNowak), [roklc](https://github.com/roklc), [Adam Kop](https://crowdin.com/profile/damianadam000)
-- **Portuguese:** thanks to [Juan Ignacio Tejera](https://crowdin.com/profile/originaljuani), [ManuelCoimbra](https://crowdin.com/profile/ManuelCoimbra), [NEVARLeVrai](https://github.com/NEVARLeVrai)
-- **Portuguese, Brazilian:** thanks to [vs-machado](https://crowdin.com/profile/vs-machado), [luxdev01](https://crowdin.com/profile/luxdev01), [VitoriaLima1802](https://crowdin.com/profile/vitorialima1802), [xSyntheticWave](https://crowdin.com/profile/xSyntheticWave), [RegularWater](https://crowdin.com/profile/RegularWater), [NEVARLeVrai](https://github.com/NEVARLeVrai)
-- **Romanian:** thanks to [OrangeZXZ](https://github.com/OrangeZxZ)
-- **Russian:** thanks to [Eddisch](https://crowdin.com/profile/eddisch2010), [Michael Müller](https://crowdin.com/profile/xqzme1337), [HighMode](https://crowdin.com/profile/highmode), [koliwan](https://crowdin.com/profile/koliwan), [Nebula-Mechanica](https://crowdin.com/profile/Nebula-Mechanica), [Alnoer](https://crowdin.com/profile/Alnoer), [kptmx](https://crowdin.com/profile/kptmx), [Crayz310](https://github.com/Crayz310), [Vladimir](https://crowdin.com/profile/vladimir15426), [siggi1984](https://github.com/siggi1984)
-- **Serbian (Cyrillic, Latin)** thanks to [IvanMaksimovic77](https://github.com/IvanMaksimovic77)
-- **Spanish:** thanks to [MS-PC](https://crowdin.com/profile/ms-pc), [Alejandro Moctezuma](https://crowdin.com/profile/alejandromoc), [Juan Ignacio Tejera](https://crowdin.com/profile/originaljuani), [iOSStarWorld](https://crowdin.com/profile/iosstarworld), [Corotyest](https://crowdin.com/profile/corotyest), [DanielSevillano](https://github.com/DanielSevillano), [Fabian Urra](https://crowdin.com/profile/nsagcl)
-- **Sinhala:** thanks to [VINULA2007](https://crowdin.com/profile/VINULA2007)
-- **Swedish:** thanks to [sebbe.ekman](https://crowdin.com/profile/sebbe.ekman), [Dženan](https://crowdin.com/profile/Dženan)
-- **Tamil** thanks to [Vignesh-p-s](https://crowdin.com/profile/vignesh-p-s)
-- **Turkish:** thanks to [abfreeman](https://github.com/abfreeman), [2010furs](https://github.com/2010furs), [Muha Aliss](https://crowdin.com/profile/muhaaliss), [mikropsoft](https://github.com/mikropsoft)
-- **Telugu** thanks to [SureshTimma](https://crowdin.com/profile/sureshtimma)
-- **Ukrainian:** thanks to [Avin](https://crowdin.com/profile/avinateachip), [Michael Müller](https://crowdin.com/profile/xqzme1337), [NiXT0y](https://crowdin.com/profile/nixt0y), [Crayz310](https://github.com/Crayz310)
-- **Vietnamese:** thanks to [teaminh](https://crowdin.com/profile/teaminh)
-> Don't see your langague here? [Request one](https://crowdin.com/project/N-Zik) now.
+> ❓ Don't see your language? [Request it here](https://crowdin.com/project/N-Zik) or contribute below!
+
+---
 
 # 🤝 Contributing
 
-## To improve functionalities
+## 🛠️ Improve the App
 
-> Pull requests are welcome
+Pull requests are welcome!  
+Feel free to fix bugs, enhance features, or suggest new ideas.
 
-## To translate app
+## 🌍 Help Translate
 
-To **translate** or **improve a translation**, **fix typo**, or to **request new language**.
+Want to:
+- Translate into a new language?
+- Improve an existing translation?
+- Fix typos or inconsistencies?
+
+Join us on Crowdin!
 
 [![Translated with Crowdin](https://badges.crowdin.net/badge/light/crowdin-on-dark.png)](https://crowdin.com/project/N-Zik)
 
 
 # 🫂 Acknowledgements
 
+### 🛠 Based on / Inspired by:
 - [**Kreate**](https://github.com/knighthat/Kreate)
 - [**RiMusic**](https://github.com/fast4x/RiMusic)
-- RiMusic previous Logo, many current icons from [jaimtres](https://github.com/jaimtres)
-- Player designed by [aneesh1122](https://github.com/aneesh1122)
-- [**YouTube-Internal-Clients**](https://github.com/zerodytrash/YouTube-Internal-Clients): A python script that discovers hidden YouTube API clients. Just a research project.
-- [**Ionicons**](https://github.com/ionic-team/ionicons): Premium hand-crafted icons built by Ionic, for Ionic apps, web apps everywhere.
-- [**FlatIcon.com**](https://www.flaticon.com/): Download Free Icons, Stickers for your projects. Resources made by, for designers.
-- [**Translator**](https://github.com/therealbush/translator): A simple, free Google Translate library for Kotlin/JVM, Java.
-- [**KuGou**](https://www.kugou.com): Lyrics provider
-- [**LrcLib**](https://lrclib.net): Lyrics provider
-- [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): A shader modifier for Compose Multiplatform / Jetpack Compose
-- [**MedieroAF**](https://github.com/MedieroAF): App logo
-- [**compose-markdown**](https://github.com/jeziellago/compose-markdown): Used to show Markdown content in app
-- [**Kizzy-RPC**](https://github.com/dead8309/KizzyRPC): Used for Discord RPC presets — thanks to **@bdead8309** for their work.
-- [**echo-discord**](https://github.com/brahmkshatriya/echo-discord): Thanks to **@brahmkshatriya** for the code that fixed artwork upload and loading issues.
 
+### 🎨 Design & UI Contributions:
+- RiMusic previous logo and many current icons: [jaimtres](https://github.com/jaimtres)
+- Player design: [aneesh1122](https://github.com/aneesh1122)
+- App logo: [MedieroAF](https://github.com/MedieroAF)
+- Icons: [**Ionicons**](https://github.com/ionic-team/ionicons), [**FlatIcon.com**](https://www.flaticon.com)
 
+### 🎵 Lyrics & Media:
+- [**KuGou**](https://www.kugou.com) – Lyrics provider
+- [**LrcLib**](https://lrclib.net) – Lyrics provider
+
+### 🧠 Features & Tools:
+- [**YouTube-Internal-Clients**](https://github.com/zerodytrash/YouTube-Internal-Clients): Script for discovering hidden YouTube API clients.
+- [**Translator**](https://github.com/therealbush/translator): Google Translate wrapper for Kotlin/JVM.
+- [**compose-markdown**](https://github.com/jeziellago/compose-markdown): Markdown rendering in app.
+- [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): Shader effects for Compose.
+- [**Kizzy-RPC**](https://github.com/dead8309/KizzyRPC): Discord RPC presets by **@bdead8309**.
+- [**echo-discord**](https://github.com/brahmkshatriya/echo-discord): Fixes for Discord artwork upload/loading by **@brahmkshatriya**.
+  
 # ⚠️ Disclaimer
 
-This project is built on top of [Kreate](https://github.com/knighthat/Kreate) but has no relation to the original author.
-Furthermore, its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube,
-Google LLC or any of its affiliates, subsidiaries.
+This project is built on top of [Kreate](https://github.com/knighthat/Kreate), but has no relation to the original author.
 
-Any trademark, service mark, trade name, or other intellectual property rights used in this project are owned by the respective owners.
+Furthermore, its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube,  
+Google LLC, or any of its affiliates or subsidiaries.
+
+Any trademarks, service marks, trade names, or other intellectual property rights used in this project remain the property of their respective owners.
