@@ -980,7 +980,17 @@
   <string name="artist_songs_count_duration">%1$d Τραγούδια • %2$s</string>
   <string name="beta_title"> Βήτα</string>
   <string name="beta_text">Αυτό είναι ακόμα σε Beta και μπορεί να περιέχει σφάλματα και συντριβή</string>
-  <string name="discord_token_text">Εάν παρατηρήσετε ότι το RPC δεν λειτουργεί, δοκιμάστε να αποσυνδεθείτε και να συνδεθείτε πίσω από τον λογαριασμό σας στο Discord το διακριτικό μπορεί να λήξει σε συγκεκριμένο σενάριο</string>
   <string name="quick_selection_type">Επιλέξτε πόσα προτεινόμενα τραγούδια θα εμφανίζονται στις Γρήγορες επιλογές</string>
   <string name="quick_selection">Προτεινόμενο τραγούδι %s</string>
+  <string name="login_to_discord">Συνδεθείτε στο Discord</string>
+  <string name="discord_token_text_invalid">Το διακριτικό σας Discord δεν είναι έγκυρο, παρακαλώ συνδεθείτε ξανά</string>
+  <string name="discord_login_successful">Επιτυχής σύνδεση στο Discord</string>
+  <string name="youtube_disconnect">Disconnect</string>
+  <string name="youtube_connect">Connect</string>
+  <string name="youtube_login_successful">Επιτυχής σύνδεση στο YouTube</string>
+  <string name="piped_login_successful">Επιτυχής σύνδεση με Piped</string>
+  <string name="piped_login_failed">Η σύνδεση Piped απέτυχε</string>
+  <string name="no_instances_found">Δεν βρέθηκαν παρουσίες</string>
+  <string name="discord_token_text">Αν παρατηρήσετε ότι το RPC δεν λειτουργεί, δοκιμάστε να αποσυνδεθείτε και να συνδεθείτε πίσω</string>
+  <string name="account_info">Πληροφορίες λογαριασμού</string>
 </resources>
