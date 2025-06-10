@@ -980,7 +980,17 @@
   <string name="artist_songs_count_duration">%1$d أغاني • %2$s</string>
   <string name="beta_title"> بيتا</string>
   <string name="beta_text">هذا لا يزال في بيتا وقد يحتوي على أخطاء وتحطم</string>
-  <string name="discord_token_text">إذا لاحظت أن الـ RPC لا يعمل ، حاول تسجيل الخروج وتسجيل العودة إلى حساب ديسكورد الخاص بك ، يمكن أن تنتهي صلاحية الرمز في سيناريو معين</string>
   <string name="quick_selection_type">اختر عدد الأغاني الموصى بإظهارها في الرموز السريعة</string>
   <string name="quick_selection">%s أغنية موصى بها</string>
+  <string name="login_to_discord">تسجيل الدخول إلى ديسكورد</string>
+  <string name="discord_token_text_invalid">رمز ديسكورد غير صالح، يرجى تسجيل الدخول مرة أخرى</string>
+  <string name="discord_login_successful">تم تسجيل الدخول بنجاح</string>
+  <string name="youtube_disconnect">Disconnect</string>
+  <string name="youtube_connect">Connect</string>
+  <string name="youtube_login_successful">تم تسجيل الدخول لليوتيوب بنجاح</string>
+  <string name="piped_login_successful">تم تسجيل الدخول بالأنبوبة بنجاح</string>
+  <string name="piped_login_failed">فشل تسجيل الدخول الأنبوت</string>
+  <string name="no_instances_found">لا يوجد مثيلات</string>
+  <string name="discord_token_text">إذا لاحظت أن RPC لا يعمل، حاول تسجيل الخروج وتسجيل الدخول مرة أخرى</string>
+  <string name="account_info">معلومات الحساب</string>
 </resources>
