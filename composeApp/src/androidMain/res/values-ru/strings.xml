@@ -980,7 +980,17 @@
   <string name="artist_songs_count_duration">%1$d треки • %2$s</string>
   <string name="beta_title"> Бета</string>
   <string name="beta_text">Это все еще находится в бета-версии и может содержать ошибки и ошибки</string>
-  <string name="discord_token_text">Если вы заметили, что RPC не работает, попробуйте выйти и войти в свою учётную запись Discord, токен может истечь в определённом сценарии</string>
   <string name="quick_selection_type">Выберите, сколько рекомендуемых песен показывать в Быстрых Выборках</string>
   <string name="quick_selection">%s рекомендуемая песня</string>
+  <string name="login_to_discord">Войти в Discord</string>
+  <string name="discord_token_text_invalid">Ваш Discord токен недействителен, пожалуйста, войдите снова</string>
+  <string name="discord_login_successful">Успешный вход в Discord</string>
+  <string name="youtube_disconnect">Отключиться</string>
+  <string name="youtube_connect">Подключиться</string>
+  <string name="youtube_login_successful">Логин YouTube успешно завершен</string>
+  <string name="piped_login_successful">Вход выполнен успешно</string>
+  <string name="piped_login_failed">Ошибка входа в систему</string>
+  <string name="no_instances_found">Экземпляров не найдено</string>
+  <string name="discord_token_text">Если вы заметили, что RPC не работает, попробуйте выйти из системы и выйти из системы</string>
+  <string name="account_info">Информация о клиенте</string>
 </resources>
