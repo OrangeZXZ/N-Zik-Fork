@@ -980,7 +980,17 @@
   <string name="artist_songs_count_duration">%1$d låtar • %2$s</string>
   <string name="beta_title"> Beta</string>
   <string name="beta_text">Detta är fortfarande i Beta och kan innehålla buggar och krasch</string>
-  <string name="discord_token_text">Om du märker att RPC inte fungerar, försök logga ut och logga tillbaka från ditt Discord-konto så kan token löpa ut i vissa scenarion</string>
   <string name="quick_selection_type">Välj hur många rekommenderade låtar som ska visas i Snabbval</string>
   <string name="quick_selection">%s rekommenderad låt</string>
+  <string name="login_to_discord">Logga in till Discord</string>
+  <string name="discord_token_text_invalid">Din Discord-token är ogiltig, vänligen logga in igen</string>
+  <string name="discord_login_successful">Discord-inloggning lyckades</string>
+  <string name="youtube_disconnect">Disconnect</string>
+  <string name="youtube_connect">Anslut</string>
+  <string name="youtube_login_successful">YouTube-inloggning lyckades</string>
+  <string name="piped_login_successful">Piped inloggning lyckades</string>
+  <string name="piped_login_failed">Pippad inloggning misslyckades</string>
+  <string name="no_instances_found">Inga instanser hittades</string>
+  <string name="discord_token_text">Om du märker att RPC inte fungerar, försök logga ut och logga tillbaka</string>
+  <string name="account_info">Konto information</string>
 </resources>
