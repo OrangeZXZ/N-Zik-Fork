@@ -980,7 +980,17 @@
   <string name="artist_songs_count_duration">%1$d melodii • %2$s</string>
   <string name="beta_title"> Beta</string>
   <string name="beta_text">Aceasta este încă în Beta și poate conține erori și crash</string>
-  <string name="discord_token_text">Dacă observi că RPC nu funcționează, încearcă să te deconectezi și să te autentifici din nou în contul tău de Discord, token-ul poate expira în anumite scenarii</string>
   <string name="quick_selection_type">Alegeți câte melodii recomandate să fie afișate în Liste Rapide</string>
   <string name="quick_selection">%s a recomandat melodia</string>
+  <string name="login_to_discord">Loghează-te pe Discord</string>
+  <string name="discord_token_text_invalid">Token-ul tău Discord este invalid, te rugăm să te autentifici din nou</string>
+  <string name="discord_login_successful">Autentificare la Discord cu succes</string>
+  <string name="youtube_disconnect">Deconectează</string>
+  <string name="youtube_connect">Conectează</string>
+  <string name="youtube_login_successful">Autentificare pe YouTube cu succes</string>
+  <string name="piped_login_successful">Conectare la conducte cu succes</string>
+  <string name="piped_login_failed">Conectarea la conducte a eșuat</string>
+  <string name="no_instances_found">Nu s-au găsit instanțe</string>
+  <string name="discord_token_text">Dacă observați că RPC nu funcționează, încercați să vă deconectați și să vă conectați din nou</string>
+  <string name="account_info">Informații cont</string>
 </resources>

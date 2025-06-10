@@ -980,7 +980,17 @@
   <string name="artist_songs_count_duration">%1$d Skladby • %2$s</string>
   <string name="beta_title"> Beta</string>
   <string name="beta_text">Toto je stále v Beta verzi a může obsahovat chyby a pád</string>
-  <string name="discord_token_text">Pokud si všimneš toho, že RPC nefunguje, zkus se odhlásit a odhlásit se zpět z tvého Discord účtu, token může vypršet v určitém scénáři</string>
   <string name="quick_selection_type">Vyberte kolik doporučených skladeb se zobrazí v rychlém výběru</string>
   <string name="quick_selection">%s doporučená skladba</string>
+  <string name="login_to_discord">Přihlásit se k Discordu</string>
+  <string name="discord_token_text_invalid">Váš Discord token je neplatný, přihlaste se prosím znovu</string>
+  <string name="discord_login_successful">Discord přihlášení úspěšné</string>
+  <string name="youtube_disconnect">Odpojit</string>
+  <string name="youtube_connect">Připojit</string>
+  <string name="youtube_login_successful">YouTube přihlášení úspěšné</string>
+  <string name="piped_login_successful">Přihlášení úspěšně odesláno</string>
+  <string name="piped_login_failed">Přihlášení odesláno se nezdařilo</string>
+  <string name="no_instances_found">Nebyly nalezeny žádné instance</string>
+  <string name="discord_token_text">Pokud si všimnete, že RPC nefunguje, zkuste se odhlásit a odhlásit zpět</string>
+  <string name="account_info">Informace o účtu</string>
 </resources>

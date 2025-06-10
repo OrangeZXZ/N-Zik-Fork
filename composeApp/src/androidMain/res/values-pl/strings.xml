@@ -980,7 +980,17 @@
   <string name="artist_songs_count_duration">%1$d Utwory • %2$s</string>
   <string name="beta_title"> Beta</string>
   <string name="beta_text">To jest nadal w wersji beta i może zawierać błędy i awarię</string>
-  <string name="discord_token_text">Jeśli zauważysz, że RPC nie działa, spróbuj zalogować się i zalogować na swoje konto Discord, token może wygasnąć w określonym scenariuszu</string>
   <string name="quick_selection_type">Wybierz ile polecanych piosenek ma być wyświetlanych w Szybkich Pickach</string>
   <string name="quick_selection">%s rekomendowany utwór</string>
+  <string name="login_to_discord">Zaloguj się do Discorda</string>
+  <string name="discord_token_text_invalid">Twój token Discorda jest nieprawidłowy, zaloguj się ponownie</string>
+  <string name="discord_login_successful">Logowanie do Discorda zakończone powodzeniem</string>
+  <string name="youtube_disconnect">Rozłącz</string>
+  <string name="youtube_connect">Połącz</string>
+  <string name="youtube_login_successful">Logowanie do YouTube zakończone powodzeniem</string>
+  <string name="piped_login_successful">Udało się zalogować</string>
+  <string name="piped_login_failed">Logowanie Piped nie powiodło się</string>
+  <string name="no_instances_found">Nie znaleziono instancji</string>
+  <string name="discord_token_text">Jeśli zauważysz, że RPC nie działa, spróbuj zalogować się i zalogować z powrotem</string>
+  <string name="account_info">Informacje o koncie</string>
 </resources>
