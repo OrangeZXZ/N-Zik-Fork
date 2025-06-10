@@ -7,12 +7,14 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -51,6 +53,7 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.NavigationBarPosition
 import it.fast4x.rimusic.enums.ThumbnailRoundness
 import it.fast4x.rimusic.extensions.discord.DiscordLoginAndGetToken
+import it.fast4x.rimusic.extensions.discord.DiscordPresenceManager
 import it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
 import it.fast4x.rimusic.thumbnailShape
 import it.fast4x.rimusic.ui.components.CustomModalBottomSheet
@@ -90,7 +93,7 @@ import kotlinx.coroutines.launch
 import me.knighthat.utils.Toaster
 import timber.log.Timber
 import androidx.compose.material3.Text
-import androidx.compose.ui.graphics.Color
+import it.fast4x.rimusic.typography
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -167,7 +170,7 @@ fun AccountsSettings() {
         SettingsEntryGroupText(title = "YOUTUBE MUSIC")
 
         SwitchSettingEntry(
-            title = "Enable YouTube Music Login",
+            title = stringResource(R.string.enable_youtube_music_login),
             text = "",
             isChecked = isYouTubeLoginEnabled,
             onCheckedChange = {
@@ -208,7 +211,7 @@ fun AccountsSettings() {
                         Column {
                             ButtonBarSettingEntry(
                                 isEnabled = true,
-                                title = if (isLoggedIn) "Disconnect" else "Connect",
+                                title = if (isLoggedIn) stringResource(R.string.youtube_disconnect) else stringResource(R.string.youtube_connect),
                                 text = if (isLoggedIn) "$accountName ${accountChannelHandle}" else "",
                                 icon = R.drawable.ytmusic,
                                 iconColor = colorPalette().text,
@@ -267,7 +270,7 @@ fun AccountsSettings() {
                                         if (cookieRetrieved.contains("SAPISID")) {
                                             isLoggedIn = true
                                             loginYouTube = false
-                                            Toaster.i( "Login successful" )
+                                            Toaster.i( context.getString(R.string.youtube_login_successful) )
                                             restartService = true
                                         }
 
@@ -357,7 +360,7 @@ fun AccountsSettings() {
             }
         }
         if (noInstances)
-            Toaster.i( "No instances found" )
+            Toaster.i( context.getString(R.string.no_instances_found) )
 
         if (executeLogin) {
             LaunchedEffect(Unit) {
@@ -370,7 +373,7 @@ fun AccountsSettings() {
                     )?.onFailure {
                         Timber.e("Failed piped login ${it.stackTraceToString()}")
                         isLoading = false
-                        Toaster.e( "Piped login failed" )
+                        Toaster.e( context.getString(R.string.piped_login_failed) )
                         loadInstances = false
                         session = null
                         executeLogin = false
@@ -378,7 +381,7 @@ fun AccountsSettings() {
                     if (session?.isSuccess == false)
                         return@launch
 
-                    Toaster.s( "Piped login successful" )
+                    Toaster.s( context.getString(R.string.piped_login_successful) )
                     Timber.i("Piped login successful")
 
                     session.let {
@@ -388,12 +391,12 @@ fun AccountsSettings() {
                         }
                     }
 
-                    isLoading = false
-                    loadInstances = false
-                    executeLogin = false
+                        isLoading = false
+                        loadInstances = false
+                        executeLogin = false
+                    }
                 }
             }
-        }
 
         if (showInstances && instances.isNotEmpty()) {
             menuState.display {
@@ -530,97 +533,192 @@ fun AccountsSettings() {
 
     /****** PIPED ******/
 
-    /****** DISCORD BETA ******/
+        /****** DISCORD BETA ******/
 
-    // rememberEncryptedPreference only works correct with API 24 and up
-    if (isAtLeastAndroid7) {
-        var isDiscordPresenceEnabled by rememberPreference(isDiscordPresenceEnabledKey, false)
-        var loginDiscord by remember { mutableStateOf(false) }
-        var discordPersonalAccessToken by rememberEncryptedPreference(
-            key = discordPersonalAccessTokenKey,
-            defaultValue = ""
-        )
-        var restartDiscordService by rememberSaveable { mutableStateOf(false) }
-        SettingsGroupSpacer()
-        SettingsEntryGroupText(
-            title = stringResource(R.string.social_discord) + " " + stringResource(R.string.beta_title)
-        )
-        SwitchSettingEntry(
-            isEnabled = isAtLeastAndroid81,
-            title = stringResource(R.string.discord_enable_rich_presence),
-            text = stringResource(R.string.beta_text),
-            isChecked = isDiscordPresenceEnabled,
-            onCheckedChange = { isDiscordPresenceEnabled = it }
-        )
+        // rememberEncryptedPreference only works correct with API 24 and up
+        if (isAtLeastAndroid7) {
+            var isDiscordPresenceEnabled by rememberPreference(isDiscordPresenceEnabledKey, false)
+            var loginDiscord by remember { mutableStateOf(false) }
+            var discordPersonalAccessToken by rememberEncryptedPreference(
+                key = discordPersonalAccessTokenKey,
+                defaultValue = ""
+            )
+            var restartDiscordService by rememberSaveable { mutableStateOf(false) }
+            var discordAvatar by rememberEncryptedPreference(
+                key = "discord_avatar",
+                defaultValue = ""
+            )
+            var discordUsername by rememberEncryptedPreference(
+                key = "discord_username",
+                defaultValue = ""
+            )
+            var isTokenValid by remember { mutableStateOf(true) }
+            var showTokenError by remember { mutableStateOf(false) }
 
-
-        AnimatedVisibility(visible = isDiscordPresenceEnabled) {
-            Column {
-                ButtonBarSettingEntry(
-                    isEnabled = true,
-                    title = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_disconnect) else stringResource(
-                        R.string.discord_connect
-                    ),
-                    text = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_connected_to_discord_account) else "",
-                    icon = R.drawable.logo_discord,
-                    iconColor = colorPalette().text,
-                    onClick = {
-                        if (discordPersonalAccessToken.isNotEmpty())
-                            discordPersonalAccessToken = ""
-                        else
-                            loginDiscord = true
+            LaunchedEffect(discordPersonalAccessToken) {
+                if (discordPersonalAccessToken.isNotEmpty()) {
+                    val presenceManager = DiscordPresenceManager(context, { discordPersonalAccessToken })
+                    isTokenValid = presenceManager.validateToken(discordPersonalAccessToken)
+                    if (!isTokenValid) {
+                        showTokenError = true
+                        discordPersonalAccessToken = ""
+                        discordUsername = ""
+                        discordAvatar = ""
+                        Toaster.e(R.string.discord_token_text_invalid)
+                    } else {
+                        showTokenError = false
                     }
-                )
+                }
+            }
 
-                Text(
-                    text = stringResource(R.string.discord_token_text),
-                    color = colorPalette().red,
-                    modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-                )
+            SettingsGroupSpacer()
+            SettingsEntryGroupText(
+                title = stringResource(R.string.social_discord) + " " + stringResource(R.string.beta_title)
+            )
+            SwitchSettingEntry(
+                isEnabled = isAtLeastAndroid81,
+                title = stringResource(R.string.discord_enable_rich_presence),
+                text = stringResource(R.string.beta_text),
+                isChecked = isDiscordPresenceEnabled,
+                onCheckedChange = { isDiscordPresenceEnabled = it }
+            )
 
-                CustomModalBottomSheet(
-                    showSheet = loginDiscord,
-                    onDismissRequest = {
-                        loginDiscord = false
-                    },
-                    containerColor = colorPalette().background0,
-                    contentColor = colorPalette().background0,
-                    modifier = Modifier.fillMaxWidth(),
-                    sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                    dragHandle = {
-                        Surface(
-                            modifier = Modifier.padding(vertical = 0.dp),
-                            color = colorPalette().background0,
-                            shape = thumbnailShape()
-                        ) {}
-                    },
-                    shape = thumbnailRoundness.shape
+
+            AnimatedVisibility(visible = isDiscordPresenceEnabled) {
+                Column(
+                    modifier = Modifier.padding(start = 25.dp)
                 ) {
-                    DiscordLoginAndGetToken(
-                        rememberNavController(),
-                        onGetToken = { token ->
-                            loginDiscord = false
-                            discordPersonalAccessToken = token
-                            Toaster.i( token )
-                            restartDiscordService = true
+                    if (showTokenError) {
+                        Text(
+                            text = stringResource(R.string.discord_token_text_invalid),
+                            color = colorPalette().red,
+                            style = typography().s,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    }
+
+
+                    if (discordPersonalAccessToken.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .padding(start = 8.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.account_info),
+                                    color = colorPalette().text,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(start = 5.dp),
+                                )
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    AsyncImage(
+                                        model = if (discordAvatar.isNotEmpty()) discordAvatar else R.drawable.logo_discord,
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .padding(start = 5.dp, top = 8.dp, bottom = 8.dp)
+                                            .size(50.dp)
+                                            .clip(thumbnailShape())
+                                    )
+
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(start = 8.dp)
+                                            .height(50.dp)
+                                            .padding(top = 8.dp, bottom = 8.dp),
+                                        contentAlignment = Alignment.CenterStart
+                                    ) {
+                                        Text(
+                                            text = discordUsername,
+                                            color = colorPalette().textSecondary,
+                                            modifier = Modifier.padding(start = 5.dp),
+                                            style = typography().m
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
+                    ButtonBarSettingEntry(
+                        isEnabled = true,
+                        title = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_disconnect) else stringResource(
+                            R.string.discord_connect
+                        ),
+                        text = if (discordPersonalAccessToken.isNotEmpty()) stringResource(R.string.discord_connected_to_discord_account) else "",
+                        icon = R.drawable.logo_discord,
+                        iconColor = colorPalette().text,
+                        onClick = {
+                            if (discordPersonalAccessToken.isNotEmpty()) {
+                                discordPersonalAccessToken = ""
+                                discordUsername = ""
+                                discordAvatar = ""
+                                showTokenError = false
+                                restartDiscordService = true
+                            } else
+                                loginDiscord = true
                         }
                     )
+
+                    if (discordPersonalAccessToken.isNotEmpty()) {
+                        Text(
+                            text = stringResource(R.string.discord_token_text),
+                            color = colorPalette().red,
+                            modifier = Modifier.padding(start = 13.dp, top = 10.dp)
+                        )
+                    }
+
                 }
-                RestartPlayerService(restartDiscordService, onRestart = {
-                    restartDiscordService = false
-                    restartActivity = !restartActivity
-                })
             }
+
+            CustomModalBottomSheet(
+                showSheet = loginDiscord,
+                onDismissRequest = {
+                    loginDiscord = false
+                },
+                containerColor = colorPalette().background0,
+                contentColor = colorPalette().background0,
+                modifier = Modifier.fillMaxWidth(),
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                dragHandle = {
+                    Surface(
+                        modifier = Modifier.padding(vertical = 0.dp),
+                        color = colorPalette().background0,
+                        shape = thumbnailShape()
+                    ) {}
+                },
+                shape = thumbnailRoundness.shape
+            ) {
+                DiscordLoginAndGetToken(
+                    navController = rememberNavController(),
+                    onGetToken = { token, username, avatar ->
+                        loginDiscord = false
+                        discordPersonalAccessToken = token
+                        discordUsername = username
+                        discordAvatar = avatar
+                        restartDiscordService = true
+                        Toaster.i(context.getString(R.string.discord_connected_to_discord_account))
+                    }
+                )
+            }
+
+            RestartPlayerService(restartDiscordService, onRestart = {
+                restartDiscordService = false
+                restartActivity = !restartActivity
+            })
         }
     }
-
-    /****** DISCORD ******/
-
-
-
-    }
-
-
 }
 
 fun isYouTubeLoginEnabled(): Boolean {
@@ -638,8 +736,3 @@ fun isYouTubeLoggedIn(): Boolean {
     val isLoggedIn = cookie?.let { parseCookieString(it) }?.contains("SAPISID") == true
     return isLoggedIn
 }
-
-
-
-
-

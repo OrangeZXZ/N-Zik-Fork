@@ -20,8 +20,17 @@ import android.graphics.BitmapFactory
 import android.graphics.Bitmap
 import java.io.FileOutputStream
 import androidx.core.graphics.scale
+import app.kreate.android.R
+import me.knighthat.utils.Toaster
 import timber.log.Timber
-import java.util.UUID
+
+    /**
+     * THIS IS STILL IN BETA AND MAY NOT WORK AS EXPECTED AND CAUSE CRASH
+     * Call this method when the playing state changes.
+     * - isPlaying = true : send the "playing" presence and refresh it every 10s
+     * - isPlaying = false : launch a timer, then send the "paused" presence (frozen time)
+     */
+
 
 class DiscordPresenceManager(
     private val context: Context,
@@ -43,12 +52,29 @@ class DiscordPresenceManager(
     private val uploadApi = "https://tmpfiles.org/api/v1/upload"
     @Volatile private var isUpdatingPresence = false
 
+
     /**
-     * THIS IS STILL IN BETA AND MAY NOT WORK AS EXPECTED AND CAUSE CRASH
-     * Call this method when the playing state changes.
-     * - isPlaying = true : send the "playing" presence and refresh it every 10s
-     * - isPlaying = false : launch a timer, then send the "paused" presence (frozen time)
+     * Validate the token
      */
+
+     internal suspend fun validateToken(token: String): Boolean = withContext(Dispatchers.IO) {
+        val request = Request.Builder()
+            .url("https://discord.com/api/v9/users/@me")
+            .header("Authorization", token)
+            .get()
+            .build()
+
+        runCatching {
+            client.newCall(request).execute().use { response ->
+                response.isSuccessful
+            }
+        }.getOrElse {
+            Timber.tag("DiscordPresence").e(it, "Error validating token: ${it.message}")
+            false
+        }
+    }
+
+
     fun onPlayingStateChanged(mediaItem: MediaItem?, isPlaying: Boolean, position: Long = 0L, duration: Long = 0L, now: Long = System.currentTimeMillis(), getCurrentPosition: (() -> Long)? = null, isPlayingProvider: (() -> Boolean)? = null) {
         if (isStopped) return
         val token = getToken() ?: return
@@ -124,6 +150,11 @@ class DiscordPresenceManager(
     ) {
         if (isStopped) return
         val token = getToken() ?: return
+        if (!validateToken(token)) {
+            Timber.tag("DiscordPresence").e("Invalid token, stopping presence updates")
+            Toaster.e(R.string.discord_token_text_invalid)
+            return
+        }
         if (token != lastToken) {
             rpc?.closeRPC()
             rpc = KizzyRPC(token)
@@ -307,7 +338,7 @@ class DiscordPresenceManager(
     ) {
         refreshJob = discordScope.launch {
             while (isActive && !isStopped) {
-                delay(20_000L)
+                delay(15_000L)
                 val isPlaying = isPlayingProvider()
                 if (isPlaying) {
                     val pos = getCurrentPosition()
