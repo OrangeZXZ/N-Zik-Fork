@@ -980,7 +980,17 @@
   <string name="artist_songs_count_duration">%1$d nummers • %2$s</string>
   <string name="beta_title"> Bèta</string>
   <string name="beta_text">Dit is nog steeds in Bèta en kan bugs en crash bevatten</string>
-  <string name="discord_token_text">Als je merkt dat de RPC niet werkt, probeer dan uit te loggen en log terug in je Discord account dat de token kan verlopen in een bepaald scenario</string>
   <string name="quick_selection_type">Kies hoeveel aanbevolen nummers te tonen in Snelle Picks</string>
   <string name="quick_selection">%s aanbevolen nummer</string>
+  <string name="login_to_discord">Aanmelden bij Discord</string>
+  <string name="discord_token_text_invalid">Je Discord token is ongeldig, log opnieuw in</string>
+  <string name="discord_login_successful">Onenigheid inloggen gelukt</string>
+  <string name="youtube_disconnect">Disconnect</string>
+  <string name="youtube_connect">Connect</string>
+  <string name="youtube_login_successful">YouTube login succesvol</string>
+  <string name="piped_login_successful">Aanmelding bij aanleiding gelukt</string>
+  <string name="piped_login_failed">Aanmelding voor Piped mislukt</string>
+  <string name="no_instances_found">Geen instanties gevonden</string>
+  <string name="discord_token_text">Als je merkt dat de RPC niet werkt, probeer dan uit te loggen en weer in te loggen</string>
+  <string name="account_info">Account informatie</string>
 </resources>
