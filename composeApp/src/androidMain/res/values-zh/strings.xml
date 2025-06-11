@@ -982,15 +982,15 @@
   <string name="beta_text">这仍然是测试版，可能包含bug和故障</string>
   <string name="quick_selection_type">选择建议在快速选择中显示多少首曲目</string>
   <string name="quick_selection">%s 推荐歌曲</string>
-  <string name="login_to_discord">Login to Discord</string>
-  <string name="discord_token_text_invalid">Your Discord token is invalid, please login again</string>
-  <string name="discord_login_successful">Discord login successful</string>
+  <string name="login_to_discord">登录到Discord</string>
+  <string name="discord_token_text_invalid">您的 Discord 令牌无效，请重新登录</string>
+  <string name="discord_login_successful">Discord登录成功</string>
   <string name="youtube_disconnect">Disconnect</string>
-  <string name="youtube_connect">Connect</string>
-  <string name="youtube_login_successful">YouTube login successful</string>
-  <string name="piped_login_successful">Piped login successful</string>
-  <string name="piped_login_failed">Piped login failed</string>
-  <string name="no_instances_found">No instances found</string>
-  <string name="discord_token_text">If you notice that the RPC doesnt work, try log off and log back</string>
-  <string name="account_info">Account info</string>
+  <string name="youtube_connect">连接</string>
+  <string name="youtube_login_successful">YouTube登录成功</string>
+  <string name="piped_login_successful">管道登录成功</string>
+  <string name="piped_login_failed">Piped登录失败</string>
+  <string name="no_instances_found">未找到实例</string>
+  <string name="discord_token_text">如果您注意到 RPC 不起作用，请尝试注销并重新登录</string>
+  <string name="account_info">帐户信息</string>
 </resources>
