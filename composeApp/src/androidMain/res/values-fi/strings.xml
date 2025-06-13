@@ -991,7 +991,7 @@
   <string name="piped_login_successful">Sisäänkirjautuminen onnistui</string>
   <string name="piped_login_failed">Sisäänkirjautuminen epäonnistui</string>
   <string name="no_instances_found">Esiintymiä ei löytynyt</string>
-  <string name="discord_token_text">Jos huomaat, että RPC ei toimi, kokeile kirjautua pois ja kirjaudu takaisin</string>
+  <string name="discord_token_text">Jos huomaat, että RPC ei toimi, kokeile kirjautua pois ja kirjaudu takaisin, varmista, että myös käynnistä palvelu ja sovellus uudelleen.</string>
   <string name="account_info">Tilin tiedot</string>
   <string name="save_visualizer_state">Tallenna visualisoijan tila</string>
   <string name="save_visualizer_state_description">Pidä visualisoijan tila istuntojen välillä</string>
