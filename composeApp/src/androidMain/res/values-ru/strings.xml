@@ -993,4 +993,8 @@
   <string name="no_instances_found">Экземпляров не найдено</string>
   <string name="discord_token_text">Если вы заметили, что RPC не работает, попробуйте выйти из системы и выйти из системы</string>
   <string name="account_info">Информация о клиенте</string>
+  <string name="save_visualizer_state">Сохранить состояние визуализатора</string>
+  <string name="save_visualizer_state_description">Сохранять состояние визуализации между сессиями</string>
+  <string name="save_lyrics_state">Сохранить состояние текста песни</string>
+  <string name="save_lyrics_state_description">Сохранить состояние текста между сессиями</string>
 </resources>
