@@ -557,13 +557,10 @@ class PlayerServiceModern : MediaLibraryService(),
          * Discord presence
          */
         if (preferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
-            val token = encryptedPreferences.getString(discordPersonalAccessTokenKey, "")
-            if (!token.isNullOrEmpty()) {
-                discordPresenceManager = DiscordPresenceManager(
-                    context = this,
-                    getToken = { token },
-                )
-            }
+            discordPresenceManager = DiscordPresenceManager(
+                context = this,
+                getToken = { encryptedPreferences.getString(discordPersonalAccessTokenKey, "") },
+            )
         }
     }
 
