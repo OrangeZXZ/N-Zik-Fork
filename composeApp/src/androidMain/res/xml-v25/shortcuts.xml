@@ -13,7 +13,7 @@
     <shortcut
         android:shortcutId="albums"
         android:enabled="true"
-        android:icon="@drawable/alternative_version"
+        android:icon="@drawable/album_alt2"
         android:shortcutShortLabel="@string/albums">
         <intent
             android:targetClass="it.fast4x.rimusic.MainActivity"
