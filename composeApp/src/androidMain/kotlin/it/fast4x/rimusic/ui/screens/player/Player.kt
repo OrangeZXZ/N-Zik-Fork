@@ -354,6 +354,42 @@ fun Player(
     val showLyricsState = rememberSaveable { mutableStateOf( false ) }
     var isShowingLyrics by showLyricsState
 
+    // User preferences (switch)
+   var shouldRememberVisualizerState by rememberPreference("showVisualizerStateKey", false)
+   var shouldRememberLyricsState by rememberPreference("showLyricsStateKey", false)
+
+   // Saved states
+   var savedVisualizerState by rememberPreference("saveVisualizerStateKey", false)
+   var savedLyricsState by rememberPreference("saveLyricsStateKey", false)
+
+   // Restore at startup (if enabled)
+   LaunchedEffect(Unit) {
+       if (shouldRememberVisualizerState) {
+           isShowingVisualizer = savedVisualizerState
+       }
+       if (shouldRememberLyricsState) {
+           isShowingLyrics = savedLyricsState
+       }
+   }
+
+   // Save only if not closing
+   LaunchedEffect(isShowingVisualizer) {
+       if (shouldRememberVisualizerState) {
+           savedVisualizerState = isShowingVisualizer
+           if (isShowingVisualizer) {
+               isShowingLyrics = false
+           }
+       }
+   }
+   LaunchedEffect(isShowingLyrics) {
+       if (shouldRememberLyricsState) {
+           savedLyricsState = isShowingLyrics
+           if (isShowingLyrics) {
+               isShowingVisualizer = false
+           }
+       }
+   }
+
     var showThumbnailOffsetDialog by rememberSaveable {
         mutableStateOf(false)
     }

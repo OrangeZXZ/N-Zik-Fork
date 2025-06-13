@@ -129,11 +129,13 @@ import it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
 import it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
+import it.fast4x.rimusic.utils.showLyricsStateKey
 import it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import it.fast4x.rimusic.utils.showPlaybackSpeedButtonKey
 import it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import it.fast4x.rimusic.utils.showTopActionsBarKey
 import it.fast4x.rimusic.utils.showTotalTimeQueueKey
+import it.fast4x.rimusic.utils.showVisualizerStateKey
 import it.fast4x.rimusic.utils.showalbumcoverKey
 import it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import it.fast4x.rimusic.utils.showsongsKey
@@ -514,6 +516,8 @@ fun AppearanceSettings(
     var restartService by rememberSaveable { mutableStateOf(false) }
     var showCoverThumbnailAnimation by rememberPreference(showCoverThumbnailAnimationKey, false)
     var coverThumbnailAnimation by rememberPreference(coverThumbnailAnimationKey, ThumbnailCoverType.Vinyl)
+    var showLyricsStateKey by rememberPreference(showLyricsStateKey, false)
+    var showVisualizerStateKey by rememberPreference(showVisualizerStateKey, false)
 
     var notificationPlayerFirstIcon by rememberPreference(notificationPlayerFirstIconKey, NotificationButtons.Download)
     var notificationPlayerSecondIcon by rememberPreference(notificationPlayerSecondIconKey, NotificationButtons.Favorites)
@@ -1567,6 +1571,19 @@ fun AppearanceSettings(
                 isChecked = clickLyricsText,
                 onCheckedChange = { clickLyricsText = it }
             )
+
+        if (search.inputValue.isBlank() || stringResource(R.string.save_lyrics_state).contains(
+                search.inputValue,
+                true
+            )
+        )
+            SwitchSettingEntry(
+                title = stringResource(R.string.save_lyrics_state),
+                text = stringResource(R.string.save_lyrics_state_description),
+                isChecked = showLyricsStateKey,
+                onCheckedChange = { showLyricsStateKey = it }
+            )
+
         if (showlyricsthumbnail)
             if (search.inputValue.isBlank() || stringResource(R.string.show_background_in_lyrics).contains(
                     search.inputValue,
@@ -1606,7 +1623,6 @@ fun AppearanceSettings(
                 valueText = { it.text },
             )
 
-
         if (search.inputValue.isBlank() || stringResource(R.string.visualizer).contains(
                 search.inputValue,
                 true
@@ -1618,27 +1634,22 @@ fun AppearanceSettings(
                 isChecked = visualizerEnabled,
                 onCheckedChange = { visualizerEnabled = it }
             )
-            /*
-            EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.visualizer),
-                selectedValue = playerVisualizerType,
-                onValueSelected = { playerVisualizerType = it },
-                valueText = {
-                    when (it) {
-                        PlayerVisualizerType.Fancy -> stringResource(R.string.vt_fancy)
-                        PlayerVisualizerType.Circular -> stringResource(R.string.vt_circular)
-                        PlayerVisualizerType.Disabled -> stringResource(R.string.vt_disabled)
-                        PlayerVisualizerType.Stacked -> stringResource(R.string.vt_stacked)
-                        PlayerVisualizerType.Oneside -> stringResource(R.string.vt_one_side)
-                        PlayerVisualizerType.Doubleside -> stringResource(R.string.vt_double_side)
-                        PlayerVisualizerType.DoublesideCircular -> stringResource(R.string.vt_double_side_circular)
-                        PlayerVisualizerType.Full -> stringResource(R.string.vt_full)
-                    }
+
+
+            AnimatedVisibility(visible = visualizerEnabled) {
+                Column {
+                    SwitchSettingEntry(
+                        title = stringResource(R.string.save_visualizer_state),
+                        text = stringResource(R.string.save_visualizer_state_description),
+                        isChecked = showVisualizerStateKey,
+                        onCheckedChange = { showVisualizerStateKey = it },
+                        modifier = Modifier.padding(start = 25.dp)
+                    )
                 }
-            )
-            */
-            ImportantSettingsDescription(text = stringResource(R.string.visualizer_require_mic_permission))
+            }
         }
+
+        ImportantSettingsDescription(text = stringResource(R.string.visualizer_require_mic_permission))
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.player_action_bar))

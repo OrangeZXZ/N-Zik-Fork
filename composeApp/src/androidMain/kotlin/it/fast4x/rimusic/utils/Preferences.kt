@@ -15,6 +15,10 @@ import it.fast4x.rimusic.models.Song
 import kotlinx.serialization.json.Json
 import timber.log.Timber
 
+const val showVisualizerStateKey = "showVisualizerStateKey"
+const val showLyricsStateKey = "showLyricsStateKey"
+const val saveVisualizerStateKey = "saveVisualizerStateKey"
+const val saveLyricsStateKey = "saveLyricsStateKey"
 const val lastPlayerThumbnailSizeKey = "lastPlayerThumbnailSize"
 const val lastPlayerPlayButtonTypeKey = "lastPlayerPlayButtonType"
 const val lastPlayerTimelineTypeKey = "lastPlayerTimelineType"

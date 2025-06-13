@@ -605,7 +605,7 @@ fun BoxScope.ActionBar(
                 if (visualizerEnabled)
                     IconButton(
                         icon = R.drawable.sound_effect,
-                        color = if ( isShowingVisualizer ) colorPalette().text else colorPalette().textDisabled,
+                        color = if ( isShowingVisualizer ) colorPalette().accent else Color.Gray,
                         onClick = {
                             if (isShowingLyrics)
                                 isShowingLyrics = !isShowingLyrics

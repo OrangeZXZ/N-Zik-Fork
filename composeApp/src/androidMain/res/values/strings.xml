@@ -993,4 +993,8 @@
 <string name="no_instances_found">No instances found</string>
 <string name="discord_token_text">If you notice that the RPC doesnt work, try log off and log back</string>
 <string name="account_info">Account info</string>
+<string name="save_visualizer_state">Save visualizer state</string>
+<string name="save_visualizer_state_description">Keep visualizer state between sessions</string>
+<string name="save_lyrics_state">Save lyrics state</string>
+<string name="save_lyrics_state_description">Keep lyrics state between sessions</string>
 </resources>
