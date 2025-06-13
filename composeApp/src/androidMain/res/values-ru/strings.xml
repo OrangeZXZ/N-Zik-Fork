@@ -991,7 +991,7 @@
   <string name="piped_login_successful">Вход выполнен успешно</string>
   <string name="piped_login_failed">Ошибка входа в систему</string>
   <string name="no_instances_found">Экземпляров не найдено</string>
-  <string name="discord_token_text">Если вы заметили, что RPC не работает, попробуйте выйти из системы и выйти из системы</string>
+  <string name="discord_token_text">Если вы заметили, что RPC не работает, попробуйте выйти из системы и войти в систему, также убедитесь, что не забудьте перезапустить службу и приложение</string>
   <string name="account_info">Информация о клиенте</string>
   <string name="save_visualizer_state">Сохранить состояние визуализатора</string>
   <string name="save_visualizer_state_description">Сохранять состояние визуализации между сессиями</string>
