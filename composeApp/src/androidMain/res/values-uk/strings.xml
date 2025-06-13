@@ -993,4 +993,8 @@
   <string name="no_instances_found">Екземплярів не знайдено</string>
   <string name="discord_token_text">Якщо ви помітили, що RPC не працює, спробуйте увійти</string>
   <string name="account_info">Інформація про обліковий запис</string>
+  <string name="save_visualizer_state">Зберегти стан візуалізатора</string>
+  <string name="save_visualizer_state_description">Зберігати візуалізатор стан між сеансами</string>
+  <string name="save_lyrics_state">Зберегти текст пісні</string>
+  <string name="save_lyrics_state_description">Зберігати стан текстів пісень між сеансами</string>
 </resources>
