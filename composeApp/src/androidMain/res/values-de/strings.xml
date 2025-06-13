@@ -993,4 +993,8 @@
   <string name="no_instances_found">Keine Instanzen gefunden</string>
   <string name="discord_token_text">Wenn du bemerkst, dass der RPC nicht funktioniert, versuche dich abzumelden und dich wieder abzumelden</string>
   <string name="account_info">Kontoinformationen</string>
+  <string name="save_visualizer_state">Visualizer-Status speichern</string>
+  <string name="save_visualizer_state_description">Visualizer-Status zwischen Sitzungen beibehalten</string>
+  <string name="save_lyrics_state">Songtext-Status speichern</string>
+  <string name="save_lyrics_state_description">Liedtext-Status zwischen Sitzungen behalten</string>
 </resources>
