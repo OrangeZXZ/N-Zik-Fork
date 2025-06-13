@@ -991,7 +991,7 @@
   <string name="piped_login_successful">Piped login successful</string>
   <string name="piped_login_failed">Piped login failed</string>
   <string name="no_instances_found">No instances found</string>
-  <string name="discord_token_text">If you notice that the RPC doesnt work, try log off and log back</string>
+  <string name="discord_token_text">If you notice that the RPC doesnt work, try log off and log back, also make sure to restart the service and the app</string>
   <string name="account_info">Account info</string>
   <string name="save_visualizer_state">Save visualizer state</string>
   <string name="save_visualizer_state_description">Keep visualizer state between sessions</string>
