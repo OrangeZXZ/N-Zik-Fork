@@ -993,7 +993,7 @@ Volume BAS : titre précédent</string>
   <string name="piped_login_successful">Connexion avec succès</string>
   <string name="piped_login_failed">Échec de la connexion</string>
   <string name="no_instances_found">Aucune instance trouvée</string>
-  <string name="discord_token_text">Si vous remarquez que le RPC ne fonctionne pas, essayez de vous déconnecter et de vous reconnecter</string>
+  <string name="discord_token_text">Si vous remarquez que le RPC ne fonctionne pas, essayez de vous déconnecter et de vous reconnecter, assurez-vous également de redémarrer le service et l\'application</string>
   <string name="account_info">Informations sur le compte</string>
   <string name="save_visualizer_state">Enregistrer l\'état du visualiseur</string>
   <string name="save_visualizer_state_description">Garder l\'état du visualiseur entre les sessions</string>
