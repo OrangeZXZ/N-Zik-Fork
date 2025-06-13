@@ -991,7 +991,7 @@
   <string name="piped_login_successful">Piped login succesfuld</string>
   <string name="piped_login_failed">Piped login mislykkedes</string>
   <string name="no_instances_found">Ingen forekomster fundet</string>
-  <string name="discord_token_text">Hvis du bemærker, at RPC ikke arbejde, så prøv at logge af og logge tilbage</string>
+  <string name="discord_token_text">Hvis du bemærker, at RPC ikke fungerer, så prøv at logge af og logge tilbage, skal du også sørge for at genstarte tjenesten og appen</string>
   <string name="account_info">Konto info</string>
   <string name="save_visualizer_state">Gem visualiserings tilstand</string>
   <string name="save_visualizer_state_description">Behold visualiserings tilstand mellem sessioner</string>
