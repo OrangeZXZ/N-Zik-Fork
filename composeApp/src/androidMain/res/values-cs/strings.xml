@@ -993,4 +993,8 @@
   <string name="no_instances_found">Nebyly nalezeny žádné instance</string>
   <string name="discord_token_text">Pokud si všimnete, že RPC nefunguje, zkuste se odhlásit a odhlásit zpět</string>
   <string name="account_info">Informace o účtu</string>
+  <string name="save_visualizer_state">Uložit stav vizualizéru</string>
+  <string name="save_visualizer_state_description">Zachovat stav vizualizace mezi relacemi</string>
+  <string name="save_lyrics_state">Uložit stav textů</string>
+  <string name="save_lyrics_state_description">Zachovat stav textů mezi relacemi</string>
 </resources>
