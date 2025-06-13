@@ -580,7 +580,12 @@ fun AccountsSettings() {
                 title = stringResource(R.string.discord_enable_rich_presence),
                 text = stringResource(R.string.beta_text),
                 isChecked = isDiscordPresenceEnabled,
-                onCheckedChange = { isDiscordPresenceEnabled = it }
+                onCheckedChange = { 
+                    isDiscordPresenceEnabled = it
+                    if (!it) {
+                        restartDiscordService = true
+                    }
+                }
             )
 
 

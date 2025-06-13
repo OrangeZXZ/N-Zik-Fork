@@ -207,6 +207,7 @@ import kotlin.math.roundToInt
 import kotlin.system.exitProcess
 import android.os.Binder as AndroidBinder
 import androidx.compose.ui.util.fastMap
+import it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
 
 const val LOCAL_KEY_PREFIX = "local:"
 
@@ -241,7 +242,7 @@ class PlayerServiceModern : MediaLibraryService(),
     /**
      * Discord presence
      */
-    private lateinit var discordPresenceManager: DiscordPresenceManager
+    private var discordPresenceManager: DiscordPresenceManager? = null
 
     var loudnessEnhancer: LoudnessEnhancer? = null
     private var binder = Binder()
@@ -555,10 +556,15 @@ class PlayerServiceModern : MediaLibraryService(),
         /**
          * Discord presence
          */
-        discordPresenceManager = DiscordPresenceManager(
-            context = this,
-            getToken = { encryptedPreferences.getString(discordPersonalAccessTokenKey, "") },
-        )
+        if (preferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
+            val token = encryptedPreferences.getString(discordPersonalAccessTokenKey, "")
+            if (!token.isNullOrEmpty()) {
+                discordPresenceManager = DiscordPresenceManager(
+                    context = this,
+                    getToken = { token },
+                )
+            }
+        }
     }
 
     override fun onBind(intent: Intent?) = super.onBind(intent) ?: binder
@@ -632,8 +638,10 @@ class PlayerServiceModern : MediaLibraryService(),
             /**
              * Discord presence cleanup
              */
-            Toaster.i("[DiscordPresence] onStop: call the manager (close discord presence)")
-            discordPresenceManager.onStop()
+            if (preferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
+                Toaster.i("[DiscordPresence] onStop: call the manager (close discord presence)")
+                discordPresenceManager?.onStop()
+            }
             maybeSavePlayerQueue()
             preferences.unregisterOnSharedPreferenceChangeListener(this)
             stopService(intent<MyDownloadService>())
@@ -736,20 +744,20 @@ class PlayerServiceModern : MediaLibraryService(),
         /**
          * Discord presence
          */
-
         val title = mediaItem?.mediaMetadata?.title ?: "<none>"
         val duration = player.duration
         val now = System.currentTimeMillis()
-
-        discordPresenceManager.onPlayingStateChanged(
-            mediaItem,
-            player.isPlaying,
-            player.currentPosition,
-            duration,
-            now,
-            getCurrentPosition = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.currentPosition } },
-            isPlayingProvider = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.isPlaying } }
-        )
+        if (preferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
+            discordPresenceManager?.onPlayingStateChanged(
+                mediaItem,
+                player.isPlaying,
+                player.currentPosition,
+                duration,
+                now,
+                getCurrentPosition = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.currentPosition } },
+                isPlayingProvider = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.isPlaying } }
+            )
+        }
     }
 
     override fun onTimelineChanged(timeline: Timeline, reason: Int) {
@@ -780,15 +788,18 @@ class PlayerServiceModern : MediaLibraryService(),
         val title = item?.mediaMetadata?.title ?: "<none>"
         val duration = player.duration
         val now = System.currentTimeMillis()
-        discordPresenceManager.onPlayingStateChanged(
-            item,
-            isPlaying,
-            player.currentPosition,
-            duration,
-            now,
-            getCurrentPosition = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.currentPosition } },
-            isPlayingProvider = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.isPlaying } }
-        )
+        
+        if (preferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
+            discordPresenceManager?.onPlayingStateChanged(
+                item,
+                isPlaying,
+                player.currentPosition,
+                duration,
+                now,
+                getCurrentPosition = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.currentPosition } },
+                isPlayingProvider = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.isPlaying } }
+            )
+        }
         updateWidgets()
     }
 
@@ -1369,16 +1380,21 @@ class PlayerServiceModern : MediaLibraryService(),
     ) {
         Timber.d("PlayerServiceModern onPositionDiscontinuity oldPosition "+oldPosition.mediaItemIndex+" newPosition "+newPosition.mediaItemIndex+" reason "+reason)
         println("PlayerServiceModern onPositionDiscontinuity oldPosition "+oldPosition.mediaItemIndex+" newPosition "+newPosition.mediaItemIndex+" reason "+reason)
+        
         // Discord presence: update on seek/skip
-        discordPresenceManager.onPlayingStateChanged(
-            player.currentMediaItem,
-            player.isPlaying,
-            player.currentPosition,
-            player.duration,
-            System.currentTimeMillis(),
-            getCurrentPosition = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.currentPosition } },
-            isPlayingProvider = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.isPlaying } }
-        )
+        if (reason == Player.DISCONTINUITY_REASON_SEEK || reason == Player.DISCONTINUITY_REASON_SKIP) {
+            if (preferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
+                discordPresenceManager?.onPlayingStateChanged(
+                    player.currentMediaItem,
+                    player.isPlaying,
+                    player.currentPosition,
+                    player.duration,
+                    System.currentTimeMillis(),
+                    getCurrentPosition = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.currentPosition } },
+                    isPlayingProvider = { kotlinx.coroutines.runBlocking(kotlinx.coroutines.Dispatchers.Main) { player.isPlaying } }
+                )
+            }
+        }
         super.onPositionDiscontinuity(oldPosition, newPosition, reason)
     }
 
