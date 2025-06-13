@@ -31,6 +31,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
     /**
      * Get the discord user
@@ -52,7 +53,10 @@ suspend fun fetchDiscordUser(token: String): Pair<String, String>? = withContext
         .build()
     runCatching {
         client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) return@withContext null
+            if (!response.isSuccessful) {
+                Timber.tag("DiscordPresence").e("Failed to fetch Discord user: ${response.code}")
+                return@withContext null
+            }
             val body = response.body?.string() ?: return@withContext null
             val json = JSONObject(body)
             val username = json.getString("username")
@@ -64,7 +68,10 @@ suspend fun fetchDiscordUser(token: String): Pair<String, String>? = withContext
                 "https://cdn.discordapp.com/embed/avatars/${id.toLong() % 5}.png"
             Pair(username, avatarUrl)
         }
-    }.getOrNull()
+    }.getOrElse {
+        Timber.tag("DiscordPresence").e(it, "Error fetching Discord user: ${it.message}")
+        null
+    }
 }
 
 

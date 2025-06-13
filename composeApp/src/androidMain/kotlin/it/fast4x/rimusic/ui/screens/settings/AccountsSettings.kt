@@ -63,7 +63,6 @@ import it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import it.fast4x.rimusic.ui.components.themed.Menu
 import it.fast4x.rimusic.ui.components.themed.MenuEntry
 import it.fast4x.rimusic.ui.styling.Dimensions
-import it.fast4x.rimusic.utils.RestartPlayerService
 import it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import it.fast4x.rimusic.utils.enableYouTubeLoginKey
 import it.fast4x.rimusic.utils.enableYouTubeSyncKey
@@ -277,10 +276,6 @@ fun AccountsSettings() {
                                     }
                                 )
                             }
-                            RestartPlayerService(restartService, onRestart = {
-                                restartService = false
-                                restartActivity = !restartActivity
-                            })
                         }
 
                     }
@@ -543,7 +538,6 @@ fun AccountsSettings() {
                 key = discordPersonalAccessTokenKey,
                 defaultValue = ""
             )
-            var restartDiscordService by rememberSaveable { mutableStateOf(false) }
             var discordAvatar by rememberEncryptedPreference(
                 key = "discord_avatar",
                 defaultValue = ""
@@ -582,9 +576,6 @@ fun AccountsSettings() {
                 isChecked = isDiscordPresenceEnabled,
                 onCheckedChange = { 
                     isDiscordPresenceEnabled = it
-                    if (!it) {
-                        restartDiscordService = true
-                    }
                 }
             )
 
@@ -670,7 +661,6 @@ fun AccountsSettings() {
                                 discordUsername = ""
                                 discordAvatar = ""
                                 showTokenError = false
-                                restartDiscordService = true
                             } else
                                 loginDiscord = true
                         }
@@ -712,16 +702,10 @@ fun AccountsSettings() {
                         discordPersonalAccessToken = token
                         discordUsername = username
                         discordAvatar = avatar
-                        restartDiscordService = true
                         Toaster.i(context.getString(R.string.discord_connected_to_discord_account))
                     }
                 )
             }
-
-            RestartPlayerService(restartDiscordService, onRestart = {
-                restartDiscordService = false
-                restartActivity = !restartActivity
-            })
         }
     }
 }

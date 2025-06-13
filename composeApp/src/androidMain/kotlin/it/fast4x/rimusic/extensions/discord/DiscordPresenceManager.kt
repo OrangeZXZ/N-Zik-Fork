@@ -78,6 +78,15 @@ class DiscordPresenceManager(
     fun onPlayingStateChanged(mediaItem: MediaItem?, isPlaying: Boolean, position: Long = 0L, duration: Long = 0L, now: Long = System.currentTimeMillis(), getCurrentPosition: (() -> Long)? = null, isPlayingProvider: (() -> Boolean)? = null) {
         if (isStopped) return
         val token = getToken() ?: return
+        if (token.isEmpty()) return
+
+        discordScope.launch {
+            if (!validateToken(token)) {
+                Timber.tag("DiscordPresence").e("Invalid token, stopping presence updates")
+                Toaster.e(R.string.discord_token_text_invalid)
+                return@launch
+            }
+        }
 
         refreshJob?.cancel()
         refreshJob = null
@@ -150,11 +159,14 @@ class DiscordPresenceManager(
     ) {
         if (isStopped) return
         val token = getToken() ?: return
+        if (token.isEmpty()) return
+
         if (!validateToken(token)) {
             Timber.tag("DiscordPresence").e("Invalid token, stopping presence updates")
             Toaster.e(R.string.discord_token_text_invalid)
             return
         }
+
         if (token != lastToken) {
             rpc?.closeRPC()
             rpc = KizzyRPC(token)
