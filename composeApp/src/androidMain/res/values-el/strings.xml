@@ -991,7 +991,7 @@
   <string name="piped_login_successful">Επιτυχής σύνδεση με Piped</string>
   <string name="piped_login_failed">Η σύνδεση Piped απέτυχε</string>
   <string name="no_instances_found">Δεν βρέθηκαν παρουσίες</string>
-  <string name="discord_token_text">Αν παρατηρήσετε ότι το RPC δεν λειτουργεί, δοκιμάστε να αποσυνδεθείτε και να συνδεθείτε πίσω</string>
+  <string name="discord_token_text">Αν παρατηρήσετε ότι το RPC δεν λειτουργεί, δοκιμάστε να αποσυνδεθείτε και να συνδεθείτε πίσω, βεβαιωθείτε επίσης να επανεκκινήσετε την υπηρεσία και την εφαρμογή</string>
   <string name="account_info">Πληροφορίες λογαριασμού</string>
   <string name="save_visualizer_state">Αποθήκευση κατάστασης οπτικού εφέ</string>
   <string name="save_visualizer_state_description">Διατήρηση της κατάστασης απεικόνισης μεταξύ των συνεδριών</string>
