@@ -143,6 +143,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
+import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.ColorFilter
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -332,6 +334,7 @@ fun HomeQuickPicks(
 
     fun refresh() {
         if (refreshing) return
+        trendingList = emptyList()
         loadedData = false
         relatedPageResult = null
         relatedInit = null
@@ -532,8 +535,6 @@ fun HomeQuickPicks(
                             binder?.player?.addMediaItems(relatedInit?.songs?.map { it.asMediaItem }
                                 ?: emptyList())
                         }
-
-                        //modifier = Modifier.fillMaxWidth(0.7f)
                     )
 
                     BasicText(
@@ -606,12 +607,25 @@ fun HomeQuickPicks(
                                 song = song,
                                 navController = navController,
                                 onClick = { binder?.startRadio(song, true) },
-                                modifier = Modifier.width(itemInHorizontalGridWidth)
+                                modifier = Modifier.width(itemInHorizontalGridWidth),
+                                thumbnailOverlay = {
+                                    if (recommendations.indexOf(song) == 0) {
+                                        Image(
+                                            painter = painterResource(R.drawable.star_brilliant),
+                                            contentDescription = null,
+                                            colorFilter = ColorFilter.tint(colorPalette().accent),
+                                            modifier = Modifier
+                                                .size(23.dp)
+                                                .align(Alignment.TopEnd)
+                                                .padding(4.dp)
+                                        )
+                                    }
+                                }
                             )
                         }
                     }
 
-                    if (relatedInit == null) Loader()
+                    if (!loadedData || relatedPageResult == null) Loader()
                 }
 
 
