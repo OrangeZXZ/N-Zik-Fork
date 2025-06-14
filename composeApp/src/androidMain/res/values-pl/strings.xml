@@ -997,4 +997,5 @@
   <string name="save_visualizer_state_description">Zachowaj stan wizualizatora pomiędzy sesjami</string>
   <string name="save_lyrics_state">Zapisz stan tekstów</string>
   <string name="save_lyrics_state_description">Zachowaj stan tekstów pomiędzy sesjami</string>
+  <string name="return_to_audio_mode">Powrót do trybu audio</string>
 </resources>
