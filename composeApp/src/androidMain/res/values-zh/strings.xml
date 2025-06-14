@@ -997,5 +997,5 @@
   <string name="save_visualizer_state_description">在会话之间保持可视化器状态</string>
   <string name="save_lyrics_state">保存歌词状态</string>
   <string name="save_lyrics_state_description">保持会话之间的歌词状态</string>
-  <string name="return_to_audio_mode">Return to audio mode</string>
+  <string name="return_to_audio_mode">返回音频模式</string>
 </resources>
