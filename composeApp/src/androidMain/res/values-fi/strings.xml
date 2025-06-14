@@ -997,4 +997,5 @@
   <string name="save_visualizer_state_description">Pidä visualisoijan tila istuntojen välillä</string>
   <string name="save_lyrics_state">Tallenna sanoitusten tila</string>
   <string name="save_lyrics_state_description">Pidä sanoitusten tila istuntojen välillä</string>
+  <string name="return_to_audio_mode">Palaa äänitilaan</string>
 </resources>
