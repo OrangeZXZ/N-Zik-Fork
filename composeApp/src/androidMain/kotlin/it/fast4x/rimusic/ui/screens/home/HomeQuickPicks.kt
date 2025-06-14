@@ -545,87 +545,89 @@ fun HomeQuickPicks(
                             .padding(bottom = 8.dp)
                     )
 
-                    // Prepare the final list : 6 locals (or less depending on the local recommandations number) + 14 YT recommendations (or less), then shuffle to show max 21 songs
-                    val recommendations = remember(trendingList, relatedInit, localCount, playEventType) {
-                        val mainIds = trendingList.map { it.id }.toSet()
-                        if (playEventType == PlayEventsType.MostPlayed || playEventType == PlayEventsType.LastPlayed) {
-                            val first = trendingList.firstOrNull()
-                            val others = trendingList.drop(1)
-                            val relatedSongs = relatedInit?.songs
-                                ?.map { it.asSong }
-                                ?.filter { it.id !in mainIds }
-                                ?.distinctBy { it.id }
-                                    ?.take(21 - (1 + others.size))
-                                .orEmpty()
-                            val total = (others + relatedSongs)
-                            val extra = if (total.size < 21) {
-                                relatedInit?.songs
+                    if (relatedPageResult != null) {
+                        // Prepare the final list : 6 locals (or less depending on the local recommandations number) + 14 YT recommendations (or less), then shuffle to show max 21 songs
+                        val recommendations = remember(trendingList, relatedInit, localCount, playEventType) {
+                            val mainIds = trendingList.map { it.id }.toSet()
+                            if (playEventType == PlayEventsType.MostPlayed || playEventType == PlayEventsType.LastPlayed) {
+                                val first = trendingList.firstOrNull()
+                                val others = trendingList.drop(1)
+                                val relatedSongs = relatedInit?.songs
                                     ?.map { it.asSong }
-                                    ?.filter { it.id !in (others.map { s -> s.id } + (first?.id ?: "")) }
+                                    ?.filter { it.id !in mainIds }
                                     ?.distinctBy { it.id }
-                                    ?.take(21 - total.size)
+                                        ?.take(21 - (1 + others.size))
                                     .orEmpty()
-                            } else emptyList()
-                            (listOfNotNull(first) + (total + extra).shuffled()).distinctBy { it.id }
-                        } else {
-                            // Random Mode will randomize the list : all mixed
-                            val locals = trendingList.take(localCount)
-                            val relatedSongs = relatedInit?.songs
-                                ?.map { it.asSong }
-                                ?.filter { it.id !in locals.map { it.id } }
-                                ?.distinctBy { it.id }
-                                ?.take(21 - locals.size)
-                                .orEmpty()
-                            val total = (locals + relatedSongs)
-                            val extra = if (total.size < 21) {
-                                relatedInit?.songs
+                                val total = (others + relatedSongs)
+                                val extra = if (total.size < 21) {
+                                    relatedInit?.songs
+                                        ?.map { it.asSong }
+                                        ?.filter { it.id !in (others.map { s -> s.id } + (first?.id ?: "")) }
+                                        ?.distinctBy { it.id }
+                                        ?.take(21 - total.size)
+                                        .orEmpty()
+                                } else emptyList()
+                                (listOfNotNull(first) + (total + extra).shuffled()).distinctBy { it.id }
+                            } else {
+                                // Random Mode will randomize the list : all mixed
+                                val locals = trendingList.take(localCount)
+                                val relatedSongs = relatedInit?.songs
                                     ?.map { it.asSong }
-                                    ?.filter { it.id !in total.map { s -> s.id } }
+                                    ?.filter { it.id !in locals.map { it.id } }
                                     ?.distinctBy { it.id }
-                                    ?.take(21 - total.size)
+                                    ?.take(21 - locals.size)
                                     .orEmpty()
-                            } else emptyList()
-                            (total + extra).shuffled().distinctBy { it.id }
+                                val total = (locals + relatedSongs)
+                                val extra = if (total.size < 21) {
+                                    relatedInit?.songs
+                                        ?.map { it.asSong }
+                                        ?.filter { it.id !in total.map { s -> s.id } }
+                                        ?.distinctBy { it.id }
+                                        ?.take(21 - total.size)
+                                        .orEmpty()
+                                } else emptyList()
+                                (total + extra).shuffled().distinctBy { it.id }
+                            }
                         }
-                    }
 
-                    LazyHorizontalGrid(
-                        state = quickPicksLazyGridState,
-                        rows = GridCells.Fixed(if (relatedInit != null) 3 else 1),
-                        flingBehavior = ScrollableDefaults.flingBehavior(),
-                        contentPadding = endPaddingValues,
-                        modifier = Modifier.fillMaxWidth()
+                        LazyHorizontalGrid(
+                            state = quickPicksLazyGridState,
+                            rows = GridCells.Fixed(if (relatedInit != null) 3 else 1),
+                            flingBehavior = ScrollableDefaults.flingBehavior(),
+                            contentPadding = endPaddingValues,
+                            modifier = Modifier.fillMaxWidth()
                                            .height(
                                                if ( relatedInit != null)
                                                    Dimensions.itemsVerticalPadding * 3 * 9
                                                else
                                                    Dimensions.itemsVerticalPadding * 9
                                            )
-                    ) {
-                        items(recommendations, key = { it.id }) { song ->
-                            me.knighthat.component.SongItem(
-                                song = song,
-                                navController = navController,
-                                onClick = { binder?.startRadio(song, true) },
-                                modifier = Modifier.width(itemInHorizontalGridWidth),
-                                thumbnailOverlay = {
-                                    if (recommendations.indexOf(song) == 0) {
-                                        Image(
-                                            painter = painterResource(R.drawable.star_brilliant),
-                                            contentDescription = null,
-                                            colorFilter = ColorFilter.tint(colorPalette().accent),
-                                            modifier = Modifier
-                                                .size(23.dp)
-                                                .align(Alignment.TopEnd)
-                                                .padding(4.dp)
-                                        )
+                        ) {
+                            items(recommendations, key = { it.id }) { song ->
+                                me.knighthat.component.SongItem(
+                                    song = song,
+                                    navController = navController,
+                                    onClick = { binder?.startRadio(song, true) },
+                                    modifier = Modifier.width(itemInHorizontalGridWidth),
+                                    thumbnailOverlay = {
+                                        if (recommendations.indexOf(song) == 0) {
+                                            Image(
+                                                painter = painterResource(R.drawable.star_brilliant),
+                                                contentDescription = null,
+                                                colorFilter = ColorFilter.tint(colorPalette().accent),
+                                                modifier = Modifier
+                                                    .size(23.dp)
+                                                    .align(Alignment.TopEnd)
+                                                    .padding(4.dp)
+                                            )
+                                        }
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
                     }
 
-                    if (!loadedData || relatedPageResult == null) Loader()
+                    if (relatedPageResult == null) Loader()
                 }
 
 
