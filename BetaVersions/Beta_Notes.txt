@@ -1,0 +1,16 @@
+Changed:
+- Added Remember visualizer and Lyrics state, that you can enable in settings
+- Changed Library icon
+- Improved Video UI
+
+Optimizations:
+- Improved Discord RPC handling (play, pause, kill)
+- improved Padding in library for artist online
+
+Bug Fixes:
+- Color button for visualizer
+- Folders on "On Device" section is back
+- Song's title showed  "e:" on explicit songs
+- Discord RPC handling connection and doesn't spam error and doesnt work if the RPC is off
+- Prevent constant fail message when there's no internet connection
+- Control wasn't working in video UI
