@@ -193,7 +193,7 @@ android {
         }
 
         create( "beta" ) {
-            initWith( maybeCreate("minified") )
+            initWith( maybeCreate("full") )
             versionNameSuffix = "-beta"
             signingConfig = signingConfigs.getByName("debug")
             buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
