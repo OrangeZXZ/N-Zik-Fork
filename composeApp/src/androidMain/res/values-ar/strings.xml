@@ -997,4 +997,5 @@
   <string name="save_visualizer_state_description">الحفاظ على حالة المرئيات بين الجلسات</string>
   <string name="save_lyrics_state">حفظ حالة الكلمات</string>
   <string name="save_lyrics_state_description">الحفاظ على حالة الكلمات بين الجلسات</string>
+  <string name="return_to_audio_mode">العودة إلى وضع الصوت</string>
 </resources>

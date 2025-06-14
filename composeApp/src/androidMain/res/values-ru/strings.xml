@@ -997,4 +997,5 @@
   <string name="save_visualizer_state_description">Сохранять состояние визуализации между сессиями</string>
   <string name="save_lyrics_state">Сохранить состояние текста песни</string>
   <string name="save_lyrics_state_description">Сохранить состояние текста между сессиями</string>
+  <string name="return_to_audio_mode">Вернуться в аудиорежим</string>
 </resources>

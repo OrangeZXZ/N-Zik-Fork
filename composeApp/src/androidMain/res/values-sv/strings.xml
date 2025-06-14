@@ -997,4 +997,5 @@
   <string name="save_visualizer_state_description">Behåll visualiseringsläget mellan sessioner</string>
   <string name="save_lyrics_state">Spara låttextens status</string>
   <string name="save_lyrics_state_description">Behåll låttexten mellan sessioner</string>
+  <string name="return_to_audio_mode">Återgå till ljudläge</string>
 </resources>

@@ -997,4 +997,5 @@
   <string name="save_visualizer_state_description">Διατήρηση της κατάστασης απεικόνισης μεταξύ των συνεδριών</string>
   <string name="save_lyrics_state">Αποθήκευση κατάστασης στίχων</string>
   <string name="save_lyrics_state_description">Διατήρηση κατάστασης στίχων μεταξύ συνεδριών</string>
+  <string name="return_to_audio_mode">Επιστροφή στη λειτουργία ήχου</string>
 </resources>

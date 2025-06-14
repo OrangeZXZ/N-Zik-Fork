@@ -997,4 +997,5 @@
   <string name="save_visualizer_state_description">Păstrați starea vizualizatorului între sesiuni</string>
   <string name="save_lyrics_state">Salvează starea versurilor</string>
   <string name="save_lyrics_state_description">Păstrați starea versurilor între sesiuni</string>
+  <string name="return_to_audio_mode">Revenire la modul audio</string>
 </resources>

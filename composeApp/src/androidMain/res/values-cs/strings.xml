@@ -997,4 +997,5 @@
   <string name="save_visualizer_state_description">Zachovat stav vizualizace mezi relacemi</string>
   <string name="save_lyrics_state">Uložit stav textů</string>
   <string name="save_lyrics_state_description">Zachovat stav textů mezi relacemi</string>
+  <string name="return_to_audio_mode">Zpět do režimu zvuku</string>
 </resources>

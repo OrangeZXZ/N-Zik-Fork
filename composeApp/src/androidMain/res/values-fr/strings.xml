@@ -999,4 +999,5 @@ Volume BAS : titre précédent</string>
   <string name="save_visualizer_state_description">Garder l\'état du visualiseur entre les sessions</string>
   <string name="save_lyrics_state">Enregistrer l\'état des paroles</string>
   <string name="save_lyrics_state_description">Garder l\'état des paroles entre les sessions</string>
+  <string name="return_to_audio_mode">Revenir en mode audio</string>
 </resources>

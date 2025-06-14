@@ -997,4 +997,5 @@
   <string name="save_visualizer_state_description">Keep visualizer state between sessions</string>
   <string name="save_lyrics_state">Save lyrics state</string>
   <string name="save_lyrics_state_description">Keep lyrics state between sessions</string>
+  <string name="return_to_audio_mode">Return to audio mode</string>
 </resources>

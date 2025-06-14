@@ -997,4 +997,5 @@
   <string name="save_visualizer_state_description">Behold visualiserstatus mellom økter</string>
   <string name="save_lyrics_state">Lagre tilstanden til sangteksten</string>
   <string name="save_lyrics_state_description">Behold tilstanden til sangtekster mellom økter</string>
+  <string name="return_to_audio_mode">Gå tilbake til lydmodus</string>
 </resources>

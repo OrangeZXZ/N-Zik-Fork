@@ -997,4 +997,5 @@
   <string name="save_visualizer_state_description">Mantener el estado del visualizador entre sesiones</string>
   <string name="save_lyrics_state">Guardar estado de letras</string>
   <string name="save_lyrics_state_description">Mantener el estado de las letras entre sesiones</string>
+  <string name="return_to_audio_mode">Volver al modo de audio</string>
 </resources>

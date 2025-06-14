@@ -997,4 +997,5 @@
   <string name="save_visualizer_state_description">セッション間のビジュアライザーの状態を維持する</string>
   <string name="save_lyrics_state">歌詞の状態を保存</string>
   <string name="save_lyrics_state_description">セッション間で歌詞の状態を維持する</string>
+  <string name="return_to_audio_mode">音声モードに戻る</string>
 </resources>
