@@ -997,4 +997,5 @@
   <string name="save_visualizer_state_description">Visalizerstatus behouden tussen sessies</string>
   <string name="save_lyrics_state">Songtekst status opslaan</string>
   <string name="save_lyrics_state_description">Songtekst status behouden tussen sessies</string>
+  <string name="return_to_audio_mode">Terug naar audiomodus</string>
 </resources>
