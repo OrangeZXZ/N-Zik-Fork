@@ -93,6 +93,7 @@ import me.knighthat.utils.Toaster
 import timber.log.Timber
 import androidx.compose.material3.Text
 import it.fast4x.rimusic.typography
+import me.knighthat.component.dialog.RestartAppDialog
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -576,6 +577,9 @@ fun AccountsSettings() {
                 isChecked = isDiscordPresenceEnabled,
                 onCheckedChange = { 
                     isDiscordPresenceEnabled = it
+                    if (!it) {
+                        RestartAppDialog.showDialog()
+                    }
                 }
             )
 
@@ -661,50 +665,44 @@ fun AccountsSettings() {
                                 discordUsername = ""
                                 discordAvatar = ""
                                 showTokenError = false
+                                RestartAppDialog.showDialog()
                             } else
                                 loginDiscord = true
                         }
                     )
 
-                    if (discordPersonalAccessToken.isNotEmpty()) {
-                        Text(
-                            text = stringResource(R.string.discord_token_text),
-                            color = colorPalette().red,
-                            modifier = Modifier.padding(start = 13.dp, top = 10.dp)
+                    CustomModalBottomSheet(
+                        showSheet = loginDiscord,
+                        onDismissRequest = {
+                            loginDiscord = false
+                        },
+                        containerColor = colorPalette().background0,
+                        contentColor = colorPalette().background0,
+                        modifier = Modifier.fillMaxWidth(),
+                        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                        dragHandle = {
+                            Surface(
+                                modifier = Modifier.padding(vertical = 0.dp),
+                                color = colorPalette().background0,
+                                shape = thumbnailShape()
+                            ) {}
+                        },
+                        shape = thumbnailRoundness.shape
+                    ) {
+                        DiscordLoginAndGetToken(
+                            navController = rememberNavController(),
+                            onGetToken = { token, username, avatar ->
+                                loginDiscord = false
+                                discordPersonalAccessToken = token
+                                discordUsername = username
+                                discordAvatar = avatar
+                                Toaster.i(context.getString(R.string.discord_connected_to_discord_account))
+                                RestartAppDialog.showDialog()
+                            }
                         )
                     }
 
                 }
-            }
-
-            CustomModalBottomSheet(
-                showSheet = loginDiscord,
-                onDismissRequest = {
-                    loginDiscord = false
-                },
-                containerColor = colorPalette().background0,
-                contentColor = colorPalette().background0,
-                modifier = Modifier.fillMaxWidth(),
-                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                dragHandle = {
-                    Surface(
-                        modifier = Modifier.padding(vertical = 0.dp),
-                        color = colorPalette().background0,
-                        shape = thumbnailShape()
-                    ) {}
-                },
-                shape = thumbnailRoundness.shape
-            ) {
-                DiscordLoginAndGetToken(
-                    navController = rememberNavController(),
-                    onGetToken = { token, username, avatar ->
-                        loginDiscord = false
-                        discordPersonalAccessToken = token
-                        discordUsername = username
-                        discordAvatar = avatar
-                        Toaster.i(context.getString(R.string.discord_connected_to_discord_account))
-                    }
-                )
             }
         }
     }
