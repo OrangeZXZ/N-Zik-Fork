@@ -991,6 +991,10 @@
   <string name="piped_login_successful">管道登录成功</string>
   <string name="piped_login_failed">Piped登录失败</string>
   <string name="no_instances_found">未找到实例</string>
-  <string name="discord_token_text">如果您注意到 RPC 不起作用，请尝试注销并重新登录</string>
+  <string name="discord_token_text">If you notice that the RPC doesnt work, try log off and log back, also make sure to restart the service and the app</string>
   <string name="account_info">帐户信息</string>
+  <string name="save_visualizer_state">Save visualizer state</string>
+  <string name="save_visualizer_state_description">Keep visualizer state between sessions</string>
+  <string name="save_lyrics_state">Save lyrics state</string>
+  <string name="save_lyrics_state_description">Keep lyrics state between sessions</string>
 </resources>

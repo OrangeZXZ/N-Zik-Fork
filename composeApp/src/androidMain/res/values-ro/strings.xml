@@ -991,6 +991,10 @@
   <string name="piped_login_successful">Conectare la conducte cu succes</string>
   <string name="piped_login_failed">Conectarea la conducte a eșuat</string>
   <string name="no_instances_found">Nu s-au găsit instanțe</string>
-  <string name="discord_token_text">Dacă observați că RPC nu funcționează, încercați să vă deconectați și să vă conectați din nou</string>
+  <string name="discord_token_text">Dacă observați că RPC nu funcționează, încercați să vă deconectați și să vă conectați, asigurați-vă că reporniți serviciul și aplicația</string>
   <string name="account_info">Informații cont</string>
+  <string name="save_visualizer_state">Salvează starea vizualizatorului</string>
+  <string name="save_visualizer_state_description">Păstrați starea vizualizatorului între sesiuni</string>
+  <string name="save_lyrics_state">Salvează starea versurilor</string>
+  <string name="save_lyrics_state_description">Păstrați starea versurilor între sesiuni</string>
 </resources>

@@ -991,6 +991,10 @@
   <string name="piped_login_successful">Inicio de sesión con éxito</string>
   <string name="piped_login_failed">Error al iniciar sesión</string>
   <string name="no_instances_found">No se encontraron instancias</string>
-  <string name="discord_token_text">Si nota que el RPC no funciona, intente cerrar sesión y vuelva a iniciar sesión</string>
+  <string name="discord_token_text">Si nota que el RPC no funciona, intente cerrar sesión y volver a conectarse, asegúrese de reiniciar el servicio y la aplicación</string>
   <string name="account_info">Información de la cuenta</string>
+  <string name="save_visualizer_state">Guardar estado del visualizador</string>
+  <string name="save_visualizer_state_description">Mantener el estado del visualizador entre sesiones</string>
+  <string name="save_lyrics_state">Guardar estado de letras</string>
+  <string name="save_lyrics_state_description">Mantener el estado de las letras entre sesiones</string>
 </resources>

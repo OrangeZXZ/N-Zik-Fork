@@ -991,6 +991,10 @@
   <string name="piped_login_successful">Piped inloggning lyckades</string>
   <string name="piped_login_failed">Pippad inloggning misslyckades</string>
   <string name="no_instances_found">Inga instanser hittades</string>
-  <string name="discord_token_text">Om du märker att RPC inte fungerar, försök logga ut och logga tillbaka</string>
+  <string name="discord_token_text">Om du märker att RPC inte fungerar, försök logga ut och logga tillbaka, se också till att starta om tjänsten och appen</string>
   <string name="account_info">Konto information</string>
+  <string name="save_visualizer_state">Spara visualiseringsläge</string>
+  <string name="save_visualizer_state_description">Behåll visualiseringsläget mellan sessioner</string>
+  <string name="save_lyrics_state">Spara låttextens status</string>
+  <string name="save_lyrics_state_description">Behåll låttexten mellan sessioner</string>
 </resources>

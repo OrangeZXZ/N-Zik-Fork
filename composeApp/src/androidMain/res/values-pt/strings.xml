@@ -991,6 +991,10 @@
   <string name="piped_login_successful">Login feito com sucesso</string>
   <string name="piped_login_failed">Login com Piped falhou</string>
   <string name="no_instances_found">Nenhuma instância encontrada</string>
-  <string name="discord_token_text">Se você notar que o RPC não funciona, tente desconectar e voltar a logar</string>
+  <string name="discord_token_text">Se você notar que o RPC não funciona, tente desconectar e voltar a logar, certifique-se também de reiniciar o serviço e o aplicativo</string>
   <string name="account_info">Informações da conta</string>
+  <string name="save_visualizer_state">Salvar estado do visualizador</string>
+  <string name="save_visualizer_state_description">Manter o estado do visualizador entre sessões</string>
+  <string name="save_lyrics_state">Salvar estado da letra</string>
+  <string name="save_lyrics_state_description">Manter o estado da letra entre sessões</string>
 </resources>

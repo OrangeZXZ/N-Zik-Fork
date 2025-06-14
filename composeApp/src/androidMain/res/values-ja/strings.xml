@@ -991,6 +991,10 @@
   <string name="piped_login_successful">パイプのログインに成功しました</string>
   <string name="piped_login_failed">パイプログインに失敗しました</string>
   <string name="no_instances_found">インスタンスが見つかりません</string>
-  <string name="discord_token_text">RPCが動作しないことに気付いたら、ログオフして再度ログインしてください</string>
+  <string name="discord_token_text">RPCが動作しないことに気付いたら、ログオフしてログアウトしてください。また、サービスとアプリを再起動してください</string>
   <string name="account_info">アカウント情報</string>
+  <string name="save_visualizer_state">ビジュアライザーの状態を保存</string>
+  <string name="save_visualizer_state_description">セッション間のビジュアライザーの状態を維持する</string>
+  <string name="save_lyrics_state">歌詞の状態を保存</string>
+  <string name="save_lyrics_state_description">セッション間で歌詞の状態を維持する</string>
 </resources>

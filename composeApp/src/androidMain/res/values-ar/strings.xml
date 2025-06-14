@@ -991,6 +991,10 @@
   <string name="piped_login_successful">تم تسجيل الدخول بالأنبوبة بنجاح</string>
   <string name="piped_login_failed">فشل تسجيل الدخول الأنبوت</string>
   <string name="no_instances_found">لا يوجد مثيلات</string>
-  <string name="discord_token_text">إذا لاحظت أن RPC لا يعمل، حاول تسجيل الخروج وتسجيل الدخول مرة أخرى</string>
+  <string name="discord_token_text">إذا لاحظت أن RPC لا يعمل ، حاول تسجيل الخروج وتسجيل العودة ، تأكد أيضا من إعادة تشغيل الخدمة والتطبيق</string>
   <string name="account_info">معلومات الحساب</string>
+  <string name="save_visualizer_state">حفظ حالة المرئيات</string>
+  <string name="save_visualizer_state_description">الحفاظ على حالة المرئيات بين الجلسات</string>
+  <string name="save_lyrics_state">حفظ حالة الكلمات</string>
+  <string name="save_lyrics_state_description">الحفاظ على حالة الكلمات بين الجلسات</string>
 </resources>
