@@ -128,7 +128,6 @@ Here are the languages currently supported:
 [![GitHub](./assets/get-it-on/GitHub.png)](https://github.com/fast4x/RiGallery/releases/latest)  
 
 **Beta versions are available here:**  
-
 [![BetaVersions folder](./assets/get-it-on/GitHubBeta.png)](https://github.com/NEVARLeVrai/N-Zik/tree/main/BetaVersions)
 
 # 🤝 Contributing
