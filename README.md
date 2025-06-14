@@ -122,6 +122,15 @@ Here are the languages currently supported:
 
 ---
 
+# 📲 Installation
+
+**Stable versions are available here:**  
+[![GitHub](./assets/get-it-on/GitHub.png)](https://github.com/fast4x/RiGallery/releases/latest)  
+
+**Beta versions are available here:**  
+
+[![BetaVersions folder](./assets/get-it-on/GitHubBeta.png)](https://github.com/NEVARLeVrai/N-Zik/tree/main/BetaVersions)
+
 # 🤝 Contributing
 
 ## 🛠️ Improve the App
@@ -166,7 +175,7 @@ Join us on Crowdin!
 - [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): Shader effects for Compose.
 - [**Kizzy-RPC**](https://github.com/dead8309/KizzyRPC): Discord RPC presets.
 - [**echo-discord**](https://github.com/brahmkshatriya/echo-discord): Fixes for Discord artwork upload/loading.
-  
+
 # ⚠️ Disclaimer
 
 This project is built on top of [Kreate](https://github.com/knighthat/Kreate), but has no relation to the original author.
@@ -175,3 +184,6 @@ Furthermore, its contents are not affiliated with, funded, authorized, endorsed 
 Google LLC, or any of its affiliates or subsidiaries.
 
 Any trademarks, service marks, trade names, or other intellectual property rights used in this project remain the property of their respective owners.
+
+Made with ❤️ by [NEVARLeVrai](https://github.com/NEVARLeVrai)  
+Licensed under GPLv3 - see [LICENSE](LICENSE)  
