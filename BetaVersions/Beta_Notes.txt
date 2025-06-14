@@ -1,3 +1,5 @@
+14/06/25 - Note May contain bugs and crash, also auto update is OFF !
+
 Changed:
 - Added Remember visualizer and Lyrics state, that you can enable in settings
 - Changed Library icon
