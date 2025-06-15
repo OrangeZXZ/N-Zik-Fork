@@ -116,6 +116,10 @@ fun HomeSongsScreen(navController: NavController ) {
     val resetCache = ResetCache( ::getSongs )
 
     val buttons = remember( builtInPlaylist ) {
+        
+        // Disable checkboxes when category has changed
+        itemSelector.isActive = false
+
         mutableStateListOf<Button>() .apply {
             this.add( search )
             this.add( locator )
