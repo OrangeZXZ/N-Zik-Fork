@@ -1,8 +1,28 @@
 A FAIRE
 
 
-
 PLUS TARD
+add bottom padding
+move to common folder
+use import instead of direct package
+remove navController parameter
+new QuickPicksSettings
+new OtherSettings UI
+add section with string title and subtitleId
+new AccountSettings UI
+new About UI
+new AppearanceSettings UI
+new DataSettings UI
+remove default subtitleId value
+implement new setting entry: header
+remove spacer from section & apply it directly to header
+add SettingHeader with subtitleId
+implement new setting entry: input dialog
+implement new setting entry: boolean switch
+new method to switch value to opposition
+use separate BasicText for subtitle
+scrollable enum selector
+implement new setting entry: description
 rework open from shortcuts
 fixup! optimize conversion with checks
 move int settings to new settings implementation
@@ -15,10 +35,21 @@ move register to after initialization of ExoPlayer
 move enum settings to new settings implementation
 new robust implementation of mutable préférences
 use built-in listener's parameters for up-to-date data environ
-
-
+new ItemSelector with support for select all
+add proper monochrome version of app icon
+remove unnecessary @composable
+new basic components of settings
+AnimatedHeader for RiMusic and ViMusic themes
+new GeneralSettings UI
+new UiSettings UI
+add function to reset value to default value
+implement new setting entry: enum selector
 
 OK
+denote @callsuper on onSet
+hide update section on non-updatable builds
+replace nullable call with static non-null call
+implement TextView
 fine-tune date values
 fix queue getting appended uncontrollably
 fix opening queue crashes the app
@@ -29,3 +60,7 @@ fix error with empty path
 fix "On device" chip shows despite disabled
 remove redundant log messages
 prevent constant fail message when there's no internet connection
+fix local songs failed to play in AA
+disable checkboxes when category has changed
+add long click support to menu entry
+fix play next in queue crashes app
