@@ -278,9 +278,7 @@ class MediaLibrarySessionCallback(
                         browsableMediaItem(
                             "${PlayerServiceModern.PLAYLIST}/$ID_TOP",
                             context.getString(R.string.playlist_top),
-                            context.preferences.getEnum(
-                                MaxTopPlaylistItemsKey,
-                                MaxTopPlaylistItems.`10`).name,
+                            context.preferences.getEnum(MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10`).name,
                             drawableUri(R.drawable.trending),
                             MediaMetadata.MEDIA_TYPE_PLAYLIST
                         ),
@@ -342,8 +340,8 @@ class MediaLibrarySessionCallback(
                                         .findSongsMostPlayedBetween(
                                             from = 0,
                                             limit = context.preferences
-                                                           .getEnum(MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10`)
-                                                           .toInt()
+                                                .getEnum(MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10`)
+                                                .toInt()
                                         )
                             ID_ONDEVICE -> database.songTable.allOnDevice()
                             ID_DOWNLOADED -> {
@@ -444,7 +442,7 @@ class MediaLibrarySessionCallback(
                                            .findSongsMostPlayedBetween(
                                                from = 0,
                                                limit = context.preferences
-                                                   .getEnum( MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10` )
+                                                   .getEnum(MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10`)
                                                    .toInt()
                                            )
                         ID_ONDEVICE -> database.songTable.allOnDevice()
@@ -554,26 +552,19 @@ class MediaLibrarySessionCallback(
             )
             .build()
 
-    private fun Song.toMediaItem(isFromPersistentQueue: Boolean = false) =
-        MediaItem.Builder()
-            .setMediaId(id)
-            .setUri(id)
-            .setCustomCacheKey(id)
-            .setMediaMetadata(
-                MediaMetadata.Builder()
-                    .setTitle(cleanTitle())
-                    .setSubtitle(cleanArtistsText())
-                    .setArtist(cleanArtistsText())
-                    .setArtworkUri(thumbnailUrl?.toUri())
-                    .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
-                    .setExtras(
-                        Bundle().apply {
-                            putBoolean(persistentQueueKey, isFromPersistentQueue)
-                        }
-                    )
-                    .build()
-            )
-            .build()
+    private fun Song.toMediaItem(isFromPersistentQueue: Boolean = false): MediaItem {
+        val bundle = Bundle().apply {
+            putBoolean(persistentQueueKey, isFromPersistentQueue)
+        }
+
+        val mediaItem = asMediaItem
+        val metadata: MediaMetadata = mediaItem.mediaMetadata
+                                               .buildUpon()
+                                               .setExtras(bundle)
+                                               .build()
+
+        return mediaItem.buildUpon().setMediaMetadata(metadata).build()
+    }
 
     private fun getCountCachedSongs() =
         database.formatTable
