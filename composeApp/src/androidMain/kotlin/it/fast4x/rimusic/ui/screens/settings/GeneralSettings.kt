@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.kreate.android.BuildConfig
 import app.kreate.android.R
 import it.fast4x.rimusic.LocalPlayerServiceBinder
 import it.fast4x.rimusic.colorPalette
@@ -305,9 +306,11 @@ fun GeneralSettings(
             )
         }
 
-        SettingsEntryGroupText( stringResource(R.string.update) )
-        if( search.inputValue.isBlank() || stringResource(R.string.update).contains( search.inputValue, true ) )
-            Updater.SettingEntry()
+        if (BuildConfig.IS_AUTOUPDATE) {
+            SettingsEntryGroupText(stringResource(R.string.update))
+            if (search.inputValue.isBlank() || stringResource(R.string.update).contains(search.inputValue, true))
+                Updater.SettingEntry()
+        }
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.languages))
