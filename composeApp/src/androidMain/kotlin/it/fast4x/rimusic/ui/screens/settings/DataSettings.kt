@@ -86,28 +86,9 @@ fun DataSettings() {
         ExoPlayerDiskDownloadCacheMaxSize.`2GB`
     )
 
-    /*
-     *    var exoPlayerAlternateCacheLocation by rememberPreference(
-     *        exoPlayerAlternateCacheLocationKey,""
-     *    )
-     */
-
     var exoPlayerCacheLocation by rememberPreference(
         exoPlayerCacheLocationKey, ExoPlayerCacheLocation.System
     )
-
-
-    /*
-     *    val dirRequest = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
-     *        uri?.let {
-     *            context.applicationContext.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-     *            context.applicationContext.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-     *            //Log.d("exoAltLocationCache",uri.path.toString())
-     *            exoPlayerAlternateCacheLocation = uri.path.toString()
-}
-}
-*/
-
 
     var showExoPlayerCustomCacheDialog by remember { mutableStateOf(false) }
     var exoPlayerCustomCache by rememberPreference(
@@ -135,14 +116,16 @@ fun DataSettings() {
     if (cleanCacheOfflineSongs) {
         ConfirmationDialog(
             text = stringResource(R.string.do_you_really_want_to_delete_cache),
-                           onDismiss = {
-                               cleanCacheOfflineSongs = false
-                           },
-                           onConfirm = {
-                               binder?.cache?.keys?.forEach { song ->
-                                   binder.cache.removeResource(song)
-                               }
-                           }
+            onDismiss = {
+                cleanCacheOfflineSongs = false
+            },
+            onConfirm = {
+                binder?.cache?.let { cache ->
+                    cache.keys.forEach { song ->
+                        cache.removeResource(song)
+                    }
+                }
+            }
         )
     }
 
@@ -153,15 +136,17 @@ fun DataSettings() {
                 cleanDownloadCache = false
             },
             onConfirm = {
-                binder?.downloadCache?.keys?.forEach { songId ->
-                    binder.downloadCache.removeResource(songId)
+                binder?.downloadCache?.let { downloadCache ->
+                    downloadCache.keys.forEach { songId ->
+                        downloadCache.removeResource(songId)
 
-                    CoroutineScope(Dispatchers.IO).launch {
-                        Database.songTable
-                                .findById( songId )
+                        CoroutineScope(Dispatchers.IO).launch {
+                            Database.songTable
+                                .findById(songId)
                                 .first()
                                 ?.asMediaItem
-                                ?.let { MyDownloadHelper.removeDownload( context, it ) }
+                                ?.let { MyDownloadHelper.removeDownload(context, it) }
+                        }
                     }
                 }
             }
@@ -171,12 +156,12 @@ fun DataSettings() {
     if (cleanCacheImages) {
         ConfirmationDialog(
             text = stringResource(R.string.do_you_really_want_to_delete_cache),
-                           onDismiss = {
-                               cleanCacheImages = false
-                           },
-                           onConfirm = {
-                               Coil.imageLoader(context).diskCache?.clear()
-                           }
+            onDismiss = {
+                cleanCacheImages = false
+            },
+            onConfirm = {
+                Coil.imageLoader(context).diskCache?.clear()
+            }
         )
     }
 
@@ -185,8 +170,7 @@ fun DataSettings() {
     Column(
         modifier = Modifier
             .background(colorPalette().background0)
-            //.fillMaxSize()
-        .fillMaxHeight()
+            .fillMaxHeight()
             .fillMaxWidth(
                 if (NavigationBarPosition.Right.isCurrent())
                     Dimensions.contentWidthRightBar
@@ -194,14 +178,6 @@ fun DataSettings() {
                     1f
             )
             .verticalScroll(rememberScrollState())
-        /*
-         *            .padding(
-         *                LocalPlayerAwareWindowInsets.current
-         *                    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End)
-         *                    .asPaddingValues()
-    )
-
-    */
     ) {
         HeaderWithIcon(
             title = stringResource(R.string.tab_data),
@@ -214,13 +190,13 @@ fun DataSettings() {
 
         SettingsDescription(text = stringResource(R.string.cache_cleared))
 
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(title = stringResource(R.string.cache))
+
         Coil.imageLoader(context).diskCache?.let { diskCache ->
             val diskCacheSize = remember(diskCache.size, cleanCacheImages) {
                 diskCache.size
             }
-
-            SettingsGroupSpacer()
-            SettingsEntryGroupText(title = stringResource(R.string.cache))
 
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.image_cache_max_size),
@@ -246,7 +222,7 @@ fun DataSettings() {
                                                if (coilDiskCacheMaxSize == CoilDiskCacheMaxSize.Custom)
                                                    showCoilCustomDiskCacheDialog = true
 
-                                                   restartService = true
+                                               restartService = true
                                            },
                                            valueText = { it.text }
             )
@@ -261,7 +237,6 @@ fun DataSettings() {
                                    valueMax = "10000",
                                    onDismiss = { showCoilCustomDiskCacheDialog = false },
                                    setValue = {
-                                       //Log.d("customCache", it)
                                        coilCustomDiskCache = it.toInt()
                                        showCoilCustomDiskCacheDialog = false
                                        restartService = true
@@ -278,7 +253,6 @@ fun DataSettings() {
                 cache.cacheSpace
             }
 
-            //SettingsGroup {
             EnumValueSelectorSettingsEntry(
                 title = stringResource(R.string.song_cache_max_size),
                                            titleSecondary = when (exoPlayerDiskCacheMaxSize) {
@@ -309,7 +283,7 @@ fun DataSettings() {
                                                if (exoPlayerDiskCacheMaxSize == ExoPlayerDiskCacheMaxSize.Custom)
                                                    showExoPlayerCustomCacheDialog = true
 
-                                                   restartService = true
+                                               restartService = true
                                            },
                                            valueText = { it.text }
             )
@@ -324,7 +298,6 @@ fun DataSettings() {
                                    valueMax = "10000",
                                    onDismiss = { showExoPlayerCustomCacheDialog = false },
                                    setValue = {
-                                       //Log.d("customCache", it)
                                        exoPlayerCustomCache = it.toInt()
                                        showExoPlayerCustomCacheDialog = false
                                        restartService = true
@@ -384,40 +357,8 @@ fun DataSettings() {
 
         SettingsDescription(stringResource(R.string.info_private_cache_location_can_t_cleaned))
         RestartPlayerService(restartService, onRestart = { restartService = false } )
-        //ImportantSettingsDescription(stringResource(R.string.restarting_rimusic_is_required))
 
         SettingsGroupSpacer()
-
-        //SettingsEntryGroupText(title = stringResource(R.string.folder_cache))
-
-        /*
-         *        SettingsDescription(
-         *            text = stringResource(R.string.custom_cache_from_android_10_may_not_be_available)
-         *        )
-         *
-         *
-         *        SettingsEntry(
-         *            title = stringResource(R.string.cache_location_folder),
-         *            text = if (exoPlayerAlternateCacheLocation == "") stringResource(R.string._default) else exoPlayerAlternateCacheLocation,
-         *            //isEnabled = if (sdkVersion.toShort() < 29) true else false,
-         *            onClick = {
-         *                dirRequest.launch(null)
-    }
-    )
-
-
-    ImportantSettingsDescription(text = stringResource(R.string.cache_reset_by_clicking_button))
-
-    SettingsEntry(
-        title = stringResource(R.string.reset_cache_location_folder),
-        text = "",
-        //isEnabled = if (sdkVersion.toShort() < 29) true else false,
-        onClick = {
-        exoPlayerAlternateCacheLocation = ""
-    }
-    )
-    */
-
 
         SettingsEntryGroupText(title = stringResource(R.string.title_backup_and_restore))
 
