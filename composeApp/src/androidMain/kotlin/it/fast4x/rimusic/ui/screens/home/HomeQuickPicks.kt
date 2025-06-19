@@ -174,6 +174,9 @@ fun HomeQuickPicks(
     val trendingInit by persist<Song?>(tag = "home/trending")
     var trendingPreference by rememberPreference(quickPicsTrendingSongKey, trendingInit)
 
+    // Variable to store the real most popular song (before shuffle)
+    var mostPopularSong by remember { mutableStateOf<Song?>(null) }
+
     var relatedPageResult by persist<Result<Innertube.RelatedPage?>?>(tag = "home/relatedPageResult")
     var relatedInit by persist<Innertube.RelatedPage?>(tag = "home/relatedPage")
     var relatedPreference by rememberPreference(quickPicsRelatedPageKey, relatedInit)
@@ -249,6 +252,7 @@ fun HomeQuickPicks(
                                 .collect { songs ->
                                     trendingList = songs.distinctBy { it.id }.take(localCount)
                                     trending = trendingList.firstOrNull()
+                                    mostPopularSong = trendingList.firstOrNull() // the first is the most popular
                                     if (relatedPageResult == null || trending?.id != trendingList.firstOrNull()?.id) {
                                         relatedPageResult = Innertube.relatedPage(
                                             NextBody(
@@ -266,6 +270,7 @@ fun HomeQuickPicks(
                                 .collect { songs ->
                                     trendingList = songs.distinctBy { it.id }.take(localCount)
                                     trending = trendingList.firstOrNull()
+                                    mostPopularSong = trendingList.firstOrNull() // the first is the most recent
                                     if (relatedPageResult == null || trending?.id != trendingList.firstOrNull()?.id) {
                                         relatedPageResult =
                                             Innertube.relatedPage(
@@ -284,7 +289,9 @@ fun HomeQuickPicks(
                                 )
                                 .distinctUntilChanged()
                                 .collect { songs ->
-                                    val shuffled = songs.distinctBy { it.id }.shuffled().take(localCount)
+                                    val originalList = songs.distinctBy { it.id }
+                                    mostPopularSong = originalList.firstOrNull() // Garder la vraie plus populaire
+                                    val shuffled = originalList.shuffled().take(localCount)
                                     trendingList = shuffled
                                     trending = shuffled.firstOrNull()
                                     if (relatedPageResult == null || trending?.id != shuffled.firstOrNull()?.id) {
@@ -610,7 +617,9 @@ fun HomeQuickPicks(
                                     onClick = { binder?.startRadio(song, true) },
                                     modifier = Modifier.width(itemInHorizontalGridWidth),
                                     thumbnailOverlay = {
-                                        if (recommendations.indexOf(song) == 0) {
+                                        if (playEventType != PlayEventsType.CasualPlayed && 
+                                            mostPopularSong != null && 
+                                            song.id == mostPopularSong!!.id) {
                                             Image(
                                                 painter = painterResource(R.drawable.star_brilliant),
                                                 contentDescription = null,
