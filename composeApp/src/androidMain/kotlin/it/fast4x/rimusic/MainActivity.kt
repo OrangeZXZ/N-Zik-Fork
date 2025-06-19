@@ -1062,7 +1062,10 @@ class MainActivity :
                                     },
                                     shape = thumbnailRoundness.shape
                                 ) {
-                                    Player( navController ) { showPlayer = false }
+                                    Player( navController ) { 
+                                        showPlayer = false
+                                        switchToAudioPlayer = false
+                                    }
                                 }
                             }
 
