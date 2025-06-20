@@ -1049,8 +1049,8 @@ class PlayerServiceModern : MediaLibraryService(),
             enableAudioTrackPlaybackParams: Boolean
         ): AudioSink {
             val minimumSilenceDuration = preferences.getLong(
-                minimumSilenceDurationKey, 2_000_000L
-            ).coerceIn(1000L..2_000_000L)
+                minimumSilenceDurationKey, 0L
+            ).coerceIn(0L..2_000_000L)
 
             return DefaultAudioSink.Builder(applicationContext)
                 .setEnableFloatOutput(enableFloatOutput)
