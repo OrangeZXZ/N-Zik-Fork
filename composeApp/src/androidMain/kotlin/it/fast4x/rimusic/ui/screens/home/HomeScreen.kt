@@ -6,12 +6,16 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -37,6 +41,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.knighthat.utils.Toaster
 import kotlin.system.exitProcess
+import it.fast4x.rimusic.LocalPlayerServiceBinder
+import it.fast4x.rimusic.ui.components.themed.Loader
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 
 
 @ExperimentalMaterial3Api
@@ -74,10 +82,29 @@ fun HomeScreen(
 
     var (tabIndex, onTabChanged) = rememberPreference(homeScreenTabIndexKey, initialtabIndex)
 
+    // Check if services are ready
+    val binder = LocalPlayerServiceBinder.current
+    var isReady by remember { mutableStateOf(false) }
+    
+    LaunchedEffect(binder) {
+        delay(100) // Small delay to ensure services are initialized
+        isReady = true
+    }
+
     if (tabIndex == -2) navController.navigate(NavRoutes.search.name)
 
-
     if (!enableQuickPicksPage && tabIndex==0) tabIndex = 1
+
+    // Show loader while services are not ready
+    if (!isReady) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Loader()
+        }
+        return
+    }
 
     Skeleton(
         navController,
