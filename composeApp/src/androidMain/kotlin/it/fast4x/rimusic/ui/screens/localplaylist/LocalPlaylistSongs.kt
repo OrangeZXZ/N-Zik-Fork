@@ -646,13 +646,23 @@ fun LocalPlaylistSongs(
                             .fillMaxWidth(if (isLandscape) 0.90f else 0.80f)
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
+                        val totalSongs = if (isRecommendationEnabled && !isRecommendationsLoading && relatedSongs.isNotEmpty()) {
+                            items.size + relatedSongs.size
+                        } else {
+                            items.size
+                        }
                         IconInfo(
-                            title = items.size.toString(),
+                            title = totalSongs.toString(),
                             icon = painterResource(R.drawable.musical_notes)
                         )
                         Spacer(modifier = Modifier.height(5.dp))
 
-                        val totalDuration = items.sumOf { durationTextToMillis(it.durationText ?: "0:0") }
+                        val recommendedSongsDuration = if (isRecommendationEnabled && !isRecommendationsLoading) {
+                            relatedSongs.keys.sumOf { durationTextToMillis(it.durationText ?: "0:0") }
+                        } else {
+                            0L
+                        }
+                        val totalDuration = items.sumOf { durationTextToMillis(it.durationText ?: "0:0") } + recommendedSongsDuration
                         IconInfo(
                             title = formatAsTime( totalDuration ),
                             icon = painterResource(R.drawable.time)
