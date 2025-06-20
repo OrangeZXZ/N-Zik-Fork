@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">Προτάσεις πρώτα</string>
   <string name="search_display_order_saved_searches_first">Αποθηκευμένες αναζητήσεις πρώτα</string>
   <string name="search_display_order_description">Επιλέξτε που θα εμφανίζεται πρώτα στα αποτελέσματα αναζήτησης</string>
+  <string name="smart_recommendations_number">Αριθμός συστάσεων</string>
+  <string name="smart_recommendations_adaptive_description">Προσαρμοστικό: Κλίμακες με μέγεθος λίστας αναπαραγωγής (10-150 συστάσεις)</string>
+  <string name="smart_recommendations_adaptive">Προσαρμοστική</string>
 </resources>
