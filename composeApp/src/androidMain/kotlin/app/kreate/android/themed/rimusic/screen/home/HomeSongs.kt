@@ -2,13 +2,20 @@ package app.kreate.android.themed.rimusic.screen.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -22,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFilter
@@ -29,7 +37,12 @@ import androidx.compose.ui.util.fastMap
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
+import app.kreate.android.R
 import it.fast4x.compose.persist.persistList
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.NavigationEndpoint
+import it.fast4x.innertube.models.bodies.NextBody
+import it.fast4x.innertube.requests.relatedSongs
 import it.fast4x.rimusic.Database
 import it.fast4x.rimusic.EXPLICIT_PREFIX
 import it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -37,6 +50,7 @@ import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.enums.BuiltInPlaylist
 import it.fast4x.rimusic.enums.DurationInMinutes
 import it.fast4x.rimusic.enums.MaxTopPlaylistItems
+import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.enums.SongSortBy
 import it.fast4x.rimusic.models.Song
 import it.fast4x.rimusic.service.MyDownloadHelper
@@ -66,9 +80,11 @@ import it.fast4x.rimusic.utils.includeLocalSongsKey
 import it.fast4x.rimusic.utils.isDownloadedSong
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
+import it.fast4x.rimusic.utils.recommendationsNumberKey
 import it.fast4x.rimusic.utils.rememberPreference
 import it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -132,6 +148,13 @@ fun HomeSongs(
      * and should **_NOT_** be set to `true` while in **second** phrase.
      */
     var isLoading by rememberSaveable { mutableStateOf(false) }
+
+    //<editor-fold defaultstate="collapsed" desc="Smart recommendation state">
+    var isRecommendationEnabled by rememberSaveable { mutableStateOf(false) }
+    val recommendationsNumber by rememberPreference( recommendationsNumberKey, RecommendationsNumber.Adaptive )
+    var relatedSongs by rememberSaveable { mutableStateOf(emptyList<Song>()) }
+    var isRecommendationsLoading by rememberSaveable { mutableStateOf(false) }
+    //</editor-fold>
 
     // This phrase loads all songs across types into [items]
     // No filtration applied to this stage, only sort
@@ -198,22 +221,116 @@ fun HomeSongs(
                       .collect { items = it }
     }
 
-    LaunchedEffect( items, search.inputValue ) {
-    items.filter { !parentalControlEnabled || !it.title.startsWith( EXPLICIT_PREFIX, true ) }
-         .filter {
-             // Without cleaning, user can search explicit songs with "e:"
-             // I kinda want this to be a feature, but it seems unnecessary
-             val containsTitle = it.cleanTitle().contains( search.inputValue, true )
-             val containsArtist = it.cleanArtistsText().contains( search.inputValue, true )
-
-             containsTitle || containsArtist
-         }
-        .let {
-            itemsOnDisplay.clear()
-            itemsOnDisplay.addAll( it )
-
-            isLoading = false
+    val smartRecommendationsButton = object : Button {
+        @Composable
+        override fun ToolBarButton() {
+            Box(
+                modifier = Modifier.size(48.dp), // Standard IconButton size
+                contentAlignment = Alignment.Center
+            ) {
+                if (isRecommendationsLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = colorPalette().accent,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    IconButton(onClick = { isRecommendationEnabled = !isRecommendationEnabled }) {
+                        Icon(
+                            painter = painterResource(R.drawable.smart_shuffle),
+                            contentDescription = "Smart Recommendations",
+                            tint = if (isRecommendationEnabled) colorPalette().accent else colorPalette().textDisabled
+                        )
+                    }
+                }
+            }
         }
+    }
+
+    LaunchedEffect(isRecommendationEnabled, items) {
+        if (!isRecommendationEnabled || items.isEmpty()) {
+            relatedSongs = emptyList()
+            isRecommendationsLoading = false
+            return@LaunchedEffect
+        }
+
+        isRecommendationsLoading = true
+
+        val targetRecommendations = recommendationsNumber.calculateAdaptiveRecommendations(items.size)
+        val allRelatedSongs = mutableListOf<Song>()
+        val existingSongIds = items.map { it.id }.toSet()
+
+        val numberOfRequests = when {
+            items.size <= 100 -> 1
+            items.size <= 500 -> 3
+            items.size <= 1000 -> 5
+            items.size <= 2000 -> 8
+            else -> 10
+        }
+
+        val seedSongs = items.shuffled().take(numberOfRequests)
+
+        for (seedSong in seedSongs) {
+            try {
+                val requestBody = NextBody(videoId = seedSong.id)
+                val relatedSongsResult = Innertube.relatedSongs(requestBody)?.getOrNull()
+
+                relatedSongsResult?.songs?.forEach { songItem ->
+                    songItem.info?.let { info ->
+                        info.endpoint?.videoId?.let { videoId ->
+                            if (!existingSongIds.contains(videoId)) {
+                                val prefix = if (songItem.explicit) EXPLICIT_PREFIX else ""
+                                val song = Song(
+                                    id = "$prefix$videoId",
+                                    title = info.name!!,
+                                    artistsText = songItem.authors?.joinToString { author -> author.name ?: "" },
+                                    durationText = songItem.durationText,
+                                    thumbnailUrl = songItem.thumbnail?.url
+                                )
+
+                                if (!allRelatedSongs.any { it.id == song.id }) {
+                                    allRelatedSongs.add(song)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (numberOfRequests > 1) delay(200L)
+
+            } catch (e: Exception) {
+                continue
+            }
+        }
+
+        relatedSongs = allRelatedSongs.take(targetRecommendations)
+        isRecommendationsLoading = false
+    }
+
+    LaunchedEffect( items, search.inputValue, isRecommendationEnabled, relatedSongs ) {
+        items.toMutableList()
+             .apply {
+                 if (isRecommendationEnabled) {
+                     relatedSongs.forEach { song ->
+                         // Insert at random position within the list
+                         val position = (0..size).random()
+                         add( position, song )
+                     }
+                 }
+             }
+             .distinctBy( Song::id )
+             .filter { !parentalControlEnabled || !it.title.startsWith( EXPLICIT_PREFIX, true ) }
+             .filter { song ->
+                 val containsTitle = song.cleanTitle().contains( search.inputValue, true )
+                 val containsArtist = song.cleanArtistsText().contains( search.inputValue, true )
+                 containsTitle || containsArtist
+             }
+             .let { 
+                 itemsOnDisplay.clear()
+                 itemsOnDisplay.addAll(it)
+             }
+
+        isLoading = false
     }
 
     LaunchedEffect( builtInPlaylist ) {
@@ -221,6 +338,7 @@ fun HomeSongs(
         buttons.add( 0, firstButton )
         buttons.add( 3, downloadAllDialog )
         buttons.add( 4, deleteDownloadsDialog )
+        buttons.add( 6, smartRecommendationsButton )
         buttons.add( exportDialog )
     }
 
@@ -275,6 +393,7 @@ fun HomeSongs(
                     song = song,
                     itemSelector = itemSelector,
                     navController = navController,
+                    isRecommended = song in relatedSongs,
                     modifier = Modifier.animateItem(),
                     thumbnailOverlay = {
                         if ( songSort.sortBy == SongSortBy.PlayTime || builtInPlaylist == BuiltInPlaylist.Top ) {
