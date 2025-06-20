@@ -2,50 +2,13 @@ A FAIRE
 
 
 PLUS TARD
-add bottom padding
-move to common folder
-use import instead of direct package
-remove navController parameter
-new QuickPicksSettings
-new OtherSettings UI
-add section with string title and subtitleId
-new AccountSettings UI
-new About UI
-new AppearanceSettings UI
-new DataSettings UI
-remove default subtitleId value
-implement new setting entry: header
-remove spacer from section & apply it directly to header
-add SettingHeader with subtitleId
-implement new setting entry: input dialog
-implement new setting entry: boolean switch
-new method to switch value to opposition
-use separate BasicText for subtitle
-scrollable enum selector
-implement new setting entry: description
-rework open from shortcuts
-fixup! optimize conversion with checks
-move int settings to new settings implementation
-move long settings to new settings implementation
-move float settings to new settings implementation
-move string settings to new settings implementation
-move boolean settings to new settings implementation
-load Settings.preferences when PlayerServiceModern is created
-move register to after initialization of ExoPlayer
-move enum settings to new settings implementation
-new robust implementation of mutable préférences
-use built-in listener's parameters for up-to-date data environ
-new ItemSelector with support for select all
-add proper monochrome version of app icon
-remove unnecessary @composable
-new basic components of settings
-AnimatedHeader for RiMusic and ViMusic themes
-new GeneralSettings UI
-new UiSettings UI
-add function to reset value to default value
-implement new setting entry: enum selector
+
 
 OK
+adjust default value of AUDIO_SKIP_SILENCE
+add password semantic when password keyboard is detected
+prevent app from crashing when invalid playlist is imported
+fix #402 #391 - put 0 as when duration is empty
 denote @callsuper on onSet
 hide update section on non-updatable builds
 replace nullable call with static non-null call
