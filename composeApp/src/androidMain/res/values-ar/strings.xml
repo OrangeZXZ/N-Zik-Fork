@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">الاقتراحات أولاً</string>
   <string name="search_display_order_saved_searches_first">عمليات البحث المحفوظة أولاً</string>
   <string name="search_display_order_description">اختر الذي يظهر أولاً في نتائج البحث</string>
+  <string name="smart_recommendations_number">عدد التوصيات</string>
+  <string name="smart_recommendations_adaptive_description">تكييف: مقاييس مع حجم قائمة التشغيل (10-150 توصية)</string>
+  <string name="smart_recommendations_adaptive">التكييف</string>
 </resources>
