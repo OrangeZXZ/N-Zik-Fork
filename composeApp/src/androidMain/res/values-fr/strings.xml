@@ -1007,6 +1007,6 @@ Volume BAS : titre précédent</string>
   <string name="search_display_order_saved_searches_first">Recherches sauvegardées en premier</string>
   <string name="search_display_order_description">Choisissez ce qui apparaît en premier dans les résultats de recherche</string>
   <string name="smart_recommendations_number">Nombre de recommandations</string>
-  <string name="smart_recommendations_adaptive_description">Adaptatif: Mise à l\'échelle avec la taille de la playlist (10 à 150 recommandations)</string>
+  <string name="smart_recommendations_adaptive_description">Adaptatif: S\'adapte avec la taille de la playlist (10 à 120 recommandations)</string>
   <string name="smart_recommendations_adaptive">Adaptatif</string>
 </resources>

@@ -1,18 +1,19 @@
-14/06/25 - Note May contain bugs and crash, also auto update is OFF !
+20/06/25 - Note May contain bugs and crash, also auto update is OFF !
 
 Changed:
-- Added Remember visualizer and Lyrics state, that you can enable in settings
-- Changed Library icon
-- Improved Video UI
+- Adaptive smart recommendations that scale with playlist size (10-150 recommendations) Settings > User Interface > Smart recommendations
+- Smart Shuffle icon
+
+Added:
+- Ability to choose the display order during a search in Settings > User Interface > Online search order
+- Added back smart shuffle to Home songs tab !
 
 Optimizations:
-- Improved Discord RPC handling (play, pause, kill)
-- improved Padding in library for artist online
+- Star icon was showing on wrong song in QuickPicks
 
 Bug Fixes:
-- Color button for visualizer
-- Folders on "On Device" section is back
-- Song's title showed  "e:" on explicit songs
-- Discord RPC handling connection and doesn't spam error and doesnt work if the RPC is off
-- Prevent constant fail message when there's no internet connection
-- Control wasn't working in video UI
+- Caption not showing in the Video mode
+- Backward icon wasn't working after exiting video mode
+- Video text in Player > Video was showing behind status bar
+- Discord RPC broken url images
+- Crash when importing songs thought backup system
