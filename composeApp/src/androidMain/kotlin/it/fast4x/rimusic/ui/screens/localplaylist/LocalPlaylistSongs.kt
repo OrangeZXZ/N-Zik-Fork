@@ -707,7 +707,7 @@ fun LocalPlaylistSongs(
                             if (isRecommendationsLoading) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(24.dp),
-                                    color = Color.White,
+                                    color = colorPalette().text,
                                     strokeWidth = 2.dp
                                 )
                             } else {

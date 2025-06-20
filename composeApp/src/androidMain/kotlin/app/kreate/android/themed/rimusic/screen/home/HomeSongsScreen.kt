@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -65,6 +66,11 @@ import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
 import timber.log.Timber
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
+import it.fast4x.rimusic.utils.isRecommendationEnabledKey
+import it.fast4x.rimusic.enums.RecommendationsNumber
+import it.fast4x.rimusic.utils.recommendationsNumberKey
+import androidx.compose.ui.res.painterResource
+import it.fast4x.rimusic.ui.components.themed.IconInfo
 
 @UnstableApi
 @ExperimentalMaterial3Api
@@ -77,6 +83,9 @@ fun HomeSongsScreen(navController: NavController ) {
     val lazyListState = rememberLazyListState()
 
     var builtInPlaylist by rememberPreference( builtInPlaylistKey, BuiltInPlaylist.Favorites )
+    var isRecommendationEnabled by rememberPreference( isRecommendationEnabledKey, false )
+    val recommendationsNumber by rememberPreference( recommendationsNumberKey, RecommendationsNumber.Adaptive )
+    var recommendationCount by remember { mutableStateOf(0) }
 
     val itemsOnDisplayState = remember { mutableStateListOf<Song>() }
 
@@ -148,7 +157,16 @@ fun HomeSongsScreen(navController: NavController ) {
         Column( Modifier.fillMaxSize() ) {
             // Sticky tab's title
             TabHeader( R.string.songs ) {
-                HeaderInfo( itemsOnDisplayState.size.toString(), R.drawable.musical_notes )
+                Column {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        HeaderInfo( itemsOnDisplayState.size.toString(), R.drawable.musical_notes )
+                    }
+                    if (isRecommendationEnabled && recommendationCount > 0) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            HeaderInfo( recommendationCount.toString(), R.drawable.smart_shuffle )
+                        }
+                    }
+                }
             }
 
             // Sticky tab's tool bar
@@ -212,7 +230,7 @@ fun HomeSongsScreen(navController: NavController ) {
 
             when( builtInPlaylist ) {
                 BuiltInPlaylist.OnDevice -> OnDeviceSong( navController, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs )
-                else                     -> HomeSongs( navController, builtInPlaylist, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs )
+                else                     -> HomeSongs( navController, builtInPlaylist, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs, onRecommendationCountChange = { count -> recommendationCount = count } )
             }
         }
 

@@ -78,6 +78,7 @@ import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.includeLocalSongsKey
 import it.fast4x.rimusic.utils.isDownloadedSong
+import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
@@ -113,6 +114,7 @@ fun HomeSongs(
     buttons: MutableList<Button>,
     itemsOnDisplay: MutableList<Song>,
     getSongs: () -> List<Song>,
+    onRecommendationCountChange: (Int) -> Unit = {},
 ) {
     // Essentials
     val binder = LocalPlayerServiceBinder.current
@@ -150,7 +152,7 @@ fun HomeSongs(
     var isLoading by rememberSaveable { mutableStateOf(false) }
 
     //<editor-fold defaultstate="collapsed" desc="Smart recommendation state">
-    var isRecommendationEnabled by rememberSaveable { mutableStateOf(false) }
+    var isRecommendationEnabled by rememberPreference( isRecommendationEnabledKey, false )
     val recommendationsNumber by rememberPreference( recommendationsNumberKey, RecommendationsNumber.Adaptive )
     var relatedSongs by rememberSaveable { mutableStateOf(emptyList<Song>()) }
     var isRecommendationsLoading by rememberSaveable { mutableStateOf(false) }
@@ -231,7 +233,7 @@ fun HomeSongs(
                 if (isRecommendationsLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
-                        color = color = Color.White
+                        color = colorPalette().text,
                         strokeWidth = 2.dp
                     )
                 } else {
@@ -239,7 +241,7 @@ fun HomeSongs(
                         Icon(
                             painter = painterResource(R.drawable.smart_shuffle),
                             contentDescription = "Smart Recommendations",
-                            tint = if (isRecommendationEnabled) colorPalette().accent else colorPalette().textDisabled
+                            tint = if (isRecommendationEnabled) colorPalette().text else colorPalette().textDisabled
                         )
                     }
                 }
@@ -331,6 +333,14 @@ fun HomeSongs(
              }
 
         isLoading = false
+    }
+
+    LaunchedEffect( relatedSongs.size, isRecommendationEnabled ) {
+        if (isRecommendationEnabled) {
+            onRecommendationCountChange(relatedSongs.size)
+        } else {
+            onRecommendationCountChange(0)
+        }
     }
 
     LaunchedEffect( builtInPlaylist ) {
