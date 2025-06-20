@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">Nejdříve návrhy</string>
   <string name="search_display_order_saved_searches_first">Nejprve uložená hledání</string>
   <string name="search_display_order_description">Vyberte, které se zobrazí jako první ve výsledcích hledání</string>
+  <string name="smart_recommendations_number">Počet doporučení</string>
+  <string name="smart_recommendations_adaptive_description">Adaptive: Stupnice s velikostí playlistu (10-150 doporučení)</string>
+  <string name="smart_recommendations_adaptive">Adaptivní</string>
 </resources>
