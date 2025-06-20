@@ -1,8 +1,10 @@
+BETA 2
 20/06/25 - Note May contain bugs and crash, also auto update is OFF !
 
 Changed:
 - Adaptive smart recommendations that scale with playlist size (10-150 recommendations) Settings > User Interface > Smart recommendations
 - Smart Shuffle icon
+- Removed the warning message asking for a soft restart
 
 Added:
 - Ability to choose the display order during a search in Settings > User Interface > Online search order
@@ -17,3 +19,5 @@ Bug Fixes:
 - Video text in Player > Video was showing behind status bar
 - Discord RPC broken url images
 - Crash when importing songs thought backup system
+- Added a waiting time when launching the app to be sure that everything is loaded up
+- Now if you change what page should load toolbar should be functional
