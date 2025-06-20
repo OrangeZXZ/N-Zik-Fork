@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">Ehdotukset ensin</string>
   <string name="search_display_order_saved_searches_first">Tallennetut haut ensin</string>
   <string name="search_display_order_description">Valitse, mikä näkyy ensin hakutuloksissa</string>
+  <string name="smart_recommendations_number">Suositusten määrä</string>
+  <string name="smart_recommendations_adaptive_description">Adaptive: Soittolistan kokoiset vaa\'at (10-150 suositusta)</string>
+  <string name="smart_recommendations_adaptive">Mukautuva</string>
 </resources>

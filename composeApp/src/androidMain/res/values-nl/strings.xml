@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">Suggesties eerst</string>
   <string name="search_display_order_saved_searches_first">Opgeslagen zoekopdrachten eerst</string>
   <string name="search_display_order_description">Kies welke eerst worden weergegeven in de zoekresultaten</string>
+  <string name="smart_recommendations_number">Aantal aanbevelingen</string>
+  <string name="smart_recommendations_adaptive_description">Adaptive: Schubben met playlist grootte (10-150 aanbevelingen)</string>
+  <string name="smart_recommendations_adaptive">Adaptief</string>
 </resources>

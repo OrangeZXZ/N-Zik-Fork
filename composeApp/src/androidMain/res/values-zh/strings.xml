@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">先建议</string>
   <string name="search_display_order_saved_searches_first">先保存搜索</string>
   <string name="search_display_order_description">选择搜索结果中首次出现的内容</string>
+  <string name="smart_recommendations_number">建议数</string>
+  <string name="smart_recommendations_adaptive_description">自适应：使用播放列表大小 (10-150 推荐)</string>
+  <string name="smart_recommendations_adaptive">自适应模式</string>
 </resources>

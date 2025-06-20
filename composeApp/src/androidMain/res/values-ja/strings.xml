@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">最初に提案する</string>
   <string name="search_display_order_saved_searches_first">最初に保存された検索</string>
   <string name="search_display_order_description">検索結果で最初に表示されるものを選択</string>
+  <string name="smart_recommendations_number">おすすめの数</string>
+  <string name="smart_recommendations_adaptive_description">適応: プレイリストのサイズを指定したスケール（10-150推奨）</string>
+  <string name="smart_recommendations_adaptive">Adaptive</string>
 </resources>

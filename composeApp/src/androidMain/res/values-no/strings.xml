@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">Forslag først</string>
   <string name="search_display_order_saved_searches_first">Lagrede søk først</string>
   <string name="search_display_order_description">Velg hvilket som vises først i søkeresultatene</string>
+  <string name="smart_recommendations_number">Antall anbefalinger</string>
+  <string name="smart_recommendations_adaptive_description">Tilpassende skalaer med spilleliste størrelse (10-150 anbefalinger)</string>
+  <string name="smart_recommendations_adaptive">Tilpassende</string>
 </resources>
