@@ -23,6 +23,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -381,15 +383,17 @@ fun LocalPlaylistSongs(
     val locator = Locator( lazyListState, ::getSongs )
 
     //<editor-fold defaultstate="collapsed" desc="Smart recommendation">
-    val recommendationsNumber by rememberPreference( recommendationsNumberKey, RecommendationsNumber.`5` )
+    val recommendationsNumber by rememberPreference( recommendationsNumberKey, RecommendationsNumber.Adaptive )
     var relatedSongs by rememberSaveable {
         // SongEntity before Int in case random position is equal
         mutableStateOf( emptyMap<Song, Int>() )
     }
+    var isRecommendationsLoading by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect( isRecommendationEnabled ) {
         if( !isRecommendationEnabled ) {
             relatedSongs = emptyMap()
+            isRecommendationsLoading = false
             return@LaunchedEffect
         }
 
@@ -404,41 +408,73 @@ fun LocalPlaylistSongs(
         while( items.isEmpty() )
             delay( 100L )
 
-        val requestBody = NextBody( videoId =  items.random().id )
-        Innertube.relatedSongs( requestBody )
-                 ?.getOrNull()      // If result is null, all subsequence calls are cancelled
-                 ?.songs
-                 ?.filterNot { songItem ->
-                     // Fetched Song may not have properties like [likedAt]
-                     // so the result of [List.any] may be false.
-                     // Comparing their IDs is the most effective way
-                     items.map( Song::id )
-                          .any{ songItem.info?.endpoint?.videoId == it }
-                 }
-                 ?.take( recommendationsNumber.toInt() )
-                 ?.associate { songItem ->
-                     with( songItem ) {
-                         // Do NOT use [Utils#Innertube.SongItem.asSong]
-                         // It doesn't have explicit prefix
-                         val prefix = if( explicit ) EXPLICIT_PREFIX else ""
+        isRecommendationsLoading = true
 
-                         Song(
-                             // Song's ID & title must not be "null". If they are,
-                             // Something is wrong with Innertube.
-                             id = "$prefix${info!!.endpoint!!.videoId!!}",
-                             title = info!!.name!!,
-                             artistsText = authors?.joinToString { author -> author.name ?: "" },
-                             durationText = durationText,
-                             thumbnailUrl = thumbnail?.url
-                         ) to (0..items.size).random()      // Map this song with a random position from [items]
-                     }
-                 }
-                 ?.let {
-                     relatedSongs = it
-
-                     // Enable position lock
-                     positionLock.isFirstIcon = true
-                 }
+        val targetRecommendations = recommendationsNumber.calculateAdaptiveRecommendations(items.size)
+        val allRelatedSongs = mutableListOf<Song>()
+        val existingSongIds = items.map { it.id }.toSet()
+        
+        // For large playlists, make more requests to get enough recommendations
+        val numberOfRequests = when {
+            items.size <= 100 -> 1
+            items.size <= 500 -> 3
+            items.size <= 1000 -> 5
+            items.size <= 2000 -> 8
+            else -> 10
+        }
+        
+        // Select random songs from the playlist to use as seeds
+        val seedSongs = items.shuffled().take(numberOfRequests)
+        
+        for (seedSong in seedSongs) {
+            try {
+                val requestBody = NextBody(videoId = seedSong.id)
+                val relatedSongsResult = Innertube.relatedSongs(requestBody)?.getOrNull()
+                
+                relatedSongsResult?.songs?.forEach { songItem ->
+                    // Filter out songs that are already in the playlist
+                    if (!existingSongIds.contains(songItem.info?.endpoint?.videoId)) {
+                        val prefix = if (songItem.explicit) EXPLICIT_PREFIX else ""
+                        val song = Song(
+                            id = "$prefix${songItem.info!!.endpoint!!.videoId!!}",
+                            title = songItem.info!!.name!!,
+                            artistsText = songItem.authors?.joinToString { author -> author.name ?: "" },
+                            durationText = songItem.durationText,
+                            thumbnailUrl = songItem.thumbnail?.url
+                        )
+                        
+                        // Avoid duplicates
+                        if (!allRelatedSongs.any { it.id == song.id }) {
+                            allRelatedSongs.add(song)
+                        }
+                    }
+                }
+                
+                // Small delay between requests
+                if (numberOfRequests > 1) delay(200L)
+                
+            } catch (e: Exception) {
+                // Continue with other requests even if one fails
+                continue
+            }
+        }
+        
+        // Take the target number of recommendations and assign random positions
+        // Note: We don't force the exact target number because:
+        // 1. YouTube doesn't always return 20 songs per request
+        // 2. Some songs are filtered out (already in playlist)
+        // 3. Some requests may fail
+        // 4. Better to have fewer quality recommendations than many poor ones
+        val finalRecommendations = allRelatedSongs.take(targetRecommendations)
+        val recommendationsWithPositions = finalRecommendations.associate { song ->
+            song to (0..items.size).random()
+        }
+        
+        relatedSongs = recommendationsWithPositions
+        isRecommendationsLoading = false
+        
+        // Enable position lock
+        positionLock.isFirstIcon = true
     }
     //</editor-fold>
     LaunchedEffect( items, relatedSongs, search.inputValue, parentalControlEnabled ) {
@@ -623,10 +659,29 @@ fun LocalPlaylistSongs(
                         )
                         if (isRecommendationEnabled) {
                             Spacer(modifier = Modifier.height(5.dp))
-                            IconInfo(
-                                title = relatedSongs.size.toString(),
-                                icon = painterResource(R.drawable.smart_shuffle)
-                            )
+                            if (isRecommendationsLoading) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.smart_shuffle),
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(16.dp),
+                                        strokeWidth = 2.dp,
+                                        color = Color.White
+                                    )
+                                }
+                            } else {
+                                IconInfo(
+                                    title = relatedSongs.size.toString(),
+                                    icon = painterResource(R.drawable.smart_shuffle)
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(30.dp))
                     }

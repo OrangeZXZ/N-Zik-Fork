@@ -235,8 +235,8 @@ fun DefaultUiSettings() {
     skipMediaOnError = false
     var volumeNormalization by rememberPreference(volumeNormalizationKey, false)
     volumeNormalization = false
-    var recommendationsNumber by rememberPreference(recommendationsNumberKey,   RecommendationsNumber.`5`)
-    recommendationsNumber = RecommendationsNumber.`5`
+    var recommendationsNumber by rememberPreference(recommendationsNumberKey,   RecommendationsNumber.Adaptive)
+    recommendationsNumber = RecommendationsNumber.Adaptive
     var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
     keepPlayerMinimized = false
     var disableIconButtonOnTop by rememberPreference(disableIconButtonOnTopKey, false)
@@ -540,7 +540,7 @@ fun UiSettings(
         AppearanceChangeDialog.isActive = true
     }
 
-    var recommendationsNumber by rememberPreference(recommendationsNumberKey,   RecommendationsNumber.`5`)
+    var recommendationsNumber by rememberPreference(recommendationsNumberKey,   RecommendationsNumber.Adaptive)
 
     var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
 
@@ -1429,12 +1429,19 @@ fun UiSettings(
         SettingsGroupSpacer()
         SettingsEntryGroupText(stringResource(R.string.smart_recommendations))
 
-        if (search.inputValue.isBlank() || stringResource(R.string.statistics_max_number_of_items).contains(search.inputValue,true))
+        if (search.inputValue.isBlank() || stringResource(R.string.smart_recommendations_number).contains(search.inputValue,true))
             EnumValueSelectorSettingsEntry(
-                title = stringResource(R.string.statistics_max_number_of_items),
+                title = stringResource(R.string.smart_recommendations_number),
+                text = if (recommendationsNumber == RecommendationsNumber.Adaptive) 
+                    stringResource(R.string.smart_recommendations_adaptive_description) else "",
                 selectedValue = recommendationsNumber,
                 onValueSelected = { recommendationsNumber = it },
-                valueText = { it.name }
+                valueText = { 
+                    when (it) {
+                        RecommendationsNumber.Adaptive -> stringResource(R.string.smart_recommendations_adaptive)
+                        else -> it.name
+                    }
+                }
             )
 
         SettingsGroupSpacer()
