@@ -1000,4 +1000,11 @@
     <string name="return_to_audio_mode">Return to audio mode</string>
     <string name="error_message_unsupported_local_playlist">Unsupported format</string>
     <string name="error_message_import_local_playlist_failed">Error occurs while importing local playlist</string>
+    <string name="search_display_order">Online search display order</string>
+    <string name="search_display_order_suggestions_first">Suggestions first</string>
+    <string name="search_display_order_saved_searches_first">Saved searches first</string>
+    <string name="search_display_order_description">Choose which appears first in search results</string>
+    <string name="smart_recommendations_number">Number of recommendations</string>
+    <string name="smart_recommendations_adaptive_description">Adaptive: Scales with playlist size (10-120 recommendations)</string>
+    <string name="smart_recommendations_adaptive">Adaptive</string>
 </resources>
