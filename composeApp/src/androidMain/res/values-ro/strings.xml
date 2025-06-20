@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">Sugestii mai întâi</string>
   <string name="search_display_order_saved_searches_first">Căutările salvate mai întâi</string>
   <string name="search_display_order_description">Alegeți care apare prima dată în rezultatele căutării</string>
+  <string name="smart_recommendations_number">Număr de recomandări</string>
+  <string name="smart_recommendations_adaptive_description">Adaptive: scări cu dimensiunea listei de redare (10-150 recomandări)</string>
+  <string name="smart_recommendations_adaptive">Adaptiv</string>
 </resources>
