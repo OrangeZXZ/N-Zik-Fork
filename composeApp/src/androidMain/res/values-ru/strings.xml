@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">Сначала предложения</string>
   <string name="search_display_order_saved_searches_first">Сначала сохраненные поиски</string>
   <string name="search_display_order_description">Выберите, что появляется в результатах поиска</string>
+  <string name="smart_recommendations_number">Количество рекомендаций</string>
+  <string name="smart_recommendations_adaptive_description">Адаптивно: Масштабы с размером плейлиста (10-150 рекомендаций)</string>
+  <string name="smart_recommendations_adaptive">Адаптивный</string>
 </resources>
