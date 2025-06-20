@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">Förslag först</string>
   <string name="search_display_order_saved_searches_first">Sparade sökningar först</string>
   <string name="search_display_order_description">Välj vilka som visas först i sökresultaten</string>
+  <string name="smart_recommendations_number">Antal rekommendationer</string>
+  <string name="smart_recommendations_adaptive_description">Adaptiv: Skalor med spelliststorlek (10-150 rekommendationer)</string>
+  <string name="smart_recommendations_adaptive">Adaptiv</string>
 </resources>
