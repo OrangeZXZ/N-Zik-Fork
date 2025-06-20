@@ -21,6 +21,10 @@ import it.fast4x.rimusic.appContext
 import it.fast4x.rimusic.colorPalette
 import it.fast4x.rimusic.typography
 import org.intellij.lang.annotations.MagicConstant
+import androidx.compose.ui.semantics.password
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.KeyboardType
+import it.fast4x.rimusic.utils.conditional
 
 abstract class TextInputDialog(
     @MagicConstant(valuesFromClass = InputDialogConstraints::class)
@@ -66,7 +70,12 @@ abstract class TextInputDialog(
             keyboardOptions = keyboardOption,
             leadingIcon = { LeadingIcon() },
             trailingIcon = { TrailingIcon() },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+            .conditional( keyboardOption.keyboardType == KeyboardType.Password
+                    || keyboardOption.keyboardType == KeyboardType.NumberPassword
+            ) {
+                semantics { password() }
+            },
             colors = InputDialog.defaultTextFieldColors()
                                 .copy(
                                     errorTextColor = colorPalette().text,
