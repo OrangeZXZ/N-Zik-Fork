@@ -231,7 +231,7 @@ fun HomeSongs(
                 if (isRecommendationsLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
-                        color = colorPalette().accent,
+                        color = color = Color.White
                         strokeWidth = 2.dp
                     )
                 } else {

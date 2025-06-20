@@ -700,21 +700,34 @@ fun LocalPlaylistSongs(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        HeaderIconButton(
-                            icon = R.drawable.smart_shuffle,
-                            enabled = true,
-                            color = if (isRecommendationEnabled) colorPalette().text else colorPalette().textDisabled,
-                            onClick = {},
-                            modifier = Modifier
-                                .combinedClickable(
-                                    onClick = {
-                                        isRecommendationEnabled = !isRecommendationEnabled
-                                    },
-                                    onLongClick = {
-                                        Toaster.i( R.string.info_smart_recommendation )
-                                    }
+                        Box(
+                            modifier = Modifier.size(48.dp), // Standard IconButton size
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (isRecommendationsLoading) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    color = Color.White,
+                                    strokeWidth = 2.dp
                                 )
-                        )
+                            } else {
+                                HeaderIconButton(
+                                    icon = R.drawable.smart_shuffle,
+                                    enabled = true,
+                                    color = if (isRecommendationEnabled) colorPalette().text else colorPalette().textDisabled,
+                                    onClick = {},
+                                    modifier = Modifier
+                                        .combinedClickable(
+                                            onClick = {
+                                                isRecommendationEnabled = !isRecommendationEnabled
+                                            },
+                                            onLongClick = {
+                                                Toaster.i( R.string.info_smart_recommendation )
+                                            }
+                                        )
+                                )
+                            }
+                        }
                         Spacer(modifier = Modifier.height(10.dp))
                         shuffle.ToolBarButton()
                         Spacer(modifier = Modifier.height(10.dp))
