@@ -51,6 +51,8 @@ class DiscordPresenceManager(
     private val json = Json { ignoreUnknownKeys = true }
     private val uploadApi = "https://tmpfiles.org/api/v1/upload"
     @Volatile private var isUpdatingPresence = false
+    @Volatile private var smallAssetUrl: String? = null
+    @Volatile private var albumAssetUrl: String? = null
 
 
     /**
@@ -173,7 +175,7 @@ class DiscordPresenceManager(
             lastToken = token
         }
         val largeImageUrl = getLargeImageUrl(mediaItem)
-            ?: "mp:attachments/1231921505923760150/1379170235298615377/album.png?ex=6843e11f&is=68428f9f&hm=eaeede43ecac89039749913711b09871adb61f92bc234ed688048d8bd1285f6c&="
+        val smallImageUrl = getSmallImageUrl()
         runCatching {
             rpc?.setActivity(
                 activity = Activity(
@@ -188,7 +190,7 @@ class DiscordPresenceManager(
                     ),
                     assets = Assets(
                         largeImage = largeImageUrl,
-                        smallImage = "mp:attachments/1231921505923760150/1379166057809575997/N-Zik_Discord.png?ex=6843dd3b&is=68428bbb&hm=c812f13ede8f4fbe757f95290099124a372f1f05abd58184eac3900a25ffafc4&=",
+                        smallImage = smallImageUrl,
                         largeText = mediaItem.mediaMetadata.title?.toString() + " - " + mediaItem.mediaMetadata.artist?.toString(),
                         smallText = "v${getVersionName(context)}",
                     ),
@@ -314,7 +316,38 @@ class DiscordPresenceManager(
         } else {
             mediaItem.mediaMetadata.artworkUri?.toString()?.takeIf { it.startsWith("http") }
         }
+        artworkFile?.delete()
+
         val asset = if (url != null) getDiscordAssetUri(url, token) else null
+
+        if (asset != null) return asset
+
+        // Fallback logic starts here if no artwork is found
+        if (albumAssetUrl != null) return albumAssetUrl
+
+        val fallbackUrl = "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_album.png"
+        val fallbackAsset = getDiscordAssetUri(fallbackUrl, token)
+        if (fallbackAsset != null) {
+            albumAssetUrl = fallbackAsset
+        }
+        return fallbackAsset
+    }
+
+    /**
+     * Get the small image url
+     */
+    private suspend fun getSmallImageUrl(): String? {
+        if (smallAssetUrl != null) return smallAssetUrl
+
+        val token = getToken() ?: return null
+        // Use a direct, permanent URL to the fallback image for reliability and speed,
+        // just like it's done for Google/YouTube artworks.
+        val url = "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
+
+        val asset = getDiscordAssetUri(url, token)
+        if (asset != null) {
+            smallAssetUrl = asset
+        }
         return asset
     }
 
