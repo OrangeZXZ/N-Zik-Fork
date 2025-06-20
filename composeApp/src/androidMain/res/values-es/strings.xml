@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">Sugerencias primero</string>
   <string name="search_display_order_saved_searches_first">Búsquedas guardadas primero</string>
   <string name="search_display_order_description">Elija cuál aparece primero en los resultados de búsqueda</string>
+  <string name="smart_recommendations_number">Número de recomendaciones</string>
+  <string name="smart_recommendations_adaptive_description">Adaptivo: Escalas con tamaño de lista de reproducción (10-150 recomendaciones)</string>
+  <string name="smart_recommendations_adaptive">Adaptivo</string>
 </resources>
