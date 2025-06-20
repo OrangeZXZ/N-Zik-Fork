@@ -205,6 +205,8 @@ import me.knighthat.component.dialog.AppearanceChangeDialog
 import me.knighthat.component.dialog.RestartAppDialog
 import me.knighthat.component.tab.Search
 import me.knighthat.utils.Toaster
+import it.fast4x.rimusic.enums.SearchDisplayOrder
+import it.fast4x.rimusic.utils.searchDisplayOrderKey
 
 @Composable
 fun DefaultUiSettings() {
@@ -522,6 +524,8 @@ fun DefaultUiSettings() {
     visualizerEnabled = false
     var showthumbnail by rememberPreference(showthumbnailKey, true)
     showthumbnail = true
+    var searchDisplayOrder by rememberPreference(searchDisplayOrderKey, SearchDisplayOrder.SuggestionsFirst)
+    searchDisplayOrder = SearchDisplayOrder.SuggestionsFirst
 }
 
 @ExperimentalAnimationApi
@@ -616,6 +620,7 @@ fun UiSettings(
     var playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
 
     var messageType by rememberPreference(messageTypeKey, MessageType.Modern)
+    var searchDisplayOrder by rememberPreference(searchDisplayOrderKey, SearchDisplayOrder.SuggestionsFirst)
 
     /*  ViMusic Mode Settings  */
     var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
@@ -1290,6 +1295,35 @@ fun UiSettings(
                 }
             }
         }
+
+
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(title = stringResource(R.string.search_display_order))
+
+        if (search.inputValue.isBlank() || stringResource(R.string.search_display_order).contains(
+                search.inputValue,
+                true
+            )
+        ) {
+            EnumValueSelectorSettingsEntry(
+                title = stringResource(R.string.search_display_order),
+                text = stringResource(R.string.search_display_order_description),
+                selectedValue = searchDisplayOrder,
+                onValueSelected = {
+                    searchDisplayOrder = it
+                },
+                valueText = { 
+                    when (it) {
+                        SearchDisplayOrder.SuggestionsFirst -> stringResource(R.string.search_display_order_suggestions_first)
+                        SearchDisplayOrder.SavedSearchesFirst -> stringResource(R.string.search_display_order_saved_searches_first)
+                    }
+                }
+            )
+        }
+
+        SettingsGroupSpacer()
+        SettingsEntryGroupText(title = stringResource(R.string.notification_player))
+
 
         SettingsGroupSpacer()
         SettingsEntryGroupText(title = stringResource(R.string.songs).uppercase())
