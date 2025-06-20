@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">Спершу пропозиції</string>
   <string name="search_display_order_saved_searches_first">Спочатку збережені пошукові запити</string>
   <string name="search_display_order_description">Виберіть, які з\'являються перші в результатах пошуку</string>
+  <string name="smart_recommendations_number">Кількість рекомендацій</string>
+  <string name="smart_recommendations_adaptive_description">Адаптивно: Масштаб зі розміром списку відтворення (10-150 рекомендацій)</string>
+  <string name="smart_recommendations_adaptive">Адаптивний колір</string>
 </resources>
