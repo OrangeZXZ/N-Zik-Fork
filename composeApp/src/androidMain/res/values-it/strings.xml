@@ -1004,4 +1004,7 @@
   <string name="search_display_order_suggestions_first">Prima i suggerimenti</string>
   <string name="search_display_order_saved_searches_first">Prima le ricerche salvate</string>
   <string name="search_display_order_description">Scegli quale appare per primo nei risultati di ricerca</string>
+  <string name="smart_recommendations_number">Numero di raccomandazioni</string>
+  <string name="smart_recommendations_adaptive_description">Adattivo: Scale con dimensione playlist (10-150 raccomandazioni)</string>
+  <string name="smart_recommendations_adaptive">Adattivo</string>
 </resources>
