@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
@@ -64,13 +68,18 @@ import me.knighthat.component.tab.LikeComponent
 import me.knighthat.component.tab.Locator
 import me.knighthat.component.tab.Search
 import me.knighthat.component.tab.SongShuffler
+import me.knighthat.component.tab.SmartShuffle
 import timber.log.Timber
 import it.fast4x.rimusic.utils.showOnDevicePlaylistKey
-import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.enums.RecommendationsNumber
 import it.fast4x.rimusic.utils.recommendationsNumberKey
-import androidx.compose.ui.res.painterResource
-import it.fast4x.rimusic.ui.components.themed.IconInfo
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.BasicText
+import it.fast4x.rimusic.typography
+import it.fast4x.rimusic.utils.semiBold
 
 @UnstableApi
 @ExperimentalMaterial3Api
@@ -83,9 +92,10 @@ fun HomeSongsScreen(navController: NavController ) {
     val lazyListState = rememberLazyListState()
 
     var builtInPlaylist by rememberPreference( builtInPlaylistKey, BuiltInPlaylist.Favorites )
-    var isRecommendationEnabled by rememberPreference( isRecommendationEnabledKey, false )
+    var isRecommendationEnabled by remember { mutableStateOf(false) }
     val recommendationsNumber by rememberPreference( recommendationsNumberKey, RecommendationsNumber.Adaptive )
     var recommendationCount by remember { mutableStateOf(0) }
+    var isRecommendationsLoading by remember { mutableStateOf(false) }
 
     val itemsOnDisplayState = remember { mutableStateListOf<Song>() }
 
@@ -97,6 +107,11 @@ fun HomeSongsScreen(navController: NavController ) {
     val locator = Locator( lazyListState, ::getSongs )
     val import = ImportSongsFromCSV()
     val shuffle = SongShuffler(::getSongs)
+    val smartShuffle = SmartShuffle(
+        isRecommendationEnabled = { isRecommendationEnabled },
+        isRecommendationsLoading = { isRecommendationsLoading },
+        onToggleRecommendation = { isRecommendationEnabled = !isRecommendationEnabled }
+    )
     val playNext = PlayNext {
         binder?.player?.addNext( getMediaItems(), appContext() )
 
@@ -133,6 +148,7 @@ fun HomeSongsScreen(navController: NavController ) {
             this.add( search )
             this.add( locator )
             this.add( shuffle )
+            this.add( smartShuffle )
             this.add( itemSelector )
             this.add( playNext )
             this.add( enqueue )
@@ -161,9 +177,36 @@ fun HomeSongsScreen(navController: NavController ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         HeaderInfo( itemsOnDisplayState.size.toString(), R.drawable.musical_notes )
                     }
-                    if (isRecommendationEnabled && recommendationCount > 0) {
+                    if (isRecommendationEnabled) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            HeaderInfo( recommendationCount.toString(), R.drawable.smart_shuffle )
+                            Icon(
+                                painter = painterResource(R.drawable.smart_shuffle),
+                                contentDescription = null,
+                                tint = colorPalette().textSecondary,
+                                modifier = Modifier.size(12.dp)
+                            )
+                            if (isRecommendationsLoading) {
+                                Spacer(modifier = Modifier.width(4.dp))
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(12.dp),
+                                    strokeWidth = 1.5.dp,
+                                    color = colorPalette().textSecondary
+                                )
+                            } else if (recommendationCount > 0) {
+                                BasicText(
+                                    text = recommendationCount.toString(),
+                                    style = TextStyle(
+                                        color = colorPalette().textSecondary,
+                                        fontStyle = typography().xxxs.semiBold.fontStyle,
+                                        fontWeight = typography().xxxs.semiBold.fontWeight,
+                                        fontSize = typography().xxxs.semiBold.fontSize
+                                    ),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.padding( start = 4.dp )
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(5.dp))
                         }
                     }
                 }
@@ -230,7 +273,7 @@ fun HomeSongsScreen(navController: NavController ) {
 
             when( builtInPlaylist ) {
                 BuiltInPlaylist.OnDevice -> OnDeviceSong( navController, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs )
-                else                     -> HomeSongs( navController, builtInPlaylist, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs, onRecommendationCountChange = { count -> recommendationCount = count } )
+                else                     -> HomeSongs( navController, builtInPlaylist, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs, onRecommendationCountChange = { count -> recommendationCount = count }, onRecommendationsLoadingChange = { loading -> isRecommendationsLoading = loading }, isRecommendationEnabled = isRecommendationEnabled )
             }
         }
 

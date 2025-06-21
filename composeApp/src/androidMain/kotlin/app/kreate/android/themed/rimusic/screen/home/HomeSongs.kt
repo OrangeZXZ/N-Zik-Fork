@@ -2,34 +2,25 @@ package app.kreate.android.themed.rimusic.screen.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFilter
@@ -37,10 +28,7 @@ import androidx.compose.ui.util.fastMap
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import app.kreate.android.R
-import it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.relatedSongs
 import it.fast4x.rimusic.Database
@@ -78,7 +66,6 @@ import it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
 import it.fast4x.rimusic.utils.forcePlayAtIndex
 import it.fast4x.rimusic.utils.includeLocalSongsKey
 import it.fast4x.rimusic.utils.isDownloadedSong
-import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
@@ -90,7 +77,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import me.knighthat.component.SongItem
 import me.knighthat.component.Sort
 import me.knighthat.component.song.PeriodSelector
@@ -115,6 +101,8 @@ fun HomeSongs(
     itemsOnDisplay: MutableList<Song>,
     getSongs: () -> List<Song>,
     onRecommendationCountChange: (Int) -> Unit = {},
+    onRecommendationsLoadingChange: (Boolean) -> Unit = {},
+    isRecommendationEnabled: Boolean = false,
 ) {
     // Essentials
     val binder = LocalPlayerServiceBinder.current
@@ -127,7 +115,7 @@ fun HomeSongs(
     val excludeSongWithDurationLimit by rememberPreference( excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled )
     //</editor-fold>
 
-    var items by persistList<Song>( "home/songs" )
+    var items by remember { mutableStateOf(emptyList<Song>()) }
 
     val songSort = Sort ( HOME_SONGS_SORT_BY, HOME_SONGS_SORT_ORDER )
     val topPlaylists = PeriodSelector( Preference.HOME_SONGS_TOP_PLAYLIST_PERIOD )
@@ -149,13 +137,13 @@ fun HomeSongs(
      * > This variable should **_NOT_** be set to `false` while inside **first** phrase,
      * and should **_NOT_** be set to `true` while in **second** phrase.
      */
-    var isLoading by rememberSaveable { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
 
     //<editor-fold defaultstate="collapsed" desc="Smart recommendation state">
-    var isRecommendationEnabled by rememberPreference( isRecommendationEnabledKey, false )
     val recommendationsNumber by rememberPreference( recommendationsNumberKey, RecommendationsNumber.Adaptive )
-    var relatedSongs by rememberSaveable { mutableStateOf(emptyList<Song>()) }
-    var isRecommendationsLoading by rememberSaveable { mutableStateOf(false) }
+    var relatedSongs by remember { mutableStateOf(emptyList<Song>()) }
+    var relatedSongsPositions by remember { mutableStateOf(emptyMap<Song, Int>()) }
+    var isRecommendationsLoading by remember { mutableStateOf(false) }
     //</editor-fold>
 
     // This phrase loads all songs across types into [items]
@@ -218,45 +206,26 @@ fun HomeSongs(
 
         retrievedSongs.flowOn( Dispatchers.IO )
                       .distinctUntilChanged()
-                      // Scroll list to top to prevent weird artifacts
-                      .onEach { lazyListState.scrollToItem( 0, 0 ) }
                       .collect { items = it }
-    }
-
-    val smartRecommendationsButton = object : Button {
-        @Composable
-        override fun ToolBarButton() {
-            Box(
-                modifier = Modifier.size(48.dp), // Standard IconButton size
-                contentAlignment = Alignment.Center
-            ) {
-                if (isRecommendationsLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        color = colorPalette().text,
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    IconButton(onClick = { isRecommendationEnabled = !isRecommendationEnabled }) {
-                        Icon(
-                            painter = painterResource(R.drawable.smart_shuffle),
-                            contentDescription = "Smart Recommendations",
-                            tint = if (isRecommendationEnabled) colorPalette().text else colorPalette().textDisabled
-                        )
-                    }
-                }
-            }
-        }
     }
 
     LaunchedEffect(isRecommendationEnabled, items) {
         if (!isRecommendationEnabled || items.isEmpty()) {
             relatedSongs = emptyList()
             isRecommendationsLoading = false
+            onRecommendationsLoadingChange(false)
+            return@LaunchedEffect
+        }
+
+        // If we already have recommendations and the list size hasn't changed significantly,
+        // we don't recalculate to avoid unnecessary recalculations during playback
+        if (relatedSongs.isNotEmpty() && 
+            relatedSongs.size >= recommendationsNumber.calculateAdaptiveRecommendations(items.size) * 0.8) {
             return@LaunchedEffect
         }
 
         isRecommendationsLoading = true
+        onRecommendationsLoadingChange(true)
 
         val targetRecommendations = recommendationsNumber.calculateAdaptiveRecommendations(items.size)
         val allRelatedSongs = mutableListOf<Song>()
@@ -306,17 +275,25 @@ fun HomeSongs(
         }
 
         relatedSongs = allRelatedSongs.take(targetRecommendations)
+        
+        // Assign stable positions to recommendations
+        val newPositions = relatedSongs.associate { song ->
+            song to (0..items.size).random()
+        }
+        relatedSongsPositions = newPositions
+        
         isRecommendationsLoading = false
+        onRecommendationsLoadingChange(false)
     }
 
-    LaunchedEffect( items, search.inputValue, isRecommendationEnabled, relatedSongs ) {
+    LaunchedEffect( items, search.inputValue, isRecommendationEnabled, relatedSongsPositions ) {
         items.toMutableList()
              .apply {
                  if (isRecommendationEnabled) {
-                     relatedSongs.forEach { song ->
-                         // Insert at random position within the list
-                         val position = (0..size).random()
-                         add( position, song )
+                     relatedSongsPositions.forEach { (song, position) ->
+                         // Use the memorized position, but ensure it's within bounds
+                         val safePosition = position.coerceIn(0, size)
+                         add( safePosition, song )
                      }
                  }
              }
@@ -348,7 +325,6 @@ fun HomeSongs(
         buttons.add( 0, firstButton )
         buttons.add( 3, downloadAllDialog )
         buttons.add( 4, deleteDownloadsDialog )
-        buttons.add( 6, smartRecommendationsButton )
         buttons.add( exportDialog )
     }
 

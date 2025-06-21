@@ -123,7 +123,6 @@ import it.fast4x.rimusic.utils.getPipedSession
 import it.fast4x.rimusic.utils.isAtLeastAndroid14
 import it.fast4x.rimusic.utils.isLandscape
 import it.fast4x.rimusic.utils.isPipedEnabledKey
-import it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import it.fast4x.rimusic.utils.manageDownload
 import it.fast4x.rimusic.utils.parentalControlEnabledKey
 import it.fast4x.rimusic.utils.recommendationsNumberKey
@@ -183,7 +182,7 @@ fun LocalPlaylistSongs(
     val parentalControlEnabled by rememberPreference( parentalControlEnabledKey, false )
     val isPipedEnabled by rememberPreference( isPipedEnabledKey, false )
     val disableScrollingText by rememberPreference( disableScrollingTextKey, false )
-    var isRecommendationEnabled by rememberPreference( isRecommendationEnabledKey, false )
+    var isRecommendationEnabled by remember { mutableStateOf(false) }
 
     // Non-vital
     val pipedSession = getPipedSession()
@@ -459,7 +458,7 @@ fun LocalPlaylistSongs(
             }
         }
         
-        // Take the target number of recommendations and assign random positions
+        // Take the target number of recommendations and assign stable positions
         // Note: We don't force the exact target number because:
         // 1. YouTube doesn't always return 20 songs per request
         // 2. Some songs are filtered out (already in playlist)
@@ -478,15 +477,20 @@ fun LocalPlaylistSongs(
     }
     //</editor-fold>
     LaunchedEffect( items, relatedSongs, search.inputValue, parentalControlEnabled ) {
-        items.toMutableList()
-             .apply {
-                 relatedSongs.forEach { (song, index) ->
-                     // Make sure position can't go outside permissible range
-                     // causing [IndexOutOfBoundException]
-                     val position = index.coerceIn(0, size)
-                     add( position, song )
-                 }
-             }
+        val baseList = items.toMutableList()
+        
+        if (isRecommendationEnabled && relatedSongs.isNotEmpty()) {
+            // Use the memorized positions to maintain stability
+            relatedSongs.forEach { (song, position) ->
+                if (!baseList.any { it.id == song.id }) {
+                    // Use the memorized position, but ensure it's within bounds
+                    val safePosition = position.coerceIn(0, baseList.size)
+                    baseList.add( safePosition, song )
+                }
+            }
+        }
+        
+        baseList
              .distinctBy( Song::id )
              .filter { !parentalControlEnabled || !it.title.startsWith( EXPLICIT_PREFIX ) }
              .filter { song ->
