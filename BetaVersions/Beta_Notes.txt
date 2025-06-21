@@ -1,23 +1,9 @@
-BETA 2
-20/06/25 - Note May contain bugs and crash, also auto update is OFF !
+🧪 BETA 1 – v1.6.2  
 
-Changed:
-- Adaptive smart recommendations that scale with playlist size (10-150 recommendations) Settings > User Interface > Smart recommendations
-- Smart Shuffle icon
-- Removed the warning message asking for a soft restart
+Date: 21/06/25  
 
-Added:
-- Ability to choose the display order during a search in Settings > User Interface > Online search order
-- Added back smart shuffle to Home songs tab !
+⚠️ This beta may contain bugs and crashes. Auto-update is currently OFF!
 
-Optimizations:
-- Star icon was showing on wrong song in QuickPicks
 
 Bug Fixes:
-- Caption not showing in the Video mode
-- Backward icon wasn't working after exiting video mode
-- Video text in Player > Video was showing behind status bar
-- Discord RPC broken url images
-- Crash when importing songs thought backup system
-- Added a waiting time when launching the app to be sure that everything is loaded up
-- Now if you change what page should load toolbar should be functional
+- Fixed an issue where "Ignore Silent" was not working, causing songs to fail loading.
