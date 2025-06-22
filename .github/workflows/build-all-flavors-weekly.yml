@@ -188,196 +188,6 @@ jobs:
           name: unsigned-apks
           path: upstream/unsigned/*.apk
 
-name: Build selected flavors
-
-on:
-  schedule:
-    - cron: '0 0 * * 0'  # Every Sunday at 0AM
-  workflow_dispatch:
-
-concurrency:
-  group: 'weekly-deploy'
-  cancel-in-progress: false
-
-jobs:
-  build_time:
-    name: Capture current time
-    runs-on: ubuntu-latest
-    outputs:
-      date: ${{ steps.date.outputs.date }}
-    steps:
-      - name: Get date
-        id: date
-        run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
-
-  versioning:
-    name: Extract version
-    runs-on: ubuntu-latest
-    outputs:
-      downstream: ${{ steps.downstream.outputs.version }}
-      code: ${{ steps.downstream.outputs.code }}
-      upstream: ${{ steps.upstream.outputs.version }}
-    env:
-      GITHUB_REPOSITORY: ${{ github.action_repository }}
-    steps:
-      - uses: actions/checkout@v4.2.1
-        with:
-          submodules: true
-      - name: Get downstream (local) version
-        id: downstream
-        run: |
-          echo "version=$(grep -E '^\s*versionName\s*=' composeApp/build.gradle.kts | awk -F '\"' '{print $2}')" >> $GITHUB_OUTPUT
-          echo "code=$(grep -E '^\s*versionCode\s*=' composeApp/build.gradle.kts | awk -F '= ' '{print $2}')" >> $GITHUB_OUTPUT
-      - name: Get upstream version
-        id: upstream
-        run: |
-          tag_name="$(curl -s https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest | jq -r .tag_name)"
-          echo "version=${tag_name#v}" >> $GITHUB_OUTPUT
-
-  verify-version:
-    needs: [versioning]
-    name: Verify versions
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check if build can proceed
-        run: |
-          if [ "${{ needs.versioning.outputs.downstream }}" = "${{ needs.versioning.outputs.upstream }}" ]; then
-            echo "Versions are equal. Skipping build."
-            exit 1
-          fi
-      - uses: actions/checkout@v4.2.1
-        with:
-          submodules: true
-      - name: Check if changelog exists
-        run: |
-          if [ ! -e "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" ]; then
-            echo "Changelog not found. Exiting."
-            exit 1
-          fi
-
-  build-full:
-    needs: [versioning, verify-version]
-    name: Build full flavor
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4.2.1
-        with:
-          submodules: true
-      - name: Copy changelogs into resources
-        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
-      - name: Setup Java 21
-        uses: actions/setup-java@v4.7.1
-        with:
-          java-version: "21"
-          distribution: "corretto"
-      - name: Restore Gradle cache
-        uses: actions/cache@v4.2.3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            ./build
-            ./composeApp/build
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: gradle-${{ runner.os }}-
-      - name: Build full flavor
-        run: ./gradlew assembleFull
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: unsigned-full
-          path: composeApp/build/outputs/apk/full/*.apk
-
-  build-minified:
-    needs: [versioning, verify-version]
-    name: Build minified flavor
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4.2.1
-        with:
-          submodules: true
-      - name: Copy changelogs into resources
-        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
-      - name: Setup Java 21
-        uses: actions/setup-java@v4.7.1
-        with:
-          java-version: "21"
-          distribution: "corretto"
-      - name: Restore Gradle cache
-        uses: actions/cache@v4.2.3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            ./build
-            ./composeApp/build
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: gradle-${{ runner.os }}-
-      - name: Build minified flavor
-        run: ./gradlew assembleMinified
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: unsigned-minified
-          path: composeApp/build/outputs/apk/minified/*.apk
-
-  build-release:
-    needs: [versioning, verify-version]
-    name: Build release flavor
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4.2.1
-        with:
-          submodules: true
-      - name: Copy changelogs into resources
-        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
-      - name: Setup Java 21
-        uses: actions/setup-java@v4.7.1
-        with:
-          java-version: "21"
-          distribution: "corretto"
-      - name: Restore Gradle cache
-        uses: actions/cache@v4.2.3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            ./build
-            ./composeApp/build
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: gradle-${{ runner.os }}-
-      - name: Build release flavor
-        run: ./gradlew assembleRelease
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: unsigned-release
-          path: composeApp/build/outputs/apk/release/*.apk
-
-  sign-apks:
-    name: (Skipped) Signing APKs - Debug keys used, no signing
-    needs:
-      - build-full
-      - build-minified
-      - build-release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4.3.0
-        with:
-          path: upstream/unsigned
-          merge-multiple: true
-      - name: Skip signing (debug keys used)
-        run: echo "Skipping signing step because debug keys are used"
-      - name: Upload unsigned APKs for release
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: unsigned-apks
-          path: upstream/unsigned/*.apk
-
   upload-to-release:
     needs: [build_time, versioning, sign-apks]
     runs-on: ubuntu-latest
@@ -394,30 +204,39 @@ jobs:
           tag_name: v${{ needs.versioning.outputs.downstream }}
           make_latest: true
           body: |
-            ## ✨ What's New in v${{ needs.versioning.outputs.downstream }}
-            ---
             <div align="center">
-              <img alt="N-Zik Logo" src="https://github.com/NEVARLeVrai/N-Zik/blob/main/assets/design/ic_banner2.png?raw=true" width="240" />
+              <img alt="app-logo" src="https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/refs/heads/main/assets/design/ic_banner2.png" />
               <p><b>N-Zik</b> - by @NEVARLeVrai</p>
             </div>
             
             ## 📲 Installation
-  
-            Download and install the **release** version.  
-            For smaller size, choose the **minified** version.  
-            Use the **full** version only if the minified version fails to install.  
-            If you encounter any issues, please report them.
-  
-            ## 📦 Available Builds
-  
-            - **Minified** – Lightweight build optimized for performance *(recommended for low-end devices)*  
-            - **Full** – Complete build with all components *(recommended if you face installation issues)*  
-            - **Release** – Standard stable build *(recommended for most users)*
-  
-            ## 🔗 Changelog & Downloads
-  
-            - Full changelog: [Compare v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }}](https://github.com/NEVARLeVrai/N-Zik/compare/v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }})  
-            - [Changelog text file](https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt)
-  
-        token: ${{ secrets.GITHUB_TOKEN }}
-        generate_release_notes: true
+            
+            Download and install `release` version.  
+            Download and install `minified` version of the app (smaller size).  
+            Only install `full` version if `minified` has installation issues.  
+            If you experience any problems, please report them.
+
+            ## What's the difference between `N-Zik-minified.apk` and `N-Zik-full.apk`
+
+            No difference.
+
+            `minified` strips unused code at compile time to reduce APK size.  
+            `full` is provided for users who have trouble installing the `minified` version.  
+            `release` is provided for normal users.
+
+            ## FAQ
+
+            <details> 
+              <summary>Q1: How do I download your build?</summary>
+              <blockquote>
+                Links to prebuilt APKs are right below this article.<br>
+                Select the one that fits your need to start the download.
+              </blockquote>
+            </details>
+
+            ## Changelogs
+            
+            Please visit [Changelogs](https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt).
+
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
