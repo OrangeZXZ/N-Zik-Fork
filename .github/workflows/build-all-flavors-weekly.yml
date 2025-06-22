@@ -204,39 +204,30 @@ jobs:
           tag_name: v${{ needs.versioning.outputs.downstream }}
           make_latest: true
           body: |
+            ## ✨ What's New in v${{ needs.versioning.outputs.downstream }}
+            ---
             <div align="center">
-              <img alt="app-logo" src="https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/refs/heads/main/assets/design/ic_banner2.png" />
+              <img alt="N-Zik Logo" src="https://github.com/NEVARLeVrai/N-Zik/blob/main/assets/design/ic_banner2.png?raw=true" width="240" />
               <p><b>N-Zik</b> - by @NEVARLeVrai</p>
             </div>
             
             ## 📲 Installation
             
-            Download and install `release` version.  
-            Download and install `minified` version of the app (smaller size).  
-            Only install `full` version if `minified` has installation issues.  
-            If you experience any problems, please report them.
+            Download and install the **release** version.  
+            For smaller size, choose the **minified** version.  
+            Use the **full** version only if the minified version fails to install.  
+            If you encounter any issues, please report them.
 
-            ## What's the difference between `N-Zik-minified.apk` and `N-Zik-full.apk`
+            ## 📦 Available Builds
 
-            No difference.
+            - **Minified** – Lightweight build optimized for performance *(recommended for low-end devices)*  
+            - **Full** – Complete build with all components *(recommended if you face installation issues)*  
+            - **Release** – Standard stable build *(recommended for most users)*
 
-            `minified` strips unused code at compile time to reduce APK size.  
-            `full` is provided for users who have trouble installing the `minified` version.  
-            `release` is provided for normal users.
-
-            ## FAQ
-
-            <details> 
-              <summary>Q1: How do I download your build?</summary>
-              <blockquote>
-                Links to prebuilt APKs are right below this article.<br>
-                Select the one that fits your need to start the download.
-              </blockquote>
-            </details>
-
-            ## Changelogs
+            ## 🔗 Changelog & Downloads
             
-            Please visit [Changelogs](https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt).
+            - Full changelog: [Compare v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }}](https://github.com/NEVARLeVrai/N-Zik/compare/v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }})  
+            - [Changelog text file](https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt)
 
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
