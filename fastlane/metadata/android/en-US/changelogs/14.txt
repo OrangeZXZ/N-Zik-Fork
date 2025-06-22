@@ -1,6 +1,0 @@
-Changed:
-- Message to inform when Invalid local playlist is selected
-
-Bug Fixes:
-- "Pin bar" & "Fat bar" timeline swapped 
-- Issue where "Ignore Silent" was not working, causing songs to fail loading.
