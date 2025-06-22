@@ -1,4 +1,4 @@
-import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+ import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -126,8 +126,8 @@ android {
         applicationId = "com.nevar.nzik"
         minSdk = 21
         targetSdk = 35
-        versionCode = 14
-        versionName = "1.6.2"
+        versionCode = 13
+        versionName = "1.6.1"
 
         /*
                 UNIVERSAL VARIABLES
