@@ -202,7 +202,7 @@ jobs:
           files: '*.apk'
           name: v${{ needs.versioning.outputs.downstream }}-${{ needs.build_time.outputs.date }} | Weekly Build
           tag_name: v${{ needs.versioning.outputs.downstream }}
-          make-latest: "true"
+          make_latest: true
           body: |
             <div align="center">
               <img alt="app-logo" src="https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/refs/heads/main/assets/design/ic_banner2.png" />
@@ -238,5 +238,6 @@ jobs:
             
             Please visit [Changelogs](https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt).
 
-          token: ${{ secrets.RELEASE_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
+
