@@ -48,21 +48,12 @@ jobs:
 
       - name: Get downstream (local) version
         id: downstream
-        # Output is current version located inside composeApp/build.gradle.kts
-        # android {
-        #   defaultConfig {
-        #     versionName = "..."
-        #   }
-        # }
         run: |
-          echo "version=$(grep -E '^\s*versionName\s*=' composeApp/build.gradle.kts | awk -F '"' '{print $2}')" >> $GITHUB_OUTPUT
+          echo "version=$(grep -E '^\s*versionName\s*=' composeApp/build.gradle.kts | awk -F '\"' '{print $2}')" >> $GITHUB_OUTPUT
           echo "code=$(grep -E '^\s*versionCode\s*=' composeApp/build.gradle.kts | awk -F '= ' '{print $2}')" >> $GITHUB_OUTPUT
 
       - name: Get upstream version
         id: upstream
-        # Fetch tag_name of latest tag from GitHub.
-        # tag_name contains "v" prefix, so it must be removed
-        # before adding to GITHUB_OUTPUT
         run: |
           tag_name="$(curl -s https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest | jq -r .tag_name)"
           echo "version=${tag_name#v}" >> $GITHUB_OUTPUT
@@ -93,7 +84,7 @@ jobs:
     needs: [versioning, verify-version]
     name: Build full version
     runs-on: ubuntu-latest
-    timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
+    timeout-minutes: 60
 
     steps:
       - uses: actions/checkout@v4.2.1
@@ -101,7 +92,6 @@ jobs:
           submodules: true
 
       - name: Copy changelogs into res/raw
-        # Job should be canceled if file doesn't exist
         run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
@@ -118,7 +108,6 @@ jobs:
             ~/.gradle/wrapper
             ./build
             ./composeApp/build
-          # Cache key has flavor's name to prevent override each other
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
 
@@ -129,14 +118,13 @@ jobs:
         uses: actions/upload-artifact@v4.6.2
         with:
           name: unsigned-full
-          path: |
-            composeApp/build/outputs/apk/full/*.apk
+          path: composeApp/build/outputs/apk/full/*.apk
 
   build-minified:
     needs: [versioning, verify-version]
     name: Build minified version
     runs-on: ubuntu-latest
-    timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
+    timeout-minutes: 60
 
     steps:
       - uses: actions/checkout@v4.2.1
@@ -144,7 +132,6 @@ jobs:
           submodules: true
 
       - name: Copy changelogs into res/raw
-        # Job should be canceled if file doesn't exist
         run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
@@ -161,7 +148,6 @@ jobs:
             ~/.gradle/wrapper
             ./build
             ./composeApp/build
-          # Cache key has flavor's name to prevent override each other
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
 
@@ -172,14 +158,13 @@ jobs:
         uses: actions/upload-artifact@v4.6.2
         with:
           name: unsigned-minified
-          path: |
-            composeApp/build/outputs/apk/minified/*.apk
+          path: composeApp/build/outputs/apk/minified/*.apk
 
   build-izzy:
     needs: [versioning, verify-version]
     name: Build Izzy version
     runs-on: ubuntu-latest
-    timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
+    timeout-minutes: 60
 
     steps:
       - uses: actions/checkout@v4.2.1
@@ -187,7 +172,6 @@ jobs:
           submodules: true
 
       - name: Copy changelogs into res/raw
-        # Job should be canceled if file doesn't exist
         run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
@@ -204,7 +188,6 @@ jobs:
             ~/.gradle/wrapper
             ./build
             ./composeApp/build
-          # Cache key has flavor's name to prevent override each other
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
 
@@ -215,11 +198,10 @@ jobs:
         uses: actions/upload-artifact@v4.6.2
         with:
           name: unsigned-izzy
-          path: |
-            composeApp/build/outputs/apk/izzy/*.apk
+          path: composeApp/build/outputs/apk/izzy/*.apk
 
   sign-apks:
-    name: Sign all built APKs
+    name: (Skipped) Signing APKs - Debug keys used, no signing
     needs:
       - build-full
       - build-minified
@@ -230,132 +212,71 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4.3.0
         with:
-          # Destination path. Supports basic tilde expansion.
-          # Optional. Default is $GITHUB_WORKSPACE
           path: upstream/unsigned
-          # When multiple artifacts are matched, this changes the behavior of the destination directories.
-          # If true, the downloaded artifacts will be in the same directory specified by path.
-          # If false, the downloaded artifacts will be extracted into individual named directories within the specified path.
-          # Optional. Default is 'false'
           merge-multiple: true
 
-      - name: Sign APKs
-        uses: Tlaster/android-sign@v1.2.2
-        with:
-          releaseDirectory: upstream/unsigned
+      - name: Skip signing (debug keys used)
+        run: echo "Skipping signing step because debug keys are used"
 
-          signingKeyBase64: "${{ secrets.KREATE_KEYSTORE }}"
-          keyStorePassword: "${{ secrets.KREATE_KEYSTORE_PASSWD }}"
-          alias: "${{ secrets.KREATE_KEY_ALIAS }}"
-          keyPassword: "${{ secrets.KREATE_KEY_PASSWD }}"
-
-          output: signed
-        env:
-          BUILD_TOOLS_VERSION: "34.0.0"
-
-      - name: Remove trails     # remove "-signed"
-        run: |
-          for filename in signed/*.apk; do mv "$filename" "${filename//-signed}"; done
-
-      - name: Upload for release
+      - name: Upload unsigned APKs for release
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: signed-apks
-          path: signed/*.apk
+          name: unsigned-apks
+          path: upstream/unsigned/*.apk
 
   upload-to-release:
     needs: [build_time, versioning, sign-apks]
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download signed APKs
+      - name: Download unsigned APKs
         uses: actions/download-artifact@v4.3.0
         with:
-          name: signed-apks
+          name: unsigned-apks
 
       - name: Upload built APK to release
         uses: softprops/action-gh-release@v2
         with:
           files: '*.apk'
-          # Name: v0.0.1-20250303 | Weekly Build
           name: v${{ needs.versioning.outputs.downstream }}-${{ needs.build_time.outputs.date }} | Weekly Build
           tag_name: v${{ needs.versioning.outputs.downstream }}
           make-latest: "true"
           body: |
             <div align="center">
-              <img alt="app-logo" src="https://raw.githubusercontent.com/knighthat/Kreate/refs/heads/main/fastlane/metadata/android/en-US/images/featureGraphic.png" />
-              <p><b>Kreate</b> - by @knighthat</p>
+              <img alt="app-logo" src="https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/refs/heads/main/assets/design/ic_banner2.png" />
+              <p><b>N-Zik</b> - by @NEVARLeVrai</p>
             </div>
             
             ## 📲 Installation
-  
-            Download and install `minified` version of the app (because the size is smaller).\
-            Only install `full` version when `minified` exhibits problems during installation.\
-            If you have trouble using the app, report it with the link below.
             
-            > **If Android says that data will be wiped, cancel and report it [HERE](https://github.com/knighthat/Kreate/issues/new?assignees=&labels=bug&template=bug_report.yaml)**
+            Download and install `release` version.  
+            Download and install `minified` version of the app (smaller size).  
+            Only install `full` version if `minified` has installation issues.  
+            If you experience any problems, please report them.
 
-            ## What's the difference between `Kreate-minified.apk` and `Kreate-full.apk`
+            ## What's the difference between `N-Zik-minified.apk` and `N-Zik-full.apk`
 
             No difference.
 
-            `minified` version strips unused code at compile time, making the APK smaller to download.
-            `full` version is still uploaded to help people who have trouble installing `minified` version.
+            `minified` strips unused code at compile time to reduce APK size.  
+            `full` is provided for users who have trouble installing the `minified` version.  
+            `release` is provided for normal users.
 
-            > [This article](https://kreate.knighthat.me/usr/faq/minified_and_full) explains this matter in detail.
-            
-            ## What's `Kreate-izzy.apk`
-            
-            This is APK built specifically for IzzyOnDroid with update checker disabled. You shouldn't
-            download this version here.
-            
-            ## Verification
-            
-            > Always check for signature before installing any app you downloaded from Github or any other APK distributors.\
-            
-            ### Public key hashes
-            
-            | Algorithm      | Hash digest                                                      |
-            |----------------|------------------------------------------------------------------|
-            | SHA-256        | 9dadd5c4bbfb59174bca523dd10b66bedbbf7b2e00630fa990d140a6a17ce7a5 |
-            | SHA-1          | f49a497bd47322c90e9f534ff945ac05f3a8e77a                         |
-            | MD5            | d4fc781f4a5ffc10434cb84d93706eba                                 |
-            
-            ### Certificate hashes
-            
-            | Algorithm      | Hash digest                                                      |
-            |----------------|------------------------------------------------------------------|
-            | SHA-256        | 1bd03a8de5df4dbd7faddb81b9f2aaf55681a584a93d6fb47e9a5ccc736ef7ac |
-            | SHA-1          | 1690571d0d8b8d54c43a4b9460a2a2bc5f67e9bc                         |
-            | MD5            | 320e604e315a0abb177e8d7570dcf4dc                                 |
-            
             ## FAQ
-            
+
             <details> 
-            <summary>Q1: How do I download your build?</summary>
+              <summary>Q1: How do I download your build?</summary>
               <blockquote>
-                Right below this article, there are links to prebuilt APKs.<br>
+                Links to prebuilt APKs are right below this article.<br>
                 Select the one that fits your need to start the download.
               </blockquote>
             </details>
-            <details>
-            <summary>Q2: How verify build's signature?</summary>
-              <blockquote>
-                There are 2 main methods:
-                <ol>
-                  <li>
-                    Built-in <a href="https://stackoverflow.com/questions/7104624/how-do-i-verify-that-an-android-apk-is-signed-with-a-release-certificate" target="_blank" rel="noopener noreferrer">jarsigner</a>
-                  </li>
-                  <li>
-                    <a href="https://developer.android.com/tools/apksigner#options-verify" target="_blank" rel="noopener noreferrer">apksigner</a> from AndroidSDK
-                  </li>
-                </ol>
-              </blockquote>
-            </details>
-            
+
             ## Changelogs
             
-            Please visit [wiki/changelogs](https://github.com/knighthat/Kreate/wiki/Changelogs) for details.
+            Please visit [Changelogs](https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt).
+
 
           token: ${{ secrets.RELEASE_TOKEN }}
           generate_release_notes: true
+
