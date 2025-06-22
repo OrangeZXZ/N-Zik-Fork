@@ -1,319 +1,242 @@
-import com.android.build.gradle.internal.api.BaseVariantOutputImpl
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+name: Build selected flavors
 
-val APP_NAME = "N-Zik"
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Every Sunday at 0AM
+  workflow_dispatch:
 
-plugins {
-    // Multiplatform
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.jetbrains.compose)
+concurrency:
+  group: 'weekly-deploy'
+  cancel-in-progress: false
 
-    // Android
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.room)
+jobs:
+  build_time:
+    name: Capture current time
+    runs-on: ubuntu-latest
+    outputs:
+      date: ${{ steps.date.outputs.date }}
+    steps:
+      - name: Get date
+        id: date
+        run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
 
+  versioning:
+    name: Extract version
+    runs-on: ubuntu-latest
+    outputs:
+      downstream: ${{ steps.downstream.outputs.version }}
+      code: ${{ steps.downstream.outputs.code }}
+      upstream: ${{ steps.upstream.outputs.version }}
+    env:
+      GITHUB_REPOSITORY: ${{ github.action_repository }}
+    steps:
+      - uses: actions/checkout@v4.2.1
+        with:
+          submodules: true
+      - name: Get downstream (local) version
+        id: downstream
+        run: |
+          echo "version=$(grep -E '^\s*versionName\s*=' composeApp/build.gradle.kts | awk -F '\"' '{print $2}')" >> $GITHUB_OUTPUT
+          echo "code=$(grep -E '^\s*versionCode\s*=' composeApp/build.gradle.kts | awk -F '= ' '{print $2}')" >> $GITHUB_OUTPUT
+      - name: Get upstream version
+        id: upstream
+        run: |
+          tag_name="$(curl -s https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest | jq -r .tag_name)"
+          echo "version=${tag_name#v}" >> $GITHUB_OUTPUT
 
-    alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.kotlin.serialization)
-}
+  verify-version:
+    needs: [versioning]
+    name: Verify versions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if build can proceed
+        run: |
+          if [ "${{ needs.versioning.outputs.downstream }}" = "${{ needs.versioning.outputs.upstream }}" ]; then
+            echo "Versions are equal. Skipping build."
+            exit 1
+          fi
+      - uses: actions/checkout@v4.2.1
+        with:
+          submodules: true
+      - name: Check if changelog exists
+        run: |
+          if [ ! -e "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" ]; then
+            echo "Changelog not found. Exiting."
+            exit 1
+          fi
 
-repositories {
-    google()
-    mavenCentral()
-    maven { url = uri("https://jitpack.io") }
-}
+  build-full:
+    needs: [versioning, verify-version]
+    name: Build full flavor
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4.2.1
+        with:
+          submodules: true
+      - name: Copy changelogs into resources
+        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
+      - name: Setup Java 21
+        uses: actions/setup-java@v4.7.1
+        with:
+          java-version: "21"
+          distribution: "corretto"
+      - name: Restore Gradle cache
+        uses: actions/cache@v4.2.3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ./build
+            ./composeApp/build
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+      - name: Build full flavor
+        run: ./gradlew assembleFull
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: unsigned-full
+          path: composeApp/build/outputs/apk/full/*.apk
 
-kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
-            freeCompilerArgs.add("-Xcontext-receivers")
-        }
-    }
+  build-minified:
+    needs: [versioning, verify-version]
+    name: Build minified flavor
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4.2.1
+        with:
+          submodules: true
+      - name: Copy changelogs into resources
+        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
+      - name: Setup Java 21
+        uses: actions/setup-java@v4.7.1
+        with:
+          java-version: "21"
+          distribution: "corretto"
+      - name: Restore Gradle cache
+        uses: actions/cache@v4.2.3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ./build
+            ./composeApp/build
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+      - name: Build minified flavor
+        run: ./gradlew assembleMinified
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: unsigned-minified
+          path: composeApp/build/outputs/apk/minified/*.apk
 
-    jvm("desktop")
+  build-release:
+    needs: [versioning, verify-version]
+    name: Build release flavor
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4.2.1
+        with:
+          submodules: true
+      - name: Copy changelogs into resources
+        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
+      - name: Setup Java 21
+        uses: actions/setup-java@v4.7.1
+        with:
+          java-version: "21"
+          distribution: "corretto"
+      - name: Restore Gradle cache
+        uses: actions/cache@v4.2.3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ./build
+            ./composeApp/build
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+      - name: Build release flavor
+        run: ./gradlew assembleRelease
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: unsigned-release
+          path: composeApp/build/outputs/apk/release/*.apk
 
+  sign-apks:
+    name: (Skipped) Signing APKs - Debug keys used, no signing
+    needs:
+      - build-full
+      - build-minified
+      - build-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4.3.0
+        with:
+          path: upstream/unsigned
+          merge-multiple: true
+      - name: Skip signing (debug keys used)
+        run: echo "Skipping signing step because debug keys are used"
+      - name: Upload unsigned APKs for release
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: unsigned-apks
+          path: upstream/unsigned/*.apk
 
+  upload-to-release:
+    needs: [build_time, versioning, sign-apks]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download unsigned APKs
+        uses: actions/download-artifact@v4.3.0
+        with:
+          name: unsigned-apks
+      - name: Upload built APK to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: '*.apk'
+          name: v${{ needs.versioning.outputs.downstream }}-${{ needs.build_time.outputs.date }} | Weekly Build
+          tag_name: v${{ needs.versioning.outputs.downstream }}
+          make-latest: "true"
+          body: |
+            <div align="center">
+              <img alt="app-logo" src="https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/refs/heads/main/assets/design/ic_banner2.png" />
+              <p><b>N-Zik</b> - by @NEVARLeVrai</p>
+            </div>
+            
+            ## 📲 Installation
+            
+            Download and install `release` version.  
+            Download and install `minified` version of the app (smaller size).  
+            Only install `full` version if `minified` has installation issues.  
+            If you experience any problems, please report them.
 
-    sourceSets {
-        all {
-            languageSettings {
-                optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
-            }
-        }
+            ## What's the difference between `N-Zik-minified.apk` and `N-Zik-full.apk`
 
-        val desktopMain by getting
-        desktopMain.dependencies {
-            implementation(compose.components.resources)
-            implementation(compose.desktop.currentOs)
+            No difference.
 
-            implementation(libs.material.icon.desktop)
-            implementation(libs.vlcj)
+            `minified` strips unused code at compile time to reduce APK size.  
+            `full` is provided for users who have trouble installing the `minified` version.  
+            `release` is provided for normal users.
 
-            implementation(libs.coil.network.okhttp)
-            runtimeOnly(libs.kotlinx.coroutines.swing)
+            ## FAQ
 
-            /*
-            // Uncomment only for build jvm desktop version
-            // Comment before build android version
-            configurations.commonMainApi {
-                exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-android")
-            }
-            */
-        }
+            <details> 
+              <summary>Q1: How do I download your build?</summary>
+              <blockquote>
+                Links to prebuilt APKs are right below this article.<br>
+                Select the one that fits your need to start the download.
+              </blockquote>
+            </details>
 
-        androidMain.dependencies {
-            implementation(libs.media3.session)
-            implementation(libs.kotlinx.coroutines.guava)
-            implementation(libs.newpipe.extractor)
-            implementation(libs.nanojson)
-            implementation(libs.androidx.webkit)
+            ## Changelogs
+            
+            Please visit [Changelogs](https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt).
 
-            // Related to built-in game, maybe removed in future?
-            implementation(libs.compose.runtime.livedata)
-        }
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-
-            implementation(projects.innertube)
-            implementation(projects.piped)
-            implementation(projects.invidious)
-
-            implementation(libs.room)
-            implementation(libs.room.runtime)
-            implementation(libs.room.sqlite.bundled)
-
-            implementation(libs.mediaplayer.kmp)
-
-            implementation(libs.navigation.kmp)
-
-            //coil3 mp
-            implementation(libs.coil.compose.core)
-            implementation(libs.coil.compose)
-            implementation(libs.coil.mp)
-
-            implementation(libs.translator)
-
-        }
-    }
-}
-
-android {
-    dependenciesInfo {
-        // Disables dependency metadata when building APKs.
-        includeInApk = false
-        // Disables dependency metadata when building Android App Bundles.
-        includeInBundle = false
-    }
-
-    buildFeatures {
-        buildConfig = true
-        compose = true
-    }
-
-    compileSdk = 35
-
-    defaultConfig {
-        applicationId = "com.nevar.nzik"
-        minSdk = 21
-        targetSdk = 35
-        versionCode = 13
-        versionName = "1.6.1"
-
-        /*
-                UNIVERSAL VARIABLES
-         */
-        buildConfigField( "Boolean", "IS_AUTOUPDATE", "true" )
-        buildConfigField( "String", "APP_NAME", "\"$APP_NAME\"" )
-    }
-
-    splits {
-        abi {
-            reset()
-            isUniversalApk = true
-        }
-    }
-
-    namespace = "app.kreate.android"
-
-    buildTypes {
-        debug {
-            applicationIdSuffix = ".debug"
-            manifestPlaceholders["appName"] = "$APP_NAME-debug"
-
-            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
-        }
-
-        create( "full" ) {
-            // App's properties
-            versionNameSuffix = "-f"
-            signingConfig = signingConfigs.getByName("debug")
-        }
-
-        create( "minified" ) {
-            // App's properties
-            versionNameSuffix = "-m"
-
-            // Package optimization
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            signingConfig = signingConfigs.getByName("debug")
-        }
-
-        create( "izzy" ) {
-            initWith( maybeCreate("minified") )
-
-            // App's properties
-            versionNameSuffix = "-izzy"
-
-            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
-        }
-
-        // Specifically tailored to F-Droid build
-        // inherited from minified build type
-        release {
-            initWith( maybeCreate("noAutoUpdate") )
-
-            // App's properties
-            versionNameSuffix = "-fdroid"
-            signingConfig = signingConfigs.getByName("debug")
-        }
-
-        create( "beta" ) {
-            initWith( maybeCreate("full") )
-            versionNameSuffix = "-beta"
-            signingConfig = signingConfigs.getByName("debug")
-            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
-        }
-
-        /**
-         * For convenience only.
-         * "Forkers" want to change app name across builds
-         * just need to change this variable
-         */
-        forEach {
-            it.manifestPlaceholders.putIfAbsent( "appName", APP_NAME )
-        }
-    }
-
-    applicationVariants.all {
-        outputs.map { it as BaseVariantOutputImpl }
-               .forEach { output ->
-                   val typeName =
-                       if( buildType.name == "noAutoUpdate" )
-                           "no-autoupdate"
-                       else
-                           buildType.name
-
-                   output.outputFileName = "$APP_NAME-$typeName.apk"
-               }
-    }
-
-    sourceSets.all {
-        kotlin.srcDir("src/$name/kotlin")
-    }
-
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    androidResources {
-        generateLocaleConfig = true
-    }
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
-    }
-}
-
-compose.desktop {
-    application {
-
-        mainClass = "MainKt"
-
-        //conveyor
-        version = "0.0.1"
-        group = "rimusic"
-
-        //jpackage
-        nativeDistributions {
-            //conveyor
-            vendor = "RiMusic.DesktopApp"
-            description = "RiMusic Desktop Music Player"
-
-            targetFormats(TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
-            packageName = "RiMusic.DesktopApp"
-            packageVersion = "0.0.1"
-        }
-    }
-}
-
-compose.resources {
-    publicResClass = true
-    generateResClass = always
-}
-
-room {
-    schemaDirectory("$projectDir/schemas")
-}
-
-dependencies {
-    implementation(libs.compose.activity)
-    implementation(libs.compose.foundation)
-    implementation(libs.compose.ui)
-    implementation(libs.compose.shimmer)
-    implementation(libs.compose.coil)
-    implementation(libs.androidx.palette)
-    implementation(libs.media3.exoplayer)
-    implementation(libs.media3.datasource.okhttp)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.appcompat.resources)
-    implementation(libs.material3)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.compose.animation)
-    implementation(libs.kotlin.csv)
-    implementation(libs.monetcompat)
-    implementation(libs.androidmaterial)
-    implementation(libs.timber)
-    implementation(libs.androidx.crypto)
-    implementation(libs.math3)
-    implementation(libs.toasty)
-    implementation(libs.androidyoutubeplayer)
-    implementation(libs.androidx.glance.widgets)
-    implementation(libs.kizzy.rpc)
-    implementation(libs.gson)
-    implementation (libs.hypnoticcanvas)
-    implementation (libs.hypnoticcanvas.shaders)
-    implementation(libs.github.jeziellago.compose.markdown)
-
-    implementation(libs.room)
-    ksp(libs.room.compiler)
-
-    implementation(projects.innertube)
-    implementation(projects.oldtube)
-    implementation(projects.kugou)
-    implementation(projects.lrclib)
-    implementation(projects.piped)
-
-    coreLibraryDesugaring(libs.desugaring.nio)
-
-    // Debug only
-    debugImplementation(libs.ui.tooling.preview.android)
-}
+          token: ${{ secrets.RELEASE_TOKEN }}
+          generate_release_notes: true
