@@ -4,7 +4,7 @@
 <b>N-Zik</b> is a multilingual fork of <a href="https://github.com/knighthat/Kreate">Kreate</a>, built with UI/UX improvements and new features in mind.
   </p>
 <p><strong>N-Zik</strong> may not yet be as stable as the original <a href="https://github.com/knighthat/Kreate">Kreate</a>, so feel free to use the original if you need a more mature alternative.</p>
-<p>I'm still learning Kotlin, but I typically push updates every Saturday when possible.</p>
+<p>I'm still learning Kotlin, but I typically push updates every Sunday at 0AM when possible.</p>
 
   <br>
   
