@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">Antal anbefalinger</string>
   <string name="smart_recommendations_adaptive_description">Adaptive: Skalaer med spillelistestørrelse (10-150 anbefalinger)</string>
   <string name="smart_recommendations_adaptive">Adaptiv</string>
+  <string name="unknown_title">Ukendt Titel</string>
+  <string name="unknown_artist">Ukendt Kunstner</string>
 </resources>
