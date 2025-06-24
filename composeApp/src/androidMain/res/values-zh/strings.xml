@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">建议数</string>
   <string name="smart_recommendations_adaptive_description">自适应：使用播放列表大小 (10-150 推荐)</string>
   <string name="smart_recommendations_adaptive">自适应模式</string>
+  <string name="unknown_title">Unknown Title</string>
+  <string name="unknown_artist">Unknown Artist</string>
 </resources>

@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">Număr de recomandări</string>
   <string name="smart_recommendations_adaptive_description">Adaptive: scări cu dimensiunea listei de redare (10-150 recomandări)</string>
   <string name="smart_recommendations_adaptive">Adaptiv</string>
+  <string name="unknown_title">Titlu necunoscut</string>
+  <string name="unknown_artist">Artist Necunoscut</string>
 </resources>

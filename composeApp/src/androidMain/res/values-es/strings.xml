@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">Número de recomendaciones</string>
   <string name="smart_recommendations_adaptive_description">Adaptivo: Escalas con tamaño de lista de reproducción (10-150 recomendaciones)</string>
   <string name="smart_recommendations_adaptive">Adaptivo</string>
+  <string name="unknown_title">Título desconocido</string>
+  <string name="unknown_artist">Artista desconocido</string>
 </resources>

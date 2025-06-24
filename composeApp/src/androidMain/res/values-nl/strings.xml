@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">Aantal aanbevelingen</string>
   <string name="smart_recommendations_adaptive_description">Adaptive: Schubben met playlist grootte (10-150 aanbevelingen)</string>
   <string name="smart_recommendations_adaptive">Adaptief</string>
+  <string name="unknown_title">Onbekende titel</string>
+  <string name="unknown_artist">Onbekende artiest</string>
 </resources>
