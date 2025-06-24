@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">Αριθμός συστάσεων</string>
   <string name="smart_recommendations_adaptive_description">Προσαρμοστικό: Κλίμακες με μέγεθος λίστας αναπαραγωγής (10-150 συστάσεις)</string>
   <string name="smart_recommendations_adaptive">Προσαρμοστική</string>
+  <string name="unknown_title">Άγνωστος Τίτλος</string>
+  <string name="unknown_artist">Άγνωστος Καλλιτέχνης</string>
 </resources>
