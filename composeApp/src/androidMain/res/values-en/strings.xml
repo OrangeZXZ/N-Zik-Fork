@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">Number of recommendations</string>
   <string name="smart_recommendations_adaptive_description">Adaptive: Scales with playlist size (10-120 recommendations)</string>
   <string name="smart_recommendations_adaptive">Adaptive</string>
+  <string name="unknown_title">Unknown Title</string>
+  <string name="unknown_artist">Unknown Artist</string>
 </resources>
