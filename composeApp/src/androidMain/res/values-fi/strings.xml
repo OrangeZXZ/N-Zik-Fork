@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">Suositusten määrä</string>
   <string name="smart_recommendations_adaptive_description">Adaptive: Soittolistan kokoiset vaa\'at (10-150 suositusta)</string>
   <string name="smart_recommendations_adaptive">Mukautuva</string>
+  <string name="unknown_title">Tuntematon Otsikko</string>
+  <string name="unknown_artist">Tuntematon Esittäjä</string>
 </resources>
