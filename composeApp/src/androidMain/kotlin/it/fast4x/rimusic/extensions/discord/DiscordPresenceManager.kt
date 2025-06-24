@@ -22,6 +22,7 @@ import java.io.FileOutputStream
 import androidx.core.graphics.scale
 import app.kreate.android.R
 import me.knighthat.utils.Toaster
+import me.knighthat.utils.isNetworkAvailable
 import timber.log.Timber
 
     /**
@@ -59,7 +60,8 @@ class DiscordPresenceManager(
      * Validate the token
      */
 
-     internal suspend fun validateToken(token: String): Boolean = withContext(Dispatchers.IO) {
+     internal suspend fun validateToken(token: String): Boolean? = withContext(Dispatchers.IO) {
+        if (!isNetworkAvailable(context)) return@withContext null
         val request = Request.Builder()
             .url("https://discord.com/api/v9/users/@me")
             .header("Authorization", token)
@@ -72,7 +74,11 @@ class DiscordPresenceManager(
             }
         }.getOrElse {
             Timber.tag("DiscordPresence").e(it, "Error validating token: ${it.message}")
-            false
+            if (it is java.io.IOException) {
+                null
+            } else {
+                false
+            }
         }
     }
 
@@ -82,12 +88,8 @@ class DiscordPresenceManager(
         val token = getToken() ?: return
         if (token.isEmpty()) return
 
-        discordScope.launch {
-            if (!validateToken(token)) {
-                Timber.tag("DiscordPresence").e("Invalid token, stopping presence updates")
-                Toaster.e(R.string.discord_token_text_invalid)
-                return@launch
-            }
+        if (!isNetworkAvailable(context)) {
+            return
         }
 
         refreshJob?.cancel()
@@ -133,12 +135,14 @@ class DiscordPresenceManager(
         if (isStopped) return
         val mediaItem = lastMediaItem ?: return
         val frozenTimestamp = now - pausedPosition
+        val title = mediaItem.mediaMetadata.title?.toString().takeIf { !it.isNullOrBlank() } ?: context.getString(R.string.unknown_title)
+        val artist = mediaItem.mediaMetadata.artist?.toString().takeIf { !it.isNullOrBlank() } ?: context.getString(R.string.unknown_artist)
         discordScope.launch {
             if (isStopped) return@launch
             sendActivity(
                 mediaItem = mediaItem,
-                details = "⏸️ Paused: ${mediaItem.mediaMetadata.title}",
-                state = mediaItem.mediaMetadata.artist?.toString() ?: "N-Zik",
+                details = "⏸️ Paused: $title",
+                state = artist,
                 start = frozenTimestamp,
                 end = frozenTimestamp,
                 status = "online",
@@ -163,10 +167,17 @@ class DiscordPresenceManager(
         val token = getToken() ?: return
         if (token.isEmpty()) return
 
-        if (!validateToken(token)) {
-            Timber.tag("DiscordPresence").e("Invalid token, stopping presence updates")
-            Toaster.e(R.string.discord_token_text_invalid)
-            return
+        when (validateToken(token)) {
+            false -> {
+                Timber.tag("DiscordPresence").e("Invalid token, stopping presence updates")
+                Toaster.e(R.string.discord_token_text_invalid)
+                return
+            }
+            null -> {
+                Timber.tag("DiscordPresence").w("Network error while updating presence, skipping.")
+                return
+            }
+            true -> { /* Token is valid, continue */ }
         }
 
         if (token != lastToken) {
@@ -176,6 +187,7 @@ class DiscordPresenceManager(
         }
         val largeImageUrl = getLargeImageUrl(mediaItem)
         val smallImageUrl = getSmallImageUrl()
+        val largeTextValue = if (state.isNotBlank()) "$details - $state" else details
         runCatching {
             rpc?.setActivity(
                 activity = Activity(
@@ -191,7 +203,7 @@ class DiscordPresenceManager(
                     assets = Assets(
                         largeImage = largeImageUrl,
                         smallImage = smallImageUrl,
-                        largeText = mediaItem.mediaMetadata.title?.toString() + " - " + mediaItem.mediaMetadata.artist?.toString(),
+                        largeText = largeTextValue,
                         smallText = "v${getVersionName(context)}",
                     ),
                     buttons = listOf("Get N-Zik", "Listen to YTMusic"),
@@ -249,6 +261,9 @@ class DiscordPresenceManager(
     private suspend fun uploadImage(file: File): String? = withContext(Dispatchers.IO) {
         val compressed = if (file.length() > 1_000_000) compressImage(file) else file
         try {
+            if (!isNetworkAvailable(context)) {
+                return@withContext null
+            }
             val requestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
                 .addFormDataPart("file", compressed!!.name, compressed.readBytes().toRequestBody("image/*".toMediaType()))
                 .build()
@@ -357,11 +372,13 @@ class DiscordPresenceManager(
     private fun sendPlayingPresence(mediaItem: MediaItem, position: Long, duration: Long, now: Long) {
         val start = now - position
         val end = start + duration
+        val title = mediaItem.mediaMetadata.title?.toString().takeIf { !it.isNullOrBlank() } ?: context.getString(R.string.unknown_title)
+        val artist = mediaItem.mediaMetadata.artist?.toString().takeIf { !it.isNullOrBlank() } ?: context.getString(R.string.unknown_artist)
         discordScope.launch {
             sendActivity(
                 mediaItem = mediaItem,
-                details = mediaItem.mediaMetadata.title?.toString() ?: "N-Zik",
-                state = mediaItem.mediaMetadata.artist?.toString() ?: "N-Zik",
+                details = title,
+                state = artist,
                 start = start,
                 end = end,
                 status = "online",
@@ -384,6 +401,9 @@ class DiscordPresenceManager(
         refreshJob = discordScope.launch {
             while (isActive && !isStopped) {
                 delay(15_000L)
+                if (!isNetworkAvailable(context)) {
+                    continue
+                }
                 val isPlaying = isPlayingProvider()
                 if (isPlaying) {
                     val pos = getCurrentPosition()

@@ -553,15 +553,23 @@ fun AccountsSettings() {
             LaunchedEffect(discordPersonalAccessToken) {
                 if (discordPersonalAccessToken.isNotEmpty()) {
                     val presenceManager = DiscordPresenceManager(context, { discordPersonalAccessToken })
-                    isTokenValid = presenceManager.validateToken(discordPersonalAccessToken)
-                    if (!isTokenValid) {
-                        showTokenError = true
-                        discordPersonalAccessToken = ""
-                        discordUsername = ""
-                        discordAvatar = ""
-                        Toaster.e(R.string.discord_token_text_invalid)
-                    } else {
-                        showTokenError = false
+                    when (presenceManager.validateToken(discordPersonalAccessToken)) {
+                        true -> {
+                            isTokenValid = true
+                            showTokenError = false
+                        }
+                        false -> {
+                            isTokenValid = false
+                            showTokenError = true
+                            discordPersonalAccessToken = ""
+                            discordUsername = ""
+                            discordAvatar = ""
+                            Toaster.e(R.string.discord_token_text_invalid)
+                        }
+                        null -> { // Network error
+                            isTokenValid = false
+                            showTokenError = false
+                        }
                     }
                 }
             }
