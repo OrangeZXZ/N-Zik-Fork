@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">Počet doporučení</string>
   <string name="smart_recommendations_adaptive_description">Adaptive: Stupnice s velikostí playlistu (10-150 doporučení)</string>
   <string name="smart_recommendations_adaptive">Adaptivní</string>
+  <string name="unknown_title">Neznámý název</string>
+  <string name="unknown_artist">Neznámý interpret</string>
 </resources>
