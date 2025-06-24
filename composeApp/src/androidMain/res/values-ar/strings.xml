@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">عدد التوصيات</string>
   <string name="smart_recommendations_adaptive_description">تكييف: مقاييس مع حجم قائمة التشغيل (10-150 توصية)</string>
   <string name="smart_recommendations_adaptive">التكييف</string>
+  <string name="unknown_title">عنوان غير معروف</string>
+  <string name="unknown_artist">فنان مجهول</string>
 </resources>
