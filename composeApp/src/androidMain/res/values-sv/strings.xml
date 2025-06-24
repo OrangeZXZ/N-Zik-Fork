@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">Antal rekommendationer</string>
   <string name="smart_recommendations_adaptive_description">Adaptiv: Skalor med spelliststorlek (10-150 rekommendationer)</string>
   <string name="smart_recommendations_adaptive">Adaptiv</string>
+  <string name="unknown_title">Okänd titel</string>
+  <string name="unknown_artist">Okänd konstnär</string>
 </resources>
