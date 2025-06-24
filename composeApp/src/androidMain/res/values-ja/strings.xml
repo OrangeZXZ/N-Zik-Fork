@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">おすすめの数</string>
   <string name="smart_recommendations_adaptive_description">適応: プレイリストのサイズを指定したスケール（10-150推奨）</string>
   <string name="smart_recommendations_adaptive">Adaptive</string>
+  <string name="unknown_title">不明なタイトル</string>
+  <string name="unknown_artist">不明なアーティスト</string>
 </resources>
