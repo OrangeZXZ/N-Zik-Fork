@@ -1009,4 +1009,6 @@ Volume BAS : titre précédent</string>
   <string name="smart_recommendations_number">Nombre de recommandations</string>
   <string name="smart_recommendations_adaptive_description">Adaptatif: S\'adapte avec la taille de la playlist (10 à 120 recommandations)</string>
   <string name="smart_recommendations_adaptive">Adaptatif</string>
+  <string name="unknown_title">Titre inconnu</string>
+  <string name="unknown_artist">Artiste inconnu</string>
 </resources>
