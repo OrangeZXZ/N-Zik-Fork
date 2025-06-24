@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">Кількість рекомендацій</string>
   <string name="smart_recommendations_adaptive_description">Адаптивно: Масштаб зі розміром списку відтворення (10-150 рекомендацій)</string>
   <string name="smart_recommendations_adaptive">Адаптивний колір</string>
+  <string name="unknown_title">Невідомий заголовок</string>
+  <string name="unknown_artist">Невідомий виконавець</string>
 </resources>
