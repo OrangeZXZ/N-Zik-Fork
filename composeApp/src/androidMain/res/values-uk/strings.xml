@@ -356,7 +356,7 @@
   <string name="sort_relative_listening_time">Відносний час прослуховування</string>
   <string name="follow">Підписатися</string>
   <string name="following">Підписаний</string>
-  <string name="artist_subscribers">%s Subscribers</string>
+  <string name="artist_subscribers">%s Підписників</string>
   <string name="but_these_updates_would_not_go_through">Але ці оновлення не проходитимуть додаткову перевірку, яка виконується, наприклад, IzzyOnDroid або F-Droid.</string>
   <string name="sleeptimer_stop">зупинити</string>
   <string name="player_keep_minimized">Згорнути</string>
@@ -965,7 +965,7 @@
   <string name="description_playback_speed">Adjust how slow/fast the song goes</string>
   <string name="opens_link_in_web_browser">Відкриває посилання у веб-браузері</string>
   <string name="title_appearance_changes">Зміна зовнішнього вигляду</string>
-  <string name="appearance_changes_message">If you change Player or UI settings,\nit is strongly recommended to restart the application.</string>
+  <string name="appearance_changes_message">Якщо ви змінюєте налаштування програвача або інтерфейсу,\nнастійно рекомендується перезапустити програму.</string>
   <string name="title_import_settings_migration">Імпорт файлу міграції.</string>
   <string name="description_import_settings_migration">Для старих користувачів до перетворення.\nВикористовувати стару програму, щоб зробити резервну копію міграції.</string>
   <string name="log_in_to_ytm">Увійдіть у свій YTM акаунт для додаткової інформації</string>
