@@ -133,46 +133,11 @@ jobs:
           name: unsigned-minified
           path: composeApp/build/outputs/apk/minified/*.apk
 
-  build-release:
-    needs: [versioning, verify-version]
-    name: Build release flavor
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4.2.1
-        with:
-          submodules: true
-      - name: Copy changelogs into resources
-        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
-      - name: Setup Java 21
-        uses: actions/setup-java@v4.7.1
-        with:
-          java-version: "21"
-          distribution: "corretto"
-      - name: Restore Gradle cache
-        uses: actions/cache@v4.2.3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            ./build
-            ./composeApp/build
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: gradle-${{ runner.os }}-
-      - name: Build release flavor
-        run: ./gradlew assembleRelease
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: unsigned-release
-          path: composeApp/build/outputs/apk/release/*.apk
-
   sign-apks:
     name: (Skipped) Signing APKs - Debug keys used, no signing
     needs:
       - build-full
       - build-minified
-      - build-release
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
@@ -213,16 +178,14 @@ jobs:
             
             ## 📲 Installation
             
-            Download and install the **release** version.  
+            Download and install the **full** version.  
             For smaller size, choose the **minified** version.  
-            Use the **full** version only if the minified version fails to install.  
             If you encounter any issues, please report them.
 
             ## 📦 Available Builds
 
             - **Minified** – Lightweight build optimized for performance *(recommended for low-end devices)*  
             - **Full** – Complete build with all components *(recommended if you face installation issues)*  
-            - **Release** – Standard stable build *(recommended for most users)*
 
             ## 🔗 Changelog & Downloads
             
