@@ -1007,4 +1007,6 @@
   <string name="smart_recommendations_number">Количество рекомендаций</string>
   <string name="smart_recommendations_adaptive_description">Адаптивно: Масштабы с размером плейлиста (10-150 рекомендаций)</string>
   <string name="smart_recommendations_adaptive">Адаптивный</string>
+  <string name="unknown_title">Неизвестное название</string>
+  <string name="unknown_artist">Неизвестный художник</string>
 </resources>
