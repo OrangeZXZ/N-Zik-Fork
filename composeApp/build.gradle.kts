@@ -1,4 +1,4 @@
- import com.android.build.gradle.internal.api.BaseVariantOutputImpl
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -115,6 +115,12 @@ android {
         includeInBundle = false
     }
 
+    androidComponents {
+        beforeVariants(selector().withBuildType("release")) {
+            it.enable = false
+        }
+    }
+
     buildFeatures {
         buildConfig = true
         compose = true
@@ -173,25 +179,6 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
 
-        create( "izzy" ) {
-            initWith( maybeCreate("minified") )
-
-            // App's properties
-            versionNameSuffix = "-izzy"
-
-            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
-        }
-
-        // Specifically tailored to F-Droid build
-        // inherited from minified build type
-        release {
-            initWith( maybeCreate("noAutoUpdate") )
-
-            // App's properties
-            versionNameSuffix = "-fdroid"
-            signingConfig = signingConfigs.getByName("debug")
-        }
-
         create( "beta" ) {
             initWith( maybeCreate("full") )
             versionNameSuffix = "-beta"
@@ -212,12 +199,7 @@ android {
     applicationVariants.all {
         outputs.map { it as BaseVariantOutputImpl }
                .forEach { output ->
-                   val typeName =
-                       if( buildType.name == "noAutoUpdate" )
-                           "no-autoupdate"
-                       else
-                           buildType.name
-
+                   val typeName = buildType.name
                    output.outputFileName = "$APP_NAME-$typeName.apk"
                }
     }
