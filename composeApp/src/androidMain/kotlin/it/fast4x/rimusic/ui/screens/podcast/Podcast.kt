@@ -268,7 +268,7 @@ fun Podcast(
                         if (podcastPage != null) {
                             if(!isLandscape)
                                 AsyncImage(
-                                    model = podcastPage!!.thumbnail.firstOrNull()?.url?.resize(1200, 900),
+                                    model = podcastPage!!.thumbnail.firstOrNull()?.url?.resize(1200, 1200),
                                     contentDescription = "loading...",
                                     modifier = Modifier
                                         .fillMaxWidth()

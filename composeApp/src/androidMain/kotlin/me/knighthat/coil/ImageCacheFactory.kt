@@ -45,11 +45,8 @@ object ImageCacheFactory {
                  ).build()
     }
 
-    // This is isn't for all devices, some devices need
-    // bigger sizes so the image won't distort, but 900 (px)
-    // is fit for majority of devices and the their storage sizes
-    // isn't too big either.
-    const val THUMBNAIL_SIZE = 900;
+   // 900 is too small for some devices, 1200 is a good compromise
+    const val THUMBNAIL_SIZE = 1200;
 
      val LOADER: ImageLoader by lazy {
          // This version doesn't have Network Cache,
