@@ -131,9 +131,9 @@ android {
     defaultConfig {
         applicationId = "com.nevar.nzik"
         minSdk = 21
-        targetSdk = 35
-        versionCode = 15
-        versionName = "1.6.3"
+        targetSdk = 36
+        versionCode = 16
+        versionName = "1.6.4"
 
         /*
                 UNIVERSAL VARIABLES

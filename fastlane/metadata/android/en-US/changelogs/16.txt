@@ -1,0 +1,6 @@
+Changed:
+- Updated dependencies
+
+Bug Fixes:
+- Sometimes when you search a music it will crash the app its resolved now
+- Images cache should be available offline now
