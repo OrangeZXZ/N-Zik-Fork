@@ -363,12 +363,12 @@ fun DataSettings() {
         SettingsEntryGroupText(title = stringResource(R.string.title_backup_and_restore))
 
         val exportDbDialog = ExportDatabaseDialog( context )
-        exportDbDialog.Render()
+        // exportDbDialog.Render() // We don't want to show the popup
 
         SettingsEntry(
             title = stringResource( R.string.save_to_backup ),
             text = stringResource( R.string.export_the_database ),
-            onClick = exportDbDialog::showDialog
+            onClick = exportDbDialog::export // Direct export without popup
         )
         SettingsDescription(text = stringResource(R.string.personal_preference))
 
@@ -385,12 +385,12 @@ fun DataSettings() {
         ))
 
         val exportSettingsDialog = ExportSettingsDialog( context )
-        exportSettingsDialog.Render()
+        // exportSettingsDialog.Render() // We don't want to show the popup
 
         SettingsEntry(
-            title = exportSettingsDialog.dialogTitle,
+            title = stringResource(R.string.title_export_settings),
             text = stringResource( R.string.store_settings_in_a_file ),
-            onClick = exportSettingsDialog::showDialog
+            onClick = exportSettingsDialog::export // Direct export without popup
         )
         ImportantSettingsDescription(
             stringResource( R.string.description_exclude_credentials )
