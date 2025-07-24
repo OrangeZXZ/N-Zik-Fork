@@ -256,7 +256,7 @@ object MyDownloadHelper {
             insertIgnore( mediaItem )
         }
 
-        val imageUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(1200)
+        val imageUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(900)
 
 //            sendAddDownload(
 //                context,MyDownloadService::class.java,downloadRequest,false
@@ -274,7 +274,7 @@ object MyDownloadHelper {
                 ImageRequest.Builder(context)
                     .networkCachePolicy(CachePolicy.ENABLED)
                     .data(imageUrl)
-                    .size(1200)
+                    .size(900)
                     .bitmapConfig(Bitmap.Config.ARGB_8888)
                     .allowHardware(false)
                     .diskCacheKey(imageUrl.toString())
