@@ -535,8 +535,12 @@ fun rememberPreference(key: String, defaultValue: HomePage?): MutableState<HomeP
     return remember {
         mutableStatePreferenceOf(
             try {
-                context.preferences.getString(key, json)
-                    ?.let { Json.decodeFromString<HomePage>(it) }
+                val raw = context.preferences.getString(key, json)
+                if (raw == null || raw == "null") {
+                    null
+                } else {
+                    Json.decodeFromString<HomePage>(raw)
+                }
             } catch (e: Exception) {
                 Timber.e("RememberPreference HomePage Error: ${ e.stackTraceToString() }")
                 null
