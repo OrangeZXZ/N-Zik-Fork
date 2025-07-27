@@ -65,21 +65,28 @@ jobs:
             exit 1
           fi
 
-  build-apks:
+  build-full:
     needs: [versioning, verify-version]
-    name: Build APKs (full & minified)
+    name: Build full version
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
+
     steps:
       - uses: actions/checkout@v4.2.1
         with:
           submodules: true
+
+      - name: Copy changelogs into res/raw
+        # Job should be canceled if file doesn't exist
+        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
+
       - name: Setup Java 21
         uses: actions/setup-java@v4.7.1
         with:
           java-version: "21"
           distribution: "corretto"
-      - name: Restore Gradle cache
+
+      - name: Restore Gradle dependencies & build cache
         uses: actions/cache@v4.2.3
         with:
           path: |
@@ -87,43 +94,96 @@ jobs:
             ~/.gradle/wrapper
             ./build
             ./composeApp/build
+          # Cache key has flavor's name to prevent override each other
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
-      - name: Copy changelogs into resources
-        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
-      - name: Build APKs
-        run: ./gradlew assembleFull assembleMinified
-      - name: Upload unsigned APKs
+
+      - name: Build with Gradle
+        run: ./gradlew assembleGithubRelease
+
+      - name: Upload artifacts for signing
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: unsigned-apks
-          path: composeApp/build/outputs/apk/**/*.apk
+          name: unsigned-release
+          path: |
+            composeApp/build/outputs/apk/github/release/*.apk
+            
+  build-minified:
+    needs: [versioning, verify-version]
+    name: Build minified version
+    runs-on: ubuntu-latest
+    timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
+
+    steps:
+      - uses: actions/checkout@v4.2.1
+        with:
+          submodules: true
+
+      - name: Copy changelogs into res/raw
+        # Job should be canceled if file doesn't exist
+        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4.7.1
+        with:
+          java-version: "21"
+          distribution: "corretto"
+
+      - name: Restore Gradle dependencies & build cache
+        uses: actions/cache@v4.2.3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ./build
+            ./composeApp/build
+          # Cache key has flavor's name to prevent override each other
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+
+      - name: Build with Gradle
+        run: ./gradlew assembleGithubUncompressed
+
+      - name: Upload artifacts for signing
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: unsigned-uncompressed
+          path: |
+            composeApp/build/outputs/apk/github/minified/*.apk
 
   sign-apks:
-    name: Sign APKs with production key
-    needs: [build-apks]
+    name: Sign all built APKs
+    needs:
+      - build-full
+      - build-minified
     runs-on: ubuntu-latest
+  
     steps:
-      - name: Download unsigned APKs
+      - name: Download artifacts
         uses: actions/download-artifact@v4.3.0
         with:
-          name: unsigned-apks
-          path: unsigned
-      - name: Decode keystore
+          path: upstream/unsigned
+          merge-multiple: true
+  
+      - name: Sign APKs
+        uses: Tlaster/android-sign@v1.2.2
+        with:
+          releaseDirectory: upstream/unsigned
+  
+          signingKeyBase64: "${{ secrets.RELEASE_KEYSTORE }}"
+          keyStorePassword: "${{ secrets.RELEASE_KEYSTORE_PASSWD }}"
+          alias: "${{ secrets.RELEASE_KEY_ALIAS }}"
+          keyPassword: "${{ secrets.RELEASE_KEY_PASSWD }}"
+  
+          output: signed
+        env:
+          BUILD_TOOLS_VERSION: "34.0.0"
+  
+      - name: Remove trails     # remove "-signed"
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > my-release-key.jks
-      - name: Sign all APKs
-        run: |
-          mkdir signed
-          for apk in unsigned/**/*.apk; do
-            apksigner sign \
-              --ks my-release-key.jks \
-              --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
-              --key-pass pass:${{ secrets.KEY_PASSWORD }} \
-              --ks-key-alias ${{ secrets.KEY_ALIAS }} \
-              --out "signed/$(basename $apk)" "$apk"
-          done
-      - name: Upload signed APKs
+          for filename in signed/*.apk; do mv "$filename" "${filename//-signed}"; done
+  
+      - name: Upload for release
         uses: actions/upload-artifact@v4.6.2
         with:
           name: signed-apks
