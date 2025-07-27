@@ -52,14 +52,14 @@ jobs:
           restore-keys: gradle-${{ runner.os }}-
 
       - name: Build with Gradle
-        run: ./gradlew assembleGithubFull
+        run: ./gradlew assembleFull
 
       - name: Upload artifacts for signing
         uses: actions/upload-artifact@v4.6.2
         with:
           name: unsigned-release
           path: |
-            composeApp/build/outputs/apk/github/release/*.apk
+            composeApp/build/outputs/apk/github/full/*.apk
 
   sign-apks:
     name: Sign all built APKs
