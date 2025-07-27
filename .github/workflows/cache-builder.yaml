@@ -110,8 +110,10 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
 
-      - name: Build with Gradle (cache only)
         # Gradle has built-in flag "-build-cache"
         # That explicitly tell compiler to generate reusable files.
         # Combine with "--exclude-task" to skip unnecessary tasks
-        run: ./gradlew assembleGithubRelease --build-cache --exclude-task packageGithubRelease
+      - name: Build with Gradle (cache only)
+        run: |
+          ./gradlew assembleFull --build-cache --exclude-task packageFull
+          ./gradlew assembleMinified --build-cache --exclude-task packageMinified
