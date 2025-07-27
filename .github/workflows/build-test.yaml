@@ -1,45 +1,69 @@
-name: Build and Sign Full APK (Test)
+name: Build & Sign Full Flavor Only (TEST)
 
 on:
   workflow_dispatch:
 
 jobs:
-  build-full:
-    name: Build Full APK
+  versioning:
+    name: Extract version
     runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.downstream.outputs.code }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.1
         with:
           submodules: true
+      - name: Get downstream (local) version code
+        id: downstream
+        run: |
+          echo "code=$(grep -E '^\s*versionCode\s*=' composeApp/build.gradle.kts | awk -F '= ' '{print $2}')" >> $GITHUB_OUTPUT
 
-      - name: Setup Java 21
-        uses: actions/setup-java@v4
+  build-full:
+    needs: [versioning]
+    name: Build Full APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4.2.1
         with:
-          java-version: 21
-          distribution: corretto
-
+          submodules: true
+      - name: Setup Java 21
+        uses: actions/setup-java@v4.7.1
+        with:
+          java-version: "21"
+          distribution: "corretto"
+      - name: Restore Gradle cache
+        uses: actions/cache@v4.2.3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ./build
+            ./composeApp/build
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+      - name: Copy changelogs into resources
+        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
       - name: Build full flavor APK
         run: ./gradlew assembleFull
-
-      - name: Upload unsigned APK
-        uses: actions/upload-artifact@v4
+      - name: Upload unsigned full APK
+        uses: actions/upload-artifact@v4.6.2
         with:
-          name: unsigned-apk
+          name: unsigned-full-apk
           path: composeApp/build/outputs/apk/full/*.apk
 
   sign-full:
-    needs: build-full
+    needs: [build-full]
+    name: Sign Full APK with production key
     runs-on: ubuntu-latest
     steps:
-      - name: Download unsigned APK
-        uses: actions/download-artifact@v4
+      - name: Download unsigned full APK
+        uses: actions/download-artifact@v4.3.0
         with:
-          name: unsigned-apk
+          name: unsigned-full-apk
           path: unsigned
-
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > my-release-key.jks
-
       - name: Sign full APK
         run: |
           mkdir signed
@@ -49,9 +73,8 @@ jobs:
             --key-pass pass:${{ secrets.KEY_PASSWORD }} \
             --ks-key-alias ${{ secrets.KEY_ALIAS }} \
             --out signed/full.apk unsigned/*.apk
-
-      - name: Upload signed APK
-        uses: actions/upload-artifact@v4
+      - name: Upload signed full APK
+        uses: actions/upload-artifact@v4.6.2
         with:
-          name: signed-apk
+          name: signed-full-apk
           path: signed/full.apk
