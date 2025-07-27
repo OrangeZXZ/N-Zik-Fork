@@ -58,6 +58,11 @@ jobs:
         run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
       - name: Build full flavor APK
         run: ./gradlew assembleFull
+      - name: Upload unsigned full APK
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: unsigned-apks
+          path: composeApp/build/outputs/apk/full/*.apk
 
   sign-full:
     needs: [build-full]
@@ -79,7 +84,7 @@ jobs:
             --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} \
             --key-pass pass:${{ secrets.KEY_PASSWORD }} \
             --ks-key-alias ${{ secrets.KEY_ALIAS }} \
-            --out signed/full.apk unsigned/composeApp/build/outputs/apk/full/*.apk
+            --out signed/full.apk unsigned/*.apk
       - name: Upload signed full APK
         uses: actions/upload-artifact@v4.6.2
         with:
