@@ -1,31 +1,64 @@
 name: Automatic Cache Builder
 
+
 on:
+  # These files are dependencies of this project.
+  # Therefore, when 1 of them changes, everything needs
+  # to be rebuild for up-to-date cache.
   push:
+    
     paths:
       - '**/*.gradle*'
       - '**/gradle-wrapper.properties'
+    # Don't run on tag creation
     tags-ignore:
       - '**'
 
   schedule:
-    - cron: '0 0 */2 * *'  # every 2 days at midnight UTC
+    # Runs every other day at midnight UTC
+    - cron: '0 0 */2 * *'
 
+  # Allows manual triggering
   workflow_dispatch:
 
+
 jobs:
+  #
+  # Topology:
+  # Scan Git's commit logs for any changes in 1 of these locations:
+  # - composeApp/androidMain
+  # - composeApp/androidImprovised
+  # - composeApp/androidUpstream
+  # If any changes detect, mark that flavor to build cache later on.
+  # Any changes made to "androidMain" will cause both flavor to be rebuilt.
+  #
   check-changes:
     name: Check for changes
     runs-on: ubuntu-latest
+
     outputs:
       changes_made: ${{ steps.detect-changes.outputs.changes_made }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          # Always have a hard-coded limit of how many commits to fetch.
+          # Better idea to fetch the whole thing but fetch time goes BRRRRRR.
           fetch-depth: 300
           submodules: true
 
+      #
+      # Explanations:
+      # git log --since="48 hours ago" --name-only --pretty=format:
+      # - Show all files that were changed withing 48 hrs.
+      # - Show changed file paths in relative (composeApp/androidMain, etc.)
+      #
+      # Rebuild all cache if a file in this group has changed:
+      # - composeApp/androidMain
+      # - composeApp/commonMain
+      # - .gradle, .gradle.kts, or gradle-wrapper.properties
+      #
       - name: Detect changes in last 48 hours
         id: detect-changes
         run: |
@@ -35,26 +68,30 @@ jobs:
             git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^composeApp/src/commonMain/" || \
             git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^.*\.gradle.*" || \
             git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^gradle-wrapper.properties"; then
-
+          
             CHANGES_MADE=true
           fi
+          
           echo "changes_made=$CHANGES_MADE" >> $GITHUB_OUTPUT
 
-  build-cache:
+  build-release:
     needs: check-changes
     if: needs.check-changes.outputs.changes_made == 'true'
-    name: Build cache for all flavors
+
+    name: Build release
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 60       # Prevent Github Action from terminating this workflow on first run
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: true
 
-      - name: Setup JDK 21
+      - name: Set up JDK
         uses: actions/setup-java@v4.7.1
         with:
+          # Do NOT add `cache: 'gradle'` here
           distribution: 'corretto'
           java-version: '21'
 
@@ -69,11 +106,12 @@ jobs:
             ~/.gradle/wrapper
             ./build
             ./composeApp/build
+          # Cache key has flavor's name to prevent override each other
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
 
-      - name: Build Minified flavor cache
-        run: ./gradlew assembleMinified --build-cache --exclude-task packageMinified
-
-      - name: Build Full flavor cache
-        run: ./gradlew assembleFull --build-cache --exclude-task packageFull
+      - name: Build with Gradle (cache only)
+        # Gradle has built-in flag "-build-cache"
+        # That explicitly tell compiler to generate reusable files.
+        # Combine with "--exclude-task" to skip unnecessary tasks
+        run: ./gradlew assembleGithubRelease --build-cache --exclude-task packageGithubRelease
