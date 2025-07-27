@@ -153,16 +153,17 @@ android {
 
     buildTypes {
         debug {
+            manifestPlaceholders += mapOf()
             applicationIdSuffix = ".debug"
             manifestPlaceholders["appName"] = "$APP_NAME-debug"
 
             buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
+            signingConfig = signingConfigs.getByName("debug")
         }
 
         create( "full" ) {
             // App's properties
             versionNameSuffix = "-f"
-            signingConfig = signingConfigs.getByName("debug")
         }
 
         create( "minified" ) {
@@ -176,13 +177,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
         }
 
         create( "beta" ) {
             initWith( maybeCreate("full") )
             versionNameSuffix = "-beta"
-            signingConfig = signingConfigs.getByName("debug")
             buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
         }
 
