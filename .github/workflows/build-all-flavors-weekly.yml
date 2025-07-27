@@ -172,7 +172,7 @@ jobs:
             ## ✨ What's New in v${{ needs.versioning.outputs.downstream }}
             ---
             <div align="center">
-              <img alt="N-Zik Logo" src="https://github.com/NEVARLeVrai/N-Zik/blob/main/assets/design/ic_banner2.png?raw=true" width="240" />
+              <img alt="N-Zik Logo" src="https://github.com/NEVARLeVrai/N-Zik/blob/main/assets/design/ic_banner2.png?raw=true" width="1000" />
               <p><b>N-Zik</b> - by @NEVARLeVrai</p>
             </div>
             
