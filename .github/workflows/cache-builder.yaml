@@ -77,6 +77,3 @@ jobs:
 
       - name: Build Full flavor cache
         run: ./gradlew assembleFull --build-cache --exclude-task packageFull
-
-      - name: Build Release flavor cache
-        run: ./gradlew assembleRelease --build-cache --exclude-task packageRelease
