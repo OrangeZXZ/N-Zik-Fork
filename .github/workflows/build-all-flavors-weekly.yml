@@ -106,7 +106,7 @@ jobs:
         with:
           name: unsigned-release
           path: |
-            composeApp/build/outputs/apk/github/full/*.apk
+            composeApp/build/outputs/apk/full/*.apk
             
   build-minified:
     needs: [versioning, verify-version]
@@ -149,7 +149,7 @@ jobs:
         with:
           name: unsigned-uncompressed
           path: |
-            composeApp/build/outputs/apk/github/minified/*.apk
+            composeApp/build/outputs/apk/minified/*.apk
 
   sign-apks:
     name: Sign all built APKs
@@ -211,6 +211,27 @@ jobs:
               <img alt="N-Zik Logo" src="https://github.com/NEVARLeVrai/N-Zik/blob/main/assets/design/ic_banner2.png?raw=true" width="1000" />
               <p><b>N-Zik</b> - by @NEVARLeVrai</p>
             </div>
+
+            ## Verification
+            
+            > Always check for signature before installing any app you downloaded from Github or any other APK distributors.
+            
+            ### Public key hashes
+            
+            | Algorithm | Hash digest                                                        |
+            |-----------|--------------------------------------------------------------------|
+            | SHA-256   | 504cdeb65e52070f0515f9ad295a288a4894d0924e9ef5d6080fdea5bdf841d6 |
+            | SHA-1     | 16e766c566e511c7d83f40e30850be27b7040a43                         |
+            | MD5       | 16e2bdf083316967c6a2dd5a0391bb76                                 |
+            
+            ### Certificate hashes
+            
+            | Algorithm | Hash digest                                                        |
+            |-----------|--------------------------------------------------------------------|
+            | SHA-256   | b473991ec08a17996a9ef2405934ce35d333ea38135ebfc1b6f4d2ab953132aa |
+            | SHA-1     | ec57f7d61cf2382aecff7444e815e37a601cb1f1                         |
+            | MD5       | 5ae0045983899ab7ca5db38ef785d6ab                                 |
+
 
             ## 📲 Installation
 
