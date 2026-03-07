@@ -16,6 +16,8 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/nevarlevrai/n-zik/badge)](https://www.codefactor.io/repository/github/nevarlevrai/n-zik)
 </div>
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/NEVARLeVrai/N-Zik)
+
 # 🎧 Features
 
 - 🌍 **Multilingual support** — English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian, and more. Contributions welcome!
