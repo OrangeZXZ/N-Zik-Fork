@@ -52,7 +52,11 @@ import app.it.fast4x.rimusic.enums.UiType
 import app.n_zik.android.core.updater.ChangelogsDialog
 import app.n_zik.android.core.updater.CheckForUpdateDialog
 import app.n_zik.android.core.updater.NewUpdateAvailableDialog
+import app.n_zik.android.core.updater.MajorUpdateConfig
+import app.n_zik.android.core.updater.MajorUpdateWarningDialog
 import app.n_zik.android.core.updater.Updater
+import app.it.fast4x.rimusic.utils.lastVersionCodeKey
+import app.it.fast4x.rimusic.appContext
 
 // THIS IS THE SCAFFOLD
 @OptIn(ExperimentalMaterial3Api::class)
@@ -209,6 +213,27 @@ fun Skeleton(
         NewUpdateAvailableDialog.Render()
         CheckForUpdateDialog.Render()
 
+        val lastVersionCode = rememberPreference(lastVersionCodeKey, 0)
+        val seenChangelogs = rememberPreference(seenChangelogsVersionKey, "")
+        
+        LaunchedEffect(Unit) {
+            if (MajorUpdateConfig.shouldShowWarning(lastVersionCode.value, seenChangelogs.value.isNotEmpty())) {
+                MajorUpdateWarningDialog.isActive = true
+            } else {
+                val currentCode = BuildConfig.VERSION_CODE
+                val lastCode = lastVersionCode.value
+                // If it's not a major update and it's a fresh install or a minor update,
+                // keep lastVersionCode in sync
+                if (lastCode != currentCode) {
+                    lastVersionCode.value = currentCode
+                }
+            }
+        }
+
+        MajorUpdateWarningDialog.Render(onConfirm = {
+            lastVersionCode.value = BuildConfig.VERSION_CODE
+        })
+
         // Function to extract the version suffix
         fun extractVersionSuffix(versionStr: String): String {
             val parts = versionStr.removePrefix("v").split("-")
@@ -235,7 +260,7 @@ fun Skeleton(
             }
         }
 
-        val seenChangelogs = rememberPreference( seenChangelogsVersionKey, "" )
+
         if( seenChangelogs.value != BuildConfig.VERSION_NAME ) {
             val changelogs = remember {
                 ChangelogsDialog( seenChangelogs )
