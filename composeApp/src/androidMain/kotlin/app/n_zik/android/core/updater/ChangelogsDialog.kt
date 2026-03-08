@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.updater
+package app.n_zik.android.core.updater
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -45,6 +45,7 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import app.kreate.android.BuildConfig
 import app.kreate.android.R
 import app.it.fast4x.rimusic.appContext
@@ -113,8 +114,8 @@ class ChangelogsDialog(
         
         var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.BottomFloating)
         var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
-        
-        androidx.compose.ui.window.Dialog(
+
+        Dialog(
             onDismissRequest = { hideDialog() }
         ) {
         Column(

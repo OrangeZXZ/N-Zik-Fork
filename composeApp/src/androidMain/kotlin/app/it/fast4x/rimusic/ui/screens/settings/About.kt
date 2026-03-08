@@ -49,9 +49,9 @@ import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.*
 import app.kreate.android.me.knighthat.utils.Repository
-import app.kreate.android.me.knighthat.updater.ChangelogsDialog
-import app.kreate.android.me.knighthat.updater.Updater
-import app.kreate.android.me.knighthat.updater.NewUpdateAvailableDialog
+import app.n_zik.android.core.updater.ChangelogsDialog
+import app.n_zik.android.core.updater.Updater
+import app.n_zik.android.core.updater.NewUpdateAvailableDialog
 import app.it.fast4x.rimusic.enums.CheckUpdateState
 import app.it.fast4x.rimusic.utils.checkUpdateStateKey
 import app.it.fast4x.rimusic.utils.checkBetaUpdatesKey

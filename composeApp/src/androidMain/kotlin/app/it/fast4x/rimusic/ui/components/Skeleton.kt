@@ -6,10 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarDefaults.windowInsets
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.kreate.android.BuildConfig
@@ -41,7 +37,6 @@ import androidx.compose.foundation.layout.add
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import app.it.fast4x.rimusic.enums.NavigationBarType
-import app.it.fast4x.rimusic.utils.navigationBarTypeKey
 import app.it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import app.it.fast4x.rimusic.ui.components.navigation.nav.AbstractNavigationBar
 import app.it.fast4x.rimusic.ui.components.navigation.nav.HorizontalNavigationBar
@@ -54,10 +49,10 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.seenChangelogsVersionKey
 import app.it.fast4x.rimusic.utils.transition
 import app.it.fast4x.rimusic.enums.UiType
-import app.kreate.android.me.knighthat.updater.ChangelogsDialog
-import app.kreate.android.me.knighthat.updater.CheckForUpdateDialog
-import app.kreate.android.me.knighthat.updater.NewUpdateAvailableDialog
-import app.kreate.android.me.knighthat.updater.Updater
+import app.n_zik.android.core.updater.ChangelogsDialog
+import app.n_zik.android.core.updater.CheckForUpdateDialog
+import app.n_zik.android.core.updater.NewUpdateAvailableDialog
+import app.n_zik.android.core.updater.Updater
 
 // THIS IS THE SCAFFOLD
 @OptIn(ExperimentalMaterial3Api::class)

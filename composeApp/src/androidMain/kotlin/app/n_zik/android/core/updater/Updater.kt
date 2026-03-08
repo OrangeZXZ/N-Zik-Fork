@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.updater
+package app.n_zik.android.core.updater
 
 import android.os.Looper
 import androidx.compose.animation.AnimatedVisibility
@@ -35,7 +35,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import app.kreate.android.me.knighthat.utils.Repository
 import app.kreate.android.me.knighthat.utils.Toaster
-import okhttp3.OkHttpClient
+import app.n_zik.android.core.network.NetworkClientFactory
 import okhttp3.Request
 import java.net.UnknownHostException
 import java.nio.file.NoSuchFileException
@@ -158,7 +158,7 @@ object Updater {
         // Get all releases to find the best one
         val url = "${Repository.GITHUB_API}/repos/${Repository.REPO}/releases"
         val request = Request.Builder().url(url).build()
-        val response = app.n_zik.android.core.network.NetworkClientFactory.getClient().newCall(request).execute()
+        val response = NetworkClientFactory.getClient().newCall(request).execute()
 
         if (!response.isSuccessful) {
             Toaster.e(response.message)

@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.updater
+package app.n_zik.android.core.updater
 
 import android.text.format.Formatter
 import app.it.fast4x.rimusic.appContext

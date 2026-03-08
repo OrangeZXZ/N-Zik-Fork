@@ -7,15 +7,14 @@
 7: Add artist video category under artist page, only video works not live performance
 8: I need to finish Player Appearance page UI and make it functional
 9: Replace old fast4x innertube api with new fast4x environment api
-10: STABLE and BETA string in changelog doesnt work properly
-11: Add randomize dice in Artist page
-12: Add a warning message once you go from stable build to beta build that inform the user that the build is unstable
-13: Remove old fast4x innertube api and Kreate innertube api
-14: Update YTB sync to use new innertube api also update eevery sync like album artists songs ect...
-15: Fix easter eggs
-16: Add back dislike button in player, android auto and notification still support it
-17: Update HomeAlbum page for sync
-18: Cache system won't show in android auto and songs tab same in phone one
-19: Explicit badge not showing in android auto
-20: Notification player show e: e: not needed
-21: Optimized transition between section in home songs
+10: Add randomize dice in Artist page
+11: Add a warning message once you go from stable build to beta build that inform the user that the build is unstable
+12: Remove old fast4x innertube api and Kreate innertube api
+13: Update YTB sync to use new innertube api also update eevery sync like album artists songs ect...
+14: Fix easter eggs
+15: Add back dislike button in player, android auto and notification still support it
+16: Update HomeAlbum page for sync
+17: Cache system won't show in android auto and songs tab same in phone one
+18: Explicit badge not showing in android auto
+19: Notification player show e: e: not needed
+20: Optimized transition between section in home songs

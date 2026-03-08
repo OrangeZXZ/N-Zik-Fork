@@ -1,12 +1,10 @@
-package app.kreate.android.me.knighthat.updater
+package app.n_zik.android.core.updater
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,8 +29,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,12 +41,8 @@ import app.kreate.android.BuildConfig
 import app.kreate.android.R
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.typography
-import app.it.fast4x.rimusic.ui.styling.shimmer
 import app.it.fast4x.rimusic.utils.bold
-import app.it.fast4x.rimusic.utils.color
-import app.it.fast4x.rimusic.utils.medium
 import app.it.fast4x.rimusic.utils.semiBold
-import app.it.fast4x.rimusic.utils.lastUpdateCheckKey
 import app.it.fast4x.rimusic.utils.updateCancelledKey
 import app.it.fast4x.rimusic.appContext
 import app.kreate.android.me.knighthat.utils.Repository
@@ -307,12 +299,11 @@ object NewUpdateAvailableDialog {
                                 Spacer(modifier = Modifier.height(8.dp))
                                 BasicText(
                                     text = buildString {
-                                        // Determine if this is a beta or stable update
-                                        val releaseSuffix = Updater.githubRelease?.tagName?.removePrefix("v")?.split("-")?.getOrNull(1) ?: ""
-                                        val currentSuffix = BuildConfig.VERSION_NAME.removePrefix("v").split("-").getOrNull(1) ?: ""
+                                        // Determine if this is a beta or stable update based on the release tag
+                                        val tagName = Updater.githubRelease?.tagName?.lowercase() ?: ""
+                                        val isBeta = tagName.contains("-b") || tagName.contains("-beta")
                                         
-                                        // Show beta title if either current or new version is beta
-                                        if (releaseSuffix == "b" || currentSuffix == "b") {
+                                        if (isBeta) {
                                             append(stringResource(R.string.beta_title))
                                             append(" ")
                                         } else {
