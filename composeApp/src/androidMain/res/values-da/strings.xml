@@ -796,6 +796,13 @@
   <string name="settings_pip_module">BiB-modul</string>
   <string name="menu_go_to_picture_in_picture">BiB</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">Fra Android 12 kan BiB aktiveres automatisk</string>
+  <string name="major_update_warning_title">Større opdatering (%1$s)</string>
+  <string name="major_update_warning_message">Denne version bringer vigtige ændringer. Det anbefales stærkt at sikkerhedskopiere dine data og helt nulstille appen ved at rydde alle data eller geninstallere det, før du rapporterer noget problem.</string>
+  <string name="major_update_warning_button">Jeg forstår</string>
+  <string name="stable_to_beta_warning_title">Skift til Beta Build</string>
+  <string name="stable_to_beta_warning_message">Du skifter til en Beta build. Denne version kan indeholde fejl eller være ustabil. Det anbefales stærkt at sikkerhedskopiere dine data, før du fortsætter eller rapporterer noget problem.</string>
+  <string name="beta_to_stable_warning_title">Skift tilbage til Stabil Byg</string>
+  <string name="beta_to_stable_warning_message">Du skifter tilbage til en stabil opbygning. Siden du brugte en Beta build, det anbefales stærkt at sikkerhedskopiere dine data og helt nulstille appen (klare data eller geninstallere) for at sikre stabilitet før rapportering af problemer.</string>
   <string name="showsecondline">Vis oversættelse på anden linje</string>
   <string name="enter_the_value">Indtast værdien</string>
   <string name="resume_playback_on_start">Genoptag afspilning ved opstart</string>
