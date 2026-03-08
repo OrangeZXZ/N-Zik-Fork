@@ -796,6 +796,13 @@
   <string name="settings_pip_module">Modul PIP</string>
   <string name="menu_go_to_picture_in_picture">PIP</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">Od systému Android 12 lze PIP automaticky povolit</string>
+  <string name="major_update_warning_title">Hlavní aktualizace (%1$s)</string>
+  <string name="major_update_warning_message">Tato verze přináší důležité změny. Důrazně doporučujeme zálohovat data a zcela resetovat aplikaci vymazáním všech dat nebo jejich opětovnou instalací před nahlášením problému.</string>
+  <string name="major_update_warning_button">Chápu</string>
+  <string name="stable_to_beta_warning_title">Přechod na Beta sestavení</string>
+  <string name="stable_to_beta_warning_message">Přepínáte na beta verzi. Tato verze může obsahovat chyby nebo může být nestabilní. Před pokračováním nebo hlášením problému se důrazně doporučuje zálohovat vaše údaje.</string>
+  <string name="beta_to_stable_warning_title">Přepnutí zpět na stabilní sestavení</string>
+  <string name="beta_to_stable_warning_message">Přepínáš zpět ke stabilnímu sestavení. Vzhledem k tomu, že používáte Beta build, je důrazně doporučeno zálohovat data a zcela resetovat aplikaci (vymazat data nebo přeinstalovat), aby byla zajištěna stabilita před hlášením jakéhokoliv problému.</string>
   <string name="showsecondline">Zobrazit překlad na druhém řádku</string>
   <string name="enter_the_value">Zadat hodnotu</string>
   <string name="resume_playback_on_start">Obnovit přehrávání při spuštění</string>
