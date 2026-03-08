@@ -796,6 +796,13 @@
   <string name="settings_pip_module">Modul PiP</string>
   <string name="menu_go_to_picture_in_picture">PiP</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">Începând cu Android 12, modul PiP poate fi activat automat</string>
+  <string name="major_update_warning_title">Actualizare majoră (%1$s)</string>
+  <string name="major_update_warning_message">Această versiune aduce schimbări importante. Este foarte recomandat să vă salvați datele și să resetați complet aplicația curățând toate datele sau reinstalând-o, înainte de a raporta orice problemă.</string>
+  <string name="major_update_warning_button">Am înțeles</string>
+  <string name="stable_to_beta_warning_title">Trecerea la versiunea Beta</string>
+  <string name="stable_to_beta_warning_message">Vă comutați la un build Beta. Această versiune poate conține erori sau poate fi instabilă. Este foarte recomandat să vă salvați datele înainte de a continua sau de a raporta orice problemă.</string>
+  <string name="beta_to_stable_warning_title">Trecerea înapoi la Stable Build</string>
+  <string name="beta_to_stable_warning_message">Tu treci înapoi la o construcție stabilă. Deoarece ai folosit o versiune Beta, este foarte recomandat să vă salvați datele și să resetați complet aplicația (ștergeți datele sau reinstalați) pentru a asigura stabilitatea înainte de a raporta orice problemă.</string>
   <string name="showsecondline">Afișează traducerea pe a doua linie</string>
   <string name="enter_the_value">Introdu valoarea</string>
   <string name="resume_playback_on_start">Reia redarea la pornire</string>
@@ -1070,4 +1077,5 @@
   <string name="content_type_official">Oficial</string>
   <string name="content_type_user_generated">Utilizator generat</string>
   <string name="in_txt">în</string>
+  <string name="other">Altele</string>
 </resources>
