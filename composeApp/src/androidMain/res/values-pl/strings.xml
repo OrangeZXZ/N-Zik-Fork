@@ -796,6 +796,13 @@
   <string name="settings_pip_module">Pip module</string>
   <string name="menu_go_to_picture_in_picture">PIP</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">Od Androida 12 pip może być automatycznie włączony</string>
+  <string name="major_update_warning_title">Duża aktualizacja (%1$s)</string>
+  <string name="major_update_warning_message">Ta wersja przynosi ważne zmiany. Zaleca się wykonanie kopii zapasowej danych i całkowite zresetowanie aplikacji poprzez wyczyszczenie wszystkich danych lub ponowne zainstalowanie aplikacji, przed zgłoszeniem jakichkolwiek problemów.</string>
+  <string name="major_update_warning_button">Rozumiem</string>
+  <string name="stable_to_beta_warning_title">Przełączanie na wersję beta</string>
+  <string name="stable_to_beta_warning_message">Przełączyłeś się na wersję Beta. Ta wersja może zawierać błędy lub być niestabilna. Zalecane jest tworzenie kopii zapasowej danych przed przystąpieniem lub zgłoszeniem jakichkolwiek problemów.</string>
+  <string name="beta_to_stable_warning_title">Przełączanie z powrotem do Stajni</string>
+  <string name="beta_to_stable_warning_message">Przełączasz się z powrotem do stabilnej budowli. Ponieważ używałeś wersji Beta, Zaleca się wykonanie kopii zapasowej danych i całkowite zresetowanie aplikacji (wyczyszczenie danych lub ponowna instalacja), aby zapewnić stabilność przed zgłoszeniem jakichkolwiek problemów.</string>
   <string name="showsecondline">Pokaż tłumaczenie w drugiej linii</string>
   <string name="enter_the_value">Wprowadź wartość</string>
   <string name="resume_playback_on_start">Wznów odtwarzanie przy uruchomieniu</string>
