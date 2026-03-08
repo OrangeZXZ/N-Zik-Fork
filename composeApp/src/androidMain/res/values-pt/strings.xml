@@ -230,7 +230,7 @@
   <string name="disable_song_switching_via_swipe">Desativar troca de música através do deslize</string>
   <string name="interface_in_use">Interface em utilização</string>
   <string name="user_interface">Interface do utilizador</string>
-  <string name="ui_tab">IU</string>
+  <string name="ui_tab">Interface do usuário</string>
   <string name="system_language">Linguagem do sistema</string>
   <string name="biggest">Maior</string>
   <string name="set_custom_cache">Definir cache personalizado</string>
@@ -796,6 +796,13 @@
   <string name="settings_pip_module">Módulo Pip</string>
   <string name="menu_go_to_picture_in_picture">PIP</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">Desde o Android 12 o Pip pode ser ativado automaticamente</string>
+  <string name="major_update_warning_title">Atualização principal (%1$s)</string>
+  <string name="major_update_warning_message">Esta versão traz mudanças importantes. É altamente recomendável fazer um backup de seus dados e redefinir completamente o aplicativo, limpando todos os dados ou reinstalando-os antes de relatar qualquer problema.</string>
+  <string name="major_update_warning_button">Eu entendo</string>
+  <string name="stable_to_beta_warning_title">Mudando para versão Beta</string>
+  <string name="stable_to_beta_warning_message">Você está mudando para uma compilação Beta. Esta versão pode conter bugs ou ser instável. É altamente recomendável fazer um backup de seus dados antes de prosseguir ou relatar qualquer problema.</string>
+  <string name="beta_to_stable_warning_title">Voltando para Construção estável</string>
+  <string name="beta_to_stable_warning_message">Você está voltando para uma compilação estável. Já que você estava usando uma versão Beta, é altamente recomendável fazer um backup de seus dados e redefinir completamente o aplicativo (limpar dados ou reinstalar) para garantir estabilidade antes de relatar qualquer problema.</string>
   <string name="showsecondline">Mostrar tradução na segunda linha</string>
   <string name="enter_the_value">Digite o valor</string>
   <string name="resume_playback_on_start">Continuar a reprodução ao iniciar</string>
