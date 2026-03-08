@@ -1,300 +1,292 @@
 {
   "repo_notes": [
-    {
-      "content": ""
-    }
+    "N-Zik is a multilingual fork of Kreate, built with Kotlin Multiplatform (KMP).",
+    "Prioritize documentation for 'composeApp' (UI/Core), 'modules' (Shared Logic), and 'extensions' (Data Providers).",
+    "Tone: Technical yet pedagogical, suitable for contributors learning Kotlin/Compose.",
+    "Extensions are mapped in settings.gradle.kts and reside in 'extensions/' and 'modules/'.",
+    "Localization is automated via Crowdin and GitHub Actions (sync-crowdin-translations.yaml).",
+    "EXCLUDE: Do not document Desktop-specific logic or VLCJ implementations (Desktop support is out of scope).",
+    "Highlight differences with the original Kreate fork where relevant."
   ],
   "pages": [
     {
       "title": "Overview",
-      "purpose": "Introduce N-Zik, explain what it is (multilingual Kotlin Multiplatform music player), its origin as a Kreate fork, and high-level features",
       "page_notes": [
         {
-          "content": ""
+          "content": "Introduction to N-Zik as an enhanced, multilingual fork of Kreate."
+        },
+        {
+          "content": "Summary of core features: Modern UI, Multilingual support, Background playback."
+        },
+        {
+          "content": "Comparative summary: Highlight N-Zik's additions over the Kreate baseline."
         }
       ]
     },
     {
       "title": "Architecture",
-      "purpose": "Explain the high-level technical architecture: Kotlin Multiplatform setup, platform targets (Android/Desktop), and major system components",
       "page_notes": [
         {
-          "content": ""
-        }
-      ]
-    },
-    {
-      "title": "Kotlin Multiplatform Structure",
-      "purpose": "Detail the KMP setup, source sets (commonMain, androidMain, desktopMain), and platform-specific implementations",
-      "parent": "Architecture",
-      "page_notes": [
+          "content": "Overview of the project's modular design using Kotlin Multiplatform."
+        },
         {
-          "content": ""
+          "content": "Description of the relationship between composeApp, modules, and extensions."
         }
       ]
     },
     {
       "title": "Module Organization",
-      "purpose": "Describe the project's modular structure: composeApp, internal modules (innertube, discord, metrolist), and extensions (oldtube, kugou, lrclib, piped, invidious)",
       "parent": "Architecture",
       "page_notes": [
         {
-          "content": ""
+          "content": "Detailed breakdown of internal modules in the 'modules/' directory."
+        },
+        {
+          "content": "Focus on 'innertube', 'discord', and 'metrolist' modules."
+        }
+      ]
+    },
+    {
+      "title": "Extensions",
+      "parent": "Architecture",
+      "page_notes": [
+        {
+          "content": "Overview of the extension system for external service integration."
+        },
+        {
+          "content": "List of directories used for extensions: 'extensions/'."
+        }
+      ]
+    },
+    {
+      "title": "Extension: Invidious",
+      "parent": "Extensions",
+      "page_notes": [
+        {
+          "content": "Documentation for the Invidious API integration."
+        }
+      ]
+    },
+    {
+      "title": "Extension: Piped",
+      "parent": "Extensions",
+      "page_notes": [
+        {
+          "content": "Documentation for the Piped API integration."
+        }
+      ]
+    },
+    {
+      "title": "Extension: KuGou",
+      "parent": "Extensions",
+      "page_notes": [
+        {
+          "content": "Integration for KuGou lyrics provider."
+        }
+      ]
+    },
+    {
+      "title": "Extension: LrcLib",
+      "parent": "Extensions",
+      "page_notes": [
+        {
+          "content": "Integration for LrcLib synced lyrics service."
+        }
+      ]
+    },
+    {
+      "title": "Extension: InnerTube",
+      "parent": "Extensions",
+      "page_notes": [
+        {
+          "content": "Documentation for the internal YouTube (InnerTube) client integration (OldTube)."
+        }
+      ]
+    },
+    {
+      "title": "Extension: Ktor Brotli",
+      "parent": "Extensions",
+      "page_notes": [
+        {
+          "content": "Support for Brotli decompression in Ktor clients."
         }
       ]
     },
     {
       "title": "Technology Stack",
-      "purpose": "Document the major technologies and libraries: Compose, Room, Ktor, Media3/VLCJ, Coil, and their versions",
-      "parent": "Architecture",
       "page_notes": [
         {
-          "content": ""
+          "content": "Listing core technologies: Kotlin, Jetpack Compose, Ktor, Okio, etc."
         }
       ]
     },
     {
-      "title": "Data Layer",
-      "purpose": "Explain the data architecture: Room database, cache system (image/song caches), and local storage",
-      "parent": "Architecture",
+      "title": "Kotlin Multiplatform",
+      "parent": "Technology Stack",
       "page_notes": [
         {
-          "content": ""
+          "content": "Usage of Common, Android, and (previously) Desktop source sets."
         }
       ]
     },
     {
-      "title": "Core Features",
-      "purpose": "Overview of N-Zik's main features as revealed through the comprehensive localization resources",
+      "title": "Jetpack Compose",
+      "parent": "Technology Stack",
       "page_notes": [
         {
-          "content": ""
-        }
-      ]
-    },
-    {
-      "title": "Player System",
-      "purpose": "Document the player: playback controls, queue management, sleep timer, audio effects (equalizer, loudness normalization, skip silence), playback speed/pitch control",
-      "parent": "Core Features",
-      "page_notes": [
-        {
-          "content": ""
-        }
-      ]
-    },
-    {
-      "title": "Library Management",
-      "purpose": "Explain library organization: songs, albums, artists, playlists (user-created and monthly auto-generated), favorites, on-device music scanning, folder management",
-      "parent": "Core Features",
-      "page_notes": [
-        {
-          "content": ""
-        }
-      ]
-    },
-    {
-      "title": "Discovery and Recommendations",
-      "purpose": "Detail the discovery engine: Quick Picks (AI-driven), Smart Recommendations (adaptive), Radio mode, statistics tracking, listening history, new releases from followed artists",
-      "parent": "Core Features",
-      "page_notes": [
-        {
-          "content": ""
-        }
-      ]
-    },
-    {
-      "title": "Lyrics and Visualizer",
-      "purpose": "Document lyrics functionality (fetching, editing, synchronized/unsynchronized, translation) and visualizer (8+ types including fancy, circular, stacked, etc.)",
-      "parent": "Core Features",
-      "page_notes": [
-        {
-          "content": ""
-        }
-      ]
-    },
-    {
-      "title": "Download and Offline Mode",
-      "purpose": "Explain downloading (manual and auto-download), caching strategy, offline playback capabilities",
-      "parent": "Core Features",
-      "page_notes": [
-        {
-          "content": ""
+          "content": "UI implementation strategy using Compose Multiplatform."
         }
       ]
     },
     {
       "title": "Localization System",
-      "purpose": "Overview of N-Zik's localization architecture - the most important aspect with 40+ language support",
       "page_notes": [
         {
-          "content": ""
+          "content": "Comprehensive guide to N-Zik's multilingual framework."
+        },
+        {
+          "content": "Integration of Crowdin for community translations."
         }
       ]
     },
     {
-      "title": "Supported Languages",
-      "purpose": "Comprehensive list of all 40+ supported languages organized by region (Western European, Eastern European, Asian, Middle Eastern, Other), with translation completeness status",
+      "title": "Crowdin Integration",
       "parent": "Localization System",
       "page_notes": [
         {
-          "content": ""
+          "content": "How strings are managed on Crowdin and synced to the repo."
         }
       ]
     },
     {
-      "title": "Localization Architecture",
-      "purpose": "Explain how Android resource system works, how strings.xml files are organized, runtime locale selection, and fallback mechanisms",
+      "title": "Automation Workflows",
       "parent": "Localization System",
       "page_notes": [
         {
-          "content": ""
+          "content": "Documentation for 'sync-crowdin-translations.yaml' and weekly build flavors."
         }
       ]
     },
     {
-      "title": "Contributing Translations",
-      "purpose": "Guide for translators: Crowdin platform usage, translation workflow, string categories (~700 strings per language), quality guidelines",
+      "title": "Contribution Guide",
       "parent": "Localization System",
       "page_notes": [
         {
-          "content": ""
+          "content": "Steps for contributors to add or fix translations."
         }
       ]
     },
     {
-      "title": "External Service Integrations",
-      "purpose": "Overview of integrations with external platforms and services",
+      "title": "UI & UX Features",
       "page_notes": [
         {
-          "content": ""
-        }
-      ]
-    },
-    {
-      "title": "YouTube and YouTube Music",
-      "purpose": "Detail YouTube Music integration: authentication, library sync, playlists sync, favorites sync, channel/album auto-sync, NewPipe Extractor, Innertube API usage",
-      "parent": "External Service Integrations",
-      "page_notes": [
-        {
-          "content": ""
-        }
-      ]
-    },
-    {
-      "title": "Piped Integration",
-      "purpose": "Explain Piped as privacy-focused alternative: instance selection, custom instances, authentication, playlist sync, how it differs from YouTube",
-      "parent": "External Service Integrations",
-      "page_notes": [
-        {
-          "content": ""
-        }
-      ]
-    },
-    {
-      "title": "Discord Rich Presence",
-      "purpose": "Document Discord integration: Rich Presence setup, KizzyRPC library usage, activity status display, authentication",
-      "parent": "External Service Integrations",
-      "page_notes": [
-        {
-          "content": ""
-        }
-      ]
-    },
-    {
-      "title": "Lyrics Providers",
-      "purpose": "Explain lyrics sources: KuGou and LrcLib APIs, synced/unsynced lyrics, fetching strategy, fallback mechanisms",
-      "parent": "External Service Integrations",
-      "page_notes": [
-        {
-          "content": ""
-        }
-      ]
-    },
-    {
-      "title": "Android Auto and Android TV",
-      "purpose": "Document platform integrations: Android Auto support, Android Automotive, Android TV compatibility, media session API",
-      "parent": "External Service Integrations",
-      "page_notes": [
-        {
-          "content": ""
-        }
-      ]
-    },
-    {
-      "title": "Customization and Settings",
-      "purpose": "Overview of N-Zik's extensive customization capabilities across UI, player, and behavior",
-      "page_notes": [
-        {
-          "content": ""
+          "content": "Overview of user interface customization and unique design elements."
         }
       ]
     },
     {
       "title": "Theme System",
-      "purpose": "Document theme options: Material You, Pure Black, Modern Black, custom colors (light/dark), thumbnail roundness, fonts, gradient backgrounds",
-      "parent": "Customization and Settings",
+      "parent": "UI & UX Features",
       "page_notes": [
         {
-          "content": ""
+          "content": "Dynamic theming and personalization options."
+        }
+      ]
+    },
+    {
+      "title": "ViMusic Toggle",
+      "parent": "Theme System",
+      "page_notes": [
+        {
+          "content": "Documentation for the toggle between N-Zik and classic ViMusic UI styles."
         }
       ]
     },
     {
       "title": "Player Appearance",
-      "purpose": "Detail player UI customization: thumbnail size, rotating buttons, player position, controls type (modern/essential), minimized/expanded views, carousel mode",
-      "parent": "Customization and Settings",
+      "parent": "UI & UX Features",
       "page_notes": [
         {
-          "content": ""
+          "content": "Customization of the playback screen and controls."
         }
       ]
     },
     {
-      "title": "Navigation and Layout",
-      "purpose": "Explain navigation customization: navigation bar position (left/right/top/bottom), type (icon+text/icon only), menu style (grid/list), transition effects",
-      "parent": "Customization and Settings",
+      "title": "Audio Visualizers",
+      "parent": "UI & UX Features",
       "page_notes": [
         {
-          "content": ""
+          "content": "Technical details on real-time animations and shader-based visualizers (HypnoticCanvas)."
         }
       ]
     },
     {
-      "title": "Settings Organization",
-      "purpose": "Document the settings hierarchy: General, UI, Data, Network, Accounts, Miscellaneous tabs and their contents",
-      "parent": "Customization and Settings",
+      "title": "Listening Stats",
+      "parent": "UI & UX Features",
       "page_notes": [
         {
-          "content": ""
+          "content": "How the app tracks and displays user listening habits."
         }
       ]
     },
     {
-      "title": "Build System and Development",
-      "purpose": "Overview of the build system, development setup, and contribution workflow",
+      "title": "Media Management",
       "page_notes": [
         {
-          "content": ""
+          "content": "How music data is handled, cached, and downloaded."
         }
       ]
     },
     {
-      "title": "Dependencies Management",
-      "purpose": "Explain libs.versions.toml version catalog, major dependencies, version management strategy",
-      "parent": "Build System and Development",
+      "title": "Automatic Caching",
+      "parent": "Media Management",
       "page_notes": [
         {
-          "content": ""
+          "content": "Implementation of the seamless offline caching system."
         }
       ]
     },
     {
-      "title": "Build Variants",
-      "purpose": "Document Android build types: debug, full, minified, beta - their purposes, configurations, and output APKs",
-      "parent": "Build System and Development",
+      "title": "Downloads",
+      "parent": "Media Management",
       "page_notes": [
         {
-          "content": ""
+          "content": "Technical details on persistent song and playlist downloads."
+        }
+      ]
+    },
+    {
+      "title": "Background Playback",
+      "parent": "Media Management",
+      "page_notes": [
+        {
+          "content": "MediaSession integration for continuous background playback."
+        }
+      ]
+    },
+    {
+      "title": "Project Context",
+      "page_notes": [
+        {
+          "content": "History, context, and philosophical goals of N-Zik."
+        }
+      ]
+    },
+    {
+      "title": "N-Zik vs Kreate",
+      "parent": "Project Context",
+      "page_notes": [
+        {
+          "content": "In-depth comparison of features, stability, and design philosophy between the two forks."
+        }
+      ]
+    },
+    {
+      "title": "Project Glossary",
+      "parent": "Project Context",
+      "page_notes": [
+        {
+          "content": "Definitions for project-specific terms: Innertube, Source Sets, Syncing, Flavors."
         }
       ]
     }
