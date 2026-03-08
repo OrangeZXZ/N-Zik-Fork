@@ -796,6 +796,13 @@
   <string name="settings_pip_module">Mòdul PIP</string>
   <string name="menu_go_to_picture_in_picture">PIP</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">Des d\'Android 12, pip es pot activar automàticament</string>
+  <string name="major_update_warning_title">Major update (%1$s)</string>
+  <string name="major_update_warning_message">This version brings important changes. It is highly recommended to backup your data and completely reset the app by clearing all data or re-installing it, before reporting any issue.</string>
+  <string name="major_update_warning_button">I understand</string>
+  <string name="stable_to_beta_warning_title">Switching to Beta Build</string>
+  <string name="stable_to_beta_warning_message">You are switching to a Beta build. This version may contain bugs or be unstable. It is highly recommended to backup your data before proceeding or reporting any issue.</string>
+  <string name="beta_to_stable_warning_title">Switching back to Stable Build</string>
+  <string name="beta_to_stable_warning_message">You are switching back to a Stable build. Since you were using a Beta build, it is highly recommended to backup your data and completely reset the app (clear data or reinstall) to ensure stability before reporting any issue.</string>
   <string name="showsecondline">Mostra la traducció a la segona línia</string>
   <string name="enter_the_value">Introduïu el valor</string>
   <string name="resume_playback_on_start">Reprèn la reproducció a l\'inici</string>
