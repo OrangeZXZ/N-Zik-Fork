@@ -796,6 +796,13 @@
   <string name="settings_pip_module">Pip モジュール</string>
   <string name="menu_go_to_picture_in_picture">PIP</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">Android 12からpipは自動的に有効になります</string>
+  <string name="major_update_warning_title">メジャーアップデート（%1$s）</string>
+  <string name="major_update_warning_message">このバージョンは重要な変更をもたらします。 問題を報告する前に、すべてのデータを消去または再インストールすることで、データをバックアップし、アプリを完全にリセットすることを強くお勧めします。</string>
+  <string name="major_update_warning_button">了解しました</string>
+  <string name="stable_to_beta_warning_title">ベータビルドに切り替え中</string>
+  <string name="stable_to_beta_warning_message">ベータビルドに切り替えています。このバージョンにはバグが含まれているか、不安定である可能性があります。 問題を進めたり報告する前に、データをバックアップすることを強くお勧めします。</string>
+  <string name="beta_to_stable_warning_title">安定したビルドに切り替え中</string>
+  <string name="beta_to_stable_warning_message">安定したビルドに戻ります。 ベータ版ビルドを使用していたので、 問題を報告する前に安定性を確保するために、データをバックアップし、アプリを完全にリセット(データのクリアまたは再インストール)することを強くお勧めします。</string>
   <string name="showsecondline">第二行に翻訳を表示</string>
   <string name="enter_the_value">値を入力してください</string>
   <string name="resume_playback_on_start">開始時に再生を再開</string>
