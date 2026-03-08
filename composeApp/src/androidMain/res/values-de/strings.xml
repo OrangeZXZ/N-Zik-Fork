@@ -796,6 +796,13 @@
   <string name="settings_pip_module">Bild im Bild Modul</string>
   <string name="menu_go_to_picture_in_picture">PIP</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">Ab Android 12 kann Bild im Bild automatisch aktiviert werden</string>
+  <string name="major_update_warning_title">Wichtiges Update (%1$s)</string>
+  <string name="major_update_warning_message">Diese Version bringt wichtige Änderungen mit sich. Es wird dringend empfohlen, Ihre Daten zu sichern und die App komplett zurückzusetzen, indem Sie alle Daten löschen oder neu installieren, bevor Sie irgendwelche Probleme melden.</string>
+  <string name="major_update_warning_button">Ich verstehe</string>
+  <string name="stable_to_beta_warning_title">Zum Beta-Build wechseln</string>
+  <string name="stable_to_beta_warning_message">Du wechselst zu einem Beta-Build. Diese Version kann Fehler enthalten oder instabil sein. Es wird dringend empfohlen, Ihre Daten zu sichern, bevor Sie fortfahren oder ein Problem melden.</string>
+  <string name="beta_to_stable_warning_title">Zurück zum Stable Build</string>
+  <string name="beta_to_stable_warning_message">Du wechselst zu einem Stabel-Build. Da du einen Beta-Build benutzt hast, Es wird dringend empfohlen, Ihre Daten zu sichern und die App komplett zurückzusetzen (Daten löschen oder neu installieren), um die Stabilität zu gewährleisten, bevor Sie irgendwelche Probleme melden.</string>
   <string name="showsecondline">Übersetzung in der zweiten Zeile anzeigen</string>
   <string name="enter_the_value">Gib den Wert ein</string>
   <string name="resume_playback_on_start">Wiedergabe beim Start fortsetzen</string>

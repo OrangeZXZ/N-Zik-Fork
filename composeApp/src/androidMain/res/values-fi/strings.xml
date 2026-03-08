@@ -796,6 +796,13 @@
   <string name="settings_pip_module">Kuva kuvassa -moduuli</string>
   <string name="menu_go_to_picture_in_picture">PIP</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">Android 12:sta lähtien PIP voidaan ottaa käyttöön automaattisesti</string>
+  <string name="major_update_warning_title">Merkittävä päivitys (%1$s)</string>
+  <string name="major_update_warning_message">Tämä versio tuo merkittäviä muutoksia. On erittäin suositeltavaa varmuuskopioida tietosi ja nollata sovellus kokonaan tyhjentämällä kaikki tiedot tai asentamalla ne uudelleen, ennen kuin raportoit ongelmista.</string>
+  <string name="major_update_warning_button">Minä ymmärrän</string>
+  <string name="stable_to_beta_warning_title">Vaihdetaan Beta-versioon</string>
+  <string name="stable_to_beta_warning_message">Olet siirtymässä Beta-versioon. Tämä versio saattaa sisältää vikoja tai olla epävakaa. On erittäin suositeltavaa varmuuskopioida tietosi ennen kuin käsittelet tai raportoit ongelmista.</string>
+  <string name="beta_to_stable_warning_title">Vaihdetaan takaisin vakaaseen versioon</string>
+  <string name="beta_to_stable_warning_message">Olet vaihtamassa takaisin vakaaseen rakennukseen. Koska olit käyttänyt Beta-rakennusta, on erittäin suositeltavaa varmuuskopioida tietosi ja nollata sovellus kokonaan (tyhjää tietoa tai uudelleenasennusta) varmistaaksesi vakauden ennen ongelman ilmoittamista.</string>
   <string name="showsecondline">Näytä käännös toisella rivillä</string>
   <string name="enter_the_value">Syötä arvo</string>
   <string name="resume_playback_on_start">Jatka soittoa käynnistettäessä</string>

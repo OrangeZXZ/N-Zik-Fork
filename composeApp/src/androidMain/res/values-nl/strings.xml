@@ -796,6 +796,13 @@
   <string name="settings_pip_module">Pip module</string>
   <string name="menu_go_to_picture_in_picture">PIP</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">From Android 12 pip can be automatically enabled</string>
+  <string name="major_update_warning_title">Grote update (%1$s)</string>
+  <string name="major_update_warning_message">Deze versie brengt belangrijke veranderingen met zich mee. Het wordt sterk aanbevolen om uw gegevens te back-uppen en de app volledig te resetten door alle gegevens te wissen of opnieuw te installeren, voordat er een probleem wordt gerapporteerd.</string>
+  <string name="major_update_warning_button">Ik begrijp het</string>
+  <string name="stable_to_beta_warning_title">Overschakelen naar Beta Build</string>
+  <string name="stable_to_beta_warning_message">U schakelt over naar een bètaversie. Deze versie kan bugs of instabiel zijn. Het wordt sterk aanbevolen om uw gegevens te back-uppen voordat u verder gaat of een probleem meldt.</string>
+  <string name="beta_to_stable_warning_title">Terugschakelen naar Stable Build</string>
+  <string name="beta_to_stable_warning_message">U schakelt terug naar een Stable build. Sinds je een bèta bouwt gebruikte, het wordt sterk aanbevolen om uw gegevens te back-uppen en de app volledig te resetten (duidelijke gegevens of opnieuw installeren) om de stabiliteit te waarborgen voordat er een probleem wordt gerapporteerd.</string>
   <string name="showsecondline">Toon vertaling op tweede regel</string>
   <string name="enter_the_value">Voer de waarde in</string>
   <string name="resume_playback_on_start">Resume Playback On Start</string>

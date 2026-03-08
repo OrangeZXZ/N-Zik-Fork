@@ -798,6 +798,13 @@ Volume BAS : titre précédent</string>
   <string name="settings_pip_module">Module Pip</string>
   <string name="menu_go_to_picture_in_picture">PIP</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">À partir d\'Android 12, PIP peut être activé automatiquement</string>
+  <string name="major_update_warning_title">Mise à jour majeure (%1$s)</string>
+  <string name="major_update_warning_message">Cette version apporte des changements importants. Il est fortement recommandé de sauvegarder vos données et de réinitialiser complètement l\'application en effaçant toutes les données ou en les réinstallant avant de signaler tout problème.</string>
+  <string name="major_update_warning_button">Je comprends</string>
+  <string name="stable_to_beta_warning_title">Passage à la version bêta</string>
+  <string name="stable_to_beta_warning_message">Vous passez à une version bêta. Cette version peut contenir des bugs ou être instable. Il est fortement recommandé de sauvegarder vos données avant de continuer ou de signaler tout problème.</string>
+  <string name="beta_to_stable_warning_title">Revenir à la version stable</string>
+  <string name="beta_to_stable_warning_message">Vous êtes en train de revenir à une version stable. Depuis que vous utilisiez une version bêta, il est fortement recommandé de sauvegarder vos données et de réinitialiser complètement l\'application (données claires ou réinstallations) pour assurer la stabilité avant de signaler tout problème.</string>
   <string name="showsecondline">Afficher la traduction dans une deuxième ligne</string>
   <string name="enter_the_value">Entrez la valeur</string>
   <string name="resume_playback_on_start">Reprendre la lecture au démarrage</string>
