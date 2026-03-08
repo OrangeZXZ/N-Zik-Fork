@@ -796,6 +796,13 @@
   <string name="settings_pip_module">Pip modul</string>
   <string name="menu_go_to_picture_in_picture">PIP</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">Fra Android 12 kan pip aktiveres automatisk</string>
+  <string name="major_update_warning_title">Stor oppdatering (%1$s)</string>
+  <string name="major_update_warning_message">Denne versjonen gir viktige endringer. Det anbefales å sikkerhetskopiere data og tilbakestille appen helt ved å fjerne alle data eller installere dem på nytt før du rapporterer noe problem.</string>
+  <string name="major_update_warning_button">Jeg skjønner</string>
+  <string name="stable_to_beta_warning_title">Bytter til betaversjon</string>
+  <string name="stable_to_beta_warning_message">Du bytter til en betaversjon. Denne versjonen kan inneholde feil eller være ustabil. Det anbefales sterkt å ta backup av dataene før du fortsetter eller rapporterer noe problem.</string>
+  <string name="beta_to_stable_warning_title">Bytter tilbake til Stabel Bygging</string>
+  <string name="beta_to_stable_warning_message">Du bytter tilbake til en Stabel bygning. Siden du brukte en Beta-bygning det er sterkt anbefalt å sikkerhetskopiere data og tilbakestille appen (slett data eller på nytt), for å sikre stabilitet før du rapporterer noe problem.</string>
   <string name="showsecondline">Vis oversettelse på andre linje</string>
   <string name="enter_the_value">Angi verdien</string>
   <string name="resume_playback_on_start">Gjenoppta avspilling ved start</string>
