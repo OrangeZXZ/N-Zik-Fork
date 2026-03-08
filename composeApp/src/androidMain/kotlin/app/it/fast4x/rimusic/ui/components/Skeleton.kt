@@ -52,11 +52,12 @@ import app.it.fast4x.rimusic.enums.UiType
 import app.n_zik.android.core.updater.ChangelogsDialog
 import app.n_zik.android.core.updater.CheckForUpdateDialog
 import app.n_zik.android.core.updater.NewUpdateAvailableDialog
+import app.n_zik.android.core.updater.BuildTransitionWarningDialog
 import app.n_zik.android.core.updater.MajorUpdateConfig
 import app.n_zik.android.core.updater.MajorUpdateWarningDialog
 import app.n_zik.android.core.updater.Updater
 import app.it.fast4x.rimusic.utils.lastVersionCodeKey
-import app.it.fast4x.rimusic.appContext
+import app.it.fast4x.rimusic.utils.lastBuildTypeKey
 
 // THIS IS THE SCAFFOLD
 @OptIn(ExperimentalMaterial3Api::class)
@@ -214,10 +215,18 @@ fun Skeleton(
         CheckForUpdateDialog.Render()
 
         val lastVersionCode = rememberPreference(lastVersionCodeKey, 0)
+        val lastBuildType = rememberPreference(lastBuildTypeKey, "")
         val seenChangelogs = rememberPreference(seenChangelogsVersionKey, "")
         
         LaunchedEffect(Unit) {
-            if (MajorUpdateConfig.shouldShowWarning(lastVersionCode.value, seenChangelogs.value.isNotEmpty())) {
+            val currentBuildType = MajorUpdateConfig.getCurrentBuildType()
+            
+            // Check for Build Type Transition (Stable <-> Beta)
+            val transition = MajorUpdateConfig.getTransitionType(lastBuildType.value)
+            if (transition != null) {
+                BuildTransitionWarningDialog.transitionType = transition
+                BuildTransitionWarningDialog.isActive = true
+            } else if (MajorUpdateConfig.shouldShowWarning(lastVersionCode.value, seenChangelogs.value.isNotEmpty())) {
                 MajorUpdateWarningDialog.isActive = true
             } else {
                 val currentCode = BuildConfig.VERSION_CODE
@@ -227,10 +236,22 @@ fun Skeleton(
                 if (lastCode != currentCode) {
                     lastVersionCode.value = currentCode
                 }
+                
+                // Keep build type in sync if no transition warning shown
+                if (lastBuildType.value != currentBuildType) {
+                    lastBuildType.value = currentBuildType
+                }
             }
         }
 
         MajorUpdateWarningDialog.Render(onConfirm = {
+            lastVersionCode.value = BuildConfig.VERSION_CODE
+            lastBuildType.value = MajorUpdateConfig.getCurrentBuildType()
+        })
+
+        BuildTransitionWarningDialog.Render(onConfirm = {
+            lastBuildType.value = MajorUpdateConfig.getCurrentBuildType()
+            // Also sync version code when confirmed
             lastVersionCode.value = BuildConfig.VERSION_CODE
         })
 

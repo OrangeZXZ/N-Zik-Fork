@@ -27,4 +27,36 @@ object MajorUpdateConfig {
         
         return isUpgradeFromUntracked || isUpgradeFromTracked
     }
+
+    /**
+     * Extracts the build type from version name.
+     * - Returns "beta" if version name contains "-b" (Beta).
+     * - Returns "stable" if version name contains "-f" (Stable Full) or "-m" (Stable Minimal).
+     * Default fallback is "stable".
+     */
+    fun getCurrentBuildType(): String {
+        val version = BuildConfig.VERSION_NAME.lowercase()
+        return when {
+            version.contains("-b") -> "beta"
+            version.contains("-m") || version.contains("-f") -> "stable"
+            else -> "stable"
+        }
+    }
+
+    /**
+     * Determines if a build transition warning should be shown.
+     * Returns:
+     * - "stable-to-beta"
+     * - "beta-to-stable"
+     * - null if no transition or same build type
+     */
+    fun getTransitionType(lastBuildType: String?): String? {
+        if (lastBuildType.isNullOrEmpty()) return null
+        val currentBuildType = getCurrentBuildType()
+        
+        if (lastBuildType == "stable" && currentBuildType == "beta") return "stable-to-beta"
+        if (lastBuildType == "beta" && currentBuildType == "stable") return "beta-to-stable"
+        
+        return null
+    }
 }
