@@ -796,6 +796,13 @@
   <string name="settings_pip_module">Pip module</string>
   <string name="menu_go_to_picture_in_picture">PIP</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">From Android 12 pip can be automatically enabled</string>
+  <string name="major_update_warning_title">Σημαντική ενημέρωση (%1$s)</string>
+  <string name="major_update_warning_message">Αυτή η έκδοση φέρνει σημαντικές αλλαγές. Συνιστάται ιδιαίτερα να δημιουργείτε αντίγραφα ασφαλείας των δεδομένων σας και να επαναφέρετε πλήρως την εφαρμογή καθαρίζοντας όλα τα δεδομένα ή επανεγκαθιστώντας τα πριν δηλώσετε οποιοδήποτε πρόβλημα.</string>
+  <string name="major_update_warning_button">Κατανοώ</string>
+  <string name="stable_to_beta_warning_title">Μετάβαση σε έκδοση Beta</string>
+  <string name="stable_to_beta_warning_message">Εναλλαγή σε έκδοση Beta. Αυτή η έκδοση μπορεί να περιέχει σφάλματα ή να είναι ασταθής. Συνιστάται να διατηρείτε αντίγραφα ασφαλείας των δεδομένων σας πριν προχωρήσετε ή να αναφέρετε οποιοδήποτε πρόβλημα.</string>
+  <string name="beta_to_stable_warning_title">Εναλλαγή πίσω σε σταθερή κατασκευή</string>
+  <string name="beta_to_stable_warning_message">Μπορείτε να επιστρέψετε σε μια σταθερή κατασκευή. Από τη στιγμή που χρησιμοποιούσατε ένα Beta build, συνιστάται ιδιαίτερα να δημιουργήσετε αντίγραφα ασφαλείας των δεδομένων σας και να επαναφέρετε πλήρως την εφαρμογή (σαφή δεδομένα ή επανεγκατάσταση) για να εξασφαλίσετε σταθερότητα πριν από την αναφορά οποιουδήποτε προβλήματος.</string>
   <string name="showsecondline">Show Translation in the Second Line</string>
   <string name="enter_the_value">Enter The Value</string>
   <string name="resume_playback_on_start">Resume Playback On Start</string>
