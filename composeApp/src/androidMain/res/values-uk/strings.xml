@@ -796,6 +796,13 @@
   <string name="settings_pip_module">Модуль Pip</string>
   <string name="menu_go_to_picture_in_picture">PIP</string>
   <string name="pip_info_from_android_12_pip_can_be_automatically_enabled">З Android 12 pip можна увімкнути автоматично</string>
+  <string name="major_update_warning_title">Major update (%1$s)</string>
+  <string name="major_update_warning_message">Ця версія приносить важливі зміни. Наполегливо рекомендується створити резервну копію ваших даних і повністю скинути програму шляхом очищення всіх даних або його повторного встановлення, перш ніж повідомляти про будь-які проблеми.</string>
+  <string name="major_update_warning_button">Я розумію</string>
+  <string name="stable_to_beta_warning_title">Перемикання на бета-версію</string>
+  <string name="stable_to_beta_warning_message">Ви переключаєтесь на Бета-збірку. Ця версія може містити помилки або бути нестабільною. Наполегливо рекомендується створити резервну копію даних, перш ніж продовжити або надіслати повідомлення про будь-які проблеми.</string>
+  <string name="beta_to_stable_warning_title">Перехід назад до стабільної збірки</string>
+  <string name="beta_to_stable_warning_message">Ви переключаєтесь назад на стабільну збірку. Оскільки ви користувалися бета-версією, настійно рекомендується створити резервну копію ваших даних і повністю скинути програму (очистити дані або перевстановити їх) для забезпечення стабільності перед відправкою звітів про будь-яку проблему.</string>
   <string name="showsecondline">Показувати переклад в другому рядку</string>
   <string name="enter_the_value">Введіть значення</string>
   <string name="resume_playback_on_start">Відновити відтворення під час запуску</string>
