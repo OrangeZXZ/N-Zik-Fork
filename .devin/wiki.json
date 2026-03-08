@@ -1,0 +1,294 @@
+{
+  "repo_notes": [
+    "N-Zik is a multilingual fork of Kreate, built with Kotlin Multiplatform (KMP).",
+    "Prioritize documentation for 'composeApp' (UI/Core), 'modules' (Shared Logic), and 'extensions' (Data Providers).",
+    "Tone: Technical yet pedagogical, suitable for contributors learning Kotlin/Compose.",
+    "Extensions are mapped in settings.gradle.kts and reside in 'extensions/' and 'modules/'.",
+    "Localization is automated via Crowdin and GitHub Actions (sync-crowdin-translations.yaml).",
+    "EXCLUDE: Do not document Desktop-specific logic or VLCJ implementations (Desktop support is out of scope).",
+    "Highlight differences with the original Kreate fork where relevant."
+  ],
+  "pages": [
+    {
+      "title": "Overview",
+      "page_notes": [
+        {
+          "content": "Introduction to N-Zik as an enhanced, multilingual fork of Kreate."
+        },
+        {
+          "content": "Summary of core features: Modern UI, Multilingual support, Background playback."
+        },
+        {
+          "content": "Comparative summary: Highlight N-Zik's additions over the Kreate baseline."
+        }
+      ]
+    },
+    {
+      "title": "Architecture",
+      "page_notes": [
+        {
+          "content": "Overview of the project's modular design using Kotlin Multiplatform."
+        },
+        {
+          "content": "Description of the relationship between composeApp, modules, and extensions."
+        }
+      ]
+    },
+    {
+      "title": "Module Organization",
+      "parent": "Architecture",
+      "page_notes": [
+        {
+          "content": "Detailed breakdown of internal modules in the 'modules/' directory."
+        },
+        {
+          "content": "Focus on 'innertube', 'discord', and 'metrolist' modules."
+        }
+      ]
+    },
+    {
+      "title": "Extensions",
+      "parent": "Architecture",
+      "page_notes": [
+        {
+          "content": "Overview of the extension system for external service integration."
+        },
+        {
+          "content": "List of directories used for extensions: 'extensions/'."
+        }
+      ]
+    },
+    {
+      "title": "Extension: Invidious",
+      "parent": "Extensions",
+      "page_notes": [
+        {
+          "content": "Documentation for the Invidious API integration."
+        }
+      ]
+    },
+    {
+      "title": "Extension: Piped",
+      "parent": "Extensions",
+      "page_notes": [
+        {
+          "content": "Documentation for the Piped API integration."
+        }
+      ]
+    },
+    {
+      "title": "Extension: KuGou",
+      "parent": "Extensions",
+      "page_notes": [
+        {
+          "content": "Integration for KuGou lyrics provider."
+        }
+      ]
+    },
+    {
+      "title": "Extension: LrcLib",
+      "parent": "Extensions",
+      "page_notes": [
+        {
+          "content": "Integration for LrcLib synced lyrics service."
+        }
+      ]
+    },
+    {
+      "title": "Extension: InnerTube",
+      "parent": "Extensions",
+      "page_notes": [
+        {
+          "content": "Documentation for the internal YouTube (InnerTube) client integration (OldTube)."
+        }
+      ]
+    },
+    {
+      "title": "Extension: Ktor Brotli",
+      "parent": "Extensions",
+      "page_notes": [
+        {
+          "content": "Support for Brotli decompression in Ktor clients."
+        }
+      ]
+    },
+    {
+      "title": "Technology Stack",
+      "page_notes": [
+        {
+          "content": "Listing core technologies: Kotlin, Jetpack Compose, Ktor, Okio, etc."
+        }
+      ]
+    },
+    {
+      "title": "Kotlin Multiplatform",
+      "parent": "Technology Stack",
+      "page_notes": [
+        {
+          "content": "Usage of Common, Android, and (previously) Desktop source sets."
+        }
+      ]
+    },
+    {
+      "title": "Jetpack Compose",
+      "parent": "Technology Stack",
+      "page_notes": [
+        {
+          "content": "UI implementation strategy using Compose Multiplatform."
+        }
+      ]
+    },
+    {
+      "title": "Localization System",
+      "page_notes": [
+        {
+          "content": "Comprehensive guide to N-Zik's multilingual framework."
+        },
+        {
+          "content": "Integration of Crowdin for community translations."
+        }
+      ]
+    },
+    {
+      "title": "Crowdin Integration",
+      "parent": "Localization System",
+      "page_notes": [
+        {
+          "content": "How strings are managed on Crowdin and synced to the repo."
+        }
+      ]
+    },
+    {
+      "title": "Automation Workflows",
+      "parent": "Localization System",
+      "page_notes": [
+        {
+          "content": "Documentation for 'sync-crowdin-translations.yaml' and weekly build flavors."
+        }
+      ]
+    },
+    {
+      "title": "Contribution Guide",
+      "parent": "Localization System",
+      "page_notes": [
+        {
+          "content": "Steps for contributors to add or fix translations."
+        }
+      ]
+    },
+    {
+      "title": "UI & UX Features",
+      "page_notes": [
+        {
+          "content": "Overview of user interface customization and unique design elements."
+        }
+      ]
+    },
+    {
+      "title": "Theme System",
+      "parent": "UI & UX Features",
+      "page_notes": [
+        {
+          "content": "Dynamic theming and personalization options."
+        }
+      ]
+    },
+    {
+      "title": "ViMusic Toggle",
+      "parent": "Theme System",
+      "page_notes": [
+        {
+          "content": "Documentation for the toggle between N-Zik and classic ViMusic UI styles."
+        }
+      ]
+    },
+    {
+      "title": "Player Appearance",
+      "parent": "UI & UX Features",
+      "page_notes": [
+        {
+          "content": "Customization of the playback screen and controls."
+        }
+      ]
+    },
+    {
+      "title": "Audio Visualizers",
+      "parent": "UI & UX Features",
+      "page_notes": [
+        {
+          "content": "Technical details on real-time animations and shader-based visualizers (HypnoticCanvas)."
+        }
+      ]
+    },
+    {
+      "title": "Listening Stats",
+      "parent": "UI & UX Features",
+      "page_notes": [
+        {
+          "content": "How the app tracks and displays user listening habits."
+        }
+      ]
+    },
+    {
+      "title": "Media Management",
+      "page_notes": [
+        {
+          "content": "How music data is handled, cached, and downloaded."
+        }
+      ]
+    },
+    {
+      "title": "Automatic Caching",
+      "parent": "Media Management",
+      "page_notes": [
+        {
+          "content": "Implementation of the seamless offline caching system."
+        }
+      ]
+    },
+    {
+      "title": "Downloads",
+      "parent": "Media Management",
+      "page_notes": [
+        {
+          "content": "Technical details on persistent song and playlist downloads."
+        }
+      ]
+    },
+    {
+      "title": "Background Playback",
+      "parent": "Media Management",
+      "page_notes": [
+        {
+          "content": "MediaSession integration for continuous background playback."
+        }
+      ]
+    },
+    {
+      "title": "Project Context",
+      "page_notes": [
+        {
+          "content": "History, context, and philosophical goals of N-Zik."
+        }
+      ]
+    },
+    {
+      "title": "N-Zik vs Kreate",
+      "parent": "Project Context",
+      "page_notes": [
+        {
+          "content": "In-depth comparison of features, stability, and design philosophy between the two forks."
+        }
+      ]
+    },
+    {
+      "title": "Project Glossary",
+      "parent": "Project Context",
+      "page_notes": [
+        {
+          "content": "Definitions for project-specific terms: Innertube, Source Sets, Syncing, Flavors."
+        }
+      ]
+    }
+  ]
+}
