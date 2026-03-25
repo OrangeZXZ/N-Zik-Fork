@@ -60,14 +60,19 @@ Wiki :
     <img alt="Screenshot 6" src="fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" height="350px" />
     <img alt="Screenshot 7" src="fastlane/metadata/android/en-US/images/phoneScreenshots/7.png" height="350px" />
     <img alt="Screenshot 8" src="fastlane/metadata/android/en-US/images/phoneScreenshots/8.png" height="350px" />
-    <img alt="Screenshot 1" src="fastlane/metadata/android/en-US/images/phoneScreenshots/9.png" height="350px"/>
-    <img alt="Screenshot 2" src="fastlane/metadata/android/en-US/images/phoneScreenshots/10.png" height="350px" />
-    <img alt="Screenshot 3" src="fastlane/metadata/android/en-US/images/phoneScreenshots/11.png" height="350px" />
-    <img alt="Screenshot 4" src="fastlane/metadata/android/en-US/images/phoneScreenshots/12.png" height="350px" />
-    <img alt="Screenshot 5" src="fastlane/metadata/android/en-US/images/phoneScreenshots/13.png" height="350px" />
-    <img alt="Screenshot 6" src="fastlane/metadata/android/en-US/images/phoneScreenshots/14.png" height="350px" />
-    <img alt="Screenshot 7" src="fastlane/metadata/android/en-US/images/phoneScreenshots/15.png" height="350px" />
-    <img alt="Screenshot 8" src="fastlane/metadata/android/en-US/images/phoneScreenshots/16.png" height="350px" />
+    <img alt="Screenshot 9" src="fastlane/metadata/android/en-US/images/phoneScreenshots/9.png" height="350px"/>
+    <img alt="Screenshot 10" src="fastlane/metadata/android/en-US/images/phoneScreenshots/10.png" height="350px" />
+    <img alt="Screenshot 11" src="fastlane/metadata/android/en-US/images/phoneScreenshots/11.png" height="350px" />
+    <img alt="Screenshot 12" src="fastlane/metadata/android/en-US/images/phoneScreenshots/12.png" height="350px" />
+    <img alt="Screenshot 13" src="fastlane/metadata/android/en-US/images/phoneScreenshots/13.png" height="350px" />
+    <img alt="Screenshot 14" src="fastlane/metadata/android/en-US/images/phoneScreenshots/14.png" height="350px" />
+    <img alt="Screenshot 15" src="fastlane/metadata/android/en-US/images/phoneScreenshots/15.png" height="350px" />
+    <img alt="Screenshot 16" src="fastlane/metadata/android/en-US/images/phoneScreenshots/16.png" height="350px" />
+    <img alt="Screenshot 17" src="fastlane/metadata/android/en-US/images/phoneScreenshots/17.png" height="350px" />
+    <img alt="Screenshot 18" src="fastlane/metadata/android/en-US/images/phoneScreenshots/18.png" height="350px" />
+    <img alt="Screenshot 19" src="fastlane/metadata/android/en-US/images/phoneScreenshots/19.png" height="350px" />
+    <img alt="Screenshot 20" src="fastlane/metadata/android/en-US/images/phoneScreenshots/20.png" height="350px" />
+    <img alt="Screenshot 21" src="fastlane/metadata/android/en-US/images/phoneScreenshots/21.png" height="350px" />
 </div>
 
 # 🌐 Supported Languages
