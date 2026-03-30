@@ -46,81 +46,93 @@ class MyDownloadService : DownloadService(
         return if(Util.SDK_INT >= 21) PlatformScheduler(this, JOB_ID) else null
     }
 
+    private var maxActiveDownloads = 0
+
     override fun getForegroundNotification(
         downloads: MutableList<Download>,
         notMetRequirements: Int
-    ) = NotificationCompat
-        .Builder(
-            /* context = */ this,
-            /* notification = */ MyDownloadHelper
-                .getDownloadNotificationHelper(this)
-                .buildProgressNotification(
-                /* context            = */ this,
-                /* smallIcon          = */ R.drawable.download_progress,
-                /* contentIntent      = */ null,
-                /* message            = */ "${downloads.size} in progress",
-                /* downloads          = */ downloads,
-                /* notMetRequirements = */ notMetRequirements
-            )
-        )
-        .setChannelId(DOWNLOAD_NOTIFICATION_CHANNEL_ID)
-        /*
-        // Add action in notification
-        .addAction(
-            NotificationCompat.Action.Builder(
-                /* icon = */ R.drawable.close,
-                /* title = */ getString(R.string.cancel),
-                /* intent = */ null //TODO notificationActionReceiver.cancel.pendingIntent
-            ).build()
-        )
-        */
-        .build()
+    ): Notification {
+        if (downloads.size > maxActiveDownloads) {
+            maxActiveDownloads = downloads.size
+        } else if (downloads.isEmpty()) {
+            maxActiveDownloads = 0
+        }
+        val downloaded = maxActiveDownloads - downloads.size
+        val message = if (maxActiveDownloads > 1) {
+            getString(R.string.download_progress, downloaded, maxActiveDownloads)
+        } else {
+            getString(R.string.download_in_progress, downloads.size)
+        }
+
+        val activeDownload = downloads.firstOrNull { it.state == Download.STATE_DOWNLOADING } ?: downloads.firstOrNull()
+        val currentDownloadName = activeDownload?.request?.data?.let { Util.fromUtf8Bytes(it) }
+
+        return NotificationCompat.Builder(this, DOWNLOAD_NOTIFICATION_CHANNEL_ID)
+            .setSmallIcon(R.drawable.download_progress)
+            .setContentTitle(getString(R.string.download))
+            .setContentText(currentDownloadName ?: message)
+            .setSubText(message) // Always show the progress like "11 / 20" in subtext
+            .setProgress(maxActiveDownloads, downloaded, maxActiveDownloads == 0)
+            .setOngoing(true)
+            .setShowWhen(false)
+            .build()    }
 
     /**
      * Creates and displays notifications for downloads when they complete or fail.
      *
-     *
-     * This helper will outlive the lifespan of a single instance of [MyDownloadService].
+     *     * This helper will outlive the lifespan of a single instance of [MyDownloadService].
      * It is static to avoid leaking the first [MyDownloadService] instance.
      */
     private class TerminalStateNotificationHelper(
         private val context: Context,
         private val notificationHelper: DownloadNotificationHelper,
-        firstNotificationId: Int
+        private val notificationId: Int
     ) : DownloadManager.Listener {
-        private var nextNotificationId: Int = firstNotificationId
+        private var completedCount = 0
+        private var failedCount = 0
+        private var lastName = ""
 
         override fun onDownloadChanged(
             downloadManager: DownloadManager,
             download: Download,
             finalException: Exception?
         ) {
-            val notification: Notification = when (download.state) {
-                Download.STATE_COMPLETED -> {
-                    notificationHelper.buildDownloadCompletedNotification(
-                        context,
-                        R.drawable.downloaded,
-                        null,
-                        Util.fromUtf8Bytes(download.request.data)
-                    )
-                }
-                Download.STATE_FAILED -> {
-                    notificationHelper.buildDownloadFailedNotification(
-                        context,
-                        R.drawable.alert_circle_not_filled,
-                        null,
-                        Util.fromUtf8Bytes(download.request.data)
-                    )
-                }
-                else -> return
+            if (download.state == Download.STATE_COMPLETED) {
+                completedCount++
+                lastName = Util.fromUtf8Bytes(download.request.data)
+            } else if (download.state == Download.STATE_FAILED) {
+                failedCount++
+                lastName = Util.fromUtf8Bytes(download.request.data)
             }
-            NotificationUtil.setNotification(context, nextNotificationId++, notification)
-
         }
 
+        override fun onIdle(downloadManager: DownloadManager) {
+            if (completedCount == 0 && failedCount == 0) {
+                return
+            }
 
+            val title = if (failedCount > 0) {
+                context.getString(R.string.download_completed_with_failed, completedCount, failedCount)
+            } else {
+                context.getString(R.string.download_completed, completedCount)  
+            }
+
+            val notification = NotificationCompat.Builder(context, DOWNLOAD_NOTIFICATION_CHANNEL_ID)
+                .setSmallIcon(if (failedCount == 0) R.drawable.downloaded else R.drawable.alert_circle_not_filled)
+                .setContentTitle(context.getString(R.string.download))
+                .setContentText(title)
+                .setSubText(lastName)
+                .setAutoCancel(true)
+                .setOnlyAlertOnce(true)
+                .build()
+
+            // Use the defined static ID (+1) to prevent deletion when the service stops
+            NotificationUtil.setNotification(context, notificationId, notification)
+
+            completedCount = 0
+            failedCount = 0
+            lastName = ""
+        }
     }
 
 }
-
-
