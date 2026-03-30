@@ -5,10 +5,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.ui.Modifier
 
-context(LazyItemScope)
+context(scope: LazyItemScope)
 @ExperimentalFoundationApi
 fun Modifier.localAnimateItemPlacement(reorderingState: ReorderingState) =
-    if (reorderingState.draggingIndex == -1) Modifier.animateItem() else this
+    if (reorderingState.draggingIndex == -1) {
+        with(scope) { animateItem() }
+    } else this
 
 
 

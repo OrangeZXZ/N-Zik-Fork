@@ -34,10 +34,13 @@ value class Hsl(@PublishedApi internal val raw: FloatArray) {
 }
 
 val FloatArray.hsl get() = Hsl(raw = this)
-val Color.hsl
-    get() = FloatArray(3)
-        .apply { ColorUtils.colorToHSL(this@Color.toArgb(), this) }
-        .hsl
+val Color.hsl: Hsl
+    get() {
+        val color = this
+        return FloatArray(3)
+            .apply { ColorUtils.colorToHSL(color.toArgb(), this) }
+            .hsl
+    }
 
 
 

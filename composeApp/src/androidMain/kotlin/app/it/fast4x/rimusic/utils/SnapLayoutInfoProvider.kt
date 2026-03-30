@@ -8,9 +8,8 @@ import androidx.compose.ui.unit.Density
 private val LazyGridLayoutInfo.singleAxisViewportSize: Int
     get() = if (orientation == Orientation.Vertical) viewportSize.height else viewportSize.width
 
-context(Density)
-
-private fun Density.calculateDistanceToDesiredSnapPosition(
+context(density: Density)
+private fun calculateDistanceToDesiredSnapPosition(
     layoutInfo: LazyGridLayoutInfo,
     item: LazyGridItemInfo,
     positionInLayout: Density.(layoutSize: Float, itemSize: Float) -> Float
@@ -18,7 +17,7 @@ private fun Density.calculateDistanceToDesiredSnapPosition(
     val containerSize =
         with(layoutInfo) { singleAxisViewportSize - beforeContentPadding - afterContentPadding }
 
-    val desiredDistance = positionInLayout(containerSize.toFloat(), item.size.width.toFloat())
+    val desiredDistance = density.positionInLayout(containerSize.toFloat(), item.size.width.toFloat())
     val itemCurrentPosition = item.offset.x.toFloat()
 
     return itemCurrentPosition - desiredDistance
