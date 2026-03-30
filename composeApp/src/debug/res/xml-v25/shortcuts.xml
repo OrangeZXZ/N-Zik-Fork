@@ -3,7 +3,7 @@
     <shortcut
         android:shortcutId="search"
         android:enabled="true"
-        android:icon="@drawable/search"
+        android:icon="@drawable/search_black"
         android:shortcutShortLabel="@string/search">
         <intent
             android:targetClass="app.it.fast4x.rimusic.MainActivity"
@@ -13,7 +13,7 @@
     <shortcut
         android:shortcutId="albums"
         android:enabled="true"
-        android:icon="@drawable/album_alt2"
+        android:icon="@drawable/album_alt2_black"
         android:shortcutShortLabel="@string/albums">
         <intent
             android:targetClass="app.it.fast4x.rimusic.MainActivity"
@@ -23,7 +23,7 @@
     <shortcut
             android:shortcutId="artists"
             android:enabled="true"
-            android:icon="@drawable/people"
+            android:icon="@drawable/people_black"
             android:shortcutShortLabel="@string/artists">
         <intent
                 android:targetClass="app.it.fast4x.rimusic.MainActivity"
@@ -33,7 +33,7 @@
     <shortcut
         android:shortcutId="library"
         android:enabled="true"
-        android:icon="@drawable/playlist"
+        android:icon="@drawable/playlist_black"
         android:shortcutShortLabel="@string/playlists">
         <intent
             android:targetClass="app.it.fast4x.rimusic.MainActivity"
@@ -43,7 +43,7 @@
     <shortcut
         android:shortcutId="crashlog"
         android:enabled="true"
-        android:icon="@drawable/copy"
+        android:icon="@drawable/copy_black"
         android:shortcutShortLabel="@string/copy_crash_log_to_clipboard">
         <intent
             android:targetClass="app.it.fast4x.rimusic.MainActivity"
@@ -51,3 +51,4 @@
             android:action="app.it.fast4x.rimusic.action.copy_crash_log" />
     </shortcut>
 </shortcuts>
+
