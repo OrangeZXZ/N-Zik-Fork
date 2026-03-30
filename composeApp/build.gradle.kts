@@ -1,5 +1,4 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -35,35 +34,11 @@ kotlin {
         }
     }
 
-    jvm("desktop")
-
-
-
     sourceSets {
         all {
             languageSettings {
                 optIn("org.jetbrains.compose.resources.ExperimentalResourceApi")
             }
-        }
-
-        val desktopMain by getting
-        desktopMain.dependencies {
-            implementation(compose.components.resources)
-            implementation(compose.desktop.currentOs)
-
-            implementation(libs.material.icon.desktop)
-            implementation(libs.vlcj)
-
-            implementation(libs.coil.network.okhttp)
-            runtimeOnly(libs.kotlinx.coroutines.swing)
-
-            /*
-            // Uncomment only for build jvm desktop version
-            // Comment before build android version
-            configurations.commonMainApi {
-                exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-android")
-            }
-            */
         }
 
         androidMain.dependencies {
@@ -231,31 +206,10 @@ java {
     }
 }
 
-compose.desktop {
-    application {
-
-        mainClass = "MainKt"
-
-        //conveyor
-        version = "0.0.1"
-        group = "rimusic"
-
-        //jpackage
-        nativeDistributions {
-            //conveyor
-            vendor = "RiMusic.DesktopApp"
-            description = "RiMusic Desktop Music Player"
-
-            targetFormats(TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
-            packageName = "RiMusic.DesktopApp"
-            packageVersion = "0.0.1"
-        }
-    }
-}
-
 compose.resources {
     publicResClass = true
     generateResClass = always
+    packageOfResClass = "rimusic.composeapp.generated.resources"
 }
 
 room {
@@ -292,7 +246,6 @@ dependencies {
 
     implementation(libs.room)
     add("kspAndroid", libs.room.compiler)
-    add("kspDesktop", libs.room.compiler)
 
     implementation(projects.innertube)
     implementation(projects.oldtube)
@@ -322,3 +275,4 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+

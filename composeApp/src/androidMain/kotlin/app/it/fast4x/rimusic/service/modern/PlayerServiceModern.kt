@@ -313,6 +313,9 @@ class PlayerServiceModern : MediaLibraryService(),
                 // CUSTOM NOTIFICATION PROVIDER -> CUSTOM NOTIFICATION PROVIDER WITH ACTIONS AND PENDING INTENT
                 // ACTUALLY NOT STABLE
                 setMediaNotificationProvider(object : MediaNotification.Provider {
+                    
+                    private val defaultProvider = DefaultMediaNotificationProvider(this@PlayerServiceModern)
+
                     override fun createNotification(
                         mediaSession: MediaSession,
                         customLayout: ImmutableList<CommandButton>,
@@ -328,6 +331,10 @@ class PlayerServiceModern : MediaLibraryService(),
                         extras: Bundle
                     ): Boolean {
                         return false
+                    }
+                    
+                    override fun getNotificationChannelInfo(): MediaNotification.Provider.NotificationChannelInfo {
+                        return defaultProvider.getNotificationChannelInfo()
                     }
                 })
             }
