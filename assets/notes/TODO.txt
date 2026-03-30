@@ -17,3 +17,4 @@
 17: Explicit badge not showing in android auto
 18: Notification player show e: e: not needed
 19: Optimized transition between section in home songs
+20: Make the desktop version
