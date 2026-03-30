@@ -44,6 +44,7 @@ import database.entities.Song
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.artistPage
+import it.fast4x.innertube.requests.ArtistPage
 import app.it.fast4x.rimusic.items.AlbumItem
 import app.it.fast4x.rimusic.items.PlaylistItem
 import app.it.fast4x.rimusic.items.SongItem
@@ -93,7 +94,7 @@ fun ArtistScreen(
 ) {
     //val leftScrollState = rememberScrollState()
     //val rightScrollState = rememberScrollState()
-    val artistPage = remember { mutableStateOf<Innertube.ArtistPage?>(null) }
+    val artistPage = remember { mutableStateOf<Innertube.ArtistInfoPage?>(null) }
     LaunchedEffect(browseId) {
         Innertube.artistPage(BrowseBody(browseId = browseId))
             ?.onSuccess {
@@ -304,8 +305,7 @@ fun ArtistScreen(
 
                         val parentalControlEnabled = false
 
-                        val songs = if (parentalControlEnabled)
-                            allSongs.filter { !it.explicit } else allSongs
+                        val artistSongs = allSongs
                         Row(
                             verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -325,7 +325,7 @@ fun ArtistScreen(
 
                         }
 
-                        songs.forEachIndexed { index, song ->
+                        artistSongs.forEachIndexed { index, song ->
 
                             SongItem(
                                 song = song,
@@ -355,7 +355,7 @@ fun ArtistScreen(
                         }
                     }
 
-                    artistPage.value!!.playlists?.let { playlists ->
+                    artistPage.value!!.playlists?.let { artistPlaylists ->
                         Row(
                             verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -379,8 +379,8 @@ fun ArtistScreen(
                                 .fillMaxWidth()
                         ) {
                             items(
-                                items = playlists,
-                                key = Innertube.PlaylistItem::key
+                                items = artistPlaylists,
+                                key = { it.key }
                             ) { playlist ->
                                 PlaylistItem(
                                     playlist = playlist,
@@ -396,7 +396,7 @@ fun ArtistScreen(
                         }
                     }
 
-                    artistPage.value!!.albums?.let { albums ->
+                    artistPage.value!!.albums?.let { artistAlbums ->
                         Row(
                             verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -413,10 +413,10 @@ fun ArtistScreen(
                                 },
                                 icon2 = Res.drawable.dice,
                                 onClick2 = {
-                                    val albumId = albums.get(
+                                    val albumId = artistAlbums.get(
                                         Random(System.currentTimeMillis()).nextInt(
                                             0,
-                                            albums.size - 1
+                                            artistAlbums.size - 1
                                         )
                                     ).key
                                     onAlbumClick(albumId)
@@ -430,8 +430,8 @@ fun ArtistScreen(
                                 .fillMaxWidth()
                         ) {
                             items(
-                                items = albums,
-                                key = Innertube.AlbumItem::key
+                                items = artistAlbums,
+                                key = { it.key }
                             ) { album ->
                                 AlbumItem(
                                     album = album,
@@ -444,7 +444,7 @@ fun ArtistScreen(
                         }
                     }
 
-                    artistPage.value!!.singles?.let { singles ->
+                    artistPage.value!!.singles?.let { artistSingles ->
                         Row(
                             verticalAlignment = Alignment.Bottom,
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -468,8 +468,8 @@ fun ArtistScreen(
                                 .fillMaxWidth()
                         ) {
                             items(
-                                items = singles,
-                                key = Innertube.AlbumItem::key
+                                items = artistSingles,
+                                key = { it.key }
                             ) { album ->
                                 AlbumItem(
                                     album = album,

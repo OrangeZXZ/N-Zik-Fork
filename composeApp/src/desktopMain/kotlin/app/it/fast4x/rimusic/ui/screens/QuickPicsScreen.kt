@@ -121,7 +121,7 @@ fun QuickPicsScreen(
                                 onSongClick(song.asSong)
                             }
                         )
-                        .animateItemPlacement()
+                        .animateItem()
                         .width(itemInHorizontalGridWidth)
                 )
             }
