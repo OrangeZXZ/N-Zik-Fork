@@ -124,7 +124,7 @@ hypnoticcanvas-shaders = { group = "com.mikepenz.hypnoticcanvas", name = "hypnot
 
 # Newpipe extractor
 newpipe-extractor = { group = "com.github.TeamNewPipe", name = "NewPipeExtractor", version.ref = "newpipe-extractor" }
-extractor = { group = "com.github.mostafaalagamy", name = "MetrolistExtractor", version = "a194151" }
+extractor = { group = "com.github.mostafaalagamy", name = "MetrolistExtractor", version = "v1.0.0" }
 nanojson = { group = "com.github.TeamNewPipe", name = "nanojson", version = "1d9e1aea9049fc9f85e68b43ba39fe7be1c1f751" }
 
 # Annotations
