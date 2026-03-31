@@ -1078,8 +1078,8 @@
     <string name="content_type_user_generated">用户已生成</string>
     <string name="in_txt">在</string>
     <string name="other">其 他</string>
-    <string name="download_in_progress">%1$d in progress</string>
+    <string name="download_in_progress">%1$d 正在进行</string>
     <string name="download_progress">%1$d / %2$d</string>
-    <string name="download_completed">%1$d completed</string>
-    <string name="download_completed_with_failed">%1$d completed, %2$d failed</string>
+    <string name="download_completed">%1$d 完成</string>
+    <string name="download_completed_with_failed">%1$d 已完成， %2$d 失败</string>
 </resources>
