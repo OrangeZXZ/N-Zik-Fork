@@ -38,4 +38,6 @@ project(":innertube").projectDir = file("modules/innertube")
 include("discord")
 project(":discord").projectDir = file("modules/discord")
 include(":metrolist")
-project(":metrolist").projectDir = file("modules/metrolist-innertube/innertube")
+val metrolistNestedDir = file("modules/metrolist-innertube/innertube")
+val metrolistRootDir = file("modules/metrolist-innertube")
+project(":metrolist").projectDir = if (metrolistNestedDir.isDirectory) metrolistNestedDir else metrolistRootDir
