@@ -14,6 +14,7 @@
 [![Localization Progress](https://badges.crowdin.net/N-Zik/localized.svg)](https://crowdin.com/project/N-Zik) [![License: GPL v3](https://img.shields.io/github/license/NEVARLeVrai/N-Zik?color=blue)](https://www.gnu.org/licenses/gpl-3.0)
 [![CodeFactor](https://www.codefactor.io/repository/github/nevarlevrai/n-zik/badge)](https://www.codefactor.io/repository/github/nevarlevrai/n-zik)
 
+
 Wiki :
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/NEVARLeVrai/N-Zik)</div>
 
