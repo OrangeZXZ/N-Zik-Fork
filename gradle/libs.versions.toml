@@ -2,6 +2,7 @@
 [versions]
 compose-plugin = "1.10.3"
 agp = "9.1.0"
+hilt = "2.59.2"
 composeMarkdownVersion = "0.6.0"
 kotlin = "2.3.20"
 kotlin-ksp = "2.3.5"
@@ -45,12 +46,15 @@ junit5 = "6.0.3"
 mockk = "1.14.9"
 webkit = "1.15.0"
 newpipe-extractor = "v0.26.0"
+koin = "4.1.0"
+kermit = "2.0.8"
 kotlinx-serialization = "1.10.0"
 
 
 [libraries]
 # Kotlinx
 github-jeziellago-compose-markdown = { module = "com.github.jeziellago:compose-markdown", version.ref = "composeMarkdownVersion" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version = "kotlinxCoroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlin-datetime" }
@@ -119,6 +123,9 @@ hypnoticcanvas-shaders = { group = "com.mikepenz.hypnoticcanvas", name = "hypnot
 
 # Newpipe extractor
 newpipe-extractor = { group = "com.github.TeamNewPipe", name = "NewPipeExtractor", version.ref = "newpipe-extractor" }
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core" }
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 extractor = { group = "com.github.mostafaalagamy", name = "MetrolistExtractor", version = "v1.0.0" }
 nanojson = { group = "com.github.TeamNewPipe", name = "nanojson", version = "1d9e1aea9049fc9f85e68b43ba39fe7be1c1f751" }
 
@@ -159,6 +166,7 @@ compose-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer",
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
 # Android
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -167,6 +175,7 @@ room = { id = "androidx.room", version.ref = "room" }
 # Others
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "kotlin-ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
 [bundles]
