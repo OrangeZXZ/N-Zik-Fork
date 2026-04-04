@@ -1,0 +1,116 @@
+name: 🎵 Release to Discord
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  extract-changelog-beta:
+    if: contains(github.event.release.tag_name, '-b')
+    runs-on: ubuntu-latest
+    outputs:
+      changelog: ${{ steps.read_changelog.outputs.content }}
+      version: ${{ steps.extract_version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Extract version code from build.gradle.kts
+        id: extract_version
+        run: |
+          versionCode=$(grep -E '^\s*versionCode\s*=' composeApp/build.gradle.kts | sed 's/[^0-9]*//g')
+          echo "version=$versionCode" >> $GITHUB_OUTPUT
+          echo "Version code extracted: $versionCode"
+
+      - name: Read changelog file
+        id: read_changelog
+        run: |
+          changelog_file="fastlane/metadata/android/en-US/changelogs/${{ steps.extract_version.outputs.version }}.txt"
+          
+          if [ -f "$changelog_file" ]; then
+            content=$(cat "$changelog_file")
+            # Escape pour multiline output
+            content="${content//'%'/'%25'}"
+            content="${content//$'\n'/'%0A'}"
+            content="${content//$'\r'/'%0D'}"
+            echo "content=$content" >> $GITHUB_OUTPUT
+            echo "✅ Changelog found and read"
+          else
+            echo "⚠️ Changelog file not found: $changelog_file"
+            echo "content=No changelog available for this version" >> $GITHUB_OUTPUT
+          fi
+
+  notify-beta:
+    needs: extract-changelog-beta
+    if: contains(github.event.release.tag_name, '-b')
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚀 Beta Release Notification
+        uses: SethCohen/github-releases-to-discord@v1.20.0
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          color: "16711680"
+          username: "🧪 N-Zik Beta"
+          avatar_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
+          content: "⚠️ **||<@&1345079801324634195>|| BETA VERSION AVAILABLE!**\n🧪 Help us test the latest features before stable release!"
+          footer_title: "N-Zik BETA • Testing & Feedback Needed"
+          footer_icon_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
+          footer_timestamp: true
+          reduce_headings: true
+          max_description: 2048
+
+  extract-changelog-stable:
+    if: "!contains(github.event.release.tag_name, '-f')"
+    runs-on: ubuntu-latest
+    outputs:
+      changelog: ${{ steps.read_changelog.outputs.content }}
+      version: ${{ steps.extract_version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Extract version code from build.gradle.kts
+        id: extract_version
+        run: |
+          versionCode=$(grep -E '^\s*versionCode\s*=' composeApp/build.gradle.kts | sed 's/[^0-9]*//g')
+          echo "version=$versionCode" >> $GITHUB_OUTPUT
+          echo "Version code extracted: $versionCode"
+
+      - name: Read changelog file
+        id: read_changelog
+        run: |
+          changelog_file="fastlane/metadata/android/en-US/changelogs/${{ steps.extract_version.outputs.version }}.txt"
+          
+          if [ -f "$changelog_file" ]; then
+            content=$(cat "$changelog_file")
+            # Escape pour multiline output
+            content="${content//'%'/'%25'}"
+            content="${content//$'\n'/'%0A'}"
+            content="${content//$'\r'/'%0D'}"
+            echo "content=$content" >> $GITHUB_OUTPUT
+            echo "✅ Changelog found and read"
+          else
+            echo "⚠️ Changelog file not found: $changelog_file"
+            echo "content=No changelog available for this version" >> $GITHUB_OUTPUT
+          fi
+
+  notify-stable:
+    needs: extract-changelog-stable
+    if: "!contains(github.event.release.tag_name, '-f')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: ✨ Stable Release Notification
+        uses: SethCohen/github-releases-to-discord@v1.20.0
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          color: "13632401"
+          username: "🎵 N-Zik Releases"
+          avatar_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
+          content: "✨ **||<@&1345079801324634195>|| NEW STABLE RELEASE!**\n🚀 Download the latest version now!"
+          footer_title: "N-Zik • Made by the community, for the community"
+          footer_icon_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
+          footer_timestamp: true
+          reduce_headings: true
+          max_description: 2048
