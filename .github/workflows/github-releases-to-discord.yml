@@ -1,8 +1,10 @@
-name: 🎵 Release to Discord
+name: Release to Discord
 
 on:
+  workflow_dispatch:
   release:
-    types: [published]
+    types: [published] 
+
 
 jobs:
   extract-changelog-beta:
