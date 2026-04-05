@@ -12,6 +12,10 @@ jobs:
       - name: 🧪 Beta Release Notification
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          CONTENT: |
+            ⚠️ **||<@&1345079801324634195>|| BETA VERSION AVAILABLE!**
+            
+            🧪 Help us test the latest features!
           DESCRIPTION: |
             ## 📲 Installation
 
@@ -45,7 +49,7 @@ jobs:
             - [View full changelog and download APK](${{ github.event.release.html_url }})
         run: |
           jq -n \
-            --arg content "⚠️ **||<@&1345079801324634195>|| BETA VERSION AVAILABLE!**\n\n🧪 Help us test the latest features!" \
+            --arg content "$CONTENT" \
             --arg username "N-Zik Beta" \
             --arg avatar "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png" \
             --arg desc "$DESCRIPTION" \
@@ -72,6 +76,10 @@ jobs:
       - name: 🚀 Stable Release Notification
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          CONTENT: |
+            ✨ **||<@&1345079801324634195>|| NEW STABLE RELEASE!**
+            
+            🚀 Download now!
           DESCRIPTION: |
             ## 📲 Installation
 
@@ -108,7 +116,7 @@ jobs:
             - [View full changelog and download APK](${{ github.event.release.html_url }})
         run: |
           jq -n \
-            --arg content "✨ **||<@&1345079801324634195>|| NEW STABLE RELEASE!**\n\n🚀 Download now!" \
+            --arg content "$CONTENT" \
             --arg username "N-Zik Stable" \
             --arg avatar "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png" \
             --arg desc "$DESCRIPTION" \
