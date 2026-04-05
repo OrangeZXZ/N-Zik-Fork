@@ -5,39 +5,7 @@ on:
     types: [published]
 
 jobs:
-  extract-changelog:
-    runs-on: ubuntu-latest
-    outputs:
-      changelog: ${{ steps.read_changelog.outputs.content }}
-      version: ${{ steps.extract_version.outputs.version }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - name: Extract version code
-        id: extract_version
-        run: |
-          versionCode=$(grep -E '^\s*versionCode\s*=' composeApp/build.gradle.kts | sed 's/[^0-9]*//g')
-          echo "version=$versionCode" >> $GITHUB_OUTPUT
-
-      - name: Read changelog
-        id: read_changelog
-        run: |
-          changelog_file="fastlane/metadata/android/en-US/changelogs/${{ steps.extract_version.outputs.version }}.txt"
-          
-          if [ -f "$changelog_file" ]; then
-            content=$(cat "$changelog_file")
-            content="${content//'%'/'%25'}"
-            content="${content//$'\n'/'%0A'}"
-            content="${content//$'\r'/'%0D'}"
-            echo "content=$content" >> $GITHUB_OUTPUT
-          else
-            echo "content=No changelog available" >> $GITHUB_OUTPUT
-          fi
-
   notify-beta:
-    needs: extract-changelog
     if: github.event.release.prerelease == true
     runs-on: ubuntu-latest
     steps:
@@ -56,7 +24,6 @@ jobs:
           max_description: 2048
 
   notify-stable:
-    needs: extract-changelog
     if: github.event.release.prerelease == false
     runs-on: ubuntu-latest
     steps:
