@@ -20,8 +20,37 @@ jobs:
           footer_title: "N-Zik BETA • Testing & Feedback Needed"
           footer_icon_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
           footer_timestamp: true
-          reduce_headings: true
-          max_description: 2048
+          release_body: |
+            ## 📲 Installation
+
+            ⚠️ This is a **BETA release**, not a stable version.  
+            It is intended **only for testing and feedback**.
+
+            1. Download the **Full BETA build** below.  
+            2. Verify its signature using the hashes provided.  
+            3. Install on your device (you may need to allow installation from outside the Play Store).  
+
+            Please report any crashes, bugs, or unexpected behavior.
+
+            ## 📦 Available Build
+
+            - **Full (BETA)** – Complete build with all components.  
+              ⚠️ May contain bugs or experimental features.
+
+            ## 🔄 Update Policy
+
+            - 🟡 **Beta Build (-b)** - **Default:** Update notifications for **Beta** are **enabled by default**.  
+              - **User options:** - You can **disable Beta updates** in **Settings > About > Beta update disabled**.  
+                - You can **enable or disable auto update** in **Settings > About > Auto update enabled**.  
+              - **Behavior:** - Without Beta enabled → automatically upgrades to the latest **Stable** release.  
+                - With Beta enabled → stays on the **Beta channel** and receives **Stable updates** as well.  
+              - ⚠️ **Note:** This build may contain experimental features and bugs. Only enable Beta updates if you want to test new features.
+
+            This lets you decide whether to test new experimental updates or stick with the stable ones.
+
+            ## 🔗 Changelog & Downloads
+
+            - [View full changelog and download APK](${{ github.event.release.html_url }})
 
   notify-stable:
     if: github.event.release.prerelease == false
@@ -38,5 +67,37 @@ jobs:
           footer_title: "N-Zik Stable • Made by the community, for the community"
           footer_icon_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
           footer_timestamp: true
-          reduce_headings: true
-          max_description: 2048
+          release_body: |
+            ## 📲 Installation
+
+            1. Download the **Full build** below (recommended for all devices).  
+            2. Verify its signature using the hashes provided.  
+            3. Install on your device (you may need to allow installation from unknown sources).  
+
+            > The **Minified build** is available for low-end devices. It contains only core features but is fully stable.
+
+            Please report any crashes, bugs, or unexpected behavior.
+
+            ## 📦 Available Builds
+
+            - **Full** – Complete build with all components.  
+            - **Minified** – Lightweight build, recommended for low-end devices.
+
+            ## 🔄 Update Policy
+
+            - 🟢 **Full Build (-f)** - **Default:** Update notifications for **Stable** are **enabled by default**.  
+              - **User options:** - You can **disable Stable updates** in **Settings > About > Auto update enabled**.  
+                - You can **enable Beta updates** in **Settings > About > Beta update enabled** to test Beta releases.  
+              - **Behavior:** - Without Beta enabled → receives **Stable** updates only.  
+                - With Beta enabled → receives both **Stable + Beta** updates.
+                    
+            - 🔵 **Minified Build (-m)** - **Default:** Update notifications for **Stable** are **enabled by default**.  
+              - **User options:** - You can **disable Stable updates** in **Settings > About > Auto update enabled**.  
+                - Always updates to the **Full Stable Build**.  
+                - No Beta option available.
+                
+            This lets you decide whether to test new experimental updates or stick with the stable ones.
+
+            ## 🔗 Changelog & Downloads
+
+            - [View full changelog and download APK](${{ github.event.release.html_url }})
