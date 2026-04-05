@@ -24,7 +24,7 @@
 
 Join the N-Zik Discord:
 
-[![Discord Widget](https://discord.com/api/guilds/1345079801324634193/widget.png?style=banner3)](https://discord.gg/FGKmNvjer9)
+[![Discord Widget](https://discord.com/api/guilds/1345079801324634193/widget.png?style=banner3)](https://discord.gg/bneHC7QRje)
 <br>
 </div>
 
