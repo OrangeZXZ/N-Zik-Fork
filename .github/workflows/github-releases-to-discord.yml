@@ -16,7 +16,7 @@ jobs:
           color: "16711680"
           username: "N-Zik Beta"
           avatar_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
-          content: "⚠️ **||<@&1345079801324634195>|| BETA VERSION AVAILABLE!**\n\n🧪 Help us test the latest features!"
+          content: "⚠️ **||<@&1345079801324634195>|| BETA VERSION AVAILABLE!**\n\n🧪 Help us test the latest features!\n"
           footer_title: "N-Zik BETA • Testing & Feedback Needed"
           footer_icon_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
           footer_timestamp: true
@@ -34,8 +34,8 @@ jobs:
           color: "13632401"
           username: "N-Zik Stable"
           avatar_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
-          content: "✨ **||<@&1345079801324634195>|| NEW STABLE RELEASE!**\n\n🚀 Download now!"
-          footer_title: "N-Zik • Made by the community, for the community"
+          content: "✨ **||<@&1345079801324634195>|| NEW STABLE RELEASE!**\n\n🚀 Download now!\n"
+          footer_title: "N-Zik Stable • Made by the community, for the community"
           footer_icon_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
           footer_timestamp: true
           reduce_headings: true
