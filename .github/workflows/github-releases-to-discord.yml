@@ -10,17 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 🧪 Beta Release Notification
-        uses: SethCohen/github-releases-to-discord@v1.20.0
-        with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          color: "16711680"
-          username: "N-Zik Beta"
-          avatar_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
-          content: "⚠️ **||<@&1345079801324634195>|| BETA VERSION AVAILABLE!**\n\n🧪 Help us test the latest features!\n"
-          footer_title: "N-Zik BETA • Testing & Feedback Needed"
-          footer_icon_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
-          footer_timestamp: true
-          release_body: |
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DESCRIPTION: |
             ## 📲 Installation
 
             ⚠️ This is a **BETA release**, not a stable version.  
@@ -51,23 +43,36 @@ jobs:
             ## 🔗 Changelog & Downloads
 
             - [View full changelog and download APK](${{ github.event.release.html_url }})
+        run: |
+          jq -n \
+            --arg content "⚠️ **||<@&1345079801324634195>|| BETA VERSION AVAILABLE!**\n\n🧪 Help us test the latest features!" \
+            --arg username "N-Zik Beta" \
+            --arg avatar "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png" \
+            --arg desc "$DESCRIPTION" \
+            '{
+              content: $content,
+              username: $username,
+              avatar_url: $avatar,
+              embeds: [{
+                color: 16711680,
+                description: $desc,
+                footer: {
+                  text: "N-Zik BETA • Testing & Feedback Needed",
+                  icon_url: $avatar
+                }
+              }]
+            }' > payload.json
+          
+          curl -X POST -H "Content-Type: application/json" -d @payload.json $WEBHOOK_URL
 
   notify-stable:
     if: github.event.release.prerelease == false
     runs-on: ubuntu-latest
     steps:
       - name: 🚀 Stable Release Notification
-        uses: SethCohen/github-releases-to-discord@v1.20.0
-        with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          color: "13632401"
-          username: "N-Zik Stable"
-          avatar_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
-          content: "✨ **||<@&1345079801324634195>|| NEW STABLE RELEASE!**\n\n🚀 Download now!\n"
-          footer_title: "N-Zik Stable • Made by the community, for the community"
-          footer_icon_url: "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
-          footer_timestamp: true
-          release_body: |
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DESCRIPTION: |
             ## 📲 Installation
 
             1. Download the **Full build** below (recommended for all devices).  
@@ -101,3 +106,24 @@ jobs:
             ## 🔗 Changelog & Downloads
 
             - [View full changelog and download APK](${{ github.event.release.html_url }})
+        run: |
+          jq -n \
+            --arg content "✨ **||<@&1345079801324634195>|| NEW STABLE RELEASE!**\n\n🚀 Download now!" \
+            --arg username "N-Zik Stable" \
+            --arg avatar "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png" \
+            --arg desc "$DESCRIPTION" \
+            '{
+              content: $content,
+              username: $username,
+              avatar_url: $avatar,
+              embeds: [{
+                color: 13632401,
+                description: $desc,
+                footer: {
+                  text: "N-Zik Stable • Made by the community, for the community",
+                  icon_url: $avatar
+                }
+              }]
+            }' > payload.json
+          
+          curl -X POST -H "Content-Type: application/json" -d @payload.json $WEBHOOK_URL
