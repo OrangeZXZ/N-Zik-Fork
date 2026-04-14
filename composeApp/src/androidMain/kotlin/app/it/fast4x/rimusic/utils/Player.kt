@@ -133,15 +133,29 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
     // This will prevent UI from freezing up during conversion
     CoroutineScope( Dispatchers.Default ).launch {
         val cleanedMediaItems = mediaItems.fastMap( MediaItem::cleaned ).fastDistinctBy( MediaItem::mediaId )
+        // Use the cleaned mediaId for lookup to ensure consistent comparison
+        val targetMediaId = mediaItems.getOrNull(mediaItemIndex)?.cleaned?.mediaId
+        val foundIndex = if (targetMediaId != null) {
+            cleanedMediaItems.indexOfFirst { it.mediaId == targetMediaId }
+        } else {
+            -1
+        }
+        val newIndex = if (foundIndex >= 0) {
+            foundIndex
+        } else {
+            Timber.w("forcePlayAtIndex: target index $mediaItemIndex not found after dedup, falling back to 0")
+            0
+        }
 
         runBlocking( Dispatchers.Main ) {
-            setMediaItems( cleanedMediaItems, mediaItemIndex, C.TIME_UNSET )
+            setMediaItems( cleanedMediaItems, newIndex, C.TIME_UNSET )
             prepare()
             restoreGlobalVolume()
             playWhenReady = true
         }
     }
 }
+
 @UnstableApi
 fun Player.forcePlayFromBeginning(mediaItems: List<MediaItem>) =
     forcePlayAtIndex(mediaItems, 0)

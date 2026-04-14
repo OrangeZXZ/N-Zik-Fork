@@ -190,7 +190,7 @@ inline fun <T : Innertube.Item> ItemsPage(
                             }
                             else -> true
                         }
-                    } ?: emptyList(),
+                    }?.distinctBy { item -> "${item::class.simpleName}_${item.key.ifEmpty { System.identityHashCode(item) }}" } ?: emptyList(),
                     key = { item -> "${item::class.simpleName}_${item.key.ifEmpty { System.identityHashCode(item) }}" },
                     itemContent = itemContent
                 )
@@ -230,6 +230,7 @@ inline fun <T : Innertube.Item> ItemsPage(
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
     }
 }
+
 
 @ExperimentalAnimationApi
 @Composable
@@ -369,7 +370,7 @@ inline fun <T : Innertube.Item> ItemsGridPage(
                             }
                             else -> true
                         }
-                    } ?: emptyList(),
+                    }?.distinctBy { item -> "${item::class.simpleName}_${item.key.ifEmpty { System.identityHashCode(item) }}" } ?: emptyList(),
                     key = { item -> "${item::class.simpleName}_${item.key.ifEmpty { System.identityHashCode(item) }}" },
                     itemContent = itemContent
                 )
@@ -408,6 +409,7 @@ inline fun <T : Innertube.Item> ItemsGridPage(
         FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
     }
 }
+
 
 
 
