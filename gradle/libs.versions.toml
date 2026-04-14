@@ -3,7 +3,7 @@
 compose-plugin = "1.10.3"
 agp = "9.1.1"
 hilt = "2.59.2"
-composeMarkdownVersion = "0.7.0"
+composeMarkdownVersion = "0.7.1"
 kotlin = "2.3.20"
 kotlin-ksp = "2.3.5"
 kotlin-datetime = "0.7.1-0.6.x-compat"
