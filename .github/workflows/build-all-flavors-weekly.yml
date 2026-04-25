@@ -204,7 +204,7 @@ jobs:
         with:
           name: signed-apks
       - name: Upload built APK to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: '*.apk'
           name: v${{ needs.versioning.outputs.downstream }}-${{ needs.build_time.outputs.date }} | 🛡️ STABLE Build
