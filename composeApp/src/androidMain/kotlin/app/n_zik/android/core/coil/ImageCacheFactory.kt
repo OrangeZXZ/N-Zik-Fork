@@ -587,7 +587,7 @@ object ImageCacheFactory {
         return null
     }
 
-    fun preloadImage(thumbnailUrl: String?) {
+    suspend fun preloadImage(thumbnailUrl: String?) {
         if (thumbnailUrl.isNullOrBlank() || thumbnailUrl == "null") {
             return
         }
@@ -596,34 +596,31 @@ object ImageCacheFactory {
         val finalUrl = thumbnailUrl.thumbnail(decision.quality.size)
         // Timber.tag("ImageCache").d("URL (preload): original=%s, modified=%s", thumbnailUrl, finalUrl)
         
-        fun enqueueWithFallback(url: String) {
+        suspend fun executeWithFallback(url: String) {
             val request = ImageRequest.Builder(appContext())
                 .data(url)
-                .diskCacheKey(generateCacheKeySync(thumbnailUrl, decision.quality))
-                .memoryCacheKey(generateCacheKeySync(thumbnailUrl, decision.quality))
-                .listener(
-                    onSuccess = { _, result ->
-                        if (decision.useNetwork) {
-                            CacheMetadataStore.save(thumbnailUrl, decision.quality)
-                        }
-                    },
-                    onError = { _, result ->
-                        val errorMsg = result.throwable.message ?: ""
-                        // Timber.tag("ImageCache").e(result.throwable, "Error (preload): original=%s, modified=%s, error=%s", thumbnailUrl, url, errorMsg)
-                        if (errorMsg.contains("404") && url.contains("i.ytimg.com/vi/")) {
-                            val fallback = url.getNextYouTubeFallback()
-                            if (fallback != null) {
-                                enqueueWithFallback(fallback)
-                                return@listener
-                            }
-                        }
-                    }
-                )
+                .diskCacheKey(generateCacheKeySync(url, decision.quality))
+                .memoryCacheKey(generateCacheKeySync(url, decision.quality))
                 .build()
-            LOADER.enqueue(request)
+
+            val result = LOADER.execute(request)
+            if (result is SuccessResult) {
+                if (decision.useNetwork) {
+                    CacheMetadataStore.save(thumbnailUrl, decision.quality)
+                }
+            } else if (result is ErrorResult) {
+                val errorMsg = result.throwable.message ?: ""
+                // Timber.tag("ImageCache").e(result.throwable, "Error (preload): original=%s, modified=%s, error=%s", thumbnailUrl, url, errorMsg)
+                if (errorMsg.contains("404") && url.contains("i.ytimg.com/vi/")) {
+                    val fallback = url.getNextYouTubeFallback()
+                    if (fallback != null) {
+                        executeWithFallback(fallback)
+                    }
+                }
+            }
         }
         
-        if (finalUrl != null) enqueueWithFallback(finalUrl)
+        if (finalUrl != null) executeWithFallback(finalUrl)
     }
 
     fun isImageCached(thumbnailUrl: String?): Boolean = CacheMetadataStore.get(thumbnailUrl ?: "") != null

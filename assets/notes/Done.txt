@@ -6,4 +6,4 @@ Fix queue drag-and-drop flicker
 Add localized toast notifications in queue screen
 Add queue scroll state persistence
 Add setting to toggle queue scroll state persistence (with localization)
-Smart queue scroll behavior (persistence or scroll to now playing)
+Smart queue scroll behavior (persistence or scroll to now playing)Fix missing cover art in offline mode (Issue #399)
