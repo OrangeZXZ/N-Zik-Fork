@@ -52,6 +52,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.glance.layout.Box
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
@@ -63,6 +64,7 @@ import app.it.fast4x.compose.persist.persistList
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.it.fast4x.rimusic.binder
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.enums.QueueLoopType
 import app.it.fast4x.rimusic.enums.QueueType
@@ -92,6 +94,7 @@ import app.it.fast4x.rimusic.utils.queueTypeKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.shouldBePlaying
 import app.it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
+import app.it.fast4x.rimusic.utils.windows
 import app.kreate.android.me.knighthat.component.SongItem
 import app.kreate.android.me.knighthat.component.tab.ExportSongsToCSVDialog
 import app.kreate.android.me.knighthat.component.tab.ItemSelector
@@ -121,6 +124,7 @@ fun Queue(
     // Essentials
     val context = LocalContext.current
     val windowInsets = WindowInsets.systemBars
+    val binder = LocalPlayerServiceBinder.current
     val player = binder?.player ?: return
     val coroutineScope = rememberCoroutineScope()
     val hapticFeedback = LocalHapticFeedback.current
@@ -128,10 +132,10 @@ fun Queue(
     val rippleIndication = ripple(bounded = false)
 
     Box( Modifier.fillMaxSize() ) {
-        var items by remember(player.currentTimeline) {
+        var items by remember {
             mutableStateOf(player.currentTimeline.mediaItems.map( MediaItem::asSong ))
         }
-        var windowsInQueue by remember(player.currentTimeline) {
+        var windowsInQueue by remember {
             mutableStateOf(player.currentTimeline.windows)
         }
         var isDragging by remember { mutableStateOf(false) }
@@ -148,7 +152,6 @@ fun Queue(
             }
         }
         var itemsOnDisplay by persistList<Song>( "queue/on_display" )
-        var windowsOnDisplay by remember { mutableStateOf(windowsInQueue) }
 
         val lazyListState = rememberLazyListState()
         val reorderableLazyListState = rememberReorderableLazyListState(
@@ -194,8 +197,11 @@ fun Queue(
         fun getSongs() = itemSelector.ifEmpty { items }
 
         val search = Search(lazyListState)
-        LaunchedEffect( windowsInQueue, search.inputValue ) {
-            windowsInQueue.filter {
+        val windowsOnDisplay = remember(windowsInQueue, search.inputValue) {
+            if (search.inputValue.isEmpty()) {
+                windowsInQueue
+            } else {
+                windowsInQueue.filter {
                     val song = it.mediaItem.asSong
                     // Without cleaning, user can search explicit songs with "e:"
                     // I kinda want this to be a feature, but it seems unnecessary
@@ -204,10 +210,11 @@ fun Queue(
 
                     containsTitle || containsArtist
                 }
-                .let {
-                    windowsOnDisplay = it
-                    itemsOnDisplay = it.map { win -> win.mediaItem.asSong }
-                }
+            }
+        }
+
+        LaunchedEffect(windowsOnDisplay) {
+            itemsOnDisplay = windowsOnDisplay.map { win -> win.mediaItem.asSong }
         }
 
         val plistName = remember { mutableStateOf("") }
