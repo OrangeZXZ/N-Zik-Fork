@@ -367,7 +367,7 @@ fun Queue(
                                         try {
                                             player.removeMediaItem( actualIndex )
                                             Toaster.s(
-                                                "${context.resources.getString(R.string.deleted)} ${song.cleanTitle()}"
+                                                context.resources.getString(R.string.deleted_item, song.cleanTitle())
                                             )
                                         } catch (e: IllegalArgumentException) {
                                             // Media item may have already been removed or index is invalid
