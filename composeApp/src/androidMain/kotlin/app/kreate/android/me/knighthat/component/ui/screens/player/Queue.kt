@@ -10,10 +10,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.media3.exoplayer.ExoPlayer
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.media3.common.Player
 import app.kreate.android.R
-import app.it.fast4x.compose.reordering.ReorderingState
 import app.it.fast4x.rimusic.enums.QueueLoopType
+import kotlinx.coroutines.CoroutineScope
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.ConfirmDialog
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.DynamicColor
@@ -80,8 +81,9 @@ class Repeat private constructor(
 @SuppressLint("ComposableNaming")
 @Composable
 fun ShuffleQueue(
-    player: ExoPlayer,
-    reorderingState: ReorderingState
+    player: Player,
+    lazyListState: LazyListState,
+    coroutineScope: CoroutineScope
 ): MenuIcon = object: MenuIcon, Descriptive {
     override val iconId: Int = R.drawable.shuffle
     override val messageId: Int = R.string.shuffle
@@ -90,8 +92,8 @@ fun ShuffleQueue(
         get() = stringResource( messageId )
 
     override fun onShortClick() {
-        reorderingState.coroutineScope.launch {
-            reorderingState.lazyListState.smoothScrollToTop()
+        coroutineScope.launch {
+            lazyListState.smoothScrollToTop()
         }.invokeOnCompletion {
             player.shuffleQueue()
         }

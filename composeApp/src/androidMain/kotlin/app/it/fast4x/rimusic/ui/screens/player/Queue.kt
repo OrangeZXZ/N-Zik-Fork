@@ -37,12 +37,15 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
@@ -57,9 +60,8 @@ import app.kreate.android.R
 import com.valentinilk.shimmer.shimmer
 import app.it.fast4x.compose.persist.persist
 import app.it.fast4x.compose.persist.persistList
-import app.it.fast4x.compose.reordering.draggedItem
-import app.it.fast4x.compose.reordering.rememberReorderingState
-import app.it.fast4x.compose.reordering.reorder
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.enums.QueueLoopType
@@ -119,8 +121,9 @@ fun Queue(
     // Essentials
     val context = LocalContext.current
     val windowInsets = WindowInsets.systemBars
-    val binder = LocalPlayerServiceBinder.current
     val player = binder?.player ?: return
+    val coroutineScope = rememberCoroutineScope()
+    val hapticFeedback = LocalHapticFeedback.current
 
     val rippleIndication = ripple(bounded = false)
 
@@ -128,22 +131,56 @@ fun Queue(
         var items by remember(player.currentTimeline) {
             mutableStateOf(player.currentTimeline.mediaItems.map( MediaItem::asSong ))
         }
+        var windowsInQueue by remember(player.currentTimeline) {
+            mutableStateOf(player.currentTimeline.windows)
+        }
+        var isDragging by remember { mutableStateOf(false) }
+        var dragInfo by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+
         player.DisposableListener {
             object : Player.Listener {
                 override fun onTimelineChanged(timeline: Timeline, reason: Int) {
-                    items = player.currentTimeline.mediaItems.map( MediaItem::asSong )
+                    if (!isDragging) {
+                        items = timeline.mediaItems.map( MediaItem::asSong )
+                        windowsInQueue = timeline.windows
+                    }
                 }
             }
         }
         var itemsOnDisplay by persistList<Song>( "queue/on_display" )
+        var windowsOnDisplay by remember { mutableStateOf(windowsInQueue) }
 
         val lazyListState = rememberLazyListState()
-        val reorderingState = rememberReorderingState(
+        val reorderableLazyListState = rememberReorderableLazyListState(
             lazyListState = lazyListState,
-            key = items,
-            onDragEnd = player::moveMediaItem,
-            extraItemCount = 0
-        )
+        ) { from, to ->
+            val fromIndex = windowsInQueue.indexOfFirst { it.uid.toString() == from.key }
+            val toIndex = windowsInQueue.indexOfFirst { it.uid.toString() == to.key }
+
+            if (fromIndex != -1 && toIndex != -1) {
+                windowsInQueue = windowsInQueue.toMutableList().apply {
+                    val currentDragInfo = dragInfo
+                    dragInfo = if (currentDragInfo == null)
+                        fromIndex to toIndex
+                    else currentDragInfo.first to toIndex
+
+                    val item = removeAt(fromIndex)
+                    add(toIndex, item)
+                }
+            }
+        }
+
+        LaunchedEffect(reorderableLazyListState.isAnyItemDragging) {
+            if (reorderableLazyListState.isAnyItemDragging) {
+                isDragging = true
+            } else {
+                dragInfo?.let { (from, to) ->
+                    player.moveMediaItem(from, to)
+                    dragInfo = null
+                }
+                isDragging = false
+            }
+        }
 
         val positionLock = remember { PositionLock() }
 
@@ -157,16 +194,20 @@ fun Queue(
         fun getSongs() = itemSelector.ifEmpty { items }
 
         val search = Search(lazyListState)
-        LaunchedEffect( items, search.inputValue ) {
-            items.filter {
+        LaunchedEffect( windowsInQueue, search.inputValue ) {
+            windowsInQueue.filter {
+                    val song = it.mediaItem.asSong
                     // Without cleaning, user can search explicit songs with "e:"
                     // I kinda want this to be a feature, but it seems unnecessary
-                    val containsTitle = it.cleanTitle().contains( search.inputValue, true )
-                    val containsArtist = it.cleanArtistsText().contains( search.inputValue, true )
+                    val containsTitle = song.cleanTitle().contains( search.inputValue, true )
+                    val containsArtist = song.cleanArtistsText().contains( search.inputValue, true )
 
                     containsTitle || containsArtist
                 }
-                .let { itemsOnDisplay = it }
+                .let {
+                    windowsOnDisplay = it
+                    itemsOnDisplay = it.map { win -> win.mediaItem.asSong }
+                }
         }
 
         val plistName = remember { mutableStateOf("") }
@@ -174,7 +215,7 @@ fun Queue(
             playlistName = plistName.value,
             songs = ::getSongs
         )
-        val shuffle = ShuffleQueue( player, reorderingState )
+        val shuffle = ShuffleQueue( player, lazyListState, coroutineScope )
         val discover = Discover( onDiscoverClick )
         val repeat = Repeat.init()
         val deleteDialog = DeleteFromQueue {
@@ -219,7 +260,7 @@ fun Queue(
             val itemBackground = if ( queueType == QueueType.Modern ) androidx.compose.ui.graphics.Color.Transparent else colorPalette().background0
 
             LazyColumn(
-                state = reorderingState.lazyListState,
+                state = lazyListState,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 contentPadding = windowInsets
                     .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
@@ -232,136 +273,144 @@ fun Queue(
 
             ) {
                 itemsIndexed(
-                    items = itemsOnDisplay,
-                    key = { index, song -> "${song.id}-$index" }
-                ) { index, song ->
+                    items = windowsOnDisplay,
+                    key = { _, window -> window.uid.toString() }
+                ) { _, window ->
+                    val song = window.mediaItem.asSong
+                    val index = windowsInQueue.indexOf(window)
 
                     val isLocal by remember { derivedStateOf { song.isLocal } }
                     val isDownloaded = isLocal || isDownloadedSong(song.id)
 
-                    Box(
-                        modifier = Modifier.fillMaxWidth()
-                                           .draggedItem(
-                                               reorderingState = reorderingState,
-                                               index = index
-                                           )
-                    ) {
-                        // Drag anchor
-                        if ( !positionLock.isLocked() ) {
-                            Box(
-                                modifier = Modifier.padding( end = 16.dp ) // Accommodate horizontal padding of SongItem
-                                    .size( 24.dp )
-                                    .zIndex( 2f )
-                                    .align( Alignment.CenterEnd ),
-                                contentAlignment = Alignment.Center
-                            ) {
+                    ReorderableItem(
+                        reorderableLazyListState,
+                        key = window.uid.toString()
+                    ) { isDraggingItem ->
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                                               .animateItem()
+                        ) {
+                            // Drag anchor
+                            if ( !positionLock.isLocked() && search.inputValue.isEmpty() ) {
+                                Box(
+                                    modifier = Modifier.padding( end = 16.dp ) // Accommodate horizontal padding of SongItem
+                                        .size( 24.dp )
+                                        .zIndex( 2f )
+                                        .align( Alignment.CenterEnd )
+                                        .draggableHandle(
+                                            onDragStarted = {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            },
+                                            onDragStopped = {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            }
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
 
-                                IconButton(
-                                    icon = R.drawable.reorder,
-                                    color = colorPalette().textDisabled,
-                                    indication = rippleIndication,
-                                    onClick = {},
-                                    modifier = Modifier.reorder(
-                                        reorderingState = reorderingState,
-                                        index = index
+                                    IconButton(
+                                        icon = R.drawable.reorder,
+                                        color = if (isDraggingItem) colorPalette().accent else colorPalette().textDisabled,
+                                        indication = rippleIndication,
+                                        onClick = {},
                                     )
-                                )
+                                }
                             }
-                        }
 
-                        val mediaItem = song.asMediaItem
-                        SwipeableQueueItem(
-                            mediaItem = mediaItem,
-                            backgroundColor = itemBackground,
-                            onPlayNext = {
-                                val currentIndex = binder.player.currentMediaItemIndex
-                                val targetIndex = currentIndex + 1
-                                // if the song is already after the current, do nothing
-                                if (index > currentIndex) {
-                                     // Only move if not already in the next position
-                                    if (index != targetIndex) {
+                            val mediaItem = song.asMediaItem
+                            SwipeableQueueItem(
+                                mediaItem = mediaItem,
+                                backgroundColor = itemBackground,
+                                onPlayNext = {
+                                    val currentIndex = binder.player.currentMediaItemIndex
+                                    val targetIndex = currentIndex + 1
+                                    // if the song is already after the current, do nothing
+                                    if (index > currentIndex) {
+                                         // Only move if not already in the next position
+                                         if (index != targetIndex) {
+                                            binder.player.moveMediaItem(index, targetIndex)
+                                        }
+                                    } else {
+                                        // If it's before or in the current position, move it to the next
                                         binder.player.moveMediaItem(index, targetIndex)
                                     }
-                                } else {
-                                    // If it's before or in the current position, move it to the next
-                                    binder.player.moveMediaItem(index, targetIndex)
-                                }
-                            },
-                            onDownload = {
-                                binder.cache.removeResource(song.id)
-                                if (!isLocal)
-                                    manageDownload(
-                                        context = context,
-                                        mediaItem = mediaItem,
-                                        downloadState = isDownloaded
-                                    )
-                            },
-                            onRemoveFromQueue = {
-                                /*
-                                     Compose gotcha here, variables passed into this
-                                     block will be held through recomposition.
-
-                                     Meaning, if index at initialization is 0
-                                     then 0 will stay here through recomposition.
-
-                                     To bypass it, pass another function that requires
-                                     computation to extract data.
-                                 */
-                                val actualIndex = player.findMediaItemIndexById( song.id )
-                                if (actualIndex >= 0 && actualIndex < player.mediaItemCount) {
-                                    try {
-                                        player.removeMediaItem( actualIndex )
-                                        Toaster.s(
-                                            "${context.resources.getString(R.string.deleted)} ${song.cleanTitle()}"
+                                },
+                                onDownload = {
+                                    binder.cache.removeResource(song.id)
+                                    if (!isLocal)
+                                        manageDownload(
+                                            context = context,
+                                            mediaItem = mediaItem,
+                                            downloadState = isDownloaded
                                         )
-                                    } catch (e: IllegalArgumentException) {
-                                        // Media item may have already been removed or index is invalid
-                                        Timber.e(e, "Failed to remove media item at index $actualIndex")
+                                },
+                                onRemoveFromQueue = {
+                                    /*
+                                         Compose gotcha here, variables passed into this
+                                         block will be held through recomposition.
+
+                                         Meaning, if index at initialization is 0
+                                         then 0 will stay here through recomposition.
+
+                                         To bypass it, pass another function that requires
+                                         computation to extract data.
+                                     */
+                                    val actualIndex = player.findMediaItemIndexById( song.id )
+                                    if (actualIndex >= 0 && actualIndex < player.mediaItemCount) {
+                                        try {
+                                            player.removeMediaItem( actualIndex )
+                                            Toaster.s(
+                                                "${context.resources.getString(R.string.deleted)} ${song.cleanTitle()}"
+                                            )
+                                        } catch (e: IllegalArgumentException) {
+                                            // Media item may have already been removed or index is invalid
+                                            Timber.e(e, "Failed to remove media item at index $actualIndex")
+                                        }
                                     }
+                                },
+                                onEnqueue = {
+                                    binder.player.enqueue(
+                                        mediaItem,
+                                        context
+                                    )
                                 }
-                            },
-                            onEnqueue = {
-                                binder.player.enqueue(
-                                    mediaItem,
-                                    context
+                            ) {
+                                SongItem(
+                                    song = song,
+                                    itemSelector = itemSelector,
+                                    navController = navController,
+                                    backgroundColor = itemBackground,
+                                    trailingContent = {
+                                        if( !positionLock.isLocked() )
+                                        // Create a fake box to store drag anchor and checkbox
+                                            Box( Modifier.width( 24.dp ) )
+                                    },
+                                    onClick = {
+                                        if( player.isNowPlaying(song.id) ) {
+                                            if(player.shouldBePlaying)
+                                                player.pause()
+                                            else
+                                                player.play()
+                                        } else {
+                                            player.seekToDefaultPosition(index)
+                                            player.prepare()
+                                            player.playWhenReady = true
+                                        }
+
+                                        /*
+                                            Due to the small size of checkboxes,
+                                            we shouldn't disable [itemSelector]
+                                         */
+
+                                        search.hideIfEmpty()
+                                    }
                                 )
                             }
-                        ) {
-                            SongItem(
-                                song = song,
-                                itemSelector = itemSelector,
-                                navController = navController,
-                                backgroundColor = itemBackground,
-                                trailingContent = {
-                                    if( !positionLock.isLocked() )
-                                    // Create a fake box to store drag anchor and checkbox
-                                        Box( Modifier.width( 24.dp ) )
-                                },
-                                onClick = {
-                                    if( player.isNowPlaying(song.id) ) {
-                                        if(player.shouldBePlaying)
-                                            player.pause()
-                                        else
-                                            player.play()
-                                    } else {
-                                        player.seekToDefaultPosition(index)
-                                        player.prepare()
-                                        player.playWhenReady = true
-                                    }
-
-                                    /*
-                                        Due to the small size of checkboxes,
-                                        we shouldn't disable [itemSelector]
-                                     */
-
-                                    search.hideIfEmpty()
-                                }
-                            )
                         }
                     }
                 }
 
-                if( binder.isLoadingRadio )
+                if( binder.isLoadingRadio ) {
                     item {
                         Column( Modifier.shimmer() ) {
                             repeat(3) { index ->
@@ -369,6 +418,7 @@ fun Queue(
                             }
                         }
                     }
+                }
             }
 
             // Search box
@@ -462,7 +512,7 @@ fun Queue(
         }
 
         FloatingActionsContainerWithScrollToTop(
-            lazyListState = reorderingState.lazyListState,
+            lazyListState = lazyListState,
             modifier = Modifier.padding(bottom = Dimensions.miniPlayerHeight)
         )
     }

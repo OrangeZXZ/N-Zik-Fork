@@ -243,6 +243,7 @@ dependencies {
     implementation(libs.hypnoticcanvas)
     implementation(libs.hypnoticcanvas.shaders)
     implementation(libs.github.jeziellago.compose.markdown)
+    implementation(libs.compose.reorderable)
 
     implementation(libs.room)
     add("kspAndroid", libs.room.compiler)

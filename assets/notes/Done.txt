@@ -1,2 +1,4 @@
 Stacked download notification
 Translated download notification
+Fix duplicate items in search results
+Fix queue index after de-duplication
