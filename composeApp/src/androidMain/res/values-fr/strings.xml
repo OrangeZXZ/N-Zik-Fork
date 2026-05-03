@@ -1086,5 +1086,5 @@ Volume BAS : titre précédent</string>
   <string name="download_progress">%1$d / %2$d</string>
   <string name="download_completed">%1$d terminé</string>
   <string name="download_completed_with_failed">%1$d terminé, %2$d a échoué</string>
-  <string name="deleted_item">%1$s deleted</string>
+  <string name="deleted_item">%1$s supprimé</string>
 </resources>
