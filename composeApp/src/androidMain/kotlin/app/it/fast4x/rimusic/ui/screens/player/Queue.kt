@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
@@ -61,6 +62,7 @@ import app.kreate.android.R
 import com.valentinilk.shimmer.shimmer
 import app.it.fast4x.compose.persist.persist
 import app.it.fast4x.compose.persist.persistList
+import app.it.fast4x.compose.persist.persistMap
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder
@@ -92,6 +94,7 @@ import app.it.fast4x.rimusic.utils.manageDownload
 import app.it.fast4x.rimusic.utils.mediaItems
 import app.it.fast4x.rimusic.utils.queueTypeKey
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.rememberQueueScrollPositionKey
 import app.it.fast4x.rimusic.utils.shouldBePlaying
 import app.it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
 import app.it.fast4x.rimusic.utils.windows
@@ -153,7 +156,15 @@ fun Queue(
         }
         var itemsOnDisplay by persistList<Song>( "queue/on_display" )
 
-        val lazyListState = rememberLazyListState()
+        val rememberQueueScrollPosition by rememberPreference(rememberQueueScrollPositionKey, true)
+        val lazyListState = if (rememberQueueScrollPosition) {
+            remember {
+                context.persistMap?.getOrPut("queue/scroll_state") { LazyListState() } as? LazyListState ?: LazyListState()
+            }
+        } else {
+            rememberLazyListState(initialFirstVisibleItemIndex = binder.player.currentMediaItemIndex.coerceAtLeast(0))
+        }
+
         val reorderableLazyListState = rememberReorderableLazyListState(
             lazyListState = lazyListState,
         ) { from, to ->

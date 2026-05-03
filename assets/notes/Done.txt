@@ -4,3 +4,6 @@ Fix duplicate items in search results
 Fix queue index after de-duplication
 Fix queue drag-and-drop flicker
 Add localized toast notifications in queue screen
+Add queue scroll state persistence
+Add setting to toggle queue scroll state persistence (with localization)
+Smart queue scroll behavior (persistence or scroll to now playing)

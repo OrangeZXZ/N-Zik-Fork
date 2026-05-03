@@ -203,7 +203,12 @@ class Search private constructor(
                 focusManager.clearFocus()
             }
         }
+        val isFirstRun = remember { mutableStateOf(true) }
         LaunchedEffect( input ) {
+            if (isFirstRun.value) {
+                isFirstRun.value = false
+                return@LaunchedEffect
+            }
             lazyListState?.scrollToItem( 0, 0 )
             lazyGridState?.scrollToItem( 0, 0 )
         }

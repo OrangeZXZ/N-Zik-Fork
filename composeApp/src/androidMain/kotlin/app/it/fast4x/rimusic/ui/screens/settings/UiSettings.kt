@@ -164,6 +164,7 @@ import app.it.fast4x.rimusic.utils.queueSwipeRightActionKey
 import app.it.fast4x.rimusic.utils.queueTypeKey
 
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.rememberQueueScrollPositionKey
 import app.it.fast4x.rimusic.utils.resumePlaybackOnStartKey
 import app.it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import app.it.fast4x.rimusic.utils.shakeEventEnabledKey
@@ -516,6 +517,8 @@ fun DefaultUiSettings() {
     visualizerEnabled = false
     var showthumbnail by rememberPreference(showthumbnailKey, true)
     showthumbnail = true
+    var rememberQueueScrollPosition by rememberPreference(rememberQueueScrollPositionKey, true)
+    rememberQueueScrollPosition = true
     var searchDisplayOrder by rememberPreference(searchDisplayOrderKey, SearchDisplayOrder.SuggestionsFirst)
     searchDisplayOrder = SearchDisplayOrder.SuggestionsFirst
 }
@@ -1306,6 +1309,17 @@ fun UiSettings(
                             isChecked = showFloatingIcon,
                             onCheckedChange = { showFloatingIcon = it },
                             icon = R.drawable.maximize
+                        )
+                    }
+
+                    var rememberQueueScrollPosition by rememberPreference(rememberQueueScrollPositionKey, true)
+                    if (search.inputValue.isBlank() || stringResource(R.string.remember_queue_scroll_position).contains(search.inputValue,true)) {
+                        OtherSwitchSettingEntry(
+                            title = stringResource(R.string.remember_queue_scroll_position),
+                            text = stringResource(R.string.remember_queue_scroll_position_description),
+                            isChecked = rememberQueueScrollPosition,
+                            onCheckedChange = { rememberQueueScrollPosition = it },
+                            icon = R.drawable.reorder
                         )
                     }
 
