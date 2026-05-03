@@ -106,7 +106,7 @@
   <string name="persistent_queue">Persistent player</string>
   <string name="remember_queue_scroll_position">Remember queue scroll position</string>
   <string name="remember_queue_scroll_position_description">Keep the scroll position when closing and reopening the player queue</string>
-  <string name="save_and_restore_playing_songs">Save and restore playing songs</string>
+  <string name="save_and_restore_playing_songs">Сачувај и врати песме за пуштање</string>
   <string name="resume_playback">Настави плејбек</string>
   <string name="when_device_is_connected">Када је повезан жични или блутут уређај</string>
   <string name="skip_silence">Прескочи тишину</string>

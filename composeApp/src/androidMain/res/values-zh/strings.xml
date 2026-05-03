@@ -103,9 +103,9 @@
   <string name="invincible_service">Invincible service</string>
   <string name="turning_off_battery_optimizations_is_not_enough">在关闭电池优化功能仍不够的时候</string>
   <string name="player">播放器</string>
-  <string name="persistent_queue">Persistent player</string>
-  <string name="remember_queue_scroll_position">Remember queue scroll position</string>
-  <string name="remember_queue_scroll_position_description">Keep the scroll position when closing and reopening the player queue</string>
+  <string name="persistent_queue">持续播放器</string>
+  <string name="remember_queue_scroll_position">记住队列滚动位置</string>
+  <string name="remember_queue_scroll_position_description">关闭和重新打开播放队列时保持滚动位置</string>
   <string name="save_and_restore_playing_songs">保存并恢复播放的歌曲</string>
   <string name="resume_playback">恢复播放</string>
   <string name="when_device_is_connected">当有线或蓝牙设备连接时</string>
@@ -1084,5 +1084,5 @@
   <string name="download_progress">%1$d / %2$d</string>
   <string name="download_completed">%1$d 完成</string>
   <string name="download_completed_with_failed">%1$d 已完成， %2$d 失败</string>
-  <string name="deleted_item">%1$s deleted</string>
+  <string name="deleted_item">%1$s 已删除</string>
 </resources>
