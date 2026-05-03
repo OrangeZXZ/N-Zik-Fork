@@ -170,8 +170,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.bush.translator.Language
-import me.bush.translator.Translator
+import dev.rebelonion.translator.Language
+import dev.rebelonion.translator.Translator
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import kotlin.Float.Companion.POSITIVE_INFINITY
@@ -327,7 +327,7 @@ fun Lyrics(
 
         var languageDestination = languageDestination(otherLanguageApp)
 
-        val translator = Translator(NetworkClientFactory.getKtorClient())
+        val translator = remember { Translator(NetworkClientFactory.getClient()) }
 
         var copyToClipboard by remember {
             mutableStateOf(false)
@@ -394,7 +394,7 @@ fun Lyrics(
         }
 
         fun translateLyricsWithRomanization(output: MutableState<String>, textToTranslate: String, isSync: Boolean, destinationLanguage: Language = Language.AUTO) = @Composable{
-            LaunchedEffect(showSecondLine, romanization, textToTranslate, destinationLanguage){
+            LaunchedEffect(showSecondLine, romanization, textToTranslate, destinationLanguage, translateEnabled){
                 var destLanguage = destinationLanguage
                 val result = withContext(Dispatchers.IO) {
                     try {

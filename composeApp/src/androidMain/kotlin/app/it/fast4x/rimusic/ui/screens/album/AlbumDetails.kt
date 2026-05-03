@@ -105,8 +105,6 @@ import app.it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.withContext
-import me.bush.translator.Language
-import me.bush.translator.Translator
 import app.kreate.android.me.knighthat.component.SongItem
 import app.kreate.android.me.knighthat.component.album.AlbumModifier
 import app.kreate.android.me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
@@ -118,6 +116,8 @@ import app.kreate.android.me.knighthat.component.tab.SongShuffler
 import app.kreate.android.me.knighthat.component.ui.screens.DynamicOrientationLayout
 import app.kreate.android.me.knighthat.component.ui.screens.album.AlbumBookmark
 import app.kreate.android.me.knighthat.component.ui.screens.album.Translate
+import dev.rebelonion.translator.Language
+import dev.rebelonion.translator.Translator
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -227,7 +227,7 @@ fun AlbumDetails(
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Translator">
     val translate = Translate.init()
-    val translator = Translator(NetworkClientFactory.getKtorClient())
+    val translator = Translator(NetworkClientFactory.getClient())
     val languageDestination = languageDestination()
     //</editor-fold>
 

@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import app.kreate.android.R
 import app.it.fast4x.rimusic.enums.Languages
-import me.bush.translator.Language
+import dev.rebelonion.translator.Language
 
 
 @Composable

@@ -105,8 +105,8 @@ import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import me.bush.translator.Language
-import me.bush.translator.Translator
+import dev.rebelonion.translator.Language
+import dev.rebelonion.translator.Translator
 import app.kreate.android.me.knighthat.component.SongItem
 import app.kreate.android.me.knighthat.component.artist.FollowButton
 import app.kreate.android.me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
@@ -190,7 +190,7 @@ fun ArtistDetails(
 
     //<editor-fold defaultstate="collapsed" desc="Translator">
     val translate = Translate.init()
-    val translator = Translator(NetworkClientFactory.getKtorClient())
+    val translator = Translator(NetworkClientFactory.getClient())
     val languageDestination = languageDestination()
     //</editor-fold>
 
