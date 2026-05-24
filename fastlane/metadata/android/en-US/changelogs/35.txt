@@ -1,0 +1,3 @@
+Fixed:
+- Fix critical crash with exoplayer, and updated streaming url to avoid getting blocked by youtube
+- Fix sync lyrics being out of sync with the music
