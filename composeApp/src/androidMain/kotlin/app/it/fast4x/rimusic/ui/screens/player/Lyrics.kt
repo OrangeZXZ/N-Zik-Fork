@@ -327,7 +327,7 @@ fun Lyrics(
 
         var languageDestination = languageDestination(otherLanguageApp)
 
-        val translator = remember { Translator(NetworkClientFactory.getClient()) }
+        val translator = remember { Translator(NetworkClientFactory.getTranslatorClient()) }
 
         var copyToClipboard by remember {
             mutableStateOf(false)

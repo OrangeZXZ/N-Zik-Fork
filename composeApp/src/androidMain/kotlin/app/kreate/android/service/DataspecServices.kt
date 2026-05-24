@@ -16,6 +16,11 @@ import app.kreate.android.utils.CharUtils
 import com.google.gson.Gson
 import com.grack.nanojson.JsonObject
 import io.ktor.client.statement.bodyAsText
+import java.net.URL
+import java.net.HttpURLConnection
+import app.n_zik.android.core.network.NetworkClientFactory
+import io.ktor.client.request.head
+import io.ktor.http.isSuccess
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.Innertube.createPoTokenChallenge
 import it.fast4x.innertube.models.PlayerResponse
@@ -48,6 +53,7 @@ import org.schabi.newpipe.extractor.services.youtube.PoTokenResult
 import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager
 import org.schabi.newpipe.extractor.services.youtube.YoutubeStreamHelper
 import java.net.UnknownHostException
+import timber.log.Timber
 
 private const val CHUNK_LENGTH = 512 * 1024L     // 512Kb
 
@@ -166,7 +172,6 @@ private fun extractFormat(
 @UnstableApi
 private fun getFormatUrl(
     videoId: String,
-    cpn: String,
     responseJson: JsonObject,
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean,
@@ -177,27 +182,44 @@ private fun getFormatUrl(
     checkPlayability( playerResponse.playabilityStatus )
 
     val format = extractFormat( playerResponse.streamingData, audioQualityFormat, connectionMetered )
+    val url = format?.url
+
+    if (url.isNullOrEmpty()) {
+        throw UnplayableException()
+    }
+
     format?.let {
         CoroutineScope( Threads.DATASPEC_DISPATCHER ).launch { upsertSongFormat( videoId, it ) }
     }
 
-    return YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, format?.url.orEmpty() )
+    return YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated( videoId, url )
                                          .toUri()
                                          .buildUpon()
                                          .appendQueryParameter( "range", "0-${format?.contentLength ?: 1_000_000}" )
-                                         .appendQueryParameter( "cpn", cpn )
                                          .build()
 }
 
 @UnstableApi
-fun getAndroidReelFormatUrl(
+suspend fun getAndroidReelFormatUrl(
     videoId: String,
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
 ): Uri {
     val cpn = CharUtils.randomString( 16 )
-    val response = YoutubeStreamHelper.getAndroidReelPlayerResponse( ContentCountry.DEFAULT, Localization.DEFAULT, videoId, cpn )
-    return getFormatUrl( videoId, cpn, response, audioQualityFormat, connectionMetered )
+    
+    val country = java.util.Locale.getDefault().country.takeIf { it.isNotEmpty() } ?: "GB"
+    val language = java.util.Locale.getDefault().language.takeIf { it.isNotEmpty() } ?: "en"
+    val contentCountry = ContentCountry(country)
+    val localization = Localization(language)
+    
+    val response = YoutubeStreamHelper.getAndroidReelPlayerResponse( contentCountry, localization, videoId, cpn )
+    val uriWithoutCpn = getFormatUrl( videoId, response, audioQualityFormat, connectionMetered )
+    
+    if (!NetworkClientFactory.validateStreamUrl(uriWithoutCpn.toString())) {
+        throw UnplayableException()
+    }
+    
+    return uriWithoutCpn.buildUpon().appendQueryParameter("cpn", cpn).build()
 }
 
 private fun String.getPoToken(): String? =
@@ -228,10 +250,24 @@ suspend fun getIosFormatUrl(
     val visitorData = Store.getIosVisitorData()
     val playerRequestToken = generateIosPoToken().orEmpty()
     val poTokenResult = PoTokenResult(visitorData, playerRequestToken, null )
-    val response = YoutubeStreamHelper.getIosPlayerResponse( ContentCountry.DEFAULT, Localization.DEFAULT, videoId, cpn, poTokenResult )
-    return getFormatUrl( videoId, cpn, response, audioQualityFormat, connectionMetered )
+    
+    val country = java.util.Locale.getDefault().country.takeIf { it.isNotEmpty() } ?: "GB"
+    val language = java.util.Locale.getDefault().language.takeIf { it.isNotEmpty() } ?: "en"
+    val contentCountry = ContentCountry(country)
+    val localization = Localization(language)
+    
+    val response = YoutubeStreamHelper.getIosPlayerResponse( contentCountry, localization, videoId, cpn, poTokenResult )
+    val uriWithoutCpn = getFormatUrl( videoId, response, audioQualityFormat, connectionMetered )
+    
+    if (!NetworkClientFactory.validateStreamUrl(uriWithoutCpn.toString())) {
+        throw UnplayableException()
+    }
+    
+    return uriWithoutCpn.buildUpon().appendQueryParameter("cpn", cpn).build()
 }
 //</editor-fold>
+
+private val formatCache = mutableMapOf<String, Uri>()
 
 @UnstableApi
 fun DataSpec.process(
@@ -239,16 +275,48 @@ fun DataSpec.process(
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
 ): DataSpec = runBlocking( Dispatchers.IO ) {
-    val formatUri = runBlocking( Dispatchers.IO ) {
-        try {
-            getAndroidReelFormatUrl( videoId, audioQualityFormat, connectionMetered )
-        } catch ( e: Exception ) {
-            when( e ) {
-                is LoginRequiredException,
-                is UnplayableException -> getIosFormatUrl( videoId, audioQualityFormat, connectionMetered )
-                else -> throw e
+    var formatUri = formatCache[videoId]
+
+    if (formatUri != null) {
+        val expireTime = formatUri.getQueryParameter("expire")?.toLongOrNull()?.times(1000)
+        if (expireTime != null && System.currentTimeMillis() >= expireTime - 30_000) {
+            formatCache.remove(videoId)
+            formatUri = null
+        }
+    }
+
+    if (formatUri == null) {
+        var retries = 0
+        var successUri: Uri? = null
+        var lastException: Exception? = null
+
+        while (retries < 3 && successUri == null) {
+            try {
+                successUri = try {
+                    getAndroidReelFormatUrl( videoId, audioQualityFormat, connectionMetered )
+                } catch ( e: Exception ) {
+                    when( e ) {
+                        is LoginRequiredException,
+                        is UnplayableException -> getIosFormatUrl( videoId, audioQualityFormat, connectionMetered )
+                        else -> throw e
+                    }
+                }
+            } catch (e: UnplayableException) {
+                lastException = e
+                retries++
+                Timber.w("Stream extraction failed on attempt $retries for $videoId, retrying...")
+                if (retries < 3) {
+                    kotlinx.coroutines.delay(500) // small delay before retrying
+                }
             }
         }
+
+        if (successUri == null) {
+            throw lastException ?: UnplayableException()
+        }
+
+        formatUri = successUri
+        formatCache[videoId] = formatUri
     }
 
     withUri( formatUri ).subrange( uriPositionOffset )

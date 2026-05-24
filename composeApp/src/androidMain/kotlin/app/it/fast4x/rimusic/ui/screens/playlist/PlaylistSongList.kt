@@ -237,7 +237,7 @@ fun PlaylistSongList(
         mutableStateOf(false)
     }
 
-    val translator = Translator(NetworkClientFactory.getClient())
+    val translator = Translator(NetworkClientFactory.getTranslatorClient())
     val languageDestination = languageDestination()
 
     val localPlaylist by remember( saveCheck ) {

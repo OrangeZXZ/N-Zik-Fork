@@ -4,6 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import timber.log.Timber
 import java.io.File
 import java.net.Proxy
 import java.util.concurrent.TimeUnit
@@ -74,6 +75,17 @@ object NetworkClientFactory {
             .build()
     }
 
+    fun getTranslatorClient(): OkHttpClient {
+        return getClient().newBuilder()
+            .addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+                    .build()
+                chain.proceed(request)
+            }
+            .build()
+    }
+
     fun getKtorClient(cacheless: Boolean = true): HttpClient {
         return if (cacheless) {
             ktorCachelessClient ?: synchronized(this) {
@@ -91,6 +103,29 @@ object NetworkClientFactory {
                     }
                 }.also { ktorClient = it }
             }
+        }
+    }
+
+    fun validateStreamUrl(streamUrl: String): Boolean {
+        return try {
+            val client = getClientWithTimeout(3, 3)
+                
+            val request = okhttp3.Request.Builder()
+                .url(streamUrl)
+                .head()
+                .header("User-Agent", me.knighthat.innertube.UserAgents.CHROME_WINDOWS)
+                .build()
+                
+            val response = client.newCall(request).execute()
+            val isSuccess = response.isSuccessful
+            if (!isSuccess) {
+                Timber.w("validateStreamUrl failed with code ${response.code} for URL: $streamUrl")
+            }
+            response.close()
+            isSuccess
+        } catch (e: Exception) {
+            Timber.e(e, "validateStreamUrl exception for URL: $streamUrl")
+            false
         }
     }
 }

@@ -78,14 +78,18 @@ object Store {
         visitorMutex.withLock {
             iosVisitorData?.let { return@withLock it }
 
+            val currentLocale = java.util.Locale.getDefault()
+            val localization = Localization(currentLocale.language)
+            val contentCountry = ContentCountry(currentLocale.country)
+
             val headers: MutableMap<String, List<String>> = mutableMapOf()
-            headers["User-Agent"] = listOf(YoutubeParsingHelper.getIosUserAgent(Localization.DEFAULT))
+            headers["User-Agent"] = listOf(YoutubeParsingHelper.getIosUserAgent(localization))
             headers.putAll(YoutubeParsingHelper.getOriginReferrerHeaders("https://www.youtube.com"))
 
             val data = YoutubeParsingHelper.getVisitorDataFromInnertube(
                 InnertubeClientRequestInfo.ofIosClient(),
-                Localization.DEFAULT,
-                ContentCountry.DEFAULT,
+                localization,
+                contentCountry,
                 headers,
                 YoutubeParsingHelper.YOUTUBEI_V1_URL,
                 null,
