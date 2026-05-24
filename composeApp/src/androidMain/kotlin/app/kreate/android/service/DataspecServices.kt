@@ -290,7 +290,7 @@ fun DataSpec.process(
         var successUri: Uri? = null
         var lastException: Exception? = null
 
-        while (retries < 3 && successUri == null) {
+        while (retries < 7 && successUri == null) {
             try {
                 successUri = try {
                     getAndroidReelFormatUrl( videoId, audioQualityFormat, connectionMetered )
