@@ -305,8 +305,8 @@ fun DataSpec.process(
                 lastException = e
                 retries++
                 Timber.w("Stream extraction failed on attempt $retries for $videoId, retrying...")
-                if (retries < 3) {
-                    kotlinx.coroutines.delay(500) // small delay before retrying
+                if (retries < 7) {
+                    kotlinx.coroutines.delay(300) // small delay before retrying
                 }
             }
         }
