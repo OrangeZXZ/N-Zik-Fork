@@ -915,19 +915,27 @@ fun Lyrics(
                                 .roundToPx()
                         }
 
-                        lazyListState.animateScrollToItem(
-                            index = synchronizedLyrics.index + 1,
-                            scrollOffset = centerOffset
-                        )
+                        try {
+                            lazyListState.animateScrollToItem(
+                                index = synchronizedLyrics.index + 1,
+                                scrollOffset = centerOffset
+                            )
+                        } catch (e: kotlinx.coroutines.CancellationException) {
+                            if (!isActive) throw e
+                        }
 
                         while (isActive) {
                             delay(50)
                             if (!synchronizedLyrics.update()) continue
 
-                            lazyListState.animateScrollToItem(
-                                index = synchronizedLyrics.index + 1,
-                                scrollOffset = centerOffset
-                            )
+                            try {
+                                lazyListState.animateScrollToItem(
+                                    index = synchronizedLyrics.index + 1,
+                                    scrollOffset = centerOffset
+                                )
+                            } catch (e: kotlinx.coroutines.CancellationException) {
+                                if (!isActive) throw e
+                            }
                         }
                     }
 
