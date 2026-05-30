@@ -109,11 +109,12 @@ infix operator fun <T : Innertube.Item> Innertube.ItemsPage<T>?.plus(other: Inne
 fun parseCookieString(cookie: String): Map<String, String> =
     cookie.split("; ")
         .filter { it.isNotEmpty() }
-        .associate {
-            val (key, value) = it.split("=")
-            key to value
+        .mapNotNull { part ->
+            val splitIndex = part.indexOf('=')
+            if (splitIndex == -1) null
+            else part.substring(0, splitIndex).trim() to part.substring(splitIndex + 1).trim()
         }
+        .toMap()
 
 fun ByteArray.toHex(): String = joinToString(separator = "") { eachByte -> "%02x".format(eachByte) }
 fun sha1(str: String): String = MessageDigest.getInstance("SHA-1").digest(str.toByteArray()).toHex()
-

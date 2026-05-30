@@ -106,14 +106,19 @@ object NetworkClientFactory {
         }
     }
 
-    fun validateStreamUrl(streamUrl: String): Boolean {
+    fun validateStreamUrl(streamUrl: String, userAgent: String? = null): Boolean {
         return try {
             val client = getClientWithTimeout(3, 3)
                 
-            val request = okhttp3.Request.Builder()
+            val builder = okhttp3.Request.Builder()
                 .url(streamUrl)
                 .head()
-                .build()
+                
+            if (userAgent != null) {
+                builder.header("User-Agent", userAgent)
+            }
+                
+            val request = builder.build()
                 
             val response = client.newCall(request).execute()
             val isSuccess = response.isSuccessful

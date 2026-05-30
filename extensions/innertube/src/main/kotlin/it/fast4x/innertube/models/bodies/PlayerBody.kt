@@ -25,7 +25,6 @@ data class PlayerBody(
     ) {
         @Serializable
         data class ContentPlaybackContext(
-            val html5Preference: String = "HTML5_PREF_WANTS",
             val signatureTimestamp: Int = 20110,
         )
     }

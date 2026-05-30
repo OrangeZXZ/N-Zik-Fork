@@ -20,27 +20,38 @@ data class Context(
     data class Client(
         val clientName: String,
         val clientVersion: String,
+        @Transient
         val platform: String? = null,
         val hl: String? = "en",
         val gl: String? = "US",
         val visitorData: String? = null, // = Innertube.DEFAULT_VISITOR_DATA,
-        val androidSdkVersion: Int? = null,
+        val androidSdkVersion: String? = null,
+        @Transient
         val userAgent: String? = null,
+        @Transient
         val referer: String? = null,
         val deviceMake: String? = null,
         val deviceModel: String? = null,
         val osName: String? = null,
         val osVersion: String? = null,
+        @Transient
         val acceptHeader: String? = null,
+        @Transient
         val xClientName: Int? = null,
         @Transient
         val api_key: String? = null,
         @Transient
         val loginSupported: Boolean = false,
         @Transient
+        val loginRequired: Boolean = false,
+        @Transient
+        val isEmbedded: Boolean = false,
+        @Transient
+        val useWebPoTokens: Boolean = false,
+        @Transient
         val useSignatureTimestamp: Boolean = true
     ) {
-        fun toContext(locale: YouTubeLocale, visitorData: String) = Context(
+        fun toContext(locale: YouTubeLocale, visitorData: String, dataSyncId: String? = null) = Context(
             client = Client(
                 clientName = clientName,
                 clientVersion = clientVersion,
@@ -58,6 +69,14 @@ data class Context(
                 api_key = api_key,
                 platform = platform,
                 loginSupported = loginSupported,
+                loginRequired = loginRequired,
+                isEmbedded = isEmbedded,
+                useWebPoTokens = useWebPoTokens,
+                xClientName = xClientName,
+                useSignatureTimestamp = useSignatureTimestamp,
+            ),
+            user = User(
+                onBehalfOfUser = if (loginSupported) dataSyncId else null
             )
         )
     }
@@ -69,7 +88,8 @@ data class Context(
 
     @Serializable
     data class User(
-        val lockedSafetyMode: Boolean = false
+        val lockedSafetyMode: Boolean = false,
+        val onBehalfOfUser: String? = null
     )
 
     @Serializable

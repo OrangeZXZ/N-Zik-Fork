@@ -488,6 +488,7 @@ object Innertube {
     fun HttpRequestBuilder.setLogin(clientType: Client = DefaultWeb.client, setLogin: Boolean = false, targetHost: String = YOUTUBE_MUSIC_HOST) {
         contentType(ContentType.Application.Json)
         headers {
+            append("X-Goog-Api-Format-Version", "1")
             append("X-YouTube-Client-Name", "${clientType.xClientName ?: 1}")
             append("X-YouTube-Client-Version", clientType.clientVersion)
             append("X-Origin", "https://$targetHost")
@@ -495,26 +496,23 @@ object Innertube {
                 append("Referer", clientType.referer)
             }
             if (setLogin && clientType.loginSupported) {
-                cookie?.let { cookie ->
-                    cookieMap = parseCookieString(cookie)
-                    append("X-Goog-Authuser", "0")
-                    append("X-Goog-Visitor-Id", visitorData)
-                    append("X-Youtube-Bootstrap-Logged-In", "true")
-                    append("Cookie", cookie)
-                    if ("SAPISID" !in cookieMap || "__Secure-3PAPISID" !in cookieMap) return@let
-                    val currentTime = System.currentTimeMillis() / 1000
-                    val sapisidCookie = if (clientType.clientName == "WEB_REMIX") {
-                        cookieMap["__Secure-3PAPISID"] ?: cookieMap["SAPISID"]
-                    } else {
-                        cookieMap["SAPISID"] ?: cookieMap["__Secure-3PAPISID"]
+                cookie?.let { cookieStr ->
+                    if (cookieStr.isNotBlank()) {
+                        cookieMap = parseCookieString(cookieStr)
+                        if ("SAPISID" !in cookieMap && "__Secure-3PAPISID" !in cookieMap) return@let
+                        val currentTime = System.currentTimeMillis() / 1000
+                        val sapisidCookie = cookieMap["SAPISID"] ?: cookieMap["__Secure-3PAPISID"]
+                        val sapisidHash = sha1("$currentTime $sapisidCookie https://$targetHost")
+                        append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
+                        append("Cookie", cookieStr)
                     }
-                    val sapisidHash = sha1("$currentTime $sapisidCookie https://$targetHost")
-                    append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
                 }
+            }
+            if (!visitorData.isNullOrBlank()) {
+                append("X-Goog-Visitor-Id", visitorData)
             }
         }
         clientType.userAgent?.let { userAgent(it) }
-        parameter("key", clientType.api_key)
         parameter("prettyPrint", false)
 
     }
@@ -848,45 +846,39 @@ object Innertube {
         context: Context = Context.DefaultWebWithLocale,
     ): HttpResponse {
         return client.post(player) {
-            // Only WEB_REMIX goes to music.youtube.com, all others (ANDROID_VR, TVHTML5, etc.) to www.youtube.com
-            val targetHost = if (context.client.clientName == "WEB_REMIX") {
-                YOUTUBE_MUSIC_HOST
-            } else {
-                "www.youtube.com"
-            }
-
-            url {
-                host = targetHost
-            }
+            // Always use music.youtube.com like Metrolist-sc does
+            val targetHost = YOUTUBE_MUSIC_HOST
 
             setLogin(clientType = context.client, setLogin = true, targetHost = targetHost)
                 
-                val playerContext = if (context.client.clientName == "TVHTML5_SIMPLY_EMBEDDED_PLAYER") {
-                    context.copy(thirdParty = Context.ThirdParty(embedUrl = "https://www.youtube.com/watch?v=$videoId"))
-                } else {
-                    context
-                }
-
-                val bodyObj = PlayerBody(
-                    context = playerContext,
-                    videoId = videoId,
-                    playlistId = playlistId,
-                    playbackContext = if (context.client.useSignatureTimestamp && signatureTimestamp != null) {
-                        PlayerBody.PlaybackContext(
-                            PlayerBody.PlaybackContext.ContentPlaybackContext(
-                                signatureTimestamp = signatureTimestamp
-                            )
-                        )
-                    } else null,
-                    serviceIntegrityDimensions = if (poToken != null) {
-                        PlayerBody.ServiceIntegrityDimensions(poToken)
-                    } else null,
-                )
-                println("NZIK_DEBUG_PAYLOAD Client: " + context.client.clientName)
-                println("NZIK_DEBUG_PAYLOAD TargetHost: " + targetHost)
-                println("NZIK_DEBUG_PAYLOAD Body: " + bodyObj.toString())
-                setBody(bodyObj)
+            val playerContext = if (context.client.isEmbedded) {
+                context.copy(thirdParty = Context.ThirdParty(embedUrl = "https://www.youtube.com/watch?v=$videoId"))
+            } else {
+                context
             }
+
+            val bodyObj = PlayerBody(
+                context = playerContext,
+                videoId = videoId,
+                playlistId = playlistId,
+                playbackContext = if (context.client.useSignatureTimestamp && signatureTimestamp != null) {
+                    PlayerBody.PlaybackContext(
+                        PlayerBody.PlaybackContext.ContentPlaybackContext(
+                            signatureTimestamp = signatureTimestamp
+                        )
+                    )
+                } else null,
+                serviceIntegrityDimensions = if (context.client.useWebPoTokens && poToken != null) {
+                    PlayerBody.ServiceIntegrityDimensions(poToken)
+                } else null,
+            )
+            
+            val jsonString = kotlinx.serialization.json.Json { encodeDefaults = true; explicitNulls = false }.encodeToString(PlayerBody.serializer(), bodyObj)
+            println("NZIK_DEBUG_PAYLOAD TargetHost: $targetHost, Client: ${context.client.clientName}")
+            println("NZIK_DEBUG_PAYLOAD Body: $jsonString")
+
+            setBody(bodyObj)
+        }
     }
 }
 

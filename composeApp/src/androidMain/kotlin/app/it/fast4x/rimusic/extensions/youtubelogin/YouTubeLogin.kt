@@ -129,7 +129,7 @@ fun YouTubeLogin(
                         @JavascriptInterface
                         fun onRetrieveDataSyncId(newDataSyncId: String?) {
                             if (newDataSyncId != null) {
-                                dataSyncId = newDataSyncId
+                                dataSyncId = newDataSyncId.substringBefore("||")
                             }
                         }
                     }, "Android")

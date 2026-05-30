@@ -54,18 +54,21 @@ private const val CHUNK_LENGTH = 512 * 1024L
 
 // Clients to try in order - mirrors Metrolist's YTPlayerUtils fallback chain
 private val FALLBACK_CLIENTS = listOf(
-    YouTubeClient.WEB_REMIX,
-    YouTubeClient.TVHTML5,          // TVHTML5_SIMPLY_EMBEDDED_PLAYER
+    YouTubeClient.WEB_REMIX, // This corresponds to MAIN_CLIENT in Metrolist
+    YouTubeClient.TVHTML5_SIMPLY_EMBEDDED_PLAYER,
+    YouTubeClient.TVHTML5,
     YouTubeClient.ANDROID_VR_1_43_32,
     YouTubeClient.ANDROID_VR_1_61_48,
-    YouTubeClient.ANDROID_VR_NO_AUTH,
-    YouTubeClient.ANDROID,
-    YouTubeClient.IOS,
+    YouTubeClient.ANDROID_CREATOR,
     YouTubeClient.IPADOS,
+    YouTubeClient.ANDROID_VR_NO_AUTH,
+    YouTubeClient.MOBILE,
+    YouTubeClient.IOS,
+    YouTubeClient.WEB,
+    YouTubeClient.WEB_CREATOR
 )
 
-// Clients that return direct URL (no signatureCipher, no n-transform needed)
-private val DIRECT_URL_CLIENTS = setOf("ANDROID_VR", "ANDROID", "IOS", "ANDROID_MUSIC", "ANDROID_CREATOR")
+private val WEB_CLIENTS = setOf("WEB", "WEB_REMIX", "WEB_CREATOR", "TVHTML5", "TVHTML5_SIMPLY_EMBEDDED_PLAYER")
 
 /**
  * Store id of song just added to the database to reduce load to Room.
@@ -161,7 +164,7 @@ private suspend fun resolveFormatUrl(
     clientName: String
 ): Uri? {
     // Direct URL clients (no signature cipher, no n-transform)
-    if (clientName in DIRECT_URL_CLIENTS) {
+    if (clientName !in WEB_CLIENTS) {
         val directUrl = format.url ?: return null
         Timber.tag(TAG).d("Direct URL for $clientName: ${directUrl.take(80)}...")
         return directUrl.toUri()
@@ -180,8 +183,16 @@ private suspend fun resolveFormatUrl(
             } else {
                 Timber.tag(TAG).w("CipherDeobfuscator returned null, trying NewPipe fallback")
                 val newPipeUrl = runCatching {
-                    org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager
-                        .getUrlWithThrottlingParameterDeobfuscated(videoId, sigCipher)
+                    val params = io.ktor.http.parseQueryString(sigCipher)
+                    val s = params["s"] ?: throw Exception("No signature")
+                    val sp = params["sp"] ?: throw Exception("No signature parameter")
+                    val urlParam = params["url"] ?: throw Exception("No url")
+                    val urlBuilder = io.ktor.http.URLBuilder(urlParam)
+                    urlBuilder.parameters[sp] = org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager.deobfuscateSignature(videoId, s)
+                    val decUrl = urlBuilder.buildString()
+                    org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated(videoId, decUrl)
+                }.onFailure {
+                    Timber.tag(TAG).e(it, "NewPipe fallback failed")
                 }.getOrNull()
                 newPipeUrl?.let { android.net.Uri.parse(it) }
             }
@@ -221,7 +232,7 @@ private suspend fun resolveStreamUri(
     val signatureTimestamp: Int? = runCatching {
         val playerJsResult = PlayerJsFetcher.getPlayerJs(forceRefresh = false)
         if (playerJsResult != null) {
-            FunctionNameExtractor.extractSignatureTimestamp(playerJsResult.second)
+            FunctionNameExtractor.extractSignatureTimestamp(playerJsResult.first)
         } else null
     }.getOrNull()
     Timber.tag(TAG).d("signatureTimestamp: $signatureTimestamp")
@@ -234,10 +245,10 @@ private suspend fun resolveStreamUri(
     Timber.tag(TAG).d("poToken generated: ${poToken != null}")
 
     // 3. Try each client in order
-    for (ytClient in FALLBACK_CLIENTS) {
+    for ((index, ytClient) in FALLBACK_CLIENTS.withIndex()) {
         try {
-            Timber.tag(TAG).d("Trying client: ${ytClient.clientName} for $videoId")
-            val context = ytClient.toContext(locale, visitorData)
+            Timber.tag(TAG).d("Trying client (${index + 1}/${FALLBACK_CLIENTS.size}): ${ytClient.clientName} for $videoId")
+            val context = ytClient.toContext(locale, visitorData, Innertube.dataSyncId)
 
             val sigTs = if (ytClient.useSignatureTimestamp) signatureTimestamp else null
             val pot   = if (ytClient.clientName == "WEB_REMIX") poToken else null
@@ -278,7 +289,7 @@ private suspend fun resolveStreamUri(
 
             // Validate (HEAD request)
             val streamUrl = uri.toString()
-            val isValid = NetworkClientFactory.validateStreamUrl(streamUrl)
+            val isValid = NetworkClientFactory.validateStreamUrl(streamUrl, ytClient.userAgent)
             if (!isValid) {
                 Timber.tag(TAG).w("${ytClient.clientName}: stream URL validation failed (403?) for $videoId")
                 continue
@@ -337,16 +348,10 @@ fun DataSpec.process(
 
     val newHeaders = mutableMapOf<String, String>()
     newHeaders.putAll(httpRequestHeaders)
-    
-    val ghostCookie = Store.getCookie()
-    if (ghostCookie.isNotBlank()) {
-        newHeaders["Cookie"] = ghostCookie
-    }
-    
-    val iosVisitorData = Store.getIosVisitorData()
-    if (!iosVisitorData.isNullOrBlank() && iosVisitorData != "null") {
-        newHeaders["X-Goog-Visitor-Id"] = iosVisitorData
-    }
+
+    // DO NOT ADD Cookie or X-Goog-Visitor-Id here!
+    // ExoPlayer sends these headers to the googlevideo.com CDN, which will reject them with 403 Forbidden.
+    // The stream URL itself contains all necessary authentication tokens (sig, expire, id).
 
     buildUpon()
         .setUri(formatUri)

@@ -83,7 +83,6 @@ val Context.defaultDataSourceFactory
         this,
         DefaultHttpDataSource.Factory().setConnectTimeoutMs(16000)
             .setReadTimeoutMs(8000)
-            .setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
             .apply {
                 it.fast4x.innertube.Innertube.cookie?.let {
                     setDefaultRequestProperties(mapOf("Cookie" to it))
@@ -98,7 +97,6 @@ val Context.okHttpDataSourceFactory
         OkHttpDataSource.Factory { request -> okHttpClient().newCall(request) }
             .apply {
                 val headers = mutableMapOf<String, String>()
-                headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0"
                 it.fast4x.innertube.Innertube.cookie?.let {
                     headers["Cookie"] = it
                 }
