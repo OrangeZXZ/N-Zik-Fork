@@ -17,7 +17,7 @@ import androidx.media3.exoplayer.offline.DownloadNotificationHelper
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.scheduler.Requirements
-import app.kreate.android.service.createDataSourceFactory
+import app.n_zik.android.core.service.createDataSourceFactory
 import app.it.fast4x.rimusic.Database
 
 import app.it.fast4x.rimusic.enums.AudioQualityFormat

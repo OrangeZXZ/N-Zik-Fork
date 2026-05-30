@@ -350,9 +350,22 @@ fun Thumbnail(
                 androidx.compose.runtime.LaunchedEffect(error) {
                     if (error != null) {
                         timber.log.Timber.e("Playback error: ${error?.cause?.cause}")
+                        
+                        var httpCode: Int? = null
+                        var currentCause: Throwable? = error?.cause
+                        while (currentCause != null) {
+                            if (currentCause is androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException) {
+                                httpCode = currentCause.responseCode
+                                break
+                            }
+                            currentCause = currentCause.cause
+                        }
+
                         app.kreate.android.me.knighthat.utils.Toaster.e(
                             if (currentWindow.mediaItem.isLocal)
                                 localMusicFileNotFoundError
+                            else if (httpCode == 403)
+                                songnotplayabledueserverrestrictionerror
                             else when (error?.cause?.cause) {
                                 is java.nio.channels.UnresolvedAddressException, is java.net.UnknownHostException -> networkerror
                                 is app.it.fast4x.rimusic.service.PlayableFormatNotFoundException -> notfindplayableaudioformaterror

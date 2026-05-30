@@ -18,6 +18,7 @@ import app.it.fast4x.rimusic.utils.CaptureCrash
 import app.it.fast4x.rimusic.utils.FileLoggingTree
 import app.it.fast4x.rimusic.utils.logDebugEnabledKey
 import app.it.fast4x.rimusic.utils.preferences
+import app.n_zik.android.core.utils.cipher.CipherDeobfuscator
 import app.it.fast4x.rimusic.utils.isProxyEnabledKey
 import app.it.fast4x.rimusic.utils.proxyHostnameKey
 import app.it.fast4x.rimusic.utils.proxyModeKey
@@ -35,6 +36,7 @@ class MainApplication : Application(), SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
         Dependencies.init(this)
+        CipherDeobfuscator.initialize(this)
 
         val oldPolicy = StrictMode.allowThreadDiskReads()
         try {

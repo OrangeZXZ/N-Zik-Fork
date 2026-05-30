@@ -53,7 +53,18 @@ class NewPipeDownloaderImpl(private val clientProvider: () -> OkHttpClient) : Do
         val responseBodyToReturn = response.body?.string()
 
         val latestUrl = response.request.url.toString()
-        return Response(response.code, response.message, response.headers.toMultimap(), responseBodyToReturn, latestUrl)
+        return Response(
+            response.code,
+            response.message,
+            response.headers.toMultimap(),
+            responseBodyToReturn,
+            responseBodyToReturn?.toByteArray(),
+            latestUrl
+        )
+    }
+
+    override fun executeAsync(request: Request, callback: org.schabi.newpipe.extractor.downloader.Downloader.AsyncCallback?): org.schabi.newpipe.extractor.downloader.CancellableCall {
+        TODO("Placeholder")
     }
 
 }

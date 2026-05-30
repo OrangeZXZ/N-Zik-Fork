@@ -34,7 +34,11 @@ data class Context(
         val acceptHeader: String? = null,
         val xClientName: Int? = null,
         @Transient
-        val api_key: String? = null
+        val api_key: String? = null,
+        @Transient
+        val loginSupported: Boolean = false,
+        @Transient
+        val useSignatureTimestamp: Boolean = true
     ) {
         fun toContext(locale: YouTubeLocale, visitorData: String) = Context(
             client = Client(
@@ -53,6 +57,7 @@ data class Context(
                 acceptHeader = acceptHeader,
                 api_key = api_key,
                 platform = platform,
+                loginSupported = loginSupported,
             )
         )
     }
@@ -106,15 +111,14 @@ data class Context(
         val DefaultWeb = Context(
             client = Client(
                 clientName = "WEB_REMIX",
-                clientVersion = "1.20250407.01.00",
+                clientVersion = "1.20260213.01.00",
                 platform = "DESKTOP",
-                //clientVersion = "1.20220606.03.00",
-                //clientVersion = "1.20230731.00.00",
                 userAgent = USER_AGENT_WEB,
                 referer = REFERER_YOUTUBE_MUSIC,
                 visitorData = Innertube.visitorData,
                 api_key = "AIzaSyC9XL3ZjWddXya6X74dJoCTL-WEYFDNX30",
-                xClientName = 67
+                xClientName = 67,
+                loginSupported = true
             )
         )
 

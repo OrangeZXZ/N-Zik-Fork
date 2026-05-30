@@ -77,7 +77,7 @@ import androidx.media3.session.MediaStyleNotificationHelper
 import androidx.media3.session.SessionToken
 import app.it.fast4x.rimusic.repository.QuickPicksRepository
 import app.kreate.android.R
-import app.kreate.android.service.createDataSourceFactory
+import app.n_zik.android.core.service.createDataSourceFactory
 import app.kreate.android.widget.Widget
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.MoreExecutors
@@ -841,7 +841,32 @@ class PlayerServiceModern : MediaLibraryService(),
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
 
-        Timber.e("PlayerServiceModern onPlayerError error code ${error.errorCode} message ${error.message} cause ${error.cause?.cause}")
+        Timber.e("PLAYER_STATUS: PLAYBACK ERROR - Code: ${error.errorCodeName} (${error.errorCode}), Message: ${error.message}")
+
+        var httpCode: Int? = null
+        var currentCause: Throwable? = error.cause
+        while (currentCause != null) {
+            if (currentCause is androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException) {
+                httpCode = currentCause.responseCode
+                break
+            }
+            currentCause = currentCause.cause
+        }
+
+        if (httpCode == 403) {
+            Timber.e("PLAYER_STATUS: PLAYBACK ERROR 403 - Server restrictions / Login required")
+            showSmartMessage(getString(R.string.error_this_song_cannot_be_played_due_to_server_restrictions))
+            player.pause()
+            
+            if (preferences.getBoolean(skipMediaOnErrorKey, false) && player.hasNextMediaItem()) {
+                val prev = player.currentMediaItem
+                player.playNext()
+                if (prev != null) {
+                    showSmartMessage(getString(R.string.skip_media_on_error_message, prev.mediaMetadata.title))
+                }
+            }
+            return
+        }
 
         val playbackConnectionExeptionList = listOf(
             PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED, //primary error code to manage
@@ -866,7 +891,8 @@ class PlayerServiceModern : MediaLibraryService(),
             416 // 416 Range Not Satisfiable
         )
 
-        if (error.errorCode in playbackHttpExeptionList) {
+        // Don't retry blindly on all HTTP exceptions anymore, 403 is already handled above
+        if (error.errorCode in playbackHttpExeptionList && httpCode != 403) {
             Timber.e("PlayerServiceModern onPlayerError recovered occurred errorCodeName ${error.errorCodeName} cause ${error.cause?.cause}")
             player.pause()
             player.prepare()
@@ -902,6 +928,11 @@ class PlayerServiceModern : MediaLibraryService(),
     override fun onEvents(player: Player, events: Player.Events) {
         if (events.containsAny(Player.EVENT_PLAYBACK_STATE_CHANGED, Player.EVENT_PLAY_WHEN_READY_CHANGED)) {
             val isBufferingOrReady = player.playbackState == Player.STATE_BUFFERING || player.playbackState == Player.STATE_READY
+            
+            if (player.playbackState == Player.STATE_READY && player.playWhenReady && events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)) {
+                Timber.i("PLAYER_STATUS: PLAYBACK OK - Streaming successfully [${player.currentMediaItem?.mediaMetadata?.title}]")
+            }
+
             if (isBufferingOrReady && player.playWhenReady) {
                 sendOpenEqualizerIntent()
             } else {

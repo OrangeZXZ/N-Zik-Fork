@@ -1,4 +1,5 @@
 package it.fast4x.innertube
+import it.fast4x.innertube.models.bodies.PlayerBody
 
 import com.zionhuang.innertube.pages.LibraryContinuationPage
 import com.zionhuang.innertube.pages.LibraryPage
@@ -832,4 +833,54 @@ object Innertube {
         }
     }
 
+
+    suspend fun playerRequest(
+        videoId: String,
+        playlistId: String? = null,
+        signatureTimestamp: Int? = null,
+        poToken: String? = null,
+        context: Context = Context.DefaultWebWithLocale,
+    ): HttpResponse {
+        return client.post(player) {
+            // Only WEB_REMIX goes to music.youtube.com, all others (ANDROID_VR, TVHTML5, etc.) to www.youtube.com
+            val targetHost = if (context.client.clientName == "WEB_REMIX") {
+                YOUTUBE_MUSIC_HOST
+            } else {
+                "www.youtube.com"
+            }
+
+                url {
+                    host = targetHost
+                }
+
+                setLogin(clientType = context.client, setLogin = true)
+                
+                val playerContext = if (context.client.clientName == "TVHTML5_SIMPLY_EMBEDDED_PLAYER") {
+                    context.copy(thirdParty = Context.ThirdParty(embedUrl = "https://www.youtube.com/watch?v=$videoId"))
+                } else {
+                    context
+                }
+
+                val bodyObj = PlayerBody(
+                    context = playerContext,
+                    videoId = videoId,
+                    playlistId = playlistId,
+                    playbackContext = if (context.client.useSignatureTimestamp && signatureTimestamp != null) {
+                        PlayerBody.PlaybackContext(
+                            PlayerBody.PlaybackContext.ContentPlaybackContext(
+                                signatureTimestamp = signatureTimestamp
+                            )
+                        )
+                    } else null,
+                    serviceIntegrityDimensions = if (poToken != null) {
+                        PlayerBody.ServiceIntegrityDimensions(poToken)
+                    } else null,
+                )
+                println("NZIK_DEBUG_PAYLOAD Client: " + context.client.clientName)
+                println("NZIK_DEBUG_PAYLOAD TargetHost: " + targetHost)
+                println("NZIK_DEBUG_PAYLOAD Body: " + bodyObj.toString())
+                setBody(bodyObj)
+            }
+    }
 }
+

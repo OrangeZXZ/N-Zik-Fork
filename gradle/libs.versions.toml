@@ -45,7 +45,6 @@ lombok = "1.18.46"
 junit5 = "6.0.3"
 mockk = "1.14.9"
 webkit = "1.15.0"
-newpipe-extractor = "v0.26.1"
 koin = "4.2.1"
 kermit = "2.1.0"
 kotlinx-serialization = "1.11.0"
@@ -121,8 +120,7 @@ ksoup-entities = { group = "com.mohamedrejeb.ksoup", name = "ksoup-entities", ve
 hypnoticcanvas = { group = "com.mikepenz.hypnoticcanvas", name = "hypnoticcanvas", version.ref = "hypnoticcanvas" }
 hypnoticcanvas-shaders = { group = "com.mikepenz.hypnoticcanvas", name = "hypnoticcanvas-shaders", version.ref = "hypnoticcanvas" }
 
-# Newpipe extractor
-newpipe-extractor = { group = "com.github.TeamNewPipe", name = "NewPipeExtractor", version.ref = "newpipe-extractor" }
+# Koin
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }

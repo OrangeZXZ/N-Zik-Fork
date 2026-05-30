@@ -113,7 +113,6 @@ object NetworkClientFactory {
             val request = okhttp3.Request.Builder()
                 .url(streamUrl)
                 .head()
-                .header("User-Agent", me.knighthat.innertube.UserAgents.CHROME_WINDOWS)
                 .build()
                 
             val response = client.newCall(request).execute()

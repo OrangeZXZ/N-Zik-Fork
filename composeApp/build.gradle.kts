@@ -44,7 +44,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.media3.session)
             implementation(libs.kotlinx.coroutines.guava)
-            implementation(libs.newpipe.extractor)
+            implementation(libs.extractor)
             implementation(libs.nanojson)
             implementation(libs.androidx.webkit)
             implementation(libs.ktor.okhttp)
@@ -61,7 +61,9 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
-            implementation(projects.innertube)
+            implementation(projects.innertube) {
+                exclude(group = "com.google.protobuf", module = "protobuf-java")
+            }
             implementation(projects.oldtube)
             implementation(projects.piped)
             implementation(projects.invidious)
@@ -248,7 +250,7 @@ dependencies {
     implementation(libs.room)
     add("kspAndroid", libs.room.compiler)
 
-    implementation(projects.innertube)
+    implementation(projects.innertube) { exclude(group = "com.google.protobuf", module = "protobuf-java") }
     implementation(projects.oldtube)
     implementation(projects.kugou)
     implementation(projects.lrclib)

@@ -82,9 +82,22 @@ fun PlayerError(error: PlaybackException) {
 
     if (errorCounter < 2) {
         Timber.e("Playback error: ${error.cause?.cause}")
+        
+        var httpCode: Int? = null
+        var currentCause: Throwable? = error.cause
+        while (currentCause != null) {
+            if (currentCause is androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException) {
+                httpCode = currentCause.responseCode
+                break
+            }
+            currentCause = currentCause.cause
+        }
+
         Toaster.w(
             if (binder?.player?.currentWindow?.mediaItem?.isLocal == true)
                 localMusicFileNotFoundError
+            else if (httpCode == 403)
+                loginrequirederror
             else when (error.cause?.cause) {
                 is UnresolvedAddressException, is UnknownHostException -> networkerror
                 is PlayableFormatNotFoundException -> notfindplayableaudioformaterror
