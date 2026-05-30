@@ -5,7 +5,12 @@ Improved:
 - Optimized Discord RPC network performance by removing redundant token validations
 
 Fixed:
+- Fixed streaming failures due to YouTube's PoToken generation requirements
+- Resolved 400 Bad Request errors on fallback YouTube clients (Android, iOS) by passing the API key correctly
+- Handled HTTP 403 errors during streaming to automatically trigger stream refresh
 - Fixed Discord Rich Presence timestamp calculations to accurately sync with track playback
+- Fixed a Discord RPC logout problem
+- Fixed quickpick when logged in
 
 Special Thanks:
-- https://github.com/MetrolistGroup for the Metrolist source code that help me find the problem and fix it !
+- https://github.com/MetrolistGroup for the Metrolist source code that helped find and fix these problems!

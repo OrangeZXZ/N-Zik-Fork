@@ -1095,6 +1095,7 @@ fun HomeQuickPicks(
 
                     page.sections.forEach {
                         if (it.items.isEmpty() || it.items.firstOrNull()?.key == null) return@forEach
+                        if (it.title.contains("Quick picks", ignoreCase = true)) return@forEach
                         println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
                         println("homePage() in HomeYouTubeMusic sections items: ${it.items}")
 

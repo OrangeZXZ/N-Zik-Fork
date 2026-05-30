@@ -1,5 +1,6 @@
 package it.fast4x.innertube.requests
 
+import com.zionhuang.innertube.pages.LibraryPage
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.BrowseEndpoint
 import it.fast4x.innertube.models.MusicCarouselShelfRenderer
@@ -34,13 +35,14 @@ data class HomePage(
                             ?: "",
                     ),
                     items = renderer.contents
-                        .map {
+                        .mapNotNull {
                             fromMusicTwoRowItemRenderer(
                                 it.musicTwoRowItemRenderer,
                                 renderer.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.firstOrNull()?.text
-                            )
-                        } //.filter { it?.title?.isNotEmpty() == true }
-
+                            ) ?: it.musicResponsiveListItemRenderer?.let { listItem ->
+                                LibraryPage.fromMusicResponsiveListItemRenderer(listItem)
+                            }
+                        }
                 )
             }
 

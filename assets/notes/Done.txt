@@ -1,2 +1,5 @@
 Fixed discord rpc logout problem
 Thx to metrolist source code
+Fixed a mistake with cookie and error handling on exoplayer
+Fixed playback crash when logged in for first time
+Fixed quickpick when logged in
