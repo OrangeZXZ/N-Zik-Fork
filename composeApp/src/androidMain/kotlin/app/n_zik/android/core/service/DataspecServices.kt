@@ -334,7 +334,24 @@ fun DataSpec.process(
         formatCache[videoId] = formatUri
     }
 
-    withUri(formatUri).subrange(uriPositionOffset)
+    val newHeaders = mutableMapOf<String, String>()
+    newHeaders.putAll(httpRequestHeaders)
+    
+    val ghostCookie = Store.getCookie()
+    if (ghostCookie.isNotBlank()) {
+        newHeaders["Cookie"] = ghostCookie
+    }
+    
+    val iosVisitorData = Store.getIosVisitorData()
+    if (!iosVisitorData.isNullOrBlank() && iosVisitorData != "null") {
+        newHeaders["X-Goog-Visitor-Id"] = iosVisitorData
+    }
+
+    buildUpon()
+        .setUri(formatUri)
+        .setHttpRequestHeaders(newHeaders)
+        .setUriPositionOffset(uriPositionOffset)
+        .build()
 }
 
 // ──────────────────────────────────────────────────────────────────────────────

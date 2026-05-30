@@ -841,32 +841,7 @@ class PlayerServiceModern : MediaLibraryService(),
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
 
-        Timber.e("PLAYER_STATUS: PLAYBACK ERROR - Code: ${error.errorCodeName} (${error.errorCode}), Message: ${error.message}")
-
-        var httpCode: Int? = null
-        var currentCause: Throwable? = error.cause
-        while (currentCause != null) {
-            if (currentCause is androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException) {
-                httpCode = currentCause.responseCode
-                break
-            }
-            currentCause = currentCause.cause
-        }
-
-        if (httpCode == 403) {
-            Timber.e("PLAYER_STATUS: PLAYBACK ERROR 403 - Server restrictions / Login required")
-            showSmartMessage(getString(R.string.error_this_song_cannot_be_played_due_to_server_restrictions))
-            player.pause()
-            
-            if (preferences.getBoolean(skipMediaOnErrorKey, false) && player.hasNextMediaItem()) {
-                val prev = player.currentMediaItem
-                player.playNext()
-                if (prev != null) {
-                    showSmartMessage(getString(R.string.skip_media_on_error_message, prev.mediaMetadata.title))
-                }
-            }
-            return
-        }
+        Timber.e("PlayerServiceModern onPlayerError error code ${error.errorCode} message ${error.message} cause ${error.cause?.cause}")
 
         val playbackConnectionExeptionList = listOf(
             PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED, //primary error code to manage
@@ -891,8 +866,7 @@ class PlayerServiceModern : MediaLibraryService(),
             416 // 416 Range Not Satisfiable
         )
 
-        // Don't retry blindly on all HTTP exceptions anymore, 403 is already handled above
-        if (error.errorCode in playbackHttpExeptionList && httpCode != 403) {
+        if (error.errorCode in playbackHttpExeptionList) {
             Timber.e("PlayerServiceModern onPlayerError recovered occurred errorCodeName ${error.errorCodeName} cause ${error.cause?.cause}")
             player.pause()
             player.prepare()

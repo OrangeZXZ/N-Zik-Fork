@@ -485,16 +485,16 @@ object Innertube {
         return response
     }
 
-    fun HttpRequestBuilder.setLogin(clientType: Client = DefaultWeb.client, setLogin: Boolean = false) {
+    fun HttpRequestBuilder.setLogin(clientType: Client = DefaultWeb.client, setLogin: Boolean = false, targetHost: String = YOUTUBE_MUSIC_HOST) {
         contentType(ContentType.Application.Json)
         headers {
             append("X-YouTube-Client-Name", "${clientType.xClientName ?: 1}")
             append("X-YouTube-Client-Version", clientType.clientVersion)
-            append("X-Origin", "https://$YOUTUBE_MUSIC_HOST")
+            append("X-Origin", "https://$targetHost")
             if (clientType.referer != null) {
                 append("Referer", clientType.referer)
             }
-            if (setLogin) {
+            if (setLogin && clientType.loginSupported) {
                 cookie?.let { cookie ->
                     cookieMap = parseCookieString(cookie)
                     append("X-Goog-Authuser", "0")
@@ -502,13 +502,18 @@ object Innertube {
                     append("Cookie", cookie)
                     if ("SAPISID" !in cookieMap || "__Secure-3PAPISID" !in cookieMap) return@let
                     val currentTime = System.currentTimeMillis() / 1000
-                    val sapisidCookie = cookieMap["SAPISID"] ?: cookieMap["__Secure-3PAPISID"]
-                    val sapisidHash = sha1("$currentTime $sapisidCookie https://$YOUTUBE_MUSIC_HOST")
+                    val sapisidCookie = if (clientType.clientName == "WEB_REMIX") {
+                        cookieMap["__Secure-3PAPISID"] ?: cookieMap["SAPISID"]
+                    } else {
+                        cookieMap["SAPISID"] ?: cookieMap["__Secure-3PAPISID"]
+                    }
+                    val sapisidHash = sha1("$currentTime $sapisidCookie https://$targetHost")
                     append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
                 }
             }
         }
         clientType.userAgent?.let { userAgent(it) }
+        parameter("key", clientType.api_key)
         parameter("prettyPrint", false)
 
     }
@@ -849,11 +854,11 @@ object Innertube {
                 "www.youtube.com"
             }
 
-                url {
-                    host = targetHost
-                }
+            url {
+                host = targetHost
+            }
 
-                setLogin(clientType = context.client, setLogin = true)
+            setLogin(clientType = context.client, setLogin = true, targetHost = targetHost)
                 
                 val playerContext = if (context.client.clientName == "TVHTML5_SIMPLY_EMBEDDED_PLAYER") {
                     context.copy(thirdParty = Context.ThirdParty(embedUrl = "https://www.youtube.com/watch?v=$videoId"))

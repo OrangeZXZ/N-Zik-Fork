@@ -19,6 +19,8 @@ import java.time.Duration
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import app.it.fast4x.rimusic.service.UnplayableException
+import app.it.fast4x.rimusic.service.UnknownException
 
 
 @UnstableApi
@@ -52,6 +54,11 @@ class CatchingDataSourceFactory(private val parent: DataSource.Factory) : DataSo
         }.getOrElse {
             it.printStackTrace()
 
+            if (it is InvalidResponseCodeException && it.responseCode == 403) throw UnplayableException()
+            if (it.cause is InvalidResponseCodeException && (it.cause as InvalidResponseCodeException).responseCode == 403) throw UnplayableException()
+            if (it is UnplayableException) throw it
+            if (it is UnknownException) throw it
+            
             if (it is PlaybackException) throw it
             else throw PlaybackException(
                 "Unknown playback error",
@@ -77,6 +84,11 @@ val Context.defaultDataSourceFactory
         DefaultHttpDataSource.Factory().setConnectTimeoutMs(16000)
             .setReadTimeoutMs(8000)
             .setUserAgent("Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0")
+            .apply {
+                it.fast4x.innertube.Innertube.cookie?.let {
+                    setDefaultRequestProperties(mapOf("Cookie" to it))
+                }
+            }
     )
 
 val Context.okHttpDataSourceFactory
@@ -87,17 +99,9 @@ val Context.okHttpDataSourceFactory
             .apply {
                 val headers = mutableMapOf<String, String>()
                 headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0"
-                
-                it.fast4x.innertube.Innertube.cookie?.let { cookie ->
-                    if (cookie.isNotBlank()) {
-                        headers["Cookie"] = cookie
-                    }
+                it.fast4x.innertube.Innertube.cookie?.let {
+                    headers["Cookie"] = it
                 }
-                
-                if (it.fast4x.innertube.Innertube.visitorData.isNotBlank() && it.fast4x.innertube.Innertube.visitorData != "null") {
-                    headers["X-Goog-Visitor-Id"] = it.fast4x.innertube.Innertube.visitorData
-                }
-                
                 setDefaultRequestProperties(headers)
             }
     )
