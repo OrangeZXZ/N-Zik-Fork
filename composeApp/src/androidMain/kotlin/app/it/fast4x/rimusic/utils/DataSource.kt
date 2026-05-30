@@ -84,6 +84,22 @@ val Context.okHttpDataSourceFactory
     get() = DefaultDataSource.Factory(
         this,
         OkHttpDataSource.Factory { request -> okHttpClient().newCall(request) }
+            .apply {
+                val headers = mutableMapOf<String, String>()
+                headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0"
+                
+                it.fast4x.innertube.Innertube.cookie?.let { cookie ->
+                    if (cookie.isNotBlank()) {
+                        headers["Cookie"] = cookie
+                    }
+                }
+                
+                if (it.fast4x.innertube.Innertube.visitorData.isNotBlank() && it.fast4x.innertube.Innertube.visitorData != "null") {
+                    headers["X-Goog-Visitor-Id"] = it.fast4x.innertube.Innertube.visitorData
+                }
+                
+                setDefaultRequestProperties(headers)
+            }
     )
 
 private fun okHttpClient(): OkHttpClient {

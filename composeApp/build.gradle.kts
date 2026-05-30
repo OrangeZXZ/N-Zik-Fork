@@ -150,11 +150,15 @@ android {
         create( "full" ) {
             // App's properties
             versionNameSuffix = "-f"
+            // Fallback for modules that don't have a 'full' build type (like :discordrpc)
+            matchingFallbacks += listOf("release")
         }
 
         create( "minified" ) {
             // App's properties
             versionNameSuffix = "-m"
+            // Fallback for modules that don't have a 'minified' build type (like :discordrpc)
+            matchingFallbacks += listOf("release")
 
             // Package optimization
             isMinifyEnabled = true
@@ -168,6 +172,8 @@ android {
         create( "beta" ) {
             initWith( maybeCreate("full") )
             versionNameSuffix = "-b"
+            // Fallback for modules that don't have a 'beta' build type (like :discordrpc)
+            matchingFallbacks += listOf("release")
         }
 
         /**
