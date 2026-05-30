@@ -111,12 +111,12 @@ android {
         compose = true
     }
 
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.nevar.nzik"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 36
         versionName = "4.0.0"
 
