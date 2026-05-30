@@ -7,3 +7,6 @@ Fixed:
 - Fixed server restriction (HTTP 403) infinite retry loops in ExoPlayer
 - Fixed missing UI warning messages for restricted and unplayable tracks
 - Removed obsolete newpipe-extractor dependency causing conflicts
+
+Special Thanks:
+- https://github.com/MetrolistGroup for the Metrolist source code that help me find the problem and fix it !
