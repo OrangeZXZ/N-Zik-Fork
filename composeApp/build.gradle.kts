@@ -48,6 +48,7 @@ kotlin {
             implementation(libs.nanojson)
             implementation(libs.androidx.webkit)
             implementation(libs.ktor.okhttp)
+            implementation(projects.discordrpc)
 
             // Related to built-in game, maybe removed in future?
             implementation(libs.compose.runtime.livedata)
@@ -67,7 +68,7 @@ kotlin {
             implementation(projects.oldtube)
             implementation(projects.piped)
             implementation(projects.invidious)
-            implementation(projects.discordrpc)
+
             implementation(projects.metrolist) {
                 exclude(group = "com.google.protobuf", module = "protobuf-java")
                 exclude(group = "com.github.mostafaalagamy", module = "MetrolistExtractor")
@@ -254,7 +255,7 @@ dependencies {
     implementation(projects.kugou)
     implementation(projects.lrclib)
     implementation(projects.piped)
-    implementation(projects.discordrpc)
+
     implementation(projects.metrolist) {
         exclude(group = "com.google.protobuf", module = "protobuf-java")
         exclude(group = "com.github.mostafaalagamy", module = "MetrolistExtractor")

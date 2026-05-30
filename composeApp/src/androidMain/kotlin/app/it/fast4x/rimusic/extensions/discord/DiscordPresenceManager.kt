@@ -97,7 +97,14 @@ class DiscordPresenceManager(
 
         if (token != lastToken) {
             rpc?.closeDirect()
-            rpc = DiscordRpcConnection(token)
+            rpc = DiscordRpcConnection(
+                token = token,
+                os = "Android",
+                browser = "Discord Android",
+                device = android.os.Build.DEVICE,
+                userAgent = com.metrolist.music.discordrpc.SuperProperties.userAgent,
+                superPropertiesBase64 = com.metrolist.music.discordrpc.SuperProperties.superPropertiesBase64
+            )
             lastToken = token
         }
 
@@ -116,8 +123,7 @@ class DiscordPresenceManager(
                 mediaItem = mediaItem,
                 getCurrentPosition = { currentPosition },
                 pausedPosition = position,
-                duration = duration,
-                startTime = now
+                duration = duration
             )
         } else {
             sendPausedPresence(duration, now, position)
@@ -128,8 +134,7 @@ class DiscordPresenceManager(
                 mediaItem = mediaItem,
                 getCurrentPosition = { currentPosition },
                 pausedPosition = position,
-                duration = duration,
-                startTime = now
+                duration = duration
             )
         }
     }
@@ -190,7 +195,14 @@ class DiscordPresenceManager(
 
         if (token != lastToken) {
             rpc?.closeDirect()
-            rpc = DiscordRpcConnection(token)
+            rpc = DiscordRpcConnection(
+                token = token,
+                os = "Android",
+                browser = "Discord Android",
+                device = android.os.Build.DEVICE,
+                userAgent = com.metrolist.music.discordrpc.SuperProperties.userAgent,
+                superPropertiesBase64 = com.metrolist.music.discordrpc.SuperProperties.superPropertiesBase64
+            )
             lastToken = token
         }
         val largeImageUrl = mediaItem.mediaMetadata.artworkUri?.toString() ?: getLargeImageFallback()
@@ -275,8 +287,7 @@ class DiscordPresenceManager(
         mediaItem: MediaItem,
         getCurrentPosition: () -> Long,
         pausedPosition: Long,
-        duration: Long,
-        startTime: Long
+        duration: Long
     ) {
         refreshJob = discordScope.launch {
             while (isActive && !isStopped) {
@@ -287,7 +298,7 @@ class DiscordPresenceManager(
                 val isPlaying = isPlayingProvider()
                 if (isPlaying) {
                     val pos = getCurrentPosition()
-                    sendPlayingPresence(mediaItem, pos, duration, startTime)
+                    sendPlayingPresence(mediaItem, pos, duration, System.currentTimeMillis())
                 } else {
                     sendPausedPresence(duration, System.currentTimeMillis(), pausedPosition)
                 }

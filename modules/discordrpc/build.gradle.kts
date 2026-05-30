@@ -1,5 +1,6 @@
 plugins {
     id("com.android.library")
+    kotlin("android")
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -8,7 +9,7 @@ configure<com.android.build.api.dsl.LibraryExtension> {
     compileSdk = 37
 
     defaultConfig {
-        minSdk = 26
+        minSdk = 24
     }
 
     compileOptions {

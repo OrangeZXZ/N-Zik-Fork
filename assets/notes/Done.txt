@@ -1,0 +1,2 @@
+Fixed discord rpc logout problem
+Thx to metrolist source code
