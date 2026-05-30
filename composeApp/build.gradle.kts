@@ -67,6 +67,7 @@ kotlin {
             implementation(projects.oldtube)
             implementation(projects.piped)
             implementation(projects.invidious)
+            implementation(projects.discordrpc)
             implementation(projects.metrolist) {
                 exclude(group = "com.google.protobuf", module = "protobuf-java")
                 exclude(group = "com.github.mostafaalagamy", module = "MetrolistExtractor")
@@ -239,7 +240,6 @@ dependencies {
     implementation(libs.toasty)
     implementation(libs.androidyoutubeplayer)
     implementation(libs.androidx.glance.widgets)
-    implementation(libs.kizzy.rpc)
     implementation(libs.gson)
     implementation(libs.hypnoticcanvas)
     implementation(libs.hypnoticcanvas.shaders)
@@ -254,6 +254,7 @@ dependencies {
     implementation(projects.kugou)
     implementation(projects.lrclib)
     implementation(projects.piped)
+    implementation(projects.discordrpc)
     implementation(projects.metrolist) {
         exclude(group = "com.google.protobuf", module = "protobuf-java")
         exclude(group = "com.github.mostafaalagamy", module = "MetrolistExtractor")
