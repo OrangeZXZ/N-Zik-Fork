@@ -1,5 +1,6 @@
 New:
 - bump min sdk to 24
+- bump target sdk to 37
 
 Improved:
 - Completely centralized HTTP network architecture using NetworkClientFactory
