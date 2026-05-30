@@ -490,6 +490,15 @@ class MainActivity :
             val coroutineScope = rememberCoroutineScope()
             val isSystemInDarkTheme = isSystemInDarkTheme()
             val navController = rememberNavController()
+            DisposableEffect(navController) {
+                val listener = androidx.navigation.NavController.OnDestinationChangedListener { _, destination, _ ->
+                    app.it.fast4x.rimusic.extensions.discord.DiscordUiState.currentRoute.value = destination.route
+                }
+                navController.addOnDestinationChangedListener(listener)
+                onDispose {
+                    navController.removeOnDestinationChangedListener(listener)
+                }
+            }
             var showPlayer by rememberSaveable { mutableStateOf(false) }
             var switchToAudioPlayer by rememberSaveable { mutableStateOf(false) }
             var animatedGradient by rememberPreference(animatedGradientKey, AnimatedGradient.FluidCoverColorGradient)

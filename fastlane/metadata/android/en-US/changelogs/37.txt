@@ -1,0 +1,11 @@
+New:
+- Added "Browsing" status in Discord Rich Presence when navigating the app
+
+Improved:
+- Optimized Discord RPC network performance by removing redundant token validations
+
+Fixed:
+- Fixed Discord Rich Presence timestamp calculations to accurately sync with track playback
+
+Special Thanks:
+- https://github.com/MetrolistGroup for the Metrolist source code that help me find the problem and fix it !
