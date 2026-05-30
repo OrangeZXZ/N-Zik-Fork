@@ -499,6 +499,7 @@ object Innertube {
                     cookieMap = parseCookieString(cookie)
                     append("X-Goog-Authuser", "0")
                     append("X-Goog-Visitor-Id", visitorData)
+                    append("X-Youtube-Bootstrap-Logged-In", "true")
                     append("Cookie", cookie)
                     if ("SAPISID" !in cookieMap || "__Secure-3PAPISID" !in cookieMap) return@let
                     val currentTime = System.currentTimeMillis() / 1000

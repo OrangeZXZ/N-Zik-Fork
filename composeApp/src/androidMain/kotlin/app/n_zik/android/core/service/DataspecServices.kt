@@ -317,7 +317,8 @@ fun DataSpec.process(
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
 ): DataSpec = runBlocking(Dispatchers.IO) {
-    Timber.tag(TAG).d("Resolving stream for videoId=$videoId, isLoggedIn=false")
+    val isLoggedIn = Store.getCookie().isNotBlank()
+    Timber.tag(TAG).d("Resolving stream for videoId=$videoId, isLoggedIn=$isLoggedIn")
 
     var formatUri = formatCache[videoId]
 
