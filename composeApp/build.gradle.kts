@@ -115,7 +115,7 @@ android {
 
     defaultConfig {
         applicationId = "com.nevar.nzik"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 36
         versionCode = 36
         versionName = "4.0.0"
