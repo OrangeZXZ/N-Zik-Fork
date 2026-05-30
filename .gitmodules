@@ -6,10 +6,6 @@
 	path = scripts/strings-modifier
 	url = https://gitlab.com/tannguyen047/string-modifier
 	branch = dev
-[submodule "discord"]
-	path = modules/discord
-	url = https://gitlab.com/tannguyen047/discord-kotlin.git
-	branch = dev
 [submodule "metrolist-innertube"]
 	path = modules/metrolist-innertube
 	url = https://github.com/NEVARLeVrai/Metrolist-innertube.git

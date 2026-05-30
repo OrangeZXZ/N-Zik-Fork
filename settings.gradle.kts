@@ -35,8 +35,6 @@ project(":ktor-client-brotli").projectDir = file("extensions/ktor-client-brotli"
 // Submodules
 include(":innertube")
 project(":innertube").projectDir = file("modules/innertube")
-include("discord")
-project(":discord").projectDir = file("modules/discord")
 include(":metrolist")
 val metrolistNestedDir = file("modules/metrolist-innertube/innertube")
 val metrolistRootDir = file("modules/metrolist-innertube")

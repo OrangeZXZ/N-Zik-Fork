@@ -67,7 +67,6 @@ kotlin {
             implementation(projects.oldtube)
             implementation(projects.piped)
             implementation(projects.invidious)
-            implementation(projects.discord)
             implementation(projects.metrolist) {
                 exclude(group = "com.google.protobuf", module = "protobuf-java")
                 exclude(group = "com.github.mostafaalagamy", module = "MetrolistExtractor")
@@ -255,7 +254,6 @@ dependencies {
     implementation(projects.kugou)
     implementation(projects.lrclib)
     implementation(projects.piped)
-    implementation(projects.discord)
     implementation(projects.metrolist) {
         exclude(group = "com.google.protobuf", module = "protobuf-java")
         exclude(group = "com.github.mostafaalagamy", module = "MetrolistExtractor")
