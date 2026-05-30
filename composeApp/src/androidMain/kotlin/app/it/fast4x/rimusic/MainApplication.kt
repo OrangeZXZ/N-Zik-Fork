@@ -23,6 +23,9 @@ import app.it.fast4x.rimusic.utils.isProxyEnabledKey
 import app.it.fast4x.rimusic.utils.proxyHostnameKey
 import app.it.fast4x.rimusic.utils.proxyModeKey
 import app.it.fast4x.rimusic.utils.proxyPortKey
+import app.it.fast4x.rimusic.utils.ytCookieKey
+import app.it.fast4x.rimusic.utils.ytVisitorDataKey
+import app.it.fast4x.rimusic.utils.ytDataSyncIdKey
 import app.it.fast4x.rimusic.utils.isValidIP
 import app.it.fast4x.rimusic.utils.getEnum
 import it.fast4x.innertube.utils.ProxyPreferenceItem
@@ -57,6 +60,15 @@ class MainApplication : Application(), SingletonImageLoader.Factory {
                 cacheDir = externalCacheDir ?: cacheDir
             )
             it.fast4x.innertube.Innertube.proxy = proxy
+            
+            // Initialize YouTube session identifiers from Datastore
+            val savedCookie = preferences.getString(ytCookieKey, "")
+            if (!savedCookie.isNullOrBlank()) {
+                it.fast4x.innertube.Innertube.cookie = savedCookie
+                it.fast4x.innertube.Innertube.visitorData = preferences.getString(ytVisitorDataKey, "") ?: ""
+                it.fast4x.innertube.Innertube.dataSyncId = preferences.getString(ytDataSyncIdKey, "")
+            }
+
             runCatching {
                 org.schabi.newpipe.extractor.NewPipe.init(
                     it.fast4x.innertube.utils.NewPipeDownloaderImpl {
