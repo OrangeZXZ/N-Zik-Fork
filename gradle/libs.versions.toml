@@ -48,7 +48,7 @@ webkit = "1.16.0"
 koin = "4.2.1"
 kermit = "2.1.0"
 kotlinx-serialization = "1.11.0"
-composeReorderable = "3.0.0"
+composeReorderable = "3.1.0"
 
 [libraries]
 # Kotlinx
