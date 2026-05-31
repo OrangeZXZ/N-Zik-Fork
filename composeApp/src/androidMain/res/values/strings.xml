@@ -1103,4 +1103,10 @@
 <string name="parental_control_is_enabled">Parental control is enabled</string>
 <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
 <string name="battery_optimization_msg">%1$s %2$s</string>
+
+    <string name="player_presets_and_layout">Presets &amp; Layout</string>
+    <string name="cover_and_thumbnail">Cover &amp; Thumbnail</string>
+    <string name="timeline_and_controls">Timeline &amp; Controls</string>
+    <string name="colors_and_background">Colors &amp; Background</string>
+    <string name="player_behavior_and_visuals">Player Behavior &amp; Visuals</string>
 </resources>
