@@ -1085,4 +1085,9 @@
   <string name="download_completed">%1$d zakończony</string>
   <string name="download_completed_with_failed">%1$d zakończone, %2$d nie powiodło się</string>
   <string name="deleted_item">%1$s deleted</string>
+  <string name="youtube_music">Muzyka YouTube</string>
+  <string name="sync_data_with_ytm_account">Synchronizuj dane z kontem YTM</string>
+  <string name="playlists_albums_artists_history_like_etc">Listy odtwarzania, albumy, artyści, historia, podobieństwo itp.</string>
+  <string name="locations">Lokalizacje</string>
+  <string name="users">Użytkownicy</string>
 </resources>
