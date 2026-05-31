@@ -1087,4 +1087,9 @@ Volume BAS : titre précédent</string>
   <string name="download_completed">%1$d terminé</string>
   <string name="download_completed_with_failed">%1$d terminé, %2$d a échoué</string>
   <string name="deleted_item">%1$s supprimé</string>
+  <string name="youtube_music">Musique YouTube</string>
+  <string name="sync_data_with_ytm_account">Synchroniser les données avec le compte YTM</string>
+  <string name="playlists_albums_artists_history_like_etc">Playlists, albums, artistes, histoire, etc.</string>
+  <string name="locations">Emplacements</string>
+  <string name="users">Utilisateurs</string>
 </resources>
