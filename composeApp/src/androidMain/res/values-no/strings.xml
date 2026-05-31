@@ -1091,4 +1091,16 @@
   <string name="locations">Steder</string>
   <string name="users">Brukere</string>
   <string name="error_youtube_login">Feil YoutubeLogin</string>
+  <string name="stream_error_retrying">Prøv igjen: %1$s</string>
+  <string name="error_playback_failed">Feil: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Kan ikke spille: %1$s</string>
+  <string name="songs_remaining">%1$s Sanger igjen</string>
+  <string name="failed_to_copy_clipboard">Kan ikke kopiere tekst til utklippstavle, prøv igjen</string>
+  <string name="discord_presence_closed">Discord tilstedeværelse stengt</string>
+  <string name="cant_enable_bass_boost">Kan ikke aktivere bass-boost</string>
+  <string name="extreme_loudness_detected">Ekstrem lydstyrke påvist</string>
+  <string name="invalid_proxy_hostname">Ditt mellomtjenernavn er ugyldig, vennligst sjekk det</string>
+  <string name="parental_control_is_enabled">Foreldrekontroll er aktivert</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>
