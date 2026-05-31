@@ -1085,4 +1085,9 @@
   <string name="download_completed">%1$d завершено</string>
   <string name="download_completed_with_failed">%1$d завершен, %2$d не удалось</string>
   <string name="deleted_item">%1$s удалено</string>
+  <string name="youtube_music">Музыка YouTube</string>
+  <string name="sync_data_with_ytm_account">Синхронизировать данные с аккаунтом YTM</string>
+  <string name="playlists_albums_artists_history_like_etc">Списки воспроизведения, альбомы, исполнители, история, подобные и т.д.</string>
+  <string name="locations">Места</string>
+  <string name="users">Пользователи</string>
 </resources>
