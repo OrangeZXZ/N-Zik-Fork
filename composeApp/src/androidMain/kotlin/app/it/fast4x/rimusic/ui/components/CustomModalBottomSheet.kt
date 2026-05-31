@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -29,6 +30,7 @@ import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.rememberPreference
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,44 +52,8 @@ fun CustomModalBottomSheet(
 ) {
     val bottomPadding = if(isLandscape) 0.dp else WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
-    //NEW SHEET
-//    val mbSheetState: ModalBottomSheetState = androidx.compose.material.rememberModalBottomSheetState(
-//        initialValue = androidx.compose.material.ModalBottomSheetValue.Expanded,
-//        skipHalfExpanded = true,
-//        confirmValueChange = {
-//            if (it == androidx.compose.material.ModalBottomSheetValue.Hidden) {
-//                onDismissRequest()
-//            }
-//            true
-//        }
-//    )
-
     if (showSheet) {
 
-        //NEW SHEET
-//        val scope = rememberCoroutineScope()
-//        SideEffect {
-//            scope.launch {
-//                mbSheetState.show()
-//            }
-//        }
-//        ModalBottomSheetLayout(
-//            sheetState =  mbSheetState,
-//            sheetContentColor = colorPalette().background0,
-//            sheetBackgroundColor = colorPalette().background0,
-//            sheetShape = shape,
-//            sheetElevation = tonalElevation,
-//            scrimColor = scrimColor,
-//            sheetContent = {
-//                Column(Modifier.padding(bottom = bottomPadding)) {
-//                    content()
-//                }
-//            },
-//            content = {}
-//        )
-        // NEW SHEET
-
-        //PREVIOUS SHEET
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
             modifier = modifier,
@@ -108,10 +74,39 @@ fun CustomModalBottomSheet(
             Column(modifier = Modifier.padding(bottom = bottomPadding)) {
 
                 val view = LocalView.current
-                (view.parent as? DialogWindowProvider)?.window?.let { window ->
-                    SideEffect {
-                        WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !isDark
-                        WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !isDark
+                (view.parent as? androidx.compose.ui.window.DialogWindowProvider)?.window?.let { window ->
+                    androidx.compose.runtime.DisposableEffect(window, containerColor) {
+                        val luminance = androidx.core.graphics.ColorUtils.calculateLuminance(containerColor.toArgb())
+                        val isLightBackground = luminance > 0.5 
+
+                        val applyInsets = {
+                            window.addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                                window.statusBarColor = android.graphics.Color.TRANSPARENT
+                            }
+
+                            val insetsController = WindowCompat.getInsetsController(window, view)
+                            insetsController.isAppearanceLightNavigationBars = isLightBackground
+                            insetsController.isAppearanceLightStatusBars = isLightBackground
+                        }
+
+                        if (view.isAttachedToWindow) {
+                            applyInsets()
+                            view.post { applyInsets() }
+                        }
+
+                        val listener = object : android.view.View.OnAttachStateChangeListener {
+                            override fun onViewAttachedToWindow(v: android.view.View) {
+                                applyInsets()
+                                view.post { applyInsets() }
+                            }
+                            override fun onViewDetachedFromWindow(v: android.view.View) {}
+                        }
+                        view.addOnAttachStateChangeListener(listener)
+
+                        onDispose {
+                            view.removeOnAttachStateChangeListener(listener)
+                        }
                     }
                 }
 
@@ -119,7 +114,6 @@ fun CustomModalBottomSheet(
                 content()
             }
         }
-        //PREVIOUS SHEET
     }
 }
 

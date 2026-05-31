@@ -638,6 +638,18 @@ fun Player(
         }
     }
 
+    val view = androidx.compose.ui.platform.LocalView.current
+    val globalIsDark = color.isDark
+    
+    fun getWindow(): android.view.Window? {
+        var context = view.context
+        while (context is android.content.ContextWrapper) {
+            if (context is android.app.Activity) return context.window
+            context = context.baseContext
+        }
+        return null
+    }
+
     var sizeShader by remember { mutableStateOf(Size.Zero) }
 
     var totalPlayTimes = 0L

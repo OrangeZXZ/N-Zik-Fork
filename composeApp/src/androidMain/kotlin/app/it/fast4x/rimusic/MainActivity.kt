@@ -377,18 +377,6 @@ class MainActivity :
         Timber.d("MainActivity onPictureInPictureModeChanged: $isInPictureInPictureMode")
     }
 
-
-    /*
-    @Suppress("DEPRECATION")
-    override fun onUserLeaveHint() {
-        super.onUserLeaveHint()
-        if (isAtLeastAndroid8 && !isInPictureInPictureMode) {
-            enterPictureInPictureMode()
-            println("MainActivity.onUserLeaveHint isInPictureInPictureMode: $isInPictureInPictureMode")
-        }
-    }
-    */
-
     @Composable
     fun ThemeApp(
         isDark: Boolean = false,
@@ -404,7 +392,24 @@ class MainActivity :
                         !isDark
                 }
             }
-
+            
+            val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+            androidx.compose.runtime.DisposableEffect(lifecycleOwner, isDark) {
+                val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+                    if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                        (view.context as Activity).window.let { window ->
+                            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
+                                !isDark
+                            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars =
+                                !isDark
+                        }
+                    }
+                }
+                lifecycleOwner.lifecycle.addObserver(observer)
+                onDispose {
+                    lifecycleOwner.lifecycle.removeObserver(observer)
+                }
+            }
         }
         content()
     }
@@ -504,7 +509,13 @@ class MainActivity :
             var animatedGradient by rememberPreference(animatedGradientKey, AnimatedGradient.FluidCoverColorGradient)
             var customColor by rememberPreference(customColorKey, Color.Green.hashCode())
             val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
-
+            
+            androidx.compose.runtime.LaunchedEffect(lightTheme) {
+                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+                    if (lightTheme) androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO 
+                    else androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+                )
+            }
 
             LocalePreferences.preference =
                 LocalePreferenceItem(
@@ -625,7 +636,6 @@ class MainActivity :
 
                             dynamicColorPaletteOf(bitmap, isDark)?.let { paletteResult ->
                                 withContext(Dispatchers.Main) {
-                                    setSystemBarAppearance(paletteResult.isDark)
                                     val newAppearance = appearance.copy(
                                         colorPalette = if (!isPicthBlack) paletteResult else paletteResult.copy(
                                             background0 = Color.Black,

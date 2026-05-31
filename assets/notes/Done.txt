@@ -19,3 +19,4 @@ Improved playback reliability
 Improved Toaster error messages
 Fixed Translated some missed toaster messages
 Improved metadata fetching for tracks
+Fixed status bar color issues when bottom sheet is open
