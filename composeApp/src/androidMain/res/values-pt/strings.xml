@@ -232,7 +232,7 @@
   <string name="disable_song_switching_via_swipe">Desativar troca de música através do deslize</string>
   <string name="interface_in_use">Interface em utilização</string>
   <string name="user_interface">Interface do utilizador</string>
-  <string name="ui_tab">IU</string>
+  <string name="ui_tab">Interface do usuário</string>
   <string name="system_language">Linguagem do sistema</string>
   <string name="biggest">Maior</string>
   <string name="set_custom_cache">Definir cache personalizado</string>
@@ -1090,4 +1090,5 @@
   <string name="playlists_albums_artists_history_like_etc">Playlists, álbuns, artistas, histórico, etc.</string>
   <string name="locations">Alocações</string>
   <string name="users">Utilizadores</string>
+  <string name="error_youtube_login">Erro no YoutubeLogin</string>
 </resources>
