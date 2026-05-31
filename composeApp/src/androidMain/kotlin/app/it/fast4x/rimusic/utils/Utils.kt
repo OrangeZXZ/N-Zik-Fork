@@ -103,7 +103,11 @@ val Innertube.SongItem.asMediaItem: MediaItem
         .setMediaMetadata(
             MediaMetadata.Builder()
                 .setTitle(info?.name)
-                .setArtist(authors?.filter {it.name?.matches(Regex("\\s*([,&])\\s*")) == false }?.joinToString(", ") { it.name ?: "" })
+                .setArtist(
+                    authors?.filter { it.name?.matches(Regex("\\s*([,&])\\s*")) == false }
+                        ?.joinToString(", ") { it.name ?: "" }
+                        ?.let { if (explicit) "\uD83C\uDD74 $it" else it }
+                )
                 .setAlbumTitle(album?.name)
                 .setArtworkUri(thumbnail?.url?.toUri())
                 .setExtras(
@@ -165,8 +169,14 @@ val Song.asMediaItem: MediaItem
     get() = MediaItem.Builder()
         .setMediaMetadata(
             MediaMetadata.Builder()
-                .setTitle(title)
-                .setArtist(artistsText)
+                .setTitle(cleanPrefix(title))
+                .setArtist(
+                    if (title.startsWith(EXPLICIT_PREFIX, true)) {
+                        if (artistsText.isNullOrEmpty()) "\uD83C\uDD74" else "\uD83C\uDD74 $artistsText"
+                    } else {
+                        artistsText
+                    }
+                )
                 .setArtworkUri(thumbnailUrl?.toUri())
                 .setExtras(
                     bundleOf(

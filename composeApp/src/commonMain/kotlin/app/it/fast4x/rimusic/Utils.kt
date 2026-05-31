@@ -26,5 +26,6 @@ fun cleanPrefix(text: String): String {
     }
     if(i >= splitText.size) return ""
     return splitText.subList(i, splitText.size).joinToString(":")
+        .removePrefix("\uD83C\uDD74 ")
 }
 
