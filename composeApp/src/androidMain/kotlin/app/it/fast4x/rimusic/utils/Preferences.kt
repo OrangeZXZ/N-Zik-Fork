@@ -623,11 +623,32 @@ fun rememberPreference(key: String, defaultValue: Long): MutableState<Long> {
 @Composable
 fun rememberPreference(key: String, defaultValue: String): MutableState<String> {
     val context = LocalContext.current
-    return remember {
-        mutableStatePreferenceOf(context.preferences.getString(key, null) ?: defaultValue) {
-            context.preferences.edit { putString(key, it) }
+    val prefs = context.preferences
+    val state = remember {
+        mutableStatePreferenceOf(prefs.getString(key, null) ?: defaultValue) {
+            prefs.edit { putString(key, it) }
         }
     }
+    
+    val listener = remember(prefs, key) {
+        android.content.SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
+            if (changedKey == key) {
+                val newValue = sharedPreferences.getString(key, null) ?: defaultValue
+                if (state.value != newValue) {
+                    state.value = newValue
+                }
+            }
+        }
+    }
+    
+    androidx.compose.runtime.DisposableEffect(prefs, listener) {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+        onDispose {
+            prefs.unregisterOnSharedPreferenceChangeListener(listener)
+        }
+    }
+
+    return state
 }
 
 @Composable
