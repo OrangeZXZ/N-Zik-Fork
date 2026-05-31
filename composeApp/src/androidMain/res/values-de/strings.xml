@@ -755,7 +755,7 @@
   <string name="discord_enable_rich_presence">Aktivitätsstatus aktivieren</string>
   <string name="discord_disconnect">Verbindung trennen</string>
   <string name="discord_connect">Verbindung herstellen</string>
-  <string name="discord_connected_to_discord_account">Mit Discord-Account verbunden</string>
+  <string name="discord_connected_to_discord_account">Mit Discord Account verbunden</string>
   <string name="settings_reset">Zurücksetzen</string>
   <string name="settings_restore_default_settings">Standardeinstellungen wiederherstellen</string>
   <string name="piped_custom_instance">Benutzerdefinierte Instanz</string>
@@ -1091,4 +1091,16 @@
   <string name="locations">Standorte</string>
   <string name="users">Benutzer</string>
   <string name="error_youtube_login">Fehler YoutubeLogin</string>
+  <string name="stream_error_retrying">Wiederholung: %1$s</string>
+  <string name="error_playback_failed">Fehler: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Abspielen nicht möglich: %1$s</string>
+  <string name="songs_remaining">%1$s Lieder verbleibend</string>
+  <string name="failed_to_copy_clipboard">Fehler beim Kopieren des Textes in die Zwischenablage, erneut versuchen</string>
+  <string name="discord_presence_closed">Discord Präsenz geschlossen</string>
+  <string name="cant_enable_bass_boost">Bass-Boost kann nicht aktiviert werden</string>
+  <string name="extreme_loudness_detected">Extreme Lautstärke erkannt</string>
+  <string name="invalid_proxy_hostname">Ihr Proxy Hostname ist ungültig, bitte überprüfen Sie ihn</string>
+  <string name="parental_control_is_enabled">Kindersicherung ist aktiviert</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>

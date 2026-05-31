@@ -755,7 +755,7 @@
   <string name="discord_enable_rich_presence">Enable Rich Presence</string>
   <string name="discord_disconnect">Disconnect</string>
   <string name="discord_connect">Anslut</string>
-  <string name="discord_connected_to_discord_account">Connected to Discord Account</string>
+  <string name="discord_connected_to_discord_account">Ansluten till Discord-konto</string>
   <string name="settings_reset">Återställ</string>
   <string name="settings_restore_default_settings">Restore default settings</string>
   <string name="piped_custom_instance">Piped custom instance</string>
@@ -1091,4 +1091,16 @@
   <string name="locations">Platser</string>
   <string name="users">Användare</string>
   <string name="error_youtube_login">Fel YoutubeLogin</string>
+  <string name="stream_error_retrying">Försök igen: %1$s</string>
+  <string name="error_playback_failed">Fel: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Det gick inte att spela: %1$s</string>
+  <string name="songs_remaining">%1$s låtar kvar</string>
+  <string name="failed_to_copy_clipboard">Det gick inte att kopiera text till urklipp, försök igen</string>
+  <string name="discord_presence_closed">Discords närvaro stängd</string>
+  <string name="cant_enable_bass_boost">Kan inte aktivera basförstärkning</string>
+  <string name="extreme_loudness_detected">Extrem ljudstyrka upptäckt</string>
+  <string name="invalid_proxy_hostname">Ditt Proxy Hostname är ogiltigt, vänligen kontrollera det</string>
+  <string name="parental_control_is_enabled">Föräldrakontroll är aktiverad</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>

@@ -1091,4 +1091,16 @@
   <string name="locations">Locații</string>
   <string name="users">Utilizatori</string>
   <string name="error_youtube_login">Eroare YoutubeLogin</string>
+  <string name="stream_error_retrying">Reîncercare: %1$s</string>
+  <string name="error_playback_failed">Eroare: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Imposibil de jucat: %1$s</string>
+  <string name="songs_remaining">%1$s melodii ramase</string>
+  <string name="failed_to_copy_clipboard">Copierea textului în clipboard a eșuat, încercați din nou</string>
+  <string name="discord_presence_closed">Prezență Discord închisă</string>
+  <string name="cant_enable_bass_boost">Nu se poate activa amplificarea bass</string>
+  <string name="extreme_loudness_detected">Luminozitate extremă detectată</string>
+  <string name="invalid_proxy_hostname">Numele tău de gazdă Proxy nu este valid, te rugăm verifică-l</string>
+  <string name="parental_control_is_enabled">Controlul parental este activat</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>

@@ -1091,4 +1091,16 @@
   <string name="locations">Ubicaciones</string>
   <string name="users">Usuarios</string>
   <string name="error_youtube_login">Error YoutubeLogin</string>
+  <string name="stream_error_retrying">Reintentando: %1$s</string>
+  <string name="error_playback_failed">Error: %1$s</string>
+  <string name="error_all_stream_attempts_failed">No se puede reproducir: %1$s</string>
+  <string name="songs_remaining">%1$s sobrantes</string>
+  <string name="failed_to_copy_clipboard">Error al copiar el texto al portapapeles, inténtalo de nuevo</string>
+  <string name="discord_presence_closed">Presencia de Discord cerrada</string>
+  <string name="cant_enable_bass_boost">No se puede activar la mejora de bajos</string>
+  <string name="extreme_loudness_detected">Ruidosidad enorme detectada</string>
+  <string name="invalid_proxy_hostname">El nombre de host del proxy no es válido, por favor compruébalo</string>
+  <string name="parental_control_is_enabled">El control parental está habilitado</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>

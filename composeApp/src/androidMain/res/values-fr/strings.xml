@@ -757,7 +757,7 @@ Volume BAS : titre précédent</string>
   <string name="discord_enable_rich_presence">Activer Rich Presence (Discord)</string>
   <string name="discord_disconnect">Déconnecté</string>
   <string name="discord_connect">Se connecter</string>
-  <string name="discord_connected_to_discord_account">Connecté à un compte Discord</string>
+  <string name="discord_connected_to_discord_account">Connecté au compte Discord</string>
   <string name="settings_reset">Réinitialiser</string>
   <string name="settings_restore_default_settings">Restaurer les paramètres par défaut</string>
   <string name="piped_custom_instance">Instance personnalisée pour Piped</string>
@@ -1093,4 +1093,16 @@ Volume BAS : titre précédent</string>
   <string name="locations">Emplacements</string>
   <string name="users">Utilisateurs</string>
   <string name="error_youtube_login">Erreur lors de la connexion à Youtube</string>
+  <string name="stream_error_retrying">Réessayer : %1$s</string>
+  <string name="error_playback_failed">Erreur: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Impossible de jouer : %1$s</string>
+  <string name="songs_remaining">%1$s Chansons restantes</string>
+  <string name="failed_to_copy_clipboard">Impossible de copier le texte dans le presse-papiers, réessayez</string>
+  <string name="discord_presence_closed">Présence de Discord fermée</string>
+  <string name="cant_enable_bass_boost">Impossible d\'activer l\'amplification des basses</string>
+  <string name="extreme_loudness_detected">Bruit extrême détecté</string>
+  <string name="invalid_proxy_hostname">Votre nom d\'hôte de proxy n\'est pas valide, veuillez le vérifier</string>
+  <string name="parental_control_is_enabled">Le contrôle parental est activé</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>
