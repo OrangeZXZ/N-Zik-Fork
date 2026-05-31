@@ -1090,4 +1090,5 @@
   <string name="playlists_albums_artists_history_like_etc">Liste de redare, albume, artiști, istorie, lucruri similare etc.</string>
   <string name="locations">Locații</string>
   <string name="users">Utilizatori</string>
+  <string name="error_youtube_login">Eroare YoutubeLogin</string>
 </resources>

@@ -1090,4 +1090,5 @@
   <string name="playlists_albums_artists_history_like_etc">المشغلين، الألبومات، الفنانين، التاريخ، مثل، إلخ.</string>
   <string name="locations">المواقع</string>
   <string name="users">المستخدمون</string>
+  <string name="error_youtube_login">خطأ في Youtubelogin</string>
 </resources>

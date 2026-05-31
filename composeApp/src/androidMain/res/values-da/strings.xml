@@ -1090,4 +1090,5 @@
   <string name="playlists_albums_artists_history_like_etc">Spillelister, album, kunstnere, historie, lignende osv.</string>
   <string name="locations">Placeringer</string>
   <string name="users">Brugere</string>
+  <string name="error_youtube_login">Fejl Under YoutubeLogin</string>
 </resources>

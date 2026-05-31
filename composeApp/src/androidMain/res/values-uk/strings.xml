@@ -1090,4 +1090,5 @@
   <string name="playlists_albums_artists_history_like_etc">Плейлісти, альбоми, артисти, історію тощо.</string>
   <string name="locations">Місцезнаходження</string>
   <string name="users">Спільноти</string>
+  <string name="error_youtube_login">Помилка YoutubeLogin</string>
 </resources>

@@ -1090,4 +1090,5 @@
   <string name="playlists_albums_artists_history_like_etc">Списки воспроизведения, альбомы, исполнители, история, подобные и т.д.</string>
   <string name="locations">Места</string>
   <string name="users">Пользователи</string>
+  <string name="error_youtube_login">Ошибка YoutubeLogin</string>
 </resources>

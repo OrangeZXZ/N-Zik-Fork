@@ -1090,4 +1090,5 @@
   <string name="playlists_albums_artists_history_like_etc">Soittolistat, albumit, artistit, historia, tykkää jne.</string>
   <string name="locations">Sijainnit</string>
   <string name="users">Käyttäjät</string>
+  <string name="error_youtube_login">Virhe YoutubeKirjaudu</string>
 </resources>

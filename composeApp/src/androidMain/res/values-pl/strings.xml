@@ -1090,4 +1090,5 @@
   <string name="playlists_albums_artists_history_like_etc">Listy odtwarzania, albumy, artyści, historia, podobieństwo itp.</string>
   <string name="locations">Lokalizacje</string>
   <string name="users">Użytkownicy</string>
+  <string name="error_youtube_login">Błąd YoutubeLogin</string>
 </resources>

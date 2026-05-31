@@ -1090,4 +1090,5 @@
   <string name="playlists_albums_artists_history_like_etc">Spellistor, album, artister, historia, osv.</string>
   <string name="locations">Platser</string>
   <string name="users">Användare</string>
+  <string name="error_youtube_login">Fel YoutubeLogin</string>
 </resources>
