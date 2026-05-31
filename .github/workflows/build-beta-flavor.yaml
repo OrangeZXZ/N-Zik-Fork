@@ -35,13 +35,10 @@ jobs:
       - name: Get downstream (local) version
         id: downstream
         run: |
-          # Affiche le build.gradle pour debug
           echo "Contents of build.gradle.kts:"
           cat composeApp/build.gradle.kts
   
-          # Récupération versionCode
           versionCode=$(grep -E '^\s*versionCode\s*=' composeApp/build.gradle.kts | sed 's/[^0-9]*//g')
-          # Récupération versionName
           versionName=$(grep -E '^\s*versionName\s*=' composeApp/build.gradle.kts | sed -E 's/.*"(.+)".*/\1/')
   
           echo "version=$versionName" >> $GITHUB_OUTPUT
@@ -232,3 +229,68 @@ jobs:
 
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
+
+  notify-discord:
+    needs: [upload-to-release, versioning]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🧪 Beta Release Notification
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          CONTENT: |
+            ⚠️ **||<@&1345079801324634195>|| BETA VERSION v${{ needs.versioning.outputs.downstream }}-b AVAILABLE!**
+            
+            🧪 Help us test the latest features!
+          DESCRIPTION: |
+            ## 📲 Installation
+
+            ⚠️ This is a **BETA release**, not a stable version.  
+            It is intended **only for testing and feedback**.
+
+            1. Download the **Full BETA build** below.  
+            2. Verify its signature using the hashes provided.  
+            3. Install on your device (you may need to allow installation from outside the Play Store).  
+
+            Please report any crashes, bugs, or unexpected behavior.
+
+            ## 📦 Available Build
+
+            - **Full (BETA)** – Complete build with all components.  
+              ⚠️ May contain bugs or experimental features.
+
+            ## 🔄 Update Policy
+
+            - 🟡 **Beta Build (-b)** - **Default:** Update notifications for **Beta** are **enabled by default**.  
+              - **User options:** - You can **disable Beta updates** in **Settings > About > Beta update disabled**.  
+                - You can **enable or disable auto update** in **Settings > About > Auto update enabled**.  
+              - **Behavior:** - Without Beta enabled → automatically upgrades to the latest **Stable** release.  
+                - With Beta enabled → stays on the **Beta channel** and receives **Stable updates** as well.  
+              - ⚠️ **Note:** This build may contain experimental features and bugs. Only enable Beta updates if you want to test new features.
+
+            This lets you decide whether to test new experimental updates or stick with the stable ones.
+
+            ## 🔗 Changelog & Downloads
+
+            - 📥 **Full BETA APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-b/N-Zik-beta.apk
+            - [View full changelog](https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-b)
+        run: |
+          jq -n \
+            --arg content "$CONTENT" \
+            --arg username "N-Zik Beta" \
+            --arg avatar "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png" \
+            --arg desc "$DESCRIPTION" \
+            '{
+              content: $content,
+              username: $username,
+              avatar_url: $avatar,
+              embeds: [{
+                color: 16711680,
+                description: $desc,
+                footer: {
+                  text: "N-Zik BETA • Testing & Feedback Needed",
+                  icon_url: $avatar
+                }
+              }]
+            }' > payload.json
+          
+          curl -X POST -H "Content-Type: application/json" -d @payload.json $WEBHOOK_URL
