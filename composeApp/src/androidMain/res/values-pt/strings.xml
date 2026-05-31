@@ -232,7 +232,7 @@
   <string name="disable_song_switching_via_swipe">Desativar troca de música através do deslize</string>
   <string name="interface_in_use">Interface em utilização</string>
   <string name="user_interface">Interface do utilizador</string>
-  <string name="ui_tab">IU</string>
+  <string name="ui_tab">Interface do usuário</string>
   <string name="system_language">Linguagem do sistema</string>
   <string name="biggest">Maior</string>
   <string name="set_custom_cache">Definir cache personalizado</string>
@@ -755,7 +755,7 @@
   <string name="discord_enable_rich_presence">Ativar Rich Presence</string>
   <string name="discord_disconnect">Desconectar</string>
   <string name="discord_connect">Conectar</string>
-  <string name="discord_connected_to_discord_account">Conectado à conta Discord</string>
+  <string name="discord_connected_to_discord_account">Conectado à conta do Discord</string>
   <string name="settings_reset">Reiniciar</string>
   <string name="settings_restore_default_settings">Restaurar configurações padrão</string>
   <string name="piped_custom_instance">Instância personalizada de Piped</string>
@@ -1091,4 +1091,16 @@
   <string name="locations">Alocações</string>
   <string name="users">Utilizadores</string>
   <string name="error_youtube_login">Erro no YoutubeLogin</string>
+  <string name="stream_error_retrying">Repetindo: %1$s</string>
+  <string name="error_playback_failed">Erro: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Não é possível jogar: %1$s</string>
+  <string name="songs_remaining">%1$s músicas restantes</string>
+  <string name="failed_to_copy_clipboard">Falha ao copiar texto para área de transferência, tente novamente</string>
+  <string name="discord_presence_closed">Presença do Discord fechada</string>
+  <string name="cant_enable_bass_boost">Não é possível ativar reforço de graves</string>
+  <string name="extreme_loudness_detected">Alarme extremo detectado</string>
+  <string name="invalid_proxy_hostname">Seu Hostname de Proxy é inválido, por favor, verifique</string>
+  <string name="parental_control_is_enabled">O controle dos pais está ativado</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>
