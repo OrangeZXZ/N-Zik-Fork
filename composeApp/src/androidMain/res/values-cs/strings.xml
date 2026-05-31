@@ -1090,4 +1090,5 @@
   <string name="playlists_albums_artists_history_like_etc">Playlisty, alba, umělci, historie, atd.</string>
   <string name="locations">Místa</string>
   <string name="users">Uživatelé</string>
+  <string name="error_youtube_login">Chyba YoutubeLogin</string>
 </resources>
