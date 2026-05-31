@@ -1085,4 +1085,9 @@
   <string name="download_completed">%1$d finalizat</string>
   <string name="download_completed_with_failed">%1$d finalizat, %2$d a eșuat</string>
   <string name="deleted_item">%1$s șters</string>
+  <string name="youtube_music">Muzică YouTube</string>
+  <string name="sync_data_with_ytm_account">Sincronizare date cu contul YTM</string>
+  <string name="playlists_albums_artists_history_like_etc">Liste de redare, albume, artiști, istorie, lucruri similare etc.</string>
+  <string name="locations">Locații</string>
+  <string name="users">Utilizatori</string>
 </resources>

@@ -1085,4 +1085,9 @@
   <string name="download_completed">%1$d dokončeno</string>
   <string name="download_completed_with_failed">%1$d dokončeno, %2$d selhal</string>
   <string name="deleted_item">%1$s smazán</string>
+  <string name="youtube_music">YouTube hudba</string>
+  <string name="sync_data_with_ytm_account">Synchronizovat data s účtem YTM</string>
+  <string name="playlists_albums_artists_history_like_etc">Playlisty, alba, umělci, historie, atd.</string>
+  <string name="locations">Místa</string>
+  <string name="users">Uživatelé</string>
 </resources>

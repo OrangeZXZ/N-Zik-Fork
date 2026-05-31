@@ -1085,4 +1085,9 @@
   <string name="download_completed">Το %1$d ολοκληρώθηκε</string>
   <string name="download_completed_with_failed">Το %1$d ολοκληρώθηκε, το %2$d απέτυχε</string>
   <string name="deleted_item">%1$s deleted</string>
+  <string name="youtube_music">Μουσική YouTube</string>
+  <string name="sync_data_with_ytm_account">Συγχρονισμός δεδομένων με λογαριασμό YTM</string>
+  <string name="playlists_albums_artists_history_like_etc">Playlists, άλμπουμ, καλλιτέχνες, ιστορία, όπως, κλπ.</string>
+  <string name="locations">Τοποθεσίες</string>
+  <string name="users">Χρήστες</string>
 </resources>

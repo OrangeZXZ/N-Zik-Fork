@@ -1085,4 +1085,9 @@
   <string name="download_completed">%1$d fullført</string>
   <string name="download_completed_with_failed">%1$d fullført, %2$d mislyktes</string>
   <string name="deleted_item">%1$s slettet</string>
+  <string name="youtube_music">YouTube Musikk</string>
+  <string name="sync_data_with_ytm_account">Synkroniser data med YTM-konto</string>
+  <string name="playlists_albums_artists_history_like_etc">Spillelister, album, artister, historie, like, osv.</string>
+  <string name="locations">Steder</string>
+  <string name="users">Brukere</string>
 </resources>

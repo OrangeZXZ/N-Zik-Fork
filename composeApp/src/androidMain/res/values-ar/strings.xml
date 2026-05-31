@@ -1085,4 +1085,9 @@
   <string name="download_completed">اكتمل %1$d</string>
   <string name="download_completed_with_failed">اكتمل %1$d ، فشل %2$d</string>
   <string name="deleted_item">تم حذف %1$s</string>
+  <string name="youtube_music">موسيقى اليوتيوب</string>
+  <string name="sync_data_with_ytm_account">مزامنة البيانات مع حساب YTM</string>
+  <string name="playlists_albums_artists_history_like_etc">المشغلين، الألبومات، الفنانين، التاريخ، مثل، إلخ.</string>
+  <string name="locations">المواقع</string>
+  <string name="users">المستخدمون</string>
 </resources>
