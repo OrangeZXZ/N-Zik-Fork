@@ -120,7 +120,7 @@ android {
         minSdk = 24
         targetSdk = 37
         versionCode = 37
-        versionName = "4.0.1"
+        versionName = "4.0.2"
 
         /*
                 UNIVERSAL VARIABLES
