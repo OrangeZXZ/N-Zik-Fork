@@ -109,7 +109,7 @@ private fun upsertSongFormat(videoId: String, format: PlayerResponse.StreamingDa
     runCatching {
         Database.asyncTransaction {
             songTable.insertIgnore(Song.makePlaceholder(videoId))
-            formatTable.insertIgnore(Format(
+            formatTable.upsert(Format(
                 videoId,
                 format.itag,
                 format.mimeType,
@@ -289,6 +289,8 @@ private suspend fun resolveStreamUriInternal(
 
     // Track the last meaningful failure reason across all clients
     var lastFailureReason: String? = null
+    var fallbackUri: Uri? = null
+    var fallbackFormat: PlayerResponse.StreamingData.Format? = null
 
     // 3. Try each client in order
     for ((index, ytClient) in FALLBACK_CLIENTS.withIndex()) {
@@ -358,6 +360,17 @@ private suspend fun resolveStreamUriInternal(
                 continue
             }
 
+            // Check if metadata is missing. If so, save as fallback and try next client.
+            if ((format.bitrate == null || format.bitrate == 0) && (format.contentLength?.toLong() ?: 0L) == 0L) {
+                lastFailureReason = "${ytClient.clientName}: stream resolved but missing metadata"
+                Timber.tag(TAG).w(lastFailureReason)
+                if (fallbackUri == null) {
+                    fallbackUri = uri
+                    fallbackFormat = format
+                }
+                continue
+            }
+
             // Success!
             Timber.tag(TAG).d("${ytClient.clientName}: stream resolved successfully for $videoId")
             CoroutineScope(Threads.DATASPEC_DISPATCHER).launch { upsertSongFormat(videoId, format) }
@@ -380,6 +393,15 @@ private suspend fun resolveStreamUriInternal(
             Timber.tag(TAG).w(lastFailureReason)
             continue
         }
+    }
+
+    if (fallbackUri != null && fallbackFormat != null) {
+        Timber.tag(TAG).w("All clients failed to provide metadata. Using fallback stream for $videoId")
+        CoroutineScope(Threads.DATASPEC_DISPATCHER).launch { upsertSongFormat(videoId, fallbackFormat!!) }
+        return fallbackUri!!
+            .buildUpon()
+            .appendQueryParameter("range", "0-${fallbackFormat?.contentLength ?: 1_000_000}")
+            .build()
     }
 
     // All clients exhausted — throw with the last meaningful reason
@@ -411,7 +433,11 @@ fun DataSpec.process(
 
     if (formatUri != null) {
         val expireTime = formatUri.getQueryParameter("expire")?.toLongOrNull()?.times(1000)
-        if (expireTime != null && System.currentTimeMillis() >= expireTime - 30_000) {
+        val isExpired = expireTime != null && System.currentTimeMillis() >= expireTime - 30_000
+        val isUnknownMetadata = formatUri.getQueryParameter("range") == "0-1000000"
+
+        if (isExpired || isUnknownMetadata) {
+            Timber.tag(TAG).d("formatCache entry invalid (expired=$isExpired, unknownMetadata=$isUnknownMetadata), removing for $videoId")
             formatCache.remove(videoId)
             formatUri = null
         }
