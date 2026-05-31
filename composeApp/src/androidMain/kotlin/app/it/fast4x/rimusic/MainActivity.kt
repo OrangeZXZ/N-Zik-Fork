@@ -509,13 +509,7 @@ class MainActivity :
             var animatedGradient by rememberPreference(animatedGradientKey, AnimatedGradient.FluidCoverColorGradient)
             var customColor by rememberPreference(customColorKey, Color.Green.hashCode())
             val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
-            
-            androidx.compose.runtime.LaunchedEffect(lightTheme) {
-                androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
-                    if (lightTheme) androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO 
-                    else androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
-                )
-            }
+
 
             LocalePreferences.preference =
                 LocalePreferenceItem(
