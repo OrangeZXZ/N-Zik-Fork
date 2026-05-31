@@ -755,7 +755,7 @@
   <string name="discord_enable_rich_presence">Увімкнути Rich Presence</string>
   <string name="discord_disconnect">Вимкнутись</string>
   <string name="discord_connect">Підключитися</string>
-  <string name="discord_connected_to_discord_account">Підключено до облікового запису Discord</string>
+  <string name="discord_connected_to_discord_account">Під\'єднано до облікового запису Discord</string>
   <string name="settings_reset">Скинути</string>
   <string name="settings_restore_default_settings">Відновити стандартні настройки</string>
   <string name="piped_custom_instance">Дзеркало користувача Piped</string>
@@ -1091,4 +1091,16 @@
   <string name="locations">Місцезнаходження</string>
   <string name="users">Спільноти</string>
   <string name="error_youtube_login">Помилка YoutubeLogin</string>
+  <string name="stream_error_retrying">Retrying: %1$s</string>
+  <string name="error_playback_failed">Помилка: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Не вдалося грати: %1$s</string>
+  <string name="songs_remaining">%1$s Songs Remaining</string>
+  <string name="failed_to_copy_clipboard">Не вдалося скопіювати текст до буфера обміну, спробуйте ще раз</string>
+  <string name="discord_presence_closed">Справжність Discord закрита</string>
+  <string name="cant_enable_bass_boost">Не вдалося увімкнути підсилення НЧ</string>
+  <string name="extreme_loudness_detected">Крайня гучність виявлено</string>
+  <string name="invalid_proxy_hostname">Неприпустиме ім\'я проксі сервера. Будь ласка, перевірте його</string>
+  <string name="parental_control_is_enabled">Батьківський контроль увімкнений</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>

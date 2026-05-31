@@ -232,7 +232,7 @@
   <string name="disable_song_switching_via_swipe">Онемогући пребацивање песама превлачењем</string>
   <string name="interface_in_use">Интерфејс у употреби</string>
   <string name="user_interface">Кориснички интерфејс</string>
-  <string name="ui_tab">User Interface</string>
+  <string name="ui_tab">Интерфејс</string>
   <string name="system_language">Системски језик</string>
   <string name="biggest">Највећа</string>
   <string name="set_custom_cache">Подесите прилагођену кеш меморију</string>
@@ -755,7 +755,7 @@
   <string name="discord_enable_rich_presence">Омогући богато присуство</string>
   <string name="discord_disconnect">Прекини везу</string>
   <string name="discord_connect">Повежи се</string>
-  <string name="discord_connected_to_discord_account">Повезано са Дискорд налогом</string>
+  <string name="discord_connected_to_discord_account">Connected to Discord account</string>
   <string name="settings_reset">Ресетуј</string>
   <string name="settings_restore_default_settings">Вратити на фабричка подешавања</string>
   <string name="piped_custom_instance">Пипед прилагођена инстанца</string>
@@ -935,7 +935,7 @@
   <string name="please_wait">Please Wait</string>
   <string name="songs_liked_yt">Song(s) are Liked in YouTube</string>
   <string name="song_unliked_yt">Song is Unliked in YouTube</string>
-  <string name="add_rimusic_to_ytm_favorites">Like N-Zik Liked songs in Youtube</string>
+  <string name="add_rimusic_to_ytm_favorites">Like RiMusic Liked songs in Youtube</string>
   <string name="do_you_really_want_to_like_all_rimusictoytmusic">(estimated time) is required to like all the songs. This action cannot be resumed if cancelled in between. You need to close the app to cancel this process. Do you want to continue?</string>
   <string name="do_you_really_want_to_like_all">(estimated time) is required to like all the songs. You need to close the app to cancel this process. Do you want to continue?</string>
   <string name="songs_liked_yt_failed">Failed to like the song in YouTube</string>
@@ -1011,7 +1011,7 @@
   <string name="piped_login_successful">Piped login successful</string>
   <string name="piped_login_failed">Piped login failed</string>
   <string name="no_instances_found">No instances found</string>
-  <string name="discord_token_text">If you notice that the RPC doesnt work, try log off and log back, also make sure to restart the service and the app</string>
+  <string name="discord_token_text">If you notice that the RPC doesnt work, try log off and log back</string>
   <string name="account_info">Account info</string>
   <string name="save_visualizer_state">Save visualizer state</string>
   <string name="save_visualizer_state_description">Keep visualizer state between sessions</string>
@@ -1025,7 +1025,7 @@
   <string name="search_display_order_saved_searches_first">Saved searches first</string>
   <string name="search_display_order_description">Choose which appears first in search results</string>
   <string name="smart_recommendations_number">Number of recommendations</string>
-  <string name="smart_recommendations_adaptive_description">Adaptive: Scales with playlist size (10-120 recommendations)</string>
+  <string name="smart_recommendations_adaptive_description">Adaptive: Scales with playlist size (10-150 recommendations)</string>
   <string name="smart_recommendations_adaptive">Adaptive</string>
   <string name="unknown_title">Unknown Title</string>
   <string name="unknown_artist">Unknown Artist</string>
@@ -1033,9 +1033,9 @@
   <string name="up_to_date">Up to date</string>
   <string name="last_check_date">Last check</string>
   <string name="auto_update_settings">Auto update settings</string>
-  <string name="auto_update_enabled">Update enabled</string>
-  <string name="auto_update_ask">Ask user</string>
-  <string name="auto_update_disabled">Update disabled</string>
+  <string name="auto_update_enabled">Омогућено</string>
+  <string name="auto_update_ask">Питај</string>
+  <string name="auto_update_disabled">Онемогућено</string>
   <string name="tab_network">Network</string>
   <string name="about_description">The about section shows information about the app, the developers, troubleshooting and update options</string>
   <string name="other_settings_description">The miscellaneous section contains various optional settings and utilities</string>
@@ -1091,4 +1091,16 @@
   <string name="locations">Locations</string>
   <string name="users">Users</string>
   <string name="error_youtube_login">Error YoutubeLogin</string>
+  <string name="stream_error_retrying">Retrying: %1$s</string>
+  <string name="error_playback_failed">Error: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Unable to play: %1$s</string>
+  <string name="songs_remaining">%1$s Songs Remaining</string>
+  <string name="failed_to_copy_clipboard">Failed to copy text to clipboard, try again</string>
+  <string name="discord_presence_closed">Discord presence closed</string>
+  <string name="cant_enable_bass_boost">Can\'t enable bass boost</string>
+  <string name="extreme_loudness_detected">Extreme loudness detected</string>
+  <string name="invalid_proxy_hostname">Your Proxy Hostname is invalid, please check it</string>
+  <string name="parental_control_is_enabled">Parental control is enabled</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>

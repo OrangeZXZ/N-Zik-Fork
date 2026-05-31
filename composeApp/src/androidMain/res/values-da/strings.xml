@@ -755,7 +755,7 @@
   <string name="discord_enable_rich_presence">Aktivér aktivitetsstatus</string>
   <string name="discord_disconnect">Afbryd</string>
   <string name="discord_connect">Forbind</string>
-  <string name="discord_connected_to_discord_account">Forbundet til Discord-konto</string>
+  <string name="discord_connected_to_discord_account">Forbundet til Discord konto</string>
   <string name="settings_reset">Nulstil</string>
   <string name="settings_restore_default_settings">Gendan standardindstillinger</string>
   <string name="piped_custom_instance">Brugerdefineret Piped-instans</string>
@@ -1091,4 +1091,16 @@
   <string name="locations">Placeringer</string>
   <string name="users">Brugere</string>
   <string name="error_youtube_login">Fejl Under YoutubeLogin</string>
+  <string name="stream_error_retrying">Forsøg: %1$s</string>
+  <string name="error_playback_failed">Fejl: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Kan ikke spille: %1$s</string>
+  <string name="songs_remaining">%1$s Sange Resterende</string>
+  <string name="failed_to_copy_clipboard">Kunne ikke kopiere tekst til udklipsholderen, prøv igen</string>
+  <string name="discord_presence_closed">Discord tilstedeværelse lukket</string>
+  <string name="cant_enable_bass_boost">Kan ikke aktivere basforstærkning</string>
+  <string name="extreme_loudness_detected">Ekstrem loudness registreret</string>
+  <string name="invalid_proxy_hostname">Dit Proxy Værtsnavn er ugyldigt, tjek det venligst</string>
+  <string name="parental_control_is_enabled">Forældrekontrol er aktiveret</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>

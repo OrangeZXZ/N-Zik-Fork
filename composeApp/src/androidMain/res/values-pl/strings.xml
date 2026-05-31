@@ -755,7 +755,7 @@
   <string name="discord_enable_rich_presence">Włącz Discord Rich Presence</string>
   <string name="discord_disconnect">Rozłącz</string>
   <string name="discord_connect">Połącz</string>
-  <string name="discord_connected_to_discord_account">Połączono z kontem Discord</string>
+  <string name="discord_connected_to_discord_account">Połączono z kontem Discorda</string>
   <string name="settings_reset">Reset</string>
   <string name="settings_restore_default_settings">Przywróć ustawienia domyślne</string>
   <string name="piped_custom_instance">Inna instancja piped</string>
@@ -1091,4 +1091,16 @@
   <string name="locations">Lokalizacje</string>
   <string name="users">Użytkownicy</string>
   <string name="error_youtube_login">Błąd YoutubeLogin</string>
+  <string name="stream_error_retrying">Ponawianie: %1$s</string>
+  <string name="error_playback_failed">Błąd: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Nie można odtworzyć: %1$s</string>
+  <string name="songs_remaining">Pozostało piosenek %1$s</string>
+  <string name="failed_to_copy_clipboard">Nie udało się skopiować tekstu do schowka, spróbuj ponownie</string>
+  <string name="discord_presence_closed">Obecność Discorda zamknięta</string>
+  <string name="cant_enable_bass_boost">Nie można włączyć podbicia basu</string>
+  <string name="extreme_loudness_detected">Wykryto ekstremalną głośność</string>
+  <string name="invalid_proxy_hostname">Twoja nazwa hosta serwera proxy jest nieprawidłowa, sprawdź ją</string>
+  <string name="parental_control_is_enabled">Kontrola rodzicielska jest włączona</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>

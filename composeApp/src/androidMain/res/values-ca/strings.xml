@@ -755,7 +755,7 @@
   <string name="discord_enable_rich_presence">Activa Rich Presence</string>
   <string name="discord_disconnect">Desconnecta</string>
   <string name="discord_connect">Connecta</string>
-  <string name="discord_connected_to_discord_account">Connectat al compte de Discord</string>
+  <string name="discord_connected_to_discord_account">Connected to Discord account</string>
   <string name="settings_reset">Restableix</string>
   <string name="settings_restore_default_settings">Restaura la configuració predeterminada</string>
   <string name="piped_custom_instance">Instància personalitzada de Piped</string>
@@ -1091,4 +1091,16 @@
   <string name="locations">Locations</string>
   <string name="users">Users</string>
   <string name="error_youtube_login">Error YoutubeLogin</string>
+  <string name="stream_error_retrying">Retrying: %1$s</string>
+  <string name="error_playback_failed">Error: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Unable to play: %1$s</string>
+  <string name="songs_remaining">%1$s Songs Remaining</string>
+  <string name="failed_to_copy_clipboard">Failed to copy text to clipboard, try again</string>
+  <string name="discord_presence_closed">Discord presence closed</string>
+  <string name="cant_enable_bass_boost">Can\'t enable bass boost</string>
+  <string name="extreme_loudness_detected">Extreme loudness detected</string>
+  <string name="invalid_proxy_hostname">Your Proxy Hostname is invalid, please check it</string>
+  <string name="parental_control_is_enabled">Parental control is enabled</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>

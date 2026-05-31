@@ -755,7 +755,7 @@
   <string name="discord_enable_rich_presence">Povolit Discord Rich Presence</string>
   <string name="discord_disconnect">Odpojit</string>
   <string name="discord_connect">Připojit</string>
-  <string name="discord_connected_to_discord_account">Připojeno k účtu Discord</string>
+  <string name="discord_connected_to_discord_account">Připojeno k Discord účtu</string>
   <string name="settings_reset">Obnovit</string>
   <string name="settings_restore_default_settings">Obnovit výchozí nastavení</string>
   <string name="piped_custom_instance">Vlastní instance Piped</string>
@@ -1091,4 +1091,16 @@
   <string name="locations">Místa</string>
   <string name="users">Uživatelé</string>
   <string name="error_youtube_login">Chyba YoutubeLogin</string>
+  <string name="stream_error_retrying">Opakování: %1$s</string>
+  <string name="error_playback_failed">Chyba: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Nelze přehrát: %1$s</string>
+  <string name="songs_remaining">%1$s Zbývající skladby</string>
+  <string name="failed_to_copy_clipboard">Nepodařilo se zkopírovat text do schránky, zkuste to znovu</string>
+  <string name="discord_presence_closed">Discord přítomnost uzavřena</string>
+  <string name="cant_enable_bass_boost">Zesílení basů nelze povolit</string>
+  <string name="extreme_loudness_detected">Zjištěna extrémní hlasitost</string>
+  <string name="invalid_proxy_hostname">Vaše jméno proxy hostitele je neplatné, zkontrolujte ho</string>
+  <string name="parental_control_is_enabled">Rodičovská kontrola je povolena</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>

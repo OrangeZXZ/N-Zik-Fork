@@ -1091,4 +1091,16 @@
   <string name="locations">Sijainnit</string>
   <string name="users">Käyttäjät</string>
   <string name="error_youtube_login">Virhe YoutubeKirjaudu</string>
+  <string name="stream_error_retrying">Toistetaan: %1$s</string>
+  <string name="error_playback_failed">Virhe: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Ei voida toistaa: %1$s</string>
+  <string name="songs_remaining">%1$s Kappaletta Jäljellä</string>
+  <string name="failed_to_copy_clipboard">Tekstin kopiointi leikepöydälle epäonnistui, yritä uudelleen</string>
+  <string name="discord_presence_closed">Discordin läsnäolo suljettu</string>
+  <string name="cant_enable_bass_boost">Basson tehostusta ei voi ottaa käyttöön</string>
+  <string name="extreme_loudness_detected">Äärimmäinen äänekkyys havaittu</string>
+  <string name="invalid_proxy_hostname">Välityspalvelimen nimi on virheellinen, tarkista se</string>
+  <string name="parental_control_is_enabled">Vanhempien ohjaus on käytössä</string>
+  <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
+  <string name="battery_optimization_msg">%1$s %2$s</string>
 </resources>
