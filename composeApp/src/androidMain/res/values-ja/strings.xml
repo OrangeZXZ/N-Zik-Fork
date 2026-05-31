@@ -1090,4 +1090,5 @@
   <string name="playlists_albums_artists_history_like_etc">プレイリスト、アルバム、アーティスト、歴史、などなど</string>
   <string name="locations">場所</string>
   <string name="users">ユーザー</string>
+  <string name="error_youtube_login">YoutubeLogin エラー</string>
 </resources>
