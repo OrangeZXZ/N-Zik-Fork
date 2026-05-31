@@ -1,6 +1,9 @@
 package app.it.fast4x.rimusic.ui.screens.settings
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -561,8 +564,18 @@ fun AppearanceSettings(
 
         //SettingsEntryGroupText(stringResource(R.string.user_interface))
 
-        //SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.player))
+        Spacer(modifier = Modifier.height(16.dp))
+        AnimatedVisibility(
+            visible = true,
+            enter = fadeIn(animationSpec = tween(600)) + scaleIn(
+                animationSpec = tween(600),
+                initialScale = 0.9f
+            )
+        ) {
+            SettingsSectionCard(
+                title = stringResource(R.string.player),
+                icon = R.drawable.play,
+                content = {
 
         if (playerBackgroundColors != PlayerBackgroundColors.BlurredCoverColor)
             showthumbnail = true
@@ -859,29 +872,20 @@ fun AppearanceSettings(
         }
 
         if (!isLandscape) {
-            Column {
-                BasicText(
-                    text = stringResource(R.string.appearancepresets),
-                    style = typography().m.semiBold.copy(color = colorPalette().text),
-                    modifier = Modifier
-                        .padding(all = 12.dp)
-                        .clickable(onClick = { appearanceChooser = true })
-                )
-                BasicText(
-                    text = stringResource(R.string.appearancepresetssecondary),
-                    style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
-                    modifier = Modifier
-                        .padding(start = 12.dp)
-                        .padding(bottom = 10.dp)
-                )
-            }
+            OtherSettingsEntry(
+                title = stringResource(R.string.appearancepresets),
+                text = stringResource(R.string.appearancepresetssecondary),
+                icon = R.drawable.sparkles,
+                onClick = { appearanceChooser = true }
+            )
 
             if (search.inputValue.isBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
                     search.inputValue,
                     true
                 )
             )
-                SwitchSettingEntry(
+                OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.show_player_top_actions_bar),
                     text = "",
                     isChecked = showTopActionsBar,
@@ -894,7 +898,8 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    SwitchSettingEntry(
+                    OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                         title = stringResource(R.string.blankspace),
                         text = "",
                         isChecked = topPadding,
@@ -907,7 +912,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
+            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.playertype),
                 selectedValue = playerType,
                 onValueSelected = {
@@ -921,7 +927,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
+            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.queuetype),
                 selectedValue = queueType,
                 onValueSelected = {
@@ -936,7 +943,8 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
+                OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.show_thumbnail),
                     text = "",
                     isChecked = showthumbnail,
@@ -949,7 +957,8 @@ fun AppearanceSettings(
                     true
                 )
             )
-                EnumValueSelectorSettingsEntry(
+                OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.swipe_Animation_No_Thumbnail),
                     selectedValue = swipeAnimationNoThumbnail,
                     onValueSelected = { swipeAnimationNoThumbnail = it },
@@ -973,7 +982,8 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        SwitchSettingEntry(
+                        OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                             title = stringResource(R.string.fadingedge),
                             text = "",
                             isChecked = fadingedge,
@@ -988,7 +998,8 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        SwitchSettingEntry(
+                        OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                             title = stringResource(R.string.carousel),
                             text = "",
                             isChecked = carousel,
@@ -1001,7 +1012,8 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        EnumValueSelectorSettingsEntry(
+                        OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                             title = stringResource(R.string.carouselsize),
                             selectedValue = carouselSize,
                             onValueSelected = { carouselSize = it },
@@ -1016,7 +1028,8 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        SwitchSettingEntry(
+                        OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                             title = stringResource(R.string.thumbnailpause),
                             text = "",
                             isChecked = thumbnailpause,
@@ -1029,7 +1042,8 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        SwitchSettingEntry(
+                        OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                             title = stringResource(R.string.show_lyrics_thumbnail),
                             text = "",
                             isChecked = showlyricsthumbnail,
@@ -1042,7 +1056,8 @@ fun AppearanceSettings(
                                 true
                             )
                         )
-                            SwitchSettingEntry(
+                            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                                 title = stringResource(R.string.showvisthumbnail),
                                 text = "",
                                 isChecked = showvisthumbnail,
@@ -1057,7 +1072,8 @@ fun AppearanceSettings(
                         true
                     )
                 ) {
-                    SwitchSettingEntry(
+                    OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                         title = stringResource(R.string.show_cover_thumbnail_animation),
                         text = "",
                         isChecked = showCoverThumbnailAnimation,
@@ -1066,7 +1082,8 @@ fun AppearanceSettings(
                     )
                     AnimatedVisibility(visible = showCoverThumbnailAnimation) {
                         Column {
-                            EnumValueSelectorSettingsEntry(
+                            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                                 title = stringResource(R.string.cover_thumbnail_animation_type),
                                 selectedValue = coverThumbnailAnimation,
                                 onValueSelected = { coverThumbnailAnimation = it },
@@ -1083,7 +1100,8 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        EnumValueSelectorSettingsEntry(
+                        OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                             title = stringResource(R.string.player_thumbnail_size),
                             selectedValue = playerThumbnailSizeL,
                             onValueSelected = { playerThumbnailSizeL = it },
@@ -1096,7 +1114,8 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        EnumValueSelectorSettingsEntry(
+                        OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                             title = stringResource(R.string.player_thumbnail_size),
                             selectedValue = playerThumbnailSize,
                             onValueSelected = { playerThumbnailSize = it },
@@ -1109,7 +1128,8 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    EnumValueSelectorSettingsEntry(
+                    OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                         title = stringResource(R.string.thumbnailtype),
                         selectedValue = thumbnailType,
                         onValueSelected = {
@@ -1124,25 +1144,11 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    EnumValueSelectorSettingsEntry(
+                    OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                         title = stringResource(R.string.thumbnail_roundness),
                         selectedValue = thumbnailRoundness,
                         onValueSelected = { thumbnailRoundness = it },
-                        trailingContent = {
-                            Spacer(
-                                modifier = Modifier
-                                    .border(
-                                        width = 1.dp,
-                                        color = colorPalette().accent,
-                                        shape = thumbnailRoundness.shape
-                                    )
-                                    .background(
-                                        color = colorPalette().background1,
-                                        shape = thumbnailRoundness.shape
-                                    )
-                                    .size(36.dp)
-                            )
-                        },
                         valueText = { it.text },
                         modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                     )
@@ -1155,7 +1161,8 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
+                OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.noblur),
                     text = "",
                     isChecked = noblur,
@@ -1171,7 +1178,8 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
+                OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.statsfornerdsplayer),
                     text = "",
                     isChecked = statsfornerds,
@@ -1184,7 +1192,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
+            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.timelinesize),
                 selectedValue = playerTimelineSize,
                 onValueSelected = { playerTimelineSize = it },
@@ -1196,7 +1205,8 @@ fun AppearanceSettings(
                 true
             )
         ) {
-            EnumValueSelectorSettingsEntry(
+            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.pinfo_type),
                 selectedValue = playerInfoType,
                 onValueSelected = {
@@ -1213,7 +1223,8 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        SwitchSettingEntry(
+                        OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                             title = stringResource(R.string.pinfo_show_icons),
                             text = "",
                             isChecked = playerInfoShowIcons,
@@ -1233,7 +1244,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
+            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.miniplayertype),
                 selectedValue = miniPlayerType,
                 onValueSelected = {
@@ -1247,7 +1259,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.player_swap_controls_with_timeline),
                 text = "",
                 isChecked = playerSwapControlsWithTimeline,
@@ -1259,7 +1272,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
+            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.timeline),
                 selectedValue = playerTimelineType,
                 onValueSelected = { playerTimelineType = it },
@@ -1271,7 +1285,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.transparentbar),
                 text = "",
                 isChecked = transparentbar,
@@ -1283,7 +1298,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
+            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.pcontrols_type),
                 selectedValue = playerControlsType,
                 onValueSelected = {
@@ -1298,7 +1314,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
+            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.play_button),
                 selectedValue = playerPlayButtonType,
                 onValueSelected = {
@@ -1313,7 +1330,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.buttonzoomout),
                 text = "",
                 isChecked = buttonzoomout,
@@ -1326,7 +1344,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
+            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.icon_like_button),
                 selectedValue = iconLikeType,
                 onValueSelected = {
@@ -1338,7 +1357,8 @@ fun AppearanceSettings(
         /*
 
         if (filter.isNullOrBlank() || stringResource(R.string.use_gradient_background).contains(filterCharSequence,true))
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.use_gradient_background),
                 text = "",
                 isChecked = isGradientBackgroundEnabled,
@@ -1351,7 +1371,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
+            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.background_colors),
                 selectedValue = playerBackgroundColors,
                 onValueSelected = {
@@ -1366,7 +1387,8 @@ fun AppearanceSettings(
                     true
                 )
             )
-                EnumValueSelectorSettingsEntry(
+                OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.gradienttype),
                     selectedValue = animatedGradient,
                     onValueSelected = {
@@ -1379,7 +1401,8 @@ fun AppearanceSettings(
         var isRotatingCoverEnabled by rememberPreference( rotatingAlbumCoverKey, false )
         AnimatedVisibility( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor ) {
             if ( search.inputValue.isBlank() || stringResource( R.string.rotating_cover_title ).contains(search.inputValue, true) )
-                SwitchSettingEntry(
+                OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource( R.string.rotating_cover_title ),
                     text = "",
                     isChecked = isRotatingCoverEnabled,
@@ -1395,7 +1418,8 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
+                OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.blackgradient),
                     text = "",
                     isChecked = blackgradient,
@@ -1408,7 +1432,8 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
+                OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.albumCoverRotation),
                     text = "",
                     isChecked = albumCoverRotation,
@@ -1423,7 +1448,8 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
+                OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.bottomgradient),
                     text = "",
                     isChecked = bottomgradient,
@@ -1434,7 +1460,8 @@ fun AppearanceSettings(
               true
               )
          )
-             SwitchSettingEntry(
+             OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                  title = stringResource(R.string.textoutline),
                  text = "",
                  isChecked = textoutline,
@@ -1446,7 +1473,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.show_total_time_of_queue),
                 text = "",
                 isChecked = showTotalTimeQueue,
@@ -1458,7 +1486,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.show_remaining_song_time),
                 text = "",
                 isChecked = showRemainingSongTime,
@@ -1470,7 +1499,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.show_next_songs_in_player),
                 text = "",
                 isChecked = showNextSongsInPlayer,
@@ -1479,7 +1509,8 @@ fun AppearanceSettings(
         AnimatedVisibility( visible = showNextSongsInPlayer) {
           Column {
               if (search.inputValue.isBlank() || stringResource(R.string.showtwosongs).contains(search.inputValue,true))
-                  EnumValueSelectorSettingsEntry(
+                  OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                       title = stringResource(R.string.songs_number_to_show),
                       selectedValue = showsongs,
                       onValueSelected = {
@@ -1496,7 +1527,8 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
+                OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.showalbumcover),
                     text = "",
                     isChecked = showalbumcover,
@@ -1511,7 +1543,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.disable_scrolling_text),
                 text = stringResource(R.string.scrolling_text_is_used_for_long_texts),
                 isChecked = disableScrollingText,
@@ -1523,7 +1556,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(if (playerType == PlayerType.Modern && !isLandscape) R.string.disable_vertical_swipe else R.string.disable_horizontal_swipe),
                 text = stringResource(if (playerType == PlayerType.Modern && !isLandscape) R.string.disable_vertical_swipe_secondary else R.string.disable_song_switching_via_swipe),
                 isChecked = disablePlayerHorizontalSwipe,
@@ -1535,7 +1569,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.player_rotating_buttons),
                 text = stringResource(R.string.player_enable_rotation_buttons),
                 isChecked = effectRotationEnabled,
@@ -1547,7 +1582,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.toggle_lyrics),
                 text = stringResource(R.string.by_tapping_on_the_thumbnail),
                 isChecked = thumbnailTapEnabled,
@@ -1559,7 +1595,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.click_lyrics_text),
                 text = "",
                 isChecked = clickLyricsText,
@@ -1571,7 +1608,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.save_lyrics_state),
                 text = stringResource(R.string.save_lyrics_state_description),
                 isChecked = showLyricsStateKey,
@@ -1584,7 +1622,8 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
+                OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.show_background_in_lyrics),
                     text = "",
                     isChecked = showBackgroundLyrics,
@@ -1596,7 +1635,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.player_enable_lyrics_popup_message),
                 text = "",
                 isChecked = playerEnableLyricsPopupMessage,
@@ -1608,7 +1648,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            EnumValueSelectorSettingsEntry(
+            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.background_progress_bar),
                 selectedValue = backgroundProgress,
                 onValueSelected = {
@@ -1622,7 +1663,8 @@ fun AppearanceSettings(
                 true
             )
         ) {
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.visualizer),
                 text = "",
                 isChecked = visualizerEnabled,
@@ -1632,7 +1674,8 @@ fun AppearanceSettings(
 
             AnimatedVisibility(visible = visualizerEnabled) {
                 Column {
-                    SwitchSettingEntry(
+                    OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                         title = stringResource(R.string.save_visualizer_state),
                         text = stringResource(R.string.save_visualizer_state_description),
                         isChecked = showVisualizerStateKey,
@@ -1646,14 +1689,29 @@ fun AppearanceSettings(
         ImportantSettingsDescription(text = stringResource(R.string.visualizer_require_mic_permission))
 
         SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.player_action_bar))
+                }
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        AnimatedVisibility(
+            visible = true,
+            enter = fadeIn(animationSpec = tween(700)) + scaleIn(
+                animationSpec = tween(700),
+                initialScale = 0.9f
+            )
+        ) {
+            SettingsSectionCard(
+                title = stringResource(R.string.player_action_bar),
+                icon = R.drawable.ui,
+                content = {
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_transparent_background).contains(
                 search.inputValue,
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.action_bar_transparent_background),
                 text = "",
                 isChecked = transparentBackgroundActionBarPlayer,
@@ -1665,7 +1723,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.actionspacedevenly),
                 text = "",
                 isChecked = actionspacedevenly,
@@ -1677,7 +1736,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.tapqueue),
                 text = "",
                 isChecked = tapqueue,
@@ -1689,7 +1749,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.swipe_up_to_open_the_queue),
                 text = "",
                 isChecked = swipeUpQueue,
@@ -1701,7 +1762,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.action_bar_show_video_button),
                 text = "",
                 isChecked = showButtonPlayerVideo,
@@ -1713,7 +1775,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.action_bar_show_discover_button),
                 text = "",
                 isChecked = showButtonPlayerDiscover,
@@ -1725,7 +1788,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.action_bar_show_download_button),
                 text = "",
                 isChecked = showButtonPlayerDownload,
@@ -1737,7 +1801,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.action_bar_show_add_to_playlist_button),
                 text = "",
                 isChecked = showButtonPlayerAddToPlaylist,
@@ -1749,7 +1814,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.action_bar_show_loop_button),
                 text = "",
                 isChecked = showButtonPlayerLoop,
@@ -1761,7 +1827,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.action_bar_show_shuffle_button),
                 text = "",
                 isChecked = showButtonPlayerShuffle,
@@ -1773,7 +1840,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.action_bar_show_lyrics_button),
                 text = "",
                 isChecked = showButtonPlayerLyrics,
@@ -1786,7 +1854,8 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    SwitchSettingEntry(
+                    OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                         title = stringResource(R.string.expandedplayer),
                         text = "",
                         isChecked = expandedplayertoggle,
@@ -1800,7 +1869,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.action_bar_show_sleep_timer_button),
                 text = "",
                 isChecked = showButtonPlayerSleepTimer,
@@ -1812,7 +1882,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.show_equalizer),
                 text = "",
                 isChecked = showButtonPlayerSystemEqualizer,
@@ -1824,7 +1895,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.action_bar_show_arrow_button_to_open_queue),
                 text = "",
                 isChecked = showButtonPlayerArrow,
@@ -1836,7 +1908,8 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.action_bar_show_start_radio_button),
                 text = "",
                 isChecked = showButtonPlayerStartradio,
@@ -1848,16 +1921,32 @@ fun AppearanceSettings(
                 true
             )
         )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.action_bar_show_menu_button),
                 text = "",
                 isChecked = showButtonPlayerMenu,
                 onCheckedChange = { showButtonPlayerMenu = it }
             )
 
+                }
+            )
+        }
+
         if (!showlyricsthumbnail) {
             SettingsGroupSpacer()
-            SettingsEntryGroupText(title = stringResource(R.string.full_screen_lyrics_components))
+            Spacer(modifier = Modifier.height(16.dp))
+            AnimatedVisibility(
+                visible = true,
+                enter = fadeIn(animationSpec = tween(800)) + scaleIn(
+                    animationSpec = tween(800),
+                    initialScale = 0.9f
+                )
+            ) {
+                SettingsSectionCard(
+                    title = stringResource(R.string.full_screen_lyrics_components),
+                    icon = R.drawable.musical_notes,
+                    content = {
 
             if (showTotalTimeQueue) {
                 if (search.inputValue.isBlank() || stringResource(R.string.show_total_time_of_queue).contains(
@@ -1865,7 +1954,8 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    SwitchSettingEntry(
+                    OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                         title = stringResource(R.string.show_total_time_of_queue),
                         text = "",
                         isChecked = queueDurationExpanded,
@@ -1878,7 +1968,8 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
+                OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.titleartist),
                     text = "",
                     isChecked = titleExpanded,
@@ -1890,7 +1981,8 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
+                OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.timeline),
                     text = "",
                     isChecked = timelineExpanded,
@@ -1902,7 +1994,8 @@ fun AppearanceSettings(
                     true
                 )
             )
-                SwitchSettingEntry(
+                OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                     title = stringResource(R.string.controls),
                     text = "",
                     isChecked = controlsExpanded,
@@ -1915,7 +2008,8 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    SwitchSettingEntry(
+                    OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                         title = stringResource(R.string.statsfornerds),
                         text = "",
                         isChecked = statsExpanded,
@@ -1942,7 +2036,8 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    SwitchSettingEntry(
+                    OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                         title = stringResource(R.string.actionbar),
                         text = "",
                         isChecked = actionExpanded,
@@ -1957,7 +2052,8 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    SwitchSettingEntry(
+                    OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                         title = stringResource(R.string.miniqueue),
                         text = "",
                         isChecked = miniQueueExpanded,
@@ -1965,26 +2061,42 @@ fun AppearanceSettings(
                     )
             }
 
-        }
-
         var showPlaybackSpeedButton by rememberPreference( showPlaybackSpeedButtonKey, false )
         if( search.inputValue.isBlank() || stringResource( R.string.title_playback_speed ).contains( search.inputValue, true ) )
-            SwitchSettingEntry(
+            OtherSwitchSettingEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource( R.string.title_playback_speed ),
                 text = stringResource( R.string.description_playback_speed ),
                 isChecked = showPlaybackSpeedButton,
                 onCheckedChange = { showPlaybackSpeedButton = it }
             )
 
+                    }
+                )
+            }
+        }
+
         SettingsGroupSpacer()
-        SettingsEntryGroupText(title = stringResource(R.string.notification_player))
+        Spacer(modifier = Modifier.height(16.dp))
+        AnimatedVisibility(
+            visible = true,
+            enter = fadeIn(animationSpec = tween(900)) + scaleIn(
+                animationSpec = tween(900),
+                initialScale = 0.9f
+            )
+        ) {
+            SettingsSectionCard(
+                title = stringResource(R.string.notification_player),
+                icon = R.drawable.information,
+                content = {
 
         if (search.inputValue.isBlank() || stringResource(R.string.notification_player).contains(
                 search.inputValue,
                 true
             )
         ) {
-            EnumValueSelectorSettingsEntry(
+            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.notificationPlayerFirstIcon),
                 selectedValue = notificationPlayerFirstIcon,
                 onValueSelected = {
@@ -1993,7 +2105,8 @@ fun AppearanceSettings(
                 },
                 valueText = { it.text },
             )
-            EnumValueSelectorSettingsEntry(
+            OtherEnumValueSelectorSettingsEntry(
+                icon = R.drawable.color_palette,
                 title = stringResource(R.string.notificationPlayerSecondIcon),
                 selectedValue = notificationPlayerSecondIcon,
                 onValueSelected = {
@@ -2005,66 +2118,77 @@ fun AppearanceSettings(
             RestartPlayerService(restartService, onRestart = { restartService = false })
         }
 
-
-//        if (search.inputValue.isBlank() || stringResource(R.string.show_song_cover).contains(
-//                search.inputValue,
-//                true
-//            )
-//        )
-//            if (!isAtLeastAndroid13) {
-//                SettingsGroupSpacer()
-//
-//                SettingsEntryGroupText(title = stringResource(R.string.lockscreen))
-//
-//                SwitchSettingEntry(
-//                    title = stringResource(R.string.show_song_cover),
-//                    text = stringResource(R.string.use_song_cover_on_lockscreen),
-//                    isChecked = isShowingThumbnailInLockscreen,
-//                    onCheckedChange = { isShowingThumbnailInLockscreen = it }
-//                )
-//            }
+                }
+            )
+        }
 
         if (isAtLeastAndroid7) {
             SettingsGroupSpacer()
-            SettingsEntryGroupText(title = stringResource(R.string.wallpaper))
-            SwitchSettingEntry(
-                title = stringResource(R.string.enable_wallpaper),
-                text = "",
-                isChecked = enableWallpaper,
-                onCheckedChange = { enableWallpaper = it }
-            )
-            AnimatedVisibility(visible = enableWallpaper) {
-                Column {
-                    EnumValueSelectorSettingsEntry(
-                        title = stringResource(R.string.set_cover_thumbnail_as_wallpaper),
-                        selectedValue = wallpaperType,
-                        onValueSelected = {
-                            wallpaperType = it
-                            restartService = true
-                        },
-                        valueText = { it.text },
-                        modifier = Modifier.padding(start = 25.dp)
-                    )
-                    RestartPlayerService(restartService, onRestart = { restartService = false })
-                }
+            Spacer(modifier = Modifier.height(16.dp))
+            AnimatedVisibility(
+                visible = true,
+                enter = fadeIn(animationSpec = tween(1000)) + scaleIn(
+                    animationSpec = tween(1000),
+                    initialScale = 0.9f
+                )
+            ) {
+                SettingsSectionCard(
+                    title = stringResource(R.string.wallpaper),
+                    icon = R.drawable.image,
+                    content = {
+                        OtherSwitchSettingEntry(
+                            icon = R.drawable.color_palette,
+                            title = stringResource(R.string.enable_wallpaper),
+                            text = "",
+                            isChecked = enableWallpaper,
+                            onCheckedChange = { enableWallpaper = it }
+                        )
+                        AnimatedVisibility(visible = enableWallpaper) {
+                            Column {
+                                OtherEnumValueSelectorSettingsEntry(
+                                    icon = R.drawable.color_palette,
+                                    title = stringResource(R.string.set_cover_thumbnail_as_wallpaper),
+                                    selectedValue = wallpaperType,
+                                    onValueSelected = {
+                                        wallpaperType = it
+                                        restartService = true
+                                    },
+                                    valueText = { it.text },
+                                    modifier = Modifier.padding(start = 25.dp)
+                                )
+                                RestartPlayerService(restartService, onRestart = { restartService = false })
+                            }
+                        }
+                    }
+                )
             }
         }
 
-        SettingsGroupSpacer()
-        var resetToDefault by remember { mutableStateOf(false) }
-        val context = LocalContext.current
-        ButtonBarSettingEntry(
-            title = stringResource(R.string.settings_reset),
-            text = stringResource(R.string.settings_restore_default_settings),
-            icon = R.drawable.refresh,
-            iconColor = colorPalette().text,
-            onClick = { resetToDefault = true },
-        )
-        if (resetToDefault) {
-            DefaultAppearanceSettings()
-            resetToDefault = false
-            navController.popBackStack()
-            Toaster.done()
+        Spacer(modifier = Modifier.height(16.dp))
+        AnimatedVisibility(
+            visible = search.inputValue.isBlank(),
+            enter = fadeIn(animationSpec = tween(1100)) + scaleIn(animationSpec = tween(1100), initialScale = 0.9f)
+        ) {
+            SettingsSectionCard(
+                title = stringResource(R.string.settings_reset),
+                icon = R.drawable.refresh,
+                content = {
+                    var resetToDefault by remember { mutableStateOf(false) }
+                    val context = LocalContext.current
+                    OtherSettingsEntry(
+                        title = stringResource(R.string.settings_reset),
+                        text = stringResource(R.string.settings_restore_default_settings),
+                        icon = R.drawable.refresh,
+                        onClick = { resetToDefault = true }
+                    )
+                    if (resetToDefault) {
+                        DefaultAppearanceSettings()
+                        resetToDefault = false
+                        navController.popBackStack()
+                        Toaster.done()
+                    }
+                }
+            )
         }
 
         SettingsGroupSpacer(

@@ -870,6 +870,39 @@ fun OtherSettingsEntry(
     }
 }
 
+@Composable
+inline fun <reified T : Enum<T>> OtherEnumValueSelectorSettingsEntry(
+    title: String,
+    icon: Int,
+    text: String? = null,
+    selectedValue: T,
+    noinline onValueSelected: (T) -> Unit,
+    modifier: Modifier = Modifier,
+    noinline valueText: @Composable (T) -> String  = { it.name }
+) {
+    var isShowingDialog by remember {
+        mutableStateOf(false)
+    }
+
+    if (isShowingDialog) {
+        ValueSelectorDialog(
+            onDismiss = { isShowingDialog = false },
+            title = title,
+            selectedValue = selectedValue,
+            values = enumValues<T>().toList(),
+            onValueSelected = onValueSelected,
+            valueText = valueText
+        )
+    }
+
+    OtherSettingsEntry(
+        title = title,
+        text = text ?: valueText(selectedValue),
+        icon = icon,
+        modifier = modifier,
+        onClick = { isShowingDialog = true }
+    )
+}
 
 @Composable
 fun OtherInfoSettingsEntry(
