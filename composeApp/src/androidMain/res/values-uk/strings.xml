@@ -1085,4 +1085,9 @@
   <string name="download_completed">%1$d completed</string>
   <string name="download_completed_with_failed">%1$d completed, %2$d failed</string>
   <string name="deleted_item">%1$s видалено</string>
+  <string name="youtube_music">YouTube музика</string>
+  <string name="sync_data_with_ytm_account">Синхронізувати дані з обліковим записом YTM</string>
+  <string name="playlists_albums_artists_history_like_etc">Плейлісти, альбоми, артисти, історію тощо.</string>
+  <string name="locations">Місцезнаходження</string>
+  <string name="users">Спільноти</string>
 </resources>
