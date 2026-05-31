@@ -1085,4 +1085,9 @@
   <string name="download_completed">%1$d voltooid</string>
   <string name="download_completed_with_failed">%1$d voltooid, %2$d is mislukt</string>
   <string name="deleted_item">%1$s verwijderd</string>
+  <string name="youtube_music">YouTube muziek</string>
+  <string name="sync_data_with_ytm_account">Gegevens synchroniseren met YTM account</string>
+  <string name="playlists_albums_artists_history_like_etc">Afspeellijsten, albums, artiesten, geschiedenis, enz.</string>
+  <string name="locations">Locaties</string>
+  <string name="users">Gebruikers</string>
 </resources>
