@@ -1107,7 +1107,7 @@ Volume BAS : titre précédent</string>
     <string name="battery_optimization_msg">%1$s %2$s</string>
     <string name="player_presets_and_layout">Préréglages &amp; Mise en page</string>
     <string name="cover_and_thumbnail">Couverture &amp; Vignette</string>
-    <string name="timeline_and_controls">Timeline &amp; Controls</string>
+    <string name="timeline_and_controls">Chronologie &amp; Commandes</string>
     <string name="colors_and_background">Couleurs &amp; Arrière-plan</string>
     <string name="player_behavior_and_visuals">Comportement du joueur &amp; Visuels</string>
 </resources>
