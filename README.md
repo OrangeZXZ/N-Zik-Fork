@@ -1,9 +1,18 @@
-<div align="center">
-  <img alt="project's banner" src="./assets/design/ic_banner2.png" width="1080" />    
-  <p>
-<b>N-Zik</b> is a multilingual fork of <a href="https://github.com/knighthat/Kreate">Kreate</a>, built with UI/UX improvements and new features in mind with LTS build support.
-  </p>
-<p><strong>N-Zik</strong> may not yet be as stable as the original <a href="https://github.com/knighthat/Kreate">Kreate</a>, so feel free to use the original if you need a more mature alternative.</p>
+<p>
+  <strong>N-Zik</strong> is a side project I originally built for myself and friends — not chasing glory. 
+  It's grown a bit since then, which is cool.
+</p>
+
+<p>
+  I use generative AI to assist with code, structured with the 
+  <a href="https://github.com/bmad-code-org/BMAD-METHOD">BMAD Method</a> — 
+  but everything gets reviewed and tested before it's pushed. I'm not shipping blind.
+</p>
+
+<p>
+  If AI-assisted development isn't your thing, no hard feelings — 
+  there are plenty of great alternatives listed below. 👇
+</p>
 
   <br>
   
