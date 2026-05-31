@@ -122,8 +122,8 @@ object Innertube {
         gl = Locale.getDefault().country,
         hl = Locale.getDefault().toLanguageTag()
     )
-    var visitorData: String = YoutubePreferences.preference?.visitordata.toString()
-    var dataSyncId: String? = YoutubePreferences.preference?.dataSyncId.toString()
+    var visitorData: String = YoutubePreferences.preference?.visitordata.takeIf { !it.isNullOrBlank() } ?: DEFAULT_VISITOR_DATA
+    var dataSyncId: String? = YoutubePreferences.preference?.dataSyncId
 
     var cookieMap = emptyMap<String, String>()
     var cookie: String? = YoutubePreferences.preference?.cookie
@@ -473,48 +473,65 @@ object Innertube {
     }
 
     suspend fun accountMenu(): HttpResponse {
-        val response =
-            client.post(accountMenu) {
-                setLogin(setLogin = true)
-                setBody(AccountMenuBody())
-            }
-
-        println("YoutubeLogin Innertube accountMenuBody: ${AccountMenuBody()}")
-        println("YoutubeLogin Innertube accountMenu RESPONSE: ${response.bodyAsText()}")
-
-        return response
+        return client.post(accountMenu) {
+            setLogin(setLogin = true)
+            setBody(AccountMenuBody())
+        }
     }
 
     fun HttpRequestBuilder.setLogin(clientType: Client = DefaultWeb.client, setLogin: Boolean = false, targetHost: String = YOUTUBE_MUSIC_HOST) {
         contentType(ContentType.Application.Json)
-        headers {
-            append("X-Goog-Api-Format-Version", "1")
-            append("X-YouTube-Client-Name", "${clientType.xClientName ?: 1}")
-            append("X-YouTube-Client-Version", clientType.clientVersion)
-            append("X-Origin", "https://$targetHost")
-            if (clientType.referer != null) {
-                append("Referer", clientType.referer)
-            }
-            if (setLogin && clientType.loginSupported) {
-                cookie?.let { cookieStr ->
-                    if (cookieStr.isNotBlank()) {
-                        cookieMap = parseCookieString(cookieStr)
-                        if ("SAPISID" !in cookieMap && "__Secure-3PAPISID" !in cookieMap) return@let
-                        val currentTime = System.currentTimeMillis() / 1000
-                        val sapisidCookie = cookieMap["SAPISID"] ?: cookieMap["__Secure-3PAPISID"]
-                        val sapisidHash = sha1("$currentTime $sapisidCookie https://$targetHost")
-                        append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
-                        append("Cookie", cookieStr)
+        var isLoggedIn = false
+        var validCookie = ""
+        if (setLogin && clientType.loginSupported) {
+            cookie?.let { cookieStr ->
+                if (cookieStr.isNotBlank()) {
+                    val cookieMap = parseCookieString(cookieStr)
+                    if ("SAPISID" in cookieMap || "__Secure-3PAPISID" in cookieMap) {
+                        isLoggedIn = true
+                        validCookie = cookieStr
                     }
                 }
             }
-            if (!visitorData.isNullOrBlank()) {
-                append("X-Goog-Visitor-Id", visitorData)
+        }
+
+        if (clientType.loginSupported || isLoggedIn) {
+            headers {
+                append("X-Goog-Api-Format-Version", "1")
+                append("X-YouTube-Client-Name", "${clientType.xClientName ?: 1}")
+                append("X-YouTube-Client-Version", clientType.clientVersion)
+                append("X-Origin", "https://$targetHost")
+                if (clientType.referer != null) {
+                    append("Referer", clientType.referer)
+                }
+
+                if (isLoggedIn) {
+                    val cookieMap = parseCookieString(validCookie)
+                    val currentTime = System.currentTimeMillis() / 1000
+                    val sapisidCookie = cookieMap["SAPISID"] ?: cookieMap["__Secure-3PAPISID"]
+                    val sapisidHash = sha1("$currentTime $sapisidCookie https://$targetHost")
+                    append("Authorization", "SAPISIDHASH ${currentTime}_$sapisidHash")
+                    append("Cookie", validCookie)
+                    append("X-Goog-Authuser", "0")
+                    append("X-Youtube-Bootstrap-Logged-In", "true")
+                }
+
+                if (!visitorData.isNullOrBlank()) {
+                    append("X-Goog-Visitor-Id", visitorData)
+                }
+
+                clientType.api_key?.let {
+                    append("X-Goog-Api-Key", it)
+                }
             }
         }
+
+        clientType.api_key?.let {
+            parameter("key", it)
+        }
+
         clientType.userAgent?.let { userAgent(it) }
         parameter("prettyPrint", false)
-
     }
 
     /*******************************************

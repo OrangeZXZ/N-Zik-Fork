@@ -12,3 +12,4 @@ Thanks to the Metrolist source code for helping identify and resolve several of 
 https://github.com/MetrolistGroup
 
 added back yt login infos
+Fixed anonymous when logged out

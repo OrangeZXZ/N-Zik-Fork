@@ -84,35 +84,41 @@ fun YouTubeLogin(
                 .fillMaxSize(),
             factory = { context ->
                 WebView(context).apply {
+                    var hasCompletedLogin = false
                     webViewClient = object : WebViewClient() {
                         override fun doUpdateVisitedHistory(view: WebView, url: String, isReload: Boolean) {
-                            if (url.startsWith("https://music.youtube.com")) {
-                                cookie = CookieManager.getInstance().getCookie(url)
-                                //onLogin(cookie)
-
-                                GlobalScope.launch {
-                                    Innertube.accountInfo().onSuccess {
-                                        println("YoutubeLogin doUpdateVisitedHistory accountInfo() $it")
-                                        accountName = it?.name.orEmpty()
-                                        accountEmail = it?.email.orEmpty()
-                                        accountChannelHandle = it?.channelHandle.orEmpty()
-                                        accountThumbnail = it?.thumbnailUrl.orEmpty()
-                                        onLogin(cookie)
-                                    }.onFailure {
-                                        Timber.e("Error YoutubeLogin: $it.stackTraceToString()")
-                                        println("Error YoutubeLogin: ${it.stackTraceToString()}")
-                                    }
-                                }
-                            }
+                            // Do nothing here, we will handle it in onPageFinished
                         }
 
                         override fun onPageFinished(view: WebView, url: String?) {
                             loadUrl("javascript:Android.onRetrieveVisitorData(window.yt.config_.VISITOR_DATA)")
                             loadUrl("javascript:Android.onRetrieveDataSyncId(window.yt.config_.DATASYNC_ID)")
+
+                            if (url?.startsWith("https://music.youtube.com") == true && !hasCompletedLogin) {
+                                cookie = CookieManager.getInstance().getCookie(url)
+                                hasCompletedLogin = true
+
+                                GlobalScope.launch {
+                                    kotlinx.coroutines.delay(500)
+
+                                    Innertube.cookie = cookie
+                                    Innertube.dataSyncId = dataSyncId
+                                    Innertube.visitorData = visitorData
+
+                                    Innertube.accountInfo().onSuccess {
+                                        println("YoutubeLogin onPageFinished accountInfo() $it")
+                                        accountName = it?.name.orEmpty()
+                                        accountEmail = it?.email.orEmpty()
+                                        accountChannelHandle = it?.channelHandle.orEmpty()
+                                        accountThumbnail = it?.thumbnailUrl.orEmpty()
+                                        onLogin(cookie)                                     
+                                    }.onFailure {
+                                        Timber.e(resource(R.string.error_youtube_login) + ": ${it.stackTraceToString()}")
+                                        hasCompletedLogin = false // Allow retry
+                                    }
+                                }
+                            }
                         }
-
-
-
                     }
                     settings.apply {
                         javaScriptEnabled = true

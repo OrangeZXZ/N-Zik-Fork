@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,6 +26,11 @@ import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import app.it.fast4x.rimusic.utils.enablePictureInPictureKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.ytAccountThumbnail
+import androidx.compose.ui.draw.clip
+import app.it.fast4x.rimusic.thumbnailShape
+import app.it.fast4x.rimusic.utils.ytAccountThumbnailKey
+import app.it.fast4x.rimusic.utils.ytCookieKey
+import it.fast4x.innertube.utils.parseCookieString
 
 @Composable
 private fun HamburgerMenu(
@@ -79,16 +86,24 @@ fun ActionBar(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
+    val cookie by rememberPreference(key = ytCookieKey, defaultValue = "")
+    val isLoggedIn = remember(cookie) {
+        "SAPISID" in parseCookieString(cookie)
+    }
+    val accountThumbnail by rememberPreference(key = ytAccountThumbnailKey, defaultValue = "")
+
     // Search Icon
     HeaderIcon( R.drawable.search) { navController.navigate(NavRoutes.search.name) }
 
-    if (isYouTubeLoggedIn()) {
-        if (ytAccountThumbnail() != "")
+    if (isLoggedIn) {
+        if (accountThumbnail.isNotEmpty())
             ImageCacheFactory.AsyncImage(
-                thumbnailUrl = ytAccountThumbnail(),
+                thumbnailUrl = accountThumbnail,
                 contentDescription = null,
-                modifier = Modifier.height(40.dp)
+                modifier = Modifier
                     .padding(end = 10.dp)
+                    .size(32.dp)
+                    .clip(CircleShape)
                     .clickable { expanded = !expanded }
             )
         else HeaderIcon( R.drawable.ytmusic, size = 30.dp ) { expanded = !expanded }

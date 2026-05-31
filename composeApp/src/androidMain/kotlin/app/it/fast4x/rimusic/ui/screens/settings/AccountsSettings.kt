@@ -48,6 +48,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.rememberNavController
 import app.kreate.android.R
 import io.ktor.http.Url
+import app.kreate.android.me.knighthat.component.dialog.RestartAppDialog
 import app.it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.utils.parseCookieString
 import it.fast4x.piped.Piped
@@ -98,7 +99,6 @@ import timber.log.Timber
 import androidx.compose.material3.Text
 import androidx.compose.ui.res.painterResource
 import app.it.fast4x.rimusic.typography
-import app.kreate.android.me.knighthat.component.dialog.RestartAppDialog
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -149,7 +149,7 @@ fun AccountsSettings() {
             )
         ) {
             SettingsSectionCard(
-                title = "YOUTUBE MUSIC",
+                title = stringResource(R.string.youtube_music),
                 icon = R.drawable.ytmusic,
                 content = {
                     // rememberEncryptedPreference only works correct with API 24 and up
@@ -190,81 +190,144 @@ fun AccountsSettings() {
 
                     AnimatedVisibility(visible = isYouTubeLoginEnabled) {
                         Column {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                if (isLoggedIn && accountThumbnail != "")
-                                    ImageCacheFactory.AsyncImage(
-                                        thumbnailUrl = accountThumbnail,
-                                        contentDescription = null,
+                            if (isLoggedIn) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column(
                                         modifier = Modifier
-                                            .height(50.dp)
-                                            .clip(thumbnailShape())
-                                    )
-
-                                Column {
-                                    OtherSettingsEntry(
-                                        title = if (isLoggedIn) stringResource(R.string.youtube_disconnect) else stringResource(R.string.youtube_connect),
-                                        text = if (isLoggedIn) "$accountName ${accountChannelHandle}" else "",
-                                        icon = R.drawable.person,
-                                        onClick = {
-                                            if (isLoggedIn) {
-                                                cookie = ""
-                                                accountName = ""
-                                                accountChannelHandle = ""
-                                                accountEmail = ""
-                                                accountThumbnail = ""
-                                                visitorData = ""
-                                                dataSyncId = ""
-                                                loginYouTube = false
-                                                //Delete cookies after logout
-                                                val cookieManager = CookieManager.getInstance()
-                                                cookieManager.removeAllCookies(null)
-                                                cookieManager.flush()
-                                                WebStorage.getInstance().deleteAllData()
-                                                restartService = true
-                                            } else
-                                                loginYouTube = true
-                                        }
-                                    )
-
-                                    CustomModalBottomSheet(
-                                        showSheet = loginYouTube,
-                                        onDismissRequest = {
-                                            loginYouTube = false
-                                        },
-                                        containerColor = colorPalette().background0,
-                                        contentColor = colorPalette().background0,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                                        dragHandle = {
-                                            Surface(
-                                                modifier = Modifier.padding(vertical = 0.dp),
-                                                color = colorPalette().background0,
-                                                shape = thumbnailShape()
-                                            ) {}
-                                        },
-                                        shape = thumbnailRoundness.shape
+                                            .padding(start = 8.dp)
                                     ) {
-                                        YouTubeLogin(
-                                            onLogin = { cookieRetrieved ->
-                                                if (cookieRetrieved.contains("SAPISID")) {
-                                                    isLoggedIn = true
-                                                    loginYouTube = false
-                                                    Toaster.i( context.getString(R.string.youtube_login_successful) )
-                                                    restartService = true
+                                        Text(
+                                            text = stringResource(R.string.account_info),
+                                            color = colorPalette().text,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.padding(start = 5.dp),
+                                        )
+
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(top = 8.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            if (accountThumbnail.isNotEmpty()) {
+                                                ImageCacheFactory.AsyncImage(
+                                                    thumbnailUrl = accountThumbnail,
+                                                    contentDescription = null,
+                                                    modifier = Modifier
+                                                        .padding(start = 5.dp, top = 8.dp, bottom = 8.dp)
+                                                        .size(50.dp)
+                                                        .clip(thumbnailShape())
+                                                )
+                                            } else {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.person),
+                                                    contentDescription = null,
+                                                    modifier = Modifier
+                                                        .padding(start = 5.dp, top = 8.dp, bottom = 8.dp)
+                                                        .size(50.dp)
+                                                        .clip(thumbnailShape()),
+                                                    tint = colorPalette().textSecondary
+                                                )
+                                            }
+
+                                            Box(
+                                                modifier = Modifier
+                                                    .padding(start = 8.dp)
+                                                    .padding(top = 8.dp, bottom = 8.dp),
+                                                contentAlignment = Alignment.CenterStart
+                                            ) {
+                                                Column {
+                                                    Text(
+                                                        text = accountName,
+                                                        color = colorPalette().text,
+                                                        modifier = Modifier.padding(start = 5.dp),
+                                                        style = typography().m
+                                                    )
+                                                    if (accountChannelHandle.isNotEmpty()) {
+                                                        Text(
+                                                            text = accountChannelHandle,
+                                                            color = colorPalette().textSecondary,
+                                                            modifier = Modifier.padding(start = 5.dp),
+                                                            style = typography().xs
+                                                        )
+                                                    }
+                                                    if (accountEmail.isNotEmpty()) {
+                                                        Text(
+                                                            text = accountEmail,
+                                                            color = colorPalette().textSecondary,
+                                                            modifier = Modifier.padding(start = 5.dp),
+                                                            style = typography().xs
+                                                        )
+                                                    }
                                                 }
                                             }
-                                        )
+                                        }
                                     }
                                 }
                             }
 
+                            OtherSettingsEntry(
+                                title = if (isLoggedIn) stringResource(R.string.youtube_disconnect) else stringResource(R.string.youtube_connect),
+                                text = "",
+                                icon = if (isLoggedIn) R.drawable.logout else R.drawable.person,
+                                onClick = {
+                                    if (isLoggedIn) {
+                                        cookie = ""
+                                        accountName = ""
+                                        accountChannelHandle = ""
+                                        accountEmail = ""
+                                        accountThumbnail = ""
+                                        visitorData = ""
+                                        dataSyncId = ""
+                                        loginYouTube = false
+                                        //Delete cookies after logout
+                                        val cookieManager = CookieManager.getInstance()
+                                        cookieManager.removeAllCookies(null)
+                                        cookieManager.flush()
+                                        WebStorage.getInstance().deleteAllData()
+                                    } else {
+                                        loginYouTube = true
+                                    }
+                                }
+                            )
+
+                            CustomModalBottomSheet(
+                                showSheet = loginYouTube,
+                                onDismissRequest = {
+                                    loginYouTube = false
+                                },
+                                containerColor = colorPalette().background0,
+                                contentColor = colorPalette().background0,
+                                modifier = Modifier.fillMaxWidth(),
+                                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                                dragHandle = {
+                                    Surface(
+                                        modifier = Modifier.padding(vertical = 0.dp),
+                                        color = colorPalette().background0,
+                                        shape = thumbnailShape()
+                                    ) {}
+                                },
+                                shape = thumbnailRoundness.shape
+                            ) {
+                                YouTubeLogin(
+                                    onLogin = { cookieRetrieved ->
+                                        if (cookieRetrieved.contains("SAPISID")) {
+                                            isLoggedIn = true
+                                            loginYouTube = false
+                                            Toaster.i( context.getString(R.string.youtube_login_successful) )
+                                        }
+                                    }
+                                )
+                            }
+
                             OtherSwitchSettingEntry(
-                                title = "Sync data with YTM account",
-                                text = "Playlists, albums, artists, history, like, etc.",
+                                title = stringResource(R.string.sync_data_with_ytm_account),
+                                text = stringResource(R.string.playlists_albums_artists_history_like_etc),
                                 isChecked = isYouTubeSyncEnabled,
                                 onCheckedChange = {
                                     isYouTubeSyncEnabled = it
@@ -336,7 +399,7 @@ fun AccountsSettings() {
                             }
                         }
                         if (noInstances)
-                            Toaster.i( context.getString(R.string.no_instances_found) )
+                            Toaster.i(context.getString(R.string.no_instances_found) )
 
                         if (executeLogin) {
                             LaunchedEffect(Unit) {
@@ -347,7 +410,7 @@ fun AccountsSettings() {
                                         username = pipedUsername,
                                         password = pipedPassword
                                     )?.onFailure {
-                                        Timber.e("Failed piped login ${it.stackTraceToString()}")
+                                        Timber.e( context.getString(R.string.piped_login_failed) + "; " + it.stackTraceToString() )
                                         isLoading = false
                                         Toaster.e( context.getString(R.string.piped_login_failed) )
                                         loadInstances = false
@@ -358,7 +421,7 @@ fun AccountsSettings() {
                                         return@launch
 
                                     Toaster.s( context.getString(R.string.piped_login_successful) )
-                                    Timber.i("Piped login successful")
+                                    Timber.i(context.getString(R.string.piped_login_successful))
 
                                     session.let {
                                         it?.getOrNull()?.token?.let { it1 ->
@@ -390,7 +453,7 @@ fun AccountsSettings() {
                                         MenuEntry(
                                             icon = R.drawable.server,
                                             text = it.name,
-                                            secondaryText = "${it.locationsFormatted} Users: ${it.userCount}",
+                                            secondaryText = stringResource(R.string.locations) + ": " + it.locationsFormatted + " " + stringResource(R.string.users) + ": " + it.userCount,
                                             onClick = {
                                                 menuState.hide()
                                                 pipedApiBaseUrl = it.apiBaseUrl.toString()

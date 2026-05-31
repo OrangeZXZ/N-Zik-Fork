@@ -1,16 +1,22 @@
 New:
-- Added "Browsing" status in Discord Rich Presence when navigating the app
+- Added "Browsing" status in Discord Rich Presence while navigating the app
+- Added back YouTube login information support
+- Added new Discord RPC statuses
 
 Improved:
 - Optimized Discord RPC network performance by removing redundant token validations
+- Improved YouTube login reliability
+- Innertube can now gather information directly from YouTube cookies (YouTube Sync is still not fully finished; avoid logging in whenever possible)
 
 Fixed:
-- Fixed streaming failures due to YouTube's PoToken generation requirements
-- Resolved 400 Bad Request errors on fallback YouTube clients (Android, iOS) by passing the API key correctly
-- Handled HTTP 403 errors during streaming to automatically trigger stream refresh
-- Fixed Discord Rich Presence timestamp calculations to accurately sync with track playback
-- Fixed a Discord RPC logout problem
-- Fixed quickpick when logged in
+- Fixed streaming failures caused by YouTube's PoToken generation requirements
+- Resolved 400 Bad Request errors on fallback YouTube clients (Android, iOS) by correctly passing the API key
+- Automatically refresh streams when HTTP 403 errors occur during playback
+- Fixed Discord Rich Presence timestamps to accurately sync with track playback
+- Fixed a Discord RPC logout issue
+- Fixed Quick Picks while logged in
+- Fixed anonymous mode while logged out
+- Fixed playback while logged out (back to normal)
 
 Special Thanks:
-- https://github.com/MetrolistGroup for the Metrolist source code that helped find and fix these problems!
+- Thanks to the Metrolist team for their source code, which helped identify and fix several of these issues.

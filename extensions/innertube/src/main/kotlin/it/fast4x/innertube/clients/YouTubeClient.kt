@@ -14,7 +14,7 @@ data class YouTubeClient(
     val osVersion: String? = null,
     val deviceMake: String? = null,
     val deviceModel: String? = null,
-    val androidSdkVersion: String? = null,
+    val androidSdkVersion: Int? = null,
     val referer: String? = null,
     val xClientName: Int? = null,
     val isEmbedded: Boolean = false,
@@ -46,7 +46,7 @@ data class YouTubeClient(
             useSignatureTimestamp = useSignatureTimestamp,
         ),
         user = Context.User(
-            onBehalfOfUser = if (loginSupported) dataSyncId else null
+            onBehalfOfUser = if (loginSupported) dataSyncId?.takeIf { it.isNotBlank() } else null
         )
     )
 
@@ -64,7 +64,7 @@ data class YouTubeClient(
             osVersion = "14",
             deviceMake = "Google",
             deviceModel = "Pixel 8 Pro",
-            androidSdkVersion = "34",
+            androidSdkVersion = 34,
             xClientName = 21,
             loginSupported = true,
             useSignatureTimestamp = true,
@@ -132,7 +132,7 @@ data class YouTubeClient(
             osName = "Android",
             deviceMake = "Oculus",
             deviceModel = "Quest 3",
-            androidSdkVersion = "32",
+            androidSdkVersion = 32,
             clientName = "ANDROID_VR",
             clientVersion = "1.43.32",
             api_key = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
@@ -147,7 +147,7 @@ data class YouTubeClient(
             osName = "Android",
             deviceMake = "Oculus",
             deviceModel = "Quest 3",
-            androidSdkVersion = "32",
+            androidSdkVersion = 32,
             clientName = "ANDROID_VR",
             clientVersion = "1.61.48",
             api_key = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
@@ -167,7 +167,7 @@ data class YouTubeClient(
             osVersion = "15",
             deviceMake = "Google",
             deviceModel = "Pixel 9 Pro Fold",
-            androidSdkVersion = "35",
+            androidSdkVersion = 35,
             xClientName = 14,
             loginSupported = true,
             useSignatureTimestamp = true,
@@ -188,7 +188,7 @@ data class YouTubeClient(
             osName = "Android",
             deviceMake = "Oculus",
             deviceModel = "Quest 3",
-            androidSdkVersion = "32",
+            androidSdkVersion = 32,
             clientName = "ANDROID_VR",
             clientVersion = "1.61.48",
             api_key = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",

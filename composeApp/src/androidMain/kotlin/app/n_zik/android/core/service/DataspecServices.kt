@@ -244,11 +244,23 @@ private suspend fun resolveStreamUri(
     }.getOrNull()
     Timber.tag(TAG).d("poToken generated: ${poToken != null}")
 
+    val isLoggedIn = !Innertube.cookie.isNullOrBlank() && Innertube.cookie?.contains("SAPISID") == true
+
     // 3. Try each client in order
     for ((index, ytClient) in FALLBACK_CLIENTS.withIndex()) {
         try {
             Timber.tag(TAG).d("Trying client (${index + 1}/${FALLBACK_CLIENTS.size}): ${ytClient.clientName} for $videoId")
-            val context = ytClient.toContext(locale, visitorData, Innertube.dataSyncId)
+
+            if (ytClient.loginRequired && !isLoggedIn) {
+                Timber.tag(TAG).d("Skipping client ${ytClient.clientName} - requires login but user is not logged in")
+                continue
+            }
+
+            val context = ytClient.toContext(
+                locale = locale,
+                visitorData = visitorData,
+                dataSyncId = if (isLoggedIn) Innertube.dataSyncId else null
+            )
 
             val sigTs = if (ytClient.useSignatureTimestamp) signatureTimestamp else null
             val pot   = if (ytClient.clientName == "WEB_REMIX") poToken else null
@@ -306,6 +318,9 @@ private suspend fun resolveStreamUri(
 
         } catch (e: LoginRequiredException) {
             Timber.tag(TAG).w("${ytClient.clientName}: LoginRequired, skipping")
+            continue
+        } catch (e: io.ktor.client.plugins.ResponseException) {
+            Timber.tag(TAG).w("${ytClient.clientName}: status=${e.response.status}")
             continue
         } catch (e: Exception) {
             Timber.tag(TAG).w("${ytClient.clientName}: exception: ${e.message}")
