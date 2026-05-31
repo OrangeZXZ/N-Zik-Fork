@@ -1085,4 +1085,9 @@
   <string name="download_completed">%1$d 完了</string>
   <string name="download_completed_with_failed">%1$d が完了しました、 %2$d が失敗しました</string>
   <string name="deleted_item">%1$s が削除されました</string>
+  <string name="youtube_music">YouTube音楽</string>
+  <string name="sync_data_with_ytm_account">YTMアカウントとデータを同期</string>
+  <string name="playlists_albums_artists_history_like_etc">プレイリスト、アルバム、アーティスト、歴史、などなど</string>
+  <string name="locations">場所</string>
+  <string name="users">ユーザー</string>
 </resources>
