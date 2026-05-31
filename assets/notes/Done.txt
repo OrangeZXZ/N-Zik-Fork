@@ -1,0 +1,2 @@
+Fix bug: Explicit badge not showing in android auto
+Fix bug: Notification player show e: e: not needed

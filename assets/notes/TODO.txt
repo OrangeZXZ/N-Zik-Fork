@@ -1,19 +1,13 @@
 back button in add to playlist in sub menu doesnt go back
-search bar online doesnt show the text centered and icon centered inside the search bar
 if i click on back button accros the app somes menu lost transition ??
-Update discord library and improve RPC and token grab, bugged pls dont use it
 When long pressing an ui or a song the effect of longpress doesnt have corner radius, on multiple UI
 Searching online and navigation around resultat make newer results to never load ? id you slide too fast
 Add artist video category under artist page, only video works not live performance
-Replace old fast4x innertube api with new fast4x environment api
 Add randomize dice in Artist page
 Remove old fast4x innertube api and Kreate innertube api
 Update YTB sync to use new innertube api also update eevery sync like album artists songs ect...
 Fix easter eggs
 Add back dislike button in player, android auto and notification still support it
 Update HomeAlbum page for sync
-Cache system won't show in android auto and songs tab same in phone one
-Explicit badge not showing in android auto
-Notification player show e: e: not needed
 Optimized transition between section in home songs
 Make the desktop version
