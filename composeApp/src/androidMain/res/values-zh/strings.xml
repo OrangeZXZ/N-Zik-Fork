@@ -1103,9 +1103,9 @@
     <string name="parental_control_is_enabled">家长控制已启用</string>
     <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
     <string name="battery_optimization_msg">%1$s %2$s</string>
-    <string name="player_presets_and_layout">Presets &amp; Layout</string>
-    <string name="cover_and_thumbnail">Cover &amp; Thumbnail</string>
+    <string name="player_presets_and_layout">预设 &amp; 布局</string>
+    <string name="cover_and_thumbnail">封面 &amp; 缩略图</string>
     <string name="timeline_and_controls">Timeline &amp; Controls</string>
-    <string name="colors_and_background">Colors &amp; Background</string>
+    <string name="colors_and_background">颜色 &amp; 背景</string>
     <string name="player_behavior_and_visuals">Player Behavior &amp; Visuals</string>
 </resources>
