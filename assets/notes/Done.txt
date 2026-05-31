@@ -1,5 +1,14 @@
-Fixed discord rpc logout problem
-Thx to metrolist source code
-Fixed a mistake with cookie and error handling on exoplayer
-Fixed playback crash when logged in for first time
-Fixed quickpick when logged in
+Fixed Discord RPC logout issues
+Fixed a cookie and error-handling mistake in ExoPlayer
+Fixed a playback crash occurring on first login
+Fixed Quick Picks when logged in
+Added a "Browsing" status to Discord Rich Presence when navigating the app
+Optimized Discord RPC network performance by removing redundant token validations
+Fixed streaming failures caused by YouTube's PoToken generation requirements
+Fixed 400 Bad Request errors on fallback YouTube clients (Android/iOS) by correctly passing the API key
+Fixed HTTP 403 streaming errors by automatically refreshing streams
+Fixed Discord Rich Presence timestamp calculations to properly sync with track playback
+Thanks to the Metrolist source code for helping identify and resolve several of these issues:
+https://github.com/MetrolistGroup
+
+added back yt login infos
