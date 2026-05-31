@@ -739,7 +739,7 @@ class MainActivity :
                                             proxy = it.fast4x.innertube.utils.getProxy(ProxyPreferences.preference!!)
                                         }
                                     } else {
-                                        Toaster.e("Your Proxy Hostname is invalid, please check it")
+                                        Toaster.e(R.string.invalid_proxy_hostname)
                                     }
                                 } else {
                                     ProxyPreferences.preference = null
@@ -1234,7 +1234,7 @@ class MainActivity :
                                     )
                                         binder?.player?.forcePlay(song.asMediaItem)
                                     else
-                                        Toaster.w( "Parental control is enabled" )
+                                        Toaster.w( R.string.parental_control_is_enabled )
                                 }
                             }
                         }

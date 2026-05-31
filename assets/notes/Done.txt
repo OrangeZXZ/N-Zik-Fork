@@ -13,4 +13,8 @@ https://github.com/MetrolistGroup
 
 added back yt login infos
 Fixed anonymous when logged out
+
 Improved Ytb login and datastore
+Improved playback reliability
+Improved Toaster error messages
+Fixed Translated some missed toaster messages

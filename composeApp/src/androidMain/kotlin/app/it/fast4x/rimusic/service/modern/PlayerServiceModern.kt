@@ -66,6 +66,7 @@ import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.source.ShuffleOrder.DefaultShuffleOrder
 import androidx.media3.exoplayer.upstream.DefaultLoadErrorHandlingPolicy
+import androidx.media3.exoplayer.upstream.LoadErrorHandlingPolicy
 import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.session.CommandButton
 import androidx.media3.session.DefaultMediaNotificationProvider
@@ -78,6 +79,7 @@ import androidx.media3.session.SessionToken
 import app.it.fast4x.rimusic.repository.QuickPicksRepository
 import app.kreate.android.R
 import app.n_zik.android.core.service.createDataSourceFactory
+import app.n_zik.android.core.service.formatCache
 import app.kreate.android.widget.Widget
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.MoreExecutors
@@ -646,7 +648,7 @@ class PlayerServiceModern : MediaLibraryService(),
              * Discord presence cleanup
              */
             if (preferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
-                Toaster.i("[DiscordPresence] onStop: call the manager (close discord presence)")
+                Toaster.i(R.string.discord_presence_closed)
                 discordPresenceManager?.onStop()
             }
             maybeSavePlayerQueue()
@@ -841,12 +843,16 @@ class PlayerServiceModern : MediaLibraryService(),
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
 
-        Timber.e("PlayerServiceModern onPlayerError error code ${error.errorCode} message ${error.message} cause ${error.cause?.cause}")
+        // Extract meaningful error detail from the exception chain
+        val errorDetail = error.message
+            ?: error.cause?.message
+            ?: error.cause?.cause?.message
+            ?: error.errorCodeName
+        Timber.e("PlayerServiceModern onPlayerError code=${error.errorCode} (${error.errorCodeName}) detail=[$errorDetail] cause=${error.cause} rootCause=${error.cause?.cause}")
 
         val playbackConnectionExeptionList = listOf(
             PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED, //primary error code to manage
             PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT,
-            PlaybackException.ERROR_CODE_IO_UNSPECIFIED // Often where custom network exceptions end up
         )
 
         // check if error is caused by internet connection
@@ -860,24 +866,34 @@ class PlayerServiceModern : MediaLibraryService(),
             return
         }
 
-        val playbackHttpExeptionList = listOf(
+        // Recoverable errors: try pause+prepare+play before giving up
+        val recoverableErrors = listOf(
             PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS,
             PlaybackException.ERROR_CODE_IO_READ_POSITION_OUT_OF_RANGE,
+            PlaybackException.ERROR_CODE_REMOTE_ERROR,        // UnplayableException lands here
+            PlaybackException.ERROR_CODE_IO_UNSPECIFIED,
             416 // 416 Range Not Satisfiable
         )
 
-        if (error.errorCode in playbackHttpExeptionList) {
-            Timber.e("PlayerServiceModern onPlayerError recovered occurred errorCodeName ${error.errorCodeName} cause ${error.cause?.cause}")
+        if (error.errorCode in recoverableErrors) {
+            Timber.e("PlayerServiceModern onPlayerError attempting recovery for ${error.errorCodeName} cause ${error.cause?.cause}")
+            // Invalidate cached stream URL so next resolve fetches a fresh one
+            player.currentMediaItem?.mediaId?.let { formatCache.remove(it) }
             player.pause()
             player.prepare()
             if (player.playWhenReady) {
                 player.play()
             }
+            Toaster.w(R.string.stream_error_retrying, formatArgs = arrayOf(errorDetail.take(80)))
             return
         }
 
-        if (!preferences.getBoolean(skipMediaOnErrorKey, false) || !player.hasNextMediaItem())
+        // Non-recoverable, non-network error: only skip if the option is ON
+        if (!preferences.getBoolean(skipMediaOnErrorKey, false) || !player.hasNextMediaItem()) {
+            // Show error toast so the user knows something is wrong
+            Toaster.e(R.string.error_playback_failed, formatArgs = arrayOf(errorDetail.take(100)))
             return
+        }
 
         val prev = player.currentMediaItem ?: return
         //player.seekToNextMediaItem()
@@ -963,7 +979,7 @@ class PlayerServiceModern : MediaLibraryService(),
             bassBoost?.setStrength(bassboostLevel)
             bassBoost?.enabled = true
         }.onFailure {
-            Toaster.e( "Can't enable bass boost" )
+            Toaster.e( R.string.cant_enable_bass_boost )
         }
     }
 
@@ -1021,7 +1037,7 @@ class PlayerServiceModern : MediaLibraryService(),
                         .collectLatest { format ->
                             val loudnessMb = format?.loudnessDb.toMb().let {
                                 if (it !in -2000..2000) {
-                                    Toaster.w( "Extreme loudness detected" )
+                                    Toaster.w( R.string.extreme_loudness_detected )
 
                                     0
                                 } else
@@ -1118,6 +1134,17 @@ class PlayerServiceModern : MediaLibraryService(),
     ).setLoadErrorHandlingPolicy(
         object : DefaultLoadErrorHandlingPolicy() {
             override fun isEligibleForFallback(exception: IOException) = true
+
+            override fun getRetryDelayMsFor(
+                loadErrorInfo: LoadErrorHandlingPolicy.LoadErrorInfo
+            ): Long {
+                // Retry with exponential backoff for recoverable errors
+                return if (loadErrorInfo.errorCount <= 5) {
+                    (loadErrorInfo.errorCount * 2000L).coerceAtMost(10_000L)
+                } else {
+                    C.TIME_UNSET // Give up after 5 retries
+                }
+            }
         }
     )
 

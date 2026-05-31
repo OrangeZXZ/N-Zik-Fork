@@ -518,7 +518,7 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
                             Database.mapIgnore( it, *items.toTypedArray() )
                         }
                 if (items.size == 50)
-                    Toaster.i( "${mediaItems.size - (index + 1) * 50} Songs Remaining" )
+                    Toaster.i(R.string.songs_remaining, formatArgs = arrayOf((mediaItems.size - (index + 1) * 50).toString()))
             }
             .onFailure {
                 println("YtMusic addToPlaylist (list of size ${items.size}) error: ${it.stackTraceToString()}")
@@ -618,7 +618,7 @@ suspend fun addToYtLikedSongs(mediaItems: List<MediaItem>){
                 }
             }
             .onFailure {
-                Toaster.e( "${index + 1}/${mediaItems.size} " + appContext().resources.getString(R.string.songs_liked_yt_failed) )
+                Toaster.e(R.string.songs_liked_yt_failed_with_index, formatArgs = arrayOf("${index + 1}/${mediaItems.size}", appContext().resources.getString(R.string.songs_liked_yt_failed)))
             }
     }
 }

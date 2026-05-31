@@ -40,6 +40,7 @@ import app.it.fast4x.rimusic.utils.isConnectionMetered
 import app.it.fast4x.rimusic.utils.okHttpDataSourceFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
@@ -51,6 +52,8 @@ import timber.log.Timber
 
 private const val TAG = "DataspecServices"
 private const val CHUNK_LENGTH = 512 * 1024L
+private const val MAX_RESOLVE_RETRIES = 3
+private const val INITIAL_RETRY_DELAY_MS = 1500L
 
 // Clients to try in order - mirrors Metrolist's YTPlayerUtils fallback chain
 private val FALLBACK_CLIENTS = listOf(
@@ -121,16 +124,18 @@ private fun upsertSongFormat(videoId: String, format: PlayerResponse.StreamingDa
 }
 
 /**
- * Checks playability status and throws appropriate exception.
+ * Checks playability status and throws appropriate exception with the real reason.
  */
 @UnstableApi
 private fun checkPlayability(playabilityStatus: PlayerResponse.PlayabilityStatus?) {
-    if (playabilityStatus?.status != "OK")
+    if (playabilityStatus?.status != "OK") {
+        val reason = playabilityStatus?.reason ?: "Unknown reason (status=${playabilityStatus?.status})"
         when (playabilityStatus?.status) {
-            "LOGIN_REQUIRED" -> throw LoginRequiredException()
-            "UNPLAYABLE"     -> throw UnplayableException()
-            else             -> throw UnknownException()
+            "LOGIN_REQUIRED" -> throw LoginRequiredException("Login required: $reason")
+            "UNPLAYABLE"     -> throw UnplayableException("Unplayable: $reason")
+            else             -> throw UnknownException("${playabilityStatus?.status ?: "NULL"}: $reason")
         }
+    }
 }
 
 /**
@@ -208,7 +213,43 @@ private suspend fun resolveFormatUrl(
 }
 
 /**
- * Core stream resolution logic.
+ * Resolves the stream URI with retry logic.
+ *
+ * Wraps [resolveStreamUriInternal] with up to [MAX_RESOLVE_RETRIES] attempts,
+ * invalidating the format cache between retries. Shows a toast when all
+ * attempts are exhausted.
+ */
+@UnstableApi
+private suspend fun resolveStreamUri(
+    videoId: String,
+    audioQualityFormat: AudioQualityFormat,
+    connectionMetered: Boolean
+): Uri {
+    var lastException: Exception? = null
+
+    for (attempt in 1..MAX_RESOLVE_RETRIES) {
+        try {
+            return resolveStreamUriInternal(videoId, audioQualityFormat, connectionMetered)
+        } catch (e: Exception) {
+            lastException = e
+            Timber.tag(TAG).w("Resolve attempt $attempt/$MAX_RESOLVE_RETRIES failed for $videoId: ${e.message}")
+            if (attempt < MAX_RESOLVE_RETRIES) {
+                // Invalidate cached URL so next attempt fetches a fresh one
+                formatCache.remove(videoId)
+                delay(INITIAL_RETRY_DELAY_MS * attempt)
+            }
+        }
+    }
+
+    // All retries exhausted — show toast with the real reason
+    Timber.tag(TAG).e("All $MAX_RESOLVE_RETRIES resolve attempts failed for $videoId")
+    val errorDetail = lastException?.message ?: "Unknown error"
+    Toaster.e(R.string.error_all_stream_attempts_failed, formatArgs = arrayOf(errorDetail.take(100)))
+    throw lastException ?: UnplayableException("All retries exhausted for $videoId")
+}
+
+/**
+ * Core stream resolution logic (single attempt).
  *
  * Mirrors Metrolist's YTPlayerUtils.playerResponseForPlayback() flow:
  * 1. Fetch signatureTimestamp from player.js
@@ -217,7 +258,7 @@ private suspend fun resolveFormatUrl(
  * 4. Return the first working stream URL
  */
 @UnstableApi
-private suspend fun resolveStreamUri(
+private suspend fun resolveStreamUriInternal(
     videoId: String,
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
@@ -245,6 +286,9 @@ private suspend fun resolveStreamUri(
     Timber.tag(TAG).d("poToken generated: ${poToken != null}")
 
     val isLoggedIn = !Innertube.cookie.isNullOrBlank() && Innertube.cookie?.contains("SAPISID") == true
+
+    // Track the last meaningful failure reason across all clients
+    var lastFailureReason: String? = null
 
     // 3. Try each client in order
     for ((index, ytClient) in FALLBACK_CLIENTS.withIndex()) {
@@ -276,26 +320,32 @@ private suspend fun resolveStreamUri(
             val playerResponse = runCatching {
                 httpResponse.body<PlayerResponse>()
             }.getOrNull() ?: run {
-                Timber.tag(TAG).w("${ytClient.clientName}: failed to parse PlayerResponse")
+                lastFailureReason = "${ytClient.clientName}: failed to parse PlayerResponse"
+                Timber.tag(TAG).w(lastFailureReason)
                 continue
             }
 
-            // Check playability
+            // Check playability — capture the reason if not OK
             if (playerResponse.playabilityStatus?.status != "OK") {
-                Timber.tag(TAG).w("${ytClient.clientName}: status=${playerResponse.playabilityStatus?.status} reason=${playerResponse.playabilityStatus?.reason}")
+                val status = playerResponse.playabilityStatus?.status ?: "NULL"
+                val reason = playerResponse.playabilityStatus?.reason ?: "no reason provided"
+                lastFailureReason = "$status: $reason"
+                Timber.tag(TAG).w("${ytClient.clientName}: status=$status reason=$reason")
                 continue
             }
 
             // Pick best audio format
             val format = pickFormat(playerResponse.streamingData, audioQualityFormat, connectionMetered)
             if (format == null) {
-                Timber.tag(TAG).w("${ytClient.clientName}: no suitable format found")
+                lastFailureReason = "${ytClient.clientName}: no suitable audio format found"
+                Timber.tag(TAG).w(lastFailureReason)
                 continue
             }
 
             // Resolve URL
             val uri = resolveFormatUrl(videoId, format, ytClient.clientName) ?: run {
-                Timber.tag(TAG).w("${ytClient.clientName}: could not resolve URL for format ${format.itag}")
+                lastFailureReason = "${ytClient.clientName}: could not resolve URL for format itag=${format.itag}"
+                Timber.tag(TAG).w(lastFailureReason)
                 continue
             }
 
@@ -303,7 +353,8 @@ private suspend fun resolveStreamUri(
             val streamUrl = uri.toString()
             val isValid = NetworkClientFactory.validateStreamUrl(streamUrl, ytClient.userAgent)
             if (!isValid) {
-                Timber.tag(TAG).w("${ytClient.clientName}: stream URL validation failed (403?) for $videoId")
+                lastFailureReason = "${ytClient.clientName}: stream URL validation failed (403/expired?) for $videoId"
+                Timber.tag(TAG).w(lastFailureReason)
                 continue
             }
 
@@ -317,25 +368,35 @@ private suspend fun resolveStreamUri(
                 .build()
 
         } catch (e: LoginRequiredException) {
-            Timber.tag(TAG).w("${ytClient.clientName}: LoginRequired, skipping")
+            lastFailureReason = "${ytClient.clientName}: ${e.message ?: "Login required"}"
+            Timber.tag(TAG).w(lastFailureReason)
             continue
         } catch (e: io.ktor.client.plugins.ResponseException) {
-            Timber.tag(TAG).w("${ytClient.clientName}: status=${e.response.status}")
+            lastFailureReason = "${ytClient.clientName}: HTTP ${e.response.status}"
+            Timber.tag(TAG).w(lastFailureReason)
             continue
         } catch (e: Exception) {
-            Timber.tag(TAG).w("${ytClient.clientName}: exception: ${e.message}")
+            lastFailureReason = "${ytClient.clientName}: ${e::class.simpleName}: ${e.message}"
+            Timber.tag(TAG).w(lastFailureReason)
             continue
         }
     }
 
-    throw UnplayableException()
+    // All clients exhausted — throw with the last meaningful reason
+    val finalReason = lastFailureReason ?: "All ${FALLBACK_CLIENTS.size} clients failed for $videoId"
+    Timber.tag(TAG).e("resolveStreamUri FAILED: $finalReason")
+    throw UnplayableException(finalReason)
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Cache + DataSpec integration
 // ──────────────────────────────────────────────────────────────────────────────
 
-private val formatCache = mutableMapOf<String, Uri>()
+/**
+ * Cache of resolved stream URLs by videoId.
+ * Exposed internally so [PlayerServiceModern.onPlayerError] can invalidate stale entries.
+ */
+internal val formatCache = mutableMapOf<String, Uri>()
 
 @UnstableApi
 fun DataSpec.process(

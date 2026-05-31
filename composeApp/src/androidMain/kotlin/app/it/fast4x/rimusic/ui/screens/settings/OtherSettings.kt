@@ -291,7 +291,7 @@ fun OtherSettings() {
                                         Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
                                     )
                                 } catch (e: ActivityNotFoundException) {
-                                    Toaster.i("$msgNoBatteryOptim ${BuildConfig.APP_NAME}")
+                                    Toaster.i(R.string.battery_optimization_msg, formatArgs = arrayOf(msgNoBatteryOptim, BuildConfig.APP_NAME))
                                 }
                             }
                         }
