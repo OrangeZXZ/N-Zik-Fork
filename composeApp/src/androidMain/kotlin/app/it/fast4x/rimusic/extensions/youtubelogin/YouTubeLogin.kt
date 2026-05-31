@@ -1,5 +1,6 @@
 package app.it.fast4x.rimusic.extensions.youtubelogin
 
+import android.R.attr.resource
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
@@ -113,7 +114,7 @@ fun YouTubeLogin(
                                         accountThumbnail = it?.thumbnailUrl.orEmpty()
                                         onLogin(cookie)                                     
                                     }.onFailure {
-                                        Timber.e(resource(R.string.error_youtube_login) + ": ${it.stackTraceToString()}")
+                                        Timber.e("YoutubeLogin Error : ${it.stackTraceToString()}")
                                         hasCompletedLogin = false // Allow retry
                                     }
                                 }
