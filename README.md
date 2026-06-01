@@ -48,15 +48,16 @@ Join the N-Zik Discord:
 
 # 🎧 Features
 
-- 🌍 **Multilingual support** — English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian, and more. Contributions welcome!
+- 🌍 **Multilingual support** - English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian, and more. Contributions welcome!
 - 🎨 **Modern & friendly UI design**
-- 🌓 **UI Mode toggle** — Switch between **N-Zik** and classic **ViMusic** styles
-- 💾 **Automatic caching** — Songs are auto-cached for offline playback with customizable cache size
-- 📥 **Downloads** — Download individual songs or entire playlists for full offline access (beyond cache)
-- ▶️ **Background playback** — Keep the music going while using other apps
-- 📊 **Listening stats** — Track your listening habits and preferences
-- 🌈 **Audio visualizer** — Stunning effects and real-time animations
-- 🕹️ **Discord Rich Presence** — Show your currently playing track directly on your Discord profile
+- 🌓 **UI Mode toggle** - Switch between **N-Zik** and classic **ViMusic** styles
+- 💾 **Automatic caching** - Songs are auto-cached for offline playback with customizable cache size
+- 📥 **Downloads** - Download individual songs or entire playlists for full offline access (beyond cache)
+- ▶️ **Background playback** - Keep the music going while using other apps
+- 📊 **Listening stats** - Track your listening habits and preferences
+- 🌈 **Audio visualizer** - Stunning effects and real-time animations
+- 🕹️ **Discord Rich Presence** - Show your currently playing track directly on your Discord profile
+- ⬇️ **OTA System Update** - The app now updates itself automatically, just like on mobile
 
 <p align="left">
   <img src="https://github.com/user-attachments/assets/c656b9e1-f46d-4599-91dc-576eb3ba8657"/><br/>
