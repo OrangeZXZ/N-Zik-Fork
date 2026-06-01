@@ -204,6 +204,7 @@ Join us on Crowdin!
 
 ### 🛠 Based on / Inspired by:
 
+- [**Metrolist**](https://github.com/metrolistgroup/metrolist)
 - [**RiPlay**](https://github.com/fast4x/RiPlay)
 - [**Kreate**](https://github.com/knighthat/Kreate)
 - [**RiMusic**](https://github.com/fast4x/RiMusic)
