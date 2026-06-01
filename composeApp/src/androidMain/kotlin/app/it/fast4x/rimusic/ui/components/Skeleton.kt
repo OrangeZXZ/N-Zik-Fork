@@ -220,6 +220,7 @@ fun Skeleton(
         val lastVersionCode = rememberPreference(lastVersionCodeKey, 0)
         val lastBuildType = rememberPreference(lastBuildTypeKey, "")
         val seenChangelogs = rememberPreference(seenChangelogsVersionKey, "")
+        val initialSeenChangelogs = remember { seenChangelogs.value }
         
         LaunchedEffect(Unit) {
             val currentBuildType = MajorUpdateConfig.getCurrentBuildType()
@@ -229,7 +230,7 @@ fun Skeleton(
             if (transition != null) {
                 BuildTransitionWarningDialog.transitionType = transition
                 BuildTransitionWarningDialog.isActive = true
-            } else if (MajorUpdateConfig.shouldShowWarning(lastVersionCode.value, seenChangelogs.value.isNotEmpty())) {
+            } else if (MajorUpdateConfig.shouldShowWarning(lastVersionCode.value, initialSeenChangelogs.isNotEmpty())) {
                 MajorUpdateWarningDialog.isActive = true
             } else {
                 val currentCode = BuildConfig.VERSION_CODE
@@ -285,8 +286,10 @@ fun Skeleton(
         }
 
 
-        if (seenChangelogs.value != BuildConfig.VERSION_NAME) {
-            seenChangelogs.value = BuildConfig.VERSION_NAME
+        LaunchedEffect(Unit) {
+            if (seenChangelogs.value != BuildConfig.VERSION_NAME) {
+                seenChangelogs.value = BuildConfig.VERSION_NAME
+            }
         }
     }
 }

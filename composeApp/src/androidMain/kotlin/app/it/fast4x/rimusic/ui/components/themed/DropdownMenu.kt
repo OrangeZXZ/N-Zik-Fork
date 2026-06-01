@@ -56,6 +56,7 @@ class DropdownMenu(
         val colors: MenuItemColors? = null,
         val modifier: Modifier = Modifier,
         val customText: String? = null,
+        val enabled: Boolean = true,
         val onClick: () -> Unit
     ) {
 
@@ -85,7 +86,7 @@ class DropdownMenu(
             }
 
             DropdownMenuItem(
-                enabled = true,
+                enabled = enabled,
                 colors = colors ?: colors(),
                 text = { Text( customText ?: if (textId != 0) stringResource(textId) else "" ) },
                 leadingIcon = icon,

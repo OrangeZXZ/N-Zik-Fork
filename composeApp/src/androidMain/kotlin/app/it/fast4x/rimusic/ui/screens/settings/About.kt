@@ -279,8 +279,10 @@ fun About(navController: androidx.navigation.NavController) {
                          modifier = Modifier
                              .weight(1f)
                              .fillMaxHeight()
-                             .clickable {
-                                 navController.navigate(app.it.fast4x.rimusic.enums.NavRoutes.updater.name)
+                             .run {
+                                 if (BuildConfig.IS_AUTOUPDATE) {
+                                     clickable { navController.navigate(app.it.fast4x.rimusic.enums.NavRoutes.updater.name) }
+                                 } else this
                              }
                              .shadow(
                                  elevation = 8.dp,
@@ -304,106 +306,156 @@ fun About(navController: androidx.navigation.NavController) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Top
                     ) {
-                        // Top content
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            // Update Icon
-                            Box(
-                                modifier = Modifier
-                                    .size(60.dp)
-                                    .background(
-                                        brush = Brush.radialGradient(
-                                            colors = listOf(
-                                                colorPalette().accent.copy(alpha = 0.1f),
-                                                colorPalette().accent.copy(alpha = 0.05f)
-                                            )
-                                        ),
-                                        shape = CircleShape
-                                    ),
-                                contentAlignment = Alignment.Center
+                        if (BuildConfig.IS_AUTOUPDATE) {
+                            // Top content
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.update),
-                                    tint = colorPalette().accent,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(28.dp)
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            // Update Title
-                            BasicText(
-                                text = stringResource(R.string.update),
-                                style = TextStyle(
-                                    fontSize = typography().l.bold.fontSize,
-                                    fontWeight = typography().l.bold.fontWeight,
-                                    color = colorPalette().text,
-                                    textAlign = TextAlign.Center
-                                ),
-                                modifier = Modifier.fillMaxWidth()
-                            )
-
-                            Spacer(modifier = Modifier.height(6.dp))
-
-                            val newVersion = Updater.githubRelease?.tagName ?: ""
-                            val hasUpdate = Updater.githubRelease != null && Updater.isVersionNewer(newVersion, BuildConfig.VERSION_NAME)
-                            if (Updater.githubRelease != null) {
+                                // Update Icon
+                                Box(
+                                    modifier = Modifier
+                                        .size(60.dp)
+                                        .background(
+                                            brush = Brush.radialGradient(
+                                                colors = listOf(
+                                                    colorPalette().accent.copy(alpha = 0.1f),
+                                                    colorPalette().accent.copy(alpha = 0.05f)
+                                                )
+                                            ),
+                                            shape = CircleShape
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.update),
+                                        tint = colorPalette().accent,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(28.dp)
+                                    )
+                                }
+    
+                                Spacer(modifier = Modifier.height(12.dp))
+    
+                                // Update Title
                                 BasicText(
-                                    text = stringResource(if (hasUpdate) R.string.update_available else R.string.up_to_date),
-                                    style = typography().xs.secondary.copy(
-                                        textAlign = TextAlign.Center,
-                                        color = if (hasUpdate) colorPalette().accent else colorPalette().textSecondary
+                                    text = stringResource(R.string.update),
+                                    style = TextStyle(
+                                        fontSize = typography().l.bold.fontSize,
+                                        fontWeight = typography().l.bold.fontWeight,
+                                        color = colorPalette().text,
+                                        textAlign = TextAlign.Center
                                     ),
                                     modifier = Modifier.fillMaxWidth()
                                 )
-                            } else {
+    
+                                Spacer(modifier = Modifier.height(6.dp))
+    
+                                val newVersion = Updater.githubRelease?.tagName ?: ""
+                                val hasUpdate = Updater.githubRelease != null && Updater.isVersionNewer(newVersion, BuildConfig.VERSION_NAME)
+                                if (Updater.githubRelease != null) {
+                                    BasicText(
+                                        text = stringResource(if (hasUpdate) R.string.update_available else R.string.up_to_date),
+                                        style = typography().xs.secondary.copy(
+                                            textAlign = TextAlign.Center,
+                                            color = if (hasUpdate) colorPalette().accent else colorPalette().textSecondary
+                                        ),
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                } else {
+                                    BasicText(
+                                        text = stringResource(R.string.audio_quality_format_unknown),
+                                        style = typography().xs.secondary.copy(
+                                            textAlign = TextAlign.Center,
+                                            color = colorPalette().textSecondary
+                                        ),
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+                                
+                                val lastCheckTime by rememberPreference(app.it.fast4x.rimusic.utils.lastUpdateCheckKey, 0L)
+                                val sdf = java.text.SimpleDateFormat("dd MMM HH:mm", java.util.Locale.getDefault())
+                                val lastCheckStr = if (lastCheckTime > 0) sdf.format(java.util.Date(lastCheckTime)) else stringResource(R.string.never_checked)
                                 BasicText(
-                                    text = stringResource(R.string.audio_quality_format_unknown),
-                                    style = typography().xs.secondary.copy(
+                                    text = if (lastCheckTime > 0) stringResource(R.string.last_check, lastCheckStr) else stringResource(R.string.never_checked),
+                                    style = typography().xxs.secondary.copy(
                                         textAlign = TextAlign.Center,
-                                        color = colorPalette().textSecondary
+                                        color = colorPalette().textSecondary.copy(alpha = 0.7f)
+                                    ),
+                                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
+                                )
+                                
+                                Spacer(modifier = Modifier.height(16.dp))
+                            }
+    
+                            Spacer(modifier = Modifier.weight(1f))
+    
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(36.dp)
+                                    .clickable {
+                                        val prefs = app.it.fast4x.rimusic.appContext().getSharedPreferences("settings", 0)
+                                        val checkBeta = prefs.getBoolean(app.it.fast4x.rimusic.utils.checkBetaUpdatesKey, app.n_zik.android.core.updater.Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == "b")
+                                        app.kreate.android.me.knighthat.utils.Toaster.i(R.string.checking_for_updates)
+                                        Updater.checkForUpdate(isForced = true, checkBetaUpdates = checkBeta, showDialog = false)
+                                        navController.navigate(app.it.fast4x.rimusic.enums.NavRoutes.updater.name)
+                                    },
+                                colors = CardDefaults.cardColors(containerColor = colorPalette().accent),
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                    BasicText(
+                                        text = stringResource(R.string.check_update),
+                                        style = typography().xs.semiBold.copy(color = Color.White)
+                                    )
+                                }
+                            }
+                        } else {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(60.dp)
+                                        .background(
+                                            brush = Brush.radialGradient(
+                                                colors = listOf(
+                                                    colorPalette().accent.copy(alpha = 0.1f),
+                                                    colorPalette().accent.copy(alpha = 0.05f)
+                                                )
+                                            ),
+                                            shape = CircleShape
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.update),
+                                        tint = colorPalette().textSecondary.copy(alpha = 0.5f),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(28.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(12.dp))
+                                BasicText(
+                                    text = stringResource(R.string.update),
+                                    style = TextStyle(
+                                        fontSize = typography().l.bold.fontSize,
+                                        fontWeight = typography().l.bold.fontWeight,
+                                        color = colorPalette().textSecondary.copy(alpha = 0.5f),
+                                        textAlign = TextAlign.Center
                                     ),
                                     modifier = Modifier.fillMaxWidth()
                                 )
-                            }
-                            
-                            val lastCheckTime by rememberPreference(app.it.fast4x.rimusic.utils.lastUpdateCheckKey, 0L)
-                            val sdf = java.text.SimpleDateFormat("dd MMM HH:mm", java.util.Locale.getDefault())
-                            val lastCheckStr = if (lastCheckTime > 0) sdf.format(java.util.Date(lastCheckTime)) else stringResource(R.string.never_checked)
-                            BasicText(
-                                text = if (lastCheckTime > 0) stringResource(R.string.last_check, lastCheckStr) else stringResource(R.string.never_checked),
-                                style = typography().xxs.secondary.copy(
-                                    textAlign = TextAlign.Center,
-                                    color = colorPalette().textSecondary.copy(alpha = 0.7f)
-                                ),
-                                modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
-                            )
-                            
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(36.dp)
-                                .clickable {
-                                    val prefs = app.it.fast4x.rimusic.appContext().getSharedPreferences("settings", 0)
-                                    val checkBeta = prefs.getBoolean(app.it.fast4x.rimusic.utils.checkBetaUpdatesKey, app.n_zik.android.core.updater.Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == "b")
-                                    app.kreate.android.me.knighthat.utils.Toaster.i(R.string.checking_for_updates)
-                                    Updater.checkForUpdate(isForced = true, checkBetaUpdates = checkBeta, showDialog = false)
-                                    navController.navigate(app.it.fast4x.rimusic.enums.NavRoutes.updater.name)
-                                },
-                            colors = CardDefaults.cardColors(containerColor = colorPalette().accent),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Spacer(modifier = Modifier.height(8.dp))
                                 BasicText(
-                                    text = stringResource(R.string.check_update),
-                                    style = typography().xs.semiBold.copy(color = Color.White)
+                                    text = stringResource(R.string.description_app_not_installed_by_apk),
+                                    style = typography().xxs.secondary.copy(
+                                        textAlign = TextAlign.Center,
+                                        color = colorPalette().textSecondary.copy(alpha = 0.7f)
+                                    ),
+                                    modifier = Modifier.fillMaxWidth()
                                 )
                             }
                         }

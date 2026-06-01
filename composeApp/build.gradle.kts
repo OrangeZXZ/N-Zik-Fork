@@ -172,6 +172,7 @@ android {
         create( "beta" ) {
             initWith( maybeCreate("full") )
             versionNameSuffix = "-b"
+            signingConfig = signingConfigs.getByName("debug")
             // Fallback for modules that don't have a 'beta' build type (like :discordrpc)
             matchingFallbacks += listOf("release")
         }

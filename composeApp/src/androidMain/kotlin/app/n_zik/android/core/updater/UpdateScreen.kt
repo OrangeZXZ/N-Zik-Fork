@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -76,6 +77,7 @@ import timber.log.Timber
 @Composable
 fun UpdateScreen(navController: NavController) {
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
     val downloadState by UpdateDownloadManager.downloadState.collectAsStateWithLifecycle()
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
 
@@ -258,55 +260,93 @@ fun UpdateScreen(navController: NavController) {
                                 }
                             }
 
-                            if (hasUpdate) {
-                                Card(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            UpdateDownloadManager.startDownload(
-                                                context,
-                                                Updater.build.downloadUrl,
-                                                newVersion
-                                            )
-                                        },
-                                    colors = CardDefaults.cardColors(containerColor = colorPalette().accent),
-                                    shape = RoundedCornerShape(12.dp)
-                                ) {
-                                    Box(
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                if (hasUpdate) {
+                                    Card(
                                         modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(16.dp),
-                                        contentAlignment = Alignment.Center
+                                            .weight(1f)
+                                            .clickable {
+                                                UpdateDownloadManager.startDownload(
+                                                    context,
+                                                    Updater.build.downloadUrl,
+                                                    newVersion
+                                                )
+                                            },
+                                        colors = CardDefaults.cardColors(containerColor = colorPalette().accent),
+                                        shape = RoundedCornerShape(12.dp)
                                     ) {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Icon(
-                                                painter = painterResource(R.drawable.download),
-                                                contentDescription = null,
-                                                tint = Color.White,
-                                                modifier = Modifier.size(20.dp)
-                                            )
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            BasicText(
-                                                text = if (state is UpdateDownloadManager.DownloadState.Failed)
-                                                    stringResource(R.string.retry)
-                                                else
-                                                    stringResource(R.string.download),
-                                                style = typography().s.bold.copy(color = Color.White)
-                                            )
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(16.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.download),
+                                                    contentDescription = null,
+                                                    tint = Color.White,
+                                                    modifier = Modifier.size(20.dp)
+                                                )
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                BasicText(
+                                                    text = if (state is UpdateDownloadManager.DownloadState.Failed)
+                                                        stringResource(R.string.retry)
+                                                    else
+                                                        stringResource(R.string.download),
+                                                    style = typography().s.bold.copy(color = Color.White)
+                                                )
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    Card(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .clickable {
+                                                Toaster.i(R.string.checking_for_updates)
+                                                Updater.checkForUpdate(true, checkBetaUpdates, showDialog = false)
+                                            },
+                                        colors = CardDefaults.cardColors(containerColor = colorPalette().background1),
+                                        shape = RoundedCornerShape(12.dp),
+                                        border = androidx.compose.foundation.BorderStroke(1.dp, colorPalette().accent.copy(alpha = 0.5f))
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(16.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.update),
+                                                    contentDescription = null,
+                                                    tint = colorPalette().accent,
+                                                    modifier = Modifier.size(20.dp)
+                                                )
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                BasicText(
+                                                    text = stringResource(R.string.check_update),
+                                                    style = typography().s.semiBold.copy(color = colorPalette().accent)
+                                                )
+                                            }
                                         }
                                     }
                                 }
-                            } else {
+
                                 Card(
                                     modifier = Modifier
-                                        .fillMaxWidth()
+                                        .weight(1f)
                                         .clickable {
-                                            Toaster.i(R.string.checking_for_updates)
-                                            Updater.checkForUpdate(true, checkBetaUpdates, showDialog = false)
+                                            val tag = if (hasUpdate) "v$newVersion" else "v$currentVersion"
+                                            uriHandler.openUri("${Repository.REPO_URL}/releases/tag/$tag")
                                         },
                                     colors = CardDefaults.cardColors(containerColor = colorPalette().background1),
                                     shape = RoundedCornerShape(12.dp),
-                                    border = androidx.compose.foundation.BorderStroke(1.dp, colorPalette().accent.copy(alpha = 0.5f))
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, colorPalette().textSecondary.copy(alpha = 0.5f))
                                 ) {
                                     Box(
                                         modifier = Modifier
@@ -316,15 +356,15 @@ fun UpdateScreen(navController: NavController) {
                                     ) {
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                             Icon(
-                                                painter = painterResource(R.drawable.update),
+                                                painter = painterResource(R.drawable.github_icon),
                                                 contentDescription = null,
-                                                tint = colorPalette().accent,
+                                                tint = colorPalette().text,
                                                 modifier = Modifier.size(20.dp)
                                             )
                                             Spacer(modifier = Modifier.width(8.dp))
                                             BasicText(
-                                                text = stringResource(R.string.check_update),
-                                                style = typography().s.semiBold.copy(color = colorPalette().accent)
+                                                text = "GitHub",
+                                                style = typography().s.semiBold.copy(color = colorPalette().text)
                                             )
                                         }
                                     }
@@ -388,12 +428,16 @@ fun UpdateScreen(navController: NavController) {
                                         modifier = Modifier.background(colorPalette().background0.copy(0.90f)),
                                         onDismissRequest = { showMenu = false }
                                     )
+                                    val isMinified = Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == UpdaterConstants.SUFFIX_CHAR_MINIFIED
                                     menu.add(
                                         app.it.fast4x.rimusic.ui.components.themed.DropdownMenu.Item(
                                             iconId = R.drawable.shield_checkmark,
-                                            customText = "${stringResource(R.string.beta_updates)}: ${if (checkBetaUpdates) stringResource(R.string.on) else stringResource(R.string.off)}"
+                                            customText = "${stringResource(R.string.beta_updates)}: ${if (isMinified) stringResource(R.string.off) else if (checkBetaUpdates) stringResource(R.string.on) else stringResource(R.string.off)}",
+                                            enabled = !isMinified
                                         ) {
-                                            checkBetaUpdates = !checkBetaUpdates
+                                            if (!isMinified) {
+                                                checkBetaUpdates = !checkBetaUpdates
+                                            }
                                         }
                                     )
                                     val stateStr = when(checkUpdateState) {
@@ -518,13 +562,7 @@ fun UpdateScreen(navController: NavController) {
                                             text = "${UpdaterConstants.PREFIX_VERSION}$currentVersion",
                                             style = typography().s.copy(color = colorPalette().textSecondary)
                                         )
-                                        if (fileSize.isNotEmpty()) {
-                                            Spacer(modifier = Modifier.height(2.dp))
-                                            BasicText(
-                                                text = stringResource(R.string.update_file_size, fileSize),
-                                                style = typography().xs.copy(color = colorPalette().textSecondary)
-                                            )
-                                        }
+                                        // No file size displayed when up to date
                                     } else {
                                         Box(
                                             modifier = Modifier
