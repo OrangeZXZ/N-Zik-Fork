@@ -236,10 +236,10 @@ class ChangelogsDialog(
                                      Icon(
                                          painter = painterResource(
                                              when (section.title.lowercase()) {
-                                                 "new" -> R.drawable.add
-                                                 "changed" -> R.drawable.title_edit
-                                                 "improved" -> R.drawable.refresh_circle
-                                                 "fixed" -> R.drawable.alert
+                                                 UpdaterConstants.CHANGELOG_NEW -> R.drawable.add
+                                                 UpdaterConstants.CHANGELOG_CHANGED -> R.drawable.title_edit
+                                                 UpdaterConstants.CHANGELOG_IMPROVED -> R.drawable.refresh_circle
+                                                 UpdaterConstants.CHANGELOG_FIXED -> R.drawable.alert
                                                  else -> R.drawable.information
                                              }
                                          ),
@@ -313,10 +313,10 @@ class ChangelogsDialog(
                                         .clip(RoundedCornerShape(3.dp))
                                         .background(
                                             when (sections[selectedTab].title.lowercase()) {
-                                                "new" -> Color(0xFF4CAF50) // Vert
-                                                "changed" -> Color(0xFFFF9800) // Orange
-                                                "improved" -> Color(0xFF2196F3) // Bleu
-                                                "fixed" -> Color(0xFFF44336) // Rouge
+                                                UpdaterConstants.CHANGELOG_NEW -> Color(0xFF4CAF50) // Vert
+                                                UpdaterConstants.CHANGELOG_CHANGED -> Color(0xFFFF9800) // Orange
+                                                UpdaterConstants.CHANGELOG_IMPROVED -> Color(0xFF2196F3) // Bleu
+                                                UpdaterConstants.CHANGELOG_FIXED -> Color(0xFFF44336) // Rouge
                                                 else -> colorPalette().accent
                                             }
                                         )

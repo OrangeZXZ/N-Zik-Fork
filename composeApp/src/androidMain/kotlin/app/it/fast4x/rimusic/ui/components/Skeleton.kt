@@ -36,6 +36,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
+import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.NavigationBarType
 import app.it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import app.it.fast4x.rimusic.ui.components.navigation.nav.AbstractNavigationBar
@@ -211,7 +212,9 @@ fun Skeleton(
                 }
             }
         }
-        NewUpdateAvailableDialog.Render()
+        NewUpdateAvailableDialog.Render(
+            onNavigateToUpdater = { navController.navigate(NavRoutes.updater.name) }
+        )
         CheckForUpdateDialog.Render()
 
         val lastVersionCode = rememberPreference(lastVersionCodeKey, 0)
@@ -282,11 +285,8 @@ fun Skeleton(
         }
 
 
-        if( seenChangelogs.value != BuildConfig.VERSION_NAME ) {
-            val changelogs = remember {
-                ChangelogsDialog( seenChangelogs )
-            }
-            changelogs.Render()
+        if (seenChangelogs.value != BuildConfig.VERSION_NAME) {
+            seenChangelogs.value = BuildConfig.VERSION_NAME
         }
     }
 }

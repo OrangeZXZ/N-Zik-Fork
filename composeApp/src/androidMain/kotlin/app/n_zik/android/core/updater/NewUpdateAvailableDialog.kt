@@ -86,15 +86,11 @@ object NewUpdateAvailableDialog {
      */
     var isCancelled: Boolean by mutableStateOf( !BuildConfig.IS_AUTOUPDATE )
 
-    private var showChangelog by mutableStateOf(false)
-    private var changelogText by mutableStateOf("")
-
     var isActive: Boolean by mutableStateOf( false )
 
     fun onDismiss() {
         isCancelled = true
         isActive = false
-        showChangelog = false
         
         // Mark update as cancelled when user cancels (but don't update the check time)
         val sharedPrefs = appContext().getSharedPreferences("settings", 0)
@@ -105,156 +101,13 @@ object NewUpdateAvailableDialog {
 
     @OptIn(ExperimentalAnimationApi::class)
     @Composable
-    fun Render() {
+    fun Render(onNavigateToUpdater: () -> Unit = {}) {
         if( isCancelled || !isActive ) return
 
         val uriHandler = LocalUriHandler.current
         var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
 
-        if (showChangelog) {
-            Dialog(onDismissRequest = { onDismiss() }) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                ) {
-                    // Header with title and version
-                    AnimatedVisibility(
-                        visible = true,
-                        enter = fadeIn(animationSpec = tween(300)) + scaleIn(
-                            animationSpec = tween(300),
-                            initialScale = 0.9f
-                        )
-                    ) {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = if (colorPalette() === PureBlackColorPalette || colorPalette() === ModernBlackColorPalette || colorPaletteMode == ColorPaletteMode.PitchBlack) {
-                                    Color(0xFF1A1A1A) // Gray dark for pitch black themes
-                                } else {
-                                    colorPalette().background1
-                                }
-                            ),
-                            shape = RoundedCornerShape(12.dp),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.changelog_list),
-                                        contentDescription = null,
-                                        tint = colorPalette().accent,
-                                        modifier = Modifier.size(32.dp)
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    BasicText(
-                                        text = stringResource(
-                                            R.string.update_changelogs,
-                                            Updater.githubRelease?.tagName ?: BuildConfig.VERSION_NAME
-                                        ),
-                                        style = typography().l.bold.copy(color = colorPalette().text)
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Changelog content
-                    AnimatedVisibility(
-                        visible = true,
-                        enter = fadeIn(animationSpec = tween(400)) + scaleIn(
-                            animationSpec = tween(400),
-                            initialScale = 0.9f
-                        )
-                    ) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(500.dp), // Limit height to leave space for the back button
-                            colors = CardDefaults.cardColors(
-                                containerColor = if (colorPalette() === PureBlackColorPalette || colorPalette() === ModernBlackColorPalette || colorPaletteMode == ColorPaletteMode.PitchBlack) {
-                                    Color(0xFF1A1A1A) // Gray dark for pitch black themes
-                                } else {
-                                    colorPalette().background1
-                                }
-                            ),
-                            shape = RoundedCornerShape(12.dp),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                                    .verticalScroll(rememberScrollState())
-                            ) {
-                                MarkdownText(
-                                    modifier = Modifier.padding(8.dp),
-                                    markdown = changelogText.ifEmpty { stringResource(R.string.no_changelog_available) },
-                                    maxLines = 100,
-                                    style = typography().xs.semiBold.copy(color = colorPalette().text)
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Back button
-                    AnimatedVisibility(
-                        visible = true,
-                        enter = fadeIn(animationSpec = tween(500)) + scaleIn(
-                            animationSpec = tween(500),
-                            initialScale = 0.9f
-                        )
-                    ) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { showChangelog = false },
-                            colors = CardDefaults.cardColors(
-                                containerColor = colorPalette().accent
-                            ),
-                            shape = RoundedCornerShape(12.dp),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 16.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.arrow_left),
-                                        contentDescription = null,
-                                        tint = Color.White,
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    BasicText(
-                                        text = stringResource(R.string.back),
-                                        style = typography().s.semiBold.copy(color = Color.White)
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            Dialog(onDismissRequest = { onDismiss() }) {
+        Dialog(onDismissRequest = { onDismiss() }) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -298,25 +151,12 @@ object NewUpdateAvailableDialog {
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 BasicText(
-                                    text = buildString {
-                                        // Determine if this is a beta or stable update based on the release tag
-                                        val tagName = Updater.githubRelease?.tagName?.lowercase() ?: ""
-                                        val isBeta = tagName.contains("-b") || tagName.contains("-beta")
-                                        
-                                        if (isBeta) {
-                                            append(stringResource(R.string.beta_title))
-                                            append(" ")
-                                        } else {
-                                            append(stringResource(R.string.stable_title))
-                                            append(" ")
-                                        }
-                                        append(stringResource(R.string.update_available))
-                                    },
+                                    text = "${stringResource(Updater.getBuildTypeStringRes())} ${stringResource(R.string.update_available)}",
                                     style = typography().l.bold.copy(color = colorPalette().text)
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 BasicText(
-                                    text = stringResource(R.string.app_update_dialog_version, Updater.githubRelease?.tagName ?: BuildConfig.VERSION_NAME),
+                                    text = stringResource(R.string.app_update_dialog_version, Updater.githubRelease?.tagName?.let { "$it${Updater.getBuildSuffix()}" } ?: BuildConfig.VERSION_NAME),
                                     style = typography().xs.copy(color = colorPalette().textSecondary)
                                 )
                                 BasicText(
@@ -330,161 +170,7 @@ object NewUpdateAvailableDialog {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Option 1: Go to github page to download
-                AnimatedVisibility(
-                    visible = true,
-                    enter = fadeIn(animationSpec = tween(400)) + scaleIn(
-                        animationSpec = tween(400),
-                        initialScale = 0.9f
-                    )
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                onDismiss()
-                                val tagUrl = "${Repository.GITHUB}/${Repository.LATEST_TAG_URL}"
-                                uriHandler.openUri(tagUrl)
-                            },
-                        colors = CardDefaults.cardColors(
-                            containerColor = if (colorPalette() === PureBlackColorPalette || colorPalette() === ModernBlackColorPalette || colorPaletteMode == ColorPaletteMode.PitchBlack) {
-                                Color(0xFF1A1A1A) // Gray dark for pitch black themes
-                            } else {
-                                colorPalette().background1
-                            }
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        ) {
-                            BasicText(
-                                text = stringResource(R.string.open_the_github_releases_web_page_and_download_latest_version),
-                                style = typography().xs.semiBold.copy(color = colorPalette().text),
-                                maxLines = 3,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.fillMaxWidth(0.8f)
-                            )
-                            Icon(
-                                painter = painterResource(R.drawable.globe),
-                                contentDescription = null,
-                                tint = colorPalette().accent,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(5.dp))
-
-                // Option 2: Go straight to download page
-                AnimatedVisibility(
-                    visible = true,
-                    enter = fadeIn(animationSpec = tween(500)) + scaleIn(
-                        animationSpec = tween(500),
-                        initialScale = 0.9f
-                    )
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                onDismiss()
-                                uriHandler.openUri(Updater.build.downloadUrl)
-                            },
-                        colors = CardDefaults.cardColors(
-                            containerColor = if (colorPalette() === PureBlackColorPalette || colorPalette() === ModernBlackColorPalette || colorPaletteMode == ColorPaletteMode.PitchBlack) {
-                                Color(0xFF1A1A1A) // Gray dark for pitch black themes
-                            } else {
-                                colorPalette().background1
-                            }
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        ) {
-                            BasicText(
-                                text = stringResource(R.string.download_latest_version_from_github_you_will_find_the_file_in_the_notification_area_and_you_can_install_by_clicking_on_it),
-                                style = typography().xs.semiBold.copy(color = colorPalette().text),
-                                maxLines = 4,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.fillMaxWidth(0.8f)
-                            )
-                            Icon(
-                                painter = painterResource(R.drawable.download),
-                                contentDescription = null,
-                                tint = colorPalette().accent,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(5.dp))
-
-                // Option 3: View Changelog
-                AnimatedVisibility(
-                    visible = true,
-                    enter = fadeIn(animationSpec = tween(600)) + scaleIn(
-                        animationSpec = tween(600),
-                        initialScale = 0.9f
-                    )
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                changelogText = Updater.githubRelease?.body ?: ""
-                                showChangelog = true
-                            },
-                        colors = CardDefaults.cardColors(
-                            containerColor = if (colorPalette() === PureBlackColorPalette || colorPalette() === ModernBlackColorPalette || colorPaletteMode == ColorPaletteMode.PitchBlack) {
-                                Color(0xFF1A1A1A) // Gray dark for pitch black themes
-                            } else {
-                                colorPalette().background1
-                            }
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                    ) {
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        ) {
-                            BasicText(
-                                text = stringResource(R.string.view_changelog, Updater.githubRelease?.tagName ?: BuildConfig.VERSION_NAME),
-                                style = typography().xs.semiBold.copy(color = colorPalette().text),
-                                maxLines = 3,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.fillMaxWidth(0.8f)
-                            )
-                            Icon(
-                                painter = painterResource(R.drawable.changelog_list),
-                                contentDescription = null,
-                                tint = colorPalette().accent,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Cancel button
+                // Action Buttons
                 AnimatedVisibility(
                     visible = true,
                     enter = fadeIn(animationSpec = tween(700)) + scaleIn(
@@ -492,35 +178,84 @@ object NewUpdateAvailableDialog {
                         initialScale = 0.9f
                     )
                 ) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onDismiss() },
-                        colors = CardDefaults.cardColors(
-                            containerColor = colorPalette().accent
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Box(
+                        // Cancel button
+                        Card(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 16.dp),
-                            contentAlignment = Alignment.Center
+                                .weight(1f)
+                                .clickable { onDismiss() },
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (colorPalette() === PureBlackColorPalette || colorPalette() === ModernBlackColorPalette || colorPaletteMode == ColorPaletteMode.PitchBlack) {
+                                    Color(0xFF1A1A1A) // Gray dark for pitch black themes
+                                } else {
+                                    colorPalette().background1
+                                }
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 16.dp),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.close),
-                                    contentDescription = null,
-                                    tint = colorPalette().text,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                BasicText(
-                                    text = stringResource(R.string.cancel),
-                                    style = typography().s.semiBold.copy(color = Color.White))
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.close),
+                                        contentDescription = null,
+                                        tint = colorPalette().textSecondary,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    BasicText(
+                                        text = stringResource(R.string.cancel),
+                                        style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+                            }
+                        }
+
+                        // Go to download button
+                        Card(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable {
+                                    onDismiss()
+                                    onNavigateToUpdater()
+                                },
+                            colors = CardDefaults.cardColors(
+                                containerColor = colorPalette().accent
+                            ),
+                            shape = RoundedCornerShape(12.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    BasicText(
+                                        text = stringResource(R.string.go_to_download),
+                                        style = typography().xs.semiBold.copy(color = Color.White),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Icon(
+                                        painter = painterResource(R.drawable.chevron_forward),
+                                        contentDescription = null,
+                                        tint = Color.White,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
                             }
                         }
                     }
@@ -529,5 +264,3 @@ object NewUpdateAvailableDialog {
         }
     }
 }
-}
-

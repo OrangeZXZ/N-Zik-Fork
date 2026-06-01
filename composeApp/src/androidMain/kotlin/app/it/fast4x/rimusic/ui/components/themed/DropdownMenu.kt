@@ -50,11 +50,12 @@ class DropdownMenu(
 
     class Item(
         val iconId: Int,
-        val textId: Int,
+        val textId: Int = 0,
         val size: Dp = 24.dp,
         val padding: Dp = Dp.Hairline,
         val colors: MenuItemColors? = null,
         val modifier: Modifier = Modifier,
+        val customText: String? = null,
         val onClick: () -> Unit
     ) {
 
@@ -86,7 +87,7 @@ class DropdownMenu(
             DropdownMenuItem(
                 enabled = true,
                 colors = colors ?: colors(),
-                text = { Text( stringResource(textId) ) },
+                text = { Text( customText ?: if (textId != 0) stringResource(textId) else "" ) },
                 leadingIcon = icon,
                 onClick = onClick
             )

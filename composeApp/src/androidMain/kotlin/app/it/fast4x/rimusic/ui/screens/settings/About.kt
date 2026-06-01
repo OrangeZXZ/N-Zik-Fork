@@ -11,6 +11,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import app.kreate.android.BuildConfig
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -33,7 +34,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.Image
-import app.kreate.android.BuildConfig
 import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
 import app.kreate.android.R
 import app.it.fast4x.rimusic.appContext
@@ -49,14 +49,8 @@ import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.*
 import app.kreate.android.me.knighthat.utils.Repository
-import app.n_zik.android.core.updater.ChangelogsDialog
 import app.n_zik.android.core.updater.Updater
 import app.n_zik.android.core.updater.NewUpdateAvailableDialog
-import app.it.fast4x.rimusic.enums.CheckUpdateState
-import app.it.fast4x.rimusic.utils.checkUpdateStateKey
-import app.it.fast4x.rimusic.utils.checkBetaUpdatesKey
-import app.it.fast4x.rimusic.utils.lastUpdateCheckKey
-import app.it.fast4x.rimusic.utils.updateCancelledKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import app.it.fast4x.rimusic.ui.styling.ModernBlackColorPalette
@@ -68,44 +62,14 @@ import java.util.*
 
 @ExperimentalAnimationApi
 @Composable
-fun About() {
+fun About(navController: androidx.navigation.NavController) {
     // Function to extract the version suffix
     fun extractVersionSuffix(versionStr: String): String {
         val parts = versionStr.removePrefix("v").split("-")
         return if (parts.size > 1) parts[1] else ""
     }
     val uriHandler = LocalUriHandler.current
-    val showChangelog = remember { mutableStateOf(false) }
-    var lastUpdateCheck by rememberPreference(lastUpdateCheckKey, 0L)
-    var checkUpdateState by rememberPreference(checkUpdateStateKey, CheckUpdateState.Enabled)
-    var checkBetaUpdates by rememberPreference(checkBetaUpdatesKey, extractVersionSuffix(BuildConfig.VERSION_NAME) == "b")
-    var updateCancelled by rememberPreference(updateCancelledKey, false)
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
-    
-    // Synchronize updateCancelled with SharedPreferences
-    LaunchedEffect(Unit) {
-        val sharedPrefs = appContext().getSharedPreferences("settings", 0)
-        updateCancelled = sharedPrefs.getBoolean(updateCancelledKey, false)
-        lastUpdateCheck = sharedPrefs.getLong(lastUpdateCheckKey, 0L)
-    }
-    
-    // Listen for SharedPreferences changes and force save
-    LaunchedEffect(updateCancelled) {
-        val sharedPrefs = appContext().getSharedPreferences("settings", 0)
-        sharedPrefs.edit()
-            .putBoolean(updateCancelledKey, updateCancelled)
-            .apply()
-    }
-    
-    // Listen for lastUpdateCheck changes in SharedPreferences
-    LaunchedEffect(Unit) {
-        val sharedPrefs = appContext().getSharedPreferences("settings", 0)
-        sharedPrefs.registerOnSharedPreferenceChangeListener { _, key ->
-            if (key == lastUpdateCheckKey) {
-                lastUpdateCheck = sharedPrefs.getLong(lastUpdateCheckKey, 0L)
-            }
-        }
-    }
     
 
     Column(
@@ -227,18 +191,47 @@ fun About() {
                              Spacer(modifier = Modifier.height(6.dp))
 
                                                                                      // Version
-                          BasicText(
-                              text = "v${getVersionName()}",
-                                   style = typography().xs.secondary.copy(
-                                  textAlign = TextAlign.Center
-                              ),
-                              modifier = Modifier.fillMaxWidth()
-                          )
+                            // Version and Badge
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                BasicText(
+                                    text = "v${getVersionName()}",
+                                    style = typography().xs.secondary.copy(
+                                        textAlign = TextAlign.Center
+                                    )
+                                )
+                                
+                                val currentSuffix = Updater.extractVersionSuffix(BuildConfig.VERSION_NAME)
+                                if (currentSuffix.isNotEmpty()) {
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Box(
+                                        modifier = Modifier
+                                            .background(
+                                                color = colorPalette().accent.copy(alpha = 0.2f),
+                                                shape = RoundedCornerShape(4.dp)
+                                            )
+                                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                                    ) {
+                                        val buildTypeRes = when (currentSuffix) {
+                                            "b" -> R.string.beta_title
+                                            "m" -> R.string.minified_title
+                                            else -> R.string.stable_title
+                                        }
+                                        BasicText(
+                                            text = stringResource(buildTypeRes).uppercase(),
+                                            style = typography().xxs.bold.copy(color = colorPalette().accent)
+                                        )
+                                    }
+                                }
+                            }
                               
-                              Spacer(modifier = Modifier.height(8.dp))
-                          }
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
 
-                                                 // Bottom content - Author & Changelog
+                        Spacer(modifier = Modifier.weight(1f))                                                 // Bottom content - Author & Changelog
                          Column(
                              horizontalAlignment = Alignment.CenterHorizontally,
                              verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -276,48 +269,19 @@ fun About() {
                                      textAlign = TextAlign.Center
                                  )
                              )
-                                                           }
-                              
-                              Spacer(modifier = Modifier.height(8.dp))
-                              
-                              // View Changelog Button
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-                                  modifier = Modifier
-                                      .fillMaxWidth()
-                                      .clip(RoundedCornerShape(8.dp))
-                                      .border(
-                                          width = 1.dp,
-                                          color = colorPalette().textSecondary.copy(alpha = 0.3f),
-                                          shape = RoundedCornerShape(8.dp)
-                                      )
-                                      .clickable { showChangelog.value = true }
-                                      .padding(8.dp)
-                              ) {
-                                 Icon(
-                                     painter = painterResource(R.drawable.changelog_list),
-                                     tint = colorPalette().textSecondary,
-                                     contentDescription = null,
-                                     modifier = Modifier.size(16.dp)
-                                 )
-                                 Spacer(modifier = Modifier.width(6.dp))
-            BasicText(
-                                     text = stringResource(R.string.view_changelog_settings_title),
-                                     style = typography().xs.semiBold.copy(
-                                         color = colorPalette().textSecondary
-                                     )
-                                 )
-                             }
-                         }
+                          }
                      }
                 }
+            }
 
-                                     // Update Check Card
+                     // Update Check Card
                      Card(
                          modifier = Modifier
                              .weight(1f)
                              .fillMaxHeight()
+                             .clickable {
+                                 navController.navigate(app.it.fast4x.rimusic.enums.NavRoutes.updater.name)
+                             }
                              .shadow(
                                  elevation = 8.dp,
                                  shape = RoundedCornerShape(16.dp),
@@ -358,8 +322,8 @@ fun About() {
                                         shape = CircleShape
                                     ),
                                 contentAlignment = Alignment.Center
-            ) {
-                Icon(
+                            ) {
+                                Icon(
                                     painter = painterResource(R.drawable.update),
                                     tint = colorPalette().accent,
                                     contentDescription = null,
@@ -383,218 +347,73 @@ fun About() {
 
                             Spacer(modifier = Modifier.height(6.dp))
 
-                            // Update Status
-                            if (BuildConfig.IS_AUTOUPDATE) {
-                                // Keep updateCancelled state synchronized with SharedPreferences
-                                LaunchedEffect(NewUpdateAvailableDialog.isActive, lastUpdateCheck) {
-                                    val sharedPrefs = appContext().getSharedPreferences("settings", 0)
-                                    updateCancelled = sharedPrefs.getBoolean(updateCancelledKey, false)
-                                }
-                                
-                                val updateStatusText = when {
-                                    lastUpdateCheck == 0L -> stringResource(R.string.never_checked)
-                                    NewUpdateAvailableDialog.isActive -> stringResource(R.string.update_available)
-                                    updateCancelled -> stringResource(R.string.update_available)
-                                    else -> {
-                                        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                                        val date = Date(lastUpdateCheck)
-                                        "${stringResource(R.string.up_to_date)} (${dateFormat.format(date)})"
-                                    }
-                                }
-                                
-                                val statusColor = if (NewUpdateAvailableDialog.isActive || updateCancelled) {
-                                    colorPalette().accent
-                                } else {
-                                    colorPalette().textSecondary
-                                }
-                                 
+                            val newVersion = Updater.githubRelease?.tagName ?: ""
+                            val hasUpdate = Updater.githubRelease != null && Updater.isVersionNewer(newVersion, BuildConfig.VERSION_NAME)
+                            if (Updater.githubRelease != null) {
                                 BasicText(
-                                    text = updateStatusText,
+                                    text = stringResource(if (hasUpdate) R.string.update_available else R.string.up_to_date),
                                     style = typography().xs.secondary.copy(
                                         textAlign = TextAlign.Center,
-                                        color = statusColor
+                                        color = if (hasUpdate) colorPalette().accent else colorPalette().textSecondary
                                     ),
                                     modifier = Modifier.fillMaxWidth()
                                 )
-                                
-                                Spacer(modifier = Modifier.height(8.dp))
                             } else {
-                BasicText(
-                                    text = stringResource(R.string.check_update),
+                                BasicText(
+                                    text = stringResource(R.string.audio_quality_format_unknown),
                                     style = typography().xs.secondary.copy(
-                                        textAlign = TextAlign.Center
+                                        textAlign = TextAlign.Center,
+                                        color = colorPalette().textSecondary
                                     ),
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
+                            
+                            val lastCheckTime by rememberPreference(app.it.fast4x.rimusic.utils.lastUpdateCheckKey, 0L)
+                            val sdf = java.text.SimpleDateFormat("dd MMM HH:mm", java.util.Locale.getDefault())
+                            val lastCheckStr = if (lastCheckTime > 0) sdf.format(java.util.Date(lastCheckTime)) else stringResource(R.string.never_checked)
+                            BasicText(
+                                text = if (lastCheckTime > 0) stringResource(R.string.last_check, lastCheckStr) else stringResource(R.string.never_checked),
+                                style = typography().xxs.secondary.copy(
+                                    textAlign = TextAlign.Center,
+                                    color = colorPalette().textSecondary.copy(alpha = 0.7f)
+                                ),
+                                modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
+                            )
+                            
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
 
-                                                                                                    // Bottom content - Update Controls
-                          if (BuildConfig.IS_AUTOUPDATE) {
-                             
-                                                           Column(
-                                  horizontalAlignment = Alignment.CenterHorizontally,
-                                  verticalArrangement = Arrangement.spacedBy(4.dp)
-                              ) {
-                                                                   // Auto Update Toggle
-                                  Row(
-                                      horizontalArrangement = Arrangement.Center,
-                                      verticalAlignment = Alignment.CenterVertically,
-                                      modifier = Modifier
-                                          .fillMaxWidth()
-                                          .clip(RoundedCornerShape(8.dp))
-                                          .border(
-                                              width = 1.dp,
-                                              color = colorPalette().textSecondary.copy(alpha = 0.3f),
-                                              shape = RoundedCornerShape(8.dp)
-                                          )
-                                          .clickable {
-                                              checkUpdateState = when (checkUpdateState) {
-                                                  CheckUpdateState.Disabled -> CheckUpdateState.Enabled
-                                                  CheckUpdateState.Enabled -> CheckUpdateState.Ask
-                                                  CheckUpdateState.Ask -> CheckUpdateState.Disabled
-                                              }
-                                          }
-                                          .padding(8.dp)
-                                  ) {
-                                                                           Icon(
-                                          painter = painterResource(
-                                              when (checkUpdateState) {
-                                                  CheckUpdateState.Enabled -> R.drawable.checkmark
-                                                  CheckUpdateState.Ask -> R.drawable.information
-                                                  CheckUpdateState.Disabled -> R.drawable.close
-                                              }
-                                          ),
-                                         tint = when (checkUpdateState) {
-                                             CheckUpdateState.Enabled -> colorPalette().accent
-                                             CheckUpdateState.Ask -> colorPalette().textSecondary
-                                             CheckUpdateState.Disabled -> colorPalette().red
-                                         },
-                                         contentDescription = null,
-                                         modifier = Modifier.size(16.dp)
-                                     )
-                                     Spacer(modifier = Modifier.width(6.dp))
-                                                                           BasicText(
-                                          text = when (checkUpdateState) {
-                                              CheckUpdateState.Enabled -> stringResource(R.string.auto_update_enabled)
-                                              CheckUpdateState.Ask -> stringResource(R.string.auto_update_ask)
-                                              CheckUpdateState.Disabled -> stringResource(R.string.auto_update_disabled)
-                                          },
-                                         style = typography().xxs.semiBold.copy(
-                                             textAlign = TextAlign.Center,
-                                             color = when (checkUpdateState) {
-                                                 CheckUpdateState.Enabled -> colorPalette().accent
-                                                 CheckUpdateState.Ask -> colorPalette().textSecondary
-                                                 CheckUpdateState.Disabled -> colorPalette().red
-                                             }
-                                         ),
-                                         modifier = Modifier.fillMaxWidth()
-                                     )
-                                                                   }
-                                  
-                                  
-                                  // Beta Updates Toggle (only for full builds, not for beta users)
-                                  if (BuildConfig.IS_AUTOUPDATE && extractVersionSuffix(BuildConfig.VERSION_NAME) == "f" || extractVersionSuffix(BuildConfig.VERSION_NAME) == "b") {
-                                      Spacer(modifier = Modifier.height(2.dp))
-                                      
-                                      Row(
-                                          horizontalArrangement = Arrangement.Center,
-                                          verticalAlignment = Alignment.CenterVertically,
-                                          modifier = Modifier
-                                              .fillMaxWidth()
-                                              .clip(RoundedCornerShape(8.dp))
-                                              .border(
-                                                  width = 1.dp,
-                                                  color = colorPalette().textSecondary.copy(alpha = 0.3f),
-                                                  shape = RoundedCornerShape(8.dp)
-                                              )
-                                              .clickable { checkBetaUpdates = !checkBetaUpdates }
-                                              .padding(8.dp)
-                                      ) {
-                                          Icon(
-                                              painter = painterResource(
-                                                  if (checkBetaUpdates) R.drawable.checkmark else R.drawable.close
-                                              ),
-                                              tint = if (checkBetaUpdates) colorPalette().accent else colorPalette().red,
-                                              contentDescription = null,
-                                              modifier = Modifier.size(16.dp)
-                                          )
-                                          Spacer(modifier = Modifier.width(6.dp))
-                                          BasicText(
-                                              text = stringResource(
-                                                  if (checkBetaUpdates) R.string.check_beta_update_enabled 
-                                                  else R.string.check_beta_update_disabled
-                                              ),
-                                              style = typography().xxs.semiBold.copy(
-                                                  textAlign = TextAlign.Center,
-                                                  color = if (checkBetaUpdates) colorPalette().accent else colorPalette().red
-                                              ),
-                                              modifier = Modifier.fillMaxWidth()
-                                          )
-                                      }
-                                  }
-                                  
-                                  // Check Update Button (moved to bottom)
-                                  Spacer(modifier = Modifier.height(4.dp))
-                                  
-                                  Row(
-                                      horizontalArrangement = Arrangement.Center,
-                                      verticalAlignment = Alignment.CenterVertically,
-                                      modifier = Modifier
-                                          .fillMaxWidth()
-                                          .clip(RoundedCornerShape(8.dp))
-                                          .border(
-                                              width = 1.dp,
-                                              color = colorPalette().textSecondary.copy(alpha = 0.3f),
-                                              shape = RoundedCornerShape(8.dp)
-                                          )
-                                          .clickable {
-                                              lastUpdateCheck = System.currentTimeMillis()
-                                              NewUpdateAvailableDialog.isCancelled = false
-                                              // Reset updateCancelled when manually checking
-                                              val sharedPrefs = appContext().getSharedPreferences("settings", 0)
-                                              sharedPrefs.edit()
-                                                  .putBoolean(updateCancelledKey, false)
-                                                  .apply()
-                                              // Force a fresh check
-                                              Updater.checkForUpdate(true, checkBetaUpdates)
-                                          }
-                                          .padding(8.dp)
-                                  ) {
-                                      Icon(
-                                          painter = painterResource(R.drawable.update),
-                                          tint = colorPalette().textSecondary,
-                                          contentDescription = null,
-                                          modifier = Modifier.size(16.dp)
-                                      )
-                                      Spacer(modifier = Modifier.width(6.dp))
-                                      BasicText(
-                                          text = stringResource(R.string.check_update),
-                                          style = typography().xxs.semiBold.copy(
-                                              textAlign = TextAlign.Center,
-                                              color = colorPalette().textSecondary
-                                          ),
-                                          modifier = Modifier.fillMaxWidth()
-                                      )
-                                  }
-                             }
-                         } else {
-                             BasicText(
-                                 text = stringResource(R.string.description_app_not_installed_by_apk),
-                                 style = typography().xxs.secondary.copy(
-                                     textAlign = TextAlign.Center,
-                                     color = colorPalette().textSecondary
-                                 ),
-                                 modifier = Modifier.fillMaxWidth()
-                             )
-                         }
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(36.dp)
+                                .clickable {
+                                    val prefs = app.it.fast4x.rimusic.appContext().getSharedPreferences("settings", 0)
+                                    val checkBeta = prefs.getBoolean(app.it.fast4x.rimusic.utils.checkBetaUpdatesKey, app.n_zik.android.core.updater.Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == "b")
+                                    app.kreate.android.me.knighthat.utils.Toaster.i(R.string.checking_for_updates)
+                                    Updater.checkForUpdate(isForced = true, checkBetaUpdates = checkBeta, showDialog = false)
+                                    navController.navigate(app.it.fast4x.rimusic.enums.NavRoutes.updater.name)
+                                },
+                            colors = CardDefaults.cardColors(containerColor = colorPalette().accent),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                BasicText(
+                                    text = stringResource(R.string.check_update),
+                                    style = typography().xs.semiBold.copy(color = Color.White)
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
-        }
+    }
 
-        Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(16.dp))
 
         // Support & Links Section
         AnimatedVisibility(
@@ -763,19 +582,6 @@ fun About() {
             modifier = Modifier.height(Dimensions.bottomSpacer)
         )
 
-    }
-
-    // Changelog dialog
-    if (showChangelog.value) {
-        val seenChangelogs = rememberPreference(seenChangelogsVersionKey, "")
-        val changelogs = remember { ChangelogsDialog(seenChangelogs) }
-
-        LaunchedEffect(Unit) { changelogs.isActive = true }
-        changelogs.Render()
-        
-        LaunchedEffect(changelogs.isActive) {
-            if (!changelogs.isActive) showChangelog.value = false
-        }
     }
 }
 

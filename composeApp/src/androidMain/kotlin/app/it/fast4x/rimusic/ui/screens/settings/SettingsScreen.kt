@@ -131,7 +131,7 @@ fun SettingsScreen(
                 5 -> AccountsSettings()
                 6 -> NetworkSettings(navController = navController)
                 7 -> OtherSettings()
-                8 -> About()
+                8 -> About(navController = navController)
 
             }
         }

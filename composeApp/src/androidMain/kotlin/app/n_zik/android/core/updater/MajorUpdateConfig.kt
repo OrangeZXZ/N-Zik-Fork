@@ -37,9 +37,9 @@ object MajorUpdateConfig {
     fun getCurrentBuildType(): String {
         val version = BuildConfig.VERSION_NAME.lowercase()
         return when {
-            version.contains("-b") -> "beta"
-            version.contains("-m") || version.contains("-f") -> "stable"
-            else -> "stable"
+            version.contains(UpdaterConstants.SUFFIX_BETA) -> UpdaterConstants.TYPE_BETA
+            version.contains(UpdaterConstants.SUFFIX_MINIFIED) || version.contains(UpdaterConstants.SUFFIX_FULL) -> UpdaterConstants.TYPE_STABLE
+            else -> UpdaterConstants.TYPE_STABLE
         }
     }
 
@@ -54,8 +54,8 @@ object MajorUpdateConfig {
         if (lastBuildType.isNullOrEmpty()) return null
         val currentBuildType = getCurrentBuildType()
         
-        if (lastBuildType == "stable" && currentBuildType == "beta") return "stable-to-beta"
-        if (lastBuildType == "beta" && currentBuildType == "stable") return "beta-to-stable"
+        if (lastBuildType == UpdaterConstants.TYPE_STABLE && currentBuildType == UpdaterConstants.TYPE_BETA) return "${UpdaterConstants.TYPE_STABLE}-to-${UpdaterConstants.TYPE_BETA}"
+        if (lastBuildType == UpdaterConstants.TYPE_BETA && currentBuildType == UpdaterConstants.TYPE_STABLE) return "${UpdaterConstants.TYPE_BETA}-to-${UpdaterConstants.TYPE_STABLE}"
         
         return null
     }

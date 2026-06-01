@@ -62,6 +62,7 @@ object CheckForUpdateDialog {
 
         var checkUpdateState by rememberPreference(checkUpdateStateKey, CheckUpdateState.Enabled)
         var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
+        val checkBetaUpdates by rememberPreference(app.it.fast4x.rimusic.utils.checkBetaUpdatesKey, app.n_zik.android.core.updater.Updater.extractVersionSuffix(app.kreate.android.BuildConfig.VERSION_NAME) == app.n_zik.android.core.updater.UpdaterConstants.SUFFIX_BETA.removePrefix("-"))
 
         Dialog(onDismissRequest = { onDismiss() }) {
             Column(
@@ -143,7 +144,7 @@ object CheckForUpdateDialog {
                             .fillMaxWidth()
                             .clickable {
                                 onDismiss()
-                                Updater.checkForUpdate(checkBetaUpdates = false)
+                                Updater.checkForUpdate(checkBetaUpdates = checkBetaUpdates)
                             },
                         colors = CardDefaults.cardColors(
                             containerColor = colorPalette().accent

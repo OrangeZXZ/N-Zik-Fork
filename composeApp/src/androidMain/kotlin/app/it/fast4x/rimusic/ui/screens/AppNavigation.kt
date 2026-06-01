@@ -440,6 +440,10 @@ fun AppNavigation(
 
             ArtistVideos( navController, id, params, miniPlayer )
         }
+
+        composable(route = NavRoutes.updater.name) {
+            app.n_zik.android.core.updater.UpdateScreen(navController = navController)
+        }
     }
 }
 

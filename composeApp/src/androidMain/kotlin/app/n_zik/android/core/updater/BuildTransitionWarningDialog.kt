@@ -42,8 +42,8 @@ object BuildTransitionWarningDialog {
 
         var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
 
-        val titleRes = if (transitionType == "stable-to-beta") R.string.stable_to_beta_warning_title else R.string.beta_to_stable_warning_title
-        val messageRes = if (transitionType == "stable-to-beta") R.string.stable_to_beta_warning_message else R.string.beta_to_stable_warning_message
+        val titleRes = if (transitionType == "${UpdaterConstants.TYPE_STABLE}-to-${UpdaterConstants.TYPE_BETA}") R.string.stable_to_beta_warning_title else R.string.beta_to_stable_warning_title
+        val messageRes = if (transitionType == "${UpdaterConstants.TYPE_STABLE}-to-${UpdaterConstants.TYPE_BETA}") R.string.stable_to_beta_warning_message else R.string.beta_to_stable_warning_message
 
         Dialog(onDismissRequest = { 
             isActive = false 

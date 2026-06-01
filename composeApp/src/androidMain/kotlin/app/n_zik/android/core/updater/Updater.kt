@@ -27,6 +27,7 @@ import app.it.fast4x.rimusic.utils.checkUpdateStateKey
 import app.it.fast4x.rimusic.utils.checkBetaUpdatesKey
 import app.it.fast4x.rimusic.utils.updateCancelledKey
 import app.it.fast4x.rimusic.utils.lastUpdateCheckKey
+import app.it.fast4x.rimusic.utils.preferences
 import app.it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,22 +41,29 @@ import okhttp3.Request
 import java.net.UnknownHostException
 import java.nio.file.NoSuchFileException
 import kotlin.math.pow
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 object Updater {
+    var isCheckingForUpdate by mutableStateOf(false)
+    var isFetchingFastlane by mutableStateOf(false)
+    var latestFastlaneChangelog: String? by mutableStateOf(null)
+    var currentFastlaneChangelog: String? by mutableStateOf(null)
+    var latestVersionCode: Int? = null
     private lateinit var tagName: String
     lateinit var build: GithubRelease.Build
-    var githubRelease: GithubRelease? = null
+    var githubRelease: GithubRelease? by mutableStateOf(null)
 
     /**
      * Extracts the build type from version string
      * e.g., "1.0.0-f" returns "full", "1.0.0-b" returns "beta"
      */
-    private fun extractBuildType(versionStr: String): String {
+    fun extractBuildType(versionStr: String): String {
         return when {
-            versionStr.endsWith("-f") -> "full"
-            versionStr.endsWith("-b") -> "beta"
-            versionStr.endsWith("-m") -> "minified"
-            else -> "full" // Default to full if no suffix
+            versionStr.endsWith(UpdaterConstants.SUFFIX_BETA) -> UpdaterConstants.TYPE_BETA
+            versionStr.endsWith(UpdaterConstants.SUFFIX_MINIFIED) -> UpdaterConstants.TYPE_MINIFIED
+            else -> UpdaterConstants.TYPE_FULL
         }
     }
 
@@ -63,9 +71,35 @@ object Updater {
      * Extracts the version suffix from version string
      * e.g., "1.0.0-f" returns "f", "1.0.0-b" returns "b"
      */
-    private fun extractVersionSuffix(versionStr: String): String {
-        val parts = versionStr.removePrefix("v").split("-")
+    fun extractVersionSuffix(versionStr: String): String {
+        val parts = versionStr.removePrefix(UpdaterConstants.PREFIX_VERSION).split("-")
         return if (parts.size > 1) parts[1] else ""
+    }
+
+    /**
+     * Returns the string resource ID for the build type label
+     * based on the selected build's APK filename.
+     * e.g., "N-Zik-beta.apk" → R.string.beta_title
+     */
+    fun getBuildTypeStringRes(): Int {
+        if (!::build.isInitialized) return R.string.stable_title
+        return when {
+            build.name.contains(UpdaterConstants.TYPE_BETA, ignoreCase = true) -> R.string.beta_title
+            build.name.contains(UpdaterConstants.TYPE_MINIFIED, ignoreCase = true) -> R.string.minified_title
+            else -> R.string.stable_title
+        }
+    }
+
+    /**
+     * Returns the version suffix (-b, -m, -f) based on the selected build.
+     */
+    fun getBuildSuffix(): String {
+        if (!::build.isInitialized) return UpdaterConstants.SUFFIX_FULL
+        return when {
+            build.name.contains(UpdaterConstants.TYPE_BETA, ignoreCase = true) -> UpdaterConstants.SUFFIX_BETA
+            build.name.contains(UpdaterConstants.TYPE_MINIFIED, ignoreCase = true) -> UpdaterConstants.SUFFIX_MINIFIED
+            else -> UpdaterConstants.SUFFIX_FULL
+        }
     }
 
     private fun extractBuild(assets: List<GithubRelease.Build>, checkBetaUpdates: Boolean = false): GithubRelease.Build {
@@ -76,17 +110,17 @@ object Updater {
         // Determine which build types to look for based on current build and beta preferences
         val targetBuildTypes = when {
             // Full users with beta enabled: check beta and full
-            currentSuffix == "f" && checkBetaUpdates -> listOf("beta", "full")
+            currentSuffix == UpdaterConstants.SUFFIX_CHAR_FULL && checkBetaUpdates -> listOf(UpdaterConstants.TYPE_BETA, UpdaterConstants.TYPE_FULL)
             // Full users with beta disabled: check only full
-            currentSuffix == "f" && !checkBetaUpdates -> listOf("full")
+            currentSuffix == UpdaterConstants.SUFFIX_CHAR_FULL && !checkBetaUpdates -> listOf(UpdaterConstants.TYPE_FULL)
             // Beta users with beta enabled: check beta and full
-            currentSuffix == "b" && checkBetaUpdates -> listOf("beta", "full")
+            currentSuffix == UpdaterConstants.SUFFIX_CHAR_BETA && checkBetaUpdates -> listOf(UpdaterConstants.TYPE_BETA, UpdaterConstants.TYPE_FULL)
             // Beta users with beta disabled: check only full
-            currentSuffix == "b" && !checkBetaUpdates -> listOf("full")
+            currentSuffix == UpdaterConstants.SUFFIX_CHAR_BETA && !checkBetaUpdates -> listOf(UpdaterConstants.TYPE_FULL)
             // Minified users: check only minified
-            currentSuffix == "m" -> listOf("minified")
-            // Default: check only full
-            else -> listOf("full")
+            currentSuffix == UpdaterConstants.SUFFIX_CHAR_MINIFIED -> listOf(UpdaterConstants.TYPE_MINIFIED)
+            // Default: empty list to trigger fallback error
+            else -> emptyList()
         }
 
         // Try to find the best matching build
@@ -114,9 +148,9 @@ object Updater {
     /**
      * Compares two version strings and returns true if version1 is newer than version2
      */
-    private fun isVersionNewer(version1: String, version2: String): Boolean {
-        val v1 = version1.removePrefix("v").substringBefore("-")
-        val v2 = version2.removePrefix("v").substringBefore("-")
+    fun isVersionNewer(version1: String, version2: String): Boolean {
+        val v1 = version1.removePrefix(UpdaterConstants.PREFIX_VERSION).substringBefore("-")
+        val v2 = version2.removePrefix(UpdaterConstants.PREFIX_VERSION).substringBefore("-")
         
         val v1Parts = v1.split(".").map { it.toIntOrNull() ?: 0 }
         val v2Parts = v2.split(".").map { it.toIntOrNull() ?: 0 }
@@ -140,7 +174,7 @@ object Updater {
      * Turns `v1.0.0` to `1.0.0`, `1.0.0-m` to `1.0.0`
      */
     private fun trimVersion(versionStr: String): String {
-        return versionStr.removePrefix("v").substringBefore("-")
+        return versionStr.removePrefix(UpdaterConstants.PREFIX_VERSION).substringBefore("-")
     }
 
     /**
@@ -183,8 +217,49 @@ object Updater {
             this@Updater.githubRelease = bestRelease
             build = extractBuild(bestRelease.builds, checkBetaUpdates)
             tagName = bestRelease.tagName
+
+            try {
+                // Find the exact version code linked in the release body
+                val regex = """${Repository.FASTLANE_CHANGELOGS_PATH}/(\d+)\.txt""".toRegex()
+                val match = regex.find(bestRelease.body)
+                
+                if (match != null) {
+                    isFetchingFastlane = true
+                    val versionCodeStr = match.groupValues[1]
+                    latestVersionCode = versionCodeStr.toIntOrNull()
+                    val downloadUrl = "${Repository.FASTLANE_CHANGELOGS_URL}/$versionCodeStr.txt"
+                    
+                    val txtReq = Request.Builder().url(downloadUrl).build()
+                    val txtRes = NetworkClientFactory.getClient().newCall(txtReq).execute()
+                    if (txtRes.isSuccessful) {
+                        latestFastlaneChangelog = txtRes.body?.string()
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                isFetchingFastlane = false
+            }
         } else {
             throw NoSuchFileException("")
+        }
+    }
+
+    fun fetchCurrentFastlaneChangelog() = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            isFetchingFastlane = true
+            val versionCode = BuildConfig.VERSION_CODE
+            val downloadUrl = "${Repository.FASTLANE_CHANGELOGS_URL}/$versionCode.txt"
+            
+            val txtReq = Request.Builder().url(downloadUrl).build()
+            val txtRes = NetworkClientFactory.getClient().newCall(txtReq).execute()
+            if (txtRes.isSuccessful) {
+                currentFastlaneChangelog = txtRes.body?.string()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            isFetchingFastlane = false
         }
     }
 
@@ -201,15 +276,15 @@ object Updater {
             
             when {
                 // Full users with beta enabled: accept both beta and full
-                currentSuffix == "f" && checkBetaUpdates -> releaseSuffix == "" || releaseSuffix == "b"
+                currentSuffix == UpdaterConstants.SUFFIX_FULL.removePrefix("-") && checkBetaUpdates -> releaseSuffix == "" || releaseSuffix == UpdaterConstants.SUFFIX_BETA.removePrefix("-")
                 // Full users with beta disabled: only accept full
-                currentSuffix == "f" && !checkBetaUpdates -> releaseSuffix == ""
+                currentSuffix == UpdaterConstants.SUFFIX_FULL.removePrefix("-") && !checkBetaUpdates -> releaseSuffix == ""
                 // Beta users with beta enabled: accept both beta and full
-                currentSuffix == "b" && checkBetaUpdates -> releaseSuffix == "b" || releaseSuffix == ""
+                currentSuffix == UpdaterConstants.SUFFIX_BETA.removePrefix("-") && checkBetaUpdates -> releaseSuffix == UpdaterConstants.SUFFIX_BETA.removePrefix("-") || releaseSuffix == ""
                 // Beta users with beta disabled: only accept full
-                currentSuffix == "b" && !checkBetaUpdates -> releaseSuffix == ""
+                currentSuffix == UpdaterConstants.SUFFIX_BETA.removePrefix("-") && !checkBetaUpdates -> releaseSuffix == ""
                 // Minified users: only accept minified
-                currentSuffix == "m" -> releaseSuffix == ""
+                currentSuffix == UpdaterConstants.SUFFIX_MINIFIED.removePrefix("-") -> releaseSuffix == ""
                 // Default case: only accept full releases
                 else -> releaseSuffix == ""
             }
@@ -218,12 +293,12 @@ object Updater {
         // Find the release with the highest version number
         // Find the maximum number of version parts to normalize all versions
         val maxParts = eligibleReleases.maxOf { release ->
-            val version = release.tagName.removePrefix("v").substringBefore("-")
+            val version = release.tagName.removePrefix(UpdaterConstants.PREFIX_VERSION).substringBefore("-")
             version.split(".").size
         }
         
         val bestRelease = eligibleReleases.maxByOrNull { release ->
-            val version = release.tagName.removePrefix("v").substringBefore("-")
+            val version = release.tagName.removePrefix(UpdaterConstants.PREFIX_VERSION).substringBefore("-")
             val parts = version.split(".").map { it.toIntOrNull() ?: 0 }
             
             // Pad the parts array to have the same length as maxParts
@@ -243,15 +318,15 @@ object Updater {
 
     fun checkForUpdate(
         isForced: Boolean = false,
-        checkBetaUpdates: Boolean = false
+        checkBetaUpdates: Boolean = false,
+        showDialog: Boolean = true
     ) = CoroutineScope(Dispatchers.IO).launch {
         // Update the last check timestamp at the beginning
-        val sharedPrefs = appContext().getSharedPreferences("settings", 0)
-        sharedPrefs.edit()
+        appContext().preferences.edit()
             .putLong(lastUpdateCheckKey, System.currentTimeMillis())
             .apply()
             
-        if (!BuildConfig.IS_AUTOUPDATE || NewUpdateAvailableDialog.isCancelled) return@launch
+        if (!isForced && (!BuildConfig.IS_AUTOUPDATE || NewUpdateAvailableDialog.isCancelled)) return@launch
 
         try {
             if (!::build.isInitialized || isForced) {
@@ -264,18 +339,24 @@ object Updater {
             } else {
                 false
             }
-            NewUpdateAvailableDialog.isActive = hasUpdate
             
-            if (!NewUpdateAvailableDialog.isActive) {
-                if(isForced) {
+            if (showDialog) {
+                NewUpdateAvailableDialog.isActive = hasUpdate
+            }
+            
+            if (!hasUpdate) {
+                if (isForced) {
                     Toaster.i(R.string.info_no_update_available)
                 }
                 NewUpdateAvailableDialog.isCancelled = true
                 // Also reset the cancelled state in SharedPreferences when no update is available
-                sharedPrefs.edit()
+                appContext().preferences.edit()
                     .putBoolean(updateCancelledKey, false)
                     .apply()
             } else {
+                if (isForced) {
+                    Toaster.i(R.string.update_available)
+                }
                 // If there's an update available, reset the cancelled state
                 NewUpdateAvailableDialog.isCancelled = false
             }
@@ -299,7 +380,7 @@ object Updater {
     @Composable
     fun SettingEntry() {
         var checkUpdateState by rememberPreference(checkUpdateStateKey, CheckUpdateState.Enabled)
-        var checkBetaUpdates by rememberPreference(checkBetaUpdatesKey, extractVersionSuffix(BuildConfig.VERSION_NAME) == "b")
+        var checkBetaUpdates by rememberPreference(checkBetaUpdatesKey, extractVersionSuffix(BuildConfig.VERSION_NAME) == UpdaterConstants.SUFFIX_CHAR_BETA)
         if (!BuildConfig.IS_AUTOUPDATE)
             checkUpdateState = CheckUpdateState.Disabled
 
