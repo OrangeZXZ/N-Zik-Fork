@@ -229,7 +229,7 @@ Join us on Crowdin!
 - [**Translator**](https://github.com/therealbush/translator): Google Translate wrapper for Kotlin/JVM.
 - [**compose-markdown**](https://github.com/jeziellago/compose-markdown): Markdown rendering in app.
 - [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): Shader effects for Compose.
-- [**Kizzy-RPC**](https://github.com/dead8309/KizzyRPC): Discord RPC presets.
+- [**Metrolist**](https://github.com/metrolistgroup/metrolist): Discord RPC presets.
 - [**echo-discord**](https://github.com/brahmkshatriya/echo-discord): Fixes for Discord artwork upload/loading.
 
 # 👀 Status
