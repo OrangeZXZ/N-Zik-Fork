@@ -67,18 +67,19 @@ Join the N-Zik Discord:
 > [!NOTE]
 > 🎤 This feature requires **microphone access** and must be enabled in settings.
 
-- 📰 **News feed** — Discover moods, genres, and new albums from your favorite artists
-- 🔄 **Import/Export playlists** — Share RiMusic playlists online with friends
-- ✍️ **Lyrics** — Fetch, display, edit, and translate synced or unsynced song lyrics
-- 🎭 **Custom themes** — Personalize your experience with theme options
-- ⏲️ **Sleep timer** — Auto-stop playback after a customizable duration
-- 🎚️ **Audio controls** — App & device volume, playback speed, pitch, normalization, skip silence
-- 📺 **Wide compatibility** — Android Auto, Android Automotive ,Android TV, and YouTube video support
+- 📰 **News feed** - Discover moods, genres, and new albums from your favorite artists
+- 🔄 **Import/Export playlists** - Share RiMusic playlists online with friends
+- ✍️ **Lyrics** - Fetch, display, edit, and translate synced or unsynced song lyrics
+- 🎭 **Custom themes** - Personalize your experience with theme options
+- ⏲️ **Sleep timer** - Auto-stop playback after a customizable duration
+- 🎚️ **Audio controls** - App & device volume, playback speed, pitch, normalization, skip silence
+- 📺 **Wide compatibility** - Android Auto, Android Automotive ,Android TV, and YouTube video support
 - 🧪 **Experimental widgets**
-- 🔁 **Update checker** — Optional automatic update notifications
-- 📤 **Export media** — Save your cached/downloaded music externally
-- ⚙️ **Export settings** — Back up and restore your preferences
-- 📡 **Offline ready** — Enjoy your music even without an internet connection
+- 🔁 **Update checker** - Optional automatic update notifications
+- 📤 **Export media** - Save your cached/downloaded music externally
+- ⚙️ **Export settings** - Back up and restore your preferences
+- 📡 **Offline ready** - Enjoy your music even without an internet connection
+- ▶️ **Early YouTube Integration** - Recommendations and profile content from your YouTube account are already pulled in; full sync is still in progress
 
 # 📷 Screenshots
 
