@@ -22,7 +22,6 @@
     If AI-assisted development isn't your thing, no hard feelings, 
     there are plenty of great alternatives.
   </p>
-</div>
 
   <br>
   
