@@ -75,7 +75,6 @@ Join the N-Zik Discord:
 - 🎚️ **Audio controls** - App & device volume, playback speed, pitch, normalization, skip silence
 - 📺 **Wide compatibility** - Android Auto, Android Automotive ,Android TV, and YouTube video support
 - 🧪 **Experimental widgets**
-- 🔁 **Update checker** - Optional automatic update notifications
 - 📤 **Export media** - Save your cached/downloaded music externally
 - ⚙️ **Export settings** - Back up and restore your preferences
 - 📡 **Offline ready** - Enjoy your music even without an internet connection
