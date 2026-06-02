@@ -58,6 +58,7 @@ Join the N-Zik Discord:
 - ⬇️ **OTA System Update** - The app now updates itself automatically, just like on mobile
 
 - 🌈 **Audio visualizer** - Stunning effects and real-time animations
+
 > [!NOTE]
 > 🎤 This feature requires **microphone access** and must be enabled in settings.
 
