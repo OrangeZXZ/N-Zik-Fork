@@ -56,18 +56,14 @@ Join the N-Zik Discord:
 - ▶️ **Background playback** - Keep the music going while using other apps
 - 📊 **Listening stats** - Track your listening habits and preferences
 - ⬇️ **OTA System Update** - The app now updates itself automatically, just like on mobile
-
 - 🌈 **Audio visualizer** - Stunning effects and real-time animations
-
 > [!NOTE]
 > 🎤 This feature requires **microphone access** and must be enabled in settings.
-
 - 🕹️ **Discord Rich Presence** - Show your currently playing track directly on your Discord profile
 <p align="left">
   <img src="https://github.com/user-attachments/assets/c656b9e1-f46d-4599-91dc-576eb3ba8657"/><br/>
   <img src="https://github.com/user-attachments/assets/90658d59-6c80-4f7f-95f1-8b6f9b73f78f"/><br/>
 </p>
-
 - 📰 **News feed** - Discover moods, genres, and new albums from your favorite artists
 - 🔄 **Import/Export playlists** - Share RiMusic playlists online with friends
 - ✍️ **Lyrics** - Fetch, display, edit, and translate synced or unsynced song lyrics
