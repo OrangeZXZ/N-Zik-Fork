@@ -748,6 +748,19 @@ class PlayerServiceModern : MediaLibraryService(),
         val networkQuality = NetworkQualityHelper.getCurrentNetworkQuality(this)
         Timber.d("PlayerServiceModern: onMediaItemTransition - Current Network Quality for next song: $networkQuality")
 
+        // Clear recovery counter for the new media item (fresh start)
+        mediaItem?.mediaId?.let { recoveryAttempts.remove(it) }
+
+        // Safety net: detect if ExoPlayer auto-advanced despite skipMediaOnError being OFF.
+        // This should not happen with our fixes, but if it does, show a visible warning.
+        if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO
+            && !preferences.getBoolean(skipMediaOnErrorKey, false)
+            && player.playerError != null
+        ) {
+            Timber.e("PlayerServiceModern: UNEXPECTED auto-skip detected with skipMediaOnError=OFF! error=${player.playerError?.errorCodeName}")
+            Toaster.w(R.string.stream_unexpected_skip)
+        }
+
         currentMediaItem.update { mediaItem }
         maybeRecoverPlaybackError()
         maybeNormalizeVolume()
@@ -840,6 +853,13 @@ class PlayerServiceModern : MediaLibraryService(),
         updateWidgets()
     }
 
+    /**
+     * Tracks recovery attempts per media item to prevent infinite retry loops.
+     * Key = mediaId, Value = number of recovery attempts already made.
+     */
+    private val recoveryAttempts = mutableMapOf<String, Int>()
+    private val MAX_RECOVERY_ATTEMPTS = 7
+
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
 
@@ -872,20 +892,34 @@ class PlayerServiceModern : MediaLibraryService(),
             PlaybackException.ERROR_CODE_IO_READ_POSITION_OUT_OF_RANGE,
             PlaybackException.ERROR_CODE_REMOTE_ERROR,        // UnplayableException lands here
             PlaybackException.ERROR_CODE_IO_UNSPECIFIED,
-            416 // 416 Range Not Satisfiable
         )
 
-        if (error.errorCode in recoverableErrors) {
-            Timber.e("PlayerServiceModern onPlayerError attempting recovery for ${error.errorCodeName} cause ${error.cause?.cause}")
-            // Invalidate cached stream URL so next resolve fetches a fresh one
-            player.currentMediaItem?.mediaId?.let { formatCache.remove(it) }
-            player.pause()
-            player.prepare()
-            if (player.playWhenReady) {
-                player.play()
+        val currentMediaId = player.currentMediaItem?.mediaId
+
+        if (error.errorCode in recoverableErrors && currentMediaId != null) {
+            val attempts = recoveryAttempts.getOrDefault(currentMediaId, 0)
+
+            if (attempts < MAX_RECOVERY_ATTEMPTS) {
+                recoveryAttempts[currentMediaId] = attempts + 1
+                Timber.e("PlayerServiceModern onPlayerError attempting recovery ${attempts + 1}/$MAX_RECOVERY_ATTEMPTS for ${error.errorCodeName} cause ${error.cause?.cause}")
+
+                // Invalidate cached stream URL so next resolve fetches a fresh one
+                formatCache.remove(currentMediaId)
+
+                // Save playWhenReady BEFORE pausing — pause() clears it
+                val wasPlaying = player.playWhenReady
+                player.pause()
+                player.prepare()
+                if (wasPlaying) {
+                    player.play()
+                }
+                Toaster.w(R.string.stream_error_retrying, formatArgs = arrayOf(errorDetail.take(80)))
+                return
+            } else {
+                Timber.e("PlayerServiceModern onPlayerError recovery exhausted ($MAX_RECOVERY_ATTEMPTS attempts) for $currentMediaId")
+                recoveryAttempts.remove(currentMediaId)
+                // Fall through — but if skipMediaOnError is OFF, we still won't skip (handled below)
             }
-            Toaster.w(R.string.stream_error_retrying, formatArgs = arrayOf(errorDetail.take(80)))
-            return
         }
 
         // Non-recoverable, non-network error: only skip if the option is ON
@@ -894,6 +928,9 @@ class PlayerServiceModern : MediaLibraryService(),
             Toaster.e(R.string.error_playback_failed, formatArgs = arrayOf(errorDetail.take(100)))
             return
         }
+
+        // Clean up recovery counter for the track we're about to skip
+        currentMediaId?.let { recoveryAttempts.remove(it) }
 
         val prev = player.currentMediaItem ?: return
         //player.seekToNextMediaItem()
@@ -1133,16 +1170,37 @@ class PlayerServiceModern : MediaLibraryService(),
         DefaultExtractorsFactory()
     ).setLoadErrorHandlingPolicy(
         object : DefaultLoadErrorHandlingPolicy() {
-            override fun isEligibleForFallback(exception: IOException) = true
+            // No MediaSource-level fallback exists — returning true here causes
+            // ExoPlayer to attempt a nonexistent fallback, then skip the track.
+            override fun isEligibleForFallback(exception: IOException) = false
 
             override fun getRetryDelayMsFor(
                 loadErrorInfo: LoadErrorHandlingPolicy.LoadErrorInfo
             ): Long {
-                // Retry with exponential backoff for recoverable errors
-                return if (loadErrorInfo.errorCount <= 5) {
-                    (loadErrorInfo.errorCount * 2000L).coerceAtMost(10_000L)
+                // Invalidate cached stream URL on every retry so we fetch fresh URLs
+                val mediaId = runCatching<String?> {
+                    loadErrorInfo.loadEventInfo.dataSpec.key
+                        ?: loadErrorInfo.loadEventInfo.dataSpec.uri.toString().substringAfter("watch?v=", "").takeIf { it.isNotEmpty() }
+                }.getOrNull()
+                if (mediaId != null) {
+                    formatCache.remove(mediaId)
+                }
+
+                val skipOnError = preferences.getBoolean(skipMediaOnErrorKey, false)
+                val count = loadErrorInfo.errorCount
+
+                return if (count <= 7) {
+                    // Normal exponential backoff up to 7 retries
+                    (count * 2000L).coerceAtMost(10_000L)
+                } else if (!skipOnError) {
+                    // User wants to NEVER skip: keep retrying with a long delay.
+                    // Show a toast so the user always knows something is happening.
+                    Toaster.w(R.string.stream_still_retrying, formatArgs = arrayOf(count.toString()))
+                    // Returning a positive value ensures ExoPlayer never gives up
+                    // on this media item (C.TIME_UNSET would cause a skip).
+                    15_000L
                 } else {
-                    C.TIME_UNSET // Give up after 5 retries
+                    C.TIME_UNSET // skipOnError is ON — let ExoPlayer give up and trigger onPlayerError
                 }
             }
         }

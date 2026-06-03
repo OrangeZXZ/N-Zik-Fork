@@ -52,7 +52,7 @@ import timber.log.Timber
 
 private const val TAG = "DataspecServices"
 private const val CHUNK_LENGTH = 512 * 1024L
-private const val MAX_RESOLVE_RETRIES = 3
+private const val MAX_RESOLVE_RETRIES = 7
 private const val INITIAL_RETRY_DELAY_MS = 1500L
 
 // Clients to try in order - mirrors Metrolist's YTPlayerUtils fallback chain
