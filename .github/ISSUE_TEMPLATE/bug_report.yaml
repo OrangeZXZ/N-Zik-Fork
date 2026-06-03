@@ -82,11 +82,9 @@ body:
     id: android-version
     attributes:
       label: Android version
-      description: What version of Android is your phone
+      description: What version of Android is your phone, Android TV, or Android Automotive
       options:
-        - 5.0 - 5.1.1 [LOLLIPOP]
-        - 6 [M]
-        - 7 - 7.1.x  [N]
+        - 7 - 7.1.x [N]
         - 8 - 8.1 [O]
         - 9 [P]
         - 10 [Q]
@@ -95,6 +93,9 @@ body:
         - 13 [TIRAMISU]
         - 14 [UPSIDE_DOWN_CAKE]
         - 15 [VANILLA_ICE_CREAM]
+        - Android Auto
+        - Android Automotive
+        - Android TV
         - Other
     validations:
       required: true
