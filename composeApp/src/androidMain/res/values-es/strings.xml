@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">Reintentando: %1$s</string>
   <string name="error_playback_failed">Error: %1$s</string>
   <string name="error_all_stream_attempts_failed">No se puede reproducir: %1$s</string>
+  <string name="stream_still_retrying">Todavía cargando… Intento %1$s</string>
+  <string name="stream_unexpected_skip">Cambio inesperado de pista detectado</string>
   <string name="songs_remaining">%1$s sobrantes</string>
   <string name="failed_to_copy_clipboard">Error al copiar el texto al portapapeles, inténtalo de nuevo</string>
   <string name="discord_presence_closed">Presencia de Discord cerrada</string>
