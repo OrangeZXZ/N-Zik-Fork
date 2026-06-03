@@ -12,6 +12,14 @@ body:
         **Thanks :heart: for taking the time to fill out this feature request report!**
         We kindly ask that you search to see if an issue [already exists](https://github.com/NEVARLeVrai/N-Zik/issues) for your feature.
 
+  - type: textarea
+    attributes:
+      label: Problem Statement
+      description: |
+        What problem does this feature solve? What's your use case?
+        Example: "I want to do X because Y, and currently I can only do Z"
+    validations:
+      required: true
 
   - type: textarea
     attributes:
@@ -35,6 +43,36 @@ body:
       description: |
         Describe alternatives you've considered.
         A clear and concise description of any alternative solutions or features you've considered.
+    validations:
+      required: false
+
+  - type: textarea
+    attributes:
+      label: Device Information
+      description: |
+        - Device model (e.g., Samsung Galaxy S24)
+        - Android version (e.g., Android 14)
+        - App version
+      placeholder: |
+        Device: 
+        Android version: 
+        App version: 
+    validations:
+      required: false
+
+  - type: checkboxes
+    attributes:
+      label: Impact Assessment
+      description: Would this feature benefit many users or is it a niche use case?
+      options:
+        - label: "This would benefit many users"
+        - label: "This is for a specific/niche use case"
+
+  - type: textarea
+    attributes:
+      label: Related Links & References
+      description: |
+        Add links to similar features in other apps, mockups, wireframes, or any other references that help understand this feature request.
     validations:
       required: false
 
