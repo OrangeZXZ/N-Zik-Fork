@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">再試行: %1$s</string>
   <string name="error_playback_failed">エラー: %1$s</string>
   <string name="error_all_stream_attempts_failed">再生できません: %1$s</string>
+  <string name="stream_still_retrying">Still loading… Attempt %1$s</string>
+  <string name="stream_unexpected_skip">予期しないトラックの変更が検出されました</string>
   <string name="songs_remaining">%1$s 曲残ります。</string>
   <string name="failed_to_copy_clipboard">クリップボードにテキストをコピーできませんでした。もう一度やり直してください。</string>
   <string name="discord_presence_closed">Discordが終了しました</string>
