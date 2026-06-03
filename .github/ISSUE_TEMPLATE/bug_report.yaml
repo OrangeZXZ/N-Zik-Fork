@@ -93,6 +93,8 @@ body:
         - 13 [TIRAMISU]
         - 14 [UPSIDE_DOWN_CAKE]
         - 15 [VANILLA_ICE_CREAM]
+        - 16 [BAKLAVA]
+        - 17 [BUTTERSCOTCH]
         - Android Auto
         - Android Automotive
         - Android TV
@@ -104,7 +106,7 @@ body:
     attributes:
       label: Other Android version
       description: Only fill when you select "Other" in Android version
-      placeholder: '16'
+      placeholder: '...'
   - type: checkboxes
     id: required-actions
     attributes:
