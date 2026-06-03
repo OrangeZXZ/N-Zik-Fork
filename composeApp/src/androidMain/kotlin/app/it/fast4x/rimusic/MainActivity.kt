@@ -91,7 +91,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.rememberNavController
 import app.kreate.android.BuildConfig
 import app.kreate.android.R
-import app.kreate.android.Threads
+import app.n_zik.android.core.playback.PlaybackDispatchers
 import android.graphics.Bitmap
 import androidx.palette.graphics.Palette
 import com.kieronquinn.monetcompat.core.MonetActivityAccessException
@@ -1339,7 +1339,7 @@ class MainActivity :
             _monet = null
 
             // Close threads
-            Threads.DATASPEC_DISPATCHER.close()
+            PlaybackDispatchers.STREAM_RESOLVER.close()
         }.onFailure {
             Timber.e("MainActivity.onDestroy removeMonetColorsChangedListener ${it.stackTraceToString()}")
         }

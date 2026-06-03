@@ -1,20 +1,20 @@
-package app.kreate.android
+package app.n_zik.android.core.playback
 
 import kotlinx.coroutines.asCoroutineDispatcher
 import java.util.concurrent.Executors
 
 /**
- * Collection of useful threads.
+ * Collection of useful threads for playback.
  *
  * Must be closed individually after use to prevent unwanted outcome
  */
-object Threads {
+object PlaybackDispatchers {
 
     /**
      * Single thread dispatcher guarantee jobs are
      * executed in the order that were given to it.
      *
-     * Should only be used by DataspecServices.kt
+     * Should only be used by StreamResolver.kt
      */
-    val DATASPEC_DISPATCHER = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    val STREAM_RESOLVER = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 }

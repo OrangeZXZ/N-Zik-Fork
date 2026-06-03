@@ -78,8 +78,8 @@ import androidx.media3.session.MediaStyleNotificationHelper
 import androidx.media3.session.SessionToken
 import app.it.fast4x.rimusic.repository.QuickPicksRepository
 import app.kreate.android.R
-import app.n_zik.android.core.service.createDataSourceFactory
-import app.n_zik.android.core.service.formatCache
+import app.n_zik.android.core.playback.createDataSourceFactory
+import app.n_zik.android.core.playback.formatCache
 import app.kreate.android.widget.Widget
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.MoreExecutors

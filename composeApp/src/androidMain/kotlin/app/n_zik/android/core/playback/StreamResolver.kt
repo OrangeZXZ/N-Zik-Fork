@@ -1,4 +1,4 @@
-package app.n_zik.android.core.service
+package app.n_zik.android.core.playback
 
 import android.content.ContentResolver
 import android.net.Uri
@@ -10,7 +10,7 @@ import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
 import app.kreate.android.R
-import app.kreate.android.Threads
+
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.core.network.NetworkClientFactory
 import app.n_zik.android.core.network.Store
@@ -38,6 +38,7 @@ import app.it.fast4x.rimusic.service.UnplayableException
 import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
 import app.it.fast4x.rimusic.utils.isConnectionMetered
 import app.it.fast4x.rimusic.utils.okHttpDataSourceFactory
+import app.it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -50,7 +51,7 @@ import java.net.UnknownHostException
 import io.ktor.client.call.body
 import timber.log.Timber
 
-private const val TAG = "DataspecServices"
+private const val TAG = "StreamResolver"
 private const val CHUNK_LENGTH = 512 * 1024L
 private const val MAX_RESOLVE_RETRIES = 7
 private const val INITIAL_RETRY_DELAY_MS = 1500L
@@ -292,10 +293,25 @@ private suspend fun resolveStreamUriInternal(
     var fallbackUri: Uri? = null
     var fallbackFormat: PlayerResponse.StreamingData.Format? = null
 
+    val prefs = appContext().preferences
+    // Use separate keys for logged-in vs logged-out so we don't prioritize a no-auth
+    // client (e.g. ANDROID_VR) when logged in, which could miss premium-only tracks.
+    val prefKey = if (isLoggedIn) "last_successful_yt_client_auth" else "last_successful_yt_client_noauth"
+    val lastSuccessfulClientName = prefs.getString(prefKey, null)
+    
+    // Sort clients: put the last successful one first, keep the rest in their original order
+    val clientsToTry = if (lastSuccessfulClientName != null) {
+        val lastSuccessfulClient = FALLBACK_CLIENTS.find { it.clientName == lastSuccessfulClientName }
+        if (lastSuccessfulClient != null) {
+            Timber.tag(TAG).d("Prioritizing remembered client: ${lastSuccessfulClient.clientName} (${if (isLoggedIn) "auth" else "noauth"})")
+            listOf(lastSuccessfulClient) + FALLBACK_CLIENTS.filter { it.clientName != lastSuccessfulClientName }
+        } else FALLBACK_CLIENTS
+    } else FALLBACK_CLIENTS
+
     // 3. Try each client in order
-    for ((index, ytClient) in FALLBACK_CLIENTS.withIndex()) {
+    for ((index, ytClient) in clientsToTry.withIndex()) {
         try {
-            Timber.tag(TAG).d("Trying client (${index + 1}/${FALLBACK_CLIENTS.size}): ${ytClient.clientName} for $videoId")
+            Timber.tag(TAG).d("Trying client (${index + 1}/${clientsToTry.size}): ${ytClient.clientName} for $videoId")
 
             if (ytClient.loginRequired && !isLoggedIn) {
                 Timber.tag(TAG).d("Skipping client ${ytClient.clientName} - requires login but user is not logged in")
@@ -373,7 +389,8 @@ private suspend fun resolveStreamUriInternal(
 
             // Success!
             Timber.tag(TAG).d("${ytClient.clientName}: stream resolved successfully for $videoId")
-            CoroutineScope(Threads.DATASPEC_DISPATCHER).launch { upsertSongFormat(videoId, format) }
+            CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch { upsertSongFormat(videoId, format) }
+            prefs.edit().putString(prefKey, ytClient.clientName).apply()
 
             return uri
                 .buildUpon()
@@ -397,7 +414,7 @@ private suspend fun resolveStreamUriInternal(
 
     if (fallbackUri != null && fallbackFormat != null) {
         Timber.tag(TAG).w("All clients failed to provide metadata. Using fallback stream for $videoId")
-        CoroutineScope(Threads.DATASPEC_DISPATCHER).launch { upsertSongFormat(videoId, fallbackFormat!!) }
+        CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch { upsertSongFormat(videoId, fallbackFormat!!) }
         return fallbackUri!!
             .buildUpon()
             .appendQueryParameter("range", "0-${fallbackFormat?.contentLength ?: 1_000_000}")
@@ -477,7 +494,7 @@ fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory {
 
         if (isLocal) return@Factory dataSpec
 
-        CoroutineScope(Threads.DATASPEC_DISPATCHER).launch { upsertSongInfo(videoId) }
+        CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch { upsertSongInfo(videoId) }
 
         dataSpec.process(videoId, audioQualityFormat, applicationContext.isConnectionMetered())
             .buildUpon()
@@ -503,7 +520,7 @@ fun MyDownloadHelper.createDataSourceFactory(): DataSource.Factory {
     val resolvingDataSourceFactory = ResolvingDataSource.Factory(upstreamFactory) { dataSpec ->
         val videoId = dataSpec.uri.toString().substringAfter("watch?v=")
 
-        CoroutineScope(Threads.DATASPEC_DISPATCHER).launch { upsertSongInfo(videoId) }
+        CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch { upsertSongInfo(videoId) }
 
         dataSpec.process(videoId, audioQualityFormat, appContext().isConnectionMetered())
             .buildUpon()

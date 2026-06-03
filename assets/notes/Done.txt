@@ -1,0 +1,3 @@
+Fixed: Github button in OTA screen, redirecting to 404 page due to wrong url prefix
+Fixed: Playback jumping to next song even with the option SKIP if an error occur in the playback, added more retrying attempt before just throwing error
+Improved: Since YTB added some work arround for the streaming to avoid long loading time the player will memories which client was successful and will use it first next time
