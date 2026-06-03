@@ -87,7 +87,7 @@ import app.it.fast4x.rimusic.repository.QuickPicksRepository
 import app.n_zik.android.R
 import app.n_zik.android.playback.services.createDataSourceFactory
 import app.n_zik.android.playback.services.formatCache
-import app.kreate.android.widget.Widget
+import app.n_zik.android.widget.Widget
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.MoreExecutors
 import it.fast4x.innertube.Innertube

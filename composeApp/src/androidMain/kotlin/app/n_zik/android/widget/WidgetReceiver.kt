@@ -1,4 +1,4 @@
-package app.kreate.android.widget
+package app.n_zik.android.widget
 
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver

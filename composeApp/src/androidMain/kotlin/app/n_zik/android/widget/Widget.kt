@@ -1,4 +1,4 @@
-package app.kreate.android.widget
+package app.n_zik.android.widget
 
 import android.content.Context
 import android.graphics.BitmapFactory
