@@ -129,19 +129,16 @@ body:
           required: true
   - type: markdown
     attributes:
-      value: >-
+      value: |-
         **To update N-Zik:**
 
         1. Check your current version in Settings > About
         2. Go to [GitHub Releases](https://github.com/NEVARLeVrai/N-Zik/releases) and download the latest APK
         3. Or enable OTA updates in the app (Settings > About > Updater) to get updates automatically
 
-
         > Please make sure you're on the **latest version** before reporting a bug!
 
-
-        > Please try to complete all of the tasks and not tick them because they
-        are required.
+        > Please try to complete all of the tasks and not tick them because they are required.
   - type: markdown
     attributes:
       value: >
