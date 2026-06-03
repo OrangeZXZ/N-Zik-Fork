@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">Retrying: %1$s</string>
   <string name="error_playback_failed">Hata: %1$s</string>
   <string name="error_all_stream_attempts_failed">Oynatılamıyor: %1$s</string>
+  <string name="stream_still_retrying">Still loading… Attempt %1$s</string>
+  <string name="stream_unexpected_skip">Unexpected track change detected</string>
   <string name="songs_remaining">%1$s şarkı kaldı</string>
   <string name="failed_to_copy_clipboard">Metin panoya kopyalanamadı, lütfen tekrar deneyin</string>
   <string name="discord_presence_closed">Discord\'da durum bilgisi kapatıldı</string>
