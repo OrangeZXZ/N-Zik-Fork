@@ -130,15 +130,14 @@ body:
   - type: markdown
     attributes:
       value: >-
-        If you install N-Zik with APK from releases page. Please go to
-        [releases/lastest](https://github.com/NEVARLeVrai/N-Zik/releases) and
-        check if it matches your install version.
+        **To update N-Zik:**
+
+        1. Check your current version in Settings > About
+        2. Go to [GitHub Releases](https://github.com/NEVARLeVrai/N-Zik/releases) and download the latest APK
+        3. Or enable OTA updates in the app (Settings > About > Updater) to get updates automatically
 
 
-        If you install from third-party app store, such as F-Droid. Please
-        double check if there's update available on that app store. **If app
-        store's version is lagged behind, please wait a few days to let them
-        update it first, then you update the app.**
+        > Please make sure you're on the **latest version** before reporting a bug!
 
 
         > Please try to complete all of the tasks and not tick them because they
