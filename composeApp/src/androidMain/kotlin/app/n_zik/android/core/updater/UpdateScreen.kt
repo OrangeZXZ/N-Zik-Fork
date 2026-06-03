@@ -341,7 +341,13 @@ fun UpdateScreen(navController: NavController) {
                                     modifier = Modifier
                                         .weight(1f)
                                         .clickable {
-                                            val tag = if (hasUpdate) "v$newVersion" else "v$currentVersion"
+                                            val rawVersion = if (hasUpdate) newVersion else currentVersion
+                                            val cleanVersion = rawVersion.removePrefix("v")
+                                            val tag = if (Updater.extractBuildType(cleanVersion) == UpdaterConstants.TYPE_BETA) {
+                                                "v$cleanVersion"
+                                            } else {
+                                                "v${cleanVersion.substringBefore('-')}"
+                                            }
                                             uriHandler.openUri("${Repository.REPO_URL}/releases/tag/$tag")
                                         },
                                     colors = CardDefaults.cardColors(containerColor = colorPalette().background1),
@@ -349,7 +355,7 @@ fun UpdateScreen(navController: NavController) {
                                     border = androidx.compose.foundation.BorderStroke(1.dp, colorPalette().textSecondary.copy(alpha = 0.5f))
                                 ) {
                                     Box(
-                                        modifier = Modifier
+                                        modifier = Modifier 
                                             .fillMaxWidth()
                                             .padding(16.dp),
                                         contentAlignment = Alignment.Center
