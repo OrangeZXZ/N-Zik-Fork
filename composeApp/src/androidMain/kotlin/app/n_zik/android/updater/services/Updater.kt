@@ -83,7 +83,7 @@ object Updater {
     /**
      * Returns the string resource ID for the build type label
      * based on the selected build's APK filename.
-     * e.g., "N-Zik-beta.apk" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ R.string.beta_title
+     * e.g., "N-Zik-beta.apk" -> R.string.beta_title
      */
     fun getBuildTypeStringRes(): Int {
         if (!::build.isInitialized) return R.string.stable_title

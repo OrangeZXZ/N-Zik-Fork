@@ -242,7 +242,7 @@ class ChangelogsDialog(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.padding(vertical = 8.dp)
                                 ) {
-                                                                         // IcÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´ne pour chaque section
+
                                      Icon(
                                          painter = painterResource(
                                              when (section.title.lowercase()) {

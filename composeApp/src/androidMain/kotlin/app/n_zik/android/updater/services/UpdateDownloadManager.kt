@@ -193,7 +193,7 @@ object UpdateDownloadManager {
                 _downloadState.value = DownloadState.Completed(outputFile.absolutePath)
 
             } catch (e: CancellationException) {
-                // Download was cancelled ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â clean up silently
+                // Download was cancelled - clean up silently
                 try { notificationManager.cancel(UPDATE_NOTIFICATION_ID) } catch (_: Exception) {}
                 outputStream?.runCatching { close() }
                 activeCall = null
@@ -247,7 +247,7 @@ object UpdateDownloadManager {
      * Cancels an ongoing download and cleans up temporary files.
      */
     fun cancelDownload(context: Context) {
-        // Cancel the OkHttp call first ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â this unblocks inputStream.read() immediately
+        // Cancel the OkHttp call first - this unblocks inputStream.read() immediately
         activeCall?.cancel()
         activeCall = null
         downloadJob?.cancel()

@@ -98,7 +98,7 @@ fun UpdateScreen(navController: NavController) {
     } ?: Updater.extractVersionSuffix(BuildConfig.VERSION_NAME)
     var checkBetaUpdates by rememberPreference(checkBetaUpdatesKey, currentSuffix == UpdaterConstants.SUFFIX_CHAR_BETA)
 
-    // Handle back press during download ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â let download continue in background
+    // Handle back press during download - let download continue in background
     BackHandler(enabled = downloadState is UpdateDownloadManager.DownloadState.Downloading ||
             downloadState is UpdateDownloadManager.DownloadState.Starting) {
         Toaster.i(R.string.download_cancelled)
@@ -106,14 +106,14 @@ fun UpdateScreen(navController: NavController) {
         navController.popBackStack()
     }
 
-    // Cleanup state on exit ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â but NOT if download is active or completed
+    // Cleanup state on exit - but NOT if download is active or completed
     DisposableEffect(Unit) {
         onDispose {
             val currentState = UpdateDownloadManager.downloadState.value
             if (currentState is UpdateDownloadManager.DownloadState.Failed) {
                 UpdateDownloadManager.resetState()
             }
-            // Don't reset Idle, Downloading, Starting or Completed ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â let download persist
+            // Don't reset Idle, Downloading, Starting or Completed - let download persist
         }
     }
 
@@ -606,7 +606,7 @@ fun UpdateScreen(navController: NavController) {
                                             app.it.fast4x.rimusic.enums.CheckUpdateState.Disabled -> stringResource(R.string.auto_update_disabled)
                                         }
                                         BasicText(
-                                            text = "${UpdaterConstants.PREFIX_VERSION}$currentVersion ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ $stateStr",
+                                            text = "${UpdaterConstants.PREFIX_VERSION}$currentVersion • $stateStr",
                                             style = typography().s.copy(color = colorPalette().textSecondary)
                                         )
                                     }
