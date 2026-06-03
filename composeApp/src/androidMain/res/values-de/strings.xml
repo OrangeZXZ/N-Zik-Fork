@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">Wiederholung: %1$s</string>
   <string name="error_playback_failed">Fehler: %1$s</string>
   <string name="error_all_stream_attempts_failed">Abspielen nicht möglich: %1$s</string>
+  <string name="stream_still_retrying">Lade noch… Versuch %1$s</string>
+  <string name="stream_unexpected_skip">Unerwartete Titeländerung erkannt</string>
   <string name="songs_remaining">%1$s Lieder verbleibend</string>
   <string name="failed_to_copy_clipboard">Fehler beim Kopieren des Textes in die Zwischenablage, erneut versuchen</string>
   <string name="discord_presence_closed">Discord Präsenz geschlossen</string>

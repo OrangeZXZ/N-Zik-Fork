@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">Retrying: %1$s</string>
   <string name="error_playback_failed">Error: %1$s</string>
   <string name="error_all_stream_attempts_failed">Unable to play: %1$s</string>
+  <string name="stream_still_retrying">Still loading… Attempt %1$s</string>
+  <string name="stream_unexpected_skip">Unexpected track change detected</string>
   <string name="songs_remaining">%1$s Songs Remaining</string>
   <string name="failed_to_copy_clipboard">Failed to copy text to clipboard, try again</string>
   <string name="discord_presence_closed">Discord presence closed</string>

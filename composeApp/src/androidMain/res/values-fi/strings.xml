@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">Toistetaan: %1$s</string>
   <string name="error_playback_failed">Virhe: %1$s</string>
   <string name="error_all_stream_attempts_failed">Ei voida toistaa: %1$s</string>
+  <string name="stream_still_retrying">Still loading… Attempt %1$s</string>
+  <string name="stream_unexpected_skip">Odottamaton reitin muutos havaittu</string>
   <string name="songs_remaining">%1$s Kappaletta Jäljellä</string>
   <string name="failed_to_copy_clipboard">Tekstin kopiointi leikepöydälle epäonnistui, yritä uudelleen</string>
   <string name="discord_presence_closed">Discordin läsnäolo suljettu</string>

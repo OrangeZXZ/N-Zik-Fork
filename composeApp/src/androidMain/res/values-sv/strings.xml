@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">Försök igen: %1$s</string>
   <string name="error_playback_failed">Fel: %1$s</string>
   <string name="error_all_stream_attempts_failed">Det gick inte att spela: %1$s</string>
+  <string name="stream_still_retrying">Laddar fortfarande… Försök %1$s</string>
+  <string name="stream_unexpected_skip">Oväntad spårändring upptäckt</string>
   <string name="songs_remaining">%1$s låtar kvar</string>
   <string name="failed_to_copy_clipboard">Det gick inte att kopiera text till urklipp, försök igen</string>
   <string name="discord_presence_closed">Discords närvaro stängd</string>

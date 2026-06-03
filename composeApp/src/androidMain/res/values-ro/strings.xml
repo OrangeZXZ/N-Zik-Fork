@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">Reîncercare: %1$s</string>
   <string name="error_playback_failed">Eroare: %1$s</string>
   <string name="error_all_stream_attempts_failed">Imposibil de jucat: %1$s</string>
+  <string name="stream_still_retrying">Încă se încarcă… Încercarea %1$s</string>
+  <string name="stream_unexpected_skip">Modificare neașteptată a traseului detectată</string>
   <string name="songs_remaining">%1$s melodii ramase</string>
   <string name="failed_to_copy_clipboard">Copierea textului în clipboard a eșuat, încercați din nou</string>
   <string name="discord_presence_closed">Prezență Discord închisă</string>

@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">Επανάληψη: %1$s</string>
   <string name="error_playback_failed">Σφάλμα: %1$s</string>
   <string name="error_all_stream_attempts_failed">Αδυναμία αναπαραγωγής: %1$s</string>
+  <string name="stream_still_retrying">Εξακολουθεί να φορτώνει… Προσπάθεια %1$s</string>
+  <string name="stream_unexpected_skip">Ανιχνεύθηκε μη αναμενόμενη αλλαγή ίχνους</string>
   <string name="songs_remaining">%1$s Songs Remaining</string>
   <string name="failed_to_copy_clipboard">Αποτυχία αντιγραφής κειμένου στο πρόχειρο, προσπαθήστε ξανά</string>
   <string name="discord_presence_closed">Παρουσία του Discord έκλεισε</string>

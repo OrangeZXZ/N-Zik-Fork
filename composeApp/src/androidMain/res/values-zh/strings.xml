@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">重试: %1$s</string>
   <string name="error_playback_failed">错误: %1$s</string>
   <string name="error_all_stream_attempts_failed">无法播放: %1$s</string>
+  <string name="stream_still_retrying">Still loading… Attempt %1$s</string>
+  <string name="stream_unexpected_skip">检测到意外的曲目变化</string>
   <string name="songs_remaining">剩余%1$s 歌曲</string>
   <string name="failed_to_copy_clipboard">复制文本到剪贴板失败，请重试</string>
   <string name="discord_presence_closed">Discord 存在关闭</string>
