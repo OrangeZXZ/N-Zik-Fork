@@ -1,8 +1,11 @@
 name: Auto-assign issues
 
 on:
+  workflow_dispatch:
   issues:
     types: [opened]
+
+
 
 permissions:
   issues: write
