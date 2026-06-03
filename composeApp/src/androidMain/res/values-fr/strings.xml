@@ -1103,7 +1103,7 @@ Volume BAS : titre précédent</string>
   <string name="stream_error_retrying">Réessayer : %1$s</string>
   <string name="error_playback_failed">Erreur: %1$s</string>
   <string name="error_all_stream_attempts_failed">Impossible de jouer : %1$s</string>
-  <string name="stream_still_retrying">Still loading… Attempt %1$s</string>
+  <string name="stream_still_retrying">Chargement en cours… Tentative %1$s</string>
   <string name="stream_unexpected_skip">Changement de piste inattendu détecté</string>
   <string name="songs_remaining">%1$s Chansons restantes</string>
   <string name="failed_to_copy_clipboard">Impossible de copier le texte dans le presse-papiers, réessayez</string>
