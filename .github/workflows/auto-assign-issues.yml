@@ -29,19 +29,42 @@ jobs:
               ? '${{ inputs.mode }}'
               : 'current-issue';
 
-            async function assignIssue(issue) {
-              if (!issue) return;
-              const labels = (issue.labels || []).map(label => label.name);
+            const assignTo = 'NEVARLeVrai';
+            const preserveAssignee = 'orangezxz';
 
-              if (labels.includes('bug') || labels.includes('enhancement')) {
+            async function syncAssignees(issue) {
+              if (!issue) return;
+
+              const labels = (issue.labels || []).map(label => label.name);
+              if (!labels.includes('bug') && !labels.includes('enhancement')) {
+                return;
+              }
+
+              const currentAssignees = (issue.assignees || []).map(user => user.login);
+              const desiredAssignees = [assignTo, preserveAssignee];
+              const finalAssignees = [...new Set([...currentAssignees.filter(login => login === preserveAssignee), ...desiredAssignees])];
+
+              const toRemove = currentAssignees.filter(login => login !== preserveAssignee && login !== assignTo);
+              if (toRemove.length > 0) {
+                await github.rest.issues.removeAssignees({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  assignees: toRemove,
+                });
+              }
+
+              const missing = finalAssignees.filter(login => !currentAssignees.includes(login));
+              if (missing.length > 0) {
                 await github.rest.issues.addAssignees({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issue.number,
-                  assignees: [issue.user.login]
+                  assignees: missing,
                 });
-                console.log(`✅ Issue #${issue.number} assigned to @${issue.user.login}`);
               }
+
+              console.log(`✅ Issue #${issue.number} assigned to ${finalAssignees.join(', ')}`);
             }
 
             if (mode === 'manual-scan') {
@@ -54,9 +77,9 @@ jobs:
 
               for (const issue of issues) {
                 if (issue.pull_request) continue;
-                await assignIssue(issue);
+                await syncAssignees(issue);
               }
               console.log(`🔎 Manual scan completed over ${issues.length} open issues.`);
             } else {
-              await assignIssue(context.payload.issue);
+              await syncAssignees(context.payload.issue);
             }
