@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">Opakování: %1$s</string>
   <string name="error_playback_failed">Chyba: %1$s</string>
   <string name="error_all_stream_attempts_failed">Nelze přehrát: %1$s</string>
+  <string name="stream_still_retrying">Stále načítám… Pokus %1$s</string>
+  <string name="stream_unexpected_skip">Zjištěna neočekávaná změna trasy</string>
   <string name="songs_remaining">%1$s Zbývající skladby</string>
   <string name="failed_to_copy_clipboard">Nepodařilo se zkopírovat text do schránky, zkuste to znovu</string>
   <string name="discord_presence_closed">Discord přítomnost uzavřena</string>
