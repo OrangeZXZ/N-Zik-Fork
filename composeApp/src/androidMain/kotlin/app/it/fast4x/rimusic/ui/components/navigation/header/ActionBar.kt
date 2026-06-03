@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components.navigation.header
+package app.it.fast4x.rimusic.ui.components.navigation.header
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.extensions.pip.isPipSupported
 import app.it.fast4x.rimusic.extensions.pip.rememberPipHandler
@@ -25,9 +25,9 @@ import app.it.fast4x.rimusic.ui.components.themed.DropdownMenu
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import app.it.fast4x.rimusic.utils.enablePictureInPictureKey
 import app.it.fast4x.rimusic.utils.rememberPreference
-import app.it.fast4x.rimusic.ytAccountThumbnail
+import app.n_zik.android.ytAccountThumbnail
 import androidx.compose.ui.draw.clip
-import app.it.fast4x.rimusic.thumbnailShape
+import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.utils.ytAccountThumbnailKey
 import app.it.fast4x.rimusic.utils.ytCookieKey
 import it.fast4x.innertube.utils.parseCookieString

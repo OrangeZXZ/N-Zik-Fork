@@ -1,5 +1,7 @@
-﻿@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.screens.player
+
+import app.n_zik.android.core.database.*
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
@@ -68,17 +70,17 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.BackgroundProgress
 import app.it.fast4x.rimusic.enums.MiniPlayerType
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.NavigationBarPosition
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
-import app.it.fast4x.rimusic.thumbnailShape
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.playback.services.PlayerServiceModern
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon

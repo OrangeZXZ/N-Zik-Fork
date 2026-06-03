@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components.navigation.nav
+package app.it.fast4x.rimusic.ui.components.navigation.nav
 
 import androidx.compose.runtime.staticCompositionLocalOf
 
@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.ui.components.themed.Button
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon

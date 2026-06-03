@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 class DropdownMenu(

@@ -4,8 +4,8 @@ import android.os.Handler
 import android.os.Looper
 import android.webkit.CookieManager
 import it.fast4x.innertube.Innertube
-import app.it.fast4x.rimusic.context
-import app.it.fast4x.rimusic.isDebugModeEnabled
+import app.n_zik.android.context
+import app.n_zik.android.isDebugModeEnabled
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 

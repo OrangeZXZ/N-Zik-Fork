@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components
+package app.it.fast4x.rimusic.ui.components
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Spring
@@ -54,7 +54,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.multiFloatActionIconOffsetXkey
 import app.it.fast4x.rimusic.utils.multiFloatActionIconOffsetYkey

@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.extensions.contributors.models
+package app.it.fast4x.rimusic.extensions.contributors.models
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,8 +35,8 @@ import com.google.gson.annotations.SerializedName
 import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.colorPalette
+import app.n_zik.android.typography
 
 data class Translator(
     @SerializedName( "username" ) val username: String,

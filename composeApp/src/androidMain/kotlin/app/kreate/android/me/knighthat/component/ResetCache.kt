@@ -1,4 +1,6 @@
-﻿package app.kreate.android.me.knighthat.component
+package app.kreate.android.me.knighthat.component
+
+import app.n_zik.android.core.database.*
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -9,10 +11,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
+import app.n_zik.android.playback.services.PlayerServiceModern
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.ConfirmDialog
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon

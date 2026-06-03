@@ -1,5 +1,7 @@
 package app.kreate.android.me.knighthat.component.import
 
+import app.n_zik.android.core.database.*
+
 import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -7,11 +9,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.media3.common.util.UnstableApi
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import app.it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
-import app.it.fast4x.rimusic.service.MyDownloadHelper
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
+import app.n_zik.android.download.utils.MyDownloadHelper
+import app.n_zik.android.playback.services.PlayerServiceModern
 import app.it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
 import app.it.fast4x.rimusic.utils.exoPlayerDiskCacheMaxSizeKey
 import app.it.fast4x.rimusic.utils.exoPlayerDiskDownloadCacheMaxSizeKey

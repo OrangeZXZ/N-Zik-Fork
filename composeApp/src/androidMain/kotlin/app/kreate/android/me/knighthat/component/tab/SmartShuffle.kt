@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.component.tab
+package app.kreate.android.me.knighthat.component.tab
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.utils.isRecommendationEnabledKey

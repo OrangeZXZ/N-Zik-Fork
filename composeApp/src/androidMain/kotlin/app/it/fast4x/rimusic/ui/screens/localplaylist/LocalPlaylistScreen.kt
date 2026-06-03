@@ -38,7 +38,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
 import app.it.fast4x.compose.persist.PersistMapCleanup
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.PlayerPosition
 import app.it.fast4x.rimusic.enums.TransitionEffect
 import app.it.fast4x.rimusic.enums.UiType

@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.it.fast4x.rimusic.ui.screens.home
+
+import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -36,12 +38,12 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import app.it.fast4x.compose.persist.persistList
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.MONTHLY_PREFIX
 import app.it.fast4x.rimusic.PINNED_PREFIX
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.YTP_PREFIX
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.PlaylistsType
 import app.it.fast4x.rimusic.enums.UiType

@@ -19,8 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.colorPalette
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.bold
 import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.semiBold

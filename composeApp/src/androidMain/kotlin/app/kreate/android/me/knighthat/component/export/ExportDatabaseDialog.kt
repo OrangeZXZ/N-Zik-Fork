@@ -1,4 +1,6 @@
-﻿package app.kreate.android.me.knighthat.component.export
+package app.kreate.android.me.knighthat.component.export
+
+import app.n_zik.android.core.database.*
 
 import android.content.Context
 import android.net.Uri
@@ -14,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import app.n_zik.android.BuildConfig
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

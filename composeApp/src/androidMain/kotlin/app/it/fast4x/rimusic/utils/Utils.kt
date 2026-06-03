@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.utils
+package app.it.fast4x.rimusic.utils
+
+import app.n_zik.android.core.database.*
 
 
 import android.content.ContentUris
@@ -6,10 +8,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import app.n_zik.android.core.network.NetworkQualityHelper
-import app.n_zik.android.core.network.isNetworkAvailable
-import app.n_zik.android.core.network.isNetworkConnected
-import app.n_zik.android.core.network.isNetworkAvailableComposable
+import app.n_zik.android.core.network.utils.NetworkQualityHelper
+import app.n_zik.android.core.network.utils.isNetworkAvailable
+import app.n_zik.android.core.network.utils.isNetworkConnected
+import app.n_zik.android.core.network.utils.isNetworkAvailableComposable
 import android.provider.MediaStore
 import android.text.format.DateUtils
 import androidx.annotation.OptIn
@@ -35,18 +37,18 @@ import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.kugou.KuGou
 import it.fast4x.lrclib.LrcLib
 import androidx.media3.session.MediaConstants.EXTRAS_KEY_IS_EXPLICIT
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.context
+import app.n_zik.android.context
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Lyrics
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.service.MyDownloadHelper
-import app.it.fast4x.rimusic.service.modern.LOCAL_KEY_PREFIX
-import app.it.fast4x.rimusic.service.modern.isLocal
+import app.n_zik.android.download.utils.MyDownloadHelper
+import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
+import app.n_zik.android.playback.services.isLocal
 import app.it.fast4x.rimusic.ui.components.themed.NewVersionDialog
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import kotlinx.coroutines.delay

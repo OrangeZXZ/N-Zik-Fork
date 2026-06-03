@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.core.coil.ImageCacheFactory
 
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.enums.CacheType
 import app.it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import app.it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize

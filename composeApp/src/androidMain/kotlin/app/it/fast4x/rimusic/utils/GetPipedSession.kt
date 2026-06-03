@@ -2,7 +2,7 @@ package app.it.fast4x.rimusic.utils
 
 import io.ktor.http.Url
 import app.it.fast4x.rimusic.models.PipedSession
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.appContext
 import timber.log.Timber
 
 /*

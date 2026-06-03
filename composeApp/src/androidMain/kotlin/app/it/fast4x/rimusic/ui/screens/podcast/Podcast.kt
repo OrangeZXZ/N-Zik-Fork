@@ -1,4 +1,7 @@
-﻿package app.it.fast4x.rimusic.ui.screens.podcast
+package app.it.fast4x.rimusic.ui.screens.podcast
+import app.n_zik.android.LocalPlayerAwareWindowInsets
+
+import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -66,19 +69,19 @@ import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.coil.resize
 
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import it.fast4x.innertube.Innertube
 import app.it.fast4x.compose.persist.persist
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.podcastPage
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Playlist
-import app.it.fast4x.rimusic.service.modern.isLocal
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.playback.services.isLocal
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import app.it.fast4x.rimusic.ui.components.themed.AutoResizeText

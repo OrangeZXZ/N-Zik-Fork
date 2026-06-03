@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.component.song
+package app.kreate.android.me.knighthat.component.song
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +17,7 @@ import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.enums.StatisticsType
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.MenuState
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive

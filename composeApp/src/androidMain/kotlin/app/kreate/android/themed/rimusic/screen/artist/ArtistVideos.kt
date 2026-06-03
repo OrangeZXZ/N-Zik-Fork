@@ -1,4 +1,4 @@
-﻿package app.kreate.android.themed.rimusic.screen.artist
+package app.kreate.android.themed.rimusic.screen.artist
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -22,8 +22,8 @@ import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.BrowseEndpoint
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.Skeleton
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem

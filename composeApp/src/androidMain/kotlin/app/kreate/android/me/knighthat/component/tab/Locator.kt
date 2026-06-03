@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.component.tab
+package app.kreate.android.me.knighthat.component.tab
 
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.lazy.LazyListState
@@ -12,9 +12,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
+import app.n_zik.android.playback.services.PlayerServiceModern
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.DynamicColor
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon

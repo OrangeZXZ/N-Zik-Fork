@@ -34,13 +34,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.NavigationBarType
 import app.it.fast4x.rimusic.enums.UiType
-import app.it.fast4x.rimusic.showSearchIconInNav
-import app.it.fast4x.rimusic.showStatsIconInNav
+import app.n_zik.android.showSearchIconInNav
+import app.n_zik.android.showStatsIconInNav
 import app.it.fast4x.rimusic.ui.components.themed.Button
 import app.it.fast4x.rimusic.ui.components.themed.TextIconButton
 import app.it.fast4x.rimusic.ui.styling.Dimensions

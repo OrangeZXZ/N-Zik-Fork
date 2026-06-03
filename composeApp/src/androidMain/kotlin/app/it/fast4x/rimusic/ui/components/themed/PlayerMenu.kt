@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.components.themed
+package app.it.fast4x.rimusic.ui.components.themed
+
+import app.n_zik.android.core.database.*
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,13 +20,13 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.context
+import app.n_zik.android.context
 import app.it.fast4x.rimusic.enums.MenuStyle
-import app.it.fast4x.rimusic.service.MyDownloadHelper
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
+import app.n_zik.android.download.utils.MyDownloadHelper
+import app.n_zik.android.playback.services.PlayerServiceModern
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import app.it.fast4x.rimusic.utils.addSongToYtPlaylist

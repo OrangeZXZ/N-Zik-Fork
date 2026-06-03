@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import java.io.File
 
 @Composable

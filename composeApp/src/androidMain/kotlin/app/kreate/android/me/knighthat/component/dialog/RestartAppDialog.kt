@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.component.dialog
+package app.kreate.android.me.knighthat.component.dialog
 
 import android.app.Activity
 import androidx.compose.foundation.border
@@ -19,11 +19,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.BuildConfig
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.appContext
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.service.MyDownloadService
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.appContext
+import app.n_zik.android.colorPalette
+import app.n_zik.android.download.services.MyDownloadService
+import app.n_zik.android.playback.services.PlayerServiceModern
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.intent
 import app.it.fast4x.rimusic.utils.medium
 import kotlin.system.exitProcess

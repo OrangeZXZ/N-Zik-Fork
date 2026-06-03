@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.settings
+package app.it.fast4x.rimusic.ui.screens.settings
 
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
@@ -54,14 +54,14 @@ import it.fast4x.innertube.utils.parseCookieString
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Instance
 import it.fast4x.piped.models.Session
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.appContext
 import app.n_zik.android.core.coil.ImageCacheFactory
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.extensions.discord.DiscordLoginAndGetToken
 import app.it.fast4x.rimusic.extensions.discord.DiscordPresenceManager
 import app.it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
-import app.it.fast4x.rimusic.thumbnailShape
+import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.DefaultDialog
@@ -98,7 +98,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import androidx.compose.material3.Text
 import androidx.compose.ui.res.painterResource
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)

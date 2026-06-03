@@ -1,5 +1,7 @@
 package app.kreate.android.me.knighthat.component.album
 
+import app.n_zik.android.core.database.*
+
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -7,9 +9,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.kreate.android.me.knighthat.component.RenameDialog
-import app.kreate.android.me.knighthat.database.AlbumTable
+import app.n_zik.android.core.database.AlbumTable
 
 class AlbumModifier private constructor(
     activeState: MutableState<Boolean>,

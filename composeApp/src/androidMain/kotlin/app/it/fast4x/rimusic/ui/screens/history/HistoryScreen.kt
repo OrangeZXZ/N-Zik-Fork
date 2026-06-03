@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.history
+package app.it.fast4x.rimusic.ui.screens.history
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi

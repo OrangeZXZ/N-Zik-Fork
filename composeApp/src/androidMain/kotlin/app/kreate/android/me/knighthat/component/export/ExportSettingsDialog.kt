@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.component.export
+package app.kreate.android.me.knighthat.component.export
 
 import android.content.Context
 import android.net.Uri

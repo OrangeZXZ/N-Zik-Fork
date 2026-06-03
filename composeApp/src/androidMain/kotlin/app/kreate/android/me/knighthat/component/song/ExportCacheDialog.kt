@@ -1,4 +1,6 @@
-﻿package app.kreate.android.me.knighthat.component.song
+package app.kreate.android.me.knighthat.component.song
+
+import app.n_zik.android.core.database.*
 
 import android.net.Uri
 import android.provider.DocumentsContract
@@ -14,10 +16,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.CacheSpan
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
+import app.n_zik.android.playback.services.PlayerServiceModern
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import kotlinx.coroutines.CoroutineScope

@@ -14,7 +14,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import app.it.fast4x.rimusic.ui.components.MusicAnimation
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.onOverlay
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 
 @OptIn(UnstableApi::class)
 @Composable

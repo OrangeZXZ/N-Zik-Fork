@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.it.fast4x.rimusic.ui.screens.home
+
+import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -47,10 +49,10 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
 import app.it.fast4x.compose.persist.persistList
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.AlbumsType
 import app.it.fast4x.rimusic.enums.FilterBy
 import app.it.fast4x.rimusic.enums.NavRoutes
@@ -58,7 +60,7 @@ import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.thumbnailShape
+import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.ui.components.ButtonsRow
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
@@ -102,7 +104,7 @@ import kotlinx.coroutines.runBlocking
 import app.kreate.android.me.knighthat.component.Sort
 import app.kreate.android.me.knighthat.component.tab.Search
 import app.kreate.android.me.knighthat.component.tab.SongShuffler
-import app.kreate.android.me.knighthat.database.AlbumTable
+import app.n_zik.android.core.database.AlbumTable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi

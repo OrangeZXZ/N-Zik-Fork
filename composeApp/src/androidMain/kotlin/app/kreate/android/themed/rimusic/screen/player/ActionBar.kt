@@ -1,4 +1,6 @@
-﻿package app.kreate.android.themed.rimusic.screen.player
+package app.kreate.android.themed.rimusic.screen.player
+
+import app.n_zik.android.core.database.*
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -67,17 +69,17 @@ import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.enums.ColorPaletteName
 import app.it.fast4x.rimusic.enums.PlayerBackgroundColors
 import app.it.fast4x.rimusic.enums.PlayerType
 import app.it.fast4x.rimusic.enums.QueueLoopType
 import app.it.fast4x.rimusic.enums.SongsNumber
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.AddToPlaylistPlayerMenu
 import app.it.fast4x.rimusic.ui.components.themed.DownloadStateIconButton

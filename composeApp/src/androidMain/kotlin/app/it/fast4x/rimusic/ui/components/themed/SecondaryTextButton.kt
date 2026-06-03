@@ -11,8 +11,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import app.it.fast4x.rimusic.ui.styling.primaryButton
 import app.it.fast4x.rimusic.utils.medium
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.colorPalette
+import app.n_zik.android.typography
 
 @Composable
 fun SecondaryTextButton(

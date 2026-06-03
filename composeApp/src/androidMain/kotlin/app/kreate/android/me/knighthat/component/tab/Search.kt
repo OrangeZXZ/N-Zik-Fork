@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.component.tab
+package app.kreate.android.me.knighthat.component.tab
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -52,9 +52,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.thumbnailShape
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.colorPalette
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
@@ -306,7 +306,7 @@ class Search private constructor(
                                
                                Spacer(modifier = Modifier.width(8.dp))
                                
-                                                               // Trailing Icon (toujours prÃ©sent pour garder la taille)
+                                                               // Trailing Icon (toujours prÃƒÂ©sent pour garder la taille)
                                 Box(
                                     modifier = Modifier.width(40.dp),
                                     contentAlignment = Alignment.Center

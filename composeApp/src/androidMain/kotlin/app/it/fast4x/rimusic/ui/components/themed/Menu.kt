@@ -27,8 +27,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.it.fast4x.rimusic.utils.medium
 import app.it.fast4x.rimusic.utils.secondary
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.colorPalette
+import app.n_zik.android.typography
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration

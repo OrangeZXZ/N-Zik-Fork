@@ -1,4 +1,7 @@
-﻿package app.it.fast4x.rimusic.ui.screens.artist
+package app.it.fast4x.rimusic.ui.screens.artist
+import app.n_zik.android.LocalPlayerAwareWindowInsets
+
+import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -33,8 +36,8 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.it.fast4x.compose.persist.persist
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Song
@@ -62,7 +65,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import app.it.fast4x.rimusic.utils.ExternalUris
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.kreate.android.me.knighthat.utils.Toaster
 import android.content.Intent
 import androidx.compose.foundation.Image
@@ -78,7 +81,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import app.it.fast4x.rimusic.ui.components.themed.AutoResizeText
 import app.it.fast4x.rimusic.ui.components.themed.FontSizeRange

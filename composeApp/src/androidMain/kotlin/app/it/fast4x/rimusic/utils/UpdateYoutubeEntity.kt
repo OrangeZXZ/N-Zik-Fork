@@ -1,5 +1,7 @@
 package app.it.fast4x.rimusic.utils
 
+import app.n_zik.android.core.database.*
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -13,7 +15,7 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.albumPage
 import it.fast4x.innertube.requests.artistPage
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Artist
 import app.it.fast4x.rimusic.models.SongAlbumMap

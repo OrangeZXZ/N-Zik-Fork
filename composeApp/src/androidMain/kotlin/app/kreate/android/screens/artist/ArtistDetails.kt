@@ -1,4 +1,4 @@
-﻿package app.kreate.android.screens.artist
+package app.kreate.android.screens.artist
 
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -59,17 +59,17 @@ import androidx.compose.ui.graphics.painter.Painter
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.requests.ArtistPage
 import it.fast4x.innertube.requests.ArtistSection
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.appContext
 
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Artist
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import app.it.fast4x.rimusic.ui.components.themed.AutoResizeText
@@ -97,7 +97,7 @@ import app.it.fast4x.rimusic.utils.enqueue
 import app.it.fast4x.rimusic.utils.fadingEdge
 import app.it.fast4x.rimusic.utils.forcePlay
 import app.it.fast4x.rimusic.utils.forcePlayAtIndex
-import app.n_zik.android.core.network.NetworkClientFactory
+import app.n_zik.android.core.network.client.NetworkClientFactory
 import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.languageDestination
 import app.it.fast4x.rimusic.utils.rememberPreference
@@ -479,7 +479,7 @@ fun ArtistDetails(
                         translate.ToolBarButton()
 
                         BasicText(
-                            text = "â€œ",
+                            text = "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“",
                             style = typography().xxl.semiBold,
                             modifier = Modifier.offset( y = (-8).dp )
                                                .align( Alignment.Top )
@@ -522,7 +522,7 @@ fun ArtistDetails(
                         )
 
                         BasicText(
-                            text = "â€ž",
+                            text = "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¾",
                             style = typography().xxl.semiBold,
                             modifier = Modifier.offset( y = 4.dp )
                                                .align( Alignment.Bottom )

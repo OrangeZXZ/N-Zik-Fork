@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.settings
+package app.it.fast4x.rimusic.ui.screens.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Spacer
@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.AlbumSwipeAction
 import app.it.fast4x.rimusic.enums.BackgroundProgress
 import app.it.fast4x.rimusic.enums.CarouselSize

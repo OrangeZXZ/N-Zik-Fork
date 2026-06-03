@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -44,14 +44,14 @@ import app.it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.requests.HomePage
-import app.it.fast4x.rimusic.LocalPlayerAwareWindowInsets
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.LocalPlayerAwareWindowInsets
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.Countries
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.UiType
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer

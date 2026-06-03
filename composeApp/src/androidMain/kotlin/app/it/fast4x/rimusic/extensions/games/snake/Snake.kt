@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.extensions.games.snake
+package app.it.fast4x.rimusic.extensions.games.snake
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

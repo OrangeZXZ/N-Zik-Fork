@@ -1,4 +1,4 @@
-﻿@file:UnstableApi
+@file:UnstableApi
 package app.it.fast4x.rimusic.ui.items
 
 import androidx.annotation.OptIn
@@ -35,11 +35,11 @@ import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.models.Album
-import app.it.fast4x.rimusic.thumbnailShape
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.shimmer

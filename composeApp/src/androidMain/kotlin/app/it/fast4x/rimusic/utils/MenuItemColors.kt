@@ -3,7 +3,7 @@ package app.it.fast4x.rimusic.utils
 import androidx.compose.material3.MenuItemColors
 import androidx.compose.runtime.Composable
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 
 @Composable
 fun menuItemColors(): MenuItemColors {

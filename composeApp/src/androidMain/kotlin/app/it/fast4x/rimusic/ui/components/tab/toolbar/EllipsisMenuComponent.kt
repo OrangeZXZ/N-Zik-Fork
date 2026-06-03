@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components.tab.toolbar
+package app.it.fast4x.rimusic.ui.components.tab.toolbar
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets

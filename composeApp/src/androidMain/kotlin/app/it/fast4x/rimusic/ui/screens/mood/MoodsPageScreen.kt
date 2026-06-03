@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.mood
+package app.it.fast4x.rimusic.ui.screens.mood
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi

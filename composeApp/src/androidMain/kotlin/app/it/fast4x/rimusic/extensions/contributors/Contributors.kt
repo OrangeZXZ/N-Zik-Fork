@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.extensions.contributors
+package app.it.fast4x.rimusic.extensions.contributors
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box

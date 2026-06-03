@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.utils
+package app.it.fast4x.rimusic.utils
 
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.R
 import app.it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import app.it.fast4x.rimusic.ui.screens.settings.SettingsDescription

@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components.tab.toolbar
+package app.it.fast4x.rimusic.ui.components.tab.toolbar
 
 import androidx.compose.runtime.Composable
 import app.n_zik.android.R

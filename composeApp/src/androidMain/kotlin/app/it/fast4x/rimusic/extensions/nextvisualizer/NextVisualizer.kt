@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.extensions.nextvisualizer
+package app.it.fast4x.rimusic.extensions.nextvisualizer
 
 import android.Manifest
 import android.content.Intent
@@ -39,8 +39,8 @@ import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import app.kreate.android.drawable.APP_ICON_BITMAP
 import app.n_zik.android.core.coil.resize
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.extensions.nextvisualizer.painters.Painter
 import app.it.fast4x.rimusic.extensions.nextvisualizer.painters.fft.FftBar
 import app.it.fast4x.rimusic.extensions.nextvisualizer.painters.fft.FftCBar
@@ -62,7 +62,7 @@ import app.it.fast4x.rimusic.extensions.nextvisualizer.painters.waveform.WfmAnal
 import app.it.fast4x.rimusic.extensions.nextvisualizer.utils.Preset
 import app.it.fast4x.rimusic.extensions.nextvisualizer.utils.VisualizerHelper
 import app.it.fast4x.rimusic.extensions.nextvisualizer.views.VisualizerView
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
 import app.it.fast4x.rimusic.utils.DisposableListener

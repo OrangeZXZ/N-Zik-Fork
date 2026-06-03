@@ -1,11 +1,11 @@
-﻿package app.kreate.android.drawable
+package app.kreate.android.drawable
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.appContext
 
 // Due to the complexity of rasterized image, it must be converted into
 // bitmap before rendering.

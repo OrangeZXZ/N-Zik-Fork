@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.utils
+package app.it.fast4x.rimusic.utils
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
 import app.it.fast4x.rimusic.ui.components.themed.TitleMiniSection
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
-import app.it.fast4x.rimusic.ytAccountName
+import app.n_zik.android.ytAccountName
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

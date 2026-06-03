@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.component
+package app.kreate.android.me.knighthat.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,8 +20,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.colorPalette
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 
 @Composable

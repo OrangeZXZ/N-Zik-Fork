@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.component
+package app.kreate.android.me.knighthat.component
 
 import android.content.ActivityNotFoundException
 import android.net.Uri

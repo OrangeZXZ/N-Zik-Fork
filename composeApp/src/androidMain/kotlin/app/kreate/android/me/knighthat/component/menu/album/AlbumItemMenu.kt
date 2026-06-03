@@ -1,4 +1,6 @@
-﻿package app.kreate.android.me.knighthat.component.menu.album
+package app.kreate.android.me.knighthat.component.menu.album
+
+import app.n_zik.android.core.database.*
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -33,16 +35,16 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.appContext
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.appContext
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
-import app.it.fast4x.rimusic.thumbnailShape
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.playback.services.PlayerServiceModern
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.MenuState
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
@@ -172,7 +174,7 @@ class AlbumItemMenu private constructor(
             ) {
                 // Album's thumbnail
                 Box(
-                    Modifier.size(Dimensions.thumbnails.album / 2) // Taille rÃ©duite pour le menu
+                    Modifier.size(Dimensions.thumbnails.album / 2) // Taille rÃƒÆ’Ã‚Â©duite pour le menu
                 ) {
                     ImageCacheFactory.Thumbnail(
                         thumbnailUrl = album.thumbnailUrl,

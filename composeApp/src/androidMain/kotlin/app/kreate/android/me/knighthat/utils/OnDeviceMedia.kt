@@ -1,15 +1,17 @@
 package app.kreate.android.me.knighthat.utils
 
+import app.n_zik.android.core.database.*
+
 import android.content.ContentUris
 import android.content.Context
 import android.provider.MediaStore
 import androidx.core.net.toUri
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.enums.OnDeviceSongSortBy
 import app.it.fast4x.rimusic.enums.SortOrder
 import app.it.fast4x.rimusic.models.Format
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.service.modern.LOCAL_KEY_PREFIX
+import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
 import app.it.fast4x.rimusic.utils.isAtLeastAndroid10
 import app.it.fast4x.rimusic.utils.isAtLeastAndroid11
 import kotlinx.coroutines.CoroutineScope

@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.screens.player
+package app.it.fast4x.rimusic.ui.screens.player
+
+import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import android.text.format.Formatter
@@ -37,14 +39,14 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.cache.Cache
 import androidx.media3.datasource.cache.CacheSpan
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.PlayerBackgroundColors
 import app.it.fast4x.rimusic.enums.PlayerType
 import app.it.fast4x.rimusic.models.Format
-import app.it.fast4x.rimusic.service.modern.LOCAL_KEY_PREFIX
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.styling.onOverlay
 import app.it.fast4x.rimusic.ui.styling.overlay

@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.playlist
+package app.it.fast4x.rimusic.ui.screens.playlist
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi

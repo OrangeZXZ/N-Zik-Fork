@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.it.fast4x.rimusic.ui.screens.home
+
+import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -28,15 +30,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerAwareWindowInsets
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerAwareWindowInsets
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.BuiltInPlaylist
 import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.StatisticsType
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Playlist
-import app.it.fast4x.rimusic.thumbnailShape
+import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog

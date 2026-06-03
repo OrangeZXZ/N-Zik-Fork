@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components
+package app.it.fast4x.rimusic.ui.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -26,12 +26,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.n_zik.android.BuildConfig
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.CheckUpdateState
 import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.PlayerPosition
-import app.it.fast4x.rimusic.LocalPlayerAwareWindowInsets
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.LocalPlayerAwareWindowInsets
+import app.n_zik.android.LocalPlayerServiceBinder
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
 import androidx.compose.runtime.CompositionLocalProvider
@@ -50,13 +50,13 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.seenChangelogsVersionKey
 import app.it.fast4x.rimusic.utils.transition
 import app.it.fast4x.rimusic.enums.UiType
-import app.n_zik.android.core.updater.ChangelogsDialog
-import app.n_zik.android.core.updater.CheckForUpdateDialog
-import app.n_zik.android.core.updater.NewUpdateAvailableDialog
-import app.n_zik.android.core.updater.BuildTransitionWarningDialog
-import app.n_zik.android.core.updater.MajorUpdateConfig
-import app.n_zik.android.core.updater.MajorUpdateWarningDialog
-import app.n_zik.android.core.updater.Updater
+import app.n_zik.android.updater.ui.ChangelogsDialog
+import app.n_zik.android.updater.ui.CheckForUpdateDialog
+import app.n_zik.android.updater.ui.NewUpdateAvailableDialog
+import app.n_zik.android.updater.ui.BuildTransitionWarningDialog
+import app.n_zik.android.updater.models.MajorUpdateConfig
+import app.n_zik.android.updater.ui.MajorUpdateWarningDialog
+import app.n_zik.android.updater.services.Updater
 import app.it.fast4x.rimusic.utils.lastVersionCodeKey
 import app.it.fast4x.rimusic.utils.lastBuildTypeKey
 

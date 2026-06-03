@@ -1,4 +1,7 @@
-﻿package app.it.fast4x.rimusic.ui.screens.localplaylist
+package app.it.fast4x.rimusic.ui.screens.localplaylist
+import app.n_zik.android.LocalPlayerAwareWindowInsets
+
+import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -62,23 +65,23 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.playlistPage
 import it.fast4x.innertube.requests.relatedSongs
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.MONTHLY_PREFIX
 import app.it.fast4x.rimusic.PIPED_PREFIX
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.PlaylistSongSortBy
 import app.it.fast4x.rimusic.enums.RecommendationsNumber
 import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.models.SongPlaylistMap
-import app.it.fast4x.rimusic.service.modern.isLocal
-import app.it.fast4x.rimusic.thumbnailShape
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.playback.services.isLocal
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button

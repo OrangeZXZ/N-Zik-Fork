@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.screens.album
+package app.it.fast4x.rimusic.ui.screens.album
+
+import app.n_zik.android.core.database.*
 
 import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -52,17 +54,17 @@ import androidx.compose.ui.graphics.painter.Painter
 
 import app.it.fast4x.compose.persist.PersistMapCleanup
 import it.fast4x.innertube.Innertube
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import app.it.fast4x.rimusic.ui.components.themed.AutoResizeText
@@ -93,7 +95,7 @@ import app.it.fast4x.rimusic.utils.enqueue
 import app.it.fast4x.rimusic.utils.fadingEdge
 import app.it.fast4x.rimusic.utils.forcePlayAtIndex
 import app.it.fast4x.rimusic.utils.formatAsTime
-import app.n_zik.android.core.network.NetworkClientFactory
+import app.n_zik.android.core.network.client.NetworkClientFactory
 import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.languageDestination
 import app.it.fast4x.rimusic.utils.medium
@@ -490,7 +492,7 @@ fun AlbumDetails(
                             translate.ToolBarButton()
 
                             BasicText(
-                                text = "â€œ",
+                                text = "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = (-8).dp)
@@ -535,7 +537,7 @@ fun AlbumDetails(
                             )
 
                             BasicText(
-                                text = "â€ž",
+                                text = "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¾",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = 4.dp)

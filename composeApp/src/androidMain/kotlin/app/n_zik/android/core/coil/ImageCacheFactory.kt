@@ -1,4 +1,4 @@
-﻿package app.n_zik.android.core.coil
+package app.n_zik.android.core.coil
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -34,14 +34,14 @@ import coil3.request.crossfade
 import coil3.request.SuccessResult
 import coil3.toBitmap
 import it.fast4x.innertube.models.Thumbnail
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import app.it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import app.it.fast4x.rimusic.enums.ImageQualityFormat
-import app.it.fast4x.rimusic.thumbnailShape
-import app.n_zik.android.core.network.NetworkQualityHelper
-// import app.n_zik.android.core.network.GlobalNetworkLogger
-import app.n_zik.android.core.network.enum.NetworkQuality as NZikNetworkQuality
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.core.network.utils.NetworkQualityHelper
+// import app.n_zik.android.core.network.client.GlobalNetworkLogger
+import app.n_zik.android.core.network.models.NetworkQuality as NZikNetworkQuality
 import app.it.fast4x.rimusic.utils.coilCustomDiskCacheKey
 import app.it.fast4x.rimusic.utils.coilDiskCacheMaxSizeKey
 import app.it.fast4x.rimusic.utils.exoPlayerCacheLocationKey
@@ -107,8 +107,8 @@ object ImageCacheFactory {
 
                 val newScore = url.getYouTubeQualityScore()
                 
-                // On n'Ã©crase que si la qualitÃ© est meilleure pour le slot "high"
-                // ou moins bonne pour le slot "low" (pour garder une miniature de secours ultra-lÃ©gÃ¨re)
+                // On n'ÃƒÆ’Ã‚Â©crase que si la qualitÃƒÆ’Ã‚Â© est meilleure pour le slot "high"
+                // ou moins bonne pour le slot "low" (pour garder une miniature de secours ultra-lÃƒÆ’Ã‚Â©gÃƒÆ’Ã‚Â¨re)
                 if (isHigh || newScore >= 5) {
                     if (newScore >= high.getYouTubeQualityScore()) {
                         high = url
@@ -188,7 +188,7 @@ object ImageCacheFactory {
             .components {
                 add(OkHttpNetworkFetcherFactory(
                     callFactory = { request: okhttp3.Request ->
-                        app.n_zik.android.core.network.NetworkClientFactory.getClient().newCall(request)
+                        app.n_zik.android.core.network.client.NetworkClientFactory.getClient().newCall(request)
                     }
                 ))
             }
@@ -629,7 +629,7 @@ object ImageCacheFactory {
 
     fun clearImageCache() {
         try {
-            // 1. On vide d'abord la mÃ©moire vive (RAM)
+            // 1. On vide d'abord la mÃƒÆ’Ã‚Â©moire vive (RAM)
             LOADER.memoryCache?.clear()
             
             // 2. On vide le cache disque (Storage)
@@ -638,10 +638,10 @@ object ImageCacheFactory {
             // 3. On vide les registres de signatures apprises (Playlists)
             PlaylistThumbnailStore.clearAll()
             
-            // 4. On vide les mÃ©tadonnÃ©es de qualitÃ©
+            // 4. On vide les mÃƒÆ’Ã‚Â©tadonnÃƒÆ’Ã‚Â©es de qualitÃƒÆ’Ã‚Â©
             CacheMetadataStore.clearAll()
             
-            // 5. On rÃ©initialise les registres temporaires
+            // 5. On rÃƒÆ’Ã‚Â©initialise les registres temporaires
             cacheKeyMap.clear()
             cooldownMap.clear()
             
@@ -693,14 +693,14 @@ private fun String.getYouTubeId(): String? {
 fun String?.thumbnail(size: Int): String? {
     if (this == null) return this
     
-    // Seuil augmentÃ© de 600 Ã  700 pour garantir l'usage du cache HQ (Mode Apprentissage)
+    // Seuil augmentÃƒÆ’Ã‚Â© de 600 ÃƒÆ’Ã‚Â  700 pour garantir l'usage du cache HQ (Mode Apprentissage)
     // On utilise >= 700 car la taille MEDIUM est maintenant de 700.
     val quality = if (size >= 700) ImageCacheFactory.NetworkQuality.HIGH else ImageCacheFactory.NetworkQuality.LOW
     
     if (contains("i.ytimg.com/pl_c/") || contains("i.ytimg.com/podcasts_artwork/")) {
         val id = getYouTubeId()
         if (id != null) {
-            // PrioritÃ© absolue Ã  la version apprise (HQ) si elle existe
+            // PrioritÃƒÆ’Ã‚Â© absolue ÃƒÆ’Ã‚Â  la version apprise (HQ) si elle existe
             val learnedHigh = ImageCacheFactory.PlaylistThumbnailStore.getHighUrl(id)
             if (learnedHigh != null) {
                 return learnedHigh
@@ -708,15 +708,15 @@ fun String?.thumbnail(size: Int): String? {
 
             // [MODE APPRENTISSAGE STRICT]
             // On ne fait le swap que s'il n'y a pas de signature 'rs='.
-            // On gÃ¨re mwEIC (Low) et mwEUC (Medium) vers mwEKC (High).
+            // On gÃƒÆ’Ã‚Â¨re mwEIC (Low) et mwEUC (Medium) vers mwEKC (High).
             if (quality == ImageCacheFactory.NetworkQuality.HIGH) {
                 return if (!contains("rs=")) {
                     replace("mwEIC", "mwEKC")
                         .replace("mwEUC", "mwEKC")
                         .replace("mwESC", "mwEKC")
                 } else {
-                    // Si on a un lien "Medium" (EUC) signÃ©, on essaie quand mÃªme de voir si on peut le "nettoyer" 
-                    // ou si le store a mieux. (Le store a dÃ©jÃ  Ã©tÃ© vÃ©rifiÃ© plus haut via learnedHigh)
+                    // Si on a un lien "Medium" (EUC) signÃƒÆ’Ã‚Â©, on essaie quand mÃƒÆ’Ã‚Âªme de voir si on peut le "nettoyer" 
+                    // ou si le store a mieux. (Le store a dÃƒÆ’Ã‚Â©jÃƒÆ’Ã‚Â  ÃƒÆ’Ã‚Â©tÃƒÆ’Ã‚Â© vÃƒÆ’Ã‚Â©rifiÃƒÆ’Ã‚Â© plus haut via learnedHigh)
                     this
                 }
             } else {
@@ -738,7 +738,7 @@ fun String?.thumbnail(size: Int): String? {
                 else -> "hqdefault.jpg"
             }
             // "Un-signing": Strip parameters and force suffix for best quality
-            // On retire tout paramÃ¨tre sqp/rs pour les vidÃ©os car ils brident la rÃ©solution
+            // On retire tout paramÃƒÆ’Ã‚Â¨tre sqp/rs pour les vidÃƒÆ’Ã‚Â©os car ils brident la rÃƒÆ’Ã‚Â©solution
             return replace(Regex("/[^/?]+\\.jpg(\\?.*)?$"), "/$suffix")
         }
         // Playlists and Podcasts (/pl_c/, /podcasts_artwork/) are usually signed

@@ -32,9 +32,9 @@ import app.it.fast4x.rimusic.utils.conditional
 import app.it.fast4x.rimusic.utils.medium
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.thumbnailShape
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.colorPalette
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.shimmerEffect
 import app.n_zik.android.core.coil.ImageCacheFactory
 

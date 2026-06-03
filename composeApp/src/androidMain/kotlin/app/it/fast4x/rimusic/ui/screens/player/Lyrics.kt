@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.screens.player
+package app.it.fast4x.rimusic.ui.screens.player
+
+import app.n_zik.android.core.database.*
 
 import android.app.SearchManager
 import android.content.ActivityNotFoundException
@@ -98,10 +100,10 @@ import it.fast4x.innertube.requests.lyrics
 import it.fast4x.kugou.KuGou
 import it.fast4x.lrclib.LrcLib
 import it.fast4x.lrclib.models.Track
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.enums.ColorPaletteName
 import app.it.fast4x.rimusic.enums.Languages
@@ -114,8 +116,8 @@ import app.it.fast4x.rimusic.enums.LyricsOutline
 import app.it.fast4x.rimusic.enums.PlayerBackgroundColors
 import app.it.fast4x.rimusic.enums.Romanization
 import app.it.fast4x.rimusic.models.Lyrics
-import app.it.fast4x.rimusic.thumbnailShape
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
@@ -137,7 +139,7 @@ import app.it.fast4x.rimusic.utils.colorPaletteNameKey
 import app.it.fast4x.rimusic.utils.conditional
 import app.it.fast4x.rimusic.utils.effectRotationKey
 import app.it.fast4x.rimusic.utils.expandedplayerKey
-import app.n_zik.android.core.network.NetworkClientFactory
+import app.n_zik.android.core.network.client.NetworkClientFactory
 import app.it.fast4x.rimusic.utils.isShowingSynchronizedLyricsKey
 import app.it.fast4x.rimusic.utils.jumpPreviousKey
 import app.it.fast4x.rimusic.utils.landscapeControlsKey

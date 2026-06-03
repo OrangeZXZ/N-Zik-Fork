@@ -1,12 +1,14 @@
 package app.kreate.android.me.knighthat.component
 
+import app.n_zik.android.core.database.*
+
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.media3.common.util.UnstableApi
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
+import app.n_zik.android.playback.services.PlayerServiceModern
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.ConfirmDialog
 
 @UnstableApi

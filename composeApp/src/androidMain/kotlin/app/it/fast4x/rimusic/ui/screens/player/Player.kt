@@ -1,4 +1,7 @@
-﻿package app.it.fast4x.rimusic.ui.screens.player
+package app.it.fast4x.rimusic.ui.screens.player
+import app.n_zik.android.appRunningInBackground
+
+import app.n_zik.android.core.database.*
 
 import app.it.fast4x.rimusic.ui.components.themed.SleepTimerDialog
 import android.annotation.SuppressLint
@@ -134,11 +137,10 @@ import com.mikepenz.hypnoticcanvas.shaders.OilFlow
 import com.mikepenz.hypnoticcanvas.shaders.PurpleLiquid
 import com.mikepenz.hypnoticcanvas.shaders.Shader
 import com.mikepenz.hypnoticcanvas.shaders.Stage
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.appRunningInBackground
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.AnimatedGradient
 import app.it.fast4x.rimusic.enums.BackgroundProgress
 import app.it.fast4x.rimusic.enums.CarouselSize
@@ -155,8 +157,8 @@ import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.ThumbnailType
 import app.it.fast4x.rimusic.models.Info
 import app.it.fast4x.rimusic.models.ui.toUiMedia
-import app.it.fast4x.rimusic.thumbnailShape
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator

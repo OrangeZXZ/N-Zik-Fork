@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.extensions.discord
+package app.it.fast4x.rimusic.extensions.discord
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.LocalPlayerAwareWindowInsets
+import app.n_zik.android.LocalPlayerAwareWindowInsets
 import app.it.fast4x.rimusic.ui.components.themed.Title
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,7 +26,7 @@ import android.view.View
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.Alignment
-import app.it.fast4x.rimusic.context
+import app.n_zik.android.context
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -45,7 +45,7 @@ private const val SAMSUNG_USER_AGENT = "Mozilla/5.0 (Linux; Android 14; SM-S921U
      */
 
 suspend fun fetchDiscordUser(token: String): Pair<String, String>? = withContext(Dispatchers.IO) {
-    val client = app.n_zik.android.core.network.NetworkClientFactory.getClient()
+    val client = app.n_zik.android.core.network.client.NetworkClientFactory.getClient()
     val request = Request.Builder()
         .url("https://discord.com/api/v9/users/@me")
         .header("Authorization", token)

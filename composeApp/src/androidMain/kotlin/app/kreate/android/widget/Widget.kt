@@ -1,4 +1,4 @@
-﻿package app.kreate.android.widget
+package app.kreate.android.widget
 
 import android.content.Context
 import android.graphics.BitmapFactory
@@ -30,7 +30,7 @@ import androidx.glance.text.Text
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import app.kreate.android.drawable.APP_ICON_BITMAP
-import app.it.fast4x.rimusic.MainActivity
+import app.n_zik.android.MainActivity
 import app.it.fast4x.rimusic.cleanPrefix
 import java.io.File
 

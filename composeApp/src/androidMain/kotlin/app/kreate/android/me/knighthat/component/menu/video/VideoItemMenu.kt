@@ -1,4 +1,6 @@
-﻿package app.kreate.android.me.knighthat.component.menu.video
+package app.kreate.android.me.knighthat.component.menu.video
+
+import app.n_zik.android.core.database.*
 
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -30,10 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.appContext
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.appContext
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.models.Info
 import app.it.fast4x.rimusic.models.Song

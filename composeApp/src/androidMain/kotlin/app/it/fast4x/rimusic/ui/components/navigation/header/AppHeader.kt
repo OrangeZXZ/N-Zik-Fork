@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components.navigation.header
+package app.it.fast4x.rimusic.ui.components.navigation.header
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.extensions.games.pacman.Pacman
 import app.it.fast4x.rimusic.ui.components.themed.Button

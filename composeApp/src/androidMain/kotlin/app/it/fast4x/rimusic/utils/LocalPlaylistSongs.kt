@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.utils
+package app.it.fast4x.rimusic.utils
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable

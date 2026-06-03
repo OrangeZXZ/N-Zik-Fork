@@ -1,4 +1,5 @@
-﻿package app.it.fast4x.rimusic.ui.screens.settings
+package app.it.fast4x.rimusic.ui.screens.settings
+import app.n_zik.android.LocalPlayerAwareWindowInsets
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -31,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.AnimatedGradient
 import app.it.fast4x.rimusic.enums.BackgroundProgress
 import app.it.fast4x.rimusic.enums.CarouselSize
@@ -57,7 +58,7 @@ import app.it.fast4x.rimusic.enums.ThumbnailCoverType
 import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.ThumbnailType
 import app.it.fast4x.rimusic.enums.WallpaperType
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.AppearancePresetDialog
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.styling.Dimensions

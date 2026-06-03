@@ -18,7 +18,7 @@ import androidx.media3.common.util.UnstableApi
 import app.it.fast4x.rimusic.enums.PlayerBackgroundColors
 import app.it.fast4x.rimusic.enums.PlayerControlsType
 import app.it.fast4x.rimusic.enums.PlayerPlayButtonType
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
+import app.n_zik.android.playback.services.PlayerServiceModern
 import app.it.fast4x.rimusic.ui.components.themed.PlaybackParamsDialog
 import app.it.fast4x.rimusic.ui.screens.player.components.controls.ControlsEssential
 import app.it.fast4x.rimusic.ui.screens.player.components.controls.ControlsModern

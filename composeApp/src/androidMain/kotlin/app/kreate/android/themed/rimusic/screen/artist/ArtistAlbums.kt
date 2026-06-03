@@ -1,4 +1,4 @@
-﻿package app.kreate.android.themed.rimusic.screen.artist
+package app.kreate.android.themed.rimusic.screen.artist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,7 +25,7 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.GridRenderer
 import it.fast4x.innertube.utils.from
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.ui.components.Skeleton
 import app.it.fast4x.rimusic.ui.components.Skeleton

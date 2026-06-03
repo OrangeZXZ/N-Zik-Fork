@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.search
+package app.it.fast4x.rimusic.ui.screens.search
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -34,8 +34,8 @@ import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.ui.components.Skeleton
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.colorPalette
+import app.n_zik.android.typography
 
 @ExperimentalTextApi
 @ExperimentalFoundationApi

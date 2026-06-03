@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.component.player
+package app.kreate.android.me.knighthat.component.player
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.media3.common.PlaybackParameters
 import app.n_zik.android.R
 import app.kreate.android.constant.Speed
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.kreate.android.me.knighthat.component.dialog.Dialog

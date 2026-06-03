@@ -1,4 +1,6 @@
-﻿package app.kreate.android.me.knighthat.component.song
+package app.kreate.android.me.knighthat.component.song
+
+import app.n_zik.android.core.database.*
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -11,10 +13,10 @@ import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.nextPage
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
+import app.n_zik.android.playback.services.PlayerServiceModern
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.utils.asSong

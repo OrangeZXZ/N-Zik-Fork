@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.screens.history
+package app.it.fast4x.rimusic.ui.screens.history
+
+import app.n_zik.android.core.database.*
 
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
@@ -41,14 +43,14 @@ import app.n_zik.android.R
 import app.it.fast4x.compose.persist.persist
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.requests.HistoryPage
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
-import app.it.fast4x.rimusic.LocalPlayerAwareWindowInsets
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.LocalPlayerAwareWindowInsets
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.HistoryType
 import app.it.fast4x.rimusic.models.Event
-import app.it.fast4x.rimusic.thumbnailShape
+import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.ui.components.ButtonsRow
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem

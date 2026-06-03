@@ -1,8 +1,8 @@
-﻿package app.it.fast4x.rimusic.extensions.discord
+package app.it.fast4x.rimusic.extensions.discord
 
 import android.content.Context
 import androidx.media3.common.MediaItem
-import app.n_zik.android.core.network.isNetworkAvailable
+import app.n_zik.android.core.network.utils.isNetworkAvailable
 import app.n_zik.android.R
 import app.kreate.android.me.knighthat.utils.Toaster
 import com.metrolist.music.discordrpc.DiscordRpcConnection
@@ -43,7 +43,7 @@ class DiscordPresenceManager(
     private var isStopped = false
     private val discordScope = externalScope
     private var refreshJob: Job? = null
-    private val client = app.n_zik.android.core.network.NetworkClientFactory.getClientWithTimeout(10L, 10L)
+    private val client = app.n_zik.android.core.network.client.NetworkClientFactory.getClientWithTimeout(10L, 10L)
     private val appStartTime = System.currentTimeMillis()
 
     init {
@@ -165,7 +165,7 @@ class DiscordPresenceManager(
             if (isStopped) return@launch
             sendActivity(
                 mediaItem = mediaItem,
-                details = "â¸ï¸ Paused: $title",
+                details = "ÃƒÂ¢Ã‚ÂÃ‚Â¸ÃƒÂ¯Ã‚Â¸Ã‚Â Paused: $title",
                 state = artist,
                 start = frozenTimestamp,
                 end = frozenTimestamp,

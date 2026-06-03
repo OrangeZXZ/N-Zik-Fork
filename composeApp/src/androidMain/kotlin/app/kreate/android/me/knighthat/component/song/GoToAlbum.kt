@@ -1,4 +1,6 @@
-﻿package app.kreate.android.me.knighthat.component.song
+package app.kreate.android.me.knighthat.component.song
+
+import app.n_zik.android.core.database.*
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -7,7 +9,7 @@ import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.nextPage
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive

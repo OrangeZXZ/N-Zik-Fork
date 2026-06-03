@@ -1,4 +1,4 @@
-﻿package com.dd3boh.outertune.utils.potoken
+package com.dd3boh.outertune.utils.potoken
 
 import android.content.Context
 import android.os.Handler
@@ -12,7 +12,7 @@ import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
-import app.it.fast4x.rimusic.isDebugModeEnabled
+import app.n_zik.android.isDebugModeEnabled
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -309,7 +309,7 @@ class PoTokenWebView private constructor(
                     "x-user-agent" to "grpc-web-javascript/0.1",
                 ).toHeaders())
                 .url(url)
-            val response = app.n_zik.android.core.network.NetworkClientFactory.getCachelessClient()
+            val response = app.n_zik.android.core.network.client.NetworkClientFactory.getCachelessClient()
                 .newCall(requestBuilder.build()).execute()
             return@runCatching response.body!!.string()
         }

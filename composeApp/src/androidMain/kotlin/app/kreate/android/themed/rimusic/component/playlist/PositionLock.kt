@@ -1,4 +1,4 @@
-﻿package app.kreate.android.themed.rimusic.component.playlist
+package app.kreate.android.themed.rimusic.component.playlist
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState

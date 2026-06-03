@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.utils
+package app.kreate.android.me.knighthat.utils
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -11,7 +11,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import es.dmoral.toasty.Toasty
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.appContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

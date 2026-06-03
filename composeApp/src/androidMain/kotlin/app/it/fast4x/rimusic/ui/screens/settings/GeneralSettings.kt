@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.settings
+package app.it.fast4x.rimusic.ui.screens.settings
 
 import android.os.Build
 import android.text.TextUtils
@@ -38,12 +38,12 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.BuildConfig
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.LocalPlayerAwareWindowInsets
+import app.n_zik.android.LocalPlayerAwareWindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.windowInsetsPadding
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.LocalPlayerServiceBinder
 
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 
 import app.it.fast4x.rimusic.enums.DurationInMilliseconds
 import app.it.fast4x.rimusic.enums.DurationInMinutes
@@ -57,7 +57,7 @@ import app.it.fast4x.rimusic.enums.NotificationType
 import app.it.fast4x.rimusic.enums.PauseBetweenSongs
 import app.it.fast4x.rimusic.enums.PipModule
 import app.it.fast4x.rimusic.enums.PresetsReverb
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette

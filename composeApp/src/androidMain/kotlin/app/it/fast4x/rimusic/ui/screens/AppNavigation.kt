@@ -1,5 +1,7 @@
 package app.it.fast4x.rimusic.ui.screens
 
+import app.n_zik.android.core.database.*
+
 import android.net.Uri
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
@@ -41,7 +43,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.kreate.android.themed.rimusic.screen.artist.ArtistAlbums
 import app.kreate.android.themed.rimusic.screen.artist.ArtistVideos
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.StatisticsType
 import app.it.fast4x.rimusic.enums.ThumbnailRoundness
@@ -442,7 +444,7 @@ fun AppNavigation(
         }
 
         composable(route = NavRoutes.updater.name) {
-            app.n_zik.android.core.updater.UpdateScreen(navController = navController)
+            app.n_zik.android.updater.ui.UpdateScreen(navController = navController)
         }
     }
 }

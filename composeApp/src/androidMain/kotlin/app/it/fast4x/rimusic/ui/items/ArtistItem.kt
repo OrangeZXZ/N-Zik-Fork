@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.items
+package app.it.fast4x.rimusic.ui.items
 
 import androidx.compose.foundation.Image
 
@@ -34,8 +34,8 @@ import it.fast4x.innertube.Innertube
 import app.it.fast4x.rimusic.cleanPrefix
 
 import app.it.fast4x.rimusic.models.Artist
-import app.it.fast4x.rimusic.thumbnailShape
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
 
 import app.it.fast4x.rimusic.utils.conditional
 import app.it.fast4x.rimusic.utils.secondary

@@ -1,7 +1,7 @@
 package app.it.fast4x.rimusic.models.ui
 
 import androidx.media3.common.MediaItem
-import app.it.fast4x.rimusic.service.modern.isLocal
+import app.n_zik.android.playback.services.isLocal
 
 data class UiMedia(
     val id: String,

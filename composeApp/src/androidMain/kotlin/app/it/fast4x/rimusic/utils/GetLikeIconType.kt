@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.utils
+package app.it.fast4x.rimusic.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue

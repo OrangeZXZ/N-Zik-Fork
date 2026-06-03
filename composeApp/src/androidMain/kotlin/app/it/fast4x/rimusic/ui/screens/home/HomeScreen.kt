@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.it.fast4x.rimusic.ui.screens.home
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
@@ -41,7 +41,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.utils.Toaster
 import kotlin.system.exitProcess
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.ui.components.themed.Loader
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.styling
+package app.it.fast4x.rimusic.ui.styling
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.saveable.Saver

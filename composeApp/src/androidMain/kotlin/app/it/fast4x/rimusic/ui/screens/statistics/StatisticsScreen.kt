@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.statistics
+package app.it.fast4x.rimusic.ui.screens.statistics
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi

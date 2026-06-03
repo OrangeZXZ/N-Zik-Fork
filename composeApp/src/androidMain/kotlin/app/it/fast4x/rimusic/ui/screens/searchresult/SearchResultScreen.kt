@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.searchresult
+package app.it.fast4x.rimusic.ui.screens.searchresult
 import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.ui.components.Skeleton
 import app.it.fast4x.rimusic.ui.components.themed.Title
@@ -38,10 +38,10 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.searchResultScreenTabIndexKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import androidx.compose.foundation.text.BasicText
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text

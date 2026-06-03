@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.it.fast4x.rimusic.ui.screens.home
+
+import app.n_zik.android.core.database.*
 
 
 import android.annotation.SuppressLint
@@ -43,8 +45,8 @@ import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import app.it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.YtMusic
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ArtistsType
 import app.it.fast4x.rimusic.enums.FilterBy
 import app.it.fast4x.rimusic.enums.NavigationBarPosition

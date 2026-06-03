@@ -1,5 +1,7 @@
-﻿@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.components
+
+import app.n_zik.android.core.database.*
 
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
@@ -43,14 +45,14 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadService
 import it.fast4x.innertube.Innertube
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.AlbumSwipeAction
 import app.it.fast4x.rimusic.enums.DownloadedStateMedia
 import app.it.fast4x.rimusic.enums.PlaylistSwipeAction
 import app.it.fast4x.rimusic.enums.QueueSwipeAction
-import app.it.fast4x.rimusic.service.MyDownloadService
-import app.it.fast4x.rimusic.service.modern.isLocal
+import app.n_zik.android.download.services.MyDownloadService
+import app.n_zik.android.playback.services.isLocal
 import app.it.fast4x.rimusic.utils.albumSwipeLeftActionKey
 import app.it.fast4x.rimusic.utils.albumSwipeRightActionKey
 import app.it.fast4x.rimusic.utils.downloadedStateMedia

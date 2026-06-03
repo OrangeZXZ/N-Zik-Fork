@@ -1,4 +1,6 @@
-﻿package app.kreate.android.me.knighthat.sync
+package app.kreate.android.me.knighthat.sync
+
+import app.n_zik.android.core.database.*
 
 import android.content.Context
 import android.os.Looper
@@ -7,8 +9,8 @@ import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import it.fast4x.innertube.YtMusic.likeVideoOrSong
 import it.fast4x.innertube.YtMusic.removelikeVideoOrSong
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.service.MyDownloadHelper
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.download.utils.MyDownloadHelper
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import app.it.fast4x.rimusic.utils.isNetworkConnected
 import kotlinx.coroutines.flow.first

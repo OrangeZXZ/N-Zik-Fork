@@ -19,8 +19,8 @@ import java.time.Duration
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
-import app.it.fast4x.rimusic.service.UnplayableException
-import app.it.fast4x.rimusic.service.UnknownException
+import app.n_zik.android.playback.exceptions.UnplayableException
+import app.n_zik.android.playback.exceptions.UnknownException
 
 
 @UnstableApi
@@ -105,7 +105,7 @@ val Context.okHttpDataSourceFactory
     )
 
 private fun okHttpClient(): OkHttpClient {
-    return app.n_zik.android.core.network.NetworkClientFactory.getCachelessClient()
+    return app.n_zik.android.core.network.client.NetworkClientFactory.getCachelessClient()
 }
 
 

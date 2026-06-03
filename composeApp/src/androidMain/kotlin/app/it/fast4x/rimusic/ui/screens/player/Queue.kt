@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.player
+package app.it.fast4x.rimusic.ui.screens.player
 
 
 import android.annotation.SuppressLint
@@ -65,14 +65,14 @@ import app.it.fast4x.compose.persist.persistList
 import app.it.fast4x.compose.persist.persistMap
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.binder
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.binder
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.QueueLoopType
 import app.it.fast4x.rimusic.enums.QueueType
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.service.modern.isLocal
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.playback.services.isLocal
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.SwipeableQueueItem
 import app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button

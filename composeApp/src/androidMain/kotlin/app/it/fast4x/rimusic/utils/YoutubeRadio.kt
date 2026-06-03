@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.utils
+package app.it.fast4x.rimusic.utils
+
+import app.n_zik.android.core.database.*
 
 import android.content.Context
 import android.widget.Toast
@@ -10,8 +12,8 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.ContinuationBody
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.nextPage
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.playback.services.PlayerServiceModern
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first

@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.items
+package app.it.fast4x.rimusic.ui.items
+
+import app.n_zik.android.core.database.*
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -34,16 +36,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.MONTHLY_PREFIX
 import app.it.fast4x.rimusic.PINNED_PREFIX
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.models.PlaylistPreview
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.thumbnailShape
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import app.it.fast4x.rimusic.ui.styling.onOverlay
 import app.it.fast4x.rimusic.ui.styling.overlay

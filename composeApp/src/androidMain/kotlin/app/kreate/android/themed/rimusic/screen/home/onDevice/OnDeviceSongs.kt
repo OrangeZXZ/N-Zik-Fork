@@ -1,4 +1,4 @@
-﻿package app.kreate.android.themed.rimusic.screen.home.onDevice
+package app.kreate.android.themed.rimusic.screen.home.onDevice
 
 import android.Manifest
 import android.content.Intent
@@ -46,10 +46,10 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import app.it.fast4x.rimusic.ui.styling.Dimensions

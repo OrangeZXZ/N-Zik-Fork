@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.player.components
+package app.it.fast4x.rimusic.ui.screens.player.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,8 +32,8 @@ import app.n_zik.android.R
 import app.it.fast4x.rimusic.utils.lastVideoIdKey
 import app.it.fast4x.rimusic.utils.lastVideoSecondsKey
 import app.it.fast4x.rimusic.utils.rememberPreference
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.colorPalette
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.semiBold
 
 

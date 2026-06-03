@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.enums
+package app.it.fast4x.rimusic.enums
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

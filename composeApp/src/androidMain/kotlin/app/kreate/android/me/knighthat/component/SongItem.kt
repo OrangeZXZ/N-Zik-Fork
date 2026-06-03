@@ -1,5 +1,7 @@
-﻿@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.kreate.android.me.knighthat.component
+
+import app.n_zik.android.core.database.*
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -50,17 +52,17 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.DownloadedStateMedia
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.service.MyDownloadHelper
-import app.it.fast4x.rimusic.service.modern.isLocal
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.download.utils.MyDownloadHelper
+import app.n_zik.android.playback.services.isLocal
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Icon

@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components.themed
+package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource

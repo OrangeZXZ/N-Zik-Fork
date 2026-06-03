@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 
 interface InputDialog: InteractiveDialog {
 

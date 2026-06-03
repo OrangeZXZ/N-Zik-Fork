@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.settings
+package app.it.fast4x.rimusic.ui.screens.settings
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -36,21 +36,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.Image
 import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.appContext
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.appContext
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.extensions.contributors.ShowDevelopers
 import app.it.fast4x.rimusic.extensions.contributors.ShowTranslators
 import app.it.fast4x.rimusic.extensions.contributors.countDevelopers
 import app.it.fast4x.rimusic.extensions.contributors.countTranslators
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.*
 import app.kreate.android.me.knighthat.utils.Repository
-import app.n_zik.android.core.updater.Updater
-import app.n_zik.android.core.updater.NewUpdateAvailableDialog
+import app.n_zik.android.updater.services.Updater
+import app.n_zik.android.updater.ui.NewUpdateAvailableDialog
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import app.it.fast4x.rimusic.ui.styling.ModernBlackColorPalette
@@ -394,8 +394,8 @@ fun About(navController: androidx.navigation.NavController) {
                                     .fillMaxWidth()
                                     .height(36.dp)
                                     .clickable {
-                                        val prefs = app.it.fast4x.rimusic.appContext().getSharedPreferences("settings", 0)
-                                        val checkBeta = prefs.getBoolean(app.it.fast4x.rimusic.utils.checkBetaUpdatesKey, app.n_zik.android.core.updater.Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == "b")
+                                        val prefs = app.n_zik.android.appContext().getSharedPreferences("settings", 0)
+                                        val checkBeta = prefs.getBoolean(app.it.fast4x.rimusic.utils.checkBetaUpdatesKey, app.n_zik.android.updater.services.Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == "b")
                                         app.kreate.android.me.knighthat.utils.Toaster.i(R.string.checking_for_updates)
                                         Updater.checkForUpdate(isForced = true, checkBetaUpdates = checkBeta, showDialog = false)
                                         navController.navigate(app.it.fast4x.rimusic.enums.NavRoutes.updater.name)

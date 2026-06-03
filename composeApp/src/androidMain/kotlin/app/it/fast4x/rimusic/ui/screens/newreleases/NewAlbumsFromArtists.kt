@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.screens.newreleases
+package app.it.fast4x.rimusic.ui.screens.newreleases
+
+import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -37,10 +39,10 @@ import app.it.fast4x.compose.persist.persist
 import app.it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.requests.discoverPageNewAlbums
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.components.themed.Loader
 import app.it.fast4x.rimusic.ui.items.AlbumItem

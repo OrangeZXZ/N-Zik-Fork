@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.it.fast4x.rimusic.utils.semiBold
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 
 class TextIconButton(
     val text: String,

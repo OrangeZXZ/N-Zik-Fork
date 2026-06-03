@@ -1,5 +1,7 @@
 package app.it.fast4x.rimusic.utils
 
+import app.n_zik.android.core.database.*
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -7,7 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 

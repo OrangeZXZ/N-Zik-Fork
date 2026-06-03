@@ -1,8 +1,10 @@
 package app.it.fast4x.rimusic.repository
 
+import app.n_zik.android.core.database.*
+
 import androidx.core.content.edit
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.enums.PlayEventsType
 import app.it.fast4x.rimusic.enums.Countries
 import app.it.fast4x.rimusic.enums.LocalRecommandationsNumber

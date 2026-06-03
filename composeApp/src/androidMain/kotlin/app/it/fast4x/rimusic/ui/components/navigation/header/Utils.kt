@@ -16,7 +16,7 @@ import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import app.it.fast4x.rimusic.utils.logDebugEnabledKey
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 import app.it.fast4x.rimusic.utils.rememberPreference
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 
 @Composable
 internal fun HeaderIcon(

@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.utils
+package app.it.fast4x.rimusic.utils
+
+import app.n_zik.android.core.database.*
 
 import android.content.Context
 import androidx.annotation.DrawableRes
@@ -7,7 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.MONTHLY_PREFIX
 import app.it.fast4x.rimusic.models.Playlist
 import kotlinx.coroutines.Dispatchers

@@ -1,4 +1,4 @@
-﻿@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.screens.player.components.controls
 
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -55,9 +55,9 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ButtonState
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.enums.ColorPaletteName
@@ -68,8 +68,8 @@ import app.it.fast4x.rimusic.enums.PlayerPlayButtonType
 import app.it.fast4x.rimusic.enums.QueueLoopType
 import app.it.fast4x.rimusic.models.Info
 import app.it.fast4x.rimusic.models.ui.UiMedia
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.playback.services.PlayerServiceModern
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.components.themed.SelectorArtistsDialog
 import app.it.fast4x.rimusic.ui.screens.player.bounceClick

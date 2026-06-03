@@ -18,7 +18,7 @@ import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.offline.DownloadService.sendAddDownload
 import androidx.media3.exoplayer.offline.DownloadService.sendRemoveDownload
-import app.n_zik.android.core.network.isMetered
+import app.n_zik.android.core.network.utils.isMetered
 
 inline fun <reified T> Context.intent(): Intent =
     Intent(this, T::class.java)

@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.screens.searchresult
+package app.it.fast4x.rimusic.ui.screens.searchresult
+
+import app.n_zik.android.core.database.*
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -31,15 +33,15 @@ import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.utils.from
 import app.it.fast4x.rimusic.enums.ContentType
 import app.it.fast4x.rimusic.enums.NavRoutes
-import app.it.fast4x.rimusic.thumbnailShape
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.items.AlbumItemListPlaceholder
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.conditional
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
@@ -51,7 +53,7 @@ import app.it.fast4x.rimusic.utils.forcePlay
 import app.it.fast4x.rimusic.utils.isDownloadedSong
 import app.it.fast4x.rimusic.utils.manageDownload
 import app.it.fast4x.rimusic.utils.playVideo
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
 import app.it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import app.it.fast4x.rimusic.ui.items.VideoItem
@@ -224,7 +226,7 @@ fun OnlineSearchList(
                                     )
                                 }
                             }
-                            item.description?.split(" â€¢ ")?.forEach { segment ->
+                            item.description?.split(" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ")?.forEach { segment ->
                                 if (segment.isNotBlank()) {
                                     BasicText(
                                         text = segment,
@@ -239,7 +241,7 @@ fun OnlineSearchList(
                             }
                         }
                         if (item is Innertube.ArtistItem) {
-                            item.description?.split(" â€¢ ")?.forEach { segment ->
+                            item.description?.split(" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ")?.forEach { segment ->
                                 if (segment.isNotBlank()) {
                                     BasicText(
                                         text = segment,
@@ -267,7 +269,7 @@ fun OnlineSearchList(
                                 )
                             }
                             if (tabIndex != 5) {
-                                item.description?.split(" â€¢ ")?.forEach { segment ->
+                                item.description?.split(" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ")?.forEach { segment ->
                                     if (segment.isNotBlank()) {
                                         BasicText(
                                             text = segment,

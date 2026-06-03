@@ -27,7 +27,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.ui.components.themed.GridMenuItemHeight
 import app.it.fast4x.rimusic.utils.conditional
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey

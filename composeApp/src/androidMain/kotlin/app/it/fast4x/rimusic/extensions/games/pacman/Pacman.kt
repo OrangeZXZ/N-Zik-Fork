@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.extensions.games.pacman
+package app.it.fast4x.rimusic.extensions.games.pacman
 
 import android.util.Log
 import android.util.Range

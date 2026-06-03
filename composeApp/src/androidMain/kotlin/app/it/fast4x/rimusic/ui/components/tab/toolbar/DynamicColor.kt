@@ -2,7 +2,7 @@ package app.it.fast4x.rimusic.ui.components.tab.toolbar
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 
 /**
  * The [DynamicColor] is a UI component designed to

@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.player
+package app.it.fast4x.rimusic.ui.screens.player
 
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
@@ -26,18 +26,18 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.service.FakeException
-import app.it.fast4x.rimusic.service.LoginRequiredException
-import app.it.fast4x.rimusic.service.NoInternetException
-import app.it.fast4x.rimusic.service.PlayableFormatNonSupported
-import app.it.fast4x.rimusic.service.PlayableFormatNotFoundException
-import app.it.fast4x.rimusic.service.TimeoutException
-import app.it.fast4x.rimusic.service.UnknownException
-import app.it.fast4x.rimusic.service.UnplayableException
-import app.it.fast4x.rimusic.service.VideoIdMismatchException
-import app.it.fast4x.rimusic.service.modern.isLocal
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.playback.exceptions.FakeException
+import app.n_zik.android.playback.exceptions.LoginRequiredException
+import app.n_zik.android.playback.exceptions.NoInternetException
+import app.n_zik.android.playback.exceptions.PlayableFormatNonSupported
+import app.n_zik.android.playback.exceptions.PlayableFormatNotFoundException
+import app.n_zik.android.playback.exceptions.TimeoutException
+import app.n_zik.android.playback.exceptions.UnknownException
+import app.n_zik.android.playback.exceptions.UnplayableException
+import app.n_zik.android.playback.exceptions.VideoIdMismatchException
+import app.n_zik.android.playback.services.isLocal
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import app.it.fast4x.rimusic.utils.center
 import app.it.fast4x.rimusic.utils.color

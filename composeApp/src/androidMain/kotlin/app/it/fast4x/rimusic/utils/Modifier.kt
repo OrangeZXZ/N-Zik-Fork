@@ -19,7 +19,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
 import app.it.fast4x.rimusic.ui.styling.shimmer
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 
 /**
  * A loading effect that goes from top left

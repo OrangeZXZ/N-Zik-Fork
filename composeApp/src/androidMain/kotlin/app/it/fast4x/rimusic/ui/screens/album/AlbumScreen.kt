@@ -1,5 +1,7 @@
 package app.it.fast4x.rimusic.ui.screens.album
 
+import app.n_zik.android.core.database.*
+
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
@@ -48,8 +50,8 @@ import app.it.fast4x.compose.persist.persist
 import app.it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.PlayerPosition
 import app.it.fast4x.rimusic.enums.TransitionEffect

@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.components.themed
+package app.it.fast4x.rimusic.ui.components.themed
+
+import app.n_zik.android.core.database.*
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,8 +24,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.colorPalette
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.cleanPrefix
 import app.it.fast4x.rimusic.models.Playlist

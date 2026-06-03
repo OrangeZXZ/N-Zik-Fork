@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.component.tab
+package app.kreate.android.me.knighthat.component.tab
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -7,15 +7,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.service.MyDownloadHelper
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
+import app.n_zik.android.download.utils.MyDownloadHelper
+import app.n_zik.android.playback.services.PlayerServiceModern
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.utils.asMediaItem
-import app.n_zik.android.core.network.isNetworkAvailable
+import app.n_zik.android.core.network.utils.isNetworkAvailable
 import app.kreate.android.me.knighthat.component.MediaDownloadDialog
 
 @UnstableApi

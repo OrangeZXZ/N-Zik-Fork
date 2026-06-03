@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.utils
+package app.it.fast4x.rimusic.utils
+
+import app.n_zik.android.core.database.*
 
 import android.widget.Toast
 import androidx.annotation.OptIn
@@ -9,8 +11,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import kotlinx.coroutines.flow.first
 import app.kreate.android.me.knighthat.utils.Toaster
 

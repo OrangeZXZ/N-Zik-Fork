@@ -1,4 +1,6 @@
-﻿package app.kreate.android.me.knighthat.component.playlist
+package app.kreate.android.me.knighthat.component.playlist
+
+import app.n_zik.android.core.database.*
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -14,9 +16,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import app.n_zik.android.R
 import it.fast4x.innertube.YtMusic
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.appContext
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.appContext
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.models.Playlist
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon

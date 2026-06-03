@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.utils
+package app.it.fast4x.rimusic.utils
+
+import app.n_zik.android.core.database.*
 
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -9,7 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import app.n_zik.android.R
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Session
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.models.Playlist
 import app.it.fast4x.rimusic.models.Song

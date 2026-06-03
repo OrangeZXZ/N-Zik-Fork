@@ -1,5 +1,7 @@
 package app.it.fast4x.rimusic.ui.screens.player
 
+import app.n_zik.android.core.database.*
+
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
@@ -35,8 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix
 import app.it.fast4x.rimusic.enums.ButtonState
 import app.it.fast4x.rimusic.enums.PlayerControlsType

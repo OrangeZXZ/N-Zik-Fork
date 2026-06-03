@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.screens.player
+package app.it.fast4x.rimusic.ui.screens.player
+
+import app.n_zik.android.core.database.*
 
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedContent
@@ -43,20 +45,20 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.enums.ThumbnailCoverType
 import app.it.fast4x.rimusic.enums.ThumbnailType
-import app.it.fast4x.rimusic.service.LoginRequiredException
-import app.it.fast4x.rimusic.service.NoInternetException
-import app.it.fast4x.rimusic.service.PlayableFormatNonSupported
-import app.it.fast4x.rimusic.service.PlayableFormatNotFoundException
-import app.it.fast4x.rimusic.service.TimeoutException
-import app.it.fast4x.rimusic.service.UnknownException
-import app.it.fast4x.rimusic.service.UnplayableException
-import app.it.fast4x.rimusic.service.VideoIdMismatchException
-import app.it.fast4x.rimusic.service.modern.isLocal
-import app.it.fast4x.rimusic.thumbnailShape
+import app.n_zik.android.playback.exceptions.LoginRequiredException
+import app.n_zik.android.playback.exceptions.NoInternetException
+import app.n_zik.android.playback.exceptions.PlayableFormatNonSupported
+import app.n_zik.android.playback.exceptions.PlayableFormatNotFoundException
+import app.n_zik.android.playback.exceptions.TimeoutException
+import app.n_zik.android.playback.exceptions.UnknownException
+import app.n_zik.android.playback.exceptions.UnplayableException
+import app.n_zik.android.playback.exceptions.VideoIdMismatchException
+import app.n_zik.android.playback.services.isLocal
+import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.ui.components.themed.RotateThumbnailCoverAnimation
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.px
@@ -368,14 +370,14 @@ fun Thumbnail(
                                 songnotplayabledueserverrestrictionerror
                             else when (error?.cause?.cause) {
                                 is java.nio.channels.UnresolvedAddressException, is java.net.UnknownHostException -> networkerror
-                                is app.it.fast4x.rimusic.service.PlayableFormatNotFoundException -> notfindplayableaudioformaterror
-                                is app.it.fast4x.rimusic.service.UnplayableException -> originalvideodeletederror
-                                is app.it.fast4x.rimusic.service.LoginRequiredException -> songnotplayabledueserverrestrictionerror
-                                is app.it.fast4x.rimusic.service.VideoIdMismatchException -> videoidmismatcherror
-                                is app.it.fast4x.rimusic.service.PlayableFormatNonSupported -> formatUnsupported
-                                is app.it.fast4x.rimusic.service.NoInternetException -> nointerneterror
-                                is app.it.fast4x.rimusic.service.TimeoutException -> timeouterror
-                                is app.it.fast4x.rimusic.service.UnknownException -> unknownerror
+                                is app.n_zik.android.playback.exceptions.PlayableFormatNotFoundException -> notfindplayableaudioformaterror
+                                is app.n_zik.android.playback.exceptions.UnplayableException -> originalvideodeletederror
+                                is app.n_zik.android.playback.exceptions.LoginRequiredException -> songnotplayabledueserverrestrictionerror
+                                is app.n_zik.android.playback.exceptions.VideoIdMismatchException -> videoidmismatcherror
+                                is app.n_zik.android.playback.exceptions.PlayableFormatNonSupported -> formatUnsupported
+                                is app.n_zik.android.playback.exceptions.NoInternetException -> nointerneterror
+                                is app.n_zik.android.playback.exceptions.TimeoutException -> timeouterror
+                                is app.n_zik.android.playback.exceptions.UnknownException -> unknownerror
                                 else -> unknownplaybackerror
                             }
                         )

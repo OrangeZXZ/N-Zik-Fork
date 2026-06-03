@@ -1,4 +1,5 @@
 package app.it.fast4x.rimusic.ui.components.themed
+import app.n_zik.android.LocalPlayerAwareWindowInsets
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,7 +25,7 @@ import app.it.fast4x.rimusic.utils.center
 import app.it.fast4x.rimusic.utils.secondary
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 
 @ExperimentalAnimationApi
 @Composable

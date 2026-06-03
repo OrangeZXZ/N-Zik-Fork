@@ -1,4 +1,4 @@
-﻿package app.kreate.android.themed.rimusic.screen.home
+package app.kreate.android.themed.rimusic.screen.home
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -30,9 +30,9 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
 import app.kreate.android.themed.rimusic.screen.home.onDevice.OnDeviceSong
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.appContext
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.appContext
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.BuiltInPlaylist
 import app.it.fast4x.rimusic.enums.CacheType
 import app.it.fast4x.rimusic.enums.NavRoutes
@@ -77,7 +77,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicText
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.semiBold
 
 @UnstableApi

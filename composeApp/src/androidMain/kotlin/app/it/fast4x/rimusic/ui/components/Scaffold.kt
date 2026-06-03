@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components
+package app.it.fast4x.rimusic.ui.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -44,7 +44,7 @@ import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.utils.playerPositionKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.transitionEffectKey
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import app.it.fast4x.rimusic.ui.components.navigation.nav.VerticalNavigationBar
 

@@ -38,8 +38,8 @@ import app.it.fast4x.rimusic.utils.bold
 import app.it.fast4x.rimusic.utils.conditional
 import app.it.fast4x.rimusic.utils.medium
 import app.it.fast4x.rimusic.utils.semiBold
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.colorPalette
+import app.n_zik.android.typography
 import kotlin.random.Random
 
 @Composable

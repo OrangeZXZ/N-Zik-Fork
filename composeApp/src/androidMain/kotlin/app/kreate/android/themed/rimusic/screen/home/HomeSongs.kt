@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.screen.home
 
+import app.n_zik.android.core.database.*
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,21 +34,21 @@ import androidx.navigation.NavController
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.relatedSongs
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.BuiltInPlaylist
 import app.it.fast4x.rimusic.enums.DurationInMinutes
 import app.it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import app.it.fast4x.rimusic.enums.RecommendationsNumber
 import app.it.fast4x.rimusic.enums.SongSortBy
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.service.MyDownloadHelper
-import app.it.fast4x.rimusic.service.modern.LOCAL_KEY_PREFIX
-import app.it.fast4x.rimusic.service.modern.isLocal
-import app.it.fast4x.rimusic.thumbnailShape
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.download.utils.MyDownloadHelper
+import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
+import app.n_zik.android.playback.services.isLocal
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import app.it.fast4x.rimusic.ui.items.SongItemPlaceholder
@@ -87,7 +89,7 @@ import app.kreate.android.me.knighthat.component.tab.ExportSongsToCSVDialog
 import app.kreate.android.me.knighthat.component.tab.HiddenSongs
 import app.kreate.android.me.knighthat.component.tab.ItemSelector
 import app.kreate.android.me.knighthat.component.tab.Search
-import app.kreate.android.me.knighthat.database.ext.FormatWithSong
+import app.n_zik.android.core.database.ext.FormatWithSong
 
 @UnstableApi
 @ExperimentalFoundationApi

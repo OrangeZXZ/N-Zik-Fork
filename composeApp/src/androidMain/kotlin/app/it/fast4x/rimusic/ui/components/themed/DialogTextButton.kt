@@ -12,8 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.it.fast4x.rimusic.utils.color
 import app.it.fast4x.rimusic.utils.medium
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.colorPalette
+import app.n_zik.android.typography
 
 @Composable
 fun DialogTextButton(

@@ -27,7 +27,7 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.enums.MusicAnimationType
 import app.it.fast4x.rimusic.utils.DisposableListener
 import app.it.fast4x.rimusic.utils.mediaItems

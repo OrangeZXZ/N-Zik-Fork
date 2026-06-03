@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.components.themed
+package app.it.fast4x.rimusic.ui.components.themed
+
+import app.n_zik.android.core.database.*
 
 import android.content.Intent
 import androidx.activity.compose.BackHandler
@@ -46,21 +48,21 @@ import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
 import app.n_zik.android.R
 import app.n_zik.android.core.coil.thumbnail
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.utils.ExternalUris
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
 import app.it.fast4x.rimusic.MONTHLY_PREFIX
 import app.it.fast4x.rimusic.PINNED_PREFIX
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.PlaylistSortBy
 import app.it.fast4x.rimusic.enums.SortOrder
 import app.it.fast4x.rimusic.models.Playlist
-import app.it.fast4x.rimusic.service.modern.isLocal
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.playback.services.isLocal
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.items.SongItem
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import app.it.fast4x.rimusic.ui.styling.Dimensions

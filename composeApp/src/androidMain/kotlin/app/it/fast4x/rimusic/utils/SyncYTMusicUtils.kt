@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.utils
+package app.it.fast4x.rimusic.utils
+
+import app.n_zik.android.core.database.*
 
 import android.widget.Toast
 import androidx.annotation.OptIn
@@ -11,8 +13,8 @@ import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.utils.completed
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.isAutoSyncEnabled
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.isAutoSyncEnabled
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Artist
 import app.it.fast4x.rimusic.models.Playlist

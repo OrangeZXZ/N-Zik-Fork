@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.mood
+package app.it.fast4x.rimusic.ui.screens.mood
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -36,11 +36,11 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.requests.BrowseResult
 import it.fast4x.innertube.requests.browse
-import app.it.fast4x.rimusic.LocalPlayerAwareWindowInsets
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.LocalPlayerAwareWindowInsets
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.Mood
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.ShimmerHost
 import app.it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon

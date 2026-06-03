@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.screens.artist
+package app.it.fast4x.rimusic.ui.screens.artist
+
+import app.n_zik.android.core.database.*
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -17,7 +19,7 @@ import app.kreate.android.screens.artist.ArtistDetails
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.requests.ArtistPage
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.enums.PlayerPosition
 import app.it.fast4x.rimusic.enums.TransitionEffect
 import app.it.fast4x.rimusic.models.Artist

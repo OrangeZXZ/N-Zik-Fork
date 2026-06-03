@@ -1,5 +1,7 @@
-﻿@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.items
+
+import app.n_zik.android.core.database.*
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -48,16 +50,16 @@ import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.compose.rememberNavController
 import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ColorPaletteName
 import app.it.fast4x.rimusic.enums.DownloadedStateMedia
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.service.MyDownloadService
-import app.it.fast4x.rimusic.service.modern.isLocal
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.download.services.MyDownloadService
+import app.n_zik.android.playback.services.isLocal
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.AddToPlaylistPlayerMenu
 import app.it.fast4x.rimusic.ui.components.themed.HeaderIconButton

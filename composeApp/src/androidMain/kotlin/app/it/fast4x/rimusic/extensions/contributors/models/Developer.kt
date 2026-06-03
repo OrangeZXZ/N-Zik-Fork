@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.extensions.contributors.models
+package app.it.fast4x.rimusic.extensions.contributors.models
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,8 +34,8 @@ import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
 
 import com.google.gson.annotations.SerializedName
-import app.it.fast4x.rimusic.colorPalette
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.colorPalette
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 
 data class Developer(

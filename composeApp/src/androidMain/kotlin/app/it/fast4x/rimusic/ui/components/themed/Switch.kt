@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.unit.dp
 import app.it.fast4x.rimusic.utils.drawCircle
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 
 @Composable
 fun Switch(

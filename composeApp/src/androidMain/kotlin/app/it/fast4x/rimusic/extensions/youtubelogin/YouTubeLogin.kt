@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.extensions.youtubelogin
+package app.it.fast4x.rimusic.extensions.youtubelogin
 
 import android.R.attr.resource
 import android.annotation.SuppressLint
@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import it.fast4x.innertube.Innertube
-import app.it.fast4x.rimusic.LocalPlayerAwareWindowInsets
+import app.n_zik.android.LocalPlayerAwareWindowInsets
 import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.ui.components.themed.IconButton

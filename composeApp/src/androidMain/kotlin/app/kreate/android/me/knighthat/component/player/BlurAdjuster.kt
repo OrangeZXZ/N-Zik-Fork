@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.component.player
+package app.kreate.android.me.knighthat.component.player
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.components.themed.SliderControl
 import app.it.fast4x.rimusic.ui.screens.settings.SwitchSettingEntry

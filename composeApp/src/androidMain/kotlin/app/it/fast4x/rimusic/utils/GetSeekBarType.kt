@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.utils
+package app.it.fast4x.rimusic.utils
 
 import androidx.annotation.OptIn
 import androidx.compose.animation.core.Animatable
@@ -47,13 +47,13 @@ import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import app.kreate.android.themed.rimusic.screen.player.timeline.DurationIndicator
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.enums.PauseBetweenSongs
 import app.it.fast4x.rimusic.enums.PlayerTimelineType
 import app.it.fast4x.rimusic.models.ui.UiMedia
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.ProgressPercentage
 import app.it.fast4x.rimusic.ui.components.SeekBar
 import app.it.fast4x.rimusic.ui.components.SeekBarAudioWaves

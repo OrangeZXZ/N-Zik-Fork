@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.screens.settings
+package app.it.fast4x.rimusic.ui.screens.settings
+
+import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import android.text.format.Formatter
@@ -21,16 +23,16 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
-import app.it.fast4x.rimusic.Database
+import app.n_zik.android.core.database.Database
 
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.CacheType
 import app.it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import app.it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import app.it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
 import app.it.fast4x.rimusic.enums.ExoPlayerDiskDownloadCacheMaxSize
-import app.it.fast4x.rimusic.service.MyDownloadHelper
+import app.n_zik.android.download.utils.MyDownloadHelper
 import app.it.fast4x.rimusic.ui.components.themed.CacheSpaceIndicator
 import app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
@@ -167,7 +169,7 @@ fun DataSettings() {
                 cleanCacheImages = false
             },
             onConfirm = {
-                // Utiliser la nouvelle mÃ©thode sÃ©curisÃ©e pour nettoyer le cache
+                // Utiliser la nouvelle mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©thode sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©curisÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©e pour nettoyer le cache
                 ImageCacheFactory.clearImageCache()
                 cleanCacheImages = false
                 cacheCleanedCounter++

@@ -30,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import androidx.compose.foundation.basicMarquee
 
 val GridMenuItemHeight = 96.dp

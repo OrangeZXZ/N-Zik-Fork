@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.component.ui.screens.player
+package app.kreate.android.me.knighthat.component.ui.screens.player
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable

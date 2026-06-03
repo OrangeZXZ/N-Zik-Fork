@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.components.themed
+package app.it.fast4x.rimusic.ui.components.themed
+
+import app.n_zik.android.core.database.*
 
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.animateFloatAsState
@@ -109,20 +111,20 @@ import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.bodies.SearchBody
 import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.utils.from
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.colorPalette
+import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.ValidationType
-import app.it.fast4x.rimusic.isBassBoostEnabled
+import app.n_zik.android.isBassBoostEnabled
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Artist
 import app.it.fast4x.rimusic.models.Info
 import app.it.fast4x.rimusic.models.Playlist
 import app.it.fast4x.rimusic.models.Song
-import app.it.fast4x.rimusic.typography
+import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import app.it.fast4x.rimusic.ui.styling.ColorPalette
 import app.it.fast4x.rimusic.ui.styling.Dimensions
@@ -1167,7 +1169,7 @@ inline fun StringListDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         BasicText(
-                            text = "Aucun Ã©lÃ©ment",
+                            text = "Aucun ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ment",
                             style = typography().s.copy(
                                 color = colorPalette().textSecondary
                             )

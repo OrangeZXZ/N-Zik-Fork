@@ -1,7 +1,10 @@
 package app.it.fast4x.rimusic.utils
+import app.n_zik.android.LocalDownloadHelper
+
+import app.n_zik.android.core.database.*
 
 
-import app.n_zik.android.core.network.isNetworkAvailable
+import app.n_zik.android.core.network.utils.isNetworkAvailable
 import androidx.annotation.OptIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -11,14 +14,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.LocalDownloadHelper
-import app.it.fast4x.rimusic.LocalPlayerServiceBinder
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.enums.DownloadedStateMedia
-import app.it.fast4x.rimusic.service.MyDownloadHelper
-import app.it.fast4x.rimusic.service.modern.LOCAL_KEY_PREFIX
-import app.it.fast4x.rimusic.service.modern.PlayerServiceModern
-import app.it.fast4x.rimusic.service.modern.isLocal
+import app.n_zik.android.download.utils.MyDownloadHelper
+import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
+import app.n_zik.android.playback.services.PlayerServiceModern
+import app.n_zik.android.playback.services.isLocal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import androidx.compose.ui.unit.dp

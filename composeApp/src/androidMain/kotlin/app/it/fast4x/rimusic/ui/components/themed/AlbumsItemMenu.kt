@@ -1,4 +1,7 @@
 package app.it.fast4x.rimusic.ui.components.themed
+import app.n_zik.android.LocalPlayerServiceBinder
+
+import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -10,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.it.fast4x.rimusic.Database
-import app.it.fast4x.rimusic.appContext
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.PlaylistPreview
@@ -56,7 +59,7 @@ fun AlbumsItemMenu(
     onAddToFavourites: (() -> Unit)? = null,
     disableScrollingText: Boolean
 ) {
-    val binder = app.it.fast4x.rimusic.LocalPlayerServiceBinder.current
+    val binder = app.n_zik.android.LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
 
     val songs by remember(album.id) {

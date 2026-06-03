@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.extensions.games.pacman.ui.theme
+package app.it.fast4x.rimusic.extensions.games.pacman.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
