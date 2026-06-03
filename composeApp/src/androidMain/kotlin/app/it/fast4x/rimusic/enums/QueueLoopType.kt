@@ -1,8 +1,8 @@
-package app.it.fast4x.rimusic.enums
+﻿package app.it.fast4x.rimusic.enums
 
 import androidx.annotation.DrawableRes
 import androidx.media3.common.Player
-import app.kreate.android.R
+import app.n_zik.android.R
 import org.intellij.lang.annotations.MagicConstant
 
 enum class QueueLoopType(

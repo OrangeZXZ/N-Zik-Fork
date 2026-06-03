@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,7 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.Database

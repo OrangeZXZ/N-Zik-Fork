@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.player
+﻿package app.it.fast4x.rimusic.ui.screens.player
 
 import android.Manifest
 import android.content.Intent
@@ -33,7 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.thumbnailShape
 import app.it.fast4x.rimusic.typography
 import app.it.fast4x.rimusic.ui.components.themed.SecondaryTextButton

@@ -1,4 +1,4 @@
-package app.n_zik.android.core.updater
+﻿package app.n_zik.android.core.updater
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -20,7 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.typography
 import app.it.fast4x.rimusic.utils.bold
@@ -30,7 +30,7 @@ import app.it.fast4x.rimusic.ui.styling.ModernBlackColorPalette
 import app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import app.it.fast4x.rimusic.utils.rememberPreference
-import app.kreate.android.BuildConfig
+import app.n_zik.android.BuildConfig
 
 object MajorUpdateWarningDialog {
     var isActive: Boolean by mutableStateOf(false)

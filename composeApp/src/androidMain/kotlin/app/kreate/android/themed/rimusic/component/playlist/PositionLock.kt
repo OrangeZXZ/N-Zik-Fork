@@ -1,4 +1,4 @@
-package app.kreate.android.themed.rimusic.component.playlist
+﻿package app.kreate.android.themed.rimusic.component.playlist
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.SortOrder
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.DualIcon

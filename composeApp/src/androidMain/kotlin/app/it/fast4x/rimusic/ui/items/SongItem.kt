@@ -1,4 +1,4 @@
-@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+﻿@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.items
 
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -46,7 +46,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.navigation.compose.rememberNavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder

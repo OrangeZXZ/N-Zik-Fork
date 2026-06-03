@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.items
+﻿package app.it.fast4x.rimusic.ui.items
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -32,7 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.kreate.android.R
+import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.MONTHLY_PREFIX

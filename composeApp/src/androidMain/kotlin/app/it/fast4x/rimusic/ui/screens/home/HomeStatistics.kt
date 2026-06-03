@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.home
+﻿package app.it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import app.it.fast4x.rimusic.colorPalette

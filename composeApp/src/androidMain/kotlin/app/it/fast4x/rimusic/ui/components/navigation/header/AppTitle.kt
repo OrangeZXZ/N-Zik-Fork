@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.navigation.header
+﻿package app.it.fast4x.rimusic.ui.components.navigation.header
 
 import android.content.Context
 import android.widget.Toast
@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes

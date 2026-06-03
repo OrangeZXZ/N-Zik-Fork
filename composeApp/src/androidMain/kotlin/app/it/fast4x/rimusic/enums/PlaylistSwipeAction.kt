@@ -1,10 +1,10 @@
-package app.it.fast4x.rimusic.enums
+﻿package app.it.fast4x.rimusic.enums
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.OptIn
 import androidx.annotation.StringRes
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.QueueSwipeAction.Download
 import app.it.fast4x.rimusic.enums.QueueSwipeAction.Favourite
 import app.it.fast4x.rimusic.enums.QueueSwipeAction.NoAction

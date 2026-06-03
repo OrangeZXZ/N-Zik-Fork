@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.artist
+﻿package app.it.fast4x.rimusic.ui.screens.artist
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -35,7 +35,7 @@ import androidx.navigation.NavController
 import app.it.fast4x.compose.persist.persist
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.ui.components.LocalMenuState

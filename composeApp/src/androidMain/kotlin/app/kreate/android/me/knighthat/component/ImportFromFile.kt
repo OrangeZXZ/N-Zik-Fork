@@ -1,9 +1,9 @@
-package app.kreate.android.me.knighthat.component
+﻿package app.kreate.android.me.knighthat.component
 
 import android.content.ActivityNotFoundException
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.kreate.android.me.knighthat.utils.Toaster
 
 abstract class ImportFromFile(

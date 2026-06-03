@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +16,7 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.typography
 

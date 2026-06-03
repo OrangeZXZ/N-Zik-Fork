@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.player
+﻿package app.it.fast4x.rimusic.ui.screens.player
 
 import android.app.SearchManager
 import android.content.ActivityNotFoundException
@@ -90,7 +90,7 @@ import androidx.compose.ui.unit.sp
 import androidx.media3.common.C
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import com.valentinilk.shimmer.shimmer
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody

@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.utils
+﻿package app.it.fast4x.rimusic.utils
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.withFrameNanos
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
-import app.kreate.android.R
+import app.n_zik.android.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch

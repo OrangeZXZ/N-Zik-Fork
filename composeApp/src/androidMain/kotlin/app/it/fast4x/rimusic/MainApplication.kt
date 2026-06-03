@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic
+﻿package app.it.fast4x.rimusic
 
 import android.app.Application
 import android.app.NotificationChannel
@@ -9,7 +9,7 @@ import android.content.Context
 import coil3.SingletonImageLoader
 import coil3.ImageLoader
 
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.network.NetworkClientFactory
 import app.it.fast4x.rimusic.service.modern.PlayerServiceModern

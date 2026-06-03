@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.ui.screens.player
+﻿package app.kreate.android.me.knighthat.component.ui.screens.player
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
@@ -12,7 +12,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.media3.common.Player
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.QueueLoopType
 import kotlinx.coroutines.CoroutineScope
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.ConfirmDialog

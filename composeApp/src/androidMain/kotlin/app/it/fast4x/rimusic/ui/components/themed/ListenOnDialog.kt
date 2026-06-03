@@ -1,8 +1,8 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.models.Info
 import app.it.fast4x.rimusic.utils.ExternalUris
 

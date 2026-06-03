@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.searchresult
+﻿package app.it.fast4x.rimusic.ui.screens.searchresult
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -37,7 +37,7 @@ import app.it.fast4x.rimusic.ui.items.AlbumItemListPlaceholder
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.conditional
 import app.n_zik.android.core.coil.ImageCacheFactory
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.models.Song
@@ -224,7 +224,7 @@ fun OnlineSearchList(
                                     )
                                 }
                             }
-                            item.description?.split(" • ")?.forEach { segment ->
+                            item.description?.split(" â€¢ ")?.forEach { segment ->
                                 if (segment.isNotBlank()) {
                                     BasicText(
                                         text = segment,
@@ -239,7 +239,7 @@ fun OnlineSearchList(
                             }
                         }
                         if (item is Innertube.ArtistItem) {
-                            item.description?.split(" • ")?.forEach { segment ->
+                            item.description?.split(" â€¢ ")?.forEach { segment ->
                                 if (segment.isNotBlank()) {
                                     BasicText(
                                         text = segment,
@@ -267,7 +267,7 @@ fun OnlineSearchList(
                                 )
                             }
                             if (tabIndex != 5) {
-                                item.description?.split(" • ")?.forEach { segment ->
+                                item.description?.split(" â€¢ ")?.forEach { segment ->
                                     if (segment.isNotBlank()) {
                                         BasicText(
                                             text = segment,

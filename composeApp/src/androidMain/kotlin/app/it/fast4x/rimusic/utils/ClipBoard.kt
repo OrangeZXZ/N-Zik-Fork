@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.utils
+﻿package app.it.fast4x.rimusic.utils
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 

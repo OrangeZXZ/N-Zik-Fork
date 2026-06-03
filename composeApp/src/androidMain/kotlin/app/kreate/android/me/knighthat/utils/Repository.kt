@@ -1,6 +1,6 @@
-package app.kreate.android.me.knighthat.utils
+﻿package app.kreate.android.me.knighthat.utils
 
-import app.kreate.android.BuildConfig
+import app.n_zik.android.BuildConfig
 
 object Repository {
 

@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.artist
+﻿package app.kreate.android.me.knighthat.component.artist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,7 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.kreate.android.R
+import app.n_zik.android.R
 import it.fast4x.innertube.YtMusic
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.appContext

@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.utils
+﻿package app.it.fast4x.rimusic.utils
 
 
 import android.annotation.SuppressLint
@@ -14,7 +14,7 @@ import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.DurationInMinutes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

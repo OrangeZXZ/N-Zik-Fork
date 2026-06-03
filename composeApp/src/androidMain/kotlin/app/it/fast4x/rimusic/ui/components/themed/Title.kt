@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
@@ -23,7 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.utils.bold
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.colorPalette

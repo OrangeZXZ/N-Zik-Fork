@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.styling
+﻿package app.it.fast4x.rimusic.ui.styling
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.saveable.Saver
@@ -10,7 +10,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.FontType
 
 @Immutable

@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.export
+﻿package app.kreate.android.me.knighthat.component.export
 
 import android.content.Context
 import android.net.Uri
@@ -12,8 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
-import app.kreate.android.BuildConfig
-import app.kreate.android.R
+import app.n_zik.android.BuildConfig
+import app.n_zik.android.R
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import app.it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.CoroutineScope

@@ -1,9 +1,9 @@
-package app.it.fast4x.rimusic.extensions.discord
+﻿package app.it.fast4x.rimusic.extensions.discord
 
 import android.content.Context
 import androidx.media3.common.MediaItem
 import app.n_zik.android.core.network.isNetworkAvailable
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.kreate.android.me.knighthat.utils.Toaster
 import com.metrolist.music.discordrpc.DiscordRpcConnection
 import com.metrolist.music.discordrpc.entities.Timestamps
@@ -165,7 +165,7 @@ class DiscordPresenceManager(
             if (isStopped) return@launch
             sendActivity(
                 mediaItem = mediaItem,
-                details = "⏸️ Paused: $title",
+                details = "â¸ï¸ Paused: $title",
                 state = artist,
                 start = frozenTimestamp,
                 end = frozenTimestamp,

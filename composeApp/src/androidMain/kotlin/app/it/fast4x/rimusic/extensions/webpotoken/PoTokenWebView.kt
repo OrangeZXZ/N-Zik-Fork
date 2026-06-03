@@ -1,4 +1,4 @@
-package com.dd3boh.outertune.utils.potoken
+﻿package com.dd3boh.outertune.utils.potoken
 
 import android.content.Context
 import android.os.Handler
@@ -10,7 +10,7 @@ import android.webkit.WebView
 import androidx.annotation.MainThread
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
-import app.kreate.android.R
+import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import app.it.fast4x.rimusic.isDebugModeEnabled
 import kotlinx.coroutines.CoroutineScope

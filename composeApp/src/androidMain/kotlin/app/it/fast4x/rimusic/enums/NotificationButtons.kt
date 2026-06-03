@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.enums
+﻿package app.it.fast4x.rimusic.enums
 
 import android.app.PendingIntent
 import androidx.annotation.DrawableRes
@@ -9,7 +9,7 @@ import androidx.media3.common.Player.REPEAT_MODE_OFF
 import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.SessionCommand
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandSearch
 import app.it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandStartRadio
 import app.it.fast4x.rimusic.service.modern.MediaSessionConstants.CommandToggleDownload

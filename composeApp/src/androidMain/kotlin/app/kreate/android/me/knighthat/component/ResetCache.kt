@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component
+﻿package app.kreate.android.me.knighthat.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -8,7 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.models.Song

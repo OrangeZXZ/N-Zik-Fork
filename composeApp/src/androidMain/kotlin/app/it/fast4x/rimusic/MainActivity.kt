@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic
+﻿package app.it.fast4x.rimusic
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -89,8 +89,8 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.rememberNavController
-import app.kreate.android.BuildConfig
-import app.kreate.android.R
+import app.n_zik.android.BuildConfig
+import app.n_zik.android.R
 import app.n_zik.android.core.playback.PlaybackDispatchers
 import android.graphics.Bitmap
 import androidx.palette.graphics.Palette
@@ -281,7 +281,7 @@ class MainActivity :
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (!isGranted) {
-            // Si la permission est refusée, rediriger vers les paramètres
+            // Si la permission est refusÃ©e, rediriger vers les paramÃ¨tres
             val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
                 putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
             }
@@ -797,7 +797,7 @@ class MainActivity :
                                 )
 
                                 if (colorPaletteName == ColorPaletteName.Dynamic) {
-                                    // Toujours appeler setDynamicPalette quand on passe au thème dynamique
+                                    // Toujours appeler setDynamicPalette quand on passe au thÃ¨me dynamique
                                     val currentArtworkUri = binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri?.thumbnail(1000)?.toString()
                                     setDynamicPalette(currentArtworkUri)
                                 } else {

@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.settings
+﻿package app.it.fast4x.rimusic.ui.screens.settings
 
 import android.content.Context
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.enums.ValidationType
 import app.it.fast4x.rimusic.typography

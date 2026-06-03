@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.playlist
+﻿package app.it.fast4x.rimusic.ui.screens.playlist
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -72,7 +72,7 @@ import androidx.compose.ui.util.fastFilter
 import androidx.compose.ui.util.fastFirst
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.coil.resize
 import app.it.fast4x.compose.persist.persist
@@ -912,7 +912,7 @@ fun PlaylistSongList(
                                     )
                             )
                             BasicText(
-                                text = "“",
+                                text = "â€œ",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = (-8).dp)
@@ -958,7 +958,7 @@ fun PlaylistSongList(
                             )
 
                             BasicText(
-                                text = "„",
+                                text = "â€ž",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = 4.dp)

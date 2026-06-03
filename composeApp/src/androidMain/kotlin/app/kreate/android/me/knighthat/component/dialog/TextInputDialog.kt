@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.dialog
+﻿package app.kreate.android.me.knighthat.component.dialog
 
 import androidx.annotation.CallSuper
 import androidx.compose.animation.AnimatedVisibility
@@ -16,7 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.appContext
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.typography

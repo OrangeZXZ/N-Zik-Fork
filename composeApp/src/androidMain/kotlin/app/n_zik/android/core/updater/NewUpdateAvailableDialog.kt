@@ -1,4 +1,4 @@
-package app.n_zik.android.core.updater
+﻿package app.n_zik.android.core.updater
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -37,8 +37,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import app.kreate.android.BuildConfig
-import app.kreate.android.R
+import app.n_zik.android.BuildConfig
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.typography
 import app.it.fast4x.rimusic.utils.bold

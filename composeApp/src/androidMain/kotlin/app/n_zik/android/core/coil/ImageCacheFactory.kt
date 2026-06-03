@@ -1,4 +1,4 @@
-package app.n_zik.android.core.coil
+﻿package app.n_zik.android.core.coil
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -16,7 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.core.net.toUri
-import app.kreate.android.R
+import app.n_zik.android.R
 import coil3.ImageLoader
 import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImage
@@ -107,8 +107,8 @@ object ImageCacheFactory {
 
                 val newScore = url.getYouTubeQualityScore()
                 
-                // On n'écrase que si la qualité est meilleure pour le slot "high"
-                // ou moins bonne pour le slot "low" (pour garder une miniature de secours ultra-légère)
+                // On n'Ã©crase que si la qualitÃ© est meilleure pour le slot "high"
+                // ou moins bonne pour le slot "low" (pour garder une miniature de secours ultra-lÃ©gÃ¨re)
                 if (isHigh || newScore >= 5) {
                     if (newScore >= high.getYouTubeQualityScore()) {
                         high = url
@@ -629,7 +629,7 @@ object ImageCacheFactory {
 
     fun clearImageCache() {
         try {
-            // 1. On vide d'abord la mémoire vive (RAM)
+            // 1. On vide d'abord la mÃ©moire vive (RAM)
             LOADER.memoryCache?.clear()
             
             // 2. On vide le cache disque (Storage)
@@ -638,10 +638,10 @@ object ImageCacheFactory {
             // 3. On vide les registres de signatures apprises (Playlists)
             PlaylistThumbnailStore.clearAll()
             
-            // 4. On vide les métadonnées de qualité
+            // 4. On vide les mÃ©tadonnÃ©es de qualitÃ©
             CacheMetadataStore.clearAll()
             
-            // 5. On réinitialise les registres temporaires
+            // 5. On rÃ©initialise les registres temporaires
             cacheKeyMap.clear()
             cooldownMap.clear()
             
@@ -693,14 +693,14 @@ private fun String.getYouTubeId(): String? {
 fun String?.thumbnail(size: Int): String? {
     if (this == null) return this
     
-    // Seuil augmenté de 600 à 700 pour garantir l'usage du cache HQ (Mode Apprentissage)
+    // Seuil augmentÃ© de 600 Ã  700 pour garantir l'usage du cache HQ (Mode Apprentissage)
     // On utilise >= 700 car la taille MEDIUM est maintenant de 700.
     val quality = if (size >= 700) ImageCacheFactory.NetworkQuality.HIGH else ImageCacheFactory.NetworkQuality.LOW
     
     if (contains("i.ytimg.com/pl_c/") || contains("i.ytimg.com/podcasts_artwork/")) {
         val id = getYouTubeId()
         if (id != null) {
-            // Priorité absolue à la version apprise (HQ) si elle existe
+            // PrioritÃ© absolue Ã  la version apprise (HQ) si elle existe
             val learnedHigh = ImageCacheFactory.PlaylistThumbnailStore.getHighUrl(id)
             if (learnedHigh != null) {
                 return learnedHigh
@@ -708,15 +708,15 @@ fun String?.thumbnail(size: Int): String? {
 
             // [MODE APPRENTISSAGE STRICT]
             // On ne fait le swap que s'il n'y a pas de signature 'rs='.
-            // On gère mwEIC (Low) et mwEUC (Medium) vers mwEKC (High).
+            // On gÃ¨re mwEIC (Low) et mwEUC (Medium) vers mwEKC (High).
             if (quality == ImageCacheFactory.NetworkQuality.HIGH) {
                 return if (!contains("rs=")) {
                     replace("mwEIC", "mwEKC")
                         .replace("mwEUC", "mwEKC")
                         .replace("mwESC", "mwEKC")
                 } else {
-                    // Si on a un lien "Medium" (EUC) signé, on essaie quand même de voir si on peut le "nettoyer" 
-                    // ou si le store a mieux. (Le store a déjà été vérifié plus haut via learnedHigh)
+                    // Si on a un lien "Medium" (EUC) signÃ©, on essaie quand mÃªme de voir si on peut le "nettoyer" 
+                    // ou si le store a mieux. (Le store a dÃ©jÃ  Ã©tÃ© vÃ©rifiÃ© plus haut via learnedHigh)
                     this
                 }
             } else {
@@ -738,7 +738,7 @@ fun String?.thumbnail(size: Int): String? {
                 else -> "hqdefault.jpg"
             }
             // "Un-signing": Strip parameters and force suffix for best quality
-            // On retire tout paramètre sqp/rs pour les vidéos car ils brident la résolution
+            // On retire tout paramÃ¨tre sqp/rs pour les vidÃ©os car ils brident la rÃ©solution
             return replace(Regex("/[^/?]+\\.jpg(\\?.*)?$"), "/$suffix")
         }
         // Playlists and Podcasts (/pl_c/, /podcasts_artwork/) are usually signed

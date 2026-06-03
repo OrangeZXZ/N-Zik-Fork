@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.settings
+﻿package app.it.fast4x.rimusic.ui.screens.settings
 
 import android.annotation.SuppressLint
 import android.text.format.Formatter
@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.it.fast4x.rimusic.Database
 
@@ -167,7 +167,7 @@ fun DataSettings() {
                 cleanCacheImages = false
             },
             onConfirm = {
-                // Utiliser la nouvelle méthode sécurisée pour nettoyer le cache
+                // Utiliser la nouvelle mÃ©thode sÃ©curisÃ©e pour nettoyer le cache
                 ImageCacheFactory.clearImageCache()
                 cleanCacheImages = false
                 cacheCleanedCounter++

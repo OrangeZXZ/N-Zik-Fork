@@ -1,6 +1,6 @@
-package app.n_zik.android.core.updater
+﻿package app.n_zik.android.core.updater
 
-import app.kreate.android.BuildConfig
+import app.n_zik.android.BuildConfig
 
 object MajorUpdateConfig {
     /**

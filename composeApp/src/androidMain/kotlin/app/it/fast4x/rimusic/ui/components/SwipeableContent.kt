@@ -1,4 +1,4 @@
-@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+﻿@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.components
 
 import androidx.annotation.OptIn
@@ -119,7 +119,7 @@ fun SwipeableContent(
                         offset < 0 -> swipeToLeftIcon
                         else -> null
                     }
-                    if (iconId == app.kreate.android.R.drawable.download_progress) {
+                    if (iconId == app.n_zik.android.R.drawable.download_progress) {
                         CircularWavyProgressIndicator(
                             color = colorPalette().accent,
                             trackColor = colorPalette().textDisabled,

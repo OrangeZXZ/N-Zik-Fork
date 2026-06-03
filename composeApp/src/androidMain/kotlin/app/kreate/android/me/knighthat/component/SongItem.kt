@@ -1,4 +1,4 @@
-@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+﻿@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.kreate.android.me.knighthat.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder

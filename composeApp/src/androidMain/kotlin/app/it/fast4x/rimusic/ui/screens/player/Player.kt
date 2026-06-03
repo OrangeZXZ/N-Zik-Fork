@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.player
+﻿package app.it.fast4x.rimusic.ui.screens.player
 
 import app.it.fast4x.rimusic.ui.components.themed.SleepTimerDialog
 import android.annotation.SuppressLint
@@ -118,7 +118,7 @@ import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import androidx.palette.graphics.Palette
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.kreate.android.screens.player.background.BlurredCover
 import app.kreate.android.themed.rimusic.screen.player.ActionBar
 import com.mikepenz.hypnoticcanvas.shaderBackground

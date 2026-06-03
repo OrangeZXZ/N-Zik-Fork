@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.menu.album
+﻿package app.kreate.android.me.knighthat.component.menu.album
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.appContext
 import app.it.fast4x.rimusic.colorPalette
@@ -172,7 +172,7 @@ class AlbumItemMenu private constructor(
             ) {
                 // Album's thumbnail
                 Box(
-                    Modifier.size(Dimensions.thumbnails.album / 2) // Taille réduite pour le menu
+                    Modifier.size(Dimensions.thumbnails.album / 2) // Taille rÃ©duite pour le menu
                 ) {
                     ImageCacheFactory.Thumbnail(
                         thumbnailUrl = album.thumbnailUrl,

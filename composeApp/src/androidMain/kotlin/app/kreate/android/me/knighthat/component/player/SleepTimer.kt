@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.player
+﻿package app.kreate.android.me.knighthat.component.player
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationResult
@@ -40,7 +40,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.typography
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive

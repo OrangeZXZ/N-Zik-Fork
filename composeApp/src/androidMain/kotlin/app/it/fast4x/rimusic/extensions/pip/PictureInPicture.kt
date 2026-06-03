@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.extensions.pip
+﻿package app.it.fast4x.rimusic.extensions.pip
 
 import android.app.Activity
 import android.app.PictureInPictureParams
@@ -28,7 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.OnPictureInPictureModeChangedProvider
 import androidx.core.app.PictureInPictureModeChangedInfo
 import androidx.core.graphics.toRect
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.compose.persist.findActivityNullable
 import app.it.fast4x.rimusic.appContext
 import app.it.fast4x.rimusic.utils.ActionReceiver

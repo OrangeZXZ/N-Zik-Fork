@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.album
+﻿package app.it.fast4x.rimusic.ui.screens.album
 
 import android.content.Intent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import androidx.compose.ui.graphics.painter.Painter
 
 import app.it.fast4x.compose.persist.PersistMapCleanup
@@ -490,7 +490,7 @@ fun AlbumDetails(
                             translate.ToolBarButton()
 
                             BasicText(
-                                text = "“",
+                                text = "â€œ",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = (-8).dp)
@@ -535,7 +535,7 @@ fun AlbumDetails(
                             )
 
                             BasicText(
-                                text = "„",
+                                text = "â€ž",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = 4.dp)

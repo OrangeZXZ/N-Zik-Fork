@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.utils
+﻿package app.it.fast4x.rimusic.utils
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
@@ -6,7 +6,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.MenuState
 import app.it.fast4x.rimusic.ui.components.themed.DeleteDialog

@@ -1,4 +1,4 @@
-@file:UnstableApi
+﻿@file:UnstableApi
 package app.it.fast4x.rimusic.ui.items
 
 import androidx.annotation.OptIn
@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import app.it.fast4x.rimusic.cleanPrefix
 import app.it.fast4x.rimusic.colorPalette

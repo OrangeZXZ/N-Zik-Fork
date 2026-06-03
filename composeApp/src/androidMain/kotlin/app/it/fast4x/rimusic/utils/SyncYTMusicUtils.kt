@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.utils
+﻿package app.it.fast4x.rimusic.utils
 
 import android.widget.Toast
 import androidx.annotation.OptIn
@@ -7,7 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.utils.completed

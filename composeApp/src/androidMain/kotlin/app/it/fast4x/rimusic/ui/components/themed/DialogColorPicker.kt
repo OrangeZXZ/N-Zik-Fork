@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -43,7 +43,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toRect
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.colorPalette
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

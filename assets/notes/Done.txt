@@ -1,3 +1,5 @@
-Fixed: Github button in OTA screen, redirecting to 404 page due to wrong url prefix
-Fixed: Playback jumping to next song even with the option SKIP if an error occur in the playback, added more retrying attempt before just throwing error
-Improved: Since YTB added some work arround for the streaming to avoid long loading time the player will memories which client was successful and will use it first next time
+Fixed: Github button in OTA screen redirecting to 404 page due to wrong url prefix
+Fixed: Playback jumping to next song even when the 'Skip on error' option is disabled. Added more retry attempts before throwing an error.
+Improved: To bypass recent YouTube streaming restrictions and avoid long loading times, the player now memorizes the last successful client and prioritizes it for future sessions.
+Refactored: Renamed `DataspecServices` to `StreamResolver` and restructured the `app.n_zik.android.core.playback` package.
+Refactored: Cleaned up project namespace from `app.kreate.android` to `app.n_zik.android` without affecting the user-facing application ID.

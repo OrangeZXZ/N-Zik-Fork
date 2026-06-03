@@ -1,4 +1,4 @@
-package app.n_zik.android.core.updater
+﻿package app.n_zik.android.core.updater
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -46,8 +46,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import app.kreate.android.BuildConfig
-import app.kreate.android.R
+import app.n_zik.android.BuildConfig
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.appContext
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.typography
@@ -232,7 +232,7 @@ class ChangelogsDialog(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.padding(vertical = 8.dp)
                                 ) {
-                                                                         // Icône pour chaque section
+                                                                         // IcÃ´ne pour chaque section
                                      Icon(
                                          painter = painterResource(
                                              when (section.title.lowercase()) {

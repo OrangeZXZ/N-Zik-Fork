@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.extensions.discord
+﻿package app.it.fast4x.rimusic.extensions.discord
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
@@ -17,7 +17,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import app.it.fast4x.rimusic.ui.components.themed.Title
 import kotlinx.coroutines.Dispatchers

@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.ui.screens.album
+﻿package app.kreate.android.me.knighthat.component.ui.screens.album
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -10,7 +10,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive

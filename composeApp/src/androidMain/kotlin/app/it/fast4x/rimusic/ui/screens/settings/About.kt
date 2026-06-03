@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.settings
+﻿package app.it.fast4x.rimusic.ui.screens.settings
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -11,7 +11,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import app.kreate.android.BuildConfig
+import app.n_zik.android.BuildConfig
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -35,7 +35,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.Image
 import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.appContext
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.enums.NavigationBarPosition

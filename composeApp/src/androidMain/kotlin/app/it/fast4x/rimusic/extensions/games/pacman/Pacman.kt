@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.extensions.games.pacman
+﻿package app.it.fast4x.rimusic.extensions.games.pacman
 
 import android.util.Log
 import android.util.Range
@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.extensions.games.pacman.models.DialogState
 import app.it.fast4x.rimusic.extensions.games.pacman.models.EnemyMovementModel
 import app.it.fast4x.rimusic.extensions.games.pacman.models.GameStatsModel

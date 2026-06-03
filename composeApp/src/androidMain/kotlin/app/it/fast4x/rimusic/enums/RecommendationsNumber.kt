@@ -1,9 +1,9 @@
-package app.it.fast4x.rimusic.enums
+﻿package app.it.fast4x.rimusic.enums
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import app.kreate.android.me.knighthat.enums.TextView
-import app.kreate.android.R
+import app.n_zik.android.R
 
 enum class RecommendationsNumber: TextView {
     `5`,
@@ -33,12 +33,12 @@ enum class RecommendationsNumber: TextView {
      * @return Number of recommendations to show
      * 
      * Adaptive scaling logic:
-     * - ≤50 songs: 10 recommendations (20% of playlist)
-     * - ≤100 songs: 20 recommendations (20% of playlist)
-     * - ≤250 songs: 30 recommendations (12% of playlist)
-     * - ≤500 songs: 50 recommendations (10% of playlist)
-     * - ≤1000 songs: 75 recommendations (7.5% of playlist)
-     * - ≤2000 songs: 100 recommendations (5% of playlist)
+     * - â‰¤50 songs: 10 recommendations (20% of playlist)
+     * - â‰¤100 songs: 20 recommendations (20% of playlist)
+     * - â‰¤250 songs: 30 recommendations (12% of playlist)
+     * - â‰¤500 songs: 50 recommendations (10% of playlist)
+     * - â‰¤1000 songs: 75 recommendations (7.5% of playlist)
+     * - â‰¤2000 songs: 100 recommendations (5% of playlist)
      * - >2000 songs: 150 recommendations (capped for performance)
      */
     fun calculateAdaptiveRecommendations(playlistSize: Int): Int {

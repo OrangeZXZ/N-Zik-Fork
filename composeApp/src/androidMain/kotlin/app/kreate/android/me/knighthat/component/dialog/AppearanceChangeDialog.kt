@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.dialog
+﻿package app.kreate.android.me.knighthat.component.dialog
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.typography
 import app.it.fast4x.rimusic.utils.medium

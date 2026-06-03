@@ -1,4 +1,4 @@
-package app.kreate.android.themed.rimusic.screen.home
+﻿package app.kreate.android.themed.rimusic.screen.home
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.kreate.android.themed.rimusic.screen.home.onDevice.OnDeviceSong
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.appContext

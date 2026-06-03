@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.playlist
+﻿package app.kreate.android.me.knighthat.component.playlist
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.appContext

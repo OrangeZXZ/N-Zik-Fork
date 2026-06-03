@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.animateFloatAsState
@@ -100,7 +100,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.coil.resize
 import app.n_zik.android.core.coil.thumbnail
@@ -1167,7 +1167,7 @@ inline fun StringListDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         BasicText(
-                            text = "Aucun élément",
+                            text = "Aucun Ã©lÃ©ment",
                             style = typography().s.copy(
                                 color = colorPalette().textSecondary
                             )

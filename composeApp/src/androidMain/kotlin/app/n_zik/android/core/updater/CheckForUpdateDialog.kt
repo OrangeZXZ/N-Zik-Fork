@@ -1,4 +1,4 @@
-package app.n_zik.android.core.updater
+﻿package app.n_zik.android.core.updater
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.enums.CheckUpdateState
 import app.it.fast4x.rimusic.typography
@@ -62,7 +62,7 @@ object CheckForUpdateDialog {
 
         var checkUpdateState by rememberPreference(checkUpdateStateKey, CheckUpdateState.Enabled)
         var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
-        val checkBetaUpdates by rememberPreference(app.it.fast4x.rimusic.utils.checkBetaUpdatesKey, app.n_zik.android.core.updater.Updater.extractVersionSuffix(app.kreate.android.BuildConfig.VERSION_NAME) == app.n_zik.android.core.updater.UpdaterConstants.SUFFIX_BETA.removePrefix("-"))
+        val checkBetaUpdates by rememberPreference(app.it.fast4x.rimusic.utils.checkBetaUpdatesKey, app.n_zik.android.core.updater.Updater.extractVersionSuffix(app.n_zik.android.BuildConfig.VERSION_NAME) == app.n_zik.android.core.updater.UpdaterConstants.SUFFIX_BETA.removePrefix("-"))
 
         Dialog(onDismissRequest = { onDismiss() }) {
             Column(

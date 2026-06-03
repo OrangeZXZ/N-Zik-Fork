@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.extensions.contributors
+﻿package app.it.fast4x.rimusic.extensions.contributors
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box
@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import app.kreate.android.R
+import app.n_zik.android.R
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import app.it.fast4x.rimusic.extensions.contributors.models.Developer

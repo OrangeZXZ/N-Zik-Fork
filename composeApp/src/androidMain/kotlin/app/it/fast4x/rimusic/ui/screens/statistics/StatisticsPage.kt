@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.statistics
+﻿package app.it.fast4x.rimusic.ui.screens.statistics
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -46,7 +46,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.Database
 
 import app.it.fast4x.rimusic.LocalPlayerAwareWindowInsets

@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component
+﻿package app.kreate.android.me.knighthat.component
 
 import android.content.ActivityNotFoundException
 import android.net.Uri
@@ -8,7 +8,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.kreate.android.me.knighthat.component.dialog.InputDialogConstraints
 import app.kreate.android.me.knighthat.component.dialog.TextInputDialog
 import app.kreate.android.me.knighthat.utils.Toaster

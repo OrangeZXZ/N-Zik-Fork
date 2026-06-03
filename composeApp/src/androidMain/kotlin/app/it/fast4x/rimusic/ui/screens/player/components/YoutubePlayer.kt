@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.player.components
+﻿package app.it.fast4x.rimusic.ui.screens.player.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,7 +28,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.utils.lastVideoIdKey
 import app.it.fast4x.rimusic.utils.lastVideoSecondsKey
 import app.it.fast4x.rimusic.utils.rememberPreference

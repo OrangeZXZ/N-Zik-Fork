@@ -1,8 +1,8 @@
-package app.it.fast4x.rimusic.utils
+﻿package app.it.fast4x.rimusic.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.IconLikeType
 
 @Composable

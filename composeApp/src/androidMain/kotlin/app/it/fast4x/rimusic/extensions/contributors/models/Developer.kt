@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.extensions.contributors.models
+﻿package app.it.fast4x.rimusic.extensions.contributors.models
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
 
 import com.google.gson.annotations.SerializedName

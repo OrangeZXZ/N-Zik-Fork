@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.home
+﻿package app.it.fast4x.rimusic.ui.screens.home
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
@@ -22,7 +22,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.kreate.android.themed.rimusic.screen.home.HomeSongsScreen
 import app.it.fast4x.compose.persist.PersistMapCleanup
 import app.it.fast4x.rimusic.enums.HomeScreenTabs

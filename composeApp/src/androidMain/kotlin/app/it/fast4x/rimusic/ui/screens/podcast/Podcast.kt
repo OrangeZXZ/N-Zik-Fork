@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.podcast
+﻿package app.it.fast4x.rimusic.ui.screens.podcast
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -62,7 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.coil.resize
 

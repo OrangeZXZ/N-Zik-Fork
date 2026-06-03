@@ -136,7 +136,7 @@ android {
         }
     }
 
-    namespace = "app.kreate.android"
+    namespace = "app.n_zik.android"
 
     buildTypes {
         debug {

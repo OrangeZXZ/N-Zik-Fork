@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.player
+﻿package app.it.fast4x.rimusic.ui.screens.player
 
 
 import android.annotation.SuppressLint
@@ -58,7 +58,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import com.valentinilk.shimmer.shimmer
 import app.it.fast4x.compose.persist.persist
 import app.it.fast4x.compose.persist.persistList

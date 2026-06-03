@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.mood
+﻿package app.it.fast4x.rimusic.ui.screens.mood
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -29,7 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import com.valentinilk.shimmer.shimmer
 import app.it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube

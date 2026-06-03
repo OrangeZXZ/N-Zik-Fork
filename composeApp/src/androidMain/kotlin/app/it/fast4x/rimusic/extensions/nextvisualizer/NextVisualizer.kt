@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.extensions.nextvisualizer
+﻿package app.it.fast4x.rimusic.extensions.nextvisualizer
 
 import android.Manifest
 import android.content.Intent
@@ -36,7 +36,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.kreate.android.drawable.APP_ICON_BITMAP
 import app.n_zik.android.core.coil.resize
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder

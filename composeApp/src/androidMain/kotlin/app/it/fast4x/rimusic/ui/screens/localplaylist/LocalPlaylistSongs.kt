@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.localplaylist
+﻿package app.it.fast4x.rimusic.ui.screens.localplaylist
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -51,7 +51,7 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
 import app.it.fast4x.compose.persist.persistList
 import app.it.fast4x.compose.reordering.draggedItem

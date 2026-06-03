@@ -1,9 +1,9 @@
-package app.kreate.android.me.knighthat.component.tab
+﻿package app.kreate.android.me.knighthat.component.tab
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.service.modern.PlayerServiceModern

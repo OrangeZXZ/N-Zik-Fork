@@ -1,9 +1,9 @@
-package app.it.fast4x.rimusic.enums
+﻿package app.it.fast4x.rimusic.enums
 
 import android.provider.MediaStore
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.kreate.android.me.knighthat.enums.TextView
 import org.intellij.lang.annotations.MagicConstant
 

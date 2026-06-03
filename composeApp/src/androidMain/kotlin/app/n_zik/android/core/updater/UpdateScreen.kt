@@ -1,4 +1,4 @@
-@file:kotlin.OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+﻿@file:kotlin.OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 package app.n_zik.android.core.updater
 
 import androidx.activity.compose.BackHandler
@@ -69,8 +69,8 @@ import kotlinx.coroutines.launch
 import app.it.fast4x.rimusic.ui.screens.settings.SettingsDescription
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
-import app.kreate.android.BuildConfig
-import app.kreate.android.R
+import app.n_zik.android.BuildConfig
+import app.n_zik.android.R
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 
@@ -88,7 +88,7 @@ fun UpdateScreen(navController: NavController) {
     } ?: Updater.extractVersionSuffix(BuildConfig.VERSION_NAME)
     var checkBetaUpdates by rememberPreference(checkBetaUpdatesKey, currentSuffix == UpdaterConstants.SUFFIX_CHAR_BETA)
 
-    // Handle back press during download — let download continue in background
+    // Handle back press during download â€” let download continue in background
     BackHandler(enabled = downloadState is UpdateDownloadManager.DownloadState.Downloading ||
             downloadState is UpdateDownloadManager.DownloadState.Starting) {
         Toaster.i(R.string.download_cancelled)
@@ -96,14 +96,14 @@ fun UpdateScreen(navController: NavController) {
         navController.popBackStack()
     }
 
-    // Cleanup state on exit — but NOT if download is active or completed
+    // Cleanup state on exit â€” but NOT if download is active or completed
     DisposableEffect(Unit) {
         onDispose {
             val currentState = UpdateDownloadManager.downloadState.value
             if (currentState is UpdateDownloadManager.DownloadState.Failed) {
                 UpdateDownloadManager.resetState()
             }
-            // Don't reset Idle, Downloading, Starting or Completed — let download persist
+            // Don't reset Idle, Downloading, Starting or Completed â€” let download persist
         }
     }
 
@@ -596,7 +596,7 @@ fun UpdateScreen(navController: NavController) {
                                             app.it.fast4x.rimusic.enums.CheckUpdateState.Disabled -> stringResource(R.string.auto_update_disabled)
                                         }
                                         BasicText(
-                                            text = "${UpdaterConstants.PREFIX_VERSION}$currentVersion • $stateStr",
+                                            text = "${UpdaterConstants.PREFIX_VERSION}$currentVersion â€¢ $stateStr",
                                             style = typography().s.copy(color = colorPalette().textSecondary)
                                         )
                                     }

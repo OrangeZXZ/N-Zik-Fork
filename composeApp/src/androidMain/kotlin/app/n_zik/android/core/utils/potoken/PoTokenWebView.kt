@@ -1,4 +1,4 @@
-package app.n_zik.android.core.utils.potoken
+﻿package app.n_zik.android.core.utils.potoken
 
 import android.content.Context
 import android.webkit.ConsoleMessage
@@ -8,7 +8,7 @@ import android.webkit.WebView
 import androidx.annotation.MainThread
 import androidx.collection.ArrayMap
 import com.metrolist.innertube.YouTube
-import app.kreate.android.BuildConfig
+import app.n_zik.android.BuildConfig
 import it.fast4x.innertube.utils.getProxy
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers

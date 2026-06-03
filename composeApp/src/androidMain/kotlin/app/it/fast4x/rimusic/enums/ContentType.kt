@@ -1,8 +1,8 @@
-package app.it.fast4x.rimusic.enums
+﻿package app.it.fast4x.rimusic.enums
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import app.kreate.android.R
+import app.n_zik.android.R
 
 enum class ContentType {
     All,

@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.history
+﻿package app.it.fast4x.rimusic.ui.screens.history
 
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedVisibility
@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastDistinctBy
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.compose.persist.persist
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.requests.HistoryPage

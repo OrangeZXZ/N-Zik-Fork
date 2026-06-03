@@ -1,4 +1,4 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+﻿@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.screens.player
 
 import androidx.compose.animation.core.LinearEasing
@@ -67,7 +67,7 @@ import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix

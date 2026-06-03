@@ -1,4 +1,4 @@
-package app.n_zik.android.core.updater
+﻿package app.n_zik.android.core.updater
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -10,7 +10,7 @@ import android.os.Environment
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.FileProvider
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.n_zik.android.core.network.NetworkClientFactory
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -189,7 +189,7 @@ object UpdateDownloadManager {
                 _downloadState.value = DownloadState.Completed(outputFile.absolutePath)
 
             } catch (e: CancellationException) {
-                // Download was cancelled — clean up silently
+                // Download was cancelled â€” clean up silently
                 try { notificationManager.cancel(UPDATE_NOTIFICATION_ID) } catch (_: Exception) {}
                 outputStream?.runCatching { close() }
                 activeCall = null
@@ -243,7 +243,7 @@ object UpdateDownloadManager {
      * Cancels an ongoing download and cleans up temporary files.
      */
     fun cancelDownload(context: Context) {
-        // Cancel the OkHttp call first — this unblocks inputStream.read() immediately
+        // Cancel the OkHttp call first â€” this unblocks inputStream.read() immediately
         activeCall?.cancel()
         activeCall = null
         downloadJob?.cancel()

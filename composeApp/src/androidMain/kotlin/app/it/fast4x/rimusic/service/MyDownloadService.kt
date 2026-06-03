@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.service
+﻿package app.it.fast4x.rimusic.service
 
 import android.app.Notification
 import android.content.Context
@@ -11,7 +11,7 @@ import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.offline.DownloadNotificationHelper
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.scheduler.PlatformScheduler
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.service.MyDownloadHelper.DOWNLOAD_NOTIFICATION_CHANNEL_ID
 
 private const val JOB_ID = 8888

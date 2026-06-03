@@ -1,4 +1,4 @@
-package app.kreate.android.themed.rimusic.screen.player
+﻿package app.kreate.android.themed.rimusic.screen.player
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -66,7 +66,7 @@ import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix

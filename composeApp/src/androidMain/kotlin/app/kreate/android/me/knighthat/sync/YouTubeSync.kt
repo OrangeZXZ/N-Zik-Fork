@@ -1,10 +1,10 @@
-package app.kreate.android.me.knighthat.sync
+﻿package app.kreate.android.me.knighthat.sync
 
 import android.content.Context
 import android.os.Looper
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import it.fast4x.innertube.YtMusic.likeVideoOrSong
 import it.fast4x.innertube.YtMusic.removelikeVideoOrSong
 import app.it.fast4x.rimusic.Database

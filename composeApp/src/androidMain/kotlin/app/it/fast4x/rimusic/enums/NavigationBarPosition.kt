@@ -1,8 +1,8 @@
-package app.it.fast4x.rimusic.enums
+﻿package app.it.fast4x.rimusic.enums
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.utils.navigationBarPositionKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.kreate.android.me.knighthat.enums.TextView

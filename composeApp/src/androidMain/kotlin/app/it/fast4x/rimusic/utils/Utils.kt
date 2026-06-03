@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.utils
+﻿package app.it.fast4x.rimusic.utils
 
 
 import android.content.ContentUris
@@ -22,7 +22,7 @@ import androidx.core.os.bundleOf
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import com.zionhuang.innertube.pages.LibraryPage
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.http.HttpStatusCode

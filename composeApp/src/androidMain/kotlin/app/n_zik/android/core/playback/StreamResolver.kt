@@ -1,4 +1,4 @@
-package app.n_zik.android.core.playback
+﻿package app.n_zik.android.core.playback
 
 import android.content.ContentResolver
 import android.net.Uri
@@ -9,7 +9,7 @@ import androidx.media3.datasource.DataSpec
 import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR
-import app.kreate.android.R
+import app.n_zik.android.R
 
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.core.network.NetworkClientFactory
@@ -242,7 +242,7 @@ private suspend fun resolveStreamUri(
         }
     }
 
-    // All retries exhausted — show toast with the real reason
+    // All retries exhausted â€” show toast with the real reason
     Timber.tag(TAG).e("All $MAX_RESOLVE_RETRIES resolve attempts failed for $videoId")
     val errorDetail = lastException?.message ?: "Unknown error"
     Toaster.e(R.string.error_all_stream_attempts_failed, formatArgs = arrayOf(errorDetail.take(100)))
@@ -255,7 +255,7 @@ private suspend fun resolveStreamUri(
  * Mirrors Metrolist's YTPlayerUtils.playerResponseForPlayback() flow:
  * 1. Fetch signatureTimestamp from player.js
  * 2. Generate PoToken (WebView)
- * 3. Try each client in order → get player response → resolve URL → validate
+ * 3. Try each client in order â†’ get player response â†’ resolve URL â†’ validate
  * 4. Return the first working stream URL
  */
 @UnstableApi
@@ -343,7 +343,7 @@ private suspend fun resolveStreamUriInternal(
                 continue
             }
 
-            // Check playability — capture the reason if not OK
+            // Check playability â€” capture the reason if not OK
             if (playerResponse.playabilityStatus?.status != "OK") {
                 val status = playerResponse.playabilityStatus?.status ?: "NULL"
                 val reason = playerResponse.playabilityStatus?.reason ?: "no reason provided"
@@ -421,15 +421,15 @@ private suspend fun resolveStreamUriInternal(
             .build()
     }
 
-    // All clients exhausted — throw with the last meaningful reason
+    // All clients exhausted â€” throw with the last meaningful reason
     val finalReason = lastFailureReason ?: "All ${FALLBACK_CLIENTS.size} clients failed for $videoId"
     Timber.tag(TAG).e("resolveStreamUri FAILED: $finalReason")
     throw UnplayableException(finalReason)
 }
 
-// ──────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Cache + DataSpec integration
-// ──────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
  * Cache of resolved stream URLs by videoId.
@@ -479,9 +479,9 @@ fun DataSpec.process(
         .build()
 }
 
-// ──────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // DataSource factories (ExoPlayer integration)
-// ──────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @UnstableApi
 fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory {

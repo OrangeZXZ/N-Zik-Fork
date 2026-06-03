@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.settings
+﻿package app.it.fast4x.rimusic.ui.screens.settings
 
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
@@ -46,7 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.rememberNavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import io.ktor.http.Url
 import app.kreate.android.me.knighthat.component.dialog.RestartAppDialog
 import app.it.fast4x.compose.persist.persistList

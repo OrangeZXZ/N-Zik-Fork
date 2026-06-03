@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.searchresult
+﻿package app.it.fast4x.rimusic.ui.screens.searchresult
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -51,7 +51,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.runtime.remember
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.utils.preferences
 import app.it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import app.it.fast4x.rimusic.enums.NavRoutes
@@ -245,7 +245,7 @@ fun OnlineSearchGrid(
                         )
                     }
                 }
-                item.description?.split(" • ")?.forEach { segment ->
+                item.description?.split(" â€¢ ")?.forEach { segment ->
                     if (segment.isNotBlank()) {
                         BasicText(
                             text = segment,
@@ -259,7 +259,7 @@ fun OnlineSearchGrid(
                 }
             }
             if (item is Innertube.ArtistItem) {
-                item.description?.split(" • ")?.forEach { segment ->
+                item.description?.split(" â€¢ ")?.forEach { segment ->
                     if (segment.isNotBlank()) {
                         BasicText(
                             text = segment,
@@ -285,7 +285,7 @@ fun OnlineSearchGrid(
                     )
                 }
                 if (tabIndex != 5) {
-                    item.description?.split(" • ")?.forEach { segment ->
+                    item.description?.split(" â€¢ ")?.forEach { segment ->
                         if (segment.isNotBlank()) {
                             BasicText(
                                 text = segment,

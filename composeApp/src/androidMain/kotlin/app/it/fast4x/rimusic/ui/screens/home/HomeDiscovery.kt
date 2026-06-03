@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.home
+﻿package app.it.fast4x.rimusic.ui.screens.home
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -49,7 +49,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.compose.persist.persist
 import app.it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube

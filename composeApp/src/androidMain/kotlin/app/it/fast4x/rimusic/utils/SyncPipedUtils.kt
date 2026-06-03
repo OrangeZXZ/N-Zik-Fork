@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.utils
+﻿package app.it.fast4x.rimusic.utils
 
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import app.kreate.android.R
+import app.n_zik.android.R
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Session
 import app.it.fast4x.rimusic.Database

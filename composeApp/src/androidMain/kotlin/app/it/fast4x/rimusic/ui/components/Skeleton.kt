@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components
+﻿package app.it.fast4x.rimusic.ui.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import app.kreate.android.BuildConfig
+import app.n_zik.android.BuildConfig
 import app.it.fast4x.rimusic.colorPalette
 import app.it.fast4x.rimusic.enums.CheckUpdateState
 import app.it.fast4x.rimusic.enums.NavigationBarPosition

@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.history
+﻿package app.it.fast4x.rimusic.ui.screens.history
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -9,7 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.compose.persist.PersistMapCleanup
 import app.it.fast4x.rimusic.ui.components.Skeleton
 

@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.artist
+﻿package app.it.fast4x.rimusic.ui.screens.artist
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -31,7 +31,7 @@ import kotlinx.coroutines.flow.flowOn
 import app.kreate.android.me.knighthat.utils.PropUtils
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.ui.components.Skeleton
 import app.it.fast4x.rimusic.ui.components.themed.Loader
 import androidx.compose.foundation.layout.Box

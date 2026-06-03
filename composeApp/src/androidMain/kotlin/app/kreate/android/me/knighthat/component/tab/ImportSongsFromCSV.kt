@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.tab
+﻿package app.kreate.android.me.knighthat.component.tab
 
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.util.fastFilter
 import androidx.compose.ui.util.fastMap
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.kreate.android.exception.InvalidHeaderException
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import app.it.fast4x.rimusic.Database

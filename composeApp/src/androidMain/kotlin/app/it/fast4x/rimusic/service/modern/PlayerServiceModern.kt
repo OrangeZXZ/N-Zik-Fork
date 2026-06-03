@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.service.modern
+﻿package app.it.fast4x.rimusic.service.modern
 
 import android.annotation.SuppressLint
 import android.app.NotificationManager
@@ -77,7 +77,7 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaStyleNotificationHelper
 import androidx.media3.session.SessionToken
 import app.it.fast4x.rimusic.repository.QuickPicksRepository
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.n_zik.android.core.playback.createDataSourceFactory
 import app.n_zik.android.core.playback.formatCache
 import app.kreate.android.widget.Widget
@@ -906,7 +906,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 // Invalidate cached stream URL so next resolve fetches a fresh one
                 formatCache.remove(currentMediaId)
 
-                // Save playWhenReady BEFORE pausing — pause() clears it
+                // Save playWhenReady BEFORE pausing â€” pause() clears it
                 val wasPlaying = player.playWhenReady
                 player.pause()
                 player.prepare()
@@ -918,7 +918,7 @@ class PlayerServiceModern : MediaLibraryService(),
             } else {
                 Timber.e("PlayerServiceModern onPlayerError recovery exhausted ($MAX_RECOVERY_ATTEMPTS attempts) for $currentMediaId")
                 recoveryAttempts.remove(currentMediaId)
-                // Fall through — but if skipMediaOnError is OFF, we still won't skip (handled below)
+                // Fall through â€” but if skipMediaOnError is OFF, we still won't skip (handled below)
             }
         }
 
@@ -1170,7 +1170,7 @@ class PlayerServiceModern : MediaLibraryService(),
         DefaultExtractorsFactory()
     ).setLoadErrorHandlingPolicy(
         object : DefaultLoadErrorHandlingPolicy() {
-            // No MediaSource-level fallback exists — returning true here causes
+            // No MediaSource-level fallback exists â€” returning true here causes
             // ExoPlayer to attempt a nonexistent fallback, then skip the track.
             override fun isEligibleForFallback(exception: IOException) = false
 
@@ -1200,7 +1200,7 @@ class PlayerServiceModern : MediaLibraryService(),
                     // on this media item (C.TIME_UNSET would cause a skip).
                     15_000L
                 } else {
-                    C.TIME_UNSET // skipOnError is ON — let ExoPlayer give up and trigger onPlayerError
+                    C.TIME_UNSET // skipOnError is ON â€” let ExoPlayer give up and trigger onPlayerError
                 }
             }
         }

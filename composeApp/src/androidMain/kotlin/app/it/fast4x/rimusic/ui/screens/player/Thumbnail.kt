@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.player
+﻿package app.it.fast4x.rimusic.ui.screens.player
 
 import androidx.annotation.OptIn
 import androidx.compose.animation.AnimatedContent
@@ -41,7 +41,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.it.fast4x.rimusic.Database
 import app.it.fast4x.rimusic.LocalPlayerServiceBinder

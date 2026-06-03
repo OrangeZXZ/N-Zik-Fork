@@ -1,4 +1,4 @@
-package app.n_zik.android.core.updater
+﻿package app.n_zik.android.core.updater
 
 import android.os.Looper
 import androidx.compose.animation.AnimatedVisibility
@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirstOrNull
-import app.kreate.android.BuildConfig
-import app.kreate.android.R
+import app.n_zik.android.BuildConfig
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.appContext
 import app.it.fast4x.rimusic.enums.CheckUpdateState
 import app.it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
@@ -79,7 +79,7 @@ object Updater {
     /**
      * Returns the string resource ID for the build type label
      * based on the selected build's APK filename.
-     * e.g., "N-Zik-beta.apk" → R.string.beta_title
+     * e.g., "N-Zik-beta.apk" â†’ R.string.beta_title
      */
     fun getBuildTypeStringRes(): Int {
         if (!::build.isInitialized) return R.string.stable_title

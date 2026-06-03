@@ -1,4 +1,4 @@
-@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+﻿@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.annotation.DrawableRes
@@ -20,7 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
-import app.kreate.android.R
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.utils.getDownloadProgress
 import androidx.compose.ui.graphics.drawscope.Stroke
 import app.it.fast4x.rimusic.colorPalette

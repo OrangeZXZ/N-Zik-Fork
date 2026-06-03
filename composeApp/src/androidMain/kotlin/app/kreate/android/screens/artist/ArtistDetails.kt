@@ -1,4 +1,4 @@
-package app.kreate.android.screens.artist
+﻿package app.kreate.android.screens.artist
 
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -53,7 +53,7 @@ import androidx.compose.ui.util.fastFirstOrNull
 import androidx.compose.ui.util.fastMap
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.R
+import app.n_zik.android.R
 import androidx.compose.ui.graphics.painter.Painter
 
 import it.fast4x.innertube.Innertube
@@ -479,7 +479,7 @@ fun ArtistDetails(
                         translate.ToolBarButton()
 
                         BasicText(
-                            text = "“",
+                            text = "â€œ",
                             style = typography().xxl.semiBold,
                             modifier = Modifier.offset( y = (-8).dp )
                                                .align( Alignment.Top )
@@ -522,7 +522,7 @@ fun ArtistDetails(
                         )
 
                         BasicText(
-                            text = "„",
+                            text = "â€ž",
                             style = typography().xxl.semiBold,
                             modifier = Modifier.offset( y = 4.dp )
                                                .align( Alignment.Bottom )

@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.extensions.games.pacman.ui.theme
+﻿package app.it.fast4x.rimusic.extensions.games.pacman.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
@@ -6,7 +6,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import app.kreate.android.R
+import app.n_zik.android.R
 
 
 // Set of Material typography styles to start with

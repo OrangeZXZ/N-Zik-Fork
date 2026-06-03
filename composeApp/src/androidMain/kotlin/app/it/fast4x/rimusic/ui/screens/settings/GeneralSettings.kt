@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.settings
+﻿package app.it.fast4x.rimusic.ui.screens.settings
 
 import android.os.Build
 import android.text.TextUtils
@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
-import app.kreate.android.BuildConfig
-import app.kreate.android.R
+import app.n_zik.android.BuildConfig
+import app.n_zik.android.R
 import app.it.fast4x.rimusic.LocalPlayerAwareWindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.windowInsetsPadding
