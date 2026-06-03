@@ -110,9 +110,11 @@ body:
   - type: input
     id: device-model
     attributes:
-      label: Device Model (Optional)
+      label: Device Model
       description: 'e.g., Pixel 8, Samsung Galaxy S24, etc.'
       placeholder: Your device model
+    validations:
+      required: true
   - type: checkboxes
     id: required-actions
     attributes:
