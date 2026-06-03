@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">إعادة المحاولة: %1$s</string>
   <string name="error_playback_failed">خطأ: %1$s</string>
   <string name="error_all_stream_attempts_failed">غير قادر على التشغيل: %1$s</string>
+  <string name="stream_still_retrying">لا يزال تحميل… محاولة %1$s</string>
+  <string name="stream_unexpected_skip">تم اكتشاف تغيير غير متوقع في المسار</string>
   <string name="songs_remaining">%1$s Songs Remaining</string>
   <string name="failed_to_copy_clipboard">فشل نسخ النص إلى الحافظة، حاول مرة أخرى</string>
   <string name="discord_presence_closed">وجود ديسكورد مغلق</string>
