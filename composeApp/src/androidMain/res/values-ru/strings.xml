@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">Повторение: %1$s</string>
   <string name="error_playback_failed">Ошибка: %1$s</string>
   <string name="error_all_stream_attempts_failed">Не удается воспроизвести: %1$s</string>
+  <string name="stream_still_retrying">Все еще загружается… Попытка %1$s</string>
+  <string name="stream_unexpected_skip">Обнаружено непредвиденное изменение трека</string>
   <string name="songs_remaining">Осталось треков: %1$s</string>
   <string name="failed_to_copy_clipboard">Не удалось скопировать текст в буфер обмена, попробуйте еще раз</string>
   <string name="discord_presence_closed">Присутствие Discord закрыто</string>
