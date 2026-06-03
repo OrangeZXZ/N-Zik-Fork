@@ -48,38 +48,38 @@ Join the N-Zik Discord:
 
 # 🎧 Features
 
-- 🌍 **Multilingual support** - English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian, and more. Contributions welcome!
-- 🎨 **Modern & friendly UI design**
-- 🌓 **UI Mode toggle** - Switch between **N-Zik** and classic **ViMusic** styles
-- 💾 **Automatic caching** - Songs are auto-cached for offline playback with customizable cache size
-- 📥 **Downloads** - Download individual songs or entire playlists for full offline access (beyond cache)
-- ▶️ **Background playback** - Keep the music going while using other apps
-- 📊 **Listening stats** - Track your listening habits and preferences
-- 🌈 **Audio visualizer** - Stunning effects and real-time animations
-- 🕹️ **Discord Rich Presence** - Show your currently playing track directly on your Discord profile
-- ⬇️ **OTA System Update** - The app now updates itself automatically, just like on mobile
-
-<p align="left">
-  <img src="https://github.com/user-attachments/assets/c656b9e1-f46d-4599-91dc-576eb3ba8657"/><br/>
-  <img src="https://github.com/user-attachments/assets/90658d59-6c80-4f7f-95f1-8b6f9b73f78f"/><br/>
-</p>
+- 🌍 **Multilingual Support** – Available in English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian, and more. Contributions are always welcome!
+- 🎨 **Modern and Intuitive UI**
+- 🌓 **UI Mode Toggle** – Switch between the **N-Zik** experience and the classic **ViMusic** interface.
+- 💾 **Smart Offline Caching** – Automatically cache songs for offline playback with customizable cache limits.
+- 📥 **Downloads** – Download individual tracks or entire playlists for permanent offline access.
+- ▶️ **Background Playback** – Keep your music playing while using other apps.
+- 📊 **Listening Statistics** – Track your habits, favorite artists, and playback trends.
+- ⬇️ **OTA Updates** – Receive automatic in-app updates without needing to reinstall manually.
+- 🌈 **Audio Visualizer** – Enjoy real-time visual effects synchronized with your music.
 
 > [!NOTE]
-> 🎤 This feature requires **microphone access** and must be enabled in settings.
+> 🎤 The audio visualizer requires **microphone permission** and must be enabled in the settings.
 
-- 📰 **News feed** - Discover moods, genres, and new albums from your favorite artists
-- 🔄 **Import/Export playlists** - Share RiMusic playlists online with friends
-- ✍️ **Lyrics** - Fetch, display, edit, and translate synced or unsynced song lyrics
-- 🎭 **Custom themes** - Personalize your experience with theme options
-- ⏲️ **Sleep timer** - Auto-stop playback after a customizable duration
-- 🎚️ **Audio controls** - App & device volume, playback speed, pitch, normalization, skip silence
-- 📺 **Wide compatibility** - Android Auto, Android Automotive ,Android TV, and YouTube video support
-- 🧪 **Experimental widgets**
-- 🔁 **Update checker** - Optional automatic update notifications
-- 📤 **Export media** - Save your cached/downloaded music externally
-- ⚙️ **Export settings** - Back up and restore your preferences
-- 📡 **Offline ready** - Enjoy your music even without an internet connection
-- ▶️ **Early YouTube Integration** - Recommendations and profile content from your YouTube account are already pulled in; full sync is still in progress
+- 🕹️ **Discord Rich Presence** – Display your currently playing track directly on your Discord profile.
+
+<p align="left">
+  <img src="https://github.com/user-attachments/assets/c656b9e1-f46d-4599-91dc-576eb3ba8657" alt="Discord Rich Presence Preview 1"/><br/>
+  <img src="https://github.com/user-attachments/assets/90658d59-6c80-4f7f-95f1-8b6f9b73f78f" alt="Discord Rich Presence Preview 2"/>
+</p>
+
+- 📰 **News Feed** – Explore moods, genres, releases, and albums from your favorite artists.
+- 🔄 **Playlist Import & Export** – Easily back up, share, and restore playlists.
+- ✍️ **Advanced Lyrics Support** – Fetch, display, edit, synchronize, and translate lyrics.
+- 🎭 **Custom Themes** – Personalize the app with multiple theme options.
+- ⏲️ **Sleep Timer** – Automatically stop playback after a configurable duration.
+- 🎚️ **Advanced Audio Controls** – Adjust volume, playback speed, pitch, normalization, and silence skipping.
+- 📺 **Wide Platform Support** – Compatible with Android Auto, Android Automotive, Android TV, and YouTube video playback.
+- 🧪 **Experimental Widgets** – Access upcoming features before they become stable.
+- 📤 **Media Export** – Export cached or downloaded music to external storage.
+- ⚙️ **Settings Backup & Restore** – Save and restore your complete app configuration.
+- 📡 **Offline First** – Enjoy your music library even without an internet connection.
+- ▶️ **YouTube Integration (Early Access)** – Recommendations and profile-related content are already synchronized from your YouTube account. Full synchronization is currently in development.
 
 # 📷 Screenshots
 
