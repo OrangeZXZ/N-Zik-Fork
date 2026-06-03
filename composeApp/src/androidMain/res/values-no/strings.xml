@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">Prøv igjen: %1$s</string>
   <string name="error_playback_failed">Feil: %1$s</string>
   <string name="error_all_stream_attempts_failed">Kan ikke spille: %1$s</string>
+  <string name="stream_still_retrying">Laster fortsatt… Forsøk %1$s</string>
+  <string name="stream_unexpected_skip">Uventet sporendring oppdaget</string>
   <string name="songs_remaining">%1$s Sanger igjen</string>
   <string name="failed_to_copy_clipboard">Kan ikke kopiere tekst til utklippstavle, prøv igjen</string>
   <string name="discord_presence_closed">Discord tilstedeværelse stengt</string>
