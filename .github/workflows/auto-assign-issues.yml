@@ -1,5 +1,4 @@
 name: Auto-assign issues
-
 on:
   workflow_dispatch:
     inputs:
@@ -13,10 +12,8 @@ on:
           - current-issue
   issues:
     types: [opened]
-
 permissions:
   issues: write
-
 jobs:
   assign-issue:
     runs-on: ubuntu-latest
@@ -25,46 +22,51 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const assignTo = 'NEVARLeVrai';
             const mode = context.eventName === 'workflow_dispatch'
               ? '${{ inputs.mode }}'
               : 'current-issue';
 
-            const assignTo = 'NEVARLeVrai';
-            const preserveAssignee = 'orangezxz';
-
-            async function syncAssignees(issue) {
+            async function syncAssignees(issue, cleanMode) {
               if (!issue) return;
 
-              const labels = (issue.labels || []).map(label => label.name);
-              if (!labels.includes('bug') && !labels.includes('enhancement')) {
-                return;
+              const labels = (issue.labels || []).map(l => l.name);
+              if (!labels.includes('bug') && !labels.includes('enhancement')) return;
+
+              const currentAssignees = (issue.assignees || []).map(u => u.login);
+
+              if (cleanMode) {
+                // Manuel : virer tout le monde sauf moi, puis m'ajouter si absent
+                const toRemove = currentAssignees.filter(login => login !== assignTo);
+                if (toRemove.length > 0) {
+                  await github.rest.issues.removeAssignees({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    assignees: toRemove,
+                  });
+                }
+                if (!currentAssignees.includes(assignTo)) {
+                  await github.rest.issues.addAssignees({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    assignees: [assignTo],
+                  });
+                }
+              } else {
+                // Auto : juste m'ajouter si je suis pas déjà là
+                if (!currentAssignees.includes(assignTo)) {
+                  await github.rest.issues.addAssignees({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    assignees: [assignTo],
+                  });
+                }
               }
 
-              const currentAssignees = (issue.assignees || []).map(user => user.login);
-              const desiredAssignees = [assignTo, preserveAssignee];
-              const finalAssignees = [...new Set([...currentAssignees.filter(login => login === preserveAssignee), ...desiredAssignees])];
-
-              const toRemove = currentAssignees.filter(login => login !== preserveAssignee && login !== assignTo);
-              if (toRemove.length > 0) {
-                await github.rest.issues.removeAssignees({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issue.number,
-                  assignees: toRemove,
-                });
-              }
-
-              const missing = finalAssignees.filter(login => !currentAssignees.includes(login));
-              if (missing.length > 0) {
-                await github.rest.issues.addAssignees({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: issue.number,
-                  assignees: missing,
-                });
-              }
-
-              console.log(`✅ Issue #${issue.number} assigned to ${finalAssignees.join(', ')}`);
+              console.log(`✅ Issue #${issue.number} synced (mode: ${cleanMode ? 'clean' : 'add-only'})`);
             }
 
             if (mode === 'manual-scan') {
@@ -74,12 +76,11 @@ jobs:
                 state: 'open',
                 per_page: 100,
               });
-
               for (const issue of issues) {
                 if (issue.pull_request) continue;
-                await syncAssignees(issue);
+                await syncAssignees(issue, true);
               }
               console.log(`🔎 Manual scan completed over ${issues.length} open issues.`);
             } else {
-              await syncAssignees(context.payload.issue);
+              await syncAssignees(context.payload.issue, false);
             }
