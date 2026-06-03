@@ -81,8 +81,8 @@ body:
   - type: dropdown
     id: android-version
     attributes:
-      label: Android version
-      description: What version of Android is your phone, Android TV, or Android Automotive
+      label: Android version / Platform
+      description: What version of Android is your phone, Android TV, Android Auto, or Android Automotive
       options:
         - 7 - 7.1.x [N]
         - 8 - 8.1 [O]
@@ -106,7 +106,13 @@ body:
     attributes:
       label: Other Android version
       description: Only fill when you select "Other" in Android version
-      placeholder: '...'
+      placeholder: '18'
+  - type: input
+    id: device-model
+    attributes:
+      label: Device Model (Optional)
+      description: 'e.g., Pixel 8, Samsung Galaxy S24, etc.'
+      placeholder: Your device model
   - type: checkboxes
     id: required-actions
     attributes:
@@ -195,11 +201,6 @@ body:
           [If you have multiple logs, please copy "details" for each log, name them appropriately, make sure they are different from each other]
           <Paste your log here>
         </details>
-  - type: markdown
-    attributes:
-      value: >-
-        This template was generated with [Issue Forms
-        Creator](https://issue-forms-creator.netlify.app]
   - type: markdown
     attributes:
       value: >-
