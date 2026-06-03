@@ -1101,6 +1101,8 @@
   <string name="stream_error_retrying">Opnieuw proberen: %1$s</string>
   <string name="error_playback_failed">Fout: %1$s</string>
   <string name="error_all_stream_attempts_failed">Kan niet afspelen: %1$s</string>
+  <string name="stream_still_retrying">Nog steeds laden… Poging %1$s</string>
+  <string name="stream_unexpected_skip">Onverwachte wijziging van track gedetecteerd</string>
   <string name="songs_remaining">%1$s Nummers resterend</string>
   <string name="failed_to_copy_clipboard">Kan tekst niet kopiëren naar klembord, probeer het opnieuw</string>
   <string name="discord_presence_closed">Discord aanwezigheidsstatus gesloten</string>
