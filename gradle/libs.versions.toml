@@ -1,6 +1,6 @@
 
 [versions]
-compose-plugin = "1.11.0"
+compose-plugin = "1.11.1"
 agp = "9.2.1"
 hilt = "2.59.2"
 composeMarkdownVersion = "0.7.2"
