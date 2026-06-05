@@ -272,7 +272,8 @@ jobs:
             ## 🔗 Changelog & Downloads
 
             - 📥 **Full BETA APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-b/N-Zik-beta.apk
-            - [Changelog text file](https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt)
+            - 📄 **Changelog:** <https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt>
+            - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-b>
         run: |
           jq -n \
             --arg content "$CONTENT" \
