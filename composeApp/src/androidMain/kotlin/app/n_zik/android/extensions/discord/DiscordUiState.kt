@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.extensions.discord
+package app.n_zik.android.extensions.discord
 
 import kotlinx.coroutines.flow.MutableStateFlow
 

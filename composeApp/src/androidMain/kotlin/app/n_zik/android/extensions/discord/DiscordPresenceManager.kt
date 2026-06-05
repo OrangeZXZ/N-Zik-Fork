@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.extensions.discord
+package app.n_zik.android.extensions.discord
 
 import android.content.Context
 import androidx.media3.common.MediaItem
@@ -46,10 +46,20 @@ class DiscordPresenceManager(
     private val client = app.n_zik.android.core.network.client.NetworkClientFactory.getClientWithTimeout(10L, 10L)
     private val appStartTime = System.currentTimeMillis()
 
+    /**
+     * Tracks whether the player currently has an active media item loaded.
+     * This is true when music is playing OR paused.
+     * This is false only when no media item exists (no miniplayer).
+     *
+     * This flag is the single source of truth for deciding whether to show
+     * browsing status or music status on route changes.
+     */
+    private var hasActiveMediaItem = false
+
     init {
         discordScope.launch {
             DiscordUiState.currentRoute.collect { route ->
-                if (!isStopped && lastMediaItem == null && route != null) {
+                if (!isStopped && !hasActiveMediaItem && route != null) {
                     sendBrowsingPresence(route)
                 }
             }
@@ -121,12 +131,20 @@ class DiscordPresenceManager(
 
         lastMediaItem = mediaItem
         lastPosition = position
+
+        // Update the active media item flag:
+        // true when a media item exists (playing or paused), false when null (no player)
+        hasActiveMediaItem = mediaItem != null
+
         if (mediaItem == null) {
+            // No media item = no music at all → show browsing if we have a route
             DiscordUiState.currentRoute.value?.let { route ->
                 sendBrowsingPresence(route)
             }
             return
         }
+
+        // Media item exists → always show music status (playing or paused), never browsing
         if (isPlaying) {
             sendPlayingPresence(mediaItem, position, duration)
             val currentIsPlaying = isPlaying
@@ -165,7 +183,7 @@ class DiscordPresenceManager(
             if (isStopped) return@launch
             sendActivity(
                 mediaItem = mediaItem,
-                details = "ÃƒÂ¢Ã‚ÂÃ‚Â¸ÃƒÂ¯Ã‚Â¸Ã‚Â Paused: $title",
+                details = "⏸︎ Paused: $title",
                 state = artist,
                 start = frozenTimestamp,
                 end = frozenTimestamp,

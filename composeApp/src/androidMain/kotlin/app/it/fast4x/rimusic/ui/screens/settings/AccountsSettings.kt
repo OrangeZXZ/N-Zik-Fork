@@ -58,8 +58,8 @@ import app.n_zik.android.appContext
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ThumbnailRoundness
-import app.it.fast4x.rimusic.extensions.discord.DiscordLoginAndGetToken
-import app.it.fast4x.rimusic.extensions.discord.DiscordPresenceManager
+import app.n_zik.android.extensions.discord.DiscordLoginAndGetToken
+import app.n_zik.android.extensions.discord.DiscordPresenceManager
 import app.it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
 import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.ui.components.CustomModalBottomSheet

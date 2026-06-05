@@ -111,7 +111,7 @@ import app.it.fast4x.rimusic.enums.WallpaperType
 import app.it.fast4x.rimusic.extensions.audiovolume.AudioVolumeObserver
 import app.it.fast4x.rimusic.extensions.audiovolume.OnAudioVolumeChangedListener
 import app.n_zik.android.core.network.utils.NetworkQualityHelper
-import app.it.fast4x.rimusic.extensions.discord.DiscordPresenceManager
+import app.n_zik.android.extensions.discord.DiscordPresenceManager
 import app.n_zik.android.isHandleAudioFocusEnabled
 import app.it.fast4x.rimusic.models.Event
 import app.it.fast4x.rimusic.models.PersistentQueue

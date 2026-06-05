@@ -497,7 +497,7 @@ class MainActivity :
             val navController = rememberNavController()
             DisposableEffect(navController) {
                 val listener = androidx.navigation.NavController.OnDestinationChangedListener { _, destination, _ ->
-                    app.it.fast4x.rimusic.extensions.discord.DiscordUiState.currentRoute.value = destination.route
+                    app.n_zik.android.extensions.discord.DiscordUiState.currentRoute.value = destination.route
                 }
                 navController.addOnDestinationChangedListener(listener)
                 onDispose {
