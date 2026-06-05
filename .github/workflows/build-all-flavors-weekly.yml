@@ -350,7 +350,7 @@ jobs:
 
             - 📥 **Full APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}/N-Zik-full.apk
             - 📥 **Minified APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}/N-Zik-minified.apk
-            - [View full changelog](https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }})
+            - [Changelog text file](https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt)
         run: |
           jq -n \
             --arg content "$CONTENT" \
