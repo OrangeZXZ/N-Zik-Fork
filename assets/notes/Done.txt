@@ -1,2 +1,3 @@
 Fixed: Crash due to widget in Android 17 moved the files to my own packages (app.n_zik.android.widget).
 Fixed: RPC being stuck on "browsing" while we were listening to music.
+Fixed: Status bar being black while on pitch black mode, forgot it.

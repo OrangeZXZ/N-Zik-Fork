@@ -630,16 +630,19 @@ class MainActivity :
 
                             dynamicColorPaletteOf(bitmap, isDark)?.let { paletteResult ->
                                 withContext(Dispatchers.Main) {
+                                    val finalPalette = if (!isPicthBlack) paletteResult else paletteResult.copy(
+                                        isDark = true,
+                                        background0 = Color.Black,
+                                        background1 = Color.Black,
+                                        background2 = Color.Black,
+                                        background3 = Color.Black,
+                                        background4 = Color.Black,
+                                        text = Color.White
+                                    )
+                                    setSystemBarAppearance(finalPalette.isDark)
                                     val newAppearance = appearance.copy(
-                                        colorPalette = if (!isPicthBlack) paletteResult else paletteResult.copy(
-                                            background0 = Color.Black,
-                                            background1 = Color.Black,
-                                            background2 = Color.Black,
-                                            background3 = Color.Black,
-                                            background4 = Color.Black,
-                                            // text = Color.White
-                                        ),
-                                        typography = appearance.typography.copy(paletteResult.text)
+                                        colorPalette = finalPalette,
+                                        typography = appearance.typography.copy(finalPalette.text)
                                     )
                                     appearance = newAppearance
                                 }

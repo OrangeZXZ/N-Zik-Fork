@@ -30,6 +30,7 @@ import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.n_zik.android.colorPalette
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,8 +75,9 @@ fun CustomModalBottomSheet(
             Column(modifier = Modifier.padding(bottom = bottomPadding)) {
 
                 val view = LocalView.current
+                val colorPalette = colorPalette()
                 (view.parent as? androidx.compose.ui.window.DialogWindowProvider)?.window?.let { window ->
-                    androidx.compose.runtime.DisposableEffect(window, containerColor) {
+                    androidx.compose.runtime.DisposableEffect(window, containerColor, colorPalette) {
                         val luminance = androidx.core.graphics.ColorUtils.calculateLuminance(containerColor.toArgb())
                         val isLightBackground = luminance > 0.5 
 
