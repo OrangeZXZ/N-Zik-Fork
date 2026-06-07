@@ -224,15 +224,17 @@ fun AIRecommendationSettings(
                 title = stringResource(R.string.tab_general),
                 icon = R.drawable.settings,
                 content = {
-                    OtherSwitchSettingEntry(
-                        title = stringResource(R.string.enable_quick_picks_page),
-                        text = "",
-                        isChecked = enableQuickPicksPage,
-                        onCheckedChange = {
-                            enableQuickPicksPage = it
-                        },
-                        icon = R.drawable.sparkles
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.enable_quick_picks_page).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = stringResource(R.string.enable_quick_picks_page),
+                            text = "",
+                            isChecked = enableQuickPicksPage,
+                            onCheckedChange = {
+                                enableQuickPicksPage = it
+                            },
+                            icon = R.drawable.sparkles
+                        )
+                    }
                 }
             )
         }
@@ -255,95 +257,113 @@ fun AIRecommendationSettings(
                 title = stringResource(R.string.quick_picks),
                 icon = R.drawable.star_brilliant,
                 content = {
-                    OtherSwitchSettingEntry(
-                        title = "${stringResource(R.string.show)} ${stringResource(R.string.tips)}",
-                        text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.tips),
-                        isChecked = showTips,
-                        onCheckedChange = {
-                            showTips = it
-                        },
-                        icon = R.drawable.person
-                    )
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.tips)}".contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = "${stringResource(R.string.show)} ${stringResource(R.string.tips)}",
+                            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.tips),
+                            isChecked = showTips,
+                            onCheckedChange = {
+                                showTips = it
+                            },
+                            icon = R.drawable.person
+                        )
+                    }
 
-                    OtherSwitchSettingEntry(
-                        title = "${stringResource(R.string.show)} ${stringResource(R.string.charts)}",
-                        text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.charts),
-                        isChecked = showCharts,
-                        onCheckedChange = {
-                            showCharts = it
-                        },
-                        icon = R.drawable.trending
-                    )
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.charts)}".contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = "${stringResource(R.string.show)} ${stringResource(R.string.charts)}",
+                            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.charts),
+                            isChecked = showCharts,
+                            onCheckedChange = {
+                                showCharts = it
+                            },
+                            icon = R.drawable.trending
+                        )
+                    }
 
-                    OtherSwitchSettingEntry(
-                        title = "${stringResource(R.string.show)} ${stringResource(R.string.related_albums)}",
-                        text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.related_albums),
-                        isChecked = showRelatedAlbums,
-                        onCheckedChange = {
-                            showRelatedAlbums = it
-                        },
-                        icon = R.drawable.album
-                    )
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.related_albums)}".contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = "${stringResource(R.string.show)} ${stringResource(R.string.related_albums)}",
+                            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.related_albums),
+                            isChecked = showRelatedAlbums,
+                            onCheckedChange = {
+                                showRelatedAlbums = it
+                            },
+                            icon = R.drawable.album
+                        )
+                    }
 
-                    OtherSwitchSettingEntry(
-                        title = "${stringResource(R.string.show)} ${stringResource(R.string.similar_artists)}",
-                        text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.similar_artists),
-                        isChecked = showSimilarArtists,
-                        onCheckedChange = {
-                            showSimilarArtists = it
-                        },
-                        icon = R.drawable.people
-                    )
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.similar_artists)}".contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = "${stringResource(R.string.show)} ${stringResource(R.string.similar_artists)}",
+                            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.similar_artists),
+                            isChecked = showSimilarArtists,
+                            onCheckedChange = {
+                                showSimilarArtists = it
+                            },
+                            icon = R.drawable.people
+                        )
+                    }
 
-                    OtherSwitchSettingEntry(
-                        title = "${stringResource(R.string.show)} ${stringResource(R.string.new_albums_of_your_artists)}",
-                        text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.new_albums_of_your_artists),
-                        isChecked = showNewAlbumsArtists,
-                        onCheckedChange = {
-                            showNewAlbumsArtists = it
-                        },
-                        icon = R.drawable.alternative_version
-                    )
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.new_albums_of_your_artists)}".contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = "${stringResource(R.string.show)} ${stringResource(R.string.new_albums_of_your_artists)}",
+                            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.new_albums_of_your_artists),
+                            isChecked = showNewAlbumsArtists,
+                            onCheckedChange = {
+                                showNewAlbumsArtists = it
+                            },
+                            icon = R.drawable.alternative_version
+                        )
+                    }
 
-                    OtherSwitchSettingEntry(
-                        title = "${stringResource(R.string.show)} ${stringResource(R.string.new_albums)}",
-                        text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.new_albums),
-                        isChecked = showNewAlbums,
-                        onCheckedChange = {
-                            showNewAlbums = it
-                        },
-                        icon = R.drawable.album
-                    )
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.new_albums)}".contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = "${stringResource(R.string.show)} ${stringResource(R.string.new_albums)}",
+                            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.new_albums),
+                            isChecked = showNewAlbums,
+                            onCheckedChange = {
+                                showNewAlbums = it
+                            },
+                            icon = R.drawable.album
+                        )
+                    }
 
-                    OtherSwitchSettingEntry(
-                        title = "${stringResource(R.string.show)} ${stringResource(R.string.playlists_you_might_like)}",
-                        text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.playlists_you_might_like),
-                        isChecked = showPlaylistMightLike,
-                        onCheckedChange = {
-                            showPlaylistMightLike = it
-                        },
-                        icon = R.drawable.playlist
-                    )
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.playlists_you_might_like)}".contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = "${stringResource(R.string.show)} ${stringResource(R.string.playlists_you_might_like)}",
+                            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.playlists_you_might_like),
+                            isChecked = showPlaylistMightLike,
+                            onCheckedChange = {
+                                showPlaylistMightLike = it
+                            },
+                            icon = R.drawable.playlist
+                        )
+                    }
 
-                    OtherSwitchSettingEntry(
-                        title = "${stringResource(R.string.show)} ${stringResource(R.string.moods_and_genres)}",
-                        text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.moods_and_genres),
-                        isChecked = showMoodsAndGenres,
-                        onCheckedChange = {
-                            showMoodsAndGenres = it
-                        },
-                        icon = R.drawable.moods
-                    )
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.moods_and_genres)}".contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = "${stringResource(R.string.show)} ${stringResource(R.string.moods_and_genres)}",
+                            text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.moods_and_genres),
+                            isChecked = showMoodsAndGenres,
+                            onCheckedChange = {
+                                showMoodsAndGenres = it
+                            },
+                            icon = R.drawable.moods
+                        )
+                    }
 
-					OtherSwitchSettingEntry(
-						title = stringResource(R.string.show_monthly_playlists_in_quick_picks),
-						text = "",
-						isChecked = showMonthlyPlaylistInQuickPicks,
-						onCheckedChange = {
-							showMonthlyPlaylistInQuickPicks = it
-						},
-						icon = R.drawable.featured_playlist
-					)
+					if (search.inputValue.isBlank() || stringResource(R.string.show_monthly_playlists_in_quick_picks).contains(search.inputValue, true)) {
+    					OtherSwitchSettingEntry(
+    						title = stringResource(R.string.show_monthly_playlists_in_quick_picks),
+    						text = "",
+    						isChecked = showMonthlyPlaylistInQuickPicks,
+    						onCheckedChange = {
+    							showMonthlyPlaylistInQuickPicks = it
+    						},
+    						icon = R.drawable.featured_playlist
+    					)
+					}
                 }
             )
         }
@@ -367,12 +387,14 @@ fun AIRecommendationSettings(
                 icon = R.drawable.person,
                 content = {
                     var showTipsDialog by remember { mutableStateOf(false) }
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.tips),
-                        text = playEventType.text,
-                        icon = R.drawable.sort_vertical,
-                        onClick = { showTipsDialog = true }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.tips).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.tips),
+                            text = playEventType.text,
+                            icon = R.drawable.sort_vertical,
+                            onClick = { showTipsDialog = true }
+                        )
+                    }
 
                     if (showTipsDialog) {
                         ValueSelectorDialog(
@@ -386,12 +408,14 @@ fun AIRecommendationSettings(
                     }
 
                     var showQuickSelectionDialog by remember { mutableStateOf(false) }
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.quick_selection_type),
-                        text = stringResource(R.string.quick_selection, localRecommandationsNumber.value),
-                        icon = R.drawable.sparkles,
-                        onClick = { showQuickSelectionDialog = true }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.quick_selection_type).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.quick_selection_type),
+                            text = stringResource(R.string.quick_selection, localRecommandationsNumber.value),
+                            icon = R.drawable.sparkles,
+                            onClick = { showQuickSelectionDialog = true }
+                        )
+                    }
 
                     if (showQuickSelectionDialog) {
                         ValueSelectorDialog(
@@ -423,25 +447,29 @@ fun AIRecommendationSettings(
                 title = stringResource(R.string.monthly_playlists),
                 icon = R.drawable.calendar,
                 content = {
-					OtherSwitchSettingEntry(
-						title = stringResource(R.string.show_monthly_playlists_in_library),
-						text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.monthly_playlists) + " " + stringResource(R.string.in_txt) + " " + stringResource(R.string.library),
-						isChecked = showMonthlyPlaylists,
-						onCheckedChange = {
-							showMonthlyPlaylists = it
-						},
-						icon = R.drawable.eye
-					)
+					if (search.inputValue.isBlank() || stringResource(R.string.show_monthly_playlists_in_library).contains(search.inputValue, true)) {
+    					OtherSwitchSettingEntry(
+    						title = stringResource(R.string.show_monthly_playlists_in_library),
+    						text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.monthly_playlists) + " " + stringResource(R.string.in_txt) + " " + stringResource(R.string.library),
+    						isChecked = showMonthlyPlaylists,
+    						onCheckedChange = {
+    							showMonthlyPlaylists = it
+    						},
+    						icon = R.drawable.eye
+    					)
+					}
 
-                    OtherSwitchSettingEntry(
-                        title = stringResource(R.string.enable_monthly_playlists_creation),
-                        text = "",
-                        isChecked = enableCreateMonthlyPlaylists,
-                        onCheckedChange = {
-                            enableCreateMonthlyPlaylists = it
-                        },
-                        icon = R.drawable.calendar_clear
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.enable_monthly_playlists_creation).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = stringResource(R.string.enable_monthly_playlists_creation),
+                            text = "",
+                            isChecked = enableCreateMonthlyPlaylists,
+                            onCheckedChange = {
+                                enableCreateMonthlyPlaylists = it
+                            },
+                            icon = R.drawable.calendar_clear
+                        )
+                    }
                 }
             )
         }
@@ -461,13 +489,15 @@ fun AIRecommendationSettings(
                 icon = R.drawable.smart_shuffle,
                 content = {
                     var showRecommendationsDialog by remember { mutableStateOf(false) }
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.smart_recommendations_number),
-                        text = if (recommendationsNumber == RecommendationsNumber.Adaptive) 
-                            stringResource(R.string.smart_recommendations_adaptive_description) else recommendationsNumber.text,
-                        icon = R.drawable.shuffle,
-                        onClick = { showRecommendationsDialog = true }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.smart_recommendations_number).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.smart_recommendations_number),
+                            text = if (recommendationsNumber == RecommendationsNumber.Adaptive) 
+                                stringResource(R.string.smart_recommendations_adaptive_description) else recommendationsNumber.text,
+                            icon = R.drawable.shuffle,
+                            onClick = { showRecommendationsDialog = true }
+                        )
+                    }
 
                     if (showRecommendationsDialog) {
                         ValueSelectorDialog(
@@ -503,12 +533,14 @@ fun AIRecommendationSettings(
                 icon = R.drawable.trending,
                 content = {
                     var showStatisticsDialog by remember { mutableStateOf(false) }
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.statistics_max_number_of_items),
-                        text = maxStatisticsItems.name,
-                        icon = R.drawable.musical_notes,
-                        onClick = { showStatisticsDialog = true }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.statistics_max_number_of_items).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.statistics_max_number_of_items),
+                            text = maxStatisticsItems.name,
+                            icon = R.drawable.musical_notes,
+                            onClick = { showStatisticsDialog = true }
+                        )
+                    }
 
                     if (showStatisticsDialog) {
                         ValueSelectorDialog(
@@ -521,15 +553,17 @@ fun AIRecommendationSettings(
                         )
                     }
 
-                    OtherSwitchSettingEntry(
-                        title = stringResource(R.string.listening_time),
-                        text = stringResource(R.string.shows_the_number_of_songs_heard_and_their_listening_time),
-                        isChecked = showStatsListeningTime,
-                        onCheckedChange = {
-                            showStatsListeningTime = it
-                        },
-                        icon = R.drawable.time
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.listening_time).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = stringResource(R.string.listening_time),
+                            text = stringResource(R.string.shows_the_number_of_songs_heard_and_their_listening_time),
+                            isChecked = showStatsListeningTime,
+                            onCheckedChange = {
+                                showStatsListeningTime = it
+                            },
+                            icon = R.drawable.time
+                        )
+                    }
                 }
             )
         }
@@ -549,12 +583,14 @@ fun AIRecommendationSettings(
                 icon = R.drawable.playlist,
                 content = {
                     var showTopPlaylistsDialog by remember { mutableStateOf(false) }
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.statistics_max_number_of_items),
-                        text = maxTopPlaylistItems.name,
-                        icon = R.drawable.musical_notes,
-                        onClick = { showTopPlaylistsDialog = true }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.statistics_max_number_of_items).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.statistics_max_number_of_items),
+                            text = maxTopPlaylistItems.name,
+                            icon = R.drawable.musical_notes,
+                            onClick = { showTopPlaylistsDialog = true }
+                        )
+                    }
 
                     if (showTopPlaylistsDialog) {
                         ValueSelectorDialog(
@@ -567,15 +603,17 @@ fun AIRecommendationSettings(
                         )
                     }
 
-                    OtherSwitchSettingEntry(
-                        title = "${stringResource(R.string.show)} ${stringResource(R.string.my_playlist_top1)}",
-                        text = "",
-                        isChecked = showMyTopPlaylist,
-                        onCheckedChange = {
-                            showMyTopPlaylist = it
-                        },
-                        icon = R.drawable.trending
-                    )
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.my_playlist_top1)}".contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = "${stringResource(R.string.show)} ${stringResource(R.string.my_playlist_top1)}",
+                            text = "",
+                            isChecked = showMyTopPlaylist,
+                            onCheckedChange = {
+                                showMyTopPlaylist = it
+                            },
+                            icon = R.drawable.trending
+                        )
+                    }
                 }
 
             )
@@ -600,16 +638,18 @@ fun AIRecommendationSettings(
                                 .countAll()
                     }.collectAsState( 0L, Dispatchers.IO )
 
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.reset_quick_picks),
-                        text = if (eventsCount > 0) {
-                            stringResource(R.string.delete_playback_events, eventsCount)
-                        } else {
-                            stringResource(R.string.quick_picks_are_cleared)
-                        },
-                        icon = R.drawable.trash,
-                        onClick = { clearEvents = true }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.reset_quick_picks).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.reset_quick_picks),
+                            text = if (eventsCount > 0) {
+                                stringResource(R.string.delete_playback_events, eventsCount)
+                            } else {
+                                stringResource(R.string.quick_picks_are_cleared)
+                            },
+                            icon = R.drawable.trash,
+                            onClick = { clearEvents = true }
+                        )
+                    }
                 }
             )
         }
@@ -630,12 +670,14 @@ fun AIRecommendationSettings(
                 content = {
                     var resetToDefault by remember { mutableStateOf(false) }
                     val context = LocalContext.current
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.settings_reset),
-                        text = stringResource(R.string.settings_restore_default_settings),
-                        icon = R.drawable.refresh,
-                        onClick = { resetToDefault = true }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.settings_reset),
+                            text = stringResource(R.string.settings_restore_default_settings),
+                            icon = R.drawable.refresh,
+                            onClick = { resetToDefault = true }
+                        )
+                    }
                     if (resetToDefault) {
                         DefaultAIRecommendationSettings()
                         resetToDefault = false

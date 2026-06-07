@@ -882,25 +882,29 @@ fun AppearanceSettings(
         }
 
         if (!isLandscape) {
-            OtherSettingsEntry(
-                title = stringResource(R.string.appearancepresets),
-                text = stringResource(R.string.appearancepresetssecondary),
-                icon = R.drawable.ui,
-                onClick = { appearanceChooser = true }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.appearancepresets).contains(search.inputValue, true)) {
+                OtherSettingsEntry(
+                    title = stringResource(R.string.appearancepresets),
+                    text = stringResource(R.string.appearancepresetssecondary),
+                    icon = R.drawable.ui,
+                    onClick = { appearanceChooser = true }
+                )
+            }
 
             if (search.inputValue.isBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
                     search.inputValue,
                     true
                 )
             )
-                OtherSwitchSettingEntry(
-                icon = R.drawable.enqueue,
-                    title = stringResource(R.string.show_player_top_actions_bar),
-                    text = "",
-                    isChecked = showTopActionsBar,
-                    onCheckedChange = { showTopActionsBar = it }
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.show_player_top_actions_bar).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.enqueue,
+                        title = stringResource(R.string.show_player_top_actions_bar),
+                        text = "",
+                        isChecked = showTopActionsBar,
+                        onCheckedChange = { showTopActionsBar = it }
+                    )
+                }
 
             if (!showTopActionsBar) {
                 if (search.inputValue.isBlank() || stringResource(R.string.blankspace).contains(
@@ -908,13 +912,15 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    OtherSwitchSettingEntry(
-                icon = R.drawable.space,
-                        title = stringResource(R.string.blankspace),
-                        text = "",
-                        isChecked = topPadding,
-                        onCheckedChange = { topPadding = it }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.blankspace).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                    icon = R.drawable.space,
+                            title = stringResource(R.string.blankspace),
+                            text = "",
+                            isChecked = topPadding,
+                            onCheckedChange = { topPadding = it }
+                        )
+                    }
             }
         }
         if (search.inputValue.isBlank() || stringResource(R.string.playertype).contains(
@@ -959,13 +965,15 @@ fun AppearanceSettings(
                     true
                 )
             )
-                OtherSwitchSettingEntry(
-                icon = R.drawable.image,
-                    title = stringResource(R.string.show_thumbnail),
-                    text = "",
-                    isChecked = showthumbnail,
-                    onCheckedChange = {showthumbnail = it},
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.show_thumbnail).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.image,
+                        title = stringResource(R.string.show_thumbnail),
+                        text = "",
+                        isChecked = showthumbnail,
+                        onCheckedChange = {showthumbnail = it},
+                    )
+                }
         }
         AnimatedVisibility(visible = !showthumbnail && playerType == PlayerType.Modern && !isLandscape) {
             if (search.inputValue.isBlank() || stringResource(R.string.swipe_Animation_No_Thumbnail).contains(
@@ -998,14 +1006,16 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        OtherSwitchSettingEntry(
-                icon = R.drawable.drop_blur,
-                            title = stringResource(R.string.fadingedge),
-                            text = "",
-                            isChecked = fadingedge,
-                            onCheckedChange = { fadingedge = it },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                        )
+                        if (search.inputValue.isBlank() || stringResource(R.string.fadingedge).contains(search.inputValue, true)) {
+                            OtherSwitchSettingEntry(
+                    icon = R.drawable.drop_blur,
+                                title = stringResource(R.string.fadingedge),
+                                text = "",
+                                isChecked = fadingedge,
+                                onCheckedChange = { fadingedge = it },
+                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                            )
+                        }
                 }
 
                 if (playerType == PlayerType.Modern && !isLandscape && (expandedplayertoggle || expandedplayer)) {
@@ -1014,14 +1024,16 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        OtherSwitchSettingEntry(
-                icon = R.drawable.images_sharp,
-                            title = stringResource(R.string.carousel),
-                            text = "",
-                            isChecked = carousel,
-                            onCheckedChange = { carousel = it },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                        )
+                        if (search.inputValue.isBlank() || stringResource(R.string.carousel).contains(search.inputValue, true)) {
+                            OtherSwitchSettingEntry(
+                    icon = R.drawable.images_sharp,
+                                title = stringResource(R.string.carousel),
+                                text = "",
+                                isChecked = carousel,
+                                onCheckedChange = { carousel = it },
+                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                            )
+                        }
 
                     if (search.inputValue.isBlank() || stringResource(R.string.carouselsize).contains(
                             search.inputValue,
@@ -1044,42 +1056,48 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        OtherSwitchSettingEntry(
-                icon = R.drawable.pause,
-                            title = stringResource(R.string.thumbnailpause),
-                            text = "",
-                            isChecked = thumbnailpause,
-                            onCheckedChange = { thumbnailpause = it },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                        )
+                        if (search.inputValue.isBlank() || stringResource(R.string.thumbnailpause).contains(search.inputValue, true)) {
+                            OtherSwitchSettingEntry(
+                    icon = R.drawable.pause,
+                                title = stringResource(R.string.thumbnailpause),
+                                text = "",
+                                isChecked = thumbnailpause,
+                                onCheckedChange = { thumbnailpause = it },
+                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                            )
+                        }
 
                     if (search.inputValue.isBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
                             search.inputValue,
                             true
                         )
                     )
-                        OtherSwitchSettingEntry(
-                icon = R.drawable.image,
-                            title = stringResource(R.string.show_lyrics_thumbnail),
-                            text = "",
-                            isChecked = showlyricsthumbnail,
-                            onCheckedChange = { showlyricsthumbnail = it },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                        )
+                        if (search.inputValue.isBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(search.inputValue, true)) {
+                            OtherSwitchSettingEntry(
+                    icon = R.drawable.image,
+                                title = stringResource(R.string.show_lyrics_thumbnail),
+                                text = "",
+                                isChecked = showlyricsthumbnail,
+                                onCheckedChange = { showlyricsthumbnail = it },
+                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                            )
+                        }
                     if (visualizerEnabled) {
                         if (search.inputValue.isBlank() || stringResource(R.string.showvisthumbnail).contains(
                                 search.inputValue,
                                 true
                             )
                         )
-                            OtherSwitchSettingEntry(
-                icon = R.drawable.equalizer,
-                                title = stringResource(R.string.showvisthumbnail),
-                                text = "",
-                                isChecked = showvisthumbnail,
-                                onCheckedChange = { showvisthumbnail = it },
-                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                            )
+                            if (search.inputValue.isBlank() || stringResource(R.string.showvisthumbnail).contains(search.inputValue, true)) {
+                                OtherSwitchSettingEntry(
+                    icon = R.drawable.equalizer,
+                                    title = stringResource(R.string.showvisthumbnail),
+                                    text = "",
+                                    isChecked = showvisthumbnail,
+                                    onCheckedChange = { showvisthumbnail = it },
+                                    modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                                )
+                            }
                     }
                 }
 
@@ -1088,14 +1106,16 @@ fun AppearanceSettings(
                         true
                     )
                 ) {
-                    OtherSwitchSettingEntry(
-                icon = R.drawable.images_sharp,
-                        title = stringResource(R.string.show_cover_thumbnail_animation),
-                        text = "",
-                        isChecked = showCoverThumbnailAnimation,
-                        onCheckedChange = { showCoverThumbnailAnimation = it },
-                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.show_cover_thumbnail_animation).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                    icon = R.drawable.images_sharp,
+                            title = stringResource(R.string.show_cover_thumbnail_animation),
+                            text = "",
+                            isChecked = showCoverThumbnailAnimation,
+                            onCheckedChange = { showCoverThumbnailAnimation = it },
+                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        )
+                    }
                     AnimatedVisibility(visible = showCoverThumbnailAnimation) {
                         Column {
                             OtherEnumValueSelectorSettingsEntry(
@@ -1177,13 +1197,15 @@ fun AppearanceSettings(
                     true
                 )
             )
-                OtherSwitchSettingEntry(
-                icon = R.drawable.eye_off,
-                    title = stringResource(R.string.noblur),
-                    text = "",
-                    isChecked = noblur,
-                    onCheckedChange = { noblur = it }
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.noblur).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.eye_off,
+                        title = stringResource(R.string.noblur),
+                        text = "",
+                        isChecked = noblur,
+                        onCheckedChange = { noblur = it }
+                    )
+                }
 
 
         }
@@ -1194,13 +1216,15 @@ fun AppearanceSettings(
                     true
                 )
             )
-                OtherSwitchSettingEntry(
-                icon = R.drawable.stats_chart,
-                    title = stringResource(R.string.statsfornerdsplayer),
-                    text = "",
-                    isChecked = statsfornerds,
-                    onCheckedChange = { statsfornerds = it }
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.statsfornerdsplayer).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.stats_chart,
+                        title = stringResource(R.string.statsfornerdsplayer),
+                        text = "",
+                        isChecked = statsfornerds,
+                        onCheckedChange = { statsfornerds = it }
+                    )
+                }
         }
         }
     )
@@ -1245,15 +1269,17 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        OtherSwitchSettingEntry(
-                icon = R.drawable.information,
-                            title = stringResource(R.string.pinfo_show_icons),
-                            text = "",
-                            isChecked = playerInfoShowIcons,
-                            onCheckedChange = { playerInfoShowIcons = it },
-                            modifier = Modifier
-                                .padding(start = 25.dp)
-                        )
+                        if (search.inputValue.isBlank() || stringResource(R.string.pinfo_show_icons).contains(search.inputValue, true)) {
+                            OtherSwitchSettingEntry(
+                    icon = R.drawable.information,
+                                title = stringResource(R.string.pinfo_show_icons),
+                                text = "",
+                                isChecked = playerInfoShowIcons,
+                                onCheckedChange = { playerInfoShowIcons = it },
+                                modifier = Modifier
+                                    .padding(start = 25.dp)
+                            )
+                        }
                 }
             }
 
@@ -1281,13 +1307,15 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.sync,
-                title = stringResource(R.string.player_swap_controls_with_timeline),
-                text = "",
-                isChecked = playerSwapControlsWithTimeline,
-                onCheckedChange = { playerSwapControlsWithTimeline = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.player_swap_controls_with_timeline).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.sync,
+                    title = stringResource(R.string.player_swap_controls_with_timeline),
+                    text = "",
+                    isChecked = playerSwapControlsWithTimeline,
+                    onCheckedChange = { playerSwapControlsWithTimeline = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.timeline).contains(
                 search.inputValue,
@@ -1307,13 +1335,15 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.eye_off,
-                title = stringResource(R.string.transparentbar),
-                text = "",
-                isChecked = transparentbar,
-                onCheckedChange = { transparentbar = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.transparentbar).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.eye_off,
+                    title = stringResource(R.string.transparentbar),
+                    text = "",
+                    isChecked = transparentbar,
+                    onCheckedChange = { transparentbar = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.pcontrols_type).contains(
                 search.inputValue,
@@ -1352,13 +1382,15 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.resize,
-                title = stringResource(R.string.buttonzoomout),
-                text = "",
-                isChecked = buttonzoomout,
-                onCheckedChange = { buttonzoomout = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.buttonzoomout).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.resize,
+                    title = stringResource(R.string.buttonzoomout),
+                    text = "",
+                    isChecked = buttonzoomout,
+                    onCheckedChange = { buttonzoomout = it }
+                )
+            }
 
 
         if (search.inputValue.isBlank() || stringResource(R.string.play_button).contains(
@@ -1417,14 +1449,16 @@ fun AppearanceSettings(
         var isRotatingCoverEnabled by rememberPreference( rotatingAlbumCoverKey, false )
         AnimatedVisibility( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor ) {
             if ( search.inputValue.isBlank() || stringResource( R.string.rotating_cover_title ).contains(search.inputValue, true) )
-                OtherSwitchSettingEntry(
-                icon = R.drawable.sync,
-                    title = stringResource( R.string.rotating_cover_title ),
-                    text = "",
-                    isChecked = isRotatingCoverEnabled,
-                    onCheckedChange = { isRotatingCoverEnabled = it },
-                    modifier = Modifier.padding( start = 25.dp )
-                )
+                if (search.inputValue.isBlank() || stringResource( R.string.rotating_cover_title ).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.sync,
+                        title = stringResource( R.string.rotating_cover_title ),
+                        text = "",
+                        isChecked = isRotatingCoverEnabled,
+                        onCheckedChange = { isRotatingCoverEnabled = it },
+                        modifier = Modifier.padding( start = 25.dp )
+                    )
+                }
         }
 
 
@@ -1434,13 +1468,15 @@ fun AppearanceSettings(
                     true
                 )
             )
-                OtherSwitchSettingEntry(
-                icon = R.drawable.drop_half_fill,
-                    title = stringResource(R.string.blackgradient),
-                    text = "",
-                    isChecked = blackgradient,
-                    onCheckedChange = { blackgradient = it }
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.blackgradient).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.drop_half_fill,
+                        title = stringResource(R.string.blackgradient),
+                        text = "",
+                        isChecked = blackgradient,
+                        onCheckedChange = { blackgradient = it }
+                    )
+                }
 
         if ((playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) && (playerType == PlayerType.Modern))
             if (search.inputValue.isBlank() || stringResource(R.string.albumCoverRotation).contains(
@@ -1448,15 +1484,17 @@ fun AppearanceSettings(
                     true
                 )
             )
-                OtherSwitchSettingEntry(
-                icon = R.drawable.sync,
-                    title = stringResource(R.string.albumCoverRotation),
-                    text = "",
-                    isChecked = albumCoverRotation,
-                    onCheckedChange = { albumCoverRotation = it },
-                    modifier = Modifier
-                        .padding(start = 25.dp)
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.albumCoverRotation).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.sync,
+                        title = stringResource(R.string.albumCoverRotation),
+                        text = "",
+                        isChecked = albumCoverRotation,
+                        onCheckedChange = { albumCoverRotation = it },
+                        modifier = Modifier
+                            .padding(start = 25.dp)
+                    )
+                }
 
         if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor)
             if (search.inputValue.isBlank() || stringResource(R.string.bottomgradient).contains(
@@ -1464,51 +1502,59 @@ fun AppearanceSettings(
                     true
                 )
             )
-                OtherSwitchSettingEntry(
-                icon = R.drawable.droplet,
-                    title = stringResource(R.string.bottomgradient),
-                    text = "",
-                    isChecked = bottomgradient,
-                    onCheckedChange = { bottomgradient = it }
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.bottomgradient).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.droplet,
+                        title = stringResource(R.string.bottomgradient),
+                        text = "",
+                        isChecked = bottomgradient,
+                        onCheckedChange = { bottomgradient = it }
+                    )
+                }
         if (search.inputValue.isBlank() || stringResource(R.string.textoutline).contains(
               search.inputValue,
               true
               )
          )
-             OtherSwitchSettingEntry(
-                icon = R.drawable.text,
-                 title = stringResource(R.string.textoutline),
-                 text = "",
-                 isChecked = textoutline,
-                 onCheckedChange = { textoutline = it }
-             )
+             if (search.inputValue.isBlank() || stringResource(R.string.textoutline).contains(search.inputValue, true)) {
+                 OtherSwitchSettingEntry(
+                    icon = R.drawable.text,
+                     title = stringResource(R.string.textoutline),
+                     text = "",
+                     isChecked = textoutline,
+                     onCheckedChange = { textoutline = it }
+                 )
+             }
 
        if (search.inputValue.isBlank() || stringResource(R.string.show_total_time_of_queue).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.time,
-                title = stringResource(R.string.show_total_time_of_queue),
-                text = "",
-                isChecked = showTotalTimeQueue,
-                onCheckedChange = { showTotalTimeQueue = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.show_total_time_of_queue).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.time,
+                    title = stringResource(R.string.show_total_time_of_queue),
+                    text = "",
+                    isChecked = showTotalTimeQueue,
+                    onCheckedChange = { showTotalTimeQueue = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.show_remaining_song_time).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.time,
-                title = stringResource(R.string.show_remaining_song_time),
-                text = "",
-                isChecked = showRemainingSongTime,
-                onCheckedChange = { showRemainingSongTime = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.show_remaining_song_time).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.time,
+                    title = stringResource(R.string.show_remaining_song_time),
+                    text = "",
+                    isChecked = showRemainingSongTime,
+                    onCheckedChange = { showRemainingSongTime = it }
+                )
+            }
 
         }
     )
@@ -1522,13 +1568,15 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.arrow_forward,
-                title = stringResource(R.string.show_next_songs_in_player),
-                text = "",
-                isChecked = showNextSongsInPlayer,
-                onCheckedChange = { showNextSongsInPlayer = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.show_next_songs_in_player).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.arrow_forward,
+                    title = stringResource(R.string.show_next_songs_in_player),
+                    text = "",
+                    isChecked = showNextSongsInPlayer,
+                    onCheckedChange = { showNextSongsInPlayer = it }
+                )
+            }
         AnimatedVisibility( visible = showNextSongsInPlayer) {
           Column {
               if (search.inputValue.isBlank() || stringResource(R.string.showtwosongs).contains(search.inputValue,true))
@@ -1550,14 +1598,16 @@ fun AppearanceSettings(
                     true
                 )
             )
-                OtherSwitchSettingEntry(
-                icon = R.drawable.album,
-                    title = stringResource(R.string.showalbumcover),
-                    text = "",
-                    isChecked = showalbumcover,
-                    onCheckedChange = { showalbumcover = it },
-                      modifier = Modifier.padding(start = 25.dp)
-                  )
+                if (search.inputValue.isBlank() || stringResource(R.string.showalbumcover).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.album,
+                        title = stringResource(R.string.showalbumcover),
+                        text = "",
+                        isChecked = showalbumcover,
+                        onCheckedChange = { showalbumcover = it },
+                          modifier = Modifier.padding(start = 25.dp)
+                      )
+                }
           }
         }
 
@@ -1566,78 +1616,90 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.text,
-                title = stringResource(R.string.disable_scrolling_text),
-                text = stringResource(R.string.scrolling_text_is_used_for_long_texts),
-                isChecked = disableScrollingText,
-                onCheckedChange = { disableScrollingText = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.disable_scrolling_text).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.text,
+                    title = stringResource(R.string.disable_scrolling_text),
+                    text = stringResource(R.string.scrolling_text_is_used_for_long_texts),
+                    isChecked = disableScrollingText,
+                    onCheckedChange = { disableScrollingText = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(if (playerType == PlayerType.Modern && !isLandscape) R.string.disable_horizontal_swipe else R.string.disable_vertical_swipe).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.sync,
-                title = stringResource(if (playerType == PlayerType.Modern && !isLandscape) R.string.disable_vertical_swipe else R.string.disable_horizontal_swipe),
-                text = stringResource(if (playerType == PlayerType.Modern && !isLandscape) R.string.disable_vertical_swipe_secondary else R.string.disable_song_switching_via_swipe),
-                isChecked = disablePlayerHorizontalSwipe,
-                onCheckedChange = { disablePlayerHorizontalSwipe = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(if (playerType == PlayerType.Modern && !isLandscape) R.string.disable_vertical_swipe else R.string.disable_horizontal_swipe).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.sync,
+                    title = stringResource(if (playerType == PlayerType.Modern && !isLandscape) R.string.disable_vertical_swipe else R.string.disable_horizontal_swipe),
+                    text = stringResource(if (playerType == PlayerType.Modern && !isLandscape) R.string.disable_vertical_swipe_secondary else R.string.disable_song_switching_via_swipe),
+                    isChecked = disablePlayerHorizontalSwipe,
+                    onCheckedChange = { disablePlayerHorizontalSwipe = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.player_rotating_buttons).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.refresh,
-                title = stringResource(R.string.player_rotating_buttons),
-                text = stringResource(R.string.player_enable_rotation_buttons),
-                isChecked = effectRotationEnabled,
-                onCheckedChange = { effectRotationEnabled = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.player_rotating_buttons).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.refresh,
+                    title = stringResource(R.string.player_rotating_buttons),
+                    text = stringResource(R.string.player_enable_rotation_buttons),
+                    isChecked = effectRotationEnabled,
+                    onCheckedChange = { effectRotationEnabled = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.toggle_lyrics).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.song_lyrics,
-                title = stringResource(R.string.toggle_lyrics),
-                text = stringResource(R.string.by_tapping_on_the_thumbnail),
-                isChecked = thumbnailTapEnabled,
-                onCheckedChange = { thumbnailTapEnabled = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.toggle_lyrics).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.song_lyrics,
+                    title = stringResource(R.string.toggle_lyrics),
+                    text = stringResource(R.string.by_tapping_on_the_thumbnail),
+                    isChecked = thumbnailTapEnabled,
+                    onCheckedChange = { thumbnailTapEnabled = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.click_lyrics_text).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.arrow_down,
-                title = stringResource(R.string.click_lyrics_text),
-                text = "",
-                isChecked = clickLyricsText,
-                onCheckedChange = { clickLyricsText = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.click_lyrics_text).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.arrow_down,
+                    title = stringResource(R.string.click_lyrics_text),
+                    text = "",
+                    isChecked = clickLyricsText,
+                    onCheckedChange = { clickLyricsText = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.save_lyrics_state).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.bookmark,
-                title = stringResource(R.string.save_lyrics_state),
-                text = stringResource(R.string.save_lyrics_state_description),
-                isChecked = showLyricsStateKey,
-                onCheckedChange = { showLyricsStateKey = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.save_lyrics_state).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.bookmark,
+                    title = stringResource(R.string.save_lyrics_state),
+                    text = stringResource(R.string.save_lyrics_state_description),
+                    isChecked = showLyricsStateKey,
+                    onCheckedChange = { showLyricsStateKey = it }
+                )
+            }
 
         if (showlyricsthumbnail)
             if (search.inputValue.isBlank() || stringResource(R.string.show_background_in_lyrics).contains(
@@ -1645,26 +1707,30 @@ fun AppearanceSettings(
                     true
                 )
             )
-                OtherSwitchSettingEntry(
-                icon = R.drawable.image,
-                    title = stringResource(R.string.show_background_in_lyrics),
-                    text = "",
-                    isChecked = showBackgroundLyrics,
-                    onCheckedChange = { showBackgroundLyrics = it }
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.show_background_in_lyrics).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.image,
+                        title = stringResource(R.string.show_background_in_lyrics),
+                        text = "",
+                        isChecked = showBackgroundLyrics,
+                        onCheckedChange = { showBackgroundLyrics = it }
+                    )
+                }
 
         if (search.inputValue.isBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.alert,
-                title = stringResource(R.string.player_enable_lyrics_popup_message),
-                text = "",
-                isChecked = playerEnableLyricsPopupMessage,
-                onCheckedChange = { playerEnableLyricsPopupMessage = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.alert,
+                    title = stringResource(R.string.player_enable_lyrics_popup_message),
+                    text = "",
+                    isChecked = playerEnableLyricsPopupMessage,
+                    onCheckedChange = { playerEnableLyricsPopupMessage = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.background_progress_bar).contains(
                 search.inputValue,
@@ -1686,25 +1752,29 @@ fun AppearanceSettings(
                 true
             )
         ) {
-            OtherSwitchSettingEntry(
-                icon = R.drawable.sound_effect,
-                title = stringResource(R.string.visualizer),
-                text = "",
-                isChecked = visualizerEnabled,
-                onCheckedChange = { visualizerEnabled = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.visualizer).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.sound_effect,
+                    title = stringResource(R.string.visualizer),
+                    text = "",
+                    isChecked = visualizerEnabled,
+                    onCheckedChange = { visualizerEnabled = it }
+                )
+            }
 
 
             AnimatedVisibility(visible = visualizerEnabled) {
                 Column {
-                    OtherSwitchSettingEntry(
-                icon = R.drawable.bookmark,
-                        title = stringResource(R.string.save_visualizer_state),
-                        text = stringResource(R.string.save_visualizer_state_description),
-                        isChecked = showVisualizerStateKey,
-                        onCheckedChange = { showVisualizerStateKey = it },
-                        modifier = Modifier.padding(start = 25.dp)
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.save_visualizer_state).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                    icon = R.drawable.bookmark,
+                            title = stringResource(R.string.save_visualizer_state),
+                            text = stringResource(R.string.save_visualizer_state_description),
+                            isChecked = showVisualizerStateKey,
+                            onCheckedChange = { showVisualizerStateKey = it },
+                            modifier = Modifier.padding(start = 25.dp)
+                        )
+                    }
                 }
             }
         }
@@ -1735,143 +1805,165 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.eye,
-                title = stringResource(R.string.action_bar_transparent_background),
-                text = "",
-                isChecked = transparentBackgroundActionBarPlayer,
-                onCheckedChange = { transparentBackgroundActionBarPlayer = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_transparent_background).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.eye,
+                    title = stringResource(R.string.action_bar_transparent_background),
+                    text = "",
+                    isChecked = transparentBackgroundActionBarPlayer,
+                    onCheckedChange = { transparentBackgroundActionBarPlayer = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.actionspacedevenly).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.horizontal_bold_line,
-                title = stringResource(R.string.actionspacedevenly),
-                text = "",
-                isChecked = actionspacedevenly,
-                onCheckedChange = { actionspacedevenly = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.actionspacedevenly).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.horizontal_bold_line,
+                    title = stringResource(R.string.actionspacedevenly),
+                    text = "",
+                    isChecked = actionspacedevenly,
+                    onCheckedChange = { actionspacedevenly = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.tapqueue).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.gesture,
-                title = stringResource(R.string.tapqueue),
-                text = "",
-                isChecked = tapqueue,
-                onCheckedChange = { tapqueue = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.tapqueue).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.gesture,
+                    title = stringResource(R.string.tapqueue),
+                    text = "",
+                    isChecked = tapqueue,
+                    onCheckedChange = { tapqueue = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.swipe_up_to_open_the_queue).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.gesture,
-                title = stringResource(R.string.swipe_up_to_open_the_queue),
-                text = "",
-                isChecked = swipeUpQueue,
-                onCheckedChange = { swipeUpQueue = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.swipe_up_to_open_the_queue).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.gesture,
+                    title = stringResource(R.string.swipe_up_to_open_the_queue),
+                    text = "",
+                    isChecked = swipeUpQueue,
+                    onCheckedChange = { swipeUpQueue = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_video_button).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.video,
-                title = stringResource(R.string.action_bar_show_video_button),
-                text = "",
-                isChecked = showButtonPlayerVideo,
-                onCheckedChange = { showButtonPlayerVideo = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_video_button).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.video,
+                    title = stringResource(R.string.action_bar_show_video_button),
+                    text = "",
+                    isChecked = showButtonPlayerVideo,
+                    onCheckedChange = { showButtonPlayerVideo = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_discover_button).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.discover,
-                title = stringResource(R.string.action_bar_show_discover_button),
-                text = "",
-                isChecked = showButtonPlayerDiscover,
-                onCheckedChange = { showButtonPlayerDiscover = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_discover_button).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.discover,
+                    title = stringResource(R.string.action_bar_show_discover_button),
+                    text = "",
+                    isChecked = showButtonPlayerDiscover,
+                    onCheckedChange = { showButtonPlayerDiscover = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_download_button).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.download,
-                title = stringResource(R.string.action_bar_show_download_button),
-                text = "",
-                isChecked = showButtonPlayerDownload,
-                onCheckedChange = { showButtonPlayerDownload = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_download_button).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.download,
+                    title = stringResource(R.string.action_bar_show_download_button),
+                    text = "",
+                    isChecked = showButtonPlayerDownload,
+                    onCheckedChange = { showButtonPlayerDownload = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_add_to_playlist_button).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.playlist,
-                title = stringResource(R.string.action_bar_show_add_to_playlist_button),
-                text = "",
-                isChecked = showButtonPlayerAddToPlaylist,
-                onCheckedChange = { showButtonPlayerAddToPlaylist = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_add_to_playlist_button).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.playlist,
+                    title = stringResource(R.string.action_bar_show_add_to_playlist_button),
+                    text = "",
+                    isChecked = showButtonPlayerAddToPlaylist,
+                    onCheckedChange = { showButtonPlayerAddToPlaylist = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_loop_button).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.refresh,
-                title = stringResource(R.string.action_bar_show_loop_button),
-                text = "",
-                isChecked = showButtonPlayerLoop,
-                onCheckedChange = { showButtonPlayerLoop = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_loop_button).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.refresh,
+                    title = stringResource(R.string.action_bar_show_loop_button),
+                    text = "",
+                    isChecked = showButtonPlayerLoop,
+                    onCheckedChange = { showButtonPlayerLoop = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_shuffle_button).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.shuffle,
-                title = stringResource(R.string.action_bar_show_shuffle_button),
-                text = "",
-                isChecked = showButtonPlayerShuffle,
-                onCheckedChange = { showButtonPlayerShuffle = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_shuffle_button).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.shuffle,
+                    title = stringResource(R.string.action_bar_show_shuffle_button),
+                    text = "",
+                    isChecked = showButtonPlayerShuffle,
+                    onCheckedChange = { showButtonPlayerShuffle = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_lyrics_button).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.song_lyrics,
-                title = stringResource(R.string.action_bar_show_lyrics_button),
-                text = "",
-                isChecked = showButtonPlayerLyrics,
-                onCheckedChange = { showButtonPlayerLyrics = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_lyrics_button).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.song_lyrics,
+                    title = stringResource(R.string.action_bar_show_lyrics_button),
+                    text = "",
+                    isChecked = showButtonPlayerLyrics,
+                    onCheckedChange = { showButtonPlayerLyrics = it }
+                )
+            }
         if (!isLandscape || !showthumbnail) {
             if (!showlyricsthumbnail) {
                 if (search.inputValue.isBlank() || stringResource(R.string.expandedplayer).contains(
@@ -1879,13 +1971,15 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    OtherSwitchSettingEntry(
-                icon = R.drawable.maximize,
-                        title = stringResource(R.string.expandedplayer),
-                        text = "",
-                        isChecked = expandedplayertoggle,
-                        onCheckedChange = { expandedplayertoggle = it }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.expandedplayer).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                    icon = R.drawable.maximize,
+                            title = stringResource(R.string.expandedplayer),
+                            text = "",
+                            isChecked = expandedplayertoggle,
+                            onCheckedChange = { expandedplayertoggle = it }
+                        )
+                    }
             }
         }
 
@@ -1894,65 +1988,75 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.time,
-                title = stringResource(R.string.action_bar_show_sleep_timer_button),
-                text = "",
-                isChecked = showButtonPlayerSleepTimer,
-                onCheckedChange = { showButtonPlayerSleepTimer = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_sleep_timer_button).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.time,
+                    title = stringResource(R.string.action_bar_show_sleep_timer_button),
+                    text = "",
+                    isChecked = showButtonPlayerSleepTimer,
+                    onCheckedChange = { showButtonPlayerSleepTimer = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.show_equalizer).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.sound_effect,
-                title = stringResource(R.string.show_equalizer),
-                text = "",
-                isChecked = showButtonPlayerSystemEqualizer,
-                onCheckedChange = { showButtonPlayerSystemEqualizer = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.show_equalizer).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.sound_effect,
+                    title = stringResource(R.string.show_equalizer),
+                    text = "",
+                    isChecked = showButtonPlayerSystemEqualizer,
+                    onCheckedChange = { showButtonPlayerSystemEqualizer = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_arrow_button_to_open_queue).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.arrow_forward,
-                title = stringResource(R.string.action_bar_show_arrow_button_to_open_queue),
-                text = "",
-                isChecked = showButtonPlayerArrow,
-                onCheckedChange = { showButtonPlayerArrow = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_arrow_button_to_open_queue).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.arrow_forward,
+                    title = stringResource(R.string.action_bar_show_arrow_button_to_open_queue),
+                    text = "",
+                    isChecked = showButtonPlayerArrow,
+                    onCheckedChange = { showButtonPlayerArrow = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_start_radio_button).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.radio,
-                title = stringResource(R.string.action_bar_show_start_radio_button),
-                text = "",
-                isChecked = showButtonPlayerStartradio,
-                onCheckedChange = { showButtonPlayerStartradio = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_start_radio_button).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.radio,
+                    title = stringResource(R.string.action_bar_show_start_radio_button),
+                    text = "",
+                    isChecked = showButtonPlayerStartradio,
+                    onCheckedChange = { showButtonPlayerStartradio = it }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_menu_button).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.burger,
-                title = stringResource(R.string.action_bar_show_menu_button),
-                text = "",
-                isChecked = showButtonPlayerMenu,
-                onCheckedChange = { showButtonPlayerMenu = it }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_menu_button).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.burger,
+                    title = stringResource(R.string.action_bar_show_menu_button),
+                    text = "",
+                    isChecked = showButtonPlayerMenu,
+                    onCheckedChange = { showButtonPlayerMenu = it }
+                )
+            }
 
                 }
             )
@@ -1980,13 +2084,15 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    OtherSwitchSettingEntry(
-                icon = R.drawable.time,
-                        title = stringResource(R.string.show_total_time_of_queue),
-                        text = "",
-                        isChecked = queueDurationExpanded,
-                        onCheckedChange = { queueDurationExpanded = it }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.show_total_time_of_queue).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                    icon = R.drawable.time,
+                            title = stringResource(R.string.show_total_time_of_queue),
+                            text = "",
+                            isChecked = queueDurationExpanded,
+                            onCheckedChange = { queueDurationExpanded = it }
+                        )
+                    }
             }
 
             if (search.inputValue.isBlank() || stringResource(R.string.titleartist).contains(
@@ -1994,39 +2100,45 @@ fun AppearanceSettings(
                     true
                 )
             )
-                OtherSwitchSettingEntry(
-                icon = R.drawable.title_edit,
-                    title = stringResource(R.string.titleartist),
-                    text = "",
-                    isChecked = titleExpanded,
-                    onCheckedChange = { titleExpanded = it }
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.titleartist).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.title_edit,
+                        title = stringResource(R.string.titleartist),
+                        text = "",
+                        isChecked = titleExpanded,
+                        onCheckedChange = { titleExpanded = it }
+                    )
+                }
 
             if (search.inputValue.isBlank() || stringResource(R.string.timeline).contains(
                     search.inputValue,
                     true
                 )
             )
-                OtherSwitchSettingEntry(
-                icon = R.drawable.ellipsis_horizontal,
-                    title = stringResource(R.string.timeline),
-                    text = "",
-                    isChecked = timelineExpanded,
-                    onCheckedChange = { timelineExpanded = it }
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.timeline).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.ellipsis_horizontal,
+                        title = stringResource(R.string.timeline),
+                        text = "",
+                        isChecked = timelineExpanded,
+                        onCheckedChange = { timelineExpanded = it }
+                    )
+                }
 
             if (search.inputValue.isBlank() || stringResource(R.string.controls).contains(
                     search.inputValue,
                     true
                 )
             )
-                OtherSwitchSettingEntry(
-                icon = R.drawable.ellipsis_horizontal,
-                    title = stringResource(R.string.controls),
-                    text = "",
-                    isChecked = controlsExpanded,
-                    onCheckedChange = { controlsExpanded = it }
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.controls).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.ellipsis_horizontal,
+                        title = stringResource(R.string.controls),
+                        text = "",
+                        isChecked = controlsExpanded,
+                        onCheckedChange = { controlsExpanded = it }
+                    )
+                }
 
             if (statsfornerds && (!(showthumbnail && playerType == PlayerType.Essential))){
                 if (search.inputValue.isBlank() || stringResource(R.string.statsfornerds).contains(
@@ -2034,13 +2146,15 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    OtherSwitchSettingEntry(
-                icon = R.drawable.stats_chart,
-                        title = stringResource(R.string.statsfornerds),
-                        text = "",
-                        isChecked = statsExpanded,
-                        onCheckedChange = { statsExpanded = it }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.statsfornerds).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                    icon = R.drawable.stats_chart,
+                            title = stringResource(R.string.statsfornerds),
+                            text = "",
+                            isChecked = statsExpanded,
+                            onCheckedChange = { statsExpanded = it }
+                        )
+                    }
             }
 
             if (
@@ -2062,15 +2176,17 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    OtherSwitchSettingEntry(
-                icon = R.drawable.menu,
-                        title = stringResource(R.string.actionbar),
-                        text = "",
-                        isChecked = actionExpanded,
-                        onCheckedChange = {
-                            actionExpanded = it
-                        }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.actionbar).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                    icon = R.drawable.menu,
+                            title = stringResource(R.string.actionbar),
+                            text = "",
+                            isChecked = actionExpanded,
+                            onCheckedChange = {
+                                actionExpanded = it
+                            }
+                        )
+                    }
             }
             if (showNextSongsInPlayer && actionExpanded) {
                 if (search.inputValue.isBlank() || stringResource(R.string.miniqueue).contains(
@@ -2078,13 +2194,15 @@ fun AppearanceSettings(
                         true
                     )
                 )
-                    OtherSwitchSettingEntry(
-                icon = R.drawable.sort_vertical,
-                        title = stringResource(R.string.miniqueue),
-                        text = "",
-                        isChecked = miniQueueExpanded,
-                        onCheckedChange = { miniQueueExpanded = it }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.miniqueue).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                    icon = R.drawable.sort_vertical,
+                            title = stringResource(R.string.miniqueue),
+                            text = "",
+                            isChecked = miniQueueExpanded,
+                            onCheckedChange = { miniQueueExpanded = it }
+                        )
+                    }
             }
 
 
@@ -2156,13 +2274,15 @@ fun AppearanceSettings(
                     title = stringResource(R.string.wallpaper),
                     icon = R.drawable.image,
                     content = {
-                        OtherSwitchSettingEntry(
-                            icon = R.drawable.images_sharp,
-                            title = stringResource(R.string.enable_wallpaper),
-                            text = "",
-                            isChecked = enableWallpaper,
-                            onCheckedChange = { enableWallpaper = it }
-                        )
+                        if (search.inputValue.isBlank() || stringResource(R.string.enable_wallpaper).contains(search.inputValue, true)) {
+                            OtherSwitchSettingEntry(
+                                icon = R.drawable.images_sharp,
+                                title = stringResource(R.string.enable_wallpaper),
+                                text = "",
+                                isChecked = enableWallpaper,
+                                onCheckedChange = { enableWallpaper = it }
+                            )
+                        }
                         AnimatedVisibility(visible = enableWallpaper) {
                             Column {
                                 OtherEnumValueSelectorSettingsEntry(
@@ -2196,12 +2316,14 @@ fun AppearanceSettings(
                 content = {
                     var resetToDefault by remember { mutableStateOf(false) }
                     val context = LocalContext.current
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.settings_reset),
-                        text = stringResource(R.string.settings_restore_default_settings),
-                        icon = R.drawable.refresh,
-                        onClick = { resetToDefault = true }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.settings_reset),
+                            text = stringResource(R.string.settings_restore_default_settings),
+                            icon = R.drawable.refresh,
+                            onClick = { resetToDefault = true }
+                        )
+                    }
                     if (resetToDefault) {
                         DefaultAppearanceSettings()
                         resetToDefault = false

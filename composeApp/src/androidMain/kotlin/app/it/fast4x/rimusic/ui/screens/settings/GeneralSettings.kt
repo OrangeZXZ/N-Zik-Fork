@@ -734,16 +734,18 @@ fun GeneralSettings(
                  content = {
         if (search.inputValue.isBlank() || stringResource(R.string.resume_playback).contains(search.inputValue,true)) {
             if (isAtLeastAndroid6) {
-                             OtherSwitchSettingEntry(
-                    title = stringResource(R.string.resume_playback),
-                    text = stringResource(R.string.when_device_is_connected),
-                    isChecked = resumePlaybackWhenDeviceConnected,
-                    onCheckedChange = {
-                        resumePlaybackWhenDeviceConnected = it
-                        restartService = true
-                                 },
-                                 icon = R.drawable.play
-                )
+                             if (search.inputValue.isBlank() || stringResource(R.string.resume_playback).contains(search.inputValue, true)) {
+                                 OtherSwitchSettingEntry(
+                        title = stringResource(R.string.resume_playback),
+                        text = stringResource(R.string.when_device_is_connected),
+                        isChecked = resumePlaybackWhenDeviceConnected,
+                        onCheckedChange = {
+                            resumePlaybackWhenDeviceConnected = it
+                            restartService = true
+                                     },
+                                     icon = R.drawable.play
+                    )
+                             }
                 RestartPlayerService(restartService, onRestart = { restartService = false })
             }
         }
@@ -765,16 +767,18 @@ fun GeneralSettings(
                 Column(
                     modifier = Modifier.padding(start = 25.dp)
                 ) {
-                                 OtherSwitchSettingEntry(
-                        title =  stringResource(R.string.resume_playback_on_start),
-                        text = stringResource(R.string.resume_automatically_when_app_opens),
-                        isChecked = resumePlaybackOnStart,
-                        onCheckedChange = {
-                            resumePlaybackOnStart = it
-                            restartService = true
-                                     },
-                                     icon = R.drawable.play
-                    )
+                                 if (search.inputValue.isBlank() ||  stringResource(R.string.resume_playback_on_start).contains(search.inputValue, true)) {
+                                     OtherSwitchSettingEntry(
+                            title =  stringResource(R.string.resume_playback_on_start),
+                            text = stringResource(R.string.resume_automatically_when_app_opens),
+                            isChecked = resumePlaybackOnStart,
+                            onCheckedChange = {
+                                resumePlaybackOnStart = it
+                                restartService = true
+                                         },
+                                         icon = R.drawable.play
+                        )
+                                 }
                     RestartPlayerService(restartService, onRestart = { restartService = false } )
                 }
             }
@@ -782,16 +786,18 @@ fun GeneralSettings(
 
         if (search.inputValue.isBlank() || stringResource(R.string.close_app_with_back_button).contains(search.inputValue,true)) {
                          if (Build.VERSION.SDK_INT >= 33) {
-                             OtherSwitchSettingEntry(
-                title = stringResource(R.string.close_app_with_back_button),
-                text = stringResource(R.string.when_you_use_the_back_button_from_the_home_page),
-                isChecked = closeWithBackButton,
-                onCheckedChange = {
-                    closeWithBackButton = it
-                    restartActivity = true
-                                 },
-                                 icon = R.drawable.close
-            )
+                             if (search.inputValue.isBlank() || stringResource(R.string.close_app_with_back_button).contains(search.inputValue, true)) {
+                                 OtherSwitchSettingEntry(
+                    title = stringResource(R.string.close_app_with_back_button),
+                    text = stringResource(R.string.when_you_use_the_back_button_from_the_home_page),
+                    isChecked = closeWithBackButton,
+                    onCheckedChange = {
+                        closeWithBackButton = it
+                        restartActivity = true
+                                     },
+                                     icon = R.drawable.close
+                )
+                             }
                          }
             RestartActivity(restartActivity, onRestart = { restartActivity = false })
         }
@@ -1068,14 +1074,16 @@ fun GeneralSettings(
                     modifier = Modifier.padding(start = 25.dp)
                 ) {
                                  var showPipModuleDialog by remember { mutableStateOf(false) }
-                                 OtherSettingsEntry(
-                                     title = stringResource(R.string.settings_pip_module),
-                                     text = when (pipModule) {
-                                         PipModule.Cover -> stringResource(R.string.pipmodule_cover)
-                                     },
-                                     onClick = { showPipModuleDialog = true },
-                                     icon = R.drawable.logo_youtube
-                                 )
+                                 if (search.inputValue.isBlank() || stringResource(R.string.settings_pip_module).contains(search.inputValue, true)) {
+                                     OtherSettingsEntry(
+                                         title = stringResource(R.string.settings_pip_module),
+                                         text = when (pipModule) {
+                                             PipModule.Cover -> stringResource(R.string.pipmodule_cover)
+                                         },
+                                         onClick = { showPipModuleDialog = true },
+                                         icon = R.drawable.logo_youtube
+                                     )
+                                 }
                                  
                                  if (showPipModuleDialog) {
                                      ValueSelectorDialog(
@@ -1096,16 +1104,18 @@ fun GeneralSettings(
                                  }
 
                                  if (isAtLeastAndroid12) {
-                                     OtherSwitchSettingEntry(
-                        title = stringResource(R.string.settings_enable_pip_auto),
-                        text = stringResource(R.string.pip_info_from_android_12_pip_can_be_automatically_enabled),
-                        isChecked = enablePictureInPictureAuto,
-                        onCheckedChange = {
-                            enablePictureInPictureAuto = it
-                            restartActivity = true
-                                         },
-                                         icon = R.drawable.logo_youtube
-                    )
+                                     if (search.inputValue.isBlank() || stringResource(R.string.settings_enable_pip_auto).contains(search.inputValue, true)) {
+                                         OtherSwitchSettingEntry(
+                            title = stringResource(R.string.settings_enable_pip_auto),
+                            text = stringResource(R.string.pip_info_from_android_12_pip_can_be_automatically_enabled),
+                            isChecked = enablePictureInPictureAuto,
+                            onCheckedChange = {
+                                enablePictureInPictureAuto = it
+                                restartActivity = true
+                                             },
+                                             icon = R.drawable.logo_youtube
+                        )
+                                     }
                                  }
                     RestartActivity(restartActivity, onRestart = { restartActivity = false })
                 }
