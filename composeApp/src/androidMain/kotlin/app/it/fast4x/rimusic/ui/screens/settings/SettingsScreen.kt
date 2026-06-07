@@ -50,6 +50,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -716,70 +717,78 @@ fun SettingsSectionCard(
 ) {
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
     
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .shadow(
-                elevation = 4.dp,
-                shape = RoundedCornerShape(12.dp),
-                spotColor = colorPalette().accent.copy(alpha = 0.2f)
+    Column(modifier = modifier.fillMaxWidth()) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .shadow(
+                    elevation = 4.dp,
+                    shape = RoundedCornerShape(12.dp),
+                    spotColor = colorPalette().accent.copy(alpha = 0.2f)
+                ),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = if (colorPalette() === PureBlackColorPalette || colorPalette() === ModernBlackColorPalette || colorPaletteMode == ColorPaletteMode.PitchBlack) {
+                    Color(0xFF1A1A1A) // Gray dark for pitch black themes
+                } else {
+                    colorPalette().background1
+                }
             ),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (colorPalette() === PureBlackColorPalette || colorPalette() === ModernBlackColorPalette || colorPaletteMode == ColorPaletteMode.PitchBlack) {
-                Color(0xFF1A1A1A) // Gray dark for pitch black themes
-            } else {
-                colorPalette().background1
-            }
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
         ) {
-            // Section Header
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 12.dp)
+            Column(
+                modifier = Modifier.padding(16.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .background(
-                            color = colorPalette().accent.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(8.dp)
-                        ),
-                    contentAlignment = Alignment.Center
+                // Section Header
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 12.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(icon),
-                        tint = colorPalette().accent,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp)
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(
+                                color = colorPalette().accent.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(8.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(icon),
+                            tint = colorPalette().accent,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.width(12.dp))
+                    
+                    BasicText(
+                        text = title,
+                        style = typography().xs.semiBold.copy(
+                            color = colorPalette().accent
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
-                Spacer(modifier = Modifier.width(8.dp))
-                BasicText(
-                    text = title,
-                    style = typography().s.semiBold.copy(
-                        color = colorPalette().accent
+    
+                if (description != null) {
+                    BasicText(
+                        text = description,
+                        style = typography().xxs.copy(
+                            color = colorPalette().textSecondary
+                        ),
+                        modifier = Modifier.padding(bottom = 16.dp)
                     )
-                )
+                }
+    
+                // Content
+                content()
             }
-
-            // Description (if provided)
-            description?.let { desc ->
-                SettingsDescription(
-                    text = desc,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            // Content
-            content()
         }
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 

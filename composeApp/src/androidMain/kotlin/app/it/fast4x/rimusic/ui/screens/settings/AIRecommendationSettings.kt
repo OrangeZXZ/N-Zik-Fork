@@ -161,8 +161,8 @@ fun AIRecommendationSettings(
     
     val search = Search()
     
-    val searchCtx_0 = search.inputValue.isBlank() || stringResource(R.string.tab_general).contains(search.inputValue, true) || stringResource(R.string.enable_quick_picks_page).contains(search.inputValue, true)
-    val searchCtx_1 = search.inputValue.isBlank() || stringResource(R.string.quick_picks).contains(search.inputValue, true) || stringResource(R.string.show).contains(search.inputValue, true) || stringResource(R.string.tips).contains(search.inputValue, true) || stringResource(R.string.charts).contains(search.inputValue, true) || stringResource(R.string.related_albums).contains(search.inputValue, true) || stringResource(R.string.similar_artists).contains(search.inputValue, true) || stringResource(R.string.new_albums_of_your_artists).contains(search.inputValue, true) || stringResource(R.string.new_albums).contains(search.inputValue, true) || stringResource(R.string.playlists_you_might_like).contains(search.inputValue, true) || stringResource(R.string.moods_and_genres).contains(search.inputValue, true) || stringResource(R.string.show_monthly_playlists_in_quick_picks).contains(search.inputValue, true)
+    val searchCtx_0 = search.inputValue.isBlank() || stringResource(R.string.tab_general).contains(search.inputValue, true) || stringResource(R.string.enable_quick_picks_page).contains(search.inputValue, true) || stringResource(R.string.disable_if_you_do_not_want_to_see).contains(search.inputValue, true)
+    val searchCtx_1 = search.inputValue.isBlank() || stringResource(R.string.quick_picks).contains(search.inputValue, true) || stringResource(R.string.show).contains(search.inputValue, true) || stringResource(R.string.tips).contains(search.inputValue, true) || stringResource(R.string.charts).contains(search.inputValue, true) || stringResource(R.string.related_albums).contains(search.inputValue, true) || stringResource(R.string.similar_artists).contains(search.inputValue, true) || stringResource(R.string.new_albums_of_your_artists).contains(search.inputValue, true) || stringResource(R.string.new_albums).contains(search.inputValue, true) || stringResource(R.string.playlists_you_might_like).contains(search.inputValue, true) || stringResource(R.string.moods_and_genres).contains(search.inputValue, true) || stringResource(R.string.show_monthly_playlists_in_quick_picks).contains(search.inputValue, true) || stringResource(R.string.disable_if_you_do_not_want_to_see).contains(search.inputValue, true)
     val searchCtx_2 = search.inputValue.isBlank() || stringResource(R.string.tips).contains(search.inputValue, true) || stringResource(R.string.quick_selection_type).contains(search.inputValue, true)
     val searchCtx_3 = search.inputValue.isBlank() || stringResource(R.string.monthly_playlists).contains(search.inputValue, true) || stringResource(R.string.show_monthly_playlists_in_library).contains(search.inputValue, true) || stringResource(R.string.enable_monthly_playlists_creation).contains(search.inputValue, true)
     val searchCtx_4 = search.inputValue.isBlank() || stringResource(R.string.smart_recommendations).contains(search.inputValue, true) || stringResource(R.string.smart_recommendations_number).contains(search.inputValue, true)
@@ -207,7 +207,7 @@ fun AIRecommendationSettings(
             textAlign = TextAlign.Center
         ) 
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
         
         search.ToolBarButton()
         search.SearchBar( this )
@@ -239,7 +239,7 @@ fun AIRecommendationSettings(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Content Sections
         AnimatedVisibility(
@@ -368,7 +368,7 @@ fun AIRecommendationSettings(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Tips Configuration Section
         AnimatedVisibility(
@@ -433,7 +433,7 @@ fun AIRecommendationSettings(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Monthly Playlists Section
         AnimatedVisibility(
@@ -474,7 +474,7 @@ fun AIRecommendationSettings(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Smart Recommendations Section
         AnimatedVisibility(
@@ -518,7 +518,7 @@ fun AIRecommendationSettings(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Statistics Section
         AnimatedVisibility(
@@ -568,7 +568,7 @@ fun AIRecommendationSettings(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Top Playlists Section
         AnimatedVisibility(
@@ -619,7 +619,7 @@ fun AIRecommendationSettings(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Data Management Section
         AnimatedVisibility(
@@ -654,7 +654,7 @@ fun AIRecommendationSettings(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Reset to Default Section
         AnimatedVisibility(

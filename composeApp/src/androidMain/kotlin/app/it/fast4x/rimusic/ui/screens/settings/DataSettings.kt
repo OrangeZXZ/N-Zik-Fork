@@ -201,7 +201,7 @@ fun DataSettings() {
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         ) 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
 
         // Cache Section
@@ -408,7 +408,7 @@ fun DataSettings() {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Backup and Restore Section
         AnimatedVisibility(
@@ -485,7 +485,7 @@ fun DataSettings() {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Search History Section
         AnimatedVisibility(
@@ -537,7 +537,7 @@ fun DataSettings() {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
                 // Search History Section
                 AnimatedVisibility(

@@ -734,7 +734,7 @@ fun UiSettings(
             modifier = Modifier.fillMaxWidth(),
             textAlign = androidx.compose.ui.text.style.TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         search.ToolBarButton()
         search.SearchBar(this)
@@ -1094,7 +1094,7 @@ fun UiSettings(
                 }
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
         val navSearchContextMatch = search.inputValue.isBlank() || 
             stringResource(R.string.search_display_order).contains(search.inputValue, true) ||
             stringResource(R.string.navigation_bar_position).contains(search.inputValue, true) ||
@@ -1326,7 +1326,7 @@ fun UiSettings(
                 }
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         val typoSearchContextMatch = search.inputValue.isBlank() || 
             stringResource(R.string.settings_use_font_type).contains(search.inputValue, true) ||
@@ -1383,7 +1383,7 @@ fun UiSettings(
                 }
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         val swipeSearchContextMatch = search.inputValue.isBlank() || 
             stringResource(R.string.swipe_to_action).contains(search.inputValue, true)
@@ -1520,7 +1520,7 @@ fun UiSettings(
                 }
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         val listsSearchContextMatch = search.inputValue.isBlank() || 
             stringResource(R.string.songs).contains(search.inputValue, true) ||
@@ -1590,7 +1590,7 @@ fun UiSettings(
                 }
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         AnimatedVisibility(
             visible = search.inputValue.isBlank(),

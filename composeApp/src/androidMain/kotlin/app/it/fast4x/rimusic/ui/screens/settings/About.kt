@@ -228,7 +228,7 @@ fun About(navController: androidx.navigation.NavController) {
                                 }
                             }
                               
-                            Spacer(modifier = Modifier.height(16.dp))
+                            /* Removed Spacer */
                         }
 
                         Spacer(modifier = Modifier.weight(1f))                                                 // Bottom content - Author & Changelog
@@ -384,7 +384,7 @@ fun About(navController: androidx.navigation.NavController) {
                                     modifier = Modifier.fillMaxWidth().padding(top = 4.dp)
                                 )
                                 
-                                Spacer(modifier = Modifier.height(16.dp))
+                                /* Removed Spacer */
                             }
     
                             Spacer(modifier = Modifier.weight(1f))
@@ -465,7 +465,7 @@ fun About(navController: androidx.navigation.NavController) {
         }
     }
 
-    Spacer(modifier = Modifier.height(16.dp))
+    /* Removed Spacer */
 
         // Support & Links Section
         AnimatedVisibility(
@@ -510,7 +510,7 @@ fun About(navController: androidx.navigation.NavController) {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Contributors Section
         AnimatedVisibility(
@@ -574,7 +574,7 @@ fun About(navController: androidx.navigation.NavController) {
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    /* Removed Spacer */
 
                     // Developers Section
                     var developersExpanded by remember { mutableStateOf(false) }

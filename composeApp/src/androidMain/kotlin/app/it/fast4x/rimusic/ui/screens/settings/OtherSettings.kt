@@ -128,7 +128,7 @@ fun OtherSettings() {
             textAlign = TextAlign.Center
         ) 
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // On Device Section
         AnimatedVisibility(
@@ -213,7 +213,7 @@ fun OtherSettings() {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Android Head Unit Section
         AnimatedVisibility(
@@ -238,7 +238,7 @@ fun OtherSettings() {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Service Lifetime Section
         AnimatedVisibility(
@@ -300,7 +300,7 @@ fun OtherSettings() {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Proxy Section
         AnimatedVisibility(
@@ -391,7 +391,7 @@ fun OtherSettings() {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Parental Control Section
         AnimatedVisibility(
@@ -416,7 +416,7 @@ fun OtherSettings() {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Debug Section
         AnimatedVisibility(

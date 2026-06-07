@@ -95,7 +95,7 @@ fun NetworkSettings(
             textAlign = TextAlign.Center
         ) 
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Network Status Section (Informative, non-clickable)
         SettingsSectionCard(
@@ -146,7 +146,7 @@ fun NetworkSettings(
             }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Quality Settings Section (Clickable override)
         SettingsSectionCard(
@@ -226,7 +226,7 @@ fun NetworkSettings(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Connection Settings Section
         SettingsSectionCard(
@@ -245,7 +245,7 @@ fun NetworkSettings(
             }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Auto Download Settings Section
         SettingsSectionCard(

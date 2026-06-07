@@ -138,7 +138,7 @@ fun AccountsSettings() {
             textAlign = TextAlign.Center
         ) 
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // YouTube Music Section
         AnimatedVisibility(
@@ -340,7 +340,7 @@ fun AccountsSettings() {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Piped Section
         if (isAtLeastAndroid7) {
@@ -582,7 +582,7 @@ fun AccountsSettings() {
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        /* Removed Spacer */
 
         // Discord Section
         if (isAtLeastAndroid7) {
