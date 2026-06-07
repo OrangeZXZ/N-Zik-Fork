@@ -632,10 +632,10 @@ object ImageCacheFactory {
             // 1. First, clear the RAM cache
             LOADER.memoryCache?.clear()
             
-            // 2. On vide le cache disque (Storage)
+            // 2. Clear the disk cache (Storage)
             DISK_CACHE.clear()
             
-            // 3. On vide les registres de signatures apprises (Playlists)
+            // 3. Clear the learned signature registries (Playlists)
             PlaylistThumbnailStore.clearAll()
             
             // 4. Clear quality metadata
@@ -694,7 +694,7 @@ fun String?.thumbnail(size: Int): String? {
     if (this == null) return this
     
     // Threshold increased from 600 to 700 to ensure HQ cache usage (Learning Mode)
-    // On utilise >= 700 car la taille MEDIUM est maintenant de 700.
+    // We use >= 700 because the MEDIUM size is now 700.
     val quality = if (size >= 700) ImageCacheFactory.NetworkQuality.HIGH else ImageCacheFactory.NetworkQuality.LOW
     
     if (contains("i.ytimg.com/pl_c/") || contains("i.ytimg.com/podcasts_artwork/")) {
@@ -706,9 +706,9 @@ fun String?.thumbnail(size: Int): String? {
                 return learnedHigh
             }
 
-            // [MODE APPRENTISSAGE STRICT]
-            // On ne fait le swap que s'il n'y a pas de signature 'rs='.
-            // On gÃƒÆ’Ã‚Â¨re mwEIC (Low) et mwEUC (Medium) vers mwEKC (High).
+            // [STRICT LEARNING MODE]
+            // We only swap if there is no 'rs=' signature.
+            // We manage mwEIC (Low) and mwEUC (Medium) towards mwEKC (High).
             if (quality == ImageCacheFactory.NetworkQuality.HIGH) {
                 return if (!contains("rs=")) {
                     replace("mwEIC", "mwEKC")

@@ -800,7 +800,7 @@ class MainActivity :
                                 )
 
                                 if (colorPaletteName == ColorPaletteName.Dynamic) {
-                                    // Toujours appeler setDynamicPalette quand on passe au thÃƒÆ’Ã‚Â¨me dynamique
+                                    // Always call setDynamicPalette when switching to the dynamic theme
                                     val currentArtworkUri = binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri?.thumbnail(1000)?.toString()
                                     setDynamicPalette(currentArtworkUri)
                                 } else {
