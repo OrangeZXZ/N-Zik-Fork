@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
@@ -557,6 +558,12 @@ fun AppearanceSettings(
             showIcon = true,
             modifier = Modifier,
             onClick = {}
+        )
+
+        SettingsDescription(
+            text = stringResource(R.string.appearance_settings_description),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
         )
 
         search.ToolBarButton()
