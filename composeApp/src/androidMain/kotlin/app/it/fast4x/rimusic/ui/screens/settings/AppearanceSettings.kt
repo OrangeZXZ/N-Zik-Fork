@@ -928,30 +928,34 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.ui,
-                title = stringResource(R.string.playertype),
-                selectedValue = playerType,
-                onValueSelected = {
-                    playerType = it
-                },
-                valueText = { it.text },
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.playertype).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.ui,
+                    title = stringResource(R.string.playertype),
+                    selectedValue = playerType,
+                    onValueSelected = {
+                        playerType = it
+                    },
+                    valueText = { it.text },
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.queuetype).contains(
                 search.inputValue,
                 true
             )
         )
-            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.sort_grid,
-                title = stringResource(R.string.queuetype),
-                selectedValue = queueType,
-                onValueSelected = {
-                    queueType = it
-                },
-                valueText = { it.text },
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.queuetype).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.sort_grid,
+                    title = stringResource(R.string.queuetype),
+                    selectedValue = queueType,
+                    onValueSelected = {
+                        queueType = it
+                    },
+                    valueText = { it.text },
+                )
+            }
         }
     )
     Spacer(modifier = Modifier.height(16.dp))
@@ -981,22 +985,24 @@ fun AppearanceSettings(
                     true
                 )
             )
-                OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.gesture,
-                    title = stringResource(R.string.swipe_Animation_No_Thumbnail),
-                    selectedValue = swipeAnimationNoThumbnail,
-                    onValueSelected = { swipeAnimationNoThumbnail = it },
-                    valueText = {
-                        when (it) {
-                            SwipeAnimationNoThumbnail.Sliding -> stringResource(R.string.te_slide_vertical)
-                            SwipeAnimationNoThumbnail.Fade -> stringResource(R.string.te_fade)
-                            SwipeAnimationNoThumbnail.Scale -> stringResource(R.string.te_scale)
-                            SwipeAnimationNoThumbnail.Carousel -> stringResource(R.string.carousel)
-                            SwipeAnimationNoThumbnail.Circle -> stringResource(R.string.vt_circular)
-                        }
-                    },
-                    modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.swipe_Animation_No_Thumbnail).contains(search.inputValue, true)) {
+                    OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.gesture,
+                        title = stringResource(R.string.swipe_Animation_No_Thumbnail),
+                        selectedValue = swipeAnimationNoThumbnail,
+                        onValueSelected = { swipeAnimationNoThumbnail = it },
+                        valueText = {
+                            when (it) {
+                                SwipeAnimationNoThumbnail.Sliding -> stringResource(R.string.te_slide_vertical)
+                                SwipeAnimationNoThumbnail.Fade -> stringResource(R.string.te_fade)
+                                SwipeAnimationNoThumbnail.Scale -> stringResource(R.string.te_scale)
+                                SwipeAnimationNoThumbnail.Carousel -> stringResource(R.string.carousel)
+                                SwipeAnimationNoThumbnail.Circle -> stringResource(R.string.vt_circular)
+                            }
+                        },
+                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                    )
+                }
         }
         AnimatedVisibility(visible = showthumbnail) {
             Column {
@@ -1040,14 +1046,16 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.resize,
-                            title = stringResource(R.string.carouselsize),
-                            selectedValue = carouselSize,
-                            onValueSelected = { carouselSize = it },
-                            valueText = { it.text },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                        )
+                        if (search.inputValue.isBlank() || stringResource(R.string.carouselsize).contains(search.inputValue, true)) {
+                            OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.resize,
+                                title = stringResource(R.string.carouselsize),
+                                selectedValue = carouselSize,
+                                onValueSelected = { carouselSize = it },
+                                valueText = { it.text },
+                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                            )
+                        }
                 }
                 if (playerType == PlayerType.Essential) {
 
@@ -1118,14 +1126,16 @@ fun AppearanceSettings(
                     }
                     AnimatedVisibility(visible = showCoverThumbnailAnimation) {
                         Column {
-                            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.images_sharp,
-                                title = stringResource(R.string.cover_thumbnail_animation_type),
-                                selectedValue = coverThumbnailAnimation,
-                                onValueSelected = { coverThumbnailAnimation = it },
-                                valueText = { it.text },
-                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 50.dp else 25.dp)
-                            )
+                            if (search.inputValue.isBlank() || stringResource(R.string.cover_thumbnail_animation_type).contains(search.inputValue, true)) {
+                                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.images_sharp,
+                                    title = stringResource(R.string.cover_thumbnail_animation_type),
+                                    selectedValue = coverThumbnailAnimation,
+                                    onValueSelected = { coverThumbnailAnimation = it },
+                                    valueText = { it.text },
+                                    modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 50.dp else 25.dp)
+                                )
+                            }
                         }
                     }
                 }
@@ -1136,58 +1146,66 @@ fun AppearanceSettings(
                             true
                         )
                     )
-                        OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.resize,
-                            title = stringResource(R.string.player_thumbnail_size),
-                            selectedValue = playerThumbnailSizeL,
-                            onValueSelected = { playerThumbnailSizeL = it },
-                            valueText = { it.text },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                        )
+                        if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(search.inputValue, true)) {
+                            OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.resize,
+                                title = stringResource(R.string.player_thumbnail_size),
+                                selectedValue = playerThumbnailSizeL,
+                                onValueSelected = { playerThumbnailSizeL = it },
+                                valueText = { it.text },
+                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                            )
+                        }
                 } else {
                     if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
                             search.inputValue,
                             true
                         )
                     )
-                        OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.resize,
-                            title = stringResource(R.string.player_thumbnail_size),
-                            selectedValue = playerThumbnailSize,
-                            onValueSelected = { playerThumbnailSize = it },
-                            valueText = { it.text },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                        )
+                        if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(search.inputValue, true)) {
+                            OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.resize,
+                                title = stringResource(R.string.player_thumbnail_size),
+                                selectedValue = playerThumbnailSize,
+                                onValueSelected = { playerThumbnailSize = it },
+                                valueText = { it.text },
+                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                            )
+                        }
                 }
                 if (search.inputValue.isBlank() || stringResource(R.string.thumbnailtype).contains(
                         search.inputValue,
                         true
                     )
                 )
-                    OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.cd,
-                        title = stringResource(R.string.thumbnailtype),
-                        selectedValue = thumbnailType,
-                        onValueSelected = {
-                            thumbnailType = it
-                        },
-                        valueText = { it.text },
-                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.thumbnailtype).contains(search.inputValue, true)) {
+                        OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.cd,
+                            title = stringResource(R.string.thumbnailtype),
+                            selectedValue = thumbnailType,
+                            onValueSelected = {
+                                thumbnailType = it
+                            },
+                            valueText = { it.text },
+                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        )
+                    }
 
                 if (search.inputValue.isBlank() || stringResource(R.string.thumbnail_roundness).contains(
                         search.inputValue,
                         true
                     )
                 )
-                    OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.horizontal_bold_line_rounded,
-                        title = stringResource(R.string.thumbnail_roundness),
-                        selectedValue = thumbnailRoundness,
-                        onValueSelected = { thumbnailRoundness = it },
-                        valueText = { it.text },
-                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.thumbnail_roundness).contains(search.inputValue, true)) {
+                        OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.horizontal_bold_line_rounded,
+                            title = stringResource(R.string.thumbnail_roundness),
+                            selectedValue = thumbnailRoundness,
+                            onValueSelected = { thumbnailRoundness = it },
+                            valueText = { it.text },
+                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        )
+                    }
             }
         }
 
@@ -1238,28 +1256,32 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.resize,
-                title = stringResource(R.string.timelinesize),
-                selectedValue = playerTimelineSize,
-                onValueSelected = { playerTimelineSize = it },
-                valueText = { it.text }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.timelinesize).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.resize,
+                    title = stringResource(R.string.timelinesize),
+                    selectedValue = playerTimelineSize,
+                    onValueSelected = { playerTimelineSize = it },
+                    valueText = { it.text }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.pinfo_type).contains(
                 search.inputValue,
                 true
             )
         ) {
-            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.information,
-                title = stringResource(R.string.pinfo_type),
-                selectedValue = playerInfoType,
-                onValueSelected = {
-                    playerInfoType = it
-                },
-                valueText = { it.text },
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.pinfo_type).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.information,
+                    title = stringResource(R.string.pinfo_type),
+                    selectedValue = playerInfoType,
+                    onValueSelected = {
+                        playerInfoType = it
+                    },
+                    valueText = { it.text },
+                )
+            }
             SettingsDescription(text = stringResource(R.string.pinfo_album_and_artist_name))
 
             AnimatedVisibility( visible = playerInfoType == PlayerInfoType.Modern) {
@@ -1292,15 +1314,17 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.ui,
-                title = stringResource(R.string.miniplayertype),
-                selectedValue = miniPlayerType,
-                onValueSelected = {
-                    miniPlayerType = it
-                },
-                valueText = { it.text },
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.miniplayertype).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.ui,
+                    title = stringResource(R.string.miniplayertype),
+                    selectedValue = miniPlayerType,
+                    onValueSelected = {
+                        miniPlayerType = it
+                    },
+                    valueText = { it.text },
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.player_swap_controls_with_timeline).contains(
                 search.inputValue,
@@ -1322,13 +1346,15 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.playing_indicator,
-                title = stringResource(R.string.timeline),
-                selectedValue = playerTimelineType,
-                onValueSelected = { playerTimelineType = it },
-                valueText = { it.text }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.timeline).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.playing_indicator,
+                    title = stringResource(R.string.timeline),
+                    selectedValue = playerTimelineType,
+                    onValueSelected = { playerTimelineType = it },
+                    valueText = { it.text }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.transparentbar).contains(
                 search.inputValue,
@@ -1350,15 +1376,17 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.burger,
-                title = stringResource(R.string.pcontrols_type),
-                selectedValue = playerControlsType,
-                onValueSelected = {
-                    playerControlsType = it
-                },
-                valueText = { it.text }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.pcontrols_type).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.burger,
+                    title = stringResource(R.string.pcontrols_type),
+                    selectedValue = playerControlsType,
+                    onValueSelected = {
+                        playerControlsType = it
+                    },
+                    valueText = { it.text }
+                )
+            }
 
 
         if (search.inputValue.isBlank() || stringResource(R.string.play_button).contains(
@@ -1366,16 +1394,18 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.play,
-                title = stringResource(R.string.play_button),
-                selectedValue = playerPlayButtonType,
-                onValueSelected = {
-                    playerPlayButtonType = it
-                    lastPlayerPlayButtonType = it
-                },
-                valueText = { it.text }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.play_button).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.play,
+                    title = stringResource(R.string.play_button),
+                    selectedValue = playerPlayButtonType,
+                    onValueSelected = {
+                        playerPlayButtonType = it
+                        lastPlayerPlayButtonType = it
+                    },
+                    valueText = { it.text }
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.buttonzoomout).contains(
                 search.inputValue,
@@ -1398,15 +1428,17 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.play,
-                title = stringResource(R.string.icon_like_button),
-                selectedValue = iconLikeType,
-                onValueSelected = {
-                    iconLikeType = it
-                },
-                valueText = { it.text },
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.icon_like_button).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.play,
+                    title = stringResource(R.string.icon_like_button),
+                    selectedValue = iconLikeType,
+                    onValueSelected = {
+                        iconLikeType = it
+                    },
+                    valueText = { it.text },
+                )
+            }
         }
     )
     Spacer(modifier = Modifier.height(16.dp))
@@ -1419,15 +1451,17 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.droplet,
-                title = stringResource(R.string.background_colors),
-                selectedValue = playerBackgroundColors,
-                onValueSelected = {
-                    playerBackgroundColors = it
-                },
-                valueText = { it.text }
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.background_colors).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.droplet,
+                    title = stringResource(R.string.background_colors),
+                    selectedValue = playerBackgroundColors,
+                    onValueSelected = {
+                        playerBackgroundColors = it
+                    },
+                    valueText = { it.text }
+                )
+            }
 
         AnimatedVisibility(visible = playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient) {
             if (search.inputValue.isBlank() || stringResource(R.string.gradienttype).contains(
@@ -1435,16 +1469,18 @@ fun AppearanceSettings(
                     true
                 )
             )
-                OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.color_palette,
-                    title = stringResource(R.string.gradienttype),
-                    selectedValue = animatedGradient,
-                    onValueSelected = {
-                        animatedGradient = it
-                    },
-                    valueText = { it.text },
-                    modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient) 25.dp else 0.dp)
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.gradienttype).contains(search.inputValue, true)) {
+                    OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.color_palette,
+                        title = stringResource(R.string.gradienttype),
+                        selectedValue = animatedGradient,
+                        onValueSelected = {
+                            animatedGradient = it
+                        },
+                        valueText = { it.text },
+                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient) 25.dp else 0.dp)
+                    )
+                }
         }
         var isRotatingCoverEnabled by rememberPreference( rotatingAlbumCoverKey, false )
         AnimatedVisibility( playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor ) {
@@ -1737,15 +1773,17 @@ fun AppearanceSettings(
                 true
             )
         )
-            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.horizontal_straight_line,
-                title = stringResource(R.string.background_progress_bar),
-                selectedValue = backgroundProgress,
-                onValueSelected = {
-                    backgroundProgress = it
-                },
-                valueText = { it.text },
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.background_progress_bar).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.horizontal_straight_line,
+                    title = stringResource(R.string.background_progress_bar),
+                    selectedValue = backgroundProgress,
+                    onValueSelected = {
+                        backgroundProgress = it
+                    },
+                    valueText = { it.text },
+                )
+            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.visualizer).contains(
                 search.inputValue,
@@ -2232,26 +2270,30 @@ fun AppearanceSettings(
                 true
             )
         ) {
-            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.notification2,
-                title = stringResource(R.string.notificationPlayerFirstIcon),
-                selectedValue = notificationPlayerFirstIcon,
-                onValueSelected = {
-                    notificationPlayerFirstIcon = it
-                    restartService = true
-                },
-                valueText = { it.text },
-            )
-            OtherEnumValueSelectorSettingsEntry(
-                icon = R.drawable.notification2,
-                title = stringResource(R.string.notificationPlayerSecondIcon),
-                selectedValue = notificationPlayerSecondIcon,
-                onValueSelected = {
-                    notificationPlayerSecondIcon = it
-                    restartService = true
-                },
-                valueText = { it.text },
-            )
+            if (search.inputValue.isBlank() || stringResource(R.string.notificationPlayerFirstIcon).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.notification2,
+                    title = stringResource(R.string.notificationPlayerFirstIcon),
+                    selectedValue = notificationPlayerFirstIcon,
+                    onValueSelected = {
+                        notificationPlayerFirstIcon = it
+                        restartService = true
+                    },
+                    valueText = { it.text },
+                )
+            }
+            if (search.inputValue.isBlank() || stringResource(R.string.notificationPlayerSecondIcon).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.notification2,
+                    title = stringResource(R.string.notificationPlayerSecondIcon),
+                    selectedValue = notificationPlayerSecondIcon,
+                    onValueSelected = {
+                        notificationPlayerSecondIcon = it
+                        restartService = true
+                    },
+                    valueText = { it.text },
+                )
+            }
             RestartPlayerService(restartService, onRestart = { restartService = false })
         }
 
@@ -2285,17 +2327,19 @@ fun AppearanceSettings(
                         }
                         AnimatedVisibility(visible = enableWallpaper) {
                             Column {
-                                OtherEnumValueSelectorSettingsEntry(
-                                    icon = R.drawable.settings,
-                                    title = stringResource(R.string.set_cover_thumbnail_as_wallpaper),
-                                    selectedValue = wallpaperType,
-                                    onValueSelected = {
-                                        wallpaperType = it
-                                        restartService = true
-                                    },
-                                    valueText = { it.text },
-                                    modifier = Modifier.padding(start = 25.dp)
-                                )
+                                if (search.inputValue.isBlank() || stringResource(R.string.set_cover_thumbnail_as_wallpaper).contains(search.inputValue, true)) {
+                                    OtherEnumValueSelectorSettingsEntry(
+                                        icon = R.drawable.settings,
+                                        title = stringResource(R.string.set_cover_thumbnail_as_wallpaper),
+                                        selectedValue = wallpaperType,
+                                        onValueSelected = {
+                                            wallpaperType = it
+                                            restartService = true
+                                        },
+                                        valueText = { it.text },
+                                        modifier = Modifier.padding(start = 25.dp)
+                                    )
+                                }
                                 RestartPlayerService(restartService, onRestart = { restartService = false })
                             }
                         }

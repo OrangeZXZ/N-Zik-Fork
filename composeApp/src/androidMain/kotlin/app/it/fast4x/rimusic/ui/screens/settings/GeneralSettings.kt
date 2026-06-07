@@ -866,18 +866,20 @@ fun GeneralSettings(
                 Column(
                     modifier = Modifier.padding(start = 25.dp)
                 ) {
-                    SliderSettingsEntry(
-                        title = stringResource(R.string.minimum_silence_length),
-                        text = stringResource(R.string.minimum_silence_length_description),
-                        state = newValue,
-                        onSlide = { newValue = it },
-                        onSlideComplete = {
-                            minimumSilenceDuration = newValue.toLong() * 1000L
-                            restartService = true
-                        },
-                        toDisplay = { stringResource(R.string.format_ms, it.toLong()) },
-                        range = 1.00f..2000.000f
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.minimum_silence_length).contains(search.inputValue, true)) {
+                        SliderSettingsEntry(
+                            title = stringResource(R.string.minimum_silence_length),
+                            text = stringResource(R.string.minimum_silence_length_description),
+                            state = newValue,
+                            onSlide = { newValue = it },
+                            onSlideComplete = {
+                                minimumSilenceDuration = newValue.toLong() * 1000L
+                                restartService = true
+                            },
+                            toDisplay = { stringResource(R.string.format_ms, it.toLong()) },
+                            range = 1.00f..2000.000f
+                        )
+                    }
 
                     RestartPlayerService(restartService, onRestart = { restartService = false } )
                 }
@@ -901,17 +903,19 @@ fun GeneralSettings(
                 Column(
                     modifier = Modifier.padding(start = 25.dp)
                 ) {
-                    SliderSettingsEntry(
-                        title = stringResource(R.string.settings_loudness_base_gain),
-                        text = stringResource(R.string.settings_target_gain_loudness_info),
-                        state = newValue,
-                        onSlide = { newValue = it },
-                        onSlideComplete = {
-                            loudnessBaseGain = newValue
-                        },
-                        toDisplay = { "%.1f dB".format(loudnessBaseGain).replace(",", ".") },
-                        range = -20f..20f
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.settings_loudness_base_gain).contains(search.inputValue, true)) {
+                        SliderSettingsEntry(
+                            title = stringResource(R.string.settings_loudness_base_gain),
+                            text = stringResource(R.string.settings_target_gain_loudness_info),
+                            state = newValue,
+                            onSlide = { newValue = it },
+                            onSlideComplete = {
+                                loudnessBaseGain = newValue
+                            },
+                            toDisplay = { "%.1f dB".format(loudnessBaseGain).replace(",", ".") },
+                            range = -20f..20f
+                        )
+                    }
                 }
             }
         }
@@ -933,17 +937,19 @@ fun GeneralSettings(
                 Column(
                     modifier = Modifier.padding(start = 25.dp)
                 ) {
-                    SliderSettingsEntry(
-                        title = stringResource(R.string.settings_bass_boost_level),
-                        text = "",
-                        state = newValue,
-                        onSlide = { newValue = it },
-                        onSlideComplete = {
-                            bassboostLevel = newValue
-                        },
-                        toDisplay = { "%.1f".format(bassboostLevel).replace(",", ".") },
-                        range = 0f..1f
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.settings_bass_boost_level).contains(search.inputValue, true)) {
+                        SliderSettingsEntry(
+                            title = stringResource(R.string.settings_bass_boost_level),
+                            text = "",
+                            state = newValue,
+                            onSlide = { newValue = it },
+                            onSlideComplete = {
+                                bassboostLevel = newValue
+                            },
+                            toDisplay = { "%.1f".format(bassboostLevel).replace(",", ".") },
+                            range = 0f..1f
+                        )
+                    }
                 }
             }
         }
