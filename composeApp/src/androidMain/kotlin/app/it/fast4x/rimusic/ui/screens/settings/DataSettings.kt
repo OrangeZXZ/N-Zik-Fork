@@ -487,7 +487,7 @@ fun DataSettings() {
 
         /* Removed Spacer */
 
-        // Search History Section
+        // History Section
         AnimatedVisibility(
             visible = true,
             enter = fadeIn(animationSpec = tween(1000)) + scaleIn(
@@ -496,8 +496,8 @@ fun DataSettings() {
             )
         ) {
             SettingsSectionCard(
-                title = stringResource(R.string.search_history),
-                icon = R.drawable.search,
+                title = stringResource(R.string.history),
+                icon = R.drawable.history,
                 content = {
                     OtherSwitchSettingEntry(
                         title = stringResource(R.string.pause_search_history),
@@ -509,8 +509,6 @@ fun DataSettings() {
                         },
                         icon = R.drawable.pause
                     )
-
-                    RestartPlayerService(restartService, onRestart = { restartService = false })
 
                     val queriesCount by remember {
                         Database.searchTable
@@ -533,39 +531,42 @@ fun DataSettings() {
                             Toaster.done()
                         }
                     )
+                    
+                    OtherSwitchSettingEntry(
+                        title = stringResource(R.string.player_pause_listen_history),
+                        text = stringResource(R.string.player_pause_listen_history_info),
+                        isChecked = pauseListenHistory,
+                        onCheckedChange = {
+                            pauseListenHistory = it
+                            restartService = true
+                        },
+                        icon = R.drawable.pause
+                    )
+                    
+                    val eventsCount by remember {
+                        Database.eventTable.countAll()
+                    }.collectAsState(0L, Dispatchers.IO)
+
+                    OtherSettingsEntry(
+                        title = stringResource(R.string.clear_listen_history),
+                        text = if (eventsCount > 0) {
+                            stringResource(R.string.delete_playback_events, eventsCount.toString())
+                        } else {
+                            stringResource(R.string.history_is_empty)
+                        },
+                        icon = R.drawable.trash,
+                        onClick = {
+                            Database.asyncTransaction {
+                                eventTable.deleteAll()
+                            }
+                            Toaster.done()
+                        }
+                    )
+                    
+                    RestartPlayerService(restartService, onRestart = { restartService = false })
                 }
             )
         }
-
-        /* Removed Spacer */
-
-                // Search History Section
-                AnimatedVisibility(
-                    visible = true,
-                    enter = fadeIn(animationSpec = tween(1000)) + scaleIn(
-                        animationSpec = tween(1000),
-                        initialScale = 0.9f
-                    )
-                ) {
-                    SettingsSectionCard(
-                        title = stringResource(R.string.player_pause_listen_history),
-                        icon = R.drawable.musical_notes,
-                        content = {
-                            OtherSwitchSettingEntry(
-                                title = stringResource(R.string.player_pause_listen_history),
-                                text = stringResource(R.string.player_pause_listen_history_info),
-                                isChecked = pauseListenHistory,
-                                onCheckedChange = {
-                                    pauseListenHistory = it
-                                    restartService = true
-                                },
-                                icon = R.drawable.pause
-                            )
-        
-                            RestartPlayerService(restartService, onRestart = { restartService = false })
-                        }
-                    )
-                }
 
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)

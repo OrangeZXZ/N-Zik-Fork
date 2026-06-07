@@ -70,6 +70,7 @@ import app.it.fast4x.rimusic.utils.forcePlay
 import app.it.fast4x.rimusic.utils.historyTypeKey
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -206,6 +207,21 @@ fun HistoryList(
                 contentAlignment = Alignment.Center
             ) {
                 Loader()
+            }
+        } else if (
+            (historyType == HistoryType.History && events.isEmpty()) ||
+            (historyType == HistoryType.YTMHistory && historyPage?.getOrNull()?.sections.isNullOrEmpty())
+        ) {
+            Box(
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                androidx.compose.foundation.text.BasicText(
+                    text = stringResource(R.string.no_items),
+                    style = app.n_zik.android.typography().m.semiBold.copy(
+                        color = colorPalette().textSecondary
+                    )
+                )
             }
         } else {
             LazyColumn(

@@ -262,6 +262,15 @@ fun StatisticsPage(
 
                 }
 
+                val isCurrentListEmpty = when (statisticsCategory) {
+                    StatisticsCategory.Songs -> songs.isEmpty()
+                    StatisticsCategory.Artists -> artists.isEmpty()
+                    StatisticsCategory.Albums -> albums.isEmpty()
+                    StatisticsCategory.Playlists -> playlists.isEmpty()
+                }
+
+
+
                 if (statisticsCategory == StatisticsCategory.Songs) {
 
                         if (showStatsListeningTime)
@@ -497,8 +506,24 @@ fun StatisticsPage(
                         )
                     }
                 }
-
-
+                if (isCurrentListEmpty) {
+                    item(
+                        key = "empty_state",
+                        span = { GridItemSpan(maxLineSpan) }
+                    ) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(top = 64.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            BasicText(
+                                text = stringResource(R.string.no_items),
+                                style = typography().m.semiBold.copy(
+                                    color = colorPalette().textSecondary
+                                )
+                            )
+                        }
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
