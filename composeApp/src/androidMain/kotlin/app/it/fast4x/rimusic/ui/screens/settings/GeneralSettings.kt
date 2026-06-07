@@ -598,7 +598,7 @@ fun GeneralSettings(
                              icon = R.drawable.reorder
             )
 
-        if (search.inputValue.isBlank() || stringResource(R.string.player_auto_load_songs_in_queue).contains(search.inputValue,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.player_auto_load_songs_in_queue).contains(search.inputValue,true) || (stringResource(R.string.player_auto_load_songs_in_queue_description)).contains(search.inputValue, true)) {
                          OtherSwitchSettingEntry(
                 title = stringResource(R.string.player_auto_load_songs_in_queue),
                 text = stringResource(R.string.player_auto_load_songs_in_queue_description),
@@ -732,9 +732,9 @@ fun GeneralSettings(
                  title = stringResource(R.string.app_behavior),
                  icon = R.drawable.settings,
                  content = {
-        if (search.inputValue.isBlank() || stringResource(R.string.resume_playback).contains(search.inputValue,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.resume_playback).contains(search.inputValue,true) || (stringResource(R.string.when_device_is_connected)).contains(search.inputValue, true)) {
             if (isAtLeastAndroid6) {
-                             if (search.inputValue.isBlank() || stringResource(R.string.resume_playback).contains(search.inputValue, true)) {
+                             if (search.inputValue.isBlank() || stringResource(R.string.resume_playback).contains(search.inputValue, true) || (stringResource(R.string.when_device_is_connected)).contains(search.inputValue, true)) {
                                  OtherSwitchSettingEntry(
                         title = stringResource(R.string.resume_playback),
                         text = stringResource(R.string.when_device_is_connected),
@@ -750,7 +750,7 @@ fun GeneralSettings(
             }
         }
 
-        if (search.inputValue.isBlank() || stringResource(R.string.persistent_queue).contains(search.inputValue,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.persistent_queue).contains(search.inputValue,true) || (stringResource(R.string.save_and_restore_playing_songs)).contains(search.inputValue, true)) {
                          OtherSwitchSettingEntry(
                 title = stringResource(R.string.persistent_queue),
                 text = stringResource(R.string.save_and_restore_playing_songs),
@@ -767,7 +767,7 @@ fun GeneralSettings(
                 Column(
                     modifier = Modifier.padding(start = 25.dp)
                 ) {
-                                 if (search.inputValue.isBlank() ||  stringResource(R.string.resume_playback_on_start).contains(search.inputValue, true)) {
+                                 if (search.inputValue.isBlank() ||  stringResource(R.string.resume_playback_on_start).contains(search.inputValue, true) || (stringResource(R.string.resume_automatically_when_app_opens)).contains(search.inputValue, true)) {
                                      OtherSwitchSettingEntry(
                             title =  stringResource(R.string.resume_playback_on_start),
                             text = stringResource(R.string.resume_automatically_when_app_opens),
@@ -784,9 +784,9 @@ fun GeneralSettings(
             }
         }
 
-        if (search.inputValue.isBlank() || stringResource(R.string.close_app_with_back_button).contains(search.inputValue,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.close_app_with_back_button).contains(search.inputValue,true) || (stringResource(R.string.when_you_use_the_back_button_from_the_home_page)).contains(search.inputValue, true)) {
                          if (Build.VERSION.SDK_INT >= 33) {
-                             if (search.inputValue.isBlank() || stringResource(R.string.close_app_with_back_button).contains(search.inputValue, true)) {
+                             if (search.inputValue.isBlank() || stringResource(R.string.close_app_with_back_button).contains(search.inputValue, true) || (stringResource(R.string.when_you_use_the_back_button_from_the_home_page)).contains(search.inputValue, true)) {
                                  OtherSwitchSettingEntry(
                     title = stringResource(R.string.close_app_with_back_button),
                     text = stringResource(R.string.when_you_use_the_back_button_from_the_home_page),
@@ -802,7 +802,7 @@ fun GeneralSettings(
             RestartActivity(restartActivity, onRestart = { restartActivity = false })
         }
 
-        if (search.inputValue.isBlank() || stringResource(R.string.close_background_player).contains(search.inputValue,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.close_background_player).contains(search.inputValue,true) || (stringResource(R.string.when_app_swipe_out_from_task_manager)).contains(search.inputValue, true)) {
                          OtherSwitchSettingEntry(
                 title = stringResource(R.string.close_background_player),
                 text = stringResource(R.string.when_app_swipe_out_from_task_manager),
@@ -816,7 +816,7 @@ fun GeneralSettings(
             RestartPlayerService(restartService, onRestart = { restartService = false } )
         }
 
-        if (search.inputValue.isBlank() || stringResource(R.string.skip_media_on_error).contains(search.inputValue,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.skip_media_on_error).contains(search.inputValue,true) || (stringResource(R.string.skip_media_on_error_description)).contains(search.inputValue, true)) {
                          OtherSwitchSettingEntry(
                 title = stringResource(R.string.skip_media_on_error),
                 text = stringResource(R.string.skip_media_on_error_description),
@@ -848,7 +848,7 @@ fun GeneralSettings(
                  title = stringResource(R.string.audio_effects),
                  icon = R.drawable.sound_effect,
                  content = {
-        if (search.inputValue.isBlank() || stringResource(R.string.skip_silence).contains(search.inputValue,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.skip_silence).contains(search.inputValue,true) || (stringResource(R.string.skip_silent_parts_during_playback)).contains(search.inputValue, true)) {
                          OtherSwitchSettingEntry(
                 title = stringResource(R.string.skip_silence),
                 text = stringResource(R.string.skip_silent_parts_during_playback),
@@ -866,7 +866,7 @@ fun GeneralSettings(
                 Column(
                     modifier = Modifier.padding(start = 25.dp)
                 ) {
-                    if (search.inputValue.isBlank() || stringResource(R.string.minimum_silence_length).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.minimum_silence_length).contains(search.inputValue, true) || (stringResource(R.string.minimum_silence_length_description)).contains(search.inputValue, true)) {
                         SliderSettingsEntry(
                             title = stringResource(R.string.minimum_silence_length),
                             text = stringResource(R.string.minimum_silence_length_description),
@@ -886,7 +886,7 @@ fun GeneralSettings(
             }
         }
 
-        if (search.inputValue.isBlank() || stringResource(R.string.loudness_normalization).contains(search.inputValue,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.loudness_normalization).contains(search.inputValue,true) || (stringResource(R.string.autoadjust_the_volume)).contains(search.inputValue, true)) {
                          OtherSwitchSettingEntry(
                 title = stringResource(R.string.loudness_normalization),
                 text = stringResource(R.string.autoadjust_the_volume),
@@ -903,7 +903,7 @@ fun GeneralSettings(
                 Column(
                     modifier = Modifier.padding(start = 25.dp)
                 ) {
-                    if (search.inputValue.isBlank() || stringResource(R.string.settings_loudness_base_gain).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.settings_loudness_base_gain).contains(search.inputValue, true) || (stringResource(R.string.settings_target_gain_loudness_info)).contains(search.inputValue, true)) {
                         SliderSettingsEntry(
                             title = stringResource(R.string.settings_loudness_base_gain),
                             text = stringResource(R.string.settings_target_gain_loudness_info),
@@ -979,7 +979,7 @@ fun GeneralSettings(
                           )
          }
 
-        if (search.inputValue.isBlank() || stringResource(R.string.settings_audio_focus).contains(search.inputValue,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.settings_audio_focus).contains(search.inputValue,true) || (stringResource(R.string.settings_audio_focus_info)).contains(search.inputValue, true)) {
                          OtherSwitchSettingEntry(
                 title = stringResource(R.string.settings_audio_focus),
                 text = stringResource(R.string.settings_audio_focus_info),
@@ -1017,7 +1017,7 @@ fun GeneralSettings(
                  title = stringResource(R.string.gestures_events),
                  icon = R.drawable.gesture,
                  content = {
-        if (search.inputValue.isBlank() || stringResource(R.string.event_volumekeys).contains(search.inputValue,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.event_volumekeys).contains(search.inputValue,true) || (stringResource(R.string.event_volumekeysinfo)).contains(search.inputValue, true)) {
                          OtherSwitchSettingEntry(
                 title = stringResource(R.string.event_volumekeys),
                 text = stringResource(R.string.event_volumekeysinfo),
@@ -1031,7 +1031,7 @@ fun GeneralSettings(
             RestartPlayerService(restartService, onRestart = { restartService = false } )
         }
 
-        if (search.inputValue.isBlank() || stringResource(R.string.event_shake).contains(search.inputValue,true)) {
+        if (search.inputValue.isBlank() || stringResource(R.string.event_shake).contains(search.inputValue,true) || (stringResource(R.string.shake_to_change_song)).contains(search.inputValue, true)) {
                          OtherSwitchSettingEntry(
                 title = stringResource(R.string.event_shake),
                 text = stringResource(R.string.shake_to_change_song),
@@ -1110,7 +1110,7 @@ fun GeneralSettings(
                                  }
 
                                  if (isAtLeastAndroid12) {
-                                     if (search.inputValue.isBlank() || stringResource(R.string.settings_enable_pip_auto).contains(search.inputValue, true)) {
+                                     if (search.inputValue.isBlank() || stringResource(R.string.settings_enable_pip_auto).contains(search.inputValue, true) || (stringResource(R.string.pip_info_from_android_12_pip_can_be_automatically_enabled)).contains(search.inputValue, true)) {
                                          OtherSwitchSettingEntry(
                             title = stringResource(R.string.settings_enable_pip_auto),
                             text = stringResource(R.string.pip_info_from_android_12_pip_can_be_automatically_enabled),

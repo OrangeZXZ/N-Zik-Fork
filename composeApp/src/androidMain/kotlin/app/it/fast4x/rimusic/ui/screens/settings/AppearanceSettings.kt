@@ -882,7 +882,7 @@ fun AppearanceSettings(
         }
 
         if (!isLandscape) {
-            if (search.inputValue.isBlank() || stringResource(R.string.appearancepresets).contains(search.inputValue, true)) {
+            if (search.inputValue.isBlank() || stringResource(R.string.appearancepresets).contains(search.inputValue, true) || (stringResource(R.string.appearancepresetssecondary)).contains(search.inputValue, true)) {
                 OtherSettingsEntry(
                     title = stringResource(R.string.appearancepresets),
                     text = stringResource(R.string.appearancepresetssecondary),
@@ -1652,7 +1652,7 @@ fun AppearanceSettings(
                 true
             )
         )
-            if (search.inputValue.isBlank() || stringResource(R.string.disable_scrolling_text).contains(search.inputValue, true)) {
+            if (search.inputValue.isBlank() || stringResource(R.string.disable_scrolling_text).contains(search.inputValue, true) || (stringResource(R.string.scrolling_text_is_used_for_long_texts)).contains(search.inputValue, true)) {
                 OtherSwitchSettingEntry(
                     icon = R.drawable.text,
                     title = stringResource(R.string.disable_scrolling_text),
@@ -1682,7 +1682,7 @@ fun AppearanceSettings(
                 true
             )
         )
-            if (search.inputValue.isBlank() || stringResource(R.string.player_rotating_buttons).contains(search.inputValue, true)) {
+            if (search.inputValue.isBlank() || stringResource(R.string.player_rotating_buttons).contains(search.inputValue, true) || (stringResource(R.string.player_enable_rotation_buttons)).contains(search.inputValue, true)) {
                 OtherSwitchSettingEntry(
                     icon = R.drawable.refresh,
                     title = stringResource(R.string.player_rotating_buttons),
@@ -1697,7 +1697,7 @@ fun AppearanceSettings(
                 true
             )
         )
-            if (search.inputValue.isBlank() || stringResource(R.string.toggle_lyrics).contains(search.inputValue, true)) {
+            if (search.inputValue.isBlank() || stringResource(R.string.toggle_lyrics).contains(search.inputValue, true) || (stringResource(R.string.by_tapping_on_the_thumbnail)).contains(search.inputValue, true)) {
                 OtherSwitchSettingEntry(
                     icon = R.drawable.song_lyrics,
                     title = stringResource(R.string.toggle_lyrics),
@@ -1727,7 +1727,7 @@ fun AppearanceSettings(
                 true
             )
         )
-            if (search.inputValue.isBlank() || stringResource(R.string.save_lyrics_state).contains(search.inputValue, true)) {
+            if (search.inputValue.isBlank() || stringResource(R.string.save_lyrics_state).contains(search.inputValue, true) || (stringResource(R.string.save_lyrics_state_description)).contains(search.inputValue, true)) {
                 OtherSwitchSettingEntry(
                     icon = R.drawable.bookmark,
                     title = stringResource(R.string.save_lyrics_state),
@@ -1803,7 +1803,7 @@ fun AppearanceSettings(
 
             AnimatedVisibility(visible = visualizerEnabled) {
                 Column {
-                    if (search.inputValue.isBlank() || stringResource(R.string.save_visualizer_state).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.save_visualizer_state).contains(search.inputValue, true) || (stringResource(R.string.save_visualizer_state_description)).contains(search.inputValue, true)) {
                         OtherSwitchSettingEntry(
                     icon = R.drawable.bookmark,
                             title = stringResource(R.string.save_visualizer_state),
@@ -2360,7 +2360,7 @@ fun AppearanceSettings(
                 content = {
                     var resetToDefault by remember { mutableStateOf(false) }
                     val context = LocalContext.current
-                    if (search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || (stringResource(R.string.settings_restore_default_settings)).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
                             title = stringResource(R.string.settings_reset),
                             text = stringResource(R.string.settings_restore_default_settings),

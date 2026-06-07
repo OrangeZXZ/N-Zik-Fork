@@ -257,7 +257,7 @@ fun AIRecommendationSettings(
                 title = stringResource(R.string.quick_picks),
                 icon = R.drawable.star_brilliant,
                 content = {
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.tips)}".contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.tips)}".contains(search.inputValue, true) || (stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.tips)).contains(search.inputValue, true)) {
                         OtherSwitchSettingEntry(
                             title = "${stringResource(R.string.show)} ${stringResource(R.string.tips)}",
                             text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.tips),
@@ -269,7 +269,7 @@ fun AIRecommendationSettings(
                         )
                     }
 
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.charts)}".contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.charts)}".contains(search.inputValue, true) || (stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.charts)).contains(search.inputValue, true)) {
                         OtherSwitchSettingEntry(
                             title = "${stringResource(R.string.show)} ${stringResource(R.string.charts)}",
                             text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.charts),
@@ -281,7 +281,7 @@ fun AIRecommendationSettings(
                         )
                     }
 
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.related_albums)}".contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.related_albums)}".contains(search.inputValue, true) || (stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.related_albums)).contains(search.inputValue, true)) {
                         OtherSwitchSettingEntry(
                             title = "${stringResource(R.string.show)} ${stringResource(R.string.related_albums)}",
                             text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.related_albums),
@@ -293,7 +293,7 @@ fun AIRecommendationSettings(
                         )
                     }
 
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.similar_artists)}".contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.similar_artists)}".contains(search.inputValue, true) || (stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.similar_artists)).contains(search.inputValue, true)) {
                         OtherSwitchSettingEntry(
                             title = "${stringResource(R.string.show)} ${stringResource(R.string.similar_artists)}",
                             text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.similar_artists),
@@ -305,7 +305,7 @@ fun AIRecommendationSettings(
                         )
                     }
 
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.new_albums_of_your_artists)}".contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.new_albums_of_your_artists)}".contains(search.inputValue, true) || (stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.new_albums_of_your_artists)).contains(search.inputValue, true)) {
                         OtherSwitchSettingEntry(
                             title = "${stringResource(R.string.show)} ${stringResource(R.string.new_albums_of_your_artists)}",
                             text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.new_albums_of_your_artists),
@@ -317,7 +317,7 @@ fun AIRecommendationSettings(
                         )
                     }
 
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.new_albums)}".contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.new_albums)}".contains(search.inputValue, true) || (stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.new_albums)).contains(search.inputValue, true)) {
                         OtherSwitchSettingEntry(
                             title = "${stringResource(R.string.show)} ${stringResource(R.string.new_albums)}",
                             text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.new_albums),
@@ -329,7 +329,7 @@ fun AIRecommendationSettings(
                         )
                     }
 
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.playlists_you_might_like)}".contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.playlists_you_might_like)}".contains(search.inputValue, true) || (stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.playlists_you_might_like)).contains(search.inputValue, true)) {
                         OtherSwitchSettingEntry(
                             title = "${stringResource(R.string.show)} ${stringResource(R.string.playlists_you_might_like)}",
                             text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.playlists_you_might_like),
@@ -341,7 +341,7 @@ fun AIRecommendationSettings(
                         )
                     }
 
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.moods_and_genres)}".contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.moods_and_genres)}".contains(search.inputValue, true) || (stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.moods_and_genres)).contains(search.inputValue, true)) {
                         OtherSwitchSettingEntry(
                             title = "${stringResource(R.string.show)} ${stringResource(R.string.moods_and_genres)}",
                             text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.moods_and_genres),
@@ -408,7 +408,7 @@ fun AIRecommendationSettings(
                     }
 
                     var showQuickSelectionDialog by remember { mutableStateOf(false) }
-                    if (search.inputValue.isBlank() || stringResource(R.string.quick_selection_type).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.quick_selection_type).contains(search.inputValue, true) || (stringResource(R.string.quick_selection, localRecommandationsNumber.value)).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
                             title = stringResource(R.string.quick_selection_type),
                             text = stringResource(R.string.quick_selection, localRecommandationsNumber.value),
@@ -447,7 +447,7 @@ fun AIRecommendationSettings(
                 title = stringResource(R.string.monthly_playlists),
                 icon = R.drawable.calendar,
                 content = {
-					if (search.inputValue.isBlank() || stringResource(R.string.show_monthly_playlists_in_library).contains(search.inputValue, true)) {
+					if (search.inputValue.isBlank() || stringResource(R.string.show_monthly_playlists_in_library).contains(search.inputValue, true) || (stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.monthly_playlists) + " " + stringResource(R.string.in_txt) + " " + stringResource(R.string.library)).contains(search.inputValue, true)) {
     					OtherSwitchSettingEntry(
     						title = stringResource(R.string.show_monthly_playlists_in_library),
     						text = stringResource(R.string.disable_if_you_do_not_want_to_see) + " " + stringResource(R.string.monthly_playlists) + " " + stringResource(R.string.in_txt) + " " + stringResource(R.string.library),
@@ -553,7 +553,7 @@ fun AIRecommendationSettings(
                         )
                     }
 
-                    if (search.inputValue.isBlank() || stringResource(R.string.listening_time).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.listening_time).contains(search.inputValue, true) || (stringResource(R.string.shows_the_number_of_songs_heard_and_their_listening_time)).contains(search.inputValue, true)) {
                         OtherSwitchSettingEntry(
                             title = stringResource(R.string.listening_time),
                             text = stringResource(R.string.shows_the_number_of_songs_heard_and_their_listening_time),
@@ -670,7 +670,7 @@ fun AIRecommendationSettings(
                 content = {
                     var resetToDefault by remember { mutableStateOf(false) }
                     val context = LocalContext.current
-                    if (search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || (stringResource(R.string.settings_restore_default_settings)).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
                             title = stringResource(R.string.settings_reset),
                             text = stringResource(R.string.settings_restore_default_settings),
