@@ -87,6 +87,12 @@
 
 ##---------------End: proguard configuration for Gson  ----------
 
+## Rules for TextClassifier (backward compatibility with API < 28)
+## Prevents R8 from stripping classes needed by Compose Foundation's
+## PlatformSelectionBehaviors on older Android versions
+-keep class android.view.textclassifier.** { *; }
+-dontwarn android.view.textclassifier.**
+
 ## Rules for NewPipeExtractor
 -keep class org.schabi.newpipe.extractor.timeago.patterns.** { *; }
 -keep class org.mozilla.javascript.** { *; }
