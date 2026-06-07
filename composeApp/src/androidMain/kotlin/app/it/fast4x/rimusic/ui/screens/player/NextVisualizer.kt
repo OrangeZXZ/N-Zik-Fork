@@ -117,7 +117,7 @@ fun NextVisualizer(
                         .background(if (!showvisthumbnail) Color.Transparent else Color.Black.copy(0.6f))
                         .clip(thumbnailShape())
                 ) {
-                    app.it.fast4x.rimusic.extensions.nextvisualizer.NextVisualizer()
+                    app.n_zik.android.extensions.nextvisualizer.NextVisualizer()
                 }
             }
         }
