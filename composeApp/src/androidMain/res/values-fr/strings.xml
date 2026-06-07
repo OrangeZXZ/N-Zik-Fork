@@ -641,6 +641,8 @@
   <string name="charts">Tableau</string>
   <string name="thumbnailtype">Type de pochette d\'album</string>
   <string name="showvisthumbnail">Afficher la pochette pour le visualiseur</string>
+  <string name="black_background_for_visualizer">Dark background for visualizer</string>
+  <string name="show_visualizer_buttons">Auto-hide visualizer buttons</string>
   <string name="androidheadunit">Unité principale Android</string>
   <string name="extra_space">Espace supplémentaire en haut</string>
   <string name="game_restart">Redémarrer</string>
