@@ -9,4 +9,6 @@ Improved: Playback speed can go to 10x
 Improved: Settings Search Functionality
 Fixed: Addd missing description on player appearance page
 Fixed: Settings page search function not showing proper results
-Added: Search in AI Recommendation Settings, Data Settings and misc settings.
+Added: Search in AI Recommendation Settings.
+Fixed: Weird spacing on some settings pages, same for search.
+FIxed: Title and description being missaligned in settings pages.
