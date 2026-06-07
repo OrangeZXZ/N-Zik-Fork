@@ -302,8 +302,9 @@ fun GeneralSettings(
         }
 
                  // Language Section
+         val searchCtx_0 = search.inputValue.isBlank() || stringResource(R.string.languages).contains(search.inputValue, true) || stringResource(R.string.app_language).contains(search.inputValue, true)
          AnimatedVisibility(
-             visible = true,
+             visible = searchCtx_0,
              enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(600)) + androidx.compose.animation.scaleIn(
                  animationSpec = androidx.compose.animation.core.tween(600),
                  initialScale = 0.9f
@@ -344,8 +345,9 @@ fun GeneralSettings(
          Spacer(modifier = Modifier.height(16.dp))
 
          // Notifications Section
+         val searchCtx_1 = search.inputValue.isBlank() || stringResource(R.string.notifications).contains(search.inputValue, true) || stringResource(R.string.notification_type).contains(search.inputValue, true) || stringResource(R.string.restarting_rimusic_is_required).contains(search.inputValue, true) || stringResource(R.string.notification_type_info).contains(search.inputValue, true)
          AnimatedVisibility(
-             visible = true,
+             visible = searchCtx_1,
              enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(700)) + androidx.compose.animation.scaleIn(
                  animationSpec = androidx.compose.animation.core.tween(700),
                  initialScale = 0.9f
@@ -386,8 +388,9 @@ fun GeneralSettings(
          Spacer(modifier = Modifier.height(16.dp))
 
          // Playback Section
+         val searchCtx_2 = search.inputValue.isBlank() || stringResource(R.string.playback).contains(search.inputValue, true) || stringResource(R.string.jump_previous).contains(search.inputValue, true) || stringResource(R.string.jump_previous_blank).contains(search.inputValue, true) || stringResource(R.string.min_listening_time).contains(search.inputValue, true) || stringResource(R.string.is_min_list_time_for_tips_or_quick_pics).contains(search.inputValue, true) || stringResource(R.string.exclude_songs_with_duration_limit).contains(search.inputValue, true) || stringResource(R.string.vt_disabled).contains(search.inputValue, true) || stringResource(R.string.exclude_songs_with_duration_limit_description).contains(search.inputValue, true) || stringResource(R.string.pause_between_songs).contains(search.inputValue, true) || stringResource(R.string.pause_between_songs_description).contains(search.inputValue, true)
          AnimatedVisibility(
-             visible = true,
+             visible = searchCtx_2,
              enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(800)) + androidx.compose.animation.scaleIn(
                  animationSpec = androidx.compose.animation.core.tween(800),
                  initialScale = 0.9f
@@ -550,8 +553,9 @@ fun GeneralSettings(
          Spacer(modifier = Modifier.height(16.dp))
 
          // Player Controls Section
+         val searchCtx_3 = search.inputValue.isBlank() || stringResource(R.string.player_controls).contains(search.inputValue, true) || stringResource(R.string.player_pause_on_volume_zero).contains(search.inputValue, true) || stringResource(R.string.info_pauses_player_when_volume_zero).contains(search.inputValue, true) || stringResource(R.string.player_keep_minimized).contains(search.inputValue, true) || stringResource(R.string.when_click_on_a_song_player_start_minimized).contains(search.inputValue, true) || stringResource(R.string.player_collapsed_disable_swiping_down).contains(search.inputValue, true) || stringResource(R.string.avoid_closing_the_player_cleaning_queue_by_swiping_down).contains(search.inputValue, true) || stringResource(R.string.player_auto_load_songs_in_queue).contains(search.inputValue, true) || stringResource(R.string.player_auto_load_songs_in_queue_description).contains(search.inputValue, true)
          AnimatedVisibility(
-             visible = true,
+             visible = searchCtx_3,
              enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(900)) + androidx.compose.animation.scaleIn(
                  animationSpec = androidx.compose.animation.core.tween(900),
                  initialScale = 0.9f
@@ -614,8 +618,9 @@ fun GeneralSettings(
          Spacer(modifier = Modifier.height(16.dp))
 
          // Queue Management Section
+         val searchCtx_4 = search.inputValue.isBlank() || stringResource(R.string.queue_management).contains(search.inputValue, true) || stringResource(R.string.max_songs_in_queue).contains(search.inputValue, true) || stringResource(R.string.unlimited).contains(search.inputValue, true) || stringResource(R.string.discover).contains(search.inputValue, true) || stringResource(R.string.discoverinfo).contains(search.inputValue, true) || stringResource(R.string.playlistindicator).contains(search.inputValue, true) || stringResource(R.string.playlistindicatorinfo).contains(search.inputValue, true) || stringResource(R.string.now_playing_indicator).contains(search.inputValue, true)
          AnimatedVisibility(
-             visible = true,
+             visible = searchCtx_4,
              enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1000)) + androidx.compose.animation.scaleIn(
                  animationSpec = androidx.compose.animation.core.tween(1000),
                  initialScale = 0.9f
@@ -715,8 +720,9 @@ fun GeneralSettings(
          Spacer(modifier = Modifier.height(16.dp))
 
          // App Behavior Section
+         val searchCtx_5 = search.inputValue.isBlank() || stringResource(R.string.app_behavior).contains(search.inputValue, true) || stringResource(R.string.resume_playback).contains(search.inputValue, true) || stringResource(R.string.when_device_is_connected).contains(search.inputValue, true) || stringResource(R.string.persistent_queue).contains(search.inputValue, true) || stringResource(R.string.save_and_restore_playing_songs).contains(search.inputValue, true) || stringResource(R.string.resume_playback_on_start).contains(search.inputValue, true) || stringResource(R.string.resume_automatically_when_app_opens).contains(search.inputValue, true) || stringResource(R.string.close_app_with_back_button).contains(search.inputValue, true) || stringResource(R.string.when_you_use_the_back_button_from_the_home_page).contains(search.inputValue, true) || stringResource(R.string.close_background_player).contains(search.inputValue, true) || stringResource(R.string.when_app_swipe_out_from_task_manager).contains(search.inputValue, true) || stringResource(R.string.skip_media_on_error).contains(search.inputValue, true) || stringResource(R.string.skip_media_on_error_description).contains(search.inputValue, true)
          AnimatedVisibility(
-             visible = true,
+             visible = searchCtx_5,
              enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1100)) + androidx.compose.animation.scaleIn(
                  animationSpec = androidx.compose.animation.core.tween(1100),
                  initialScale = 0.9f
@@ -824,8 +830,9 @@ fun GeneralSettings(
          Spacer(modifier = Modifier.height(16.dp))
 
          // Audio Effects Section
+         val searchCtx_6 = search.inputValue.isBlank() || stringResource(R.string.audio_effects).contains(search.inputValue, true) || stringResource(R.string.skip_silence).contains(search.inputValue, true) || stringResource(R.string.skip_silent_parts_during_playback).contains(search.inputValue, true) || stringResource(R.string.minimum_silence_length).contains(search.inputValue, true) || stringResource(R.string.minimum_silence_length_description).contains(search.inputValue, true) || stringResource(R.string.loudness_normalization).contains(search.inputValue, true) || stringResource(R.string.autoadjust_the_volume).contains(search.inputValue, true) || stringResource(R.string.settings_loudness_base_gain).contains(search.inputValue, true) || stringResource(R.string.settings_target_gain_loudness_info).contains(search.inputValue, true) || stringResource(R.string.settings_audio_bass_boost).contains(search.inputValue, true) || stringResource(R.string.settings_bass_boost_level).contains(search.inputValue, true) || stringResource(R.string.settings_audio_reverb).contains(search.inputValue, true) || stringResource(R.string.settings_audio_reverb_info_apply_a_depth_effect_to_the_audio).contains(search.inputValue, true) || stringResource(R.string.settings_audio_focus).contains(search.inputValue, true) || stringResource(R.string.settings_audio_focus_info).contains(search.inputValue, true) || stringResource(R.string.equalizer).contains(search.inputValue, true) || stringResource(R.string.interact_with_the_system_equalizer).contains(search.inputValue, true)
          AnimatedVisibility(
-             visible = true,
+             visible = searchCtx_6,
              enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1200)) + androidx.compose.animation.scaleIn(
                  animationSpec = androidx.compose.animation.core.tween(1200),
                  initialScale = 0.9f
@@ -986,8 +993,9 @@ fun GeneralSettings(
          Spacer(modifier = Modifier.height(16.dp))
 
          // Gestures & Events Section
+         val searchCtx_7 = search.inputValue.isBlank() || stringResource(R.string.gestures_events).contains(search.inputValue, true) || stringResource(R.string.event_volumekeys).contains(search.inputValue, true) || stringResource(R.string.event_volumekeysinfo).contains(search.inputValue, true) || stringResource(R.string.event_shake).contains(search.inputValue, true) || stringResource(R.string.shake_to_change_song).contains(search.inputValue, true)
          AnimatedVisibility(
-             visible = true,
+             visible = searchCtx_7,
              enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1300)) + androidx.compose.animation.scaleIn(
                  animationSpec = androidx.compose.animation.core.tween(1300),
                  initialScale = 0.9f
@@ -1031,8 +1039,9 @@ fun GeneralSettings(
          Spacer(modifier = Modifier.height(16.dp))
 
          // Picture in Picture Section
+         val searchCtx_8 = search.inputValue.isBlank() || stringResource(R.string.picture_in_picture).contains(search.inputValue, true) || stringResource(R.string.settings_enable_pip).contains(search.inputValue, true) || stringResource(R.string.settings_pip_module).contains(search.inputValue, true) || stringResource(R.string.pipmodule_cover).contains(search.inputValue, true) || stringResource(R.string.settings_enable_pip_auto).contains(search.inputValue, true) || stringResource(R.string.pip_info_from_android_12_pip_can_be_automatically_enabled).contains(search.inputValue, true)
          AnimatedVisibility(
-             visible = true,
+             visible = searchCtx_8,
              enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1400)) + androidx.compose.animation.scaleIn(
                  animationSpec = androidx.compose.animation.core.tween(1400),
                  initialScale = 0.9f
