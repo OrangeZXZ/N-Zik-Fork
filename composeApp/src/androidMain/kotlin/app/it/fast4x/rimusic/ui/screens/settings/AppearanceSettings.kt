@@ -563,7 +563,7 @@ fun AppearanceSettings(
         SettingsDescription(
             text = stringResource(R.string.appearance_settings_description),
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Start
         )
 
         Spacer(modifier = Modifier.height(16.dp))

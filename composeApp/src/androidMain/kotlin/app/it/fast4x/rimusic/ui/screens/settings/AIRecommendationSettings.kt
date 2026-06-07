@@ -204,7 +204,7 @@ fun AIRecommendationSettings(
         SettingsDescription(
             text = stringResource(R.string.quick_picks_description),
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Start
         ) 
 
         /* Removed Spacer */

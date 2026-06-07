@@ -92,7 +92,7 @@ fun NetworkSettings(
         SettingsDescription(
             text = stringResource(R.string.network_settings_description),
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Start
         ) 
 
         /* Removed Spacer */

@@ -450,8 +450,7 @@ fun SettingsDescription(
             else typography().xxs.secondary,
             textAlign = textAlign,
             modifier = modifier
-                .padding(start = 12.dp)
-                //.padding(horizontal = 12.dp)
+                .padding(horizontal = 16.dp)
                 .padding(bottom = 8.dp)
         )
     } else {
@@ -460,8 +459,7 @@ fun SettingsDescription(
             style = if (important) typography().xxs.semiBold.color(colorPalette().red)
             else typography().xxs.secondary,
             modifier = modifier
-                .padding(start = 12.dp)
-                //.padding(horizontal = 12.dp)
+                .padding(horizontal = 16.dp)
                 .padding(bottom = 8.dp)
         )
     }
@@ -476,7 +474,7 @@ fun ImportantSettingsDescription(
         text = text,
         style = typography().xxs.semiBold.color(colorPalette().red),
         modifier = modifier
-            .padding(start = 12.dp)
+            .padding(horizontal = 16.dp)
             .padding(vertical = 8.dp)
     )
 }

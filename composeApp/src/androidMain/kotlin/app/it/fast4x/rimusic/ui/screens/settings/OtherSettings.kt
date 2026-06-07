@@ -125,7 +125,7 @@ fun OtherSettings() {
         SettingsDescription(
             text = stringResource(R.string.other_settings_description),
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Start
         ) 
 
         /* Removed Spacer */

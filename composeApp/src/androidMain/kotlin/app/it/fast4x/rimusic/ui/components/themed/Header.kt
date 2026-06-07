@@ -166,7 +166,7 @@ fun HeaderWithIcon (
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             //.requiredHeight(Dimensions.halfheaderHeight)
-            .padding(all = 8.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
 
     ){
 
@@ -196,7 +196,7 @@ fun HeaderWithIcon (
         } else {
             // New behavior for RiMusic and others
             Row(
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {

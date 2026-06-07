@@ -135,7 +135,7 @@ fun AccountsSettings() {
         SettingsDescription(
             text = stringResource(R.string.accounts_settings_description),
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Start
         ) 
 
         /* Removed Spacer */
