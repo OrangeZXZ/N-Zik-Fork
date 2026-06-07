@@ -4,3 +4,5 @@ Fixed: Status bar being black while on pitch black mode, forgot it.
 Fixed: Crash on textClassifier for A7 on Minified build
 Improved: Visualizer lags, now its butter smooth on low-end devices
 Refactored: Visualizer code to my folder (app.n_zik.android.extensions.nextvisualizer)
+Removed: Old showPlaybackSpeedButtonKey, becoming usselss since you can hold play button to change speed
+Improved: Playback speed can go to 10x

@@ -120,7 +120,6 @@ import app.it.fast4x.rimusic.utils.showButtonPlayerStartRadioKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import app.it.fast4x.rimusic.utils.showNextSongsInPlayerKey
-import app.it.fast4x.rimusic.utils.showPlaybackSpeedButtonKey
 import app.it.fast4x.rimusic.utils.showalbumcoverKey
 import app.it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import app.it.fast4x.rimusic.utils.showsongsKey
@@ -135,7 +134,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import app.n_zik.android.core.coil.ImageCacheFactory
-import app.kreate.android.me.knighthat.component.player.PlaybackSpeed
 import app.kreate.android.me.knighthat.utils.Toaster
 
 private class PagerViewPort(
@@ -691,14 +689,6 @@ fun BoxScope.ActionBar(
                         },
                         modifier = Modifier.size( 24.dp )
                     )
-
-                val showPlaybackSpeedButton by rememberPreference( showPlaybackSpeedButtonKey, false )
-                if( showPlaybackSpeedButton ) {
-                    val playbackSpeed = remember { PlaybackSpeed() }
-
-                    playbackSpeed.Render()
-                    playbackSpeed.ToolBarButton()
-                }
 
                 val showButtonPlayerArrow by rememberPreference( showButtonPlayerArrowKey, true )
                 if (showButtonPlayerArrow)

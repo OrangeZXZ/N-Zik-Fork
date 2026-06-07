@@ -134,7 +134,6 @@ import app.it.fast4x.rimusic.utils.showDownloadButtonBackgroundPlayerKey
 import app.it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import app.it.fast4x.rimusic.utils.showLyricsStateKey
 import app.it.fast4x.rimusic.utils.showNextSongsInPlayerKey
-import app.it.fast4x.rimusic.utils.showPlaybackSpeedButtonKey
 import app.it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import app.it.fast4x.rimusic.utils.showTopActionsBarKey
 import app.it.fast4x.rimusic.utils.showTotalTimeQueueKey
@@ -2077,15 +2076,7 @@ fun AppearanceSettings(
                     )
             }
 
-        var showPlaybackSpeedButton by rememberPreference( showPlaybackSpeedButtonKey, false )
-        if( search.inputValue.isBlank() || stringResource( R.string.title_playback_speed ).contains( search.inputValue, true ) )
-            OtherSwitchSettingEntry(
-                icon = R.drawable.time,
-                title = stringResource( R.string.title_playback_speed ),
-                text = stringResource( R.string.description_playback_speed ),
-                isChecked = showPlaybackSpeedButton,
-                onCheckedChange = { showPlaybackSpeedButton = it }
-            )
+
 
                     }
                 )

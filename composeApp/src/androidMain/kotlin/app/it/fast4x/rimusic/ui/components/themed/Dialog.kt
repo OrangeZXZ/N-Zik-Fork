@@ -2689,7 +2689,7 @@ fun PlaybackParamsDialog(
                     },
                     onSlideComplete = {},
                     toDisplay = { "%.1fx".format(playbackSpeed) },
-                    range = 0.1f..5f
+                    range = 0.1f..10f
                 )
 
                 /*
