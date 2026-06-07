@@ -144,6 +144,8 @@ import app.it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import app.it.fast4x.rimusic.utils.showsongsKey
 import app.it.fast4x.rimusic.utils.showthumbnailKey
 import app.it.fast4x.rimusic.utils.showvisthumbnailKey
+import app.it.fast4x.rimusic.utils.showVisualizerButtonsKey
+import app.it.fast4x.rimusic.utils.blackBackgroundForVisThumbnailKey
 import app.it.fast4x.rimusic.utils.statsExpandedKey
 import app.it.fast4x.rimusic.utils.statsfornerdsKey
 import app.it.fast4x.rimusic.utils.swipeAnimationsNoThumbnailKey
@@ -319,6 +321,8 @@ fun DefaultAppearanceSettings() {
     thumbnailType = ThumbnailType.Modern
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
     showvisthumbnail = true
+    var blackBackgroundForVisThumbnail by rememberPreference(blackBackgroundForVisThumbnailKey, true)
+    blackBackgroundForVisThumbnail = true
     var buttonzoomout by rememberPreference(buttonzoomoutKey, true)
     buttonzoomout = true
     var thumbnailpause by rememberPreference(thumbnailpauseKey, true)
@@ -487,6 +491,8 @@ fun AppearanceSettings(
     var actionspacedevenly by rememberPreference(actionspacedevenlyKey, true)
     var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
+    var blackBackgroundForVisThumbnail by rememberPreference(blackBackgroundForVisThumbnailKey, true)
+    var showVisualizerButtons by rememberPreference(showVisualizerButtonsKey, true)
     var buttonzoomout by rememberPreference(buttonzoomoutKey, true)
     var thumbnailpause by rememberPreference(thumbnailpauseKey, true)
     var showsongs by rememberPreference(showsongsKey, SongsNumber.`2`)
@@ -1109,6 +1115,28 @@ fun AppearanceSettings(
                                     text = "",
                                     isChecked = showvisthumbnail,
                                     onCheckedChange = { showvisthumbnail = it },
+                                    modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                                )
+                            }
+                            AnimatedVisibility(visible = showvisthumbnail) {
+                                if (search.inputValue.isBlank() || stringResource(R.string.black_background_for_visualizer).contains(search.inputValue, true)) {
+                                    OtherSwitchSettingEntry(
+                                        icon = R.drawable.images_sharp,
+                                        title = stringResource(R.string.black_background_for_visualizer),
+                                        text = "",
+                                        isChecked = blackBackgroundForVisThumbnail,
+                                        onCheckedChange = { blackBackgroundForVisThumbnail = it },
+                                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 45.dp else 20.dp)
+                                    )
+                                }
+                            }
+                            if (search.inputValue.isBlank() || stringResource(R.string.show_visualizer_buttons).contains(search.inputValue, true)) {
+                                OtherSwitchSettingEntry(
+                                    icon = R.drawable.menu,
+                                    title = stringResource(R.string.show_visualizer_buttons),
+                                    text = "",
+                                    isChecked = showVisualizerButtons,
+                                    onCheckedChange = { showVisualizerButtons = it },
                                     modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                                 )
                             }

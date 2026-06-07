@@ -9,6 +9,11 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
@@ -73,8 +79,11 @@ import app.it.fast4x.rimusic.utils.isCompositionLaunched
 import app.it.fast4x.rimusic.utils.rememberPreference
 
 import app.it.fast4x.rimusic.utils.semiBold
+import app.it.fast4x.rimusic.utils.showVisualizerButtonsKey
 import app.it.fast4x.rimusic.utils.visualizerEnabledKey
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -159,6 +168,8 @@ fun NextVisualizer() {
                             bitmapCover = bitmap
                             circleBitmap = Icon.getCircledBitmap(bitmap)
                         }
+                    } catch (e: CancellationException) {
+                        throw e
                     } catch (e: Exception) {
                         Timber.e("Failed to get bitmap in NextVisualizer ${e.stackTraceToString()}")
                         withContext(Dispatchers.Main) {
@@ -183,6 +194,8 @@ fun NextVisualizer() {
                                     bitmapCover = bitmap
                                     circleBitmap = Icon.getCircledBitmap(bitmap)
                                 }
+                            } catch (e: CancellationException) {
+                                throw e
                             } catch (e: Exception) {
                                 withContext(Dispatchers.Main) {
                                     bitmapCover = APP_ICON_BITMAP
@@ -202,8 +215,24 @@ fun NextVisualizer() {
             var currentVisualizer by rememberPreference(currentVisualizerKey, 0)
             if (currentVisualizer < 0 || currentVisualizer >= visualizersList.size) currentVisualizer = 0
 
+            val showVisualizerButtons by rememberPreference(showVisualizerButtonsKey, true)
+
+            var showControls by remember { mutableStateOf(true) }
+            var controlsTimerKey by remember { mutableStateOf(0) }
+
+            LaunchedEffect(controlsTimerKey) {
+                showControls = true
+                delay(3000)
+                showControls = false
+            }
+
             Box(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { controlsTimerKey++ }
             ) {
 
                 AndroidView(
@@ -216,16 +245,22 @@ fun NextVisualizer() {
                     }
                 )
 
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter)
-                        .height(50.dp)
+                AnimatedVisibility(
+                    visible = !showVisualizerButtons || showControls,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                    modifier = Modifier.align(Alignment.BottomCenter)
                 ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                    ) {
                     IconButton(
                         onClick = {
+                            controlsTimerKey++
                             if (currentVisualizer > 0) currentVisualizer--
                             else currentVisualizer = visualizersList.lastIndex
                         },
@@ -241,6 +276,7 @@ fun NextVisualizer() {
                     
                     IconButton(
                         onClick = {
+                            controlsTimerKey++
                             if (currentVisualizer < visualizersList.lastIndex) currentVisualizer++
                             else currentVisualizer = 0
                         },
@@ -248,6 +284,7 @@ fun NextVisualizer() {
                         color = colorPalette().text,
                         modifier = Modifier.size(32.dp)
                     )
+                    }
                 }
             }
         }
@@ -255,15 +292,16 @@ fun NextVisualizer() {
 }
 
 fun createVisualizersList(background: Bitmap, circleBitmap: Bitmap, color: Int): List<Painter> {
-    val ampR = 3f
-    val yR = 0.2f
+    val ampR = 4f
+    val smoothWave = 0.6f
+    val yR = 0f
     return listOf(
         // Basic components
-        Move(WfmAnalog(colorPaint = color, ampR = ampR)),
-        Move(FftBar(colorPaint = color, ampR = ampR), yR = yR),
-        Move(FftLine(colorPaint = color, ampR = ampR), yR = yR),
-        Move(FftWave(ampR = ampR), yR = yR),
-        Move(FftWaveRgb(ampR = ampR), yR = yR),
+        Move(WfmAnalog(colorPaint = color, ampR = ampR, smooth = smoothWave)),
+        Move(FftBar(colorPaint = color, ampR = ampR), yR = 0.5f),
+        Move(FftLine(colorPaint = color, ampR = ampR), yR = 0.5f),
+        Move(FftWave(ampR = ampR), yR = 0.5f),
+        Move(FftWaveRgb(ampR = ampR), yR = 0.5f),
         Compose(
             Move(WfmAnalog(colorPaint = color), yR = -.3f),
             Move(FftBar(colorPaint = color), yR = -.1f),
@@ -271,20 +309,20 @@ fun createVisualizersList(background: Bitmap, circleBitmap: Bitmap, color: Int):
             Move(FftWave(), yR = .3f),
             Move(FftWaveRgb(), yR = .5f)
         ),
-        Move(FftBar(colorPaint = color, side = "b", ampR = ampR), yR = -yR),
-        Move(FftLine(colorPaint = color, side = "b", ampR = ampR), yR = -yR),
-        Move(FftWave(side = "b", ampR = ampR), yR = -yR),
-        Move(FftWaveRgb(side = "b", ampR = ampR), yR = -yR),
+        Move(FftBar(colorPaint = color, side = "b", ampR = ampR), yR = -0.5f),
+        Move(FftLine(colorPaint = color, side = "b", ampR = ampR), yR = -0.5f),
+        Move(FftWave(side = "b", ampR = ampR), yR = -0.5f),
+        Move(FftWaveRgb(side = "b", ampR = ampR), yR = -0.5f),
         Compose(
-            Move(FftBar(colorPaint = color, side = "b"), yR = -.3f),
-            Move(FftLine(colorPaint = color, side = "b"), yR = -.1f),
-            Move(FftWave(side = "b"), yR = .1f),
-            Move(FftWaveRgb(side = "b"), yR = .3f)
+            Move(FftBar(colorPaint = color, side = "b"), yR = -0.5f),
+            Move(FftLine(colorPaint = color, side = "b"), yR = -0.3f),
+            Move(FftWave(side = "b"), yR = -0.1f),
+            Move(FftWaveRgb(side = "b"), yR = 0.1f)
         ),
-        Move(FftBar(colorPaint = color, side = "ab", ampR = ampR), yR = yR-0.1f),
-        Move(FftLine(colorPaint = color, side = "ab", ampR = ampR), yR = yR-0.1f),
-        Move(FftWave(side = "ab", ampR = ampR), yR = yR-0.1f),
-        Move(FftWaveRgb(side = "ab", ampR = ampR), yR = yR-0.1f),
+        Move(FftBar(colorPaint = color, side = "ab", ampR = ampR), yR = 0f),
+        Move(FftLine(colorPaint = color, side = "ab", ampR = ampR), yR = 0f),
+        Move(FftWave(side = "ab", ampR = ampR), yR = 0f),
+        Move(FftWaveRgb(side = "ab", ampR = ampR), yR = 0f),
         Compose(
             Move(FftBar(colorPaint = color, side = "ab"), yR = -.3f),
             Move(FftLine(colorPaint = color, side = "ab"), yR = -.1f),
@@ -322,25 +360,25 @@ fun createVisualizersList(background: Bitmap, circleBitmap: Bitmap, color: Int):
                 paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
             },
             Gradient(preset = Gradient.LINEAR_HORIZONTAL)
-        ), yR = yR),
+        ), yR = 0.5f),
         Move(Blend(
             FftLine(colorPaint = color, ampR = ampR).apply {
                 paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
             },
             Gradient(preset = Gradient.LINEAR_VERTICAL, hsv = true)
-        ), yR = yR),
+        ), yR = 0.5f),
         Move(Blend(
             FftLine(colorPaint = color, ampR = ampR).apply {
                 paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
             },
             Gradient(preset = Gradient.LINEAR_VERTICAL_MIRROR, hsv = true)
-        ), yR = yR),
+        ), yR = 0.5f),
         Move(Blend(
             FftLine(colorPaint = color, ampR = ampR).apply {
                 paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
             },
             Gradient(preset = Gradient.RADIAL)
-        ), yR = yR),
+        ), yR = 0.5f),
         Move(Blend(
             FftCBar(colorPaint = color, side = "ab", gapX = 8f, ampR = ampR).apply {
                 paint.style = Paint.Style.FILL
@@ -350,7 +388,7 @@ fun createVisualizersList(background: Bitmap, circleBitmap: Bitmap, color: Int):
         // Composition
         Glitch(Beat(Preset.getPresetWithBitmap("cIcon", circleBitmap))),
         Compose(
-            WfmAnalog(colorPaint = color, ampR = ampR).apply { paint.alpha = 150 },
+            WfmAnalog(colorPaint = color, ampR = ampR, smooth = smoothWave).apply { paint.alpha = 150 },
             Shake(Preset.getPresetWithBitmap("cWaveRgbIcon", circleBitmap)).apply {
                 animX.duration = 1000
                 animY.duration = 2000

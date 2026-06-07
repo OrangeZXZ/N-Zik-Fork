@@ -42,6 +42,7 @@ import app.it.fast4x.rimusic.utils.isCompositionLaunched
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showvisthumbnailKey
+import app.it.fast4x.rimusic.utils.blackBackgroundForVisThumbnailKey
 import app.it.fast4x.rimusic.utils.visualizerEnabledKey
 
 @UnstableApi
@@ -52,6 +53,7 @@ fun NextVisualizer(
     val context = LocalContext.current
     val visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
+    var blackBackgroundForVisThumbnail by rememberPreference(blackBackgroundForVisThumbnailKey, true)
 
     if (visualizerEnabled) {
         val permission = Manifest.permission.RECORD_AUDIO
@@ -114,7 +116,7 @@ fun NextVisualizer(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(if (!showvisthumbnail) Color.Transparent else Color.Black.copy(0.6f))
+                        .background(if (!showvisthumbnail || !blackBackgroundForVisThumbnail) Color.Transparent else Color.Black.copy(0.6f))
                         .clip(thumbnailShape())
                 ) {
                     app.n_zik.android.extensions.nextvisualizer.NextVisualizer()
