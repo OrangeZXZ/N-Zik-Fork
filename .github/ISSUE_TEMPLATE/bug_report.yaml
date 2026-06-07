@@ -1,4 +1,4 @@
-name: 🐛Bug report
+name: 🐛 Bug report
 description: Short description of how to trigger this bug
 title: "[BUG]: "
 labels:
@@ -23,36 +23,39 @@ body:
         already know!
 
 
-
         # Download unsuccessful
 
 
         If you click download (all or individually), and the download icons
-        aren't changed. 
+        aren't changed.
 
         Only open ticket if none of your songs downloaded.
 
 
         If some are and some aren't, you are blocked by YouTube, please manually
-        download them with some break time in between
-                
+        download them with some break time in between.
+
 
         # Don't think that's YT?
-                       
+
+
         If you can't play songs even on those you've downloaded, please try
         these steps:
-                
+
+
         1. Re-download the song
 
         2. Clear cache
 
         3. Play songs that are physically on your device
-                        
-        Then, if the problem persists. Please follow the steps below to open a
-        ticket
+
+
+        Then, if the problem persists, please follow the steps below to open a
+        ticket.
 
 
         ---
+
   - type: markdown
     attributes:
       value: >-
@@ -67,22 +70,38 @@ body:
 
 
         Required fields are marked with *
+
   - type: input
     id: app-version
     attributes:
-      label: Version of N-Zik
+      label: Version of N-Zik *
       description: >-
-        Please specify what version of N-Zik are you on. Note: Don't use
-        "latest" or similar terms, we have apps on multiple stores with some are
-        lagged behind
-      placeholder: v.1.0.0, v.1.1.0, etc.
+        Please specify what version of N-Zik you are on. Note: Don't use
+        "latest" or similar terms, we have apps on multiple stores with some
+        lagged behind.
+      placeholder: "v1.0.0, v1.1.0, etc."
     validations:
       required: true
+
+  - type: dropdown
+    id: nzik-type
+    attributes:
+      label: N-Zik Build variant *
+      description: What build variant of N-Zik are you using?
+      options:
+        - Full
+        - Minified
+        - Beta
+    validations:
+      required: true
+
   - type: dropdown
     id: android-version
     attributes:
-      label: Android version / Platform
-      description: What version of Android is your phone, Android TV, Android Auto, or Android Automotive
+      label: Android version / Platform *
+      description: >-
+        What version of Android is your phone, Android TV, Android Auto,
+        or Android Automotive?
       options:
         - 7 - 7.1.x [N]
         - 8 - 8.1 [O]
@@ -94,111 +113,112 @@ body:
         - 14 [UPSIDE_DOWN_CAKE]
         - 15 [VANILLA_ICE_CREAM]
         - 16 [BAKLAVA]
-        - 17 [BUTTERSCOTCH]
         - Android Auto
         - Android Automotive
         - Android TV
         - Other
     validations:
       required: true
+
   - type: input
     id: other-android-version
     attributes:
       label: Other Android version
-      description: Only fill when you select "Other" in Android version
-      placeholder: '18'
+      description: Only fill this in if you selected "Other" above.
+      placeholder: "e.g. 17"
+
   - type: input
     id: device-model
     attributes:
-      label: Device Model
-      description: 'e.g., Pixel 8, Samsung Galaxy S24, etc.'
+      label: Device Model *
+      description: "e.g. Pixel 9, Samsung Galaxy S25, Xiaomi 17 Ultra, etc."
       placeholder: Your device model
     validations:
       required: true
+
   - type: checkboxes
     id: required-actions
     attributes:
-      label: TODOs before submitting a ticket
-      description: Complete these steps fixes most problems, most of the time. Shocker!
+      label: TODOs before submitting a ticket *
+      description: >-
+        Completing these steps fixes most problems, most of the time. Shocker!
+        Please actually complete them — don't just tick them because they're required.
       options:
-        - label: Update my app to latest version (see link below)
+        - label: I have updated my app to the latest version (see link below)
           required: true
-        - label: (If I'm on latest version) Re-install app
+        - label: "(If already on latest) I have re-installed the app"
           required: true
-        - label: I have checked issue page and there's no problem like mine
+        - label: I have checked the issue page and there is no existing report like mine
           required: true
+
   - type: markdown
     attributes:
       value: |-
         **To update N-Zik:**
 
-        1. Check your current version in Settings > About
+        1. Check your current version in **Settings > About**
         2. Go to [GitHub Releases](https://github.com/NEVARLeVrai/N-Zik/releases) and download the latest APK
-        3. Or enable OTA updates in the app (Settings > About > Updater) to get updates automatically
+        3. Or enable OTA updates in the app (**Settings > About > Updater**) to get updates automatically
 
-        > Please make sure you're on the **latest version** before reporting a bug!
+        > ⚠️ Please make sure you're on the **latest version** before reporting a bug!
 
-        > Please try to complete all of the tasks and not tick them because they are required.
-  - type: markdown
-    attributes:
-      value: >
         ---
-
 
         # Real questions
 
-
         Alright, now we've already applied some of the most common
-        troubleshooting steps. Next step is to fill out the description of the
-        bug.
+        troubleshooting steps. Next step is to fill out the description of the bug.
 
+        > Remember! More information helps us resolve the problem faster.
 
-        > Remember! More information helps us resolve the problem faster
   - type: textarea
     id: bug-trigger
     attributes:
-      label: Tell us how to trigger this bug
-      description: 'Each step should be on its own line. You can use simple sentences like:'
+      label: How to trigger this bug *
+      description: "Each step should be on its own line. Use simple sentences like:"
       value: |-
         1. Open N-Zik
-        2. Click on A 
+        2. Click on A
         3. Click on B
         4. Boom! Crash happens
     validations:
       required: true
+
   - type: textarea
     id: video
     attributes:
-      label: Submit a video
-      description: Please record a short clip of the bug, it helps tremendously
-      value: >-
-        Since Android 12, a screen recorder is baked into the OS, for your
-        convenience! Older versions require additional software to do so.
+      label: Submit a video (optional)
+      description: >-
+        Please record a short clip of the bug — it helps tremendously.
+        Since Android 12, a screen recorder is built into the OS.
+        Older versions require additional software.
+        Here's an [instruction video](https://www.youtube.com/watch?v=h6fOErvWIGI).
 
-
-        > Here's an [instruction
-        video](https://www.youtube.com/watch?v=h6fOErvWIGI)
   - type: textarea
     id: expectation
     attributes:
-      label: What was your expectation?
+      label: What did you expect to happen? *
       description: What did you expect after completing those steps?
-      placeholder: I clicked on next so obviously it plays random. DUH!!
+      placeholder: "I clicked Next so obviously it should play the next track. DUH!!"
     validations:
       required: true
+
   - type: textarea
     id: log
     attributes:
-      label: Logs (Optional)
+      label: Logs (optional)
       description: >-
-        Logs can be enabled in Settings > Misc > "Enable debug logs" > "Copy
-        crash log" (only available after you re-trigger the bug)
+        Logs can be enabled in **Settings > Misc > "Enable debug logs"**,
+        then **"Copy crash log"** (only available after re-triggering the bug).
       value: |-
         <details>
           <summary>Logs</summary>
-          [If you have multiple logs, please copy "details" for each log, name them appropriately, make sure they are different from each other]
+
+          [If you have multiple logs, copy the "details" block for each one, name them appropriately, and make sure they differ from each other.]
+
           <Paste your log here>
         </details>
+
   - type: markdown
     attributes:
       value: >-
