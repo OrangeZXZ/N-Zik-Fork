@@ -212,8 +212,6 @@ fun AIRecommendationSettings(
         search.ToolBarButton()
         search.SearchBar( this )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         // General Settings Section
         AnimatedVisibility(
             visible = searchCtx_0,
