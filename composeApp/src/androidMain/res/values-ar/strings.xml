@@ -1143,4 +1143,5 @@
   <string name="download_failed">فشل التحميل</string>
   <string name="failed_to_install">فشل التثبيت: %s</string>
   <string name="last_check">الفحص الأخير: %s</string>
+  <string name="no_items">لا توجد عناصر</string>
 </resources>
