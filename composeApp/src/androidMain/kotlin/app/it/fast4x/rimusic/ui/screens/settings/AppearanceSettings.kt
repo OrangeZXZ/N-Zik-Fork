@@ -566,6 +566,8 @@ fun AppearanceSettings(
             textAlign = TextAlign.Center
         )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         search.ToolBarButton()
         search.SearchBar( this )
 
