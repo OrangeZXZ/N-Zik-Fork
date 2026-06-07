@@ -91,7 +91,7 @@ import app.it.fast4x.rimusic.ui.components.themed.MenuEntry
 import app.it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import app.it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import app.it.fast4x.rimusic.ui.components.themed.Title
-import app.it.fast4x.rimusic.ui.components.themed.Title2Actions
+import app.it.fast4x.rimusic.ui.components.themed.Title3Actions
 import app.it.fast4x.rimusic.ui.components.themed.TitleMiniSection
 import app.it.fast4x.rimusic.ui.items.AlbumItem
 import app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
@@ -528,8 +528,9 @@ fun HomeQuickPicks(
                     WelcomeMessage()
 
                 if (showTips) {
-                    Title2Actions(
+                    Title3Actions(
                         title = stringResource(R.string.tips),
+                        icon1 = R.drawable.settings,
                         onClick1 = {
                             menuState.display {
                                 Menu {
@@ -558,6 +559,17 @@ fun HomeQuickPicks(
                                         }
                                     )
                                 }
+                            }
+                        },
+                        icon3 = R.drawable.dice,
+                        onClick3 = {
+                            binder?.stopRadio()
+                            val allItems = listOfNotNull(trending?.asMediaItem) +
+                                           (relatedInit?.songs?.map { it.asMediaItem } ?: emptyList())
+                            val shuffled = allItems.shuffled()
+                            if (shuffled.isNotEmpty()) {
+                                binder?.player?.forcePlay(shuffled.first())
+                                binder?.player?.addMediaItems(shuffled.drop(1))
                             }
                         },
                         icon2 = R.drawable.play,

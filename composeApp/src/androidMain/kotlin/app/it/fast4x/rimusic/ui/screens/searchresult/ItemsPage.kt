@@ -112,6 +112,7 @@ inline fun <T : Innertube.Item> ItemsPage(
                     it.printStackTrace()
                     delay(2000) // Avoid rapid retry on failure
                 }
+                delay(250) // Allow UI to recompose and update layout info
                 isLoadingMore = false
             }
         }
@@ -196,7 +197,7 @@ inline fun <T : Innertube.Item> ItemsPage(
                 )
 
                 if (itemsPage != null && itemsPage?.items.isNullOrEmpty()) {
-                    item(key = "empty") {
+                    item {
                         BasicText(
                             text = emptyItemsText,
                             style = typography().xs.secondary.center,
@@ -208,7 +209,7 @@ inline fun <T : Innertube.Item> ItemsPage(
                 }
 
                 if (!(itemsPage != null && itemsPage?.continuation == null)) {
-                    item(key = "loading") {
+                    item {
                         val isFirstLoad = itemsPage?.items.isNullOrEmpty()
                         Column {
                             repeat(if (isFirstLoad) initialPlaceholderCount else continuationPlaceholderCount) {
@@ -219,7 +220,6 @@ inline fun <T : Innertube.Item> ItemsPage(
                 }
 
                 item(
-                    key = "footer",
                     contentType = 0,
                 ) {
                     Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
@@ -288,6 +288,7 @@ inline fun <T : Innertube.Item> ItemsGridPage(
                     it.printStackTrace()
                     delay(2000)
                 }
+                delay(250) // Allow UI to recompose and update layout info
                 isLoadingMore = false
             }
         }
@@ -377,7 +378,6 @@ inline fun <T : Innertube.Item> ItemsGridPage(
 
                 if (itemsPage != null && itemsPage?.items.isNullOrEmpty()) {
                     item(
-                        key = "empty",
                         span = { GridItemSpan(maxLineSpan) }
                     ) {
                         BasicText(
@@ -392,7 +392,6 @@ inline fun <T : Innertube.Item> ItemsGridPage(
 
                 if (!(itemsPage != null && itemsPage?.continuation == null)) {
                     item(
-                        key = "loading",
                         span = { GridItemSpan(maxLineSpan) }
                     ) {
                         val isFirstLoad = itemsPage?.items.isNullOrEmpty()

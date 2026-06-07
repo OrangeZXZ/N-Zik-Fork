@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -116,6 +117,7 @@ import app.kreate.android.me.knighthat.component.tab.Radio
 import app.kreate.android.me.knighthat.component.tab.SongShuffler
 import app.kreate.android.me.knighthat.component.ui.screens.DynamicOrientationLayout
 import app.kreate.android.me.knighthat.component.ui.screens.album.Translate
+import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @UnstableApi
@@ -302,7 +304,7 @@ fun ArtistDetails(
                 key = ArtistSection::title
             ) { section ->
                 Row(
-                    verticalAlignment = Alignment.Bottom,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = sectionTextModifier.fillMaxWidth()
                 ) {
                     Text(
@@ -310,6 +312,88 @@ fun ArtistDetails(
                         style = typography().m.semiBold,
                         modifier = Modifier.weight( 1f )
                     )
+
+                    if (!section.items.fastAll { it is Innertube.ArtistItem }) {
+                        val scope = androidx.compose.runtime.rememberCoroutineScope()
+                        val context = LocalContext.current
+
+                        androidx.compose.material3.Icon(
+                            painter = androidx.compose.ui.res.painterResource(R.drawable.dice),
+                            contentDescription = null,
+                            tint = colorPalette().textSecondary,
+                            modifier = Modifier
+                                .padding(end = 12.dp)
+                                .clickable {
+                                    scope.launch(Dispatchers.IO) {
+                                        val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
+                                        if (section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null) {
+                                            it.fast4x.innertube.YtMusic.getPlaylist(section.moreEndpoint!!.browseId!!).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                        }
+                                        if (allMediaItems.isEmpty()) {
+                                            section.items.forEach { item ->
+                                                when (item) {
+                                                    is Innertube.SongItem -> item.asSong?.asMediaItem?.let { allMediaItems.add(it) }
+                                                    is Innertube.VideoItem -> allMediaItems.add(item.asMediaItem)
+                                                    is Innertube.AlbumItem -> it.fast4x.innertube.YtMusic.getAlbum(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                    is Innertube.PlaylistItem -> it.fast4x.innertube.YtMusic.getPlaylist(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                    else -> {}
+                                                }
+                                            }
+                                        }
+                                        if (allMediaItems.isNotEmpty()) {
+                                            withContext(Dispatchers.Main) {
+                                                binder?.stopRadio()
+                                                val shuffled = allMediaItems.shuffled()
+                                                binder?.player?.forcePlay(shuffled.first())
+                                                binder?.player?.addMediaItems(shuffled.drop(1))
+                                            }
+                                        } else {
+                                            withContext(Dispatchers.Main) {
+                                                app.kreate.android.me.knighthat.utils.Toaster.e(R.string.no_song_found)
+                                            }
+                                        }
+                                    }
+                                }
+                        )
+
+                        androidx.compose.material3.Icon(
+                            painter = androidx.compose.ui.res.painterResource(R.drawable.play),
+                            contentDescription = null,
+                            tint = colorPalette().textSecondary,
+                            modifier = Modifier
+                                .padding(end = 12.dp)
+                                .clickable {
+                                    scope.launch(Dispatchers.IO) {
+                                        val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
+                                        if (section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null) {
+                                            it.fast4x.innertube.YtMusic.getPlaylist(section.moreEndpoint!!.browseId!!).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                        }
+                                        if (allMediaItems.isEmpty()) {
+                                            section.items.forEach { item ->
+                                                when (item) {
+                                                    is Innertube.SongItem -> item.asSong?.asMediaItem?.let { allMediaItems.add(it) }
+                                                    is Innertube.VideoItem -> allMediaItems.add(item.asMediaItem)
+                                                    is Innertube.AlbumItem -> it.fast4x.innertube.YtMusic.getAlbum(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                    is Innertube.PlaylistItem -> it.fast4x.innertube.YtMusic.getPlaylist(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                    else -> {}
+                                                }
+                                            }
+                                        }
+                                        if (allMediaItems.isNotEmpty()) {
+                                            withContext(Dispatchers.Main) {
+                                                binder?.stopRadio()
+                                                binder?.player?.forcePlay(allMediaItems.first())
+                                                binder?.player?.addMediaItems(allMediaItems.drop(1))
+                                            }
+                                        } else {
+                                            withContext(Dispatchers.Main) {
+                                                app.kreate.android.me.knighthat.utils.Toaster.e(R.string.no_song_found)
+                                            }
+                                        }
+                                    }
+                                }
+                        )
+                    }
 
                     section.moreEndpoint?.browseId?.let { browseId ->
                         Icon(

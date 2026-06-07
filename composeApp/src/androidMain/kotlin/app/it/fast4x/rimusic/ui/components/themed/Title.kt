@@ -114,11 +114,10 @@ fun Title2Actions(
                 contentDescription = null,
                 tint = colorPalette().text,
                 modifier = Modifier
+                    .padding(end = 12.dp)
                     .clickable {
                         onClick2.invoke()
                     }
-                    .padding(end = 12.dp)
-                    .size(20.dp)
             )
         }
 
@@ -134,6 +133,79 @@ fun Title2Actions(
             )
         }
 
+    }
+}
+
+@Composable
+fun Title3Actions(
+    title: String,
+    modifier: Modifier = Modifier,
+    @DrawableRes icon1: Int? = R.drawable.arrow_forward,
+    @DrawableRes icon2: Int? = R.drawable.arrow_forward,
+    @DrawableRes icon3: Int? = R.drawable.arrow_forward,
+    enableClick: Boolean = true,
+    onClick1: (() -> Unit)? = null,
+    onClick2: (() -> Unit)? = null,
+    onClick3: (() -> Unit)? = null,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
+            .clickable(enabled = onClick1 != null) {
+                if (enableClick)
+                    onClick1?.invoke()
+            }
+            .padding(horizontal = 12.dp, vertical = 12.dp)
+    ) {
+        Text(
+            text = title,
+            style = TextStyle(
+                fontSize = typography().l.semiBold.fontSize,
+                fontWeight = typography().l.semiBold.fontWeight,
+                color = colorPalette().text,
+                textAlign = TextAlign.Start
+            ),
+            modifier = Modifier.weight(1f)
+        )
+        if (onClick3 != null && enableClick) {
+            Icon(
+                painter = painterResource(icon3 ?: R.drawable.arrow_forward),
+                contentDescription = null,
+                tint = colorPalette().text,
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .clickable {
+                        onClick3.invoke()
+                    }
+            )
+        }
+
+        if (onClick2 != null && enableClick) {
+            Icon(
+                painter = painterResource(icon2 ?: R.drawable.arrow_forward),
+                contentDescription = null,
+                tint = colorPalette().text,
+                modifier = Modifier
+                    .padding(end = 12.dp)
+                    .clickable {
+                        onClick2.invoke()
+                    }
+            )
+        }
+
+        if (onClick1 != null && enableClick) {
+            Icon(
+                painter = painterResource(icon1 ?: R.drawable.arrow_forward),
+                contentDescription = null,
+                tint = colorPalette().text,
+                modifier = Modifier
+                    .clickable {
+                        onClick1.invoke()
+                    }
+            )
+        }
     }
 }
 
