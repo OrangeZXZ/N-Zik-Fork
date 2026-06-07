@@ -453,10 +453,12 @@ fun Queue(
             ) {
                 if( !isLandscape ) {
                     // Move mini player up as search bar appears
-                    val yOffset = if( search.isVisible ) -125 else -65
+                    val miniPlayerOffset = Dimensions.miniPlayerHeight
+                    val searchBarHeight = 96.dp
+                    val yOffset = if( search.isVisible ) -(miniPlayerOffset + searchBarHeight) else -miniPlayerOffset
 
                     Box(
-                        Modifier.absoluteOffset( 0.dp, yOffset.dp )
+                        Modifier.absoluteOffset( 0.dp, yOffset )
                                 .align( Alignment.TopCenter )
                     ) { MiniPlayer( {}, {} ) }
                 }

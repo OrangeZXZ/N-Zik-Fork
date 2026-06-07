@@ -1,1 +1,2 @@
-Improved: Floating action arrow up, to avoid overlapping with the bottom navigation bar
+Improved: Floating action arrow up, to avoid overlapping with the miniplayer in the queue
+Improved: Search bar being overlapsing with the miniplayer in the queue
