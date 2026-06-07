@@ -640,6 +640,8 @@
   <string name="charts">Topplistor</string>
   <string name="thumbnailtype">Thumbnail type</string>
   <string name="showvisthumbnail">Visa miniatyrbild för visualiserare</string>
+  <string name="black_background_for_visualizer">Mörk bakgrund för visualiserare</string>
+  <string name="show_visualizer_buttons">Dölj visualiseringsknappar automatiskt</string>
   <string name="androidheadunit">Android huvudenhet</string>
   <string name="extra_space">Extra utrymme högst upp</string>
   <string name="game_restart">Starta om</string>
