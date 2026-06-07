@@ -64,6 +64,7 @@ import kotlinx.coroutines.Dispatchers
 import app.kreate.android.me.knighthat.utils.Toaster
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import app.kreate.android.me.knighthat.component.tab.Search
 
 @Composable
 fun DefaultAIRecommendationSettings() {
@@ -158,6 +159,18 @@ fun AIRecommendationSettings(
     // Top Playlists Settings
     var maxTopPlaylistItems by rememberPreference(MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10`)
     
+    val search = Search()
+    
+    val searchCtx_0 = search.inputValue.isBlank() || stringResource(R.string.tab_general).contains(search.inputValue, true) || stringResource(R.string.enable_quick_picks_page).contains(search.inputValue, true)
+    val searchCtx_1 = search.inputValue.isBlank() || stringResource(R.string.quick_picks).contains(search.inputValue, true) || stringResource(R.string.show).contains(search.inputValue, true) || stringResource(R.string.tips).contains(search.inputValue, true) || stringResource(R.string.charts).contains(search.inputValue, true) || stringResource(R.string.related_albums).contains(search.inputValue, true) || stringResource(R.string.similar_artists).contains(search.inputValue, true) || stringResource(R.string.new_albums_of_your_artists).contains(search.inputValue, true) || stringResource(R.string.new_albums).contains(search.inputValue, true) || stringResource(R.string.playlists_you_might_like).contains(search.inputValue, true) || stringResource(R.string.moods_and_genres).contains(search.inputValue, true) || stringResource(R.string.show_monthly_playlists_in_quick_picks).contains(search.inputValue, true)
+    val searchCtx_2 = search.inputValue.isBlank() || stringResource(R.string.tips).contains(search.inputValue, true) || stringResource(R.string.quick_selection_type).contains(search.inputValue, true)
+    val searchCtx_3 = search.inputValue.isBlank() || stringResource(R.string.monthly_playlists).contains(search.inputValue, true) || stringResource(R.string.show_monthly_playlists_in_library).contains(search.inputValue, true) || stringResource(R.string.enable_monthly_playlists_creation).contains(search.inputValue, true)
+    val searchCtx_4 = search.inputValue.isBlank() || stringResource(R.string.smart_recommendations).contains(search.inputValue, true) || stringResource(R.string.smart_recommendations_number).contains(search.inputValue, true)
+    val searchCtx_5 = search.inputValue.isBlank() || stringResource(R.string.statistics).contains(search.inputValue, true) || stringResource(R.string.statistics_max_number_of_items).contains(search.inputValue, true) || stringResource(R.string.listening_time).contains(search.inputValue, true)
+    val searchCtx_6 = search.inputValue.isBlank() || stringResource(R.string.playlist_top).contains(search.inputValue, true) || stringResource(R.string.statistics_max_number_of_items).contains(search.inputValue, true) || stringResource(R.string.my_playlist_top1).contains(search.inputValue, true)
+    val searchCtx_7 = search.inputValue.isBlank() || stringResource(R.string.tab_data).contains(search.inputValue, true) || stringResource(R.string.reset_quick_picks).contains(search.inputValue, true)
+    val searchCtx_8 = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true)
+
     if (clearEvents) {
         ConfirmationDialog(
             text = stringResource(R.string.do_you_really_want_to_delete_all_playback_events),
@@ -195,10 +208,15 @@ fun AIRecommendationSettings(
         ) 
 
         Spacer(modifier = Modifier.height(16.dp))
+        
+        search.ToolBarButton()
+        search.SearchBar( this )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         // General Settings Section
         AnimatedVisibility(
-            visible = true,
+            visible = searchCtx_0,
             enter = fadeIn(animationSpec = tween(600)) + scaleIn(
                 animationSpec = tween(600),
                 initialScale = 0.9f
@@ -225,7 +243,7 @@ fun AIRecommendationSettings(
 
         // Content Sections
         AnimatedVisibility(
-            visible = enableQuickPicksPage,
+            visible = enableQuickPicksPage && searchCtx_1,
             enter = fadeIn(animationSpec = tween(800)) + scaleIn(
                 animationSpec = tween(800),
                 initialScale = 0.9f
@@ -336,7 +354,7 @@ fun AIRecommendationSettings(
 
         // Tips Configuration Section
         AnimatedVisibility(
-            visible = enableQuickPicksPage && showTips,
+            visible = enableQuickPicksPage && showTips && searchCtx_2,
             enter = fadeIn(animationSpec = tween(1000)) + scaleIn(
                 animationSpec = tween(1000),
                 initialScale = 0.9f
@@ -397,7 +415,7 @@ fun AIRecommendationSettings(
 
         // Monthly Playlists Section
         AnimatedVisibility(
-            visible = true,
+            visible = searchCtx_3,
             enter = fadeIn(animationSpec = tween(1400)) + scaleIn(
                 animationSpec = tween(1400),
                 initialScale = 0.9f
@@ -434,7 +452,7 @@ fun AIRecommendationSettings(
 
         // Smart Recommendations Section
         AnimatedVisibility(
-            visible = true,
+            visible = searchCtx_4,
             enter = fadeIn(animationSpec = tween(1400)) + scaleIn(
                 animationSpec = tween(1400),
                 initialScale = 0.9f
@@ -476,7 +494,7 @@ fun AIRecommendationSettings(
 
         // Statistics Section
         AnimatedVisibility(
-            visible = true,
+            visible = searchCtx_5,
             enter = fadeIn(animationSpec = tween(1600)) + scaleIn(
                 animationSpec = tween(1600),
                 initialScale = 0.9f
@@ -522,7 +540,7 @@ fun AIRecommendationSettings(
 
         // Top Playlists Section
         AnimatedVisibility(
-            visible = true,
+            visible = searchCtx_6,
             enter = fadeIn(animationSpec = tween(1800)) + scaleIn(
                 animationSpec = tween(1800),
                 initialScale = 0.9f
@@ -569,7 +587,7 @@ fun AIRecommendationSettings(
 
         // Data Management Section
         AnimatedVisibility(
-            visible = true,
+            visible = searchCtx_7,
             enter = fadeIn(animationSpec = tween(2000)) + scaleIn(
                 animationSpec = tween(2000),
                 initialScale = 0.9f
@@ -602,7 +620,7 @@ fun AIRecommendationSettings(
 
         // Reset to Default Section
         AnimatedVisibility(
-            visible = true,
+            visible = searchCtx_8,
             enter = fadeIn(animationSpec = tween(2200)) + scaleIn(
                 animationSpec = tween(2200),
                 initialScale = 0.9f
