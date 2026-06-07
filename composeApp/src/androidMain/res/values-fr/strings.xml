@@ -1145,4 +1145,5 @@ Volume BAS : titre précédent</string>
   <string name="download_failed">Échec du téléchargement</string>
   <string name="failed_to_install">Échec de l\'installation : %s</string>
   <string name="last_check">Dernière vérification : %s</string>
+  <string name="no_items">Aucun élément</string>
 </resources>
