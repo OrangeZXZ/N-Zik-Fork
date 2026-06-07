@@ -640,6 +640,8 @@
   <string name="charts">Musiikkilista</string>
   <string name="thumbnailtype">Thumbnail type</string>
   <string name="showvisthumbnail">Näytä pienoiskuva visualisoijalle</string>
+  <string name="black_background_for_visualizer">Tumma tausta visualisoijalle</string>
+  <string name="show_visualizer_buttons">Piilota visualisoijan painikkeet automaattisesti</string>
   <string name="androidheadunit">Android pääyksikkö</string>
   <string name="extra_space">Ylimääräinen tila yläreunassa</string>
   <string name="game_restart">Käynnistä uudelleen</string>

@@ -640,6 +640,8 @@
   <string name="charts">Topplister</string>
   <string name="thumbnailtype">Thumbnail type</string>
   <string name="showvisthumbnail">Vis miniatyrbilde for visualiserer</string>
+  <string name="black_background_for_visualizer">Mørk bakgrunn for visualizer</string>
+  <string name="show_visualizer_buttons">Auto-skjul visualiseringsknapper</string>
   <string name="androidheadunit">Android hodeenhet</string>
   <string name="extra_space">Ekstra mellomrom på toppen</string>
   <string name="game_restart">Start på nytt</string>

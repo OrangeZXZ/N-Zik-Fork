@@ -640,6 +640,8 @@
   <string name="charts">Gráficos</string>
   <string name="thumbnailtype">Thumbnail type</string>
   <string name="showvisthumbnail">Mostrar miniatura para o visualizador</string>
+  <string name="black_background_for_visualizer">Fundo escuro para o visualizador</string>
+  <string name="show_visualizer_buttons">Ocultar botões de visualizador automaticamente</string>
   <string name="androidheadunit">Unidade de cabeça Android</string>
   <string name="extra_space">Espaço extra no topo</string>
   <string name="game_restart">Reniciar</string>

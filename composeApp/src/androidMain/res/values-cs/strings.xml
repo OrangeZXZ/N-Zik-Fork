@@ -640,6 +640,8 @@
   <string name="charts">Žebříček</string>
   <string name="thumbnailtype">Typ miniatur</string>
   <string name="showvisthumbnail">Zobrazit miniaturu pro vizualizér</string>
+  <string name="black_background_for_visualizer">Tmavé pozadí pro vizualizér</string>
+  <string name="show_visualizer_buttons">Automaticky skrýt tlačítka vizualizace</string>
   <string name="androidheadunit">Android Head unit</string>
   <string name="extra_space">Prostor navíc nahoře</string>
   <string name="game_restart">Restartovat</string>

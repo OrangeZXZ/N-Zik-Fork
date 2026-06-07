@@ -640,6 +640,8 @@
   <string name="charts">Topuri</string>
   <string name="thumbnailtype">Tip miniatură</string>
   <string name="showvisthumbnail">Afișează miniatura pentru vizualizator</string>
+  <string name="black_background_for_visualizer">Fundal întunecat pentru vizualizator</string>
+  <string name="show_visualizer_buttons">Ascunde automat butoanele vizualizatorului</string>
   <string name="androidheadunit">Unitate principală Android</string>
   <string name="extra_space">Spațiu suplimentar în partea de sus</string>
   <string name="game_restart">Repornire</string>
