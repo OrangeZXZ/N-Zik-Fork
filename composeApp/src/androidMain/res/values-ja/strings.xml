@@ -1143,4 +1143,5 @@
   <string name="download_failed">ダウンロードに失敗しました</string>
   <string name="failed_to_install">インストールに失敗しました: %s</string>
   <string name="last_check">最終確認： %s</string>
+  <string name="no_items">アイテムがありません</string>
 </resources>
