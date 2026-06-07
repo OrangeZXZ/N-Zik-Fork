@@ -1143,4 +1143,5 @@
   <string name="download_failed">Descărcare eșuată</string>
   <string name="failed_to_install">Instalare eșuată: %s</string>
   <string name="last_check">Ultima verificare: %s</string>
+  <string name="no_items">Niciun articol</string>
 </resources>
