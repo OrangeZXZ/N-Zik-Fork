@@ -205,7 +205,7 @@ fun BoxScope.FloatingActions(
     val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
     val playerSheetState = LocalPlayerSheetState.current
-    val bottomPadding = if (!playerSheetState.isVisible) bottomDp + Dimensions.collapsedPlayer else bottomDp
+    val bottomPadding = if (!playerSheetState.isVisible) bottomDp + Dimensions.collapsedPlayer + additionalBottomPadding else bottomDp + additionalBottomPadding
 
     var offsetX = rememberPreference(floatActionIconOffsetXkey, 0F )
     var offsetY = rememberPreference(floatActionIconOffsetYkey, 0F )
@@ -237,7 +237,7 @@ fun BoxScope.FloatingActions(
         verticalAlignment = Alignment.Bottom,
         modifier = modifier
             .align(Alignment.BottomEnd)
-            //.padding(end = 16.dp)
+            .padding(end = 16.dp)
             //.padding(bottom = bottomPadding)
             /*
             .padding(
