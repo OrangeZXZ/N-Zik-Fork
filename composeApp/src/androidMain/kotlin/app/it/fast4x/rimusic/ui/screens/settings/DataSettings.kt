@@ -169,7 +169,7 @@ fun DataSettings() {
                 cleanCacheImages = false
             },
             onConfirm = {
-                // Utiliser la nouvelle mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©thode sÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©curisÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©e pour nettoyer le cache
+                // Use a new safe method to clear the cache
                 ImageCacheFactory.clearImageCache()
                 cleanCacheImages = false
                 cacheCleanedCounter++

@@ -174,7 +174,7 @@ class AlbumItemMenu private constructor(
             ) {
                 // Album's thumbnail
                 Box(
-                    Modifier.size(Dimensions.thumbnails.album / 2) // Taille rÃƒÆ’Ã‚Â©duite pour le menu
+                    Modifier.size(Dimensions.thumbnails.album / 2) // Reduced size for the menu
                 ) {
                     ImageCacheFactory.Thumbnail(
                         thumbnailUrl = album.thumbnailUrl,

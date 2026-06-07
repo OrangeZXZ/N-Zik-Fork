@@ -223,7 +223,7 @@ fun OnlineSearchGrid(
                 )
             }
             if (item is Innertube.AlbumItem) {
-                item.authors?.joinToString(", ") { it.name ?: "" }?.let { authors ->
+                item.authors?.filter { it.name?.matches(Regex("\\s*([,&])\\s*")) == false }?.joinToString(", ") { it.name ?: "" }?.let { authors ->
                     if (authors.isNotBlank()) {
                         BasicText(
                             text = authors,
@@ -247,7 +247,7 @@ fun OnlineSearchGrid(
                         )
                     }
                 }
-                item.description?.split(" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ")?.forEach { segment ->
+                item.description?.split(" • ")?.forEach { segment ->
                     if (segment.isNotBlank()) {
                         BasicText(
                             text = segment,
@@ -261,7 +261,7 @@ fun OnlineSearchGrid(
                 }
             }
             if (item is Innertube.ArtistItem) {
-                item.description?.split(" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ")?.forEach { segment ->
+                item.description?.split(" • ")?.forEach { segment ->
                     if (segment.isNotBlank()) {
                         BasicText(
                             text = segment,
@@ -287,7 +287,7 @@ fun OnlineSearchGrid(
                     )
                 }
                 if (tabIndex != 5) {
-                    item.description?.split(" ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¢ ")?.forEach { segment ->
+                    item.description?.split(" • ")?.forEach { segment ->
                         if (segment.isNotBlank()) {
                             BasicText(
                                 text = segment,

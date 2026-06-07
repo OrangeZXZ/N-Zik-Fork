@@ -1169,7 +1169,7 @@ inline fun StringListDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         BasicText(
-                            text = "Aucun ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ment",
+                            text = stringResource(R.string.no_items),
                             style = typography().s.copy(
                                 color = colorPalette().textSecondary
                             )

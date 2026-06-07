@@ -913,7 +913,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 // Invalidate cached stream URL so next resolve fetches a fresh one
                 formatCache.remove(currentMediaId)
 
-                // Save playWhenReady BEFORE pausing ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â pause() clears it
+                // Save playWhenReady BEFORE pausing - pause() clears it
                 val wasPlaying = player.playWhenReady
                 player.pause()
                 player.prepare()
@@ -925,7 +925,7 @@ class PlayerServiceModern : MediaLibraryService(),
             } else {
                 Timber.e("PlayerServiceModern onPlayerError recovery exhausted ($MAX_RECOVERY_ATTEMPTS attempts) for $currentMediaId")
                 recoveryAttempts.remove(currentMediaId)
-                // Fall through ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â but if skipMediaOnError is OFF, we still won't skip (handled below)
+                // Fall through - but if skipMediaOnError is OFF, we still won't skip (handled below) is OFF, we still won't skip (handled below)
             }
         }
 
@@ -1177,7 +1177,7 @@ class PlayerServiceModern : MediaLibraryService(),
         DefaultExtractorsFactory()
     ).setLoadErrorHandlingPolicy(
         object : DefaultLoadErrorHandlingPolicy() {
-            // No MediaSource-level fallback exists ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â returning true here causes
+            // No MediaSource-level fallback exists - returning true here causes here causes
             // ExoPlayer to attempt a nonexistent fallback, then skip the track.
             override fun isEligibleForFallback(exception: IOException) = false
 
@@ -1207,7 +1207,7 @@ class PlayerServiceModern : MediaLibraryService(),
                     // on this media item (C.TIME_UNSET would cause a skip).
                     15_000L
                 } else {
-                    C.TIME_UNSET // skipOnError is ON ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â let ExoPlayer give up and trigger onPlayerError
+                    C.TIME_UNSET // skipOnError is ON - let ExoPlayer give up and trigger onPlayerError give up and trigger onPlayerError
                 }
             }
         }

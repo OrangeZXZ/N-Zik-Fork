@@ -479,7 +479,7 @@ fun ArtistDetails(
                         translate.ToolBarButton()
 
                         BasicText(
-                            text = "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“",
+                            text = "\u25C0",
                             style = typography().xxl.semiBold,
                             modifier = Modifier.offset( y = (-8).dp )
                                                .align( Alignment.Top )
@@ -522,7 +522,7 @@ fun ArtistDetails(
                         )
 
                         BasicText(
-                            text = "ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¾",
+                            text = "\u25C0",
                             style = typography().xxl.semiBold,
                             modifier = Modifier.offset( y = 4.dp )
                                                .align( Alignment.Bottom )

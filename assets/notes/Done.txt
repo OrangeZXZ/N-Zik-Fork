@@ -11,4 +11,7 @@ Fixed: Addd missing description on player appearance page
 Fixed: Settings page search function not showing proper results
 Added: Search in AI Recommendation Settings.
 Fixed: Weird spacing on some settings pages, same for search.
-FIxed: Title and description being missaligned in settings pages.
+Fixed: Title and description being missaligned in settings pages.
+Fixed: There was somes non utf-8 chars in the app due to some copy paste from scripts while moving up files.
+Fixed: Added "No items" texts on pages that were empty.
+Improved: search doesnt showing proper music infos

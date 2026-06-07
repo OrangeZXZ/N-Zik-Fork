@@ -306,7 +306,7 @@ class Search private constructor(
                                
                                Spacer(modifier = Modifier.width(8.dp))
                                
-                                                               // Trailing Icon (toujours prÃƒÂ©sent pour garder la taille)
+                                                               // Trailing Icon (always present to maintain size)
                                 Box(
                                     modifier = Modifier.width(40.dp),
                                     contentAlignment = Alignment.Center

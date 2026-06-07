@@ -281,7 +281,7 @@ class MainActivity :
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (!isGranted) {
-            // Si la permission est refusÃƒÆ’Ã‚Â©e, rediriger vers les paramÃƒÆ’Ã‚Â¨tres
+            // If permission is denied, redirect to settings
             val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
                 putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
             }

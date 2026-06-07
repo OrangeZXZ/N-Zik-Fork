@@ -107,8 +107,8 @@ object ImageCacheFactory {
 
                 val newScore = url.getYouTubeQualityScore()
                 
-                // On n'ÃƒÆ’Ã‚Â©crase que si la qualitÃƒÆ’Ã‚Â© est meilleure pour le slot "high"
-                // ou moins bonne pour le slot "low" (pour garder une miniature de secours ultra-lÃƒÆ’Ã‚Â©gÃƒÆ’Ã‚Â¨re)
+                // Only overwrite if the quality is better for the "high" slot
+                // or worse for the "low" slot (to keep an ultra-light fallback thumbnail)
                 if (isHigh || newScore >= 5) {
                     if (newScore >= high.getYouTubeQualityScore()) {
                         high = url
@@ -629,7 +629,7 @@ object ImageCacheFactory {
 
     fun clearImageCache() {
         try {
-            // 1. On vide d'abord la mÃƒÆ’Ã‚Â©moire vive (RAM)
+            // 1. First, clear the RAM cache
             LOADER.memoryCache?.clear()
             
             // 2. On vide le cache disque (Storage)
@@ -638,10 +638,10 @@ object ImageCacheFactory {
             // 3. On vide les registres de signatures apprises (Playlists)
             PlaylistThumbnailStore.clearAll()
             
-            // 4. On vide les mÃƒÆ’Ã‚Â©tadonnÃƒÆ’Ã‚Â©es de qualitÃƒÆ’Ã‚Â©
+            // 4. Clear quality metadata
             CacheMetadataStore.clearAll()
             
-            // 5. On rÃƒÆ’Ã‚Â©initialise les registres temporaires
+            // 5. Reset temporary registers
             cacheKeyMap.clear()
             cooldownMap.clear()
             
@@ -693,14 +693,14 @@ private fun String.getYouTubeId(): String? {
 fun String?.thumbnail(size: Int): String? {
     if (this == null) return this
     
-    // Seuil augmentÃƒÆ’Ã‚Â© de 600 ÃƒÆ’Ã‚Â  700 pour garantir l'usage du cache HQ (Mode Apprentissage)
+    // Threshold increased from 600 to 700 to ensure HQ cache usage (Learning Mode)
     // On utilise >= 700 car la taille MEDIUM est maintenant de 700.
     val quality = if (size >= 700) ImageCacheFactory.NetworkQuality.HIGH else ImageCacheFactory.NetworkQuality.LOW
     
     if (contains("i.ytimg.com/pl_c/") || contains("i.ytimg.com/podcasts_artwork/")) {
         val id = getYouTubeId()
         if (id != null) {
-            // PrioritÃƒÆ’Ã‚Â© absolue ÃƒÆ’Ã‚Â  la version apprise (HQ) si elle existe
+            // Absolute priority to the learned (HQ) version if it exists
             val learnedHigh = ImageCacheFactory.PlaylistThumbnailStore.getHighUrl(id)
             if (learnedHigh != null) {
                 return learnedHigh
@@ -715,8 +715,8 @@ fun String?.thumbnail(size: Int): String? {
                         .replace("mwEUC", "mwEKC")
                         .replace("mwESC", "mwEKC")
                 } else {
-                    // Si on a un lien "Medium" (EUC) signÃƒÆ’Ã‚Â©, on essaie quand mÃƒÆ’Ã‚Âªme de voir si on peut le "nettoyer" 
-                    // ou si le store a mieux. (Le store a dÃƒÆ’Ã‚Â©jÃƒÆ’Ã‚Â  ÃƒÆ’Ã‚Â©tÃƒÆ’Ã‚Â© vÃƒÆ’Ã‚Â©rifiÃƒÆ’Ã‚Â© plus haut via learnedHigh)
+                    // If we have a signed "Medium" (EUC) link, still try to see if we can "clean" it 
+                    // or if the store has better. (The store was already checked above via learnedHigh)
                     this
                 }
             } else {
@@ -738,7 +738,7 @@ fun String?.thumbnail(size: Int): String? {
                 else -> "hqdefault.jpg"
             }
             // "Un-signing": Strip parameters and force suffix for best quality
-            // On retire tout paramÃƒÆ’Ã‚Â¨tre sqp/rs pour les vidÃƒÆ’Ã‚Â©os car ils brident la rÃƒÆ’Ã‚Â©solution
+            // Remove all sqp/rs parameters for videos as they limit resolution
             return replace(Regex("/[^/?]+\\.jpg(\\?.*)?$"), "/$suffix")
         }
         // Playlists and Podcasts (/pl_c/, /podcasts_artwork/) are usually signed

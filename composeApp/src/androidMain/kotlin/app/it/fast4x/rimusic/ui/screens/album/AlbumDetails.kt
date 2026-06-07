@@ -492,7 +492,7 @@ fun AlbumDetails(
                             translate.ToolBarButton()
 
                             BasicText(
-                                text = "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ",
+                                text = "“",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = (-8).dp)
@@ -537,7 +537,7 @@ fun AlbumDetails(
                             )
 
                             BasicText(
-                                text = "ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¾",
+                                text = "„",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = 4.dp)

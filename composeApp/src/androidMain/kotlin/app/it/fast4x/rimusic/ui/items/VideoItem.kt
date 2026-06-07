@@ -51,7 +51,7 @@ fun VideoItem(
         thumbnailUrl = video.thumbnail?.url,
         duration = video.durationText,
         title = video.info?.name,
-        uploader = video.authors?.joinToString(", ") { it.name ?: "" },
+        uploader = video.authors?.filter { it.name?.matches(Regex("\\s*([,&])\\s*")) == false }?.joinToString(", ") { it.name ?: "" },
         views = video.viewsText,
         thumbnailHeightDp = thumbnailHeightDp,
         thumbnailWidthDp = thumbnailWidthDp,
