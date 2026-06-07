@@ -196,7 +196,7 @@ fun HeaderWithIcon (
         } else {
             // New behavior for RiMusic and others
             Row(
-                horizontalArrangement = Arrangement.Start,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {

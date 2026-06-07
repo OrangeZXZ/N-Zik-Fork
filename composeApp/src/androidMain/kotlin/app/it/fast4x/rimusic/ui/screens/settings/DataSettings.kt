@@ -199,7 +199,7 @@ fun DataSettings() {
         SettingsDescription(
             text = stringResource(R.string.data_settings_description),
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Start
+            textAlign = TextAlign.Center
         ) 
         /* Removed Spacer */
 

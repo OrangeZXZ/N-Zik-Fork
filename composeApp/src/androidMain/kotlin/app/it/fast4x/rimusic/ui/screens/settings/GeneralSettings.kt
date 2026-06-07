@@ -252,7 +252,7 @@ fun GeneralSettings(
                  SettingsDescription(
              text = stringResource(R.string.general_settings_description),
              modifier = Modifier.fillMaxWidth(),
-             textAlign = TextAlign.Start
+             textAlign = TextAlign.Center
          ) 
 
         /* Removed Spacer */
