@@ -1143,4 +1143,5 @@
   <string name="download_failed">Download falhou</string>
   <string name="failed_to_install">Falha ao instalar: %s</string>
   <string name="last_check">Última verificação: %s</string>
+  <string name="no_items">Nenhum item</string>
 </resources>

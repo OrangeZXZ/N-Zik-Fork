@@ -1143,4 +1143,5 @@
   <string name="download_failed">Lataus epäonnistui</string>
   <string name="failed_to_install">Asennus epäonnistui: %s</string>
   <string name="last_check">Viimeisin tarkistus: %s</string>
+  <string name="no_items">Ei kohteita</string>
 </resources>

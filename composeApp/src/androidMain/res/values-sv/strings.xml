@@ -1143,4 +1143,5 @@
   <string name="download_failed">Nedladdning misslyckades</string>
   <string name="failed_to_install">Det gick inte att installera: %s</string>
   <string name="last_check">Senaste kontroll: %s</string>
+  <string name="no_items">Inga objekt</string>
 </resources>

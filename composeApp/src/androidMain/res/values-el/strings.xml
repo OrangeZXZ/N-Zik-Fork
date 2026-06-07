@@ -1143,4 +1143,5 @@
   <string name="download_failed">Αποτυχία λήψης</string>
   <string name="failed_to_install">Αποτυχία εγκατάστασης: %s</string>
   <string name="last_check">Τελευταίος έλεγχος: %s</string>
+  <string name="no_items">Δεν υπάρχουν στοιχεία</string>
 </resources>

@@ -1143,4 +1143,5 @@
   <string name="download_failed">Download mislykkedes</string>
   <string name="failed_to_install">Kunne ikke installere: %s</string>
   <string name="last_check">Sidste check: %s</string>
+  <string name="no_items">Ingen elementer</string>
 </resources>

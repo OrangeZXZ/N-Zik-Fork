@@ -1143,4 +1143,5 @@
   <string name="download_failed">Не вдалося завантажити</string>
   <string name="failed_to_install">Не вдалося встановити: %s</string>
   <string name="last_check">Last check: %s</string>
+  <string name="no_items">Товарів немає</string>
 </resources>
