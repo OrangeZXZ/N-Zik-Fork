@@ -355,30 +355,30 @@ fun createVisualizersList(background: Bitmap, circleBitmap: Bitmap, color: Int):
             Move(FftCWaveRgb(side = "ab", colorPaint = color, ampR = ampR))
         ),
         //Blend
-        Move(Blend(
-            FftLine(colorPaint = color, ampR = ampR).apply {
+        Blend(
+            Move(FftLine(colorPaint = color, ampR = ampR).apply {
                 paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
-            },
+            }, yR = 0.5f),
             Gradient(preset = Gradient.LINEAR_HORIZONTAL)
-        ), yR = 0.5f),
-        Move(Blend(
-            FftLine(colorPaint = color, ampR = ampR).apply {
+        ),
+        Blend(
+            Move(FftLine(colorPaint = color, ampR = ampR).apply {
                 paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
-            },
+            }, yR = 0.5f),
             Gradient(preset = Gradient.LINEAR_VERTICAL, hsv = true)
-        ), yR = 0.5f),
-        Move(Blend(
-            FftLine(colorPaint = color, ampR = ampR).apply {
+        ),
+        Blend(
+            Move(FftLine(colorPaint = color, ampR = ampR).apply {
                 paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
-            },
+            }, yR = 0.5f),
             Gradient(preset = Gradient.LINEAR_VERTICAL_MIRROR, hsv = true)
-        ), yR = 0.5f),
-        Move(Blend(
-            FftLine(colorPaint = color, ampR = ampR).apply {
+        ),
+        Blend(
+            Move(FftLine(colorPaint = color, ampR = ampR).apply {
                 paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
-            },
+            }, yR = 0.5f),
             Gradient(preset = Gradient.RADIAL)
-        ), yR = 0.5f),
+        ),
         Move(Blend(
             FftCBar(colorPaint = color, side = "ab", gapX = 8f, ampR = ampR).apply {
                 paint.style = Paint.Style.FILL
