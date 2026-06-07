@@ -1066,6 +1066,7 @@
   <string name="easter_egg_last">Вы номер один, длинный клик и наслаждайтесь сюрпризом</string>
   <string name="general_settings_description">Общий раздел содержит настройки для общей функциональности приложения</string>
   <string name="ui_settings_description">Раздел пользовательского интерфейса содержит настройки для изменения глобального интерфейса и навигации</string>
+  <string name="appearance_settings_description">Раздел внешнего вида содержит настройки внешнего вида игрока</string>
   <string name="pause_between_songs_description">Добавить паузу между песнями</string>
   <string name="notifications">Уведомления</string>
   <string name="playback">Воспроизведение</string>
