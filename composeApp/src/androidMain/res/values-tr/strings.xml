@@ -640,6 +640,8 @@
   <string name="charts">Listeler</string>
   <string name="thumbnailtype">Thumbnail type</string>
   <string name="showvisthumbnail">Show thumbnail for visualizer</string>
+  <string name="black_background_for_visualizer">Dark background for visualizer</string>
+  <string name="show_visualizer_buttons">Auto-hide visualizer buttons</string>
   <string name="androidheadunit">Android head unit</string>
   <string name="extra_space">Extra space at the top</string>
   <string name="game_restart">Yeniden başlat</string>
