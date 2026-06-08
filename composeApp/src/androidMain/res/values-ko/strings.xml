@@ -94,7 +94,7 @@
   <string name="neither_save_new_searched_query">검색어 및 검색 기록을 표시하지 않습니다</string>
   <string name="clear_search_history">검색기록 지우기</string>
   <string name="history_is_empty">기록이 없습니다</string>
-  <string name="service_lifetime">서비스 수명</string>
+  <string name="service_lifetime">Service lifetime</string>
   <string name="battery_optimizations_applied">배터리 최적화가 적용되면 일시정지 시 재생 알림이 갑자기 사라질 수 있습니다.</string>
   <string name="is_android12">Since Android 12, disabling battery optimizations is required for the \"Invisible service\" option to take effect.</string>
   <string name="ignore_battery_optimizations">배터리 최적화 무시</string>
@@ -170,9 +170,9 @@
   <string name="languages">언어</string>
   <string name="app_language">앱 언어</string>
   <string name="in_alphabetical_order">알파벳 순:</string>
-  <string name="contributors">기여자</string>
-  <string name="troubleshooting">문제 해결</string>
-  <string name="social">소셜</string>
+  <string name="contributors">Contributors</string>
+  <string name="troubleshooting">Troubleshooting</string>
+  <string name="social">Social</string>
   <string name="english">영어 (English)</string>
   <string name="italian">이탈리아어 (Italiano)</string>
   <string name="czech">체코어 (Čeština)</string>
@@ -289,7 +289,7 @@
   <string name="do_you_really_want_to_download_all">정말로 모든 곡을 다운로드하실 건가요?</string>
   <string name="import_playlist">재생목록 가져오기</string>
   <string name="lang_ukrainian">Ukrainian (Українська)</string>
-  <string name="proxy">프록시</string>
+  <string name="proxy">Proxy</string>
   <string name="enable_proxy">프록시 활성화</string>
   <string name="proxy_mode">프록시 모드</string>
   <string name="proxy_host">프록시 호스트</string>
@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">This folder already exists</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">이 폴더를 차단 목록에서 삭제하시겠나요?</string>
   <string name="player_appearance">Player Appearance</string>
-  <string name="player_action_bar">플레이어 액션바</string>
+  <string name="player_action_bar">Player action bar</string>
   <string name="tab_data">데이터</string>
   <string name="image_cache_max_size">이미지 캐시 최대 크기</string>
   <string name="network_status">Quality Status</string>
@@ -391,7 +391,7 @@
   <string name="tab_miscellaneous">Misc</string>
   <string name="swipe_to_action">Swipe for action</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Perform actions by swiping left or right on a song within vertical list of songs</string>
-  <string name="smart_recommendations">자동 권장 사항</string>
+  <string name="smart_recommendations">Smart recommendations</string>
   <string name="player_collapsed_disable_swiping_down">아래로 스와이프 비활성화</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">플레이어가 최소화된 상태에서 아래로 스와이프하여 플레이어를 닫고 재생목록을 정리하지 마세요.</string>
   <string name="sort_date_liked">Date Favorited</string>
@@ -592,11 +592,11 @@
   <string name="cache_location_private">비공개</string>
   <string name="cache_location_system">시스템</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">월간, 온라인 또는 piped 재생 목록의 이름을 변경할 수 없습니다</string>
-  <string name="debug">디버그</string>
+  <string name="debug">Debug</string>
   <string name="enable_log_debug">Enable debug logs</string>
   <string name="if_enabled_create_a_log_file_to_highlight_errors">활성화시, 오류를 강조하는 로그 파일이 생성됩니다</string>
   <string name="copy_log_to_clipboard">클립보드에 로그 복사</string>
-  <string name="piped_account">PIPED</string>
+  <string name="piped_account">Piped</string>
   <string name="enable_piped_syncronization">Enable piped synchronization</string>
   <string name="piped_change_instance">Change Instance</string>
   <string name="piped_username">사용자 이름</string>
@@ -606,7 +606,7 @@
   <string name="piped_connected_to_s">%s에 연결됨</string>
   <string name="fake_audio_bar">Fake Waveform</string>
   <string name="copy_crash_log_to_clipboard">클립보드에 충돌 로그 복사</string>
-  <string name="title_backup_and_restore">백업 및 복원</string>
+  <string name="title_backup_and_restore">Backup and restore</string>
   <string name="message_excluded_s_songs">%s개의 곡 제외됨</string>
   <string name="show_thumbnail">썸네일 표시</string>
   <string name="show_lyrics_thumbnail">가사 썸네일 표시</string>
@@ -814,7 +814,7 @@
   <string name="resume_automatically_when_app_opens">Resume playback automatically when the app is opened</string>
   <string name="notificationPlayerFirstIcon">첫 번째 버튼</string>
   <string name="notificationPlayerSecondIcon">두 번째 버튼</string>
-  <string name="notification_player">알림 플레이어</string>
+  <string name="notification_player">Notification Player</string>
   <string name="repeat">반복</string>
   <string name="original_lyrics">Original lyrics</string>
   <string name="translated_lyrics">Translated lyrics</string>
@@ -1146,4 +1146,7 @@
   <string name="failed_to_install">Failed to install: %s</string>
   <string name="last_check">Last check: %s</string>
   <string name="no_items">No items</string>
+  <string name="no_song_found">No song found</string>
+  <string name="listen_history">Listen history</string>
+  <string name="clear_listen_history">Clear listen history</string>
 </resources>
