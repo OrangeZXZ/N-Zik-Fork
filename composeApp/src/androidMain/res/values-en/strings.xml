@@ -1103,7 +1103,7 @@
   <string name="error_youtube_login">Error YoutubeLogin</string>
   <string name="stream_error_retrying">Retrying: %1$s</string>
   <string name="error_playback_failed">Error: %1$s</string>
-  <string name="error_all_stream_attempts_failed">Unable to play: %1$s</string>
+  <string name="error_all_stream_attempts_failed">Error: %1$s</string>
   <string name="stream_still_retrying">Still loading… Attempt %1$s</string>
   <string name="stream_unexpected_skip">Unexpected track change detected</string>
   <string name="songs_remaining">%1$s Songs Remaining</string>
@@ -1132,7 +1132,7 @@
   <string name="changelog">Changelog</string>
   <string name="update_preferences">Update Preferences</string>
   <string name="beta_updates">Beta Updates</string>
-  <string name="update_not_available_yet">Update not available yet or build not found</string>
+  <string name="update_not_available_yet"></string>
   <string name="update_cache_cleared">Cache cleared</string>
   <string name="invalid_version_string">Invalid version string: %s</string>
   <string name="on">On</string>

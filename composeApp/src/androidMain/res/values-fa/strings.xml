@@ -94,7 +94,7 @@
   <string name="neither_save_new_searched_query">Neither save new searched queries nor show history</string>
   <string name="clear_search_history">Clear search history</string>
   <string name="history_is_empty">History is empty</string>
-  <string name="service_lifetime">SERVICE LIFETIME</string>
+  <string name="service_lifetime">Service lifetime</string>
   <string name="battery_optimizations_applied">If battery optimizations are applied, the playback notification can suddenly disappear when paused.</string>
   <string name="is_android12">Since Android 12, disabling battery optimizations is required for the \"Invisible service\" option to take effect.</string>
   <string name="ignore_battery_optimizations">Ignore battery optimizations</string>
@@ -170,9 +170,9 @@
   <string name="languages">Languages</string>
   <string name="app_language">App language</string>
   <string name="in_alphabetical_order">In alphabetical order:</string>
-  <string name="contributors">CONTRIBUTORS</string>
-  <string name="troubleshooting">TROUBLESHOOTING</string>
-  <string name="social">SOCIAL</string>
+  <string name="contributors">Contributors</string>
+  <string name="troubleshooting">Troubleshooting</string>
+  <string name="social">Social</string>
   <string name="english">English</string>
   <string name="italian">Italian (Italiano)</string>
   <string name="czech">Czech (Čeština)</string>
@@ -289,7 +289,7 @@
   <string name="do_you_really_want_to_download_all">Do you really want to download all?</string>
   <string name="import_playlist">Import playlist</string>
   <string name="lang_ukrainian">Ukrainian (Українська)</string>
-  <string name="proxy">PROXY</string>
+  <string name="proxy">Proxy</string>
   <string name="enable_proxy">Enable Proxy</string>
   <string name="proxy_mode">Proxy Mode</string>
   <string name="proxy_host">Proxy Host</string>
@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">This folder already exists</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Are you sure you want to remove this folder from the blacklist?</string>
   <string name="player_appearance">Player Appearance</string>
-  <string name="player_action_bar">PLAYER ACTION BAR</string>
+  <string name="player_action_bar">Player action bar</string>
   <string name="tab_data">Data</string>
   <string name="image_cache_max_size">Image cache max size</string>
   <string name="network_status">Quality Status</string>
@@ -391,7 +391,7 @@
   <string name="tab_miscellaneous">Misc</string>
   <string name="swipe_to_action">Swipe for action</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Perform actions by swiping left or right on a song within vertical list of songs</string>
-  <string name="smart_recommendations">SMART RECOMMENDATIONS</string>
+  <string name="smart_recommendations">Smart recommendations</string>
   <string name="player_collapsed_disable_swiping_down">Disable swiping down</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Avoid closing the player and cleaning the queue by swiping down while it is minimized</string>
   <string name="sort_date_liked">Date Favorited</string>
@@ -592,11 +592,11 @@
   <string name="cache_location_private">Private</string>
   <string name="cache_location_system">System</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">Cannot rename a monthly or online or piped playlist</string>
-  <string name="debug">DEBUG</string>
+  <string name="debug">Debug</string>
   <string name="enable_log_debug">Enable debug logs</string>
   <string name="if_enabled_create_a_log_file_to_highlight_errors">If enabled, create a log file to highlight errors</string>
   <string name="copy_log_to_clipboard">Copy log to clipboard</string>
-  <string name="piped_account">PIPED</string>
+  <string name="piped_account">Piped</string>
   <string name="enable_piped_syncronization">Enable piped synchronization</string>
   <string name="piped_change_instance">Change Instance</string>
   <string name="piped_username">Username</string>
@@ -606,7 +606,7 @@
   <string name="piped_connected_to_s">Connected to %s</string>
   <string name="fake_audio_bar">Fake Waveform</string>
   <string name="copy_crash_log_to_clipboard">Copy crash log to clipboard</string>
-  <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
+  <string name="title_backup_and_restore">Backup and restore</string>
   <string name="message_excluded_s_songs">Excluded %s songs</string>
   <string name="show_thumbnail">Show thumbnail</string>
   <string name="show_lyrics_thumbnail">Show thumbnail for lyrics</string>
@@ -814,7 +814,7 @@
   <string name="resume_automatically_when_app_opens">Resume playback automatically when the app is opened</string>
   <string name="notificationPlayerFirstIcon">First button</string>
   <string name="notificationPlayerSecondIcon">Second button</string>
-  <string name="notification_player">NOTIFICATION PLAYER</string>
+  <string name="notification_player">Notification Player</string>
   <string name="repeat">Repeat</string>
   <string name="original_lyrics">Original lyrics</string>
   <string name="translated_lyrics">Translated lyrics</string>
@@ -1146,4 +1146,7 @@
   <string name="failed_to_install">Failed to install: %s</string>
   <string name="last_check">Last check: %s</string>
   <string name="no_items">No items</string>
+  <string name="no_song_found">No song found</string>
+  <string name="listen_history">Listen history</string>
+  <string name="clear_listen_history">Clear listen history</string>
 </resources>

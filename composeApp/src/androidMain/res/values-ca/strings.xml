@@ -94,7 +94,7 @@
   <string name="neither_save_new_searched_query">No deseu les consultes de cerca noves ni mostreu l\'historial</string>
   <string name="clear_search_history">Esborra l\'historial de cerques</string>
   <string name="history_is_empty">L\'historial de cerques és buit</string>
-  <string name="service_lifetime">DURADA DE VIDA DEL SERVEI</string>
+  <string name="service_lifetime">Service lifetime</string>
   <string name="battery_optimizations_applied">Si s\'apliquen optimitzacions de la bateria, la notificació de reproducció pot desaparèixer de sobte quan es posa en pausa.</string>
   <string name="is_android12">Des d\'Android 12, cal desactivar l\'optimització de la bateria perquè l\'opció \"Servei invencible\" tingui efecte.</string>
   <string name="ignore_battery_optimizations">Ignora les optimitzacions de la bateria</string>
@@ -170,9 +170,9 @@
   <string name="languages">Idiomes</string>
   <string name="app_language">Idioma de l\'aplicació</string>
   <string name="in_alphabetical_order">Per ordre alfabètic:</string>
-  <string name="contributors">COL·LABORADORS</string>
-  <string name="troubleshooting">RESOLUCIÓ DE PROBLEMES</string>
-  <string name="social">SOCIAL</string>
+  <string name="contributors">Contributors</string>
+  <string name="troubleshooting">Troubleshooting</string>
+  <string name="social">Social</string>
   <string name="english">Anglès</string>
   <string name="italian">Italià (Italiano)</string>
   <string name="czech">Txec (Čeština)</string>
@@ -289,7 +289,7 @@
   <string name="do_you_really_want_to_download_all">De veritat vols descarregar-ho tot?</string>
   <string name="import_playlist">Importa la llista de reproducció</string>
   <string name="lang_ukrainian">Ucraïnès</string>
-  <string name="proxy">SERVIDOR INTERMEDIARI</string>
+  <string name="proxy">Proxy</string>
   <string name="enable_proxy">Habilita el servidor intermediari</string>
   <string name="proxy_mode">Mode del servidor intermediari</string>
   <string name="proxy_host">Amfitrió del servidor intermediari</string>
@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">La carpeta ja existeix.</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Esteu segur que voleu eliminar aquesta carpeta de la llista negra?</string>
   <string name="player_appearance">Aparença</string>
-  <string name="player_action_bar">BARRA D\'ACCIÓ DEL REPRODUCTOR</string>
+  <string name="player_action_bar">Player action bar</string>
   <string name="tab_data">Dades</string>
   <string name="image_cache_max_size">Mida màxima de la memòria cau d\'imatges</string>
   <string name="network_status">Quality Status</string>
@@ -391,7 +391,7 @@
   <string name="tab_miscellaneous">Miscel·lània</string>
   <string name="swipe_to_action">Acció en lliscar</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Activa el menú d\'acció fent lliscar la cançó cap a l\'esquerra o cap a la dreta</string>
-  <string name="smart_recommendations">RECOMANACIONS INTEL·LIGENTS</string>
+  <string name="smart_recommendations">Recomanació intel·ligent</string>
   <string name="player_collapsed_disable_swiping_down">Desactiva el lliscament cap avall</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Eviteu tancar el reproductor i netejar la cua fent lliscar cap avall mentre estigui minimitzat</string>
   <string name="sort_date_liked">Data de quan et va agradar</string>
@@ -592,11 +592,11 @@
   <string name="cache_location_private">Privat</string>
   <string name="cache_location_system">Sistema</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">No es pot canviar el nom d\'una llista de reproducció mensual, en línia o en canal</string>
-  <string name="debug">DEPURACIÓ</string>
+  <string name="debug">Debug</string>
   <string name="enable_log_debug">Activa la depuració del registre</string>
   <string name="if_enabled_create_a_log_file_to_highlight_errors">Si està activat, creeu un fitxer de registre per destacar els errors</string>
   <string name="copy_log_to_clipboard">Copia el registre al porta-retalls</string>
-  <string name="piped_account">CANÇONS DESTACADES</string>
+  <string name="piped_account">Marcat</string>
   <string name="enable_piped_syncronization">Activa la sincronització de cançons destacades</string>
   <string name="piped_change_instance">Canvia instància</string>
   <string name="piped_username">Nom d’usuari</string>
@@ -606,7 +606,7 @@
   <string name="piped_connected_to_s">Connectat a %s</string>
   <string name="fake_audio_bar">Barra d\'àudio falsa</string>
   <string name="copy_crash_log_to_clipboard">Copia el registre d\'errors al porta-retalls</string>
-  <string name="title_backup_and_restore">CÒPIA DE SEGURETAT I RESTAURACIÓ</string>
+  <string name="title_backup_and_restore">Backup and restore</string>
   <string name="message_excluded_s_songs">S\'han exclòs %s cançons</string>
   <string name="show_thumbnail">Mostra la miniatura</string>
   <string name="show_lyrics_thumbnail">Mostra la miniatura de la lletra</string>
@@ -814,7 +814,7 @@
   <string name="resume_automatically_when_app_opens">Reprèn la reproducció automàticament quan s\'obre l\'aplicació</string>
   <string name="notificationPlayerFirstIcon">Primer botó</string>
   <string name="notificationPlayerSecondIcon">Segon botó</string>
-  <string name="notification_player">NOTIFICACIÓ DEL REPRODUCTOR</string>
+  <string name="notification_player">Notification Player</string>
   <string name="repeat">Repeteix</string>
   <string name="original_lyrics">Lletres originals</string>
   <string name="translated_lyrics">Lletres traduïdes</string>
@@ -1146,4 +1146,7 @@
   <string name="failed_to_install">Failed to install: %s</string>
   <string name="last_check">Last check: %s</string>
   <string name="no_items">No items</string>
+  <string name="no_song_found">No song found</string>
+  <string name="listen_history">Listen history</string>
+  <string name="clear_listen_history">Clear listen history</string>
 </resources>

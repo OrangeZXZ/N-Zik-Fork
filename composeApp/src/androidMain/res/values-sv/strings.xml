@@ -94,7 +94,7 @@
   <string name="neither_save_new_searched_query">Spara varken nya sökningar eller visa historik</string>
   <string name="clear_search_history">Rensa sökhistorik</string>
   <string name="history_is_empty">Ingen historik</string>
-  <string name="service_lifetime">SERVICE LIFETIME</string>
+  <string name="service_lifetime">Livslängd för tjänst</string>
   <string name="battery_optimizations_applied">Om batterioptimering är aktiverad kan uppspelningsaviseringen försvinna när musiken pausas.</string>
   <string name="is_android12">Eftersom Android 12, inaktivera batterioptimeringar krävs för att \"Osynlig tjänst\" alternativ för att träda i kraft.</string>
   <string name="ignore_battery_optimizations">Ignorera batterioptimeringar</string>
@@ -170,9 +170,9 @@
   <string name="languages">Språk</string>
   <string name="app_language">Appens språk</string>
   <string name="in_alphabetical_order">I alfabetisk ordning:</string>
-  <string name="contributors">BIDRAGARE</string>
-  <string name="troubleshooting">FELSÖKNING</string>
-  <string name="social">SOCIALT</string>
+  <string name="contributors">Bidragsgivare</string>
+  <string name="troubleshooting">Felsökning</string>
+  <string name="social">Socialt</string>
   <string name="english">Engelska</string>
   <string name="italian">Italienska (Italiano)</string>
   <string name="czech">Tjeckiska (Čeština)</string>
@@ -289,7 +289,7 @@
   <string name="do_you_really_want_to_download_all">Vill du verkligen ladda ner alla?</string>
   <string name="import_playlist">Importera spellista</string>
   <string name="lang_ukrainian">Ukrainska (&lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; &lt;unk&gt; egentligen)</string>
-  <string name="proxy">PROXY</string>
+  <string name="proxy">Proxy</string>
   <string name="enable_proxy">Aktivera proxy</string>
   <string name="proxy_mode">Proxyläge</string>
   <string name="proxy_host">Värd för proxy</string>
@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">Denna mapp finns redan</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Är du säker på att du vill ta bort den här mappen från svartlistan?</string>
   <string name="player_appearance">Utseende för spelare</string>
-  <string name="player_action_bar">Spelarens snabbknappar</string>
+  <string name="player_action_bar">Åtgärdsfält för spelare</string>
   <string name="tab_data">Data</string>
   <string name="image_cache_max_size">Bildcachens maxstorlek</string>
   <string name="network_status">Kvalitet Status</string>
@@ -391,7 +391,7 @@
   <string name="tab_miscellaneous">Övrigt</string>
   <string name="swipe_to_action">Svep för åtgärd</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Utför åtgärder genom att dra åt vänster eller höger på en låt i en vertikal lista över låtar</string>
-  <string name="smart_recommendations">REKOMMENDERAT</string>
+  <string name="smart_recommendations">Smarta rekommendationer</string>
   <string name="player_collapsed_disable_swiping_down">Inaktivera svepning nedåt</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Undvik att stänga spelaren och rensa kön genom att dra nedåt medan den är minimerad</string>
   <string name="sort_date_liked">Favorit datum</string>
@@ -592,11 +592,11 @@
   <string name="cache_location_private">Private</string>
   <string name="cache_location_system">System</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">Cannot rename a monthly or online or piped playlist</string>
-  <string name="debug">DEBUG</string>
+  <string name="debug">Debug</string>
   <string name="enable_log_debug">Aktivera debug-loggar</string>
   <string name="if_enabled_create_a_log_file_to_highlight_errors">If enabled, create a log file to highlight errors</string>
   <string name="copy_log_to_clipboard">Kopiera logg till urklipp</string>
-  <string name="piped_account">PIPED</string>
+  <string name="piped_account">Piped</string>
   <string name="enable_piped_syncronization">Aktivera piffad synkronisering</string>
   <string name="piped_change_instance">Ändra instans</string>
   <string name="piped_username">Användarnamn</string>
@@ -606,7 +606,7 @@
   <string name="piped_connected_to_s">Ansluten till %s</string>
   <string name="fake_audio_bar">Falska vågform</string>
   <string name="copy_crash_log_to_clipboard">Kopiera kraschlogg till urklipp</string>
-  <string name="title_backup_and_restore">BACKUP AND RESTORE</string>
+  <string name="title_backup_and_restore">Säkerhetskopiera och återställ</string>
   <string name="message_excluded_s_songs">Excluded %s songs</string>
   <string name="show_thumbnail">Show thumbnail</string>
   <string name="show_lyrics_thumbnail">Show thumbnail for lyrics</string>
@@ -814,7 +814,7 @@
   <string name="resume_automatically_when_app_opens">Återuppspelning automatiskt när appen öppnas</string>
   <string name="notificationPlayerFirstIcon">First button</string>
   <string name="notificationPlayerSecondIcon">Second button</string>
-  <string name="notification_player">NOTIFICATION PLAYER</string>
+  <string name="notification_player">Aviseringsspelare</string>
   <string name="repeat">Repeat</string>
   <string name="original_lyrics">Ursprunglig låttext</string>
   <string name="translated_lyrics">Översatta låttext</string>
@@ -1146,4 +1146,7 @@
   <string name="failed_to_install">Det gick inte att installera: %s</string>
   <string name="last_check">Senaste kontroll: %s</string>
   <string name="no_items">Inga objekt</string>
+  <string name="no_song_found">Ingen låt hittades</string>
+  <string name="listen_history">Lyssna historik</string>
+  <string name="clear_listen_history">Rensa lyssningshistorik</string>
 </resources>
