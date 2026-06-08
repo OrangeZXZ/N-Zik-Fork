@@ -1267,16 +1267,16 @@ fun AppearanceSettings(
                             title = stringResource(R.string.thumbnail_roundness),
                             text = "",
                             state = thumbnailRoundnessDp,
-                            range = 0f..36f,
-
+                            range = 0f..48f,
+                            steps = 3,
                             onSlide = { thumbnailRoundnessDp = it },
                             toDisplay = { it.toInt().toString() },
-                            trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.5f))).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.5f)))) } },
+                            trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = androidx.compose.foundation.shape.RoundedCornerShape(thumbnailRoundnessDp.dp)).border(width = 1.dp, color = colorPalette().accent, shape = androidx.compose.foundation.shape.RoundedCornerShape(thumbnailRoundnessDp.dp))) } },
                             modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                         )
 
                         androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
-                            listOf(0f to "0", 12f to "12", 18f to "18", 27f to "27", 36f to "Max").forEach { (v, label) ->
+                            listOf(0f to "0", 12f to "12", 24f to "24", 36f to "36", 48f to "Max").forEach { (v, label) ->
                                 val isSelected = thumbnailRoundnessDp.toInt() == v.toInt()
                                 androidx.compose.material3.TextButton(
                                     onClick = { thumbnailRoundnessDp = v },
