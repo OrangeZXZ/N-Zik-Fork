@@ -132,15 +132,6 @@ object MyDownloadHelper {
         return downloadManager
     }
 
-    /*
-        @Synchronized
-        fun getDownloadTracker(context: Context): DownloadTracker {
-            ensureDownloadManagerInitialized(context)
-            return downloadTracker
-        }
-
-     */
-
     @Synchronized
     private fun initDownloadCache( context: Context ): SimpleCache {
         val cacheSize = context.preferences.getEnum( exoPlayerDiskDownloadCacheMaxSizeKey, ExoPlayerDiskCacheMaxSize.`2GB` )
@@ -295,6 +286,15 @@ object MyDownloadHelper {
             return
         }
 
+        val parentalControlEnabled = context.preferences.getBoolean(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false)
+        if (parentalControlEnabled) {
+            val isExplicit = mediaItem.mediaMetadata.title?.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) == true
+            if (isExplicit) {
+                Toaster.w(app.n_zik.android.R.string.parental_control_is_enabled)
+                return
+            }
+        }
+
         val downloadRequest = DownloadRequest
             .Builder(
                 /* id      = */ mediaItem.mediaId,
@@ -311,16 +311,13 @@ object MyDownloadHelper {
 
         val imageUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(1000)
 
-//            sendAddDownload(
-//                context,MyDownloadService::class.java,downloadRequest,false
-//            )
-
         coroutineScope.launch {
             context.download<MyDownloadService>(downloadRequest).exceptionOrNull()?.let {
                 if (it is CancellationException) throw it
 
                 Timber.e("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
                 println("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
+                Toaster.e(app.n_zik.android.R.string.error_playback_failed)
             }
             downloadSyncedLyrics( mediaItem.asSong )
             ImageCacheFactory.preloadImage(mediaItem.mediaMetadata.artworkUri.toString())
@@ -331,8 +328,6 @@ object MyDownloadHelper {
 
     fun removeDownload(context: Context, mediaItem: MediaItem) {
         if (mediaItem.isLocal) return
-
-        //sendRemoveDownload(context,MyDownloadService::class.java,mediaItem.mediaId,false)
         coroutineScope.launch {
             context.removeDownload<MyDownloadService>(mediaItem.mediaId).exceptionOrNull()?.let {
                 if (it is CancellationException) throw it

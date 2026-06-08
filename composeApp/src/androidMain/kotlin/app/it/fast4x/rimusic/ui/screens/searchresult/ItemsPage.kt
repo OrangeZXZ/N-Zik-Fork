@@ -34,6 +34,8 @@ import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithSc
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.center
 import app.it.fast4x.rimusic.utils.secondary
+import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
+import app.it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.withContext
@@ -71,6 +73,7 @@ inline fun <T : Innertube.Item> ItemsPage(
     val updatedItemsPageProvider by rememberUpdatedState(itemsPageProvider)
 
     val lazyListState = rememberLazyListState()
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     var itemsPage by persist<Innertube.ItemsPage<T>?>(tag)
     var hasScrolledToTop by remember { mutableStateOf(false) }
@@ -174,6 +177,7 @@ inline fun <T : Innertube.Item> ItemsPage(
 
                 items(
                     itemsPage?.items?.filter { item ->
+                        if (parentalControlEnabled && item is Innertube.SongItem && item.explicit) return@filter false
                         when {
                             item is Innertube.SongItem -> {
                                 when (filterContentType) {
@@ -249,6 +253,7 @@ inline fun <T : Innertube.Item> ItemsGridPage(
 ) {
     val updatedItemsPageProvider by rememberUpdatedState(itemsPageProvider)
     val lazyGridState = rememberLazyGridState()
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     var itemsPage by persist<Innertube.ItemsPage<T>?>(tag)
     var hasScrolledToTop by remember { mutableStateOf(false) }
 
@@ -354,6 +359,7 @@ inline fun <T : Innertube.Item> ItemsGridPage(
 
                 items(
                     itemsPage?.items?.filter { item ->
+                        if (parentalControlEnabled && item is Innertube.SongItem && item.explicit) return@filter false
                         when {
                             item is Innertube.SongItem -> {
                                 when (filterContentType) {

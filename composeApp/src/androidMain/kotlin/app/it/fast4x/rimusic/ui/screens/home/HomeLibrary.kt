@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -33,6 +34,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -72,6 +76,7 @@ import app.it.fast4x.rimusic.utils.showFloatingIconKey
 import app.it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import app.it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import app.it.fast4x.rimusic.utils.showPipedPlaylistsKey
+import app.it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -218,12 +223,37 @@ fun HomeLibrary(
                 // Sticky tab's tool bar
                 TabToolBar.Buttons( sort, sync, search, shuffle, newPlaylistDialog, importPlaylistDialog, itemSize )
 
-                // Sticky search bar
                 search.SearchBar( this )
 
-                LazyVerticalGrid(
-                    state = lazyGridState,
-                    columns = GridCells.Adaptive( itemSize.size.dp ),
+                val listPrefix =
+                    when( playlistType ) {
+                        PlaylistsType.Playlist -> ""    // Matches everything
+                        PlaylistsType.PinnedPlaylist -> PINNED_PREFIX
+                        PlaylistsType.MonthlyPlaylist -> MONTHLY_PREFIX
+                        PlaylistsType.PipedPlaylist -> PIPED_PREFIX
+                        PlaylistsType.YTPlaylist -> YTP_PREFIX
+                    }
+                val condition: (PlaylistPreview) -> Boolean = {
+                    when (playlistType) {
+                        PlaylistsType.YTPlaylist -> it.playlist.isYoutubePlaylist
+                        PlaylistsType.Playlist -> {
+                            val isMonthly = it.playlist.name.startsWith(MONTHLY_PREFIX, true)
+                            val isPinned = it.playlist.name.startsWith(PINNED_PREFIX, true)
+                            val isPiped = it.playlist.name.startsWith(PIPED_PREFIX, true)
+                            
+                            (!isMonthly || showMonthlyPlaylists) && 
+                            (!isPinned || showPinnedPlaylists) && 
+                            (!isPiped || showPipedPlaylists)
+                        }
+                        else -> it.playlist.name.startsWith(listPrefix, true)
+                    }
+                }
+                val filteredItems = itemsOnDisplay.filter( condition )
+
+                Box(modifier = Modifier.fillMaxSize()) {
+                    LazyVerticalGrid(
+                        state = lazyGridState,
+                        columns = GridCells.Adaptive( itemSize.size.dp ),
                     modifier = Modifier
                         .background(colorPalette().background0)
                         .fillMaxSize(),
@@ -252,31 +282,8 @@ fun HomeLibrary(
                         }
                     }
 
-                    val listPrefix =
-                        when( playlistType ) {
-                            PlaylistsType.Playlist -> ""    // Matches everything
-                            PlaylistsType.PinnedPlaylist -> PINNED_PREFIX
-                            PlaylistsType.MonthlyPlaylist -> MONTHLY_PREFIX
-                            PlaylistsType.PipedPlaylist -> PIPED_PREFIX
-                            PlaylistsType.YTPlaylist -> YTP_PREFIX
-                        }
-                    val condition: (PlaylistPreview) -> Boolean = {
-                        when (playlistType) {
-                            PlaylistsType.YTPlaylist -> it.playlist.isYoutubePlaylist
-                            PlaylistsType.Playlist -> {
-                                val isMonthly = it.playlist.name.startsWith(MONTHLY_PREFIX, true)
-                                val isPinned = it.playlist.name.startsWith(PINNED_PREFIX, true)
-                                val isPiped = it.playlist.name.startsWith(PIPED_PREFIX, true)
-                                
-                                (!isMonthly || showMonthlyPlaylists) && 
-                                (!isPinned || showPinnedPlaylists) && 
-                                (!isPiped || showPipedPlaylists)
-                            }
-                            else -> it.playlist.name.startsWith(listPrefix, true)
-                        }
-                    }
                     items(
-                        items = itemsOnDisplay.filter( condition ),
+                        items = filteredItems,
                         key = { it.playlist.id }
                     ) { preview ->
                         PlaylistItem(
@@ -296,9 +303,22 @@ fun HomeLibrary(
                             isEditable = preview.playlist.isEditable
                         )
                     }
-
-
                 }
+
+                if (filteredItems.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxSize().padding(bottom = 47.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        androidx.compose.foundation.text.BasicText(
+                            text = stringResource(R.string.no_items),
+                            style = app.n_zik.android.typography().m.semiBold.copy(
+                                color = colorPalette().textSecondary
+                            )
+                        )
+                    }
+                }
+            }
             }
 
             FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)

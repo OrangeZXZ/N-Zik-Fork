@@ -58,6 +58,7 @@ import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_SORT_ORDER
 import app.it.fast4x.rimusic.utils.addNext
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.bold
+import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.enqueue
 import app.it.fast4x.rimusic.utils.forcePlayAtIndex
 import app.it.fast4x.rimusic.utils.isAtLeastAndroid13
@@ -239,6 +240,26 @@ fun OnDeviceSong(
                 key = { it }
             ) {
                 FolderItem( it ) { currentPath += "/$it" }
+            }
+        }
+
+        val folders = if (showFolder4LocalSongs && songsOnDevice.isNotEmpty()) {
+            PathUtils.getAvailablePaths( songsOnDevice.values, currentPath )
+        } else emptyList()
+
+        if (isPermissionGranted && itemsOnDisplay.isEmpty() && folders.isEmpty()) {
+            item {
+                Box(
+                    modifier = Modifier.fillParentMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    BasicText(
+                        text = stringResource(R.string.no_items),
+                        style = typography().m.semiBold.copy(
+                            color = colorPalette().textSecondary
+                        )
+                    )
+                }
             }
         }
 

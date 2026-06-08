@@ -144,6 +144,8 @@ fun StatisticsPage(
     val maxStatisticsItems by rememberPreference( maxStatisticsItemsKey, MaxStatisticsItems.`10` )
     val from = remember( statisticsType ) { statisticsType.timeStampInMillis() }
 
+    val parentalControlEnabled by rememberPreference(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false)
+
     val artists by remember {
         Database.eventTable
                 .findArtistsMostPlayedBetween(
@@ -181,14 +183,17 @@ fun StatisticsPage(
     val totalPlayTimesState = totalPlayTimesFlow.collectAsState(0L, Dispatchers.IO)
     totalPlayTimes = totalPlayTimesState.value
 
-    val songs by remember {
+    val songs by remember(parentalControlEnabled, maxStatisticsItems) {
         Database.eventTable
             .findSongsMostPlayedBetween(
                 from = from,
-                limit = maxStatisticsItems.toInt()
+                limit = maxStatisticsItems.toInt() * (if (parentalControlEnabled) 5 else 1)
             )
             .distinctUntilChanged()
-            .map { it.take(maxStatisticsItems.toInt()) }
+            .map { list -> 
+                list.filter { !parentalControlEnabled || !it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) }
+                    .take(maxStatisticsItems.toInt()) 
+            }
     }.collectAsState(emptyList(), Dispatchers.IO)
 
 
@@ -388,7 +393,7 @@ fun StatisticsPage(
 
                         ArtistItem(
                             thumbnailUrl = artists[it].thumbnailUrl,
-                            name = "${it+1}. ${artists[it].name}",
+                            name = "${it+1}. ${cleanPrefix(artists[it].name ?: "")}",
                             showName = true,
                             subscribersCount = null,
                             thumbnailSizePx = artistThumbnailSizePx,

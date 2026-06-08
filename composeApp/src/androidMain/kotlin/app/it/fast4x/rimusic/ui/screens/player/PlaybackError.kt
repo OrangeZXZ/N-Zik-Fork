@@ -35,6 +35,7 @@ import app.n_zik.android.playback.exceptions.PlayableFormatNotFoundException
 import app.n_zik.android.playback.exceptions.TimeoutException
 import app.n_zik.android.playback.exceptions.UnknownException
 import app.n_zik.android.playback.exceptions.UnplayableException
+import app.n_zik.android.playback.exceptions.ExplicitContentException
 import app.n_zik.android.playback.exceptions.VideoIdMismatchException
 import app.n_zik.android.playback.services.isLocal
 import app.n_zik.android.typography
@@ -74,6 +75,7 @@ fun PlayerError(error: PlaybackException) {
     val unknownerror = stringResource(R.string.error_media_cannot_be_played)
     val nointerneterror = stringResource(R.string.error_no_internet)
     val timeouterror = stringResource(R.string.error_timeout)
+    val parentalcontrolerror = stringResource(R.string.parental_control_is_enabled)
 
     val formatUnsupported = stringResource(R.string.error_file_unsupported_format)
 
@@ -107,6 +109,7 @@ fun PlayerError(error: PlaybackException) {
                 is PlayableFormatNonSupported -> formatUnsupported
                 is NoInternetException -> nointerneterror
                 is TimeoutException -> timeouterror
+                is ExplicitContentException -> parentalcontrolerror
                 is UnknownException -> unknownerror
                 is FakeException -> unknownerror
                 else -> unknownerror

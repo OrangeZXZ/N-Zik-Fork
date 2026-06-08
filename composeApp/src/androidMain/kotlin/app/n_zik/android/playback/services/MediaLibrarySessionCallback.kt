@@ -53,6 +53,7 @@ import app.it.fast4x.rimusic.MONTHLY_PREFIX
 import app.it.fast4x.rimusic.PINNED_PREFIX
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.LOCAL_KEY_PREFIX
+import app.it.fast4x.rimusic.enums.AudioQualityFormat
 import app.n_zik.android.playback.models.MediaSessionConstants.ID_ALBUMS_FAVORITES
 import app.n_zik.android.playback.models.MediaSessionConstants.ID_ALBUMS_LIBRARY
 import app.n_zik.android.playback.models.MediaSessionConstants.ID_ARTISTS_FAVORITES
@@ -326,17 +327,17 @@ class MediaLibrarySessionCallback(
                 }
                 MediaSessionConstants.ID_SONGS_CACHED -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_SONGS_CACHED_SHUFFLE)
-                    val songs = database.formatTable.allWithSongs().first().fastFilter { itf -> itf.song.totalPlayTimeMs > 0 && itf.format.contentLength != null && (if (::binder.isInitialized) binder.cache.isCached(itf.song.id, 0L, itf.format.contentLength ?: 0L) else false) }.reversed().fastMap { itf -> itf.song }.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
+                    val songs = database.formatTable.allWithSongs().first().fastFilter { itf -> itf.format.contentLength != null && (if (::binder.isInitialized) binder.cache.isCached(itf.song.id, 0L, itf.format.contentLength ?: 0L) else false) }.reversed().fastMap { itf -> itf.song }.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
                     listOf(shuffleItem) + songs
                 }
                 MediaSessionConstants.ID_ARTISTS_LIBRARY -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_ARTISTS_LIBRARY_SHUFFLE)
-                    val artists = database.artistTable.allInLibrary().first().map { artist -> MediaItemMapper.browsableMediaItem("${PlayerServiceModern.ARTIST}/${artist.id}", artist.name ?: "", null, MediaItemMapper.drawableUri(context, R.drawable.artist), MediaMetadata.MEDIA_TYPE_ARTIST) }
+                    val artists = database.artistTable.allInLibrary().first().map { artist -> MediaItemMapper.mapArtistToMediaItem(PlayerServiceModern.ARTIST, artist.id, artist.name ?: "", artist.thumbnailUrl) }
                     listOf(shuffleItem) + artists
                 }
                 MediaSessionConstants.ID_ARTISTS_FAVORITES -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_ARTISTS_FAVORITES_SHUFFLE)
-                    val artists = database.artistTable.allFollowing().first().map { artist -> MediaItemMapper.browsableMediaItem("${PlayerServiceModern.ARTIST}/${artist.id}", artist.name ?: "", null, MediaItemMapper.drawableUri(context, R.drawable.artist), MediaMetadata.MEDIA_TYPE_ARTIST) }
+                    val artists = database.artistTable.allFollowing().first().map { artist -> MediaItemMapper.mapArtistToMediaItem(PlayerServiceModern.ARTIST, artist.id, artist.name ?: "", artist.thumbnailUrl) }
                     listOf(shuffleItem) + artists
                 }
                 PlayerServiceModern.ALBUM -> {
@@ -604,10 +605,16 @@ class MediaLibrarySessionCallback(
             println("MediaLibrarySessionCallback.onGetChildren error for $parentId: ${e.message}")
             emptyList()
         }
-        if (list.isNotEmpty()) {
-            searchCache[parentId] = list
+        val parentalControlEnabled = try { context.preferences.getBoolean(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false) } catch (e: Exception) { false }
+        val filteredList = if (parentalControlEnabled) {
+            list.filter { it.mediaMetadata.extras?.getBoolean(androidx.media3.session.MediaConstants.EXTRAS_KEY_IS_EXPLICIT) != true }
+        } else {
+            list
         }
-        LibraryResult.ofItemList(ImmutableList.copyOf(list), params)
+        if (filteredList.isNotEmpty()) {
+            searchCache[parentId] = filteredList
+        }
+        LibraryResult.ofItemList(ImmutableList.copyOf(filteredList), params)
     }
 
     @OptIn(UnstableApi::class)
@@ -764,10 +771,12 @@ class MediaLibrarySessionCallback(
         controller: MediaSession.ControllerInfo,
         mediaItems: MutableList<MediaItem>
     ): ListenableFuture<MutableList<MediaItem>> = scope.future(Dispatchers.IO) {
-        mediaItems.fastMap { item ->
+        val parentalControlEnabled = try { context.preferences.getBoolean(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false) } catch (e: Exception) { false }
+        val mappedItems = mediaItems.fastMap { item ->
             val songId = item.mediaId.split("/").lastOrNull() ?: item.mediaId
             database.songTable.findById(songId).first()?.asMediaItem ?: item.buildUpon().setMediaId(songId).build()
-        }.toMutableList()
+        }.filter { !parentalControlEnabled || it.mediaMetadata.extras?.getBoolean(androidx.media3.session.MediaConstants.EXTRAS_KEY_IS_EXPLICIT) != true }.toMutableList()
+        mappedItems
     }
 
     @Deprecated("Deprecated in Java")

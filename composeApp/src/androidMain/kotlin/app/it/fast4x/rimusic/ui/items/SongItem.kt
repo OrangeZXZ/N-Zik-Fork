@@ -638,7 +638,7 @@ fun SongItem(
                 */
 
                 BasicText(
-                    text = authors,
+                    text = cleanPrefix(authors),
                     style = typography().xs.semiBold.secondary,
                     maxLines = 1,
                     overflow = TextOverflow.Clip,

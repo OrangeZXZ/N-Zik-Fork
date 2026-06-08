@@ -37,7 +37,7 @@ object MediaItemMapper {
         id = "$parentId/$id",
         title = name,
         subtitle = subtext,
-        iconUri = thumbnailUrl?.thumbnail(720)?.toUri(), // ENHANCED QUALITY
+        iconUri = thumbnailUrl?.thumbnail(1200)?.toUri(), // ENHANCED QUALITY
         mediaType = MediaMetadata.MEDIA_TYPE_ARTIST,
         path = searchPath.ifEmpty { parentId }
     )
@@ -53,7 +53,7 @@ object MediaItemMapper {
         id = "$parentId/$id",
         title = title,
         subtitle = authorsText,
-        iconUri = thumbnailUrl?.thumbnail(720)?.toUri(), // ENHANCED QUALITY
+        iconUri = thumbnailUrl?.thumbnail(1200)?.toUri(), // ENHANCED QUALITY
         mediaType = MediaMetadata.MEDIA_TYPE_ALBUM,
         path = searchPath.ifEmpty { parentId }
     )
@@ -61,14 +61,23 @@ object MediaItemMapper {
 
     fun mapSongToMediaItem(song: Song, path: String): MediaItem {
         val baseItem = song.asMediaItem
+        var metadataBuilder = baseItem.mediaMetadata.buildUpon()
+
+        if (song.isLocal) {
+            metadataBuilder = metadataBuilder.setArtworkUri(drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
+        } else if (song.thumbnailUrl == null) {
+            metadataBuilder = metadataBuilder.setArtworkUri(drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
+        }
+
         return if (path.contains(MediaSessionConstants.ID_SEARCH_VIDEOS)) {
             baseItem.buildUpon()
                 .setMediaId("$path/${song.id}")
-                .setMediaMetadata(baseItem.mediaMetadata.buildUpon().setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO).build())
+                .setMediaMetadata(metadataBuilder.setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO).build())
                 .build()
         } else {
             baseItem.buildUpon()
                 .setMediaId("$path/${song.id}")
+                .setMediaMetadata(metadataBuilder.build())
                 .build()
         }
     }
@@ -79,12 +88,17 @@ object MediaItemMapper {
         }
 
         val mediaItem = song.asMediaItem
-        val metadata: MediaMetadata = mediaItem.mediaMetadata
+        var metadataBuilder = mediaItem.mediaMetadata
             .buildUpon()
             .setExtras(bundle)
-            .build()
 
-        return mediaItem.buildUpon().setMediaMetadata(metadata).build()
+        if (song.isLocal) {
+            metadataBuilder = metadataBuilder.setArtworkUri(drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
+        } else if (song.thumbnailUrl == null) {
+            metadataBuilder = metadataBuilder.setArtworkUri(drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
+        }
+
+        return mediaItem.buildUpon().setMediaMetadata(metadataBuilder.build()).build()
     }
 
     fun browsableMediaItem(

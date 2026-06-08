@@ -1,9 +1,0 @@
-Improved: Floating action arrow up, to avoid overlapping with the miniplayer in the queue
-Improved: Search bar being overlapsing with the miniplayer in the queue
-Improved: Online search will no loger hang on if you scroll too fast to the end of the page.
-NEW: Add dice icon to home quick picks to play random songs.
-Improved: Removed the old arrow icon in home quick picks, replaced with settings icon.
-NEW: add play and random directly in top of artist page.
-Improved: Added no information text in history if no history is found.
-NEW: Add an option to clear history in history page in data settings.
-Improved: Somes string in settings were in UPPERCASE, changed it to titlecase.

@@ -106,6 +106,49 @@ class MyDownloadService : DownloadService(
             } else if (download.state == Download.STATE_FAILED) {
                 failedCount++
                 lastName = Util.fromUtf8Bytes(download.request.data)
+
+                val currentCause = finalException
+                var rootCause: Throwable? = currentCause
+                var httpCode: Int? = null
+                while (rootCause != null) {
+                    if (rootCause is androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException) {
+                        httpCode = rootCause.responseCode
+                    }
+                    rootCause = rootCause.cause
+                }
+                
+                val specificCause = generateSequence<Throwable>(currentCause) { it.cause }.firstOrNull { 
+                    it is app.n_zik.android.playback.exceptions.ExplicitContentException || 
+                    it is java.nio.channels.UnresolvedAddressException || 
+                    it is java.net.UnknownHostException || 
+                    it is app.n_zik.android.playback.exceptions.PlayableFormatNotFoundException || 
+                    it is app.n_zik.android.playback.exceptions.UnplayableException || 
+                    it is app.n_zik.android.playback.exceptions.LoginRequiredException || 
+                    it is app.n_zik.android.playback.exceptions.VideoIdMismatchException || 
+                    it is app.n_zik.android.playback.exceptions.PlayableFormatNonSupported || 
+                    it is app.n_zik.android.playback.exceptions.NoInternetException || 
+                    it is app.n_zik.android.playback.exceptions.TimeoutException || 
+                    it is app.n_zik.android.playback.exceptions.UnknownException
+                }
+
+                if (specificCause is app.n_zik.android.playback.exceptions.ExplicitContentException) {
+                    app.kreate.android.me.knighthat.utils.Toaster.w(R.string.parental_control_is_enabled)
+                } else {
+                    val errorMessage = if (httpCode == 403) {
+                        context.getString(R.string.error_this_song_cannot_be_played_due_to_server_restrictions)
+                    } else when (specificCause) {
+                        is java.nio.channels.UnresolvedAddressException, is java.net.UnknownHostException -> context.getString(R.string.error_a_network_error_has_occurred)
+                        is app.n_zik.android.playback.exceptions.PlayableFormatNotFoundException -> context.getString(R.string.error_couldn_t_find_a_playable_audio_format)
+                        is app.n_zik.android.playback.exceptions.UnplayableException -> context.getString(R.string.error_the_original_video_source_of_this_song_has_been_deleted)
+                        is app.n_zik.android.playback.exceptions.LoginRequiredException -> context.getString(R.string.error_this_song_cannot_be_played_due_to_server_restrictions)
+                        is app.n_zik.android.playback.exceptions.VideoIdMismatchException -> context.getString(R.string.error_the_returned_video_id_doesn_t_match_the_requested_one)
+                        is app.n_zik.android.playback.exceptions.PlayableFormatNonSupported -> context.getString(R.string.error_file_unsupported_format)
+                        is app.n_zik.android.playback.exceptions.NoInternetException -> context.getString(R.string.error_no_internet)
+                        is app.n_zik.android.playback.exceptions.TimeoutException -> context.getString(R.string.error_timeout)
+                        else -> context.getString(R.string.error_an_unknown_playback_error_has_occurred)
+                    }
+                    app.kreate.android.me.knighthat.utils.Toaster.e(errorMessage)
+                }
             }
         }
 

@@ -252,7 +252,9 @@ fun HomeQuickPicks(
                                 )
                                 .distinctUntilChanged()
                                 .collect { songs ->
-                                    trendingList = songs.distinctBy { it.id }.take(localCount)
+                                    trendingList = songs.distinctBy { it.id }
+                                                        .filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
+                                                        .take(localCount)
                                     trending = trendingList.firstOrNull()
                                     // mostPopularSong = trendingList.firstOrNull() // the first is the most popular
                                     if (relatedPageResult == null || trending?.id != trendingList.firstOrNull()?.id) {
@@ -271,7 +273,9 @@ fun HomeQuickPicks(
                                 )
                                 .distinctUntilChanged()
                                 .collect { songs ->
-                                    trendingList = songs.distinctBy { it.id }.take(localCount)
+                                    trendingList = songs.distinctBy { it.id }
+                                                        .filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
+                                                        .take(localCount)
                                     trending = trendingList.firstOrNull()
                                     // mostPopularSong = trendingList.firstOrNull() // the first is the most recent
                                     if (relatedPageResult == null || trending?.id != trendingList.firstOrNull()?.id) {
@@ -294,6 +298,7 @@ fun HomeQuickPicks(
                                 .distinctUntilChanged()
                                 .collect { songs ->
                                     val originalList = songs.distinctBy { it.id }
+                                                            .filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
                                     // mostPopularSong = originalList.firstOrNull() // Garder la vraie plus populaire
                                     val shuffled = originalList.shuffled().take(localCount)
                                     trendingList = shuffled
@@ -605,6 +610,7 @@ fun HomeQuickPicks(
                                     val relatedSongs = relatedInit?.songs
                                         ?.map { it.asSong }
                                         ?.filter { it.id !in mainIds }
+                                        ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
                                         ?.distinctBy { it.id }
                                         ?.take(21 - (1 + others.size))
                                         .orEmpty()
@@ -613,6 +619,7 @@ fun HomeQuickPicks(
                                         relatedInit?.songs
                                             ?.map { it.asSong }
                                             ?.filter { it.id !in (others.map { s -> s.id } + (first?.id ?: "")) }
+                                            ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
                                             ?.distinctBy { it.id }
                                             ?.take(21 - total.size)
                                             .orEmpty()
@@ -624,6 +631,7 @@ fun HomeQuickPicks(
                                     val relatedSongs = relatedInit?.songs
                                         ?.map { it.asSong }
                                         ?.filter { it.id !in locals.map { it.id } }
+                                        ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
                                         ?.distinctBy { it.id }
                                         ?.take(21 - locals.size)
                                         .orEmpty()
@@ -632,6 +640,7 @@ fun HomeQuickPicks(
                                         relatedInit?.songs
                                             ?.map { it.asSong }
                                             ?.filter { it.id !in total.map { s -> s.id } }
+                                            ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
                                             ?.distinctBy { it.id }
                                             ?.take(21 - total.size)
                                             .orEmpty()

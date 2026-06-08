@@ -133,7 +133,7 @@ fun Thumbnail(
     val unknownerror = stringResource(R.string.error_unknown)
     val nointerneterror = stringResource(R.string.error_no_internet)
     val timeouterror = stringResource(R.string.error_timeout)
-
+    val explicterror = stringResource(R.string.parental_control_is_enabled)
     val formatUnsupported = stringResource(R.string.error_file_unsupported_format)
 
     var artImageAvailable by remember {
@@ -363,24 +363,29 @@ fun Thumbnail(
                             currentCause = currentCause.cause
                         }
 
-                        app.kreate.android.me.knighthat.utils.Toaster.e(
-                            if (currentWindow.mediaItem.isLocal)
-                                localMusicFileNotFoundError
-                            else if (httpCode == 403)
-                                songnotplayabledueserverrestrictionerror
-                            else when (error?.cause?.cause) {
-                                is java.nio.channels.UnresolvedAddressException, is java.net.UnknownHostException -> networkerror
-                                is app.n_zik.android.playback.exceptions.PlayableFormatNotFoundException -> notfindplayableaudioformaterror
-                                is app.n_zik.android.playback.exceptions.UnplayableException -> originalvideodeletederror
-                                is app.n_zik.android.playback.exceptions.LoginRequiredException -> songnotplayabledueserverrestrictionerror
-                                is app.n_zik.android.playback.exceptions.VideoIdMismatchException -> videoidmismatcherror
-                                is app.n_zik.android.playback.exceptions.PlayableFormatNonSupported -> formatUnsupported
-                                is app.n_zik.android.playback.exceptions.NoInternetException -> nointerneterror
-                                is app.n_zik.android.playback.exceptions.TimeoutException -> timeouterror
-                                is app.n_zik.android.playback.exceptions.UnknownException -> unknownerror
-                                else -> unknownplaybackerror
-                            }
-                        )
+                        val specificErrorString = if (currentWindow.mediaItem.isLocal)
+                            localMusicFileNotFoundError
+                        else if (httpCode == 403)
+                            songnotplayabledueserverrestrictionerror
+                        else when (error?.cause?.cause) {
+                            is java.nio.channels.UnresolvedAddressException, is java.net.UnknownHostException -> networkerror
+                            is app.n_zik.android.playback.exceptions.PlayableFormatNotFoundException -> notfindplayableaudioformaterror
+                            is app.n_zik.android.playback.exceptions.UnplayableException -> originalvideodeletederror
+                            is app.n_zik.android.playback.exceptions.LoginRequiredException -> songnotplayabledueserverrestrictionerror
+                            is app.n_zik.android.playback.exceptions.VideoIdMismatchException -> videoidmismatcherror
+                            is app.n_zik.android.playback.exceptions.PlayableFormatNonSupported -> formatUnsupported
+                            is app.n_zik.android.playback.exceptions.NoInternetException -> nointerneterror
+                            is app.n_zik.android.playback.exceptions.TimeoutException -> timeouterror
+                            is app.n_zik.android.playback.exceptions.ExplicitContentException -> explicterror
+                            is app.n_zik.android.playback.exceptions.UnknownException -> unknownerror
+                            else -> unknownplaybackerror
+                        }
+                        
+                        if (error?.cause?.cause is app.n_zik.android.playback.exceptions.ExplicitContentException) {
+                            app.kreate.android.me.knighthat.utils.Toaster.w(specificErrorString)
+                        } else {
+                            app.kreate.android.me.knighthat.utils.Toaster.e(specificErrorString)
+                        }
                     }
                 }
             }

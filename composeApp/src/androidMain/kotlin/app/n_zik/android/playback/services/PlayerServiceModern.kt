@@ -893,6 +893,15 @@ class PlayerServiceModern : MediaLibraryService(),
             return
         }
 
+        if (error.cause.isFatalCustomException()) {
+            val rootCause = generateSequence<Throwable>(error) { it.cause }.firstOrNull { it is app.n_zik.android.playback.exceptions.ExplicitContentException }
+            if (rootCause != null) {
+                Toaster.w(R.string.parental_control_is_enabled)
+            }
+            player.pause()
+            return
+        }
+
         // Recoverable errors: try pause+prepare+play before giving up
         val recoverableErrors = listOf(
             PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS,
@@ -1195,6 +1204,10 @@ class PlayerServiceModern : MediaLibraryService(),
 
                 val skipOnError = preferences.getBoolean(skipMediaOnErrorKey, false)
                 val count = loadErrorInfo.errorCount
+
+                if (loadErrorInfo.exception.isFatalCustomException()) {
+                    return C.TIME_UNSET
+                }
 
                 return if (count <= 7) {
                     // Normal exponential backoff up to 7 retries
@@ -1788,6 +1801,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
     }
 
+    @androidx.compose.runtime.Stable
     open inner class Binder : AndroidBinder() {
         val service: PlayerServiceModern
             get() = this@PlayerServiceModern
@@ -2061,5 +2075,13 @@ class PlayerServiceModern : MediaLibraryService(),
 
 }
 
-
-
+fun Throwable?.isFatalCustomException(): Boolean {
+    return generateSequence<Throwable>(this) { it.cause }
+        .any {
+            it is app.n_zik.android.playback.exceptions.ExplicitContentException ||
+            it is app.n_zik.android.playback.exceptions.LoginRequiredException ||
+            it is app.n_zik.android.playback.exceptions.PlayableFormatNonSupported ||
+            it is app.n_zik.android.playback.exceptions.UnplayableException ||
+            it is app.n_zik.android.playback.exceptions.VideoIdMismatchException
+        }
+}

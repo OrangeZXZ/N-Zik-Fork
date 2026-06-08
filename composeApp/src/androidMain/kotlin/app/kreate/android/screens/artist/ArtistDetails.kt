@@ -141,6 +141,7 @@ fun ArtistDetails(
 
     // Settings
     val disableScrollingText by rememberPreference( disableScrollingTextKey, false )
+    val parentalControlEnabled by rememberPreference(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false)
 
     val sectionTextModifier = Modifier
         .padding( horizontal = 16.dp )
@@ -148,7 +149,7 @@ fun ArtistDetails(
     val albumThumbnailSizeDp = 108.dp
     val albumThumbnailSizePx = albumThumbnailSizeDp.px
 
-    val songs = remember {
+    val songs = remember(parentalControlEnabled) {
         artistPage.sections
                   .fastFirstOrNull { section ->
                       section.items.fastAll { it is Innertube.SongItem }
@@ -157,6 +158,7 @@ fun ArtistDetails(
                   ?.mapNotNull {
                       (it as? Innertube.SongItem)?.asSong
                   }
+                  ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
                   .orEmpty()
     }
 

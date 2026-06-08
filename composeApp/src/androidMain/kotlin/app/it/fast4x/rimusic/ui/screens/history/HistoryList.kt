@@ -105,7 +105,7 @@ fun HistoryList(
                 .map { list ->
                     val today = java.time.LocalDate.now()
                     val yesterday = today.minusDays(1)
-                    list.filter { !parentalControlEnabled || it.song.title.startsWith( EXPLICIT_PREFIX, true ) }
+                    list.filter { !parentalControlEnabled || !it.song.title.startsWith( EXPLICIT_PREFIX, true ) }
                         .reversed()
                         .groupBy {
                             val eventDate = java.time.Instant.ofEpochMilli(it.event.timestamp)
@@ -291,6 +291,7 @@ fun HistoryList(
                             items = section.songs
                                 .map { it.asMediaItem }
                                 .filter { it.mediaId.isNotEmpty() }
+                                .filter { !parentalControlEnabled || it.mediaMetadata.title?.startsWith(EXPLICIT_PREFIX, true) != true }
                                 .filter { mediaItem ->
                                     (mediaItem.mediaMetadata.title ?: "").contains(search.inputValue, ignoreCase = true) ||
                                             (mediaItem.mediaMetadata.artist ?: "").contains(search.inputValue, ignoreCase = true)

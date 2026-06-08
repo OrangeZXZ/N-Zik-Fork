@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
+import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.ContinuationBody
@@ -107,7 +108,8 @@ data class YouTubeRadio @OptIn(UnstableApi::class) constructor
                   }
                   ?.also { mediaItems = it }
 
-        return mediaItems ?: emptyList()
+        val parentalControlEnabled = context.preferences.getBoolean(parentalControlEnabledKey, false)
+        return (mediaItems ?: emptyList()).filter { !parentalControlEnabled || it.mediaMetadata.title?.startsWith(EXPLICIT_PREFIX, true) != true }
     }
 }
 

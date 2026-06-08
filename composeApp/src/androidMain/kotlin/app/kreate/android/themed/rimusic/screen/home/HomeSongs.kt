@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.res.stringResource
+import app.n_zik.android.R
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -256,6 +259,7 @@ fun HomeSongs(
                     songItem.info?.let { info ->
                         info.endpoint?.videoId?.let { videoId ->
                             if (!existingSongIds.contains(videoId)) {
+                                if (parentalControlEnabled && songItem.explicit) return@let
                                 val prefix = if (songItem.explicit) EXPLICIT_PREFIX else ""
                                 val song = Song(
                                     id = "$prefix$videoId",
@@ -346,11 +350,26 @@ fun HomeSongs(
             .background(colorPalette().background0)
             .fillMaxSize()
     ) {
-        if( isLoading )
+        if( isLoading ) {
             items(
                 count = 20,
                 key = { it }
             ) { SongItemPlaceholder() }
+        } else if (itemsOnDisplay.isEmpty()) {
+            item {
+                Box(
+                    modifier = Modifier.fillParentMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    androidx.compose.foundation.text.BasicText(
+                        text = stringResource(R.string.no_items),
+                        style = app.n_zik.android.typography().m.semiBold.copy(
+                            color = colorPalette().textSecondary
+                        )
+                    )
+                }
+            }
+        }
 
         itemsIndexed(
             items = itemsOnDisplay,

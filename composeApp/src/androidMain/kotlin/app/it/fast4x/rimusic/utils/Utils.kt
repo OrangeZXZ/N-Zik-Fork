@@ -1,5 +1,6 @@
 package app.it.fast4x.rimusic.utils
 
+import android.R.attr.duration
 import app.n_zik.android.core.database.*
 
 
@@ -25,6 +26,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
+import app.n_zik.android.core.coil.thumbnail
 import com.zionhuang.innertube.pages.LibraryPage
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.http.HttpStatusCode
@@ -82,7 +84,7 @@ val Innertube.Podcast.EpisodeItem.asMediaItem: MediaItem
                 .setTitle(title)
                 .setArtist(author.toString())
                 .setAlbumTitle(title)
-                .setArtworkUri(thumbnail.firstOrNull()?.url?.toUri())
+                .setArtworkUri(thumbnail.firstOrNull()?.url?.thumbnail(1200)?.toUri())
                 .setExtras(
                     bundleOf(
                         //"albumId" to album?.endpoint?.browseId,
@@ -179,13 +181,17 @@ val Song.asMediaItem: MediaItem
                         artistsText
                     }
                 )
-                .setArtworkUri(thumbnailUrl?.toUri())
+                .setArtworkUri(thumbnailUrl?.thumbnail(1200)?.toUri())
                 .setExtras(
                     bundleOf(
                         "durationText" to durationText,
                         EXPLICIT_BUNDLE_TAG to title.startsWith( EXPLICIT_PREFIX, true ),
                         EXTRAS_KEY_IS_EXPLICIT to title.startsWith( EXPLICIT_PREFIX, true )
-                    )
+                    ).apply {
+                        if (!isLocal) {
+                            putLong("android.media.metadata.DURATION", duration * 1000L)
+                        }
+                    }
                 )
                 .setIsPlayable(true)
                 .setIsBrowsable(false)

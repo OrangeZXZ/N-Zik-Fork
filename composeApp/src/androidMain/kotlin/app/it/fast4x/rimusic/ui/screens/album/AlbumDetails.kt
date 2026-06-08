@@ -150,11 +150,15 @@ fun AlbumDetails(
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
-    val items by remember {
+    val rawItems by remember {
         Database.songAlbumMapTable
                 .allSongsOf( browseId )
                 .distinctUntilChanged()
     }.collectAsState( emptyList(), Dispatchers.IO )
+
+    val items = remember(rawItems, parentalControlEnabled) {
+        rawItems.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
+    }
 
     val itemSelector = ItemSelector<Song>()
 

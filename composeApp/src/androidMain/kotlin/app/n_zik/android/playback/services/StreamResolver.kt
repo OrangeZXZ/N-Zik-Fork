@@ -46,6 +46,9 @@ import app.n_zik.android.playback.services.PlayerServiceModern
 import app.it.fast4x.rimusic.utils.isConnectionMetered
 import app.it.fast4x.rimusic.utils.okHttpDataSourceFactory
 import app.it.fast4x.rimusic.utils.preferences
+import app.n_zik.android.playback.exceptions.ExplicitContentException
+import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -432,8 +435,10 @@ private suspend fun resolveStreamUriInternal(
     val finalReason = lastFailureReason ?: "All ${FALLBACK_CLIENTS.size} clients failed for $videoId"
     Timber.tag(TAG).e("resolveStreamUri FAILED: $finalReason")
     throw UnplayableException(finalReason)
-}    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// Cache + DataSpec integration    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+}
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Cache + DataSpec integration
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 /**
  * Cache of resolved stream URLs by videoId.
@@ -449,6 +454,14 @@ fun DataSpec.process(
 ): DataSpec = runBlocking(Dispatchers.IO) {
     val isLoggedIn = Store.getCookie().isNotBlank()
     Timber.tag(TAG).d("Resolving stream for videoId=$videoId, isLoggedIn=$isLoggedIn")
+
+    val parentalControlEnabled = appContext().preferences.getBoolean(parentalControlEnabledKey, false)
+    if (parentalControlEnabled) {
+        val song = Database.songTable.findById(videoId).firstOrNull()
+        if (song?.title?.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) == true) {
+            throw ExplicitContentException()
+        }
+    }
 
     var formatUri = formatCache[videoId]
 
@@ -481,8 +494,10 @@ fun DataSpec.process(
         .setHttpRequestHeaders(newHeaders)
         .setUriPositionOffset(uriPositionOffset)
         .build()
-}    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// DataSource factories (ExoPlayer integration)    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+}
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // DataSource factories (ExoPlayer integration)
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 @UnstableApi
 fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory {
@@ -507,11 +522,23 @@ fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory {
         .setCache(cache)
         .setUpstreamDataSourceFactory(resolvingDataSourceFactory)
 
-    return CacheDataSource.Factory()
+    val finalCacheFactory = CacheDataSource.Factory()
         .setCache(downloadCache)
         .setUpstreamDataSourceFactory(lruCacheFactory)
         .setCacheWriteDataSinkFactory(null)
         .setFlags(FLAG_IGNORE_CACHE_ON_ERROR)
+
+    return ResolvingDataSource.Factory(finalCacheFactory) { dataSpec ->
+        val videoId = dataSpec.key ?: dataSpec.uri.toString().substringAfter("watch?v=")
+        val parentalControlEnabled = appContext().preferences.getBoolean(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false)
+        if (parentalControlEnabled) {
+            val isExplicit = kotlinx.coroutines.runBlocking { Database.songTable.findById(videoId).firstOrNull()?.title?.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) == true }
+            if (isExplicit) {
+                throw app.n_zik.android.playback.exceptions.ExplicitContentException()
+            }
+        }
+        dataSpec
+    }
 }
 
 @UnstableApi

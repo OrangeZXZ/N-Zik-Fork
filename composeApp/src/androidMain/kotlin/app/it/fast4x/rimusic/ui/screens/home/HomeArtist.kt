@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -38,6 +39,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -221,9 +224,10 @@ fun HomeArtists(
                 // Sticky search bar
                 search.SearchBar( this )
 
-                LazyVerticalGrid(
-                    state = lazyGridState,
-                    columns = GridCells.Adaptive( itemSize.size.dp ),
+                Box(modifier = Modifier.fillMaxSize()) {
+                    LazyVerticalGrid(
+                        state = lazyGridState,
+                        columns = GridCells.Adaptive( itemSize.size.dp ),
                     modifier = Modifier.background( colorPalette().background0 )
                                        .fillMaxSize(),
                     contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
@@ -312,6 +316,21 @@ fun HomeArtists(
                         )
                     }
                 }
+
+                if (itemsOnDisplay.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxSize().padding(bottom = 47.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        BasicText(
+                            text = stringResource(R.string.no_items),
+                            style = typography.m.semiBold.copy(
+                                color = colorPalette().textSecondary
+                            )
+                        )
+                    }
+                }
+            }
             }
 
             FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
