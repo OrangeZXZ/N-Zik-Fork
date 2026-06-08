@@ -1149,4 +1149,6 @@
   <string name="no_song_found">Пісню не знайдено</string>
   <string name="listen_history">Слухати історію</string>
   <string name="clear_listen_history">Очистити історію слухання</string>
+  <string name="ui_roundness">Об’єм інтерфейсу</string>
+  <string name="app_name">N-Zik</string>
 </resources>
