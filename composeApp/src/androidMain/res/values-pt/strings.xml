@@ -94,7 +94,7 @@
   <string name="neither_save_new_searched_query">Nem salvar novas consultas pesquisadas nem mostrar histórico</string>
   <string name="clear_search_history">Limpar o histórico de pesquisa</string>
   <string name="history_is_empty">O histórico está vazio!</string>
-  <string name="service_lifetime">SERVIÇO PERMANENTE</string>
+  <string name="service_lifetime">Validade do serviço</string>
   <string name="battery_optimizations_applied">Se as otimizações da bateria forem aplicadas, a notificação de reprodução pode desaparecer repentinamente quando pausada.</string>
   <string name="is_android12">Desde o Android 12, desativar otimizações de bateria é necessário para que a opção \"Serviço invisível\" tenha efeito.</string>
   <string name="ignore_battery_optimizations">Ignorar otimizações de bateria</string>
@@ -170,9 +170,9 @@
   <string name="languages">Linguagens</string>
   <string name="app_language">Linguagem da aplicação</string>
   <string name="in_alphabetical_order">Na ordem alfabética:</string>
-  <string name="contributors">CONTRIBUIDORES</string>
-  <string name="troubleshooting">RESOLUÇÃO DE PROBLEMAS</string>
-  <string name="social">SOCIAL</string>
+  <string name="contributors">Colaboradores</string>
+  <string name="troubleshooting">Solução de problemas</string>
+  <string name="social">Sócio</string>
   <string name="english">Inglês (English)</string>
   <string name="italian">Italiano (Italiano)</string>
   <string name="czech">Checo (Čeština)</string>
@@ -289,7 +289,7 @@
   <string name="do_you_really_want_to_download_all">Tem a certeza que quer transferir tudo?</string>
   <string name="import_playlist">Importar uma playlist</string>
   <string name="lang_ukrainian">Ucraniano (├├├├├├├├├&amp;)</string>
-  <string name="proxy">PROXY</string>
+  <string name="proxy">Proxy</string>
   <string name="enable_proxy">Ativar proxy</string>
   <string name="proxy_mode">Modo do proxy</string>
   <string name="proxy_host">Host do Proxy</string>
@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">Esta pasta já existe</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Tem a certeza que quer remover esta pasta da lista negra?</string>
   <string name="player_appearance">Aparência do Jogador</string>
-  <string name="player_action_bar">BARRA DE AÇÃO DO PLAYER</string>
+  <string name="player_action_bar">Player action bar</string>
   <string name="tab_data">Dados</string>
   <string name="image_cache_max_size">Tamanho máximo do cache de imagens</string>
   <string name="network_status">Estado da Qualidade</string>
@@ -391,7 +391,7 @@
   <string name="tab_miscellaneous">Diversos</string>
   <string name="swipe_to_action">Deslize para ação</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Executar ações deslizando para a esquerda ou direita em uma música dentro da lista vertical de músicas</string>
-  <string name="smart_recommendations">RECOMENDAÇÕES INTELIGENTES</string>
+  <string name="smart_recommendations">Recomendações inteligentes</string>
   <string name="player_collapsed_disable_swiping_down">Desativar deslize para baixo</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Evite fechar o player e limpar a fila deslizando para baixo quando estiver minimizado</string>
   <string name="sort_date_liked">Data favorita</string>
@@ -592,11 +592,11 @@
   <string name="cache_location_private">Privado</string>
   <string name="cache_location_system">Sistema</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">Cannot rename a monthly or online or piped playlist</string>
-  <string name="debug">DEPURAÇÃO</string>
+  <string name="debug">Debug</string>
   <string name="enable_log_debug">Ativar logs de depuração</string>
   <string name="if_enabled_create_a_log_file_to_highlight_errors">Se ativado, crie um arquivo de log para destacar erros</string>
   <string name="copy_log_to_clipboard">Copiar log para área de transferência</string>
-  <string name="piped_account">PIPED</string>
+  <string name="piped_account">Piped</string>
   <string name="enable_piped_syncronization">Habilitar sincronização piped</string>
   <string name="piped_change_instance">Alterar instância</string>
   <string name="piped_username">Nome de utilizador</string>
@@ -606,7 +606,7 @@
   <string name="piped_connected_to_s">Ligado a %s</string>
   <string name="fake_audio_bar">Onda de Falso</string>
   <string name="copy_crash_log_to_clipboard">Copiar log de erro para área de transferência</string>
-  <string name="title_backup_and_restore">BACKUP E RESTAURAR</string>
+  <string name="title_backup_and_restore">Backup and restore</string>
   <string name="message_excluded_s_songs">%s músicas excluídas</string>
   <string name="show_thumbnail">Mostrar miniatura</string>
   <string name="show_lyrics_thumbnail">Mostrar miniatura para letras</string>
@@ -814,7 +814,7 @@
   <string name="resume_automatically_when_app_opens">Retomar a reprodução automaticamente quando o aplicativo for aberto</string>
   <string name="notificationPlayerFirstIcon">Primeiro botão</string>
   <string name="notificationPlayerSecondIcon">Segundo botão</string>
-  <string name="notification_player">NOTIFICATION PLAYER</string>
+  <string name="notification_player">Notification Player</string>
   <string name="repeat">Repetir</string>
   <string name="original_lyrics">Letra original</string>
   <string name="translated_lyrics">Letra traduzida</string>
@@ -1146,4 +1146,7 @@
   <string name="failed_to_install">Falha ao instalar: %s</string>
   <string name="last_check">Última verificação: %s</string>
   <string name="no_items">Nenhum item</string>
+  <string name="no_song_found">Nenhuma música encontrada</string>
+  <string name="listen_history">Listen history</string>
+  <string name="clear_listen_history">Clear listen history</string>
 </resources>
