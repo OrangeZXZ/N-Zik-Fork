@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens
+package app.it.fast4x.rimusic.ui.screens
 
 import app.n_zik.android.core.database.*
 
@@ -110,7 +110,7 @@ fun AppNavigation(
                     //shape = thumbnailShape
                 ) {}
             },
-            shape = app.n_zik.android.thumbnailShape()
+            shape = app.n_zik.android.uiRoundnessShape()
         ) {
             content()
         }

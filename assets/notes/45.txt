@@ -1,0 +1,9 @@
+- **Amélioration du système d'arrondi (UI Roundness)** :
+  - Création et intégration de `BoundedCornerSize` pour que l'arrondi s'adapte intelligemment à la taille des petits éléments, sans les déformer en cercles parfaits. L'arrondi maximal est désormais bloqué à 40% de la taille de l'élément.
+  - Mise à jour de la prévisualisation dans les paramètres pour refléter le nouveau comportement avec précision.
+- **Correction des formes de Bottom Sheets (Player, File d'attente, etc.)** :
+  - L'écran du lecteur (Player), la file d'attente, la recherche, et autres Bottom Sheets utilisent désormais correctement la forme `uiRoundnessShape` au lieu de `thumbnailShape`. 
+  - Résolution d'un bug majeur où l'augmentation de l'arrondi de la pochette au maximum (Max / 36) transformait malencontreusement tout l'écran du lecteur en un cercle tronqué.
+- **Paramètres par défaut ajustés** :
+  - L'arrondi par défaut des pochettes (Thumbnails) passe de 9dp à 12dp pour un aspect visuel plus moderne dès l'installation.
+  - Les boutons de réglage rapide pour l'arrondi des pochettes ont été mis à jour (0, 12, 24, Max) pour correspondre au nouveau réglage par défaut.

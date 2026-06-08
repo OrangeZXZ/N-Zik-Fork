@@ -273,7 +273,7 @@ fun DefaultAppearanceSettings() {
     clickLyricsText = true
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
     showBackgroundLyrics = false
-    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 9f)
+    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 12f)
     var uiRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.uiRoundnessDpKey, 20f)
     thumbnailRoundnessDp = 18f
     var miniPlayerType by rememberPreference(
@@ -446,7 +446,7 @@ fun AppearanceSettings(
 
     val search = Search()
 
-    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 9f)
+    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 12f)
     var uiRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.uiRoundnessDpKey, 20f)
 
     var miniPlayerType by rememberPreference(
@@ -1276,7 +1276,7 @@ fun AppearanceSettings(
                         )
 
                         androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
-                            listOf(0f to "0", 9f to "9", 18f to "18", 27f to "27", 36f to "Max").forEach { (v, label) ->
+                            listOf(0f to "0", 12f to "12", 24f to "24", 36f to "Max").forEach { (v, label) ->
                                 val isSelected = thumbnailRoundnessDp.toInt() == v.toInt()
                                 androidx.compose.material3.TextButton(
                                     onClick = { thumbnailRoundnessDp = v },

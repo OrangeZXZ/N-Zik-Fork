@@ -2212,10 +2212,10 @@ fun Player(
                 Surface(
                     modifier = Modifier.padding(vertical = 0.dp),
                     color = colorPalette().background0,
-                    shape = thumbnailShape()
+                    shape = app.n_zik.android.uiRoundnessShape()
                 ) {}
             },
-            shape = app.n_zik.android.thumbnailShape()
+            shape = app.n_zik.android.uiRoundnessShape()
         ) {
             Queue(
                 navController = navController,
@@ -2241,10 +2241,10 @@ fun Player(
                 Surface(
                     modifier = Modifier.padding(vertical = 0.dp),
                     color = colorPalette().background0,
-                    shape = thumbnailShape()
+                    shape = app.n_zik.android.uiRoundnessShape()
                 ) {}
             },
-            shape = app.n_zik.android.thumbnailShape()
+            shape = app.n_zik.android.uiRoundnessShape()
         ) {
             SearchYoutubeEntity(
                 navController = navController,

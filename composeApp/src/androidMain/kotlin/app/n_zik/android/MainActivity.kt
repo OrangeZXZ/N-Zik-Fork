@@ -527,7 +527,7 @@ class MainActivity :
                     val colorPaletteName =
                         getEnum(colorPaletteNameKey, ColorPaletteName.Dynamic)
                     val colorPaletteMode = getEnum(colorPaletteModeKey, ColorPaletteMode.Dark)
-                    val thumbnailRoundnessDp = getFloat(thumbnailRoundnessDpKey, 9f)
+                    val thumbnailRoundnessDp = getFloat(thumbnailRoundnessDpKey, 12f)
                     val uiRoundnessDp = getFloat("uiRoundnessDpKey", 20f)
                     val useSystemFont = getBoolean(useSystemFontKey, false)
                     val applyFontPadding = getBoolean(applyFontPaddingKey, false)
@@ -847,7 +847,7 @@ class MainActivity :
 
                             app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey -> {
                                 val thumbnailRoundnessDp =
-                                    sharedPreferences.getFloat(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 9f)
+                                    sharedPreferences.getFloat(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 12f)
 
                                 appearance = appearance.copy(
                                     thumbnailShape = if (thumbnailRoundnessDp >= 36f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(thumbnailRoundnessDp.dp)
@@ -1098,10 +1098,10 @@ class MainActivity :
                                         Surface(
                                             modifier = Modifier.padding(vertical = 0.dp),
                                             color = finalAppearance.colorPalette.background0,
-                                            shape = thumbnailShape()
+                                            shape = uiRoundnessShape()
                                         ) {}
                                     },
-                                    shape = app.n_zik.android.thumbnailShape()
+                                    shape = uiRoundnessShape()
                                 ) {
                                     Player( navController ) { 
                                         showPlayer = false
@@ -1121,10 +1121,10 @@ class MainActivity :
                                     Surface(
                                         modifier = Modifier.padding(vertical = 0.dp),
                                         color = finalAppearance.colorPalette.background0,
-                                        shape = thumbnailShape()
+                                        shape = uiRoundnessShape()
                                     ) {}
                                 },
-                                shape = app.n_zik.android.thumbnailShape()
+                                shape = uiRoundnessShape()
                             ) {
                                 youtubePlayer()
                             }
@@ -1139,10 +1139,10 @@ class MainActivity :
                                     Surface(
                                         modifier = Modifier.padding(vertical = 0.dp),
                                         color = Color.Transparent,
-                                        //shape = thumbnailShape
+                                        //shape = uiRoundnessShape()
                                     ) {}
                                 },
-                                shape = app.n_zik.android.thumbnailShape()
+                                shape = uiRoundnessShape()
                             ) {
                                 menuState.content()
                             }

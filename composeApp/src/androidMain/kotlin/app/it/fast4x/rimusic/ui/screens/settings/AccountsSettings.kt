@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.settings
+package app.it.fast4x.rimusic.ui.screens.settings
 
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
@@ -303,10 +303,10 @@ fun AccountsSettings() {
                                     Surface(
                                         modifier = Modifier.padding(vertical = 0.dp),
                                         color = colorPalette().background0,
-                                        shape = thumbnailShape()
+                                        shape = app.n_zik.android.uiRoundnessShape()
                                     ) {}
                                 },
-                                shape = app.n_zik.android.thumbnailShape()
+                                shape = app.n_zik.android.uiRoundnessShape()
                             ) {
                                 YouTubeLogin(
                                     onLogin = { cookieRetrieved ->
@@ -750,10 +750,10 @@ fun AccountsSettings() {
                                         Surface(
                                             modifier = Modifier.padding(vertical = 0.dp),
                                             color = colorPalette().background0,
-                                            shape = thumbnailShape()
+                                            shape = app.n_zik.android.uiRoundnessShape()
                                         ) {}
                                     },
-                                    shape = app.n_zik.android.thumbnailShape()
+                                    shape = app.n_zik.android.uiRoundnessShape()
                                 ) {
                                     DiscordLoginAndGetToken(
                                         navController = rememberNavController(),
