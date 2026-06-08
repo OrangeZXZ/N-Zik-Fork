@@ -1149,4 +1149,6 @@
   <string name="no_song_found">Nenalezena žádná skladba</string>
   <string name="listen_history">Historie poslechů</string>
   <string name="clear_listen_history">Vymazat historii poslech</string>
+  <string name="ui_roundness">Kolo UI</string>
+  <string name="app_name">N-Zik</string>
 </resources>

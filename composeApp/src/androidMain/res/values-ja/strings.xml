@@ -1149,4 +1149,6 @@
   <string name="no_song_found">曲が見つかりません</string>
   <string name="listen_history">Listen history</string>
   <string name="clear_listen_history">リッスン履歴をクリア</string>
+  <string name="ui_roundness">UIの丸さ</string>
+  <string name="app_name">N-Zik</string>
 </resources>

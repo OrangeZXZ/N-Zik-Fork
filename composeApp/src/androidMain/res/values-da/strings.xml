@@ -1149,4 +1149,6 @@
   <string name="no_song_found">Ingen sang fundet</string>
   <string name="listen_history">Lyt til historik</string>
   <string name="clear_listen_history">Ryd lyttehistorik</string>
+  <string name="ui_roundness">UI Roundness</string>
+  <string name="app_name">N-Zik</string>
 </resources>

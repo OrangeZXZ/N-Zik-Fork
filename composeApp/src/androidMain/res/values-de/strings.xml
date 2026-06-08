@@ -1149,4 +1149,6 @@
   <string name="no_song_found">Kein Lied gefunden</string>
   <string name="listen_history">Verlauf anzeigen</string>
   <string name="clear_listen_history">Listenverlauf löschen</string>
+  <string name="ui_roundness">UI-Rundung</string>
+  <string name="app_name">N-Zik</string>
 </resources>
