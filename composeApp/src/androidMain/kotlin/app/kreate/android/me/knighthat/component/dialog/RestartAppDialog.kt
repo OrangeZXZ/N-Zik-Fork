@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.dialog
+﻿package app.kreate.android.me.knighthat.component.dialog
 
 import android.app.Activity
 import androidx.compose.foundation.border
@@ -27,6 +27,7 @@ import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.intent
 import app.it.fast4x.rimusic.utils.medium
 import kotlin.system.exitProcess
+import app.n_zik.android.uiRoundnessShape
 
 object RestartAppDialog: ConfirmDialog {
 
@@ -58,7 +59,7 @@ object RestartAppDialog: ConfirmDialog {
                 containerColor = colorPalette().accent,
                 contentColor = colorPalette().textSecondary
             ),
-            shape = RoundedCornerShape(12.dp)
+            shape = uiRoundnessShape()
         ) {
             BasicText(
                 text = stringResource( R.string.confirm ),
@@ -76,4 +77,7 @@ object RestartAppDialog: ConfirmDialog {
         )
     }
 }
+
+
+
 

@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.tab
+﻿package app.kreate.android.me.knighthat.component.tab
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -62,6 +62,7 @@ import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.conditional
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
+import app.n_zik.android.uiRoundnessShape
 
 class Search private constructor(
     inputState: MutableState<TextFieldValue>,
@@ -223,10 +224,10 @@ class Search private constructor(
                     .fillMaxWidth()
                     .shadow(
                         elevation = 8.dp,
-                        shape = RoundedCornerShape(16.dp),
+                        shape = uiRoundnessShape(),
                         spotColor = colorPalette().accent.copy(alpha = 0.3f)
                     ),
-                shape = RoundedCornerShape(16.dp),
+                shape = uiRoundnessShape(),
                 colors = CardDefaults.cardColors(
                     containerColor = colorPalette().background1
                 ),
@@ -256,7 +257,7 @@ class Search private constructor(
                                   .fillMaxWidth()
                                   .background(
                                       color = colorPalette().background1,
-                                      shape = RoundedCornerShape(8.dp)
+                                      shape = uiRoundnessShape()
                                   )
                                   .padding(horizontal = 20.dp, vertical = 16.dp),
                               verticalAlignment = Alignment.CenterVertically
@@ -267,7 +268,7 @@ class Search private constructor(
                                      .size(32.dp)
                                      .background(
                                          color = colorPalette().accent.copy(alpha = 0.1f),
-                                         shape = RoundedCornerShape(8.dp)
+                                         shape = uiRoundnessShape()
                                      ),
                                  contentAlignment = Alignment.Center
                              ) {
@@ -287,7 +288,7 @@ class Search private constructor(
                                        .weight(1f)
                                        .background(
                                            color = colorPalette().background2,
-                                           shape = RoundedCornerShape(6.dp)
+                                           shape = uiRoundnessShape()
                                        )
                                        .padding(horizontal = 12.dp, vertical = 8.dp),
                                    contentAlignment = Alignment.CenterStart
@@ -317,7 +318,7 @@ class Search private constructor(
                                                 .size(32.dp)
                                                 .background(
                                                     color = colorPalette().accent.copy(alpha = 0.1f),
-                                                    shape = RoundedCornerShape(8.dp)
+                                                    shape = uiRoundnessShape()
                                                 ),
                                             contentAlignment = Alignment.Center
                                         ) {
@@ -347,4 +348,5 @@ class Search private constructor(
         }
     }
 }
+
 

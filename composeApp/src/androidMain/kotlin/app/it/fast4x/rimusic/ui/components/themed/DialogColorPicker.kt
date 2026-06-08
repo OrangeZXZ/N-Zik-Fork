@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -48,6 +48,7 @@ import app.n_zik.android.colorPalette
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import android.graphics.Color as AndroidColor
+import app.n_zik.android.uiRoundnessShape
 
 
 @Composable
@@ -140,7 +141,7 @@ fun SatValPanel(
         modifier = Modifier
             .size(300.dp)
             .emitDragGesture(interactionSource)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(uiRoundnessShape())
     ) {
         val cornerRadius = 12.dp.toPx()
         val satValSize = size
@@ -231,7 +232,7 @@ private fun Modifier.emitDragGesture(
                 interactionSource.emit(PressInteraction.Press(input.position))
             }
         }
-    }.clickable(interactionSource, null) {
+    }.clip(uiRoundnessShape()).clickable(interactionSource, null) {
     }
 }
 
@@ -250,7 +251,7 @@ fun HueBar(
         modifier = Modifier
             .height(40.dp)
             .width(300.dp)
-            .clip(RoundedCornerShape(50))
+            .clip(uiRoundnessShape())
             .emitDragGesture(interactionSource)
     ) {
         val drawScopeSize = size
@@ -328,5 +329,8 @@ private fun DrawScope.drawBitmap(
         )
     }
 }
+
+
+
 
 

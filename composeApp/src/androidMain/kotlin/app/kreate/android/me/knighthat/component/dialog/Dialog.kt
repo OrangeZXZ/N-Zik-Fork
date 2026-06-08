@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.dialog
+﻿package app.kreate.android.me.knighthat.component.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -24,6 +24,7 @@ import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.bold
 import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.semiBold
+import app.n_zik.android.uiRoundnessShape
 
 interface Dialog {
 
@@ -112,7 +113,7 @@ interface Dialog {
                                        maxHeight = screenHeightDp * maxHeight
                                    )
                                    .padding(16.dp),
-                shape = RoundedCornerShape(16.dp),
+                shape = uiRoundnessShape(),
                 colors = CardDefaults.cardColors(
                     containerColor = colorPalette().background1
                 ),
@@ -147,4 +148,5 @@ interface Dialog {
         }
     }
 }
+
 

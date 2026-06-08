@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.album
+﻿package app.it.fast4x.rimusic.ui.screens.album
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.core.database.*
 
@@ -464,7 +468,7 @@ fun AlbumDetails(
                                     thumbnailSizePx = thumbnailAlbumSizePx,
                                     thumbnailSizeDp = thumbnailAlbumSizeDp,
                                     modifier = Modifier
-                                        .clickable {
+                                        .clip(uiRoundnessShape()).clickable {
                                             navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
                                         },
                                     disableScrollingText = disableScrollingText
@@ -496,7 +500,7 @@ fun AlbumDetails(
                             translate.ToolBarButton()
 
                             BasicText(
-                                text = "“",
+                                text = "â€œ",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = (-8).dp)
@@ -541,7 +545,7 @@ fun AlbumDetails(
                             )
 
                             BasicText(
-                                text = "„",
+                                text = "â€ž",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = 4.dp)
@@ -575,3 +579,6 @@ fun AlbumDetails(
         }
     }
 }
+
+
+

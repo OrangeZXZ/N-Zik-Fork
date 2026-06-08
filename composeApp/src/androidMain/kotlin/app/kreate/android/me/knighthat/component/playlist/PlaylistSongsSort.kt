@@ -1,4 +1,8 @@
-package app.kreate.android.me.knighthat.component.playlist
+﻿package app.kreate.android.me.knighthat.component.playlist
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.text.BasicText
@@ -46,9 +50,12 @@ class PlaylistSongsSort private constructor(
             style = typography().s.semiBold,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.clickable { super.onLongClick() }
+            modifier = Modifier.clip(uiRoundnessShape()).clickable { super.onLongClick() }
         )
     }
 }
+
+
+
 
 

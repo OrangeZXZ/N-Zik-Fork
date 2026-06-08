@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.dialog
+﻿package app.kreate.android.me.knighthat.component.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.colorPalette
+import app.n_zik.android.uiRoundnessShape
 
 interface InputDialog: InteractiveDialog {
 
@@ -71,7 +72,7 @@ interface InputDialog: InteractiveDialog {
                                         .border(
                                             width = 2.dp,
                                             color = Color( android.graphics.Color.RED ).copy( alpha = .3f ),
-                                            shape = RoundedCornerShape(20)
+                                            shape = uiRoundnessShape()
                                         )
                                         .padding( vertical = 10.dp ),
             onCancel = ::hideDialog
@@ -105,4 +106,5 @@ interface InputDialog: InteractiveDialog {
         )
     }
 }
+
 

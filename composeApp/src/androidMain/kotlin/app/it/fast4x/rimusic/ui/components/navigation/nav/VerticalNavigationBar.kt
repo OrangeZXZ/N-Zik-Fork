@@ -1,5 +1,6 @@
 package app.it.fast4x.rimusic.ui.components.navigation.nav
 
+import androidx.annotation.OptIn
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.updateTransition
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
@@ -38,6 +40,7 @@ import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.vertical
+import app.n_zik.android.uiRoundnessShape
 
 // Shown when "Navigation bar position" is set to "left" or "right"
 class VerticalNavigationBar(
@@ -53,6 +56,7 @@ class VerticalNavigationBar(
         // Do NOT use it
         super.buttonList.add( component )
 
+    @OptIn(UnstableApi::class)
     @Composable
     override fun add(buttons: @Composable (@Composable (Int, String, Int) -> Unit) -> Unit ) {
         val transition = updateTransition( targetState = tabIndex, label = null )
@@ -102,8 +106,8 @@ class VerticalNavigationBar(
                             }
                 }
             val button = Button( iconId, textColor, 0.dp, 0.dp, Dp.Unspecified, buttonModifier )
-            val contentModifier = Modifier.clip( RoundedCornerShape(24.dp) )
-                                          .clickable( onClick = { onTabChanged(index) } )
+            val contentModifier = Modifier.clip( uiRoundnessShape() )
+                                          .clip(uiRoundnessShape()).clickable( onClick = { onTabChanged(index) } )
                                           .padding( vertical = 8.dp )
             val result: @Composable () -> Unit = {
                 if( isLandscape )
@@ -131,9 +135,10 @@ class VerticalNavigationBar(
     @Composable
     override fun BackButton(): NavigationButton {
         val button = super.BackButton()
+        val shape = app.n_zik.android.uiRoundnessShape()
         button.modifier {
             it.offset( 0.dp, 7.dp )
-              .clip( CircleShape )
+              .clip( shape )
               .padding( top = 12.dp, bottom = 12.dp )
               .size( 24.dp )
         }
@@ -143,9 +148,10 @@ class VerticalNavigationBar(
     @Composable
     override fun SettingsButton(): NavigationButton {
         val button = super.SettingsButton()
+        val shape = app.n_zik.android.uiRoundnessShape()
         button.modifier {
             it.offset( 0.dp, 7.dp )
-              .clip( CircleShape )
+              .clip( shape )
               .padding( top = 12.dp, bottom = 12.dp )
               .size( 24.dp )
         }
@@ -155,9 +161,10 @@ class VerticalNavigationBar(
     @Composable
     override fun StatsButton(): NavigationButton {
         val button = super.StatsButton()
+        val shape = app.n_zik.android.uiRoundnessShape()
         button.modifier {
             it.offset( 0.dp, 7.dp )
-              .clip( CircleShape )
+              .clip( shape )
               .padding( top = 12.dp, bottom = 12.dp )
               .size( 24.dp )
         }
@@ -167,9 +174,10 @@ class VerticalNavigationBar(
     @Composable
     override fun SearchButton(): NavigationButton {
         val button = super.SearchButton()
+        val shape = app.n_zik.android.uiRoundnessShape()
         button.modifier {
             it.offset( 0.dp, 7.dp )
-                .clip( CircleShape )
+                .clip( shape )
                 .padding( top = 12.dp, bottom = 12.dp )
                 .size( 24.dp )
         }
@@ -260,5 +268,11 @@ class VerticalNavigationBar(
         }
     }
 }
+
+
+
+
+
+
 
 

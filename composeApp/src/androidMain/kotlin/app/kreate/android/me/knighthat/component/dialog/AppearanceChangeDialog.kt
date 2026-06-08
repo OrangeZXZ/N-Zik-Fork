@@ -1,4 +1,6 @@
-package app.kreate.android.me.knighthat.component.dialog
+﻿package app.kreate.android.me.knighthat.component.dialog
+
+import androidx.compose.ui.draw.clip
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,6 +22,7 @@ import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.medium
+import app.n_zik.android.uiRoundnessShape
 
 object AppearanceChangeDialog: ConfirmDialog {
 
@@ -57,10 +60,10 @@ object AppearanceChangeDialog: ConfirmDialog {
                     .border(
                         width = 2.dp,
                         color = colorPalette().accent,
-                        shape = RoundedCornerShape(20)
+                        shape = uiRoundnessShape()
                     )
                     .padding(vertical = 10.dp)
-                    .clickable(onClick = ::onConfirm)
+                    .clip(uiRoundnessShape()).clickable(onClick = ::onConfirm)
             )
         }
     }
@@ -77,4 +80,8 @@ object AppearanceChangeDialog: ConfirmDialog {
         )
     }
 } 
+
+
+
+
 

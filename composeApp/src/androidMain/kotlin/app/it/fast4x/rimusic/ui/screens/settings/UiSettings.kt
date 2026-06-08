@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.settings
+﻿package app.it.fast4x.rimusic.ui.screens.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Spacer
@@ -58,15 +58,12 @@ import app.it.fast4x.rimusic.enums.PlayerControlsType
 import app.it.fast4x.rimusic.enums.PlayerInfoType
 import app.it.fast4x.rimusic.enums.PlayerPlayButtonType
 import app.it.fast4x.rimusic.enums.PlayerPosition
-import app.it.fast4x.rimusic.enums.PlayerThumbnailSize
 import app.it.fast4x.rimusic.enums.PlayerTimelineSize
 import app.it.fast4x.rimusic.enums.PlayerTimelineType
 import app.it.fast4x.rimusic.enums.PlayerType
 import app.it.fast4x.rimusic.enums.PlaylistSwipeAction
 import app.it.fast4x.rimusic.enums.QueueSwipeAction
 import app.it.fast4x.rimusic.enums.QueueType
-
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.ThumbnailType
 import app.it.fast4x.rimusic.enums.TransitionEffect
 import app.it.fast4x.rimusic.enums.UiType
@@ -130,7 +127,8 @@ import app.it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
 import app.it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import app.it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import app.it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
-import app.it.fast4x.rimusic.utils.lastPlayerThumbnailSizeKey
+import app.it.fast4x.rimusic.utils.thumbnailSizeDpKey
+import app.it.fast4x.rimusic.utils.lastThumbnailSizeDpKey
 import app.it.fast4x.rimusic.utils.lastPlayerTimelineTypeKey
 import app.it.fast4x.rimusic.utils.maxSongsInQueueKey
 
@@ -152,7 +150,6 @@ import app.it.fast4x.rimusic.utils.playerInfoTypeKey
 import app.it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import app.it.fast4x.rimusic.utils.playerPositionKey
 import app.it.fast4x.rimusic.utils.playerSwapControlsWithTimelineKey
-import app.it.fast4x.rimusic.utils.playerThumbnailSizeKey
 import app.it.fast4x.rimusic.utils.playerTimelineSizeKey
 import app.it.fast4x.rimusic.utils.playerTimelineTypeKey
 import app.it.fast4x.rimusic.utils.playerTypeKey
@@ -199,7 +196,6 @@ import app.it.fast4x.rimusic.utils.skipMediaOnErrorKey
 import app.it.fast4x.rimusic.utils.skipSilenceKey
 import app.it.fast4x.rimusic.utils.swipeUpQueueKey
 import app.it.fast4x.rimusic.utils.tapqueueKey
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import app.it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import app.it.fast4x.rimusic.utils.thumbnailTypeKey
 import app.it.fast4x.rimusic.utils.transitionEffectKey
@@ -212,6 +208,7 @@ import app.kreate.android.me.knighthat.component.dialog.RestartAppDialog
 import app.kreate.android.me.knighthat.component.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.it.fast4x.rimusic.enums.SearchDisplayOrder
+import app.it.fast4x.rimusic.utils.lastThumbnailSizeDpKey
 import app.it.fast4x.rimusic.utils.searchDisplayOrderKey
 
 @Composable
@@ -248,8 +245,8 @@ fun DefaultUiSettings() {
     disableIconButtonOnTop = false
     var lastPlayerTimelineType by rememberPreference(lastPlayerTimelineTypeKey, PlayerTimelineType.Default)
     lastPlayerTimelineType = PlayerTimelineType.Default
-    var lastPlayerThumbnailSize by rememberPreference(lastPlayerThumbnailSizeKey, PlayerThumbnailSize.Medium)
-    lastPlayerThumbnailSize = PlayerThumbnailSize.Medium
+    var lastThumbnailSizeDp by rememberPreference(lastThumbnailSizeDpKey, 30f)
+    lastThumbnailSizeDp = 30f
     var uiType  by rememberPreference(UiTypeKey, UiType.RiMusic)
     uiType = UiType.RiMusic
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
@@ -290,11 +287,6 @@ fun DefaultUiSettings() {
     pauseBetweenSongs = PauseBetweenSongs.`0`
     var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
     maxSongsInQueue = MaxSongs.`500`
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
-    thumbnailRoundness = ThumbnailRoundness.Medium
     var showFavoritesPlaylist by rememberPreference(showFavoritesPlaylistKey, true)
     showFavoritesPlaylist = true
 
@@ -400,11 +392,11 @@ fun DefaultUiSettings() {
     thumbnailType = ThumbnailType.Modern
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
     playerTimelineType = PlayerTimelineType.Wavy
-    var playerThumbnailSize by rememberPreference(
-        playerThumbnailSizeKey,
-        PlayerThumbnailSize.Biggest
+    var thumbnailSizeDp by rememberPreference(
+        thumbnailSizeDpKey,
+        0f
     )
-    playerThumbnailSize = PlayerThumbnailSize.Biggest
+    thumbnailSizeDp = 0f
     var playerTimelineSize by rememberPreference(
         playerTimelineSizeKey,
         PlayerTimelineSize.Biggest
@@ -538,7 +530,7 @@ fun UiSettings(
 
     var disableIconButtonOnTop by rememberPreference(disableIconButtonOnTopKey, false)
     var lastPlayerTimelineType by rememberPreference(lastPlayerTimelineTypeKey, PlayerTimelineType.Default)
-    var lastPlayerThumbnailSize by rememberPreference(lastPlayerThumbnailSizeKey, PlayerThumbnailSize.Medium)
+    var lastThumbnailSizeDp by rememberPreference(lastThumbnailSizeDpKey, 30f)
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
 
     var lastPlayerPlayButtonType by rememberPreference(lastPlayerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
@@ -619,9 +611,9 @@ fun UiSettings(
     var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
     var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
-    var playerThumbnailSize by rememberPreference(
-        playerThumbnailSizeKey,
-        PlayerThumbnailSize.Medium
+    var thumbnailSizeDp by rememberPreference(
+        thumbnailSizeDpKey,
+        30f
     )
     var playerTimelineSize by rememberPreference(
         playerTimelineSizeKey,
@@ -813,7 +805,7 @@ fun UiSettings(
                                     disableIconButtonOnTop = true
                                     playerTimelineType = PlayerTimelineType.FakeAudioBar
                                     visualizerEnabled = false
-                                    playerThumbnailSize = PlayerThumbnailSize.Medium
+                                    thumbnailSizeDp = 30f
                                     thumbnailTapEnabled = true
                                     showSearchTab = true
                                     showStatsInNavbar = true
@@ -866,7 +858,7 @@ fun UiSettings(
                                     disablePlayerHorizontalSwipe = false
                                     disableIconButtonOnTop = false
                                     playerTimelineType = lastPlayerTimelineType
-                                    playerThumbnailSize = lastPlayerThumbnailSize
+                                    thumbnailSizeDp = lastThumbnailSizeDp
                                     playerPlayButtonType = lastPlayerPlayButtonType
                                     navigationBarPosition = NavigationBarPosition.Bottom
                                 }
@@ -1623,6 +1615,8 @@ fun UiSettings(
         )
     }
 }
+
+
 
 
 

@@ -1,4 +1,6 @@
-package app.it.fast4x.rimusic.extensions.games.pacman.ui.theme
+﻿package app.it.fast4x.rimusic.extensions.games.pacman.ui.theme
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.size
@@ -12,9 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 val Shapes = Shapes(
-    small = RoundedCornerShape(4.dp),
-    medium = RoundedCornerShape(4.dp),
-    large = RoundedCornerShape(0.dp)
+    small = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
+    medium = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
+    large = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
 )
 
 @Composable
@@ -37,5 +39,7 @@ fun MyStarTrek() {
         modifier = Modifier.size(100.dp)
     ) { }
 }
+
+
 
 

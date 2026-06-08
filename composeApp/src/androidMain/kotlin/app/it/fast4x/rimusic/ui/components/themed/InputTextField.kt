@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
+
+import androidx.compose.foundation.clickable
+
+import androidx.compose.ui.draw.clip
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +35,7 @@ import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.textCopyFromClipboard
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 inline fun InputTextField(
@@ -57,7 +62,7 @@ inline fun InputTextField(
     Column(
         modifier = modifier
             .padding(all = 10.dp)
-            .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
+            .background(color = colorPalette().background1, shape = uiRoundnessShape())
             .padding(vertical = 16.dp)
             .defaultMinSize(Dp.Unspecified, 190.dp)
     ) {
@@ -98,7 +103,7 @@ inline fun InputTextField(
                             modifier = Modifier
                                 .width(30.dp)
                                 .height(30.dp)
-                                .clickable(
+                                .clip(uiRoundnessShape()).clickable(
                                     indication = rememberRipple(bounded = false),
                                     interactionSource = remember { MutableInteractionSource() },
                                     enabled = true,
@@ -156,6 +161,9 @@ inline fun InputTextField(
 
 
 }
+
+
+
 
 
 

@@ -1,5 +1,7 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+﻿@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.screens.player.components.controls
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.CircularWavyProgressIndicator
@@ -145,7 +147,7 @@ fun InfoAlbumAndArtistEssential(
 
 
             var modifierTitle = Modifier
-                .combinedClickable (
+                .clip(uiRoundnessShape()).combinedClickable (
                     indication = ripple(bounded = true),
                     interactionSource = remember { MutableInteractionSource() },
                     onClick = {
@@ -309,7 +311,7 @@ fun InfoAlbumAndArtistEssential(
 
 
         var modifierArtist = Modifier
-            .combinedClickable (
+            .clip(uiRoundnessShape()).combinedClickable (
                 indication = ripple(bounded = true),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
@@ -442,7 +444,7 @@ fun ControlsEssential(
         contentDescription = null,
         colorFilter = ColorFilter.tint(colorPalette().text),
         modifier = Modifier
-            .combinedClickable(
+            .clip(uiRoundnessShape()).combinedClickable(
                 indication = ripple(bounded = false),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
@@ -465,7 +467,7 @@ fun ControlsEssential(
 
     Box(
         modifier = Modifier
-            .combinedClickable(
+            .clip(uiRoundnessShape()).combinedClickable(
                 indication = ripple(bounded = false),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
@@ -479,7 +481,7 @@ fun ControlsEssential(
                 onLongClick = onShowSpeedPlayerDialog
             )
             .bounceClick()
-            .clip(RoundedCornerShape(playPauseRoundness))
+            .clip(uiRoundnessShape())
             .background(
                 when (colorPaletteName) {
                     ColorPaletteName.Dynamic, ColorPaletteName.Default,
@@ -575,7 +577,7 @@ fun ControlsEssential(
         contentDescription = null,
         colorFilter = ColorFilter.tint(colorPalette().text),
         modifier = Modifier
-            .combinedClickable(
+            .clip(uiRoundnessShape()).combinedClickable(
                 indication = ripple(bounded = false),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
@@ -598,6 +600,9 @@ fun ControlsEssential(
         modifier = Modifier.size( 26.dp )
     )
 }
+
+
+
 
 
 

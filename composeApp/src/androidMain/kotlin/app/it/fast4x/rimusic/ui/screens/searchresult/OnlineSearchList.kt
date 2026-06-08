@@ -1,4 +1,6 @@
-package app.it.fast4x.rimusic.ui.screens.searchresult
+﻿package app.it.fast4x.rimusic.ui.screens.searchresult
+
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.core.database.*
 
@@ -130,7 +132,7 @@ fun OnlineSearchList(
                         thumbnailHeightDp = 72.dp,
                         modifier = Modifier
                             .background(colorPalette().background0)
-                            .combinedClickable(
+                            .clip(uiRoundnessShape()).combinedClickable(
                                 onLongClick = {
                                     menuState.display {
                                         VideoItemMenu(
@@ -154,7 +156,7 @@ fun OnlineSearchList(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
+                        .clip(uiRoundnessShape()).clickable {
                             when (tabIndex) {
                                 1 -> navController.navigate("${NavRoutes.album.name}/${item.key}")
                                 2 -> navController.navigate("${NavRoutes.artist.name}/${item.key}")
@@ -226,7 +228,7 @@ fun OnlineSearchList(
                                     )
                                 }
                             }
-                            item.description?.split(" • ")?.forEach { segment ->
+                            item.description?.split(" â€¢ ")?.forEach { segment ->
                                 if (segment.isNotBlank()) {
                                     BasicText(
                                         text = segment,
@@ -241,7 +243,7 @@ fun OnlineSearchList(
                             }
                         }
                         if (item is Innertube.ArtistItem) {
-                            item.description?.split(" • ")?.forEach { segment ->
+                            item.description?.split(" â€¢ ")?.forEach { segment ->
                                 if (segment.isNotBlank()) {
                                     BasicText(
                                         text = segment,
@@ -269,7 +271,7 @@ fun OnlineSearchList(
                                 )
                             }
                             if (tabIndex != 5) {
-                                item.description?.split(" • ")?.forEach { segment ->
+                                item.description?.split(" â€¢ ")?.forEach { segment ->
                                     if (segment.isNotBlank()) {
                                         BasicText(
                                             text = segment,
@@ -352,6 +354,8 @@ private fun getItemFrom(tabIndex: Int): (it.fast4x.innertube.models.MusicShelfRe
     3 -> Innertube.VideoItem.Companion::from
     else -> Innertube.PlaylistItem.Companion::from
 }
+
+
 
 
 

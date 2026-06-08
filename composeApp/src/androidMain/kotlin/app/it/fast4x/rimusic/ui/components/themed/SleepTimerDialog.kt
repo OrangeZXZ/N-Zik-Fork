@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,6 +37,7 @@ import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.formatAsDuration
 import app.it.fast4x.rimusic.utils.semiBold
+import app.n_zik.android.uiRoundnessShape
 
 private const val MINUTES_TO_MILLIS = 60 * 1000L
 private const val STEP_MINUTES = 5
@@ -76,7 +77,7 @@ fun SleepTimerDialog(
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
                         .padding(16.dp),
-                    shape = RoundedCornerShape(16.dp),
+                    shape = uiRoundnessShape(),
                     colors = CardDefaults.cardColors(
                         containerColor = colorPalette.background1
                     ),
@@ -114,7 +115,7 @@ fun SleepTimerDialog(
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier
                                         .alpha(if (amount <= 1) 0.5f else 1f)
-                                        .clip(CircleShape)
+                                        .clip(uiRoundnessShape())
                                         .clickable(enabled = amount > 1) { amount-- }
                                         .size(48.dp)
                                         .background(colorPalette.background0)
@@ -132,7 +133,7 @@ fun SleepTimerDialog(
                                             formatAsDuration(sleepTimeMillis)
                                         ),
                                         style = typography().s.semiBold.copy(color = colorPalette.text),
-                                        modifier = Modifier.clickable {
+                                        modifier = Modifier.clip(uiRoundnessShape()).clickable {
                                             showCircularSlider = !showCircularSlider
                                         }
                                     )
@@ -142,7 +143,7 @@ fun SleepTimerDialog(
                                     contentAlignment = Alignment.Center,
                                     modifier = Modifier
                                         .alpha(if (amount >= MAX_SLIDER_VALUE.toInt()) 0.5f else 1f)
-                                        .clip(CircleShape)
+                                        .clip(uiRoundnessShape())
                                         .clickable(enabled = amount < MAX_SLIDER_VALUE.toInt()) { amount++ }
                                         .size(48.dp)
                                         .background(colorPalette.background0)
@@ -198,7 +199,7 @@ fun SleepTimerDialog(
                                     containerColor = colorPalette.background2,
                                     contentColor = colorPalette.text
                                 ),
-                                shape = RoundedCornerShape(12.dp)
+                                shape = uiRoundnessShape()
                             ) {
                                 androidx.compose.material3.Text(
                                     text = stringResource(R.string.cancel),
@@ -217,7 +218,7 @@ fun SleepTimerDialog(
                                     containerColor = colorPalette.accent,
                                     contentColor = colorPalette.textSecondary
                                 ),
-                                shape = RoundedCornerShape(12.dp)
+                                shape = uiRoundnessShape()
                             ) {
                                 androidx.compose.material3.Text(
                                     text = stringResource(R.string.confirm),
@@ -231,6 +232,10 @@ fun SleepTimerDialog(
         }
     }
 }
+
+
+
+
 
 
 

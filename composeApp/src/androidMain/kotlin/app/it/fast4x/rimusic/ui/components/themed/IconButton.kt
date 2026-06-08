@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -53,7 +57,7 @@ fun IconButton(
         contentDescription = null,
         colorFilter = ColorFilter.tint(color),
         modifier = Modifier
-            .clickable(
+            .clip(uiRoundnessShape()).clickable(
                 indication = indication ?: ripple(bounded = false),
                 interactionSource = remember { MutableInteractionSource() },
                 enabled = enabled,
@@ -62,6 +66,9 @@ fun IconButton(
             .then(modifier)
     )
 }
+
+
+
 
 
 

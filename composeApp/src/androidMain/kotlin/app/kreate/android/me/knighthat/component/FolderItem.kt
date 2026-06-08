@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component
+﻿package app.kreate.android.me.knighthat.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +23,7 @@ import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.styling.Dimensions
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 fun FolderItem(
@@ -35,9 +36,9 @@ fun FolderItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy( 12.dp ),
         modifier = modifier.fillMaxWidth()
-                           .clip( RoundedCornerShape(10.dp) )
+                           .clip( uiRoundnessShape() )
                            .background( backgroundColor )
-                           .clickable( onClick = onClick )
+                           .clip(uiRoundnessShape()).clickable( onClick = onClick )
                            .padding(
                                vertical = Dimensions.itemsVerticalPadding,
                                horizontal = 16.dp
@@ -61,4 +62,7 @@ fun FolderItem(
         )
     }
 }
+
+
+
 

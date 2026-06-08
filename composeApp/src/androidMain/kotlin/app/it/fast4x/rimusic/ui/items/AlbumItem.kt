@@ -1,4 +1,4 @@
-@file:UnstableApi
+﻿@file:UnstableApi
 package app.it.fast4x.rimusic.ui.items
 
 import androidx.annotation.OptIn
@@ -36,7 +36,6 @@ import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.models.Album
 import app.n_zik.android.thumbnailShape
 import app.n_zik.android.typography
@@ -48,8 +47,8 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.shimmerEffect
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import app.n_zik.android.core.coil.ImageCacheFactory
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 fun AlbumItem(
@@ -240,8 +239,7 @@ fun AlbumPlaceholder(
 ) {
     val thumbnailSizeDp = Dimensions.thumbnails.album
 
-    val thumbnailRoundness by rememberPreference( thumbnailRoundnessKey, ThumbnailRoundness.Medium )
-
+    
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy( 12.dp ),
@@ -257,7 +255,7 @@ fun AlbumPlaceholder(
         Row( Modifier.fillMaxWidth() ) {
             Box(
                 Modifier.size( thumbnailSizeDp )
-                        .clip( thumbnailRoundness.shape )
+                        .clip( app.n_zik.android.thumbnailShape() )
                         .shimmerEffect()
             )
         }
@@ -265,7 +263,7 @@ fun AlbumPlaceholder(
         Row(
             Modifier.padding( top = 4.dp )
                     .fillMaxWidth( .7f )
-                    .clip( RoundedCornerShape(25) )
+                    .clip( uiRoundnessShape() )
         ) {
             // Title with shimmer effect
             BasicText(
@@ -281,7 +279,7 @@ fun AlbumPlaceholder(
             Row(
                 Modifier.padding( top = 4.dp )
                         .fillMaxWidth( .3f )
-                        .clip( RoundedCornerShape(25) )
+                        .clip( uiRoundnessShape() )
             ) {
                 // Year (if enabled) with shimmer effect
                 BasicText(
@@ -325,7 +323,7 @@ fun AlbumItemGridPlaceholder(
                         .padding(top = 8.dp)
                         .width((thumbnailSizeDp - 8.dp) * 0.8f)
                         .height(12.dp)
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(uiRoundnessShape())
                         .shimmerEffect()
                 )
                 Box(
@@ -333,7 +331,7 @@ fun AlbumItemGridPlaceholder(
                         .padding(top = 4.dp)
                         .width((thumbnailSizeDp - 8.dp) * 0.4f)
                         .height(10.dp)
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(uiRoundnessShape())
                         .shimmerEffect()
                 )
             }
@@ -367,18 +365,20 @@ fun AlbumItemListPlaceholder(
                 Modifier
                     .fillMaxWidth()
                     .height(16.dp)
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(uiRoundnessShape())
                     .shimmerEffect()
             )
             Box(
                 Modifier
                     .fillMaxWidth(0.6f)
                     .height(12.dp)
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(uiRoundnessShape())
                     .shimmerEffect()
             )
         }
     }
 }
+
+
 
 

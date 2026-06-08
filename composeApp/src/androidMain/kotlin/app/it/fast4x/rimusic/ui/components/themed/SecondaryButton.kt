@@ -1,4 +1,6 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -26,7 +28,7 @@ fun SecondaryCircleButton(
 ) {
     Box(
         modifier = modifier
-            .clip(CircleShape)
+            .clip(uiRoundnessShape())
             .clickable(enabled = enabled, onClick = onClick)
             .background(colorPalette().primaryButton)
             .size(36.dp)
@@ -51,7 +53,7 @@ fun SecondaryButton(
 ) {
     Box(
         modifier = modifier
-            //.clip(CircleShape)
+            //.clip(uiRoundnessShape())
             .clickable(enabled = enabled, onClick = onClick)
             //.background(colorPalette.primaryButton)
             .size(36.dp)
@@ -66,6 +68,9 @@ fun SecondaryButton(
         )
     }
 }
+
+
+
 
 
 

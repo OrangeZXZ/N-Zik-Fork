@@ -1,5 +1,9 @@
 package app.it.fast4x.rimusic.ui.components.navigation.nav
 
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
+
 import androidx.compose.runtime.staticCompositionLocalOf
 
 import android.annotation.SuppressLint
@@ -105,5 +109,3 @@ internal class NavigationButton(
         super.Draw()
     }
 }
-
-

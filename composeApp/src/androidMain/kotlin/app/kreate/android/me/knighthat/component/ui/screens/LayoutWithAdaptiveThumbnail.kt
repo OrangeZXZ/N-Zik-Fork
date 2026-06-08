@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.ui.screens
+﻿package app.kreate.android.me.knighthat.component.ui.screens
 
 
 import androidx.compose.foundation.Image
@@ -15,10 +15,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.painter.Painter
 
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.rememberPreference
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import app.n_zik.android.thumbnailShape
 
 /**
  * A layout that presents differently based on the
@@ -44,16 +43,14 @@ fun DynamicOrientationLayout(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxWidth( .5f )
             ) {
-                val roundness by rememberPreference(
-                    thumbnailRoundnessKey, ThumbnailRoundness.Heavy
-                )
+                
                 Image(
                     painter = thumbnail,
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier.fillMaxSize( .5f )
                         .aspectRatio( 1f )
-                        .clip( roundness.shape )
+                        .clip( thumbnailShape() )
                 )
             }
             content()
@@ -61,5 +58,7 @@ fun DynamicOrientationLayout(
     else
         content()
 }
+
+
 
 

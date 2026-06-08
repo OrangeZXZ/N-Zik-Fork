@@ -1,4 +1,6 @@
-package app.it.fast4x.rimusic.ui.screens.home
+﻿package app.it.fast4x.rimusic.ui.screens.home
+
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.core.database.*
 
@@ -147,7 +149,7 @@ fun HomeStatistics(
                     alternative = true,
                     modifier = Modifier
                         .clip(thumbnailShape())
-                        .clickable(onClick = { onStatisticsType(StatisticsType.Today) })
+                        .clip(uiRoundnessShape()).clickable(onClick = { onStatisticsType(StatisticsType.Today) })
                         .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
@@ -163,7 +165,7 @@ fun HomeStatistics(
                     alternative = true,
                     modifier = Modifier
                         .clip(thumbnailShape())
-                        .clickable(onClick = { onStatisticsType(StatisticsType.OneWeek) })
+                        .clip(uiRoundnessShape()).clickable(onClick = { onStatisticsType(StatisticsType.OneWeek) })
                         .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
@@ -179,7 +181,7 @@ fun HomeStatistics(
                     alternative = true,
                     modifier = Modifier
                         .clip(thumbnailShape())
-                        .clickable(onClick = { onStatisticsType(StatisticsType.OneMonth) })
+                        .clip(uiRoundnessShape()).clickable(onClick = { onStatisticsType(StatisticsType.OneMonth) })
                         .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
@@ -195,7 +197,7 @@ fun HomeStatistics(
                     alternative = true,
                     modifier = Modifier
                         .clip(thumbnailShape())
-                        .clickable(onClick = { onStatisticsType(StatisticsType.ThreeMonths) })
+                        .clip(uiRoundnessShape()).clickable(onClick = { onStatisticsType(StatisticsType.ThreeMonths) })
                         .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
@@ -211,7 +213,7 @@ fun HomeStatistics(
                     alternative = true,
                     modifier = Modifier
                         .clip(thumbnailShape())
-                        .clickable(onClick = { onStatisticsType(StatisticsType.SixMonths) })
+                        .clip(uiRoundnessShape()).clickable(onClick = { onStatisticsType(StatisticsType.SixMonths) })
                         .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
@@ -227,7 +229,7 @@ fun HomeStatistics(
                     alternative = true,
                     modifier = Modifier
                         .clip(thumbnailShape())
-                        .clickable(onClick = { onStatisticsType(StatisticsType.OneYear) })
+                        .clip(uiRoundnessShape()).clickable(onClick = { onStatisticsType(StatisticsType.OneYear) })
                         .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
@@ -243,7 +245,7 @@ fun HomeStatistics(
                     alternative = true,
                     modifier = Modifier
                         .clip(thumbnailShape())
-                        .clickable(onClick = { onStatisticsType(StatisticsType.All) })
+                        .clip(uiRoundnessShape()).clickable(onClick = { onStatisticsType(StatisticsType.All) })
                         .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
@@ -258,6 +260,8 @@ fun HomeStatistics(
             )
     }
 }
+
+
 
 
 

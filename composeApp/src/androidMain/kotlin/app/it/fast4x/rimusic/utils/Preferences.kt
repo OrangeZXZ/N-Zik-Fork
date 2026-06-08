@@ -21,6 +21,7 @@ const val saveVisualizerStateKey = "saveVisualizerStateKey"
 const val saveLyricsStateKey = "saveLyricsStateKey"
 const val filterContentTypeKey = "filterContentType"
 const val lastPlayerThumbnailSizeKey = "lastPlayerThumbnailSize"
+const val lastThumbnailSizeDpKey = "lastThumbnailSizeDp"
 const val lastPlayerPlayButtonTypeKey = "lastPlayerPlayButtonType"
 const val lastPlayerTimelineTypeKey = "lastPlayerTimelineType"
 const val lastPlayerVisualizerTypeKey = "lastPlayerVisualizerType"
@@ -685,4 +686,10 @@ inline fun <T> mutableStatePreferenceOf(
             }
         })
 
+
+
+const val thumbnailSizeDpKey = "thumbnailSizeDpKey"
+const val thumbnailSizeLDpKey = "thumbnailSizeLDpKey"
+const val thumbnailRoundnessDpKey = "thumbnailRoundnessDpKey"
+const val uiRoundnessDpKey = "uiRoundnessDpKey"
 

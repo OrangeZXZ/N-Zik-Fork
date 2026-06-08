@@ -1,4 +1,8 @@
-package app.kreate.android.themed.rimusic.screen.artist
+﻿package app.kreate.android.themed.rimusic.screen.artist
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -109,7 +113,7 @@ fun ArtistVideos(
                             thumbnailHeightDp = thumbnailHeightDp,
                             modifier = Modifier
                                 .background(colorPalette().background0)
-                                .combinedClickable(
+                                .clip(uiRoundnessShape()).combinedClickable(
                                     onLongClick = {
                                         menuState.display {
                                             VideoItemMenu(
@@ -159,5 +163,8 @@ fun ArtistVideos(
         )
     }
 }
+
+
+
 
 

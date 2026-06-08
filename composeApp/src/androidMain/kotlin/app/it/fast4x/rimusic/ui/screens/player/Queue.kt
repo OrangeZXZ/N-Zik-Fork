@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.player
+﻿package app.it.fast4x.rimusic.ui.screens.player
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 
 import android.annotation.SuppressLint
@@ -447,7 +451,7 @@ fun Queue(
 
             Box(
                 modifier = Modifier.fillMaxWidth()
-                                   .clickable { onDismiss( repeat.type ) }
+                                   .clip(uiRoundnessShape()).clickable { onDismiss( repeat.type ) }
                                    .background (colorPalette().background1 )
                                    .height( 60.dp ) //bottom bar queue
             ) {
@@ -537,6 +541,9 @@ fun Queue(
         )
     }
 }
+
+
+
 
 
 

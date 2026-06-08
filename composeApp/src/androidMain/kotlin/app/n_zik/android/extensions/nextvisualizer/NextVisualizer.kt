@@ -1,4 +1,8 @@
-package app.n_zik.android.extensions.nextvisualizer
+﻿package app.n_zik.android.extensions.nextvisualizer
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import android.Manifest
 import android.content.Intent
@@ -229,7 +233,7 @@ fun NextVisualizer() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clickable(
+                    .clip(uiRoundnessShape()).clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ) { controlsTimerKey++ }
@@ -401,5 +405,8 @@ fun createVisualizersList(background: Bitmap, circleBitmap: Bitmap, color: Int):
         )
     )
 }
+
+
+
 
 

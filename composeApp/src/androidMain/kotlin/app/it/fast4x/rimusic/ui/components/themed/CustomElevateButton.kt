@@ -1,4 +1,6 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
+
+import androidx.compose.foundation.clickable
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
@@ -17,13 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import app.it.fast4x.rimusic.utils.doubleShadowDrop
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 fun CustomElevatedButton(
     onClick: () -> Unit,
     backgroundColor: Color,
     modifier: Modifier = Modifier,
-    shape: Shape = RoundedCornerShape(8.dp),
+    shape: Shape = uiRoundnessShape(),
     content: @Composable BoxScope.() -> Unit
 ) {
     val interSource = remember { MutableInteractionSource() }
@@ -46,7 +49,7 @@ fun CustomElevatedButton(
             .background(backgroundColor, shape)
             .clip(shape),
             /*
-            .clickable(
+            .clip(uiRoundnessShape()).clickable(
                 interactionSource = interSource,
                 indication = LocalIndication.current,
                 onClick = onClick
@@ -56,6 +59,9 @@ fun CustomElevatedButton(
         content = content
     )
 }
+
+
+
 
 
 

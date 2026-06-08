@@ -11,6 +11,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Alignment
+import app.n_zik.android.uiRoundnessShape
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import app.it.fast4x.rimusic.utils.logDebugEnabledKey
@@ -25,7 +31,13 @@ internal fun HeaderIcon(
     size: Dp = 24.dp,
     onClick: () -> Unit
 ) {
-    IconButton( onClick ) {
+    Box(
+        modifier = Modifier
+            .size(48.dp)
+            .clip(uiRoundnessShape())
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
         Icon(
             imageVector = ImageVector.vectorResource( iconId ),
             contentDescription = null,
@@ -65,5 +77,6 @@ internal class AppBar {
             }
     }
 }
+
 
 

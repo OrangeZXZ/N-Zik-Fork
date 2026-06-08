@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.home
+﻿package app.it.fast4x.rimusic.ui.screens.home
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.core.database.*
 
@@ -268,7 +272,7 @@ fun HomeArtists(
                                             modifier = Modifier
                                                 .align(Alignment.CenterVertically)
                                                 .padding(end = 5.dp)
-                                                .clickable {
+                                                .clip(uiRoundnessShape()).clickable {
                                                     menuState.display {
                                                         FilterMenu(
                                                             title = stringResource(R.string.filter_by),
@@ -289,7 +293,7 @@ fun HomeArtists(
                                             onClick = {},
                                             modifier = Modifier
                                                 .offset(0.dp, 2.5.dp)
-                                                .clickable(
+                                                .clip(uiRoundnessShape()).clickable(
                                                     interactionSource = remember { MutableInteractionSource() },
                                                     indication = null,
                                                     onClick = {}
@@ -307,7 +311,7 @@ fun HomeArtists(
                             thumbnailSizePx = itemSize.size.px,
                             alternative = true,
                             modifier = Modifier.animateItem( fadeInSpec = null, fadeOutSpec = null )
-                                               .clickable(onClick = {
+                                               .clip(uiRoundnessShape()).clickable(onClick = {
                                                    search.hideIfEmpty()
                                                    onArtistClick( artist )
                                                }),
@@ -346,6 +350,9 @@ fun HomeArtists(
         }
     }
 }
+
+
+
 
 
 

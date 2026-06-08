@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.extensions.games.snake
+﻿package app.it.fast4x.rimusic.extensions.games.snake
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
 import kotlinx.coroutines.delay
 import kotlin.random.Random
+import app.n_zik.android.uiRoundnessShape
 
 data class Cell(val x: Int, val y: Int)
 
@@ -230,7 +231,7 @@ fun ControlButton(
     IconButton(
         modifier = Modifier
             .clip(
-                RoundedCornerShape(20.dp)
+                uiRoundnessShape()
             )
             .background(color = Color.LightGray),
         onClick = onClick
@@ -279,5 +280,6 @@ fun checkGameOver(snake: List<Cell>, gridSize: Int): Boolean {
     val head = snake.first()
     return head in snake.drop(1) || head.x < 0 || head.y < 0 || head.x >= gridSize || head.y >= gridSize
 }
+
 
 

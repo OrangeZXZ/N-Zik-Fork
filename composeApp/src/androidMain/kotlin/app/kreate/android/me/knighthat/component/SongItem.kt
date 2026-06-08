@@ -1,7 +1,8 @@
-@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+﻿@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.kreate.android.me.knighthat.component
 
 import app.n_zik.android.core.database.*
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -87,6 +88,7 @@ import kotlinx.coroutines.Dispatchers
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.kreate.android.me.knighthat.component.menu.song.SongItemMenu
 import app.kreate.android.me.knighthat.component.tab.ItemSelector
+import app.n_zik.android.uiRoundnessShape
 
 
 private interface SongIndicator: Icon {
@@ -103,7 +105,7 @@ private interface SongIndicator: Icon {
     override fun ToolBarButton() {
         val modifier = this.modifier
                                      .size(sizeDp)
-                                     .combinedClickable(
+                                     .clip(uiRoundnessShape()).combinedClickable(
                                          onClick = ::onShortClick,
                                          onLongClick = {
                                              if(this is Clickable)
@@ -184,14 +186,14 @@ fun SongItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy( 12.dp ),
         modifier = modifier.fillMaxWidth()
-                           .clip( RoundedCornerShape(10.dp) )
+                           .clip( uiRoundnessShape() )
                            .background( backgroundColor )
                            .conditional( isPlaying ) {
                                background( colorPalette.favoritesOverlay )
                            }
                            // This component must be placed before padding to prevent
                            // ripple effect to only highlight padded area
-                           .combinedClickable(
+                           .clip(uiRoundnessShape()).combinedClickable(
                                onClick = onClick,
                                onLongClick = {
                                    hapticFeedback.performHapticFeedback( HapticFeedbackType.LongPress )
@@ -335,7 +337,7 @@ fun SongItem(
                         Box(
                             modifier = Modifier
                                 .size(20.dp)
-                                .clickable {
+                                .clip(uiRoundnessShape()).clickable {
                                     binder?.cache?.removeResource( song.id )
                                     Database.asyncTransaction {
                                         formatTable.deleteBySongId( song.id )
@@ -414,6 +416,9 @@ fun SongItem(
         trailingContent?.invoke( this )
     }
 }
+
+
+
 
 
 

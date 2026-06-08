@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.components
+﻿package app.it.fast4x.rimusic.ui.components
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
@@ -97,7 +101,7 @@ fun BottomSheet(
                     .graphicsLayer {
                         alpha = 1f - (state.progress * 16).coerceAtMost(1f)
                     }
-                    .clickable(onClick = {
+                    .clip(uiRoundnessShape()).clickable(onClick = {
                         if (!disableVerticalDrag) state.expandSoft()
                     })
                     .fillMaxWidth()
@@ -310,6 +314,9 @@ fun rememberBottomSheetState(
         )
     }
 }
+
+
+
 
 
 

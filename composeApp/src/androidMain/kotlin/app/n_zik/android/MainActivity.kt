@@ -123,7 +123,6 @@ import app.it.fast4x.rimusic.enums.LogType
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.PipModule
 import app.it.fast4x.rimusic.enums.PlayerBackgroundColors
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.extensions.pip.PipEventContainer
 import app.it.fast4x.rimusic.extensions.pip.PipModuleContainer
 import app.it.fast4x.rimusic.extensions.pip.PipModuleCover
@@ -217,7 +216,7 @@ import app.it.fast4x.rimusic.utils.showSearchTabKey
 import app.it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import app.it.fast4x.rimusic.utils.textCopyToClipboard
 import app.n_zik.android.core.coil.*
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
+import app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey
 import app.it.fast4x.rimusic.utils.transitionEffectKey
 import app.it.fast4x.rimusic.utils.useSystemFontKey
 import kotlinx.coroutines.Dispatchers
@@ -238,6 +237,7 @@ import java.util.Locale
 import java.util.Objects
 import kotlin.math.sqrt
 import kotlin.system.exitProcess
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 @UnstableApi
 class MainActivity :
@@ -527,8 +527,8 @@ class MainActivity :
                     val colorPaletteName =
                         getEnum(colorPaletteNameKey, ColorPaletteName.Dynamic)
                     val colorPaletteMode = getEnum(colorPaletteModeKey, ColorPaletteMode.Dark)
-                    val thumbnailRoundness =
-                        getEnum(thumbnailRoundnessKey, ThumbnailRoundness.Heavy)
+                    val thumbnailRoundnessDp = getFloat(thumbnailRoundnessDpKey, 9f)
+                    val uiRoundnessDp = getFloat("uiRoundnessDpKey", 20f)
                     val useSystemFont = getBoolean(useSystemFontKey, false)
                     val applyFontPadding = getBoolean(applyFontPaddingKey, false)
 
@@ -561,7 +561,8 @@ class MainActivity :
                                 applyFontPadding,
                                 fontType
                             ),
-                            thumbnailShape = thumbnailRoundness.shape
+                            thumbnailShape = if (thumbnailRoundnessDp >= 36f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(thumbnailRoundnessDp.dp),
+                            uiRoundnessShape = RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(uiRoundnessDp.dp, 0.4f))
                         )
                     )
                 }
@@ -844,12 +845,19 @@ class MainActivity :
                                 }
                             }
 
-                            thumbnailRoundnessKey -> {
-                                val thumbnailRoundness =
-                                    sharedPreferences.getEnum(key, ThumbnailRoundness.Heavy)
+                            app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey -> {
+                                val thumbnailRoundnessDp =
+                                    sharedPreferences.getFloat(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 9f)
 
                                 appearance = appearance.copy(
-                                    thumbnailShape = thumbnailRoundness.shape
+                                    thumbnailShape = if (thumbnailRoundnessDp >= 36f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(thumbnailRoundnessDp.dp)
+                                )
+                            }
+
+                            "uiRoundnessDpKey" -> {
+                                val uiRoundnessDp = sharedPreferences.getFloat(key, 20f)
+                                appearance = appearance.copy(
+                                    uiRoundnessShape = RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(uiRoundnessDp.dp, 0.4f))
                                 )
                             }
 
@@ -1048,10 +1056,7 @@ class MainActivity :
                             checkIfAppIsRunningInBackground()
 
 
-                            val thumbnailRoundness by rememberPreference(
-                                thumbnailRoundnessKey,
-                                ThumbnailRoundness.Medium
-                            )
+                            
 
                             val isVideo = binder?.player?.currentMediaItem?.isVideo ?: false
                             val isVideoEnabled =
@@ -1096,7 +1101,7 @@ class MainActivity :
                                             shape = thumbnailShape()
                                         ) {}
                                     },
-                                    shape = thumbnailRoundness.shape
+                                    shape = app.n_zik.android.thumbnailShape()
                                 ) {
                                     Player( navController ) { 
                                         showPlayer = false
@@ -1119,7 +1124,7 @@ class MainActivity :
                                         shape = thumbnailShape()
                                     ) {}
                                 },
-                                shape = thumbnailRoundness.shape
+                                shape = app.n_zik.android.thumbnailShape()
                             ) {
                                 youtubePlayer()
                             }
@@ -1137,7 +1142,7 @@ class MainActivity :
                                         //shape = thumbnailShape
                                     ) {}
                                 },
-                                shape = thumbnailRoundness.shape
+                                shape = app.n_zik.android.thumbnailShape()
                             ) {
                                 menuState.content()
                             }
@@ -1412,6 +1417,10 @@ val LocalPlayerSheetState =
     staticCompositionLocalOf<SheetState> { error("No player sheet state provided") }
 
 //val LocalInternetConnected = staticCompositionLocalOf<Boolean> { error("No Network Status provided") }
+
+
+
+
 
 
 

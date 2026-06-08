@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.newreleases
+﻿package app.it.fast4x.rimusic.ui.screens.newreleases
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.core.database.*
 
@@ -142,7 +146,7 @@ fun NewAlbumsFromArtists(
                             thumbnailSizePx = thumbnailSizePx,
                             thumbnailSizeDp = thumbnailSizeDp,
                             alternative = true,
-                            modifier = Modifier.clickable(onClick = {
+                            modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
                                 navController.navigate(route = "${NavRoutes.album.name}/${it.key}")
                             }),
                             disableScrollingText = disableScrollingText
@@ -171,6 +175,9 @@ fun NewAlbumsFromArtists(
         }
     }
 }
+
+
+
 
 
 

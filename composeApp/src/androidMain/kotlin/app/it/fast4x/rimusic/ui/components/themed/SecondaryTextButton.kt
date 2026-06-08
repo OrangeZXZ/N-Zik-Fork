@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +13,7 @@ import app.it.fast4x.rimusic.ui.styling.primaryButton
 import app.it.fast4x.rimusic.utils.medium
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 fun SecondaryTextButton(
@@ -26,14 +27,17 @@ fun SecondaryTextButton(
         text = text,
         style = typography().xxs.medium,
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .clickable(enabled = enabled, onClick = onClick)
+            .clip(uiRoundnessShape())
+            .clip(uiRoundnessShape()).clickable(enabled = enabled, onClick = onClick)
             .background(if (alternative) colorPalette().background0 else colorPalette().primaryButton)
             .padding(all = 8.dp)
             .padding(horizontal = 8.dp)
 
     )
 }
+
+
+
 
 
 

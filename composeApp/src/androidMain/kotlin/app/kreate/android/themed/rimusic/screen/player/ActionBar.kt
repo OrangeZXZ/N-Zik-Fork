@@ -1,6 +1,7 @@
-package app.kreate.android.themed.rimusic.screen.player
+﻿package app.kreate.android.themed.rimusic.screen.player
 
 import app.n_zik.android.core.database.*
+import app.n_zik.android.uiRoundnessShape
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -135,6 +136,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.kreate.android.me.knighthat.utils.Toaster
+import app.n_zik.android.uiRoundnessShape
 
 private class PagerViewPort(
     private val showSongsState: MutableState<SongsNumber>,
@@ -193,7 +195,7 @@ fun BoxScope.ActionBar(
                            .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
                            .requiredHeight(if (showNextSongsInPlayer && (showLyricsThumbnail || (!isShowingLyrics || miniQueueExpanded))) 90.dp else 50.dp)
                            .fillMaxWidth(if (isLandscape) 0.8f else 1f)
-                           .clickable( enabled = tapQueue ) {
+                           .clip(uiRoundnessShape()).clickable( enabled = tapQueue ) {
                                showQueue = true
                            }
                            .background(
@@ -208,9 +210,9 @@ fun BoxScope.ActionBar(
                                        else
                                            0.7f // 0.0 > 0.1
                                ),
-                               shape = if (isLandscape) CircleShape else RoundedCornerShape(0.dp)
+                               shape = if (isLandscape) CircleShape else uiRoundnessShape()
                            )
-                           .clip(if (isLandscape) CircleShape else RoundedCornerShape(0.dp))
+                           .clip(if (isLandscape) CircleShape else uiRoundnessShape())
                            .pointerInput(Unit) {
                                if (swipeUpQueue)
                                    detectVerticalDragGestures(
@@ -300,7 +302,7 @@ fun BoxScope.ActionBar(
                             ),
                             contentDescription = null,
                             modifier = Modifier.size( 25.dp )
-                                               .clickable(
+                                               .clip(uiRoundnessShape()).clickable(
                                                    interactionSource = remember { MutableInteractionSource() },
                                                    indication = null,
                                                ) {
@@ -328,7 +330,7 @@ fun BoxScope.ActionBar(
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             modifier = Modifier
-                                .combinedClickable(
+                                .clip(uiRoundnessShape()).combinedClickable(
                                     onClick = {
                                         binder.player.playAtIndex(index)
                                     },
@@ -350,7 +352,7 @@ fun BoxScope.ActionBar(
                                         contentDescription = "song_pos_$index",
                                         modifier = Modifier
                                             .padding(end = 5.dp)
-                                            .clip(RoundedCornerShape(5.dp))
+                                            .clip(uiRoundnessShape())
                                             .size(30.dp)
                                     )
                                 }
@@ -492,7 +494,7 @@ fun BoxScope.ActionBar(
                         onClick = {},
                         modifier = Modifier
                             .size(24.dp)
-                            .combinedClickable(
+                            .clip(uiRoundnessShape()).combinedClickable(
                                 onClick = { discoverIsEnabled = !discoverIsEnabled },
                                 onLongClick = {
                                     Toaster.i(R.string.discoverinfo)
@@ -741,5 +743,8 @@ fun BoxScope.ActionBar(
         }
     }
 }
+
+
+
 
 

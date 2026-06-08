@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import android.graphics.Matrix
 import androidx.compose.animation.core.LinearEasing
@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 fun FluidGradientBox() {
@@ -81,8 +82,8 @@ fun FluidGradientBox() {
                 .onSizeChanged {
                     size = Size(it.width.toFloat(), it.height.toFloat())
                 }
-                .clip(RoundedCornerShape(16.dp))
-                .border(1.dp, Color.White, RoundedCornerShape(16.dp))
+                .clip(uiRoundnessShape())
+                .border(1.dp, Color.White, uiRoundnessShape())
                 .drawBehind {
                     drawRect(brush = brushA)
                     drawRect(brush = brushMask, blendMode = BlendMode.DstOut)
@@ -91,7 +92,7 @@ fun FluidGradientBox() {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                modifier = Modifier.border(1.dp, Color.White, RoundedCornerShape(4.dp))
+                modifier = Modifier.border(1.dp, Color.White, uiRoundnessShape())
                     .padding(horizontal = 8.dp, vertical = 4.dp),
                 text = "FLUID",
                 style = MaterialTheme.typography.headlineLarge,
@@ -129,5 +130,6 @@ fun animateBrushRotation(
         }
     }
 }
+
 
 

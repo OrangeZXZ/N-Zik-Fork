@@ -1,7 +1,8 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+﻿@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.screens.player
 
 import app.n_zik.android.core.database.*
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
@@ -46,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.draw.drawBehind
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
@@ -110,6 +112,7 @@ import app.n_zik.android.core.coil.ImageCacheFactory
 import app.kreate.android.me.knighthat.sync.YouTubeSync
 import app.kreate.android.me.knighthat.utils.Toaster
 import kotlin.math.absoluteValue
+import app.n_zik.android.uiRoundnessShape
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -221,7 +224,7 @@ fun MiniPlayer(
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     val isFloating = NavigationBarPosition.BottomFloating.isCurrent()
-    val shape = if (isFloating) RoundedCornerShape(24.dp) else RoundedCornerShape(12.dp)
+    val shape = if (isFloating) uiRoundnessShape() else uiRoundnessShape()
 
 
     SwipeToDismissBox(
@@ -284,7 +287,7 @@ fun MiniPlayer(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.Top,
             modifier = Modifier
-                .combinedClickable(
+                .clip(uiRoundnessShape()).combinedClickable(
                     onLongClick = {
                         navController?.navigate(NavRoutes.queue.name);
                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -296,7 +299,7 @@ fun MiniPlayer(
                         //    navController?.navigate("player")
                     }
                 )
-                //.clickable(onClick = showPlayer)
+                //.clip(uiRoundnessShape()).clickable(onClick = showPlayer)
                 .pointerInput(Unit) {
                     detectVerticalDragGestures(
                         onVerticalDrag = { _, dragAmount ->
@@ -417,8 +420,7 @@ fun MiniPlayer(
 
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(playPauseRoundness))
-                        .clickable {
+                        .clip(uiRoundnessShape()).clickable {
                             if (shouldBePlaying) {
                                 binder.gracefulPause()
                             } else {
@@ -487,6 +489,10 @@ fun MiniPlayer(
 
     }
 }
+
+
+
+
 
 
 

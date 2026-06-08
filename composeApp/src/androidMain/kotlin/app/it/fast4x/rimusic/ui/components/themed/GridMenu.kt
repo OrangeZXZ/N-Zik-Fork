@@ -1,4 +1,6 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -111,7 +113,7 @@ fun LazyGridScope.GridMenuItem(
             modifier = modifier
                 .clip(ShapeDefaults.Large)
                 .height(GridMenuItemHeight)
-                .clickable(
+                .clip(uiRoundnessShape()).clickable(
                     enabled = enabled,
                     onClick = onClick
                 )
@@ -139,5 +141,7 @@ fun LazyGridScope.GridMenuItem(
         }
     }
 }
+
+
 
 

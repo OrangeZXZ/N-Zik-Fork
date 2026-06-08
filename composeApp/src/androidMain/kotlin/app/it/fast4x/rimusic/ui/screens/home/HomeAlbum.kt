@@ -1,4 +1,6 @@
-package app.it.fast4x.rimusic.ui.screens.home
+﻿package app.it.fast4x.rimusic.ui.screens.home
+
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.core.database.*
 
@@ -307,7 +309,7 @@ fun HomeAlbums(
                                             modifier = Modifier
                                                 .align(Alignment.CenterVertically)
                                                 .padding(end = 5.dp)
-                                                .clickable {
+                                                .clip(uiRoundnessShape()).clickable {
                                                     menuState.display {
                                                         FilterMenu(
                                                             title = stringResource(R.string.filter_by),
@@ -328,7 +330,7 @@ fun HomeAlbums(
                                             onClick = {},
                                             modifier = Modifier
                                                 .offset(0.dp, 2.5.dp)
-                                                .clickable(
+                                                .clip(uiRoundnessShape()).clickable(
                                                     interactionSource = remember { MutableInteractionSource() },
                                                     indication = null,
                                                     onClick = {}
@@ -411,7 +413,7 @@ fun HomeAlbums(
                             thumbnailSizePx = itemSize.size.px,
                             modifier = Modifier
                                 .animateItem( fadeInSpec = null, fadeOutSpec = null )
-                                .combinedClickable(
+                                .clip(uiRoundnessShape()).combinedClickable(
 
                                     onLongClick = {
                                         menuState.display {
@@ -464,6 +466,8 @@ fun HomeAlbums(
         }
     }
 }
+
+
 
 
 

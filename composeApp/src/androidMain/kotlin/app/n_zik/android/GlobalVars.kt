@@ -28,6 +28,9 @@ fun colorPalette() = LocalAppearance.current.colorPalette
 fun thumbnailShape() = LocalAppearance.current.thumbnailShape
 
 @Composable
+fun uiRoundnessShape() = LocalAppearance.current.uiRoundnessShape
+
+@Composable
 fun showSearchIconInNav() = rememberPreference( showSearchTabKey, false ).value
 
 @Composable

@@ -1,4 +1,8 @@
-package app.kreate.android.themed.rimusic.screen.player.timeline
+﻿package app.kreate.android.themed.rimusic.screen.player.timeline
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -89,7 +93,7 @@ private fun RowScope.SkipTimeButton(
         contentDescription = contentDescription,
         modifier = modifier.size( DURATION_INDICATOR_HEIGHT.dp )
                            .align( Alignment.CenterVertically )
-                           .combinedClickable(
+                           .clip(uiRoundnessShape()).combinedClickable(
                                interactionSource = remember { MutableInteractionSource() },
                                indication = null,
                                role = Role.Button,
@@ -244,3 +248,6 @@ fun DurationIndicator(
         )
     }
 }
+
+
+

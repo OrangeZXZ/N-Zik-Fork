@@ -1,7 +1,8 @@
-@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+﻿@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.items
 
 import app.n_zik.android.core.database.*
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -88,6 +89,7 @@ import app.n_zik.android.core.coil.size
 import app.kreate.android.me.knighthat.utils.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import app.n_zik.android.uiRoundnessShape
 
 
 @UnstableApi
@@ -368,7 +370,7 @@ fun SongItem(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier
             .padding(end = 8.dp)
-            .clip(RoundedCornerShape(10.dp))
+            .clip(uiRoundnessShape())
             .conditional(isNowPlaying){
                 background(colorPalette.favoritesOverlay)
             }
@@ -451,7 +453,7 @@ fun SongItem(
                                 .size(14.dp)
                                 .background(colorPalette().accent, CircleShape)
                                 .padding(all = 3.dp)
-                                .combinedClickable(onClick = {
+                                .clip(uiRoundnessShape()).combinedClickable(onClick = {
                                     menuState.display {
                                         if (binder != null) {
                                             AddToPlaylistPlayerMenu(
@@ -510,7 +512,7 @@ fun SongItem(
                                 .size(18.dp)
                                 .background(colorPalette().accent, CircleShape)
                                 .padding(all = 3.dp)
-                                .combinedClickable(onClick = {}, onLongClick = {
+                                .clip(uiRoundnessShape()).combinedClickable(onClick = {}, onLongClick = {
                                     SmartMessage(context.resources.getString(R.string.playlistindicatorinfo2), context = context)
                                 })
                         )
@@ -561,7 +563,7 @@ fun SongItem(
                             .size(18.dp)
                             .background(colorPalette().accent, CircleShape)
                             .padding(all = 3.dp)
-                            .combinedClickable(onClick = {
+                            .clip(uiRoundnessShape()).combinedClickable(onClick = {
                                 menuState.display {
                                     if (binder != null) {
                                         AddToPlaylistPlayerMenu(
@@ -614,7 +616,7 @@ fun SongItem(
                         color = colorPalette().text,
                         modifier = Modifier
                             .size(16.dp)
-                            .clickable {
+                            .clip(uiRoundnessShape()).clickable {
                                 DownloadService.sendRemoveDownload(
                                         context,
                                         MyDownloadService::class.java,
@@ -670,7 +672,7 @@ fun SongItem(
                     androidx.compose.foundation.layout.Box(
                         modifier = Modifier
                             .size(20.dp)
-                            .clickable(
+                            .clip(uiRoundnessShape()).clickable(
                                 onClick = {
                                     DownloadService.sendRemoveDownload(
                                         context,
@@ -738,7 +740,7 @@ fun SongItemPlaceholder( modifier: Modifier = Modifier ) {
     ) {
         Box(
             Modifier.size( Dimensions.thumbnails.song )
-                    .clip( RoundedCornerShape(12.dp) )
+                    .clip( uiRoundnessShape() )
                     .shimmerEffect()
         )
 
@@ -793,5 +795,8 @@ fun SongItemPlaceholder( modifier: Modifier = Modifier ) {
         }
     }
 }
+
+
+
 
 

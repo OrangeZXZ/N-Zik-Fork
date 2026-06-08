@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
@@ -50,7 +51,6 @@ import app.it.fast4x.rimusic.enums.PlayerBackgroundColors
 import app.it.fast4x.rimusic.enums.PlayerControlsType
 import app.it.fast4x.rimusic.enums.PlayerInfoType
 import app.it.fast4x.rimusic.enums.PlayerPlayButtonType
-import app.it.fast4x.rimusic.enums.PlayerThumbnailSize
 import app.it.fast4x.rimusic.enums.PlayerTimelineSize
 import app.it.fast4x.rimusic.enums.PlayerTimelineType
 import app.it.fast4x.rimusic.enums.PlayerType
@@ -59,7 +59,6 @@ import app.it.fast4x.rimusic.enums.QueueType
 import app.it.fast4x.rimusic.enums.SongsNumber
 import app.it.fast4x.rimusic.enums.SwipeAnimationNoThumbnail
 import app.it.fast4x.rimusic.enums.ThumbnailCoverType
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.ThumbnailType
 import app.it.fast4x.rimusic.enums.WallpaperType
 import app.n_zik.android.typography
@@ -109,8 +108,6 @@ import app.it.fast4x.rimusic.utils.playerInfoShowIconsKey
 import app.it.fast4x.rimusic.utils.playerInfoTypeKey
 import app.it.fast4x.rimusic.utils.playerPlayButtonTypeKey
 import app.it.fast4x.rimusic.utils.playerSwapControlsWithTimelineKey
-import app.it.fast4x.rimusic.utils.playerThumbnailSizeKey
-import app.it.fast4x.rimusic.utils.playerThumbnailSizeLKey
 import app.it.fast4x.rimusic.utils.playerTimelineSizeKey
 import app.it.fast4x.rimusic.utils.playerTimelineTypeKey
 import app.it.fast4x.rimusic.utils.playerTypeKey
@@ -157,7 +154,6 @@ import app.it.fast4x.rimusic.utils.tapqueueKey
 import app.it.fast4x.rimusic.utils.textoutlineKey
 import app.it.fast4x.rimusic.utils.thumbnailFadeExKey
 import app.it.fast4x.rimusic.utils.thumbnailFadeKey
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import app.it.fast4x.rimusic.utils.thumbnailSpacingKey
 import app.it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import app.it.fast4x.rimusic.utils.thumbnailTypeKey
@@ -219,11 +215,8 @@ fun DefaultAppearanceSettings() {
     visualizerEnabled = false
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
     playerTimelineType = PlayerTimelineType.Wavy
-    var playerThumbnailSize by rememberPreference(
-        playerThumbnailSizeKey,
-        PlayerThumbnailSize.Biggest
-    )
-    playerThumbnailSize = PlayerThumbnailSize.Biggest
+    var thumbnailSizeDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 85f)
+    thumbnailSizeDp = 100f
     var playerTimelineSize by rememberPreference(
         playerTimelineSizeKey,
         PlayerTimelineSize.Biggest
@@ -280,11 +273,9 @@ fun DefaultAppearanceSettings() {
     clickLyricsText = true
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
     showBackgroundLyrics = false
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
-    thumbnailRoundness = ThumbnailRoundness.Medium
+    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 9f)
+    var uiRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.uiRoundnessDpKey, 20f)
+    thumbnailRoundnessDp = 18f
     var miniPlayerType by rememberPreference(
         miniPlayerTypeKey,
         MiniPlayerType.Essential
@@ -407,14 +398,8 @@ fun AppearanceSettings(
     )
     */
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
-    var playerThumbnailSize by rememberPreference(
-        playerThumbnailSizeKey,
-        PlayerThumbnailSize.Biggest
-    )
-    var playerThumbnailSizeL by rememberPreference(
-        playerThumbnailSizeLKey,
-        PlayerThumbnailSize.Biggest
-    )
+    var thumbnailSizeDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 85f)
+    var thumbnailSizeLDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeLDpKey, 0f)
     var playerTimelineSize by rememberPreference(
         playerTimelineSizeKey,
         PlayerTimelineSize.Biggest
@@ -461,10 +446,8 @@ fun AppearanceSettings(
 
     val search = Search()
 
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
+    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 9f)
+    var uiRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.uiRoundnessDpKey, 20f)
 
     var miniPlayerType by rememberPreference(
         miniPlayerTypeKey,
@@ -623,7 +606,7 @@ fun AppearanceSettings(
                 showthumbnail = true
                 playerBackgroundColors = PlayerBackgroundColors.BlurredCoverColor
                 blurStrength = 50f
-                thumbnailRoundness = ThumbnailRoundness.None
+                thumbnailRoundnessDp = 0f
                 playerInfoType = PlayerInfoType.Essential
                 playerTimelineType = PlayerTimelineType.ThinBar
                 playerTimelineSize = PlayerTimelineSize.Biggest
@@ -634,7 +617,7 @@ fun AppearanceSettings(
                 showlyricsthumbnail = false
                 expandedplayer = true
                 thumbnailType = ThumbnailType.Modern
-                playerThumbnailSize = PlayerThumbnailSize.Big
+                thumbnailSizeDp = 75f
                 showTotalTimeQueue = false
                 bottomgradient = true
                 showRemainingSongTime = true
@@ -678,13 +661,13 @@ fun AppearanceSettings(
                 thumbnailSpacing = -32f
                 thumbnailType = ThumbnailType.Essential
                 carouselSize = CarouselSize.Big
-                playerThumbnailSize = PlayerThumbnailSize.Biggest
+                thumbnailSizeDp = 100f
                 showTotalTimeQueue = false
                 transparentBackgroundActionBarPlayer = true
                 showRemainingSongTime = true
                 bottomgradient = true
                 showlyricsthumbnail = false
-                thumbnailRoundness = ThumbnailRoundness.Medium
+                thumbnailRoundnessDp = 18f
                 showNextSongsInPlayer = true
                 colorPaletteName = ColorPaletteName.Dynamic
                 colorPaletteMode = ColorPaletteMode.System
@@ -766,14 +749,14 @@ fun AppearanceSettings(
                 transparentbar = false
                 playerType = PlayerType.Essential
                 expandedplayer = false
-                playerThumbnailSize = PlayerThumbnailSize.Expanded
+                thumbnailSizeDp = 100f
                 showTotalTimeQueue = false
                 transparentBackgroundActionBarPlayer = true
                 showRemainingSongTime = true
                 bottomgradient = true
                 showlyricsthumbnail = false
                 thumbnailType = ThumbnailType.Essential
-                thumbnailRoundness = ThumbnailRoundness.Light
+                thumbnailRoundnessDp = 9f
                 playerType = PlayerType.Modern
                 fadingedge = true
                 thumbnailFade = 5f
@@ -814,13 +797,13 @@ fun AppearanceSettings(
                 transparentbar = false
                 playerType = PlayerType.Modern
                 expandedplayer = false
-                playerThumbnailSize = PlayerThumbnailSize.Biggest
+                thumbnailSizeDp = 100f
                 showTotalTimeQueue = false
                 transparentBackgroundActionBarPlayer = true
                 showRemainingSongTime = true
                 showlyricsthumbnail = false
                 thumbnailType = ThumbnailType.Modern
-                thumbnailRoundness = ThumbnailRoundness.Heavy
+                thumbnailRoundnessDp = 36f
                 fadingedge = true
                 thumbnailFade = 0f
                 thumbnailFadeEx = 5f
@@ -860,13 +843,13 @@ fun AppearanceSettings(
                 transparentbar = false
                 playerType = PlayerType.Essential
                 expandedplayer = true
-                playerThumbnailSize = PlayerThumbnailSize.Big
+                thumbnailSizeDp = 75f
                 showTotalTimeQueue = false
                 transparentBackgroundActionBarPlayer = true
                 showRemainingSongTime = true
                 showlyricsthumbnail = false
                 thumbnailType = ThumbnailType.Modern
-                thumbnailRoundness = ThumbnailRoundness.Heavy
+                thumbnailRoundnessDp = 36f
                 showNextSongsInPlayer = false
                 ///////ACTION BAR BUTTONS////////////////
                 transparentBackgroundActionBarPlayer = true
@@ -1177,83 +1160,6 @@ fun AppearanceSettings(
                     }
                 }
 
-                if (isLandscape) {
-                    if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
-                            search.inputValue,
-                            true
-                        )
-                    )
-                        if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(search.inputValue, true)) {
-                            OtherEnumValueSelectorSettingsEntry(
-                    icon = R.drawable.resize,
-                                title = stringResource(R.string.player_thumbnail_size),
-                                selectedValue = playerThumbnailSizeL,
-                                onValueSelected = { playerThumbnailSizeL = it },
-                                trailingContent = @Composable {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(36.dp)
-                                            .border(
-                                                width = 1.dp,
-                                                color = colorPalette().accent,
-                                                shape = thumbnailRoundness.shape
-                                            ),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Box(
-                                            modifier = Modifier
-                                                .padding((playerThumbnailSizeL.size * 0.15f).dp)
-                                                .fillMaxSize()
-                                                .background(
-                                                    color = colorPalette().accent.copy(alpha = 0.5f),
-                                                    shape = thumbnailRoundness.shape
-                                                )
-                                        )
-                                    }
-                                },
-                                valueText = { it.text },
-                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                            )
-                        }
-                } else {
-                    if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
-                            search.inputValue,
-                            true
-                        )
-                    )
-                        if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(search.inputValue, true)) {
-                            OtherEnumValueSelectorSettingsEntry(
-                    icon = R.drawable.resize,
-                                title = stringResource(R.string.player_thumbnail_size),
-                                selectedValue = playerThumbnailSize,
-                                onValueSelected = { playerThumbnailSize = it },
-                                trailingContent = @Composable {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(36.dp)
-                                            .border(
-                                                width = 1.dp,
-                                                color = colorPalette().accent,
-                                                shape = thumbnailRoundness.shape
-                                            ),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Box(
-                                            modifier = Modifier
-                                                .padding((playerThumbnailSize.size * 0.15f).dp)
-                                                .fillMaxSize()
-                                                .background(
-                                                    color = colorPalette().accent.copy(alpha = 0.5f),
-                                                    shape = thumbnailRoundness.shape
-                                                )
-                                        )
-                                    }
-                                },
-                                valueText = { it.text },
-                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                            )
-                        }
-                }
                 if (search.inputValue.isBlank() || stringResource(R.string.thumbnailtype).contains(
                         search.inputValue,
                         true
@@ -1261,7 +1167,7 @@ fun AppearanceSettings(
                 )
                     if (search.inputValue.isBlank() || stringResource(R.string.thumbnailtype).contains(search.inputValue, true)) {
                         OtherEnumValueSelectorSettingsEntry(
-                    icon = R.drawable.cd,
+                            icon = R.drawable.cd,
                             title = stringResource(R.string.thumbnailtype),
                             selectedValue = thumbnailType,
                             onValueSelected = {
@@ -1272,35 +1178,158 @@ fun AppearanceSettings(
                         )
                     }
 
+                if (isLandscape) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
+                            search.inputValue,
+                            true
+                        )
+                    )
+                        if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(search.inputValue, true)) {
+                            SliderSettingsEntry(
+                                icon = R.drawable.resize,
+                                title = stringResource(R.string.player_thumbnail_size),
+                                text = "",
+                                state = thumbnailSizeLDp,
+                                range = 0f..100f,
+                                steps = 3,
+                                onSlide = { thumbnailSizeLDp = it },
+                                toDisplay = { it.toInt().toString() },
+                                trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = androidx.compose.foundation.shape.RoundedCornerShape(thumbnailRoundnessDp.dp)), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeLDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = androidx.compose.foundation.shape.RoundedCornerShape(thumbnailRoundnessDp.dp))) } } },
+                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                            )
+
+                            androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
+                                listOf(0f to "Min", 25f to "25%", 50f to "50%", 75f to "75%", 100f to "Max").forEach { (v, label) ->
+                                    val isSelected = thumbnailSizeLDp.toInt() == v.toInt()
+                                    androidx.compose.material3.TextButton(
+                                        onClick = { thumbnailSizeLDp = v },
+                                        shape = app.n_zik.android.uiRoundnessShape(),
+                                        colors = androidx.compose.material3.ButtonDefaults.textButtonColors(containerColor = if (isSelected) colorPalette().accent.copy(alpha = 0.2f) else androidx.compose.ui.graphics.Color.Transparent)
+                                    ) {
+                                        androidx.compose.material3.Text(
+                                            text = label,
+                                            fontSize = 12.sp,
+                                            color = if (isSelected) colorPalette().accent else colorPalette().text,
+                                            fontWeight = if (isSelected) androidx.compose.ui.text.font.FontWeight.Bold else null
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                } else {
+                    if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
+                            search.inputValue,
+                            true
+                        )
+                    )
+                        if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(search.inputValue, true)) {
+                            SliderSettingsEntry(
+                                icon = R.drawable.resize,
+                                title = stringResource(R.string.player_thumbnail_size),
+                                text = "",
+                                state = thumbnailSizeDp,
+                                range = 0f..100f,
+                                steps = 3,
+                                onSlide = { thumbnailSizeDp = it },
+                                toDisplay = { it.toInt().toString() },
+                                trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = androidx.compose.foundation.shape.RoundedCornerShape(thumbnailRoundnessDp.dp)), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = androidx.compose.foundation.shape.RoundedCornerShape(thumbnailRoundnessDp.dp))) } } },
+                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                            )
+
+                            androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
+                                listOf(0f to "Min", 25f to "25%", 50f to "50%", 75f to "75%", 100f to "Max").forEach { (v, label) ->
+                                    val isSelected = thumbnailSizeDp.toInt() == v.toInt()
+                                    androidx.compose.material3.TextButton(
+                                        onClick = { thumbnailSizeDp = v },
+                                        shape = app.n_zik.android.uiRoundnessShape(),
+                                        colors = androidx.compose.material3.ButtonDefaults.textButtonColors(containerColor = if (isSelected) colorPalette().accent.copy(alpha = 0.2f) else androidx.compose.ui.graphics.Color.Transparent)
+                                    ) {
+                                        androidx.compose.material3.Text(
+                                            text = label,
+                                            fontSize = 12.sp,
+                                            color = if (isSelected) colorPalette().accent else colorPalette().text,
+                                            fontWeight = if (isSelected) androidx.compose.ui.text.font.FontWeight.Bold else null
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                }
+
                 if (search.inputValue.isBlank() || stringResource(R.string.thumbnail_roundness).contains(
                         search.inputValue,
                         true
                     )
                 )
                     if (search.inputValue.isBlank() || stringResource(R.string.thumbnail_roundness).contains(search.inputValue, true)) {
-                        OtherEnumValueSelectorSettingsEntry(
-                    icon = R.drawable.horizontal_bold_line_rounded,
+                        SliderSettingsEntry(
+                            icon = R.drawable.image,
                             title = stringResource(R.string.thumbnail_roundness),
-                            selectedValue = thumbnailRoundness,
-                            onValueSelected = { thumbnailRoundness = it },
-                            trailingContent = @Composable {
-                                Spacer(
-                                    modifier = Modifier
-                                        .size(36.dp)
-                                        .background(
-                                            color = colorPalette().accent.copy(alpha = 0.5f),
-                                            shape = thumbnailRoundness.shape
-                                        )
-                                        .border(
-                                            width = 1.dp,
-                                            color = colorPalette().accent,
-                                            shape = thumbnailRoundness.shape
-                                        )
-                                )
-                            },
-                            valueText = { it.text },
+                            text = "",
+                            state = thumbnailRoundnessDp,
+                            range = 0f..36f,
+                            steps = 3,
+                            onSlide = { thumbnailRoundnessDp = it },
+                            toDisplay = { it.toInt().toString() },
+                            trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = androidx.compose.foundation.shape.RoundedCornerShape(thumbnailRoundnessDp.dp)).border(width = 1.dp, color = colorPalette().accent, shape = androidx.compose.foundation.shape.RoundedCornerShape(thumbnailRoundnessDp.dp))) } },
                             modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                         )
+
+                        androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
+                            listOf(0f to "0", 9f to "9", 18f to "18", 27f to "27", 36f to "Max").forEach { (v, label) ->
+                                val isSelected = thumbnailRoundnessDp.toInt() == v.toInt()
+                                androidx.compose.material3.TextButton(
+                                    onClick = { thumbnailRoundnessDp = v },
+                                    shape = app.n_zik.android.uiRoundnessShape(),
+                                    colors = androidx.compose.material3.ButtonDefaults.textButtonColors(containerColor = if (isSelected) colorPalette().accent.copy(alpha = 0.2f) else androidx.compose.ui.graphics.Color.Transparent)
+                                ) {
+                                    androidx.compose.material3.Text(
+                                        text = label,
+                                        fontSize = 12.sp,
+                                        color = if (isSelected) colorPalette().accent else colorPalette().text,
+                                        fontWeight = if (isSelected) androidx.compose.ui.text.font.FontWeight.Bold else null
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                if (search.inputValue.isBlank() || stringResource(app.n_zik.android.R.string.ui_roundness).contains(
+                        search.inputValue,
+                        true
+                    )
+                )
+                    if (search.inputValue.isBlank() || stringResource(app.n_zik.android.R.string.ui_roundness).contains(search.inputValue, true)) {
+                        SliderSettingsEntry(
+                            icon = app.n_zik.android.R.drawable.ui,
+                            title = stringResource(app.n_zik.android.R.string.ui_roundness),
+                            text = "",
+                            state = uiRoundnessDp,
+                            range = 0f..36f,
+                            steps = 3,
+                            onSlide = { uiRoundnessDp = it },
+                            toDisplay = { it.toInt().toString() },
+                            trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(uiRoundnessDp.dp, 0.4f))).border(width = 1.dp, color = colorPalette().accent, shape = androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(uiRoundnessDp.dp, 0.4f)))) } },
+                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        )
+
+                        androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
+                            listOf(0f to "0", 9f to "9", 18f to "18", 27f to "27", 36f to "Max").forEach { (v, label) ->
+                                val isSelected = uiRoundnessDp.toInt() == v.toInt()
+                                androidx.compose.material3.TextButton(
+                                    onClick = { uiRoundnessDp = v },
+                                    shape = app.n_zik.android.uiRoundnessShape(),
+                                    colors = androidx.compose.material3.ButtonDefaults.textButtonColors(containerColor = if (isSelected) colorPalette().accent.copy(alpha = 0.2f) else androidx.compose.ui.graphics.Color.Transparent)
+                                ) {
+                                    androidx.compose.material3.Text(
+                                        text = label,
+                                        fontSize = 12.sp,
+                                        color = if (isSelected) colorPalette().accent else colorPalette().text,
+                                        fontWeight = if (isSelected) androidx.compose.ui.text.font.FontWeight.Bold else null
+                                    )
+                                }
+                            }
+                        }
                     }
             }
         }

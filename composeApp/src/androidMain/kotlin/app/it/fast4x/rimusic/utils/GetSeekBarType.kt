@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.utils
+﻿package app.it.fast4x.rimusic.utils
 
 import androidx.annotation.OptIn
 import androidx.compose.animation.core.Animatable
@@ -65,6 +65,7 @@ import app.it.fast4x.rimusic.ui.styling.collapsedPlayerProgressBar
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import app.n_zik.android.uiRoundnessShape
 
 const val DURATION_INDICATOR_HEIGHT = 20
 
@@ -137,7 +138,7 @@ fun GetSeekBar(
                 },
                 color = colorPalette().collapsedPlayerProgressBar,
                 backgroundColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
-                shape = RoundedCornerShape(8.dp),
+                shape = uiRoundnessShape(),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position().toFloat(), isVisible = true)
             )
 
@@ -162,7 +163,7 @@ fun GetSeekBar(
                 },
                 color = colorPalette().collapsedPlayerProgressBar,
                 backgroundColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
-                shape = RoundedCornerShape(8.dp),
+                shape = uiRoundnessShape(),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position().toFloat(), isVisible = true)
             )
 
@@ -187,7 +188,7 @@ fun GetSeekBar(
                 },
                 color = colorPalette().collapsedPlayerProgressBar,
                 backgroundColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
-                shape = RoundedCornerShape(8.dp),
+                shape = uiRoundnessShape(),
                 //modifier = Modifier.pulsatingEffect(currentValue = scrubbingPosition?.toFloat() ?: position().toFloat(), isVisible = true)
             )
 
@@ -213,7 +214,7 @@ fun GetSeekBar(
                 color = colorPalette().collapsedPlayerProgressBar,
                 isActive = binder.player.isPlaying,
                 backgroundColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
-                shape = RoundedCornerShape(8.dp),
+                shape = uiRoundnessShape(),
             )
         }
 
@@ -254,7 +255,7 @@ fun GetSeekBar(
                 },
                 color = colorPalette().collapsedPlayerProgressBar,
                 backgroundColor = colorPalette().textSecondary,
-                shape = RoundedCornerShape(8.dp)
+                shape = uiRoundnessShape()
             )
 
 
@@ -264,5 +265,8 @@ fun GetSeekBar(
 
     DurationIndicator( binder, scrubbingPosition, position(), duration() )
 }
+
+
+
 
 

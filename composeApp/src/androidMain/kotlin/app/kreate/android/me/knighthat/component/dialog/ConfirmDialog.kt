@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.dialog
+﻿package app.kreate.android.me.knighthat.component.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.colorPalette
+import app.n_zik.android.uiRoundnessShape
 
 interface ConfirmDialog: InteractiveDialog {
 
@@ -31,7 +32,7 @@ interface ConfirmDialog: InteractiveDialog {
                 containerColor = colorPalette().background2,
                 contentColor = colorPalette().text
             ),
-            shape = RoundedCornerShape(12.dp)
+            shape = uiRoundnessShape()
         ) {
             InteractiveDialog.CancelButton(
                 onCancel = ::hideDialog
@@ -45,7 +46,7 @@ interface ConfirmDialog: InteractiveDialog {
                 containerColor = colorPalette().accent,
                 contentColor = colorPalette().textSecondary
             ),
-            shape = RoundedCornerShape(12.dp)
+            shape = uiRoundnessShape()
         ) {
             InteractiveDialog.ConfirmButton(
                 onConfirm = ::onConfirm
@@ -53,4 +54,5 @@ interface ConfirmDialog: InteractiveDialog {
         }
     }
 }
+
 

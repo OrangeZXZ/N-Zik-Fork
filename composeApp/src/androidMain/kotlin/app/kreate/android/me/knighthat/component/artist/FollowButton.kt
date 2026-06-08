@@ -1,6 +1,7 @@
-package app.kreate.android.me.knighthat.component.artist
+﻿package app.kreate.android.me.knighthat.component.artist
 
 import app.n_zik.android.core.database.*
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,6 +35,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.utils.Toaster
+import app.n_zik.android.uiRoundnessShape
 
 class FollowButton private constructor(
     private val getArtist: () -> Artist
@@ -89,9 +91,9 @@ class FollowButton private constructor(
                                    width = 100.dp,
                                    height = TabToolBar.TOOLBAR_ICON_SIZE
                                )
-                               .clip( RoundedCornerShape(50) )
+                               .clip( uiRoundnessShape() )
                                .background( buttonProps.second )
-                               .clickable( onClick = ::onShortClick ),
+                               .clip(uiRoundnessShape()).clickable( onClick = ::onShortClick ),
             contentAlignment = Alignment.Center
         ) {
             BasicText(
@@ -101,4 +103,7 @@ class FollowButton private constructor(
         }
     }
 }
+
+
+
 

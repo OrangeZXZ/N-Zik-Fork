@@ -1,14 +1,16 @@
-package app.n_zik.android.updater.ui
+﻿package app.n_zik.android.updater.ui
 
 import app.n_zik.android.updater.services.*
 import app.n_zik.android.updater.models.*
 import app.n_zik.android.updater.ui.*
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.updater.services.Updater
 import app.n_zik.android.updater.services.UpdateDownloadManager
 import app.n_zik.android.updater.models.UpdaterConstants
 import app.n_zik.android.updater.models.GithubRelease
 import app.n_zik.android.updater.models.MajorUpdateConfig
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -71,6 +73,7 @@ import app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import app.it.fast4x.rimusic.ui.styling.ModernBlackColorPalette
 import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import java.util.stream.Stream
+import app.n_zik.android.uiRoundnessShape
 
 class ChangelogsDialog(
     seenChangelogVersionState: MutableState<String>,
@@ -161,7 +164,7 @@ class ChangelogsDialog(
                             colorPalette().background1
                         }
                     ),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = uiRoundnessShape(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     Box(
@@ -213,7 +216,7 @@ class ChangelogsDialog(
                             colorPalette().background1
                         }
                     ),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = uiRoundnessShape(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     TabRow(
@@ -290,7 +293,7 @@ class ChangelogsDialog(
                             colorPalette().background1
                         }
                     ),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = uiRoundnessShape(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     val configuration = LocalWindowInfo.current
@@ -320,7 +323,7 @@ class ChangelogsDialog(
                                 Box(
                                     modifier = Modifier
                                         .size(6.dp)
-                                        .clip(RoundedCornerShape(3.dp))
+                                        .clip(uiRoundnessShape())
                                         .background(
                                             when (sections[selectedTab].title.lowercase()) {
                                                 UpdaterConstants.CHANGELOG_NEW -> Color(0xFF4CAF50) // Vert
@@ -357,11 +360,11 @@ class ChangelogsDialog(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { hideDialog() },
+                        .clip(uiRoundnessShape()).clickable { hideDialog() },
                     colors = CardDefaults.cardColors(
                         containerColor = colorPalette().accent
                     ),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = uiRoundnessShape(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
                     Box(
@@ -395,4 +398,7 @@ class ChangelogsDialog(
 
     data class Section( val title: String, val changes: List<String> )
 }
+
+
+
 

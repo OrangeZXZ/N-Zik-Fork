@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.search
+﻿package app.it.fast4x.rimusic.ui.screens.search
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.core.database.*
 
@@ -45,7 +49,6 @@ import app.n_zik.android.core.database.Database
 import app.n_zik.android.LocalPlayerAwareWindowInsets
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.colorPalette
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.models.Song
 import app.n_zik.android.playback.services.isLocal
 import app.n_zik.android.typography
@@ -65,7 +68,6 @@ import app.it.fast4x.rimusic.utils.isNowPlaying
 import app.it.fast4x.rimusic.utils.manageDownload
 import app.it.fast4x.rimusic.utils.medium
 import app.it.fast4x.rimusic.utils.rememberPreference
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -105,11 +107,7 @@ fun LocalSongSearch(
     }
     val context = LocalContext.current
 
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
-
+    
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     val focusRequester = remember {
@@ -169,7 +167,7 @@ fun LocalSongSearch(
                             modifier = Modifier
                                 .background(
                                     colorPalette().background1,
-                                    shape = thumbnailRoundness.shape
+                                    shape = app.n_zik.android.thumbnailShape()
                                 )
                                 .padding(all = 4.dp)
                                 .focusRequester(focusRequester)
@@ -271,7 +269,7 @@ fun LocalSongSearch(
                     thumbnailSizePx = thumbnailSizePx,
                     thumbnailSizeDp = thumbnailSizeDp,
                     modifier = Modifier
-                        .combinedClickable(
+                        .clip(uiRoundnessShape()).combinedClickable(
                             onLongClick = {
                                 menuState.display {
                                     InHistoryMediaItemMenu(
@@ -298,6 +296,10 @@ fun LocalSongSearch(
         focusRequester.requestFocus()
     }
 }
+
+
+
+
 
 
 

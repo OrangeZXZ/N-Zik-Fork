@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.searchresult
+﻿package app.it.fast4x.rimusic.ui.screens.searchresult
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.core.database.*
 
@@ -138,7 +142,7 @@ fun OnlineSearchGrid(
                             thumbnailHeightDp = 72.dp,
                             modifier = Modifier
                                 .background(colorPalette().background0)
-                                .combinedClickable(
+                                .clip(uiRoundnessShape()).combinedClickable(
                                     onLongClick = {
                                         menuState.display {
                                             VideoItemMenu(
@@ -167,7 +171,7 @@ fun OnlineSearchGrid(
                         alternative = true,
                         showInfo = false,
                         modifier = Modifier
-                            .combinedClickable(
+                            .clip(uiRoundnessShape()).combinedClickable(
                                 onClick = {
                                     navController.navigate("${NavRoutes.album.name}/${item.key}")
                                 },
@@ -186,7 +190,7 @@ fun OnlineSearchGrid(
                         alternative = true,
                         showName = false,
                         showInfo = false,
-                        modifier = Modifier.clickable {
+                        modifier = Modifier.clip(uiRoundnessShape()).clickable {
                             when (tabIndex) {
                                 4, 5 -> navController.navigate("${NavRoutes.playlist.name}/${item.key}")
                                 6 -> navController.navigate("${NavRoutes.podcast.name}/${item.key}")
@@ -204,7 +208,7 @@ fun OnlineSearchGrid(
                         alternative = true,
                         showName = false,
                         modifier = Modifier
-                            .clickable(onClick = {
+                            .clip(uiRoundnessShape()).clickable(onClick = {
                                 navController.navigate("${NavRoutes.artist.name}/${item.key}")
                             }),
                         disableScrollingText = disableScrollingText
@@ -247,7 +251,7 @@ fun OnlineSearchGrid(
                         )
                     }
                 }
-                item.description?.split(" • ")?.forEach { segment ->
+                item.description?.split(" â€¢ ")?.forEach { segment ->
                     if (segment.isNotBlank()) {
                         BasicText(
                             text = segment,
@@ -261,7 +265,7 @@ fun OnlineSearchGrid(
                 }
             }
             if (item is Innertube.ArtistItem) {
-                item.description?.split(" • ")?.forEach { segment ->
+                item.description?.split(" â€¢ ")?.forEach { segment ->
                     if (segment.isNotBlank()) {
                         BasicText(
                             text = segment,
@@ -287,7 +291,7 @@ fun OnlineSearchGrid(
                     )
                 }
                 if (tabIndex != 5) {
-                    item.description?.split(" • ")?.forEach { segment ->
+                    item.description?.split(" â€¢ ")?.forEach { segment ->
                         if (segment.isNotBlank()) {
                             BasicText(
                                 text = segment,
@@ -367,6 +371,9 @@ private fun getItemFrom(tabIndex: Int): (it.fast4x.innertube.models.MusicShelfRe
     3 -> Innertube.VideoItem.Companion::from
     else -> Innertube.PlaylistItem.Companion::from
 }
+
+
+
 
 
 

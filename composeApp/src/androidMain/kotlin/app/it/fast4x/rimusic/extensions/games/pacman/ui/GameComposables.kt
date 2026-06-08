@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.extensions.games.pacman.ui
+﻿package app.it.fast4x.rimusic.extensions.games.pacman.ui
 
 import android.content.res.Resources
 import androidx.compose.animation.core.Animatable
@@ -68,6 +68,7 @@ import app.it.fast4x.rimusic.extensions.games.pacman.ui.theme.PacmanRed
 import app.it.fast4x.rimusic.extensions.games.pacman.ui.theme.PacmanWhite
 import app.it.fast4x.rimusic.extensions.games.pacman.ui.theme.PacmanYellow
 import app.it.fast4x.rimusic.extensions.games.pacman.utils.GameConstants
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 fun FullScreenDialog(showDialog: MutableState<Boolean>, text: String) {
@@ -81,7 +82,7 @@ fun FullScreenDialog(showDialog: MutableState<Boolean>, text: String) {
         ) {
             Surface(
                 modifier = Modifier.wrapContentSize(),
-                shape = RoundedCornerShape(16.dp),
+                shape = uiRoundnessShape(),
                 color = PacmanYellow
             ) {
                 Box(
@@ -557,5 +558,6 @@ fun enemyMovement(duration: Int, gameStats: GameStatsModel, initialXOffset: Floa
 
 
 }
+
 
 

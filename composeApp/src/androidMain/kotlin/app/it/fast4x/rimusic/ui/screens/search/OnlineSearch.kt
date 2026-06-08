@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.search
+﻿package app.it.fast4x.rimusic.ui.screens.search
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.core.database.*
 
@@ -66,7 +70,6 @@ import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.SearchDisplayOrder
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.models.SearchQuery
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
@@ -91,7 +94,6 @@ import app.it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.searchDisplayOrderKey
 import app.it.fast4x.rimusic.utils.secondary
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -166,11 +168,7 @@ fun OnlineSearch(
         FocusRequester()
     }
 
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
-
+    
     val lazyListState = rememberLazyListState()
 
     //val navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.BottomFloating)
@@ -244,7 +242,7 @@ fun OnlineSearch(
                                 .background(
                                     //colorPalette().background4,
                                     colorPalette().background1,
-                                    shape = thumbnailRoundness.shape
+                                    shape = app.n_zik.android.thumbnailShape()
                                 )
                                 .padding(all = 4.dp)
                                 .focusRequester(focusRequester)
@@ -361,7 +359,7 @@ fun OnlineSearch(
                                         onDownloadClick = {},
                                         downloadState = downloadState,
                                         modifier = Modifier
-                                            .combinedClickable(
+                                            .clip(uiRoundnessShape()).combinedClickable(
                                                 onLongClick = {
                                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.display {
@@ -390,7 +388,7 @@ fun OnlineSearch(
                                         thumbnailSizePx = songThumbnailSizePx,
                                         thumbnailSizeDp = songThumbnailSizeDp,
                                         modifier = Modifier
-                                            .clickable {
+                                            .clip(uiRoundnessShape()).clickable {
                                                 navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
                                             },
                                         disableScrollingText = disableScrollingText
@@ -406,7 +404,7 @@ fun OnlineSearch(
                                         thumbnailSizePx = songThumbnailSizePx,
                                         thumbnailSizeDp = songThumbnailSizeDp,
                                         modifier = Modifier
-                                            .clickable {
+                                            .clip(uiRoundnessShape()).clickable {
                                                 navController.navigate(route = "${NavRoutes.artist.name}/${artist.key}")
                                             },
                                         disableScrollingText = disableScrollingText
@@ -419,7 +417,7 @@ fun OnlineSearch(
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
-                                    .clickable (
+                                    .clip(uiRoundnessShape()).clickable (
                                         onClick = {
                                             onSearch(query.replace("/", "", true))
                                             /*
@@ -453,7 +451,7 @@ fun OnlineSearch(
                                     contentDescription = null,
                                     colorFilter = ColorFilter.tint(colorPalette().textDisabled),
                                     modifier = Modifier
-                                        .clickable(
+                                        .clip(uiRoundnessShape()).clickable(
                                             indication = rippleIndication,
                                             interactionSource = remember { MutableInteractionSource() },
                                             onClick = {
@@ -508,7 +506,7 @@ fun OnlineSearch(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .clickable(onClick = {
+                                .clip(uiRoundnessShape()).clickable(onClick = {
                                     onSearch(searchQuery.query.replace("/", "", true))
                                     /*
                                     onTextFieldValueChanged(
@@ -544,7 +542,7 @@ fun OnlineSearch(
                                 contentDescription = null,
                                 colorFilter = ColorFilter.tint(colorPalette().textDisabled),
                                 modifier = Modifier
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         indication = rippleIndication,
                                         interactionSource = remember { MutableInteractionSource() },
                                         onClick = {
@@ -568,7 +566,7 @@ fun OnlineSearch(
                                 contentDescription = null,
                                 colorFilter = ColorFilter.tint(colorPalette().textDisabled),
                                 modifier = Modifier
-                                    .clickable(
+                                    .clip(uiRoundnessShape()).clickable(
                                         indication = rippleIndication,
                                         interactionSource = remember { MutableInteractionSource() },
                                         onClick = {
@@ -605,7 +603,7 @@ fun OnlineSearch(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .clickable(onClick = {
+                                .clip(uiRoundnessShape()).clickable(onClick = {
                                     onSearch(searchQuery.query.replace("/", "", true))
                                     /*
                                     onTextFieldValueChanged(
@@ -641,7 +639,7 @@ fun OnlineSearch(
                                 contentDescription = null,
                                 colorFilter = ColorFilter.tint(colorPalette().textDisabled),
                                 modifier = Modifier
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         indication = rippleIndication,
                                         interactionSource = remember { MutableInteractionSource() },
                                         onClick = {
@@ -665,7 +663,7 @@ fun OnlineSearch(
                                 contentDescription = null,
                                 colorFilter = ColorFilter.tint(colorPalette().textDisabled),
                                 modifier = Modifier
-                                    .clickable(
+                                    .clip(uiRoundnessShape()).clickable(
                                         indication = rippleIndication,
                                         interactionSource = remember { MutableInteractionSource() },
                                         onClick = {
@@ -708,7 +706,7 @@ fun OnlineSearch(
                                         onDownloadClick = {},
                                         downloadState = downloadState,
                                         modifier = Modifier
-                                            .combinedClickable(
+                                            .clip(uiRoundnessShape()).combinedClickable(
                                                 onLongClick = {
                                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.display {
@@ -737,7 +735,7 @@ fun OnlineSearch(
                                         thumbnailSizePx = songThumbnailSizePx,
                                         thumbnailSizeDp = songThumbnailSizeDp,
                                         modifier = Modifier
-                                            .clickable {
+                                            .clip(uiRoundnessShape()).clickable {
                                                 navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
                                             },
                                         disableScrollingText = disableScrollingText
@@ -753,7 +751,7 @@ fun OnlineSearch(
                                         thumbnailSizePx = songThumbnailSizePx,
                                         thumbnailSizeDp = songThumbnailSizeDp,
                                         modifier = Modifier
-                                            .clickable {
+                                            .clip(uiRoundnessShape()).clickable {
                                                 navController.navigate(route = "${NavRoutes.artist.name}/${artist.key}")
                                             },
                                         disableScrollingText = disableScrollingText
@@ -766,7 +764,7 @@ fun OnlineSearch(
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
-                                    .clickable (
+                                    .clip(uiRoundnessShape()).clickable (
                                         onClick = {
                                             onSearch(query.replace("/", "", true))
                                             /*
@@ -800,7 +798,7 @@ fun OnlineSearch(
                                     contentDescription = null,
                                     colorFilter = ColorFilter.tint(colorPalette().textDisabled),
                                     modifier = Modifier
-                                        .clickable(
+                                        .clip(uiRoundnessShape()).clickable(
                                             indication = rippleIndication,
                                             interactionSource = remember { MutableInteractionSource() },
                                             onClick = {
@@ -854,6 +852,10 @@ fun OnlineSearch(
     }
 
 }
+
+
+
+
 
 
 

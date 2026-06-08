@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.player.components
+﻿package app.it.fast4x.rimusic.ui.screens.player.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,6 +35,7 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.semiBold
+import app.n_zik.android.uiRoundnessShape
 
 
 @Composable
@@ -61,8 +62,8 @@ fun YoutubePlayer(
                 .background(
                     color = colorPalette().background0.copy(alpha = 0.9f),
                 )
-                .clip(RoundedCornerShape(20.dp))
-                .clickable { onSwitchToAudioPlayer() }
+                .clip(uiRoundnessShape())
+                .clip(uiRoundnessShape()).clickable { onSwitchToAudioPlayer() }
                 .padding(horizontal = 12.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -84,7 +85,7 @@ fun YoutubePlayer(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 130.dp)
-                .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                .clip(uiRoundnessShape())
                 .zIndex(2f),
             factory = {
                 val iFramePlayerOptions = IFramePlayerOptions.Builder(context = it)
@@ -120,6 +121,10 @@ fun YoutubePlayer(
     }
 
 }
+
+
+
+
 
 
 

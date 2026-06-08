@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.items
+﻿package app.it.fast4x.rimusic.ui.items
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,10 +23,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import it.fast4x.innertube.Innertube
+import app.n_zik.android.uiRoundnessShape
 
 
 import app.it.fast4x.rimusic.ui.styling.onOverlay
 import app.it.fast4x.rimusic.ui.styling.overlay
+import app.n_zik.android.uiRoundnessShape
 
 import app.it.fast4x.rimusic.utils.color
 import app.it.fast4x.rimusic.utils.conditional
@@ -37,6 +40,7 @@ import app.n_zik.android.thumbnailShape
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.shimmerEffect
 import app.n_zik.android.core.coil.ImageCacheFactory
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 fun VideoItem(
@@ -99,7 +103,7 @@ fun VideoItem(
                         .padding(all = 4.dp)
                         .background(
                             color = colorPalette().overlay,
-                            shape = RoundedCornerShape(2.dp)
+                            shape = uiRoundnessShape()
                         )
                         .padding(horizontal = 4.dp, vertical = 2.dp)
                         .align(Alignment.BottomEnd)
@@ -167,14 +171,14 @@ fun VideoItemPlaceholder(
                 Modifier
                     .fillMaxWidth()
                     .height(16.dp)
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(uiRoundnessShape())
                     .shimmerEffect()
             )
             Box(
                 Modifier
                     .fillMaxWidth(0.6f)
                     .height(12.dp)
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(uiRoundnessShape())
                     .shimmerEffect()
             )
             Box(
@@ -182,12 +186,13 @@ fun VideoItemPlaceholder(
                     .padding(top = 4.dp)
                     .fillMaxWidth(0.4f)
                     .height(10.dp)
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(uiRoundnessShape())
                     .shimmerEffect()
             )
         }
     }
 }
+
 
 
 

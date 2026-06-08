@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.components.navigation.header
+﻿package app.it.fast4x.rimusic.ui.components.navigation.header
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -144,7 +148,7 @@ object TabToolBar {
             tint,
             size,
             enabled,
-            modifier.combinedClickable(
+            modifier.clip(uiRoundnessShape()).combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick
             ),
@@ -191,7 +195,7 @@ object TabToolBar {
             tint,
             size,
             enabled,
-            modifier.combinedClickable (
+            modifier.clip(uiRoundnessShape()).combinedClickable (
                 onClick = onShortClick,
                 onLongClick = onLongClick
             )
@@ -235,7 +239,7 @@ object TabToolBar {
             toggleCondition,
             tint,
             size,
-            modifier.combinedClickable (
+            modifier.clip(uiRoundnessShape()).combinedClickable (
                 onClick = onShortClick,
                 onLongClick = onLongClick
             )
@@ -283,12 +287,15 @@ object TabToolBar {
             toggleCondition,
             enabled,
             size,
-            modifier.combinedClickable (
+            modifier.clip(uiRoundnessShape()).combinedClickable (
                 onClick = onShortClick,
                 onLongClick = onLongClick
             )
         ) { }
     }
 }
+
+
+
 
 

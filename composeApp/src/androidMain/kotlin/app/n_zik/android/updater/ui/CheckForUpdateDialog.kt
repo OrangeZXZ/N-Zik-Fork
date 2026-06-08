@@ -1,14 +1,18 @@
-package app.n_zik.android.updater.ui
+﻿package app.n_zik.android.updater.ui
+
+import androidx.compose.ui.draw.clip
 
 import app.n_zik.android.updater.services.*
 import app.n_zik.android.updater.models.*
 import app.n_zik.android.updater.ui.*
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.updater.services.Updater
 import app.n_zik.android.updater.services.UpdateDownloadManager
 import app.n_zik.android.updater.models.UpdaterConstants
 import app.n_zik.android.updater.models.GithubRelease
 import app.n_zik.android.updater.models.MajorUpdateConfig
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -54,6 +58,7 @@ import app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import app.it.fast4x.rimusic.utils.bold
 import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import app.it.fast4x.rimusic.utils.semiBold
+import app.n_zik.android.uiRoundnessShape
 
 object CheckForUpdateDialog {
 
@@ -98,7 +103,7 @@ object CheckForUpdateDialog {
                                 colorPalette().background1
                             }
                         ),
-                        shape = RoundedCornerShape(12.dp),
+                        shape = uiRoundnessShape(),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Box(
@@ -152,14 +157,14 @@ object CheckForUpdateDialog {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
+                            .clip(uiRoundnessShape()).clickable {
                                 onDismiss()
                                 Updater.checkForUpdate(checkBetaUpdates = checkBetaUpdates)
                             },
                         colors = CardDefaults.cardColors(
                             containerColor = colorPalette().accent
                         ),
-                        shape = RoundedCornerShape(12.dp),
+                        shape = uiRoundnessShape(),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Row(
@@ -199,7 +204,7 @@ object CheckForUpdateDialog {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onDismiss() },
+                            .clip(uiRoundnessShape()).clickable { onDismiss() },
                         colors = CardDefaults.cardColors(
                             containerColor = if (colorPalette() === PureBlackColorPalette || colorPalette() === ModernBlackColorPalette || colorPaletteMode == ColorPaletteMode.PitchBlack) {
                                 Color(0xFF1A1A1A) // Gray dark for pitch black themes
@@ -207,7 +212,7 @@ object CheckForUpdateDialog {
                                 colorPalette().background1
                             }
                         ),
-                        shape = RoundedCornerShape(12.dp),
+                        shape = uiRoundnessShape(),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Row(
@@ -247,7 +252,7 @@ object CheckForUpdateDialog {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
+                            .clip(uiRoundnessShape()).clickable {
                                 checkUpdateState = CheckUpdateState.Disabled
                                 onDismiss()
                             },
@@ -258,7 +263,7 @@ object CheckForUpdateDialog {
                                 colorPalette().background1
                             }
                         ),
-                        shape = RoundedCornerShape(12.dp),
+                        shape = uiRoundnessShape(),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Row(
@@ -288,4 +293,8 @@ object CheckForUpdateDialog {
         }
     }
 }
+
+
+
+
 

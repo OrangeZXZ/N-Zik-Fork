@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.dialog
+﻿package app.kreate.android.me.knighthat.component.dialog
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -15,14 +15,16 @@ import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.medium
+import app.n_zik.android.uiRoundnessShape
 
 interface InteractiveDialog: Dialog {
 
     companion object {
         @JvmStatic
+        @Composable
         fun ButtonModifier( extra: Modifier = Modifier ): Modifier =
             Modifier.wrapContentWidth(align = Alignment.CenterHorizontally)
-                    .clip( RoundedCornerShape(20) )
+                    .clip( uiRoundnessShape() )
                     .then( extra )
 
         @JvmStatic
@@ -38,7 +40,7 @@ interface InteractiveDialog: Dialog {
                                     color = colorPalette().onAccent,
                                     textAlign = TextAlign.Center
                                 ),
-            modifier = modifier.clickable( onClick = onConfirm )
+            modifier = modifier.clip(uiRoundnessShape()).clickable( onClick = onConfirm )
         )
 
         @JvmStatic
@@ -54,11 +56,14 @@ interface InteractiveDialog: Dialog {
                                     color = Color(android.graphics.Color.RED).copy( alpha = .3f ),
                                     textAlign = TextAlign.Center
                                 ),
-            modifier = modifier.clickable( onClick = onCancel )
+            modifier = modifier.clip(uiRoundnessShape()).clickable( onClick = onCancel )
         )
     }
 
     @Composable
     fun Buttons()
 }
+
+
+
 

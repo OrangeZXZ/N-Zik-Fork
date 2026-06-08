@@ -1,14 +1,18 @@
-package app.n_zik.android.updater.ui
+﻿package app.n_zik.android.updater.ui
+
+import androidx.compose.ui.draw.clip
 
 import app.n_zik.android.updater.services.*
 import app.n_zik.android.updater.models.*
 import app.n_zik.android.updater.ui.*
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.updater.services.Updater
 import app.n_zik.android.updater.services.UpdateDownloadManager
 import app.n_zik.android.updater.models.UpdaterConstants
 import app.n_zik.android.updater.models.GithubRelease
 import app.n_zik.android.updater.models.MajorUpdateConfig
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -40,6 +44,7 @@ import app.it.fast4x.rimusic.ui.styling.ModernBlackColorPalette
 import app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.n_zik.android.uiRoundnessShape
 
 object BuildTransitionWarningDialog {
     var isActive: Boolean by mutableStateOf(false)
@@ -82,7 +87,7 @@ object BuildTransitionWarningDialog {
                                 colorPalette().background1
                             }
                         ),
-                        shape = RoundedCornerShape(12.dp),
+                        shape = uiRoundnessShape(),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Box(
@@ -129,7 +134,7 @@ object BuildTransitionWarningDialog {
                                 colorPalette().background1
                             }
                         ),
-                        shape = RoundedCornerShape(12.dp),
+                        shape = uiRoundnessShape(),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Column(
@@ -158,14 +163,14 @@ object BuildTransitionWarningDialog {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { 
+                            .clip(uiRoundnessShape()).clickable { 
                                 isActive = false
                                 onConfirm()
                             },
                         colors = CardDefaults.cardColors(
                             containerColor = colorPalette().accent
                         ),
-                        shape = RoundedCornerShape(12.dp),
+                        shape = uiRoundnessShape(),
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Box(
@@ -196,3 +201,7 @@ object BuildTransitionWarningDialog {
         }
     }
 }
+
+
+
+

@@ -1,6 +1,7 @@
-package app.it.fast4x.rimusic.ui.items
+﻿package app.it.fast4x.rimusic.ui.items
 
 import app.n_zik.android.core.database.*
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -61,6 +62,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import app.n_zik.android.core.coil.ImageCacheFactory
+import app.n_zik.android.uiRoundnessShape
 
 val HTTP_REGEX = Regex("^https?://.*")
 val FOUR_CORNERS = listOf( Alignment.TopStart, Alignment.TopEnd, Alignment.BottomStart, Alignment.BottomEnd )
@@ -299,7 +301,7 @@ fun PlaylistItem(
                     modifier = Modifier.padding( all = 4.dp )
                                        .background(
                                            color = colorPalette().overlay,
-                                           shape = RoundedCornerShape(4.dp)
+                                           shape = uiRoundnessShape()
                                        )
                                        .padding( all = 6.dp)
                                        .align(Alignment.BottomEnd)
@@ -366,6 +368,7 @@ fun PlaylistItemPlaceholder(
         }
     }
 }
+
 
 
 

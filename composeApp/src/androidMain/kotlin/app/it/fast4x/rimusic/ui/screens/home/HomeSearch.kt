@@ -1,4 +1,6 @@
-package app.it.fast4x.rimusic.ui.screens.home
+﻿package app.it.fast4x.rimusic.ui.screens.home
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -89,7 +91,7 @@ fun HomeSearch(
                     alternative = true,
                     modifier = Modifier
                         .clip(thumbnailShape())
-                        .clickable(onClick = { onSearchType(SearchType.Online) })
+                        .clip(uiRoundnessShape()).clickable(onClick = { onSearchType(SearchType.Online) })
                         .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
@@ -105,7 +107,7 @@ fun HomeSearch(
                     alternative = true,
                     modifier = Modifier
                         .clip(thumbnailShape())
-                        .clickable(onClick = { onSearchType(SearchType.Library) })
+                        .clip(uiRoundnessShape()).clickable(onClick = { onSearchType(SearchType.Library) })
                         .animateItem(),
                     disableScrollingText = disableScrollingText
                 )
@@ -114,7 +116,7 @@ fun HomeSearch(
             item(key = "gotolink") {
                 Modifier
                     .clip(thumbnailShape())
-                    .clickable(onClick = { onSearchType(SearchType.Gotolink) })
+                    .clip(uiRoundnessShape()).clickable(onClick = { onSearchType(SearchType.Gotolink) })
                 PlaylistItem(
                     icon = R.drawable.query_stats,
                     colorTint = colorPalette().favoritesIcon,
@@ -131,6 +133,8 @@ fun HomeSearch(
 
     }
 }
+
+
 
 
 

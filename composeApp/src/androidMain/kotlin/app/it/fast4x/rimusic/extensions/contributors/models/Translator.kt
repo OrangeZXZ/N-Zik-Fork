@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.extensions.contributors.models
+﻿package app.it.fast4x.rimusic.extensions.contributors.models
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import app.n_zik.android.uiRoundnessShape
 
 import com.google.gson.annotations.SerializedName
 import app.n_zik.android.R
@@ -37,6 +38,7 @@ import app.n_zik.android.core.coil.ImageCacheFactory
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
+import app.n_zik.android.uiRoundnessShape
 
 data class Translator(
     @SerializedName( "username" ) val username: String,
@@ -70,7 +72,7 @@ data class Translator(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 5.dp, horizontal = 15.dp)
-                    .background(backgroundColor, RoundedCornerShape( 12.dp )),
+                    .background(backgroundColor, uiRoundnessShape()),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -78,8 +80,8 @@ data class Translator(
                     contentDescription = null,
                     modifier = Modifier
                         .size(40.dp)
-                        .clip( RoundedCornerShape( 25.dp ) )
-                        .border( 1.dp, Color.White, RoundedCornerShape( 25.dp ) ),
+                        .clip( uiRoundnessShape() )
+                        .border( 1.dp, Color.White, uiRoundnessShape() ),
                     contentScale = ContentScale.Fit
                 )
 
@@ -106,7 +108,7 @@ data class Translator(
                             ),
                             modifier = Modifier
                                 .wrapContentSize()
-                                .clickable {
+                                .clip(uiRoundnessShape()).clickable {
                                     if (profileUrl != null) {
                                         uriHandler.openUri(profileUrl)
                                     }
@@ -139,6 +141,9 @@ data class Translator(
         }
     }
 }
+
+
+
 
 
 

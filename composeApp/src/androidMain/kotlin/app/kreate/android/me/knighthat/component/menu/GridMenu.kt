@@ -1,4 +1,6 @@
-package app.kreate.android.me.knighthat.component.menu
+﻿package app.kreate.android.me.knighthat.component.menu
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
@@ -70,7 +72,7 @@ object GridMenu {
             .height(GridMenuItemHeight)
             .alpha(if (enabled) 1f else 0.5f)
             .padding(12.dp)
-            .combinedClickable(
+            .clip(uiRoundnessShape()).combinedClickable(
                 enabled = enabled,
                 onClick = onClick,
                 onLongClick = onLongClick
@@ -98,5 +100,7 @@ object GridMenu {
         )
     }
 }
+
+
 
 

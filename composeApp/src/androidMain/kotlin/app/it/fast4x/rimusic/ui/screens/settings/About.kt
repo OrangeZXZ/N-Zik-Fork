@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.settings
+﻿package app.it.fast4x.rimusic.ui.screens.settings
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -59,6 +59,7 @@ import androidx.compose.ui.graphics.Color
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import java.text.SimpleDateFormat
 import java.util.*
+import app.n_zik.android.uiRoundnessShape
 
 @ExperimentalAnimationApi
 @Composable
@@ -126,10 +127,10 @@ fun About(navController: androidx.navigation.NavController) {
                              .fillMaxHeight()
                     .shadow(
                         elevation = 8.dp,
-                        shape = RoundedCornerShape(16.dp),
+                        shape = uiRoundnessShape(),
                         spotColor = colorPalette().accent.copy(alpha = 0.3f)
                     ),
-                shape = RoundedCornerShape(16.dp),
+                shape = uiRoundnessShape(),
                 colors = CardDefaults.cardColors(
                     containerColor = if (colorPalette() === PureBlackColorPalette || colorPalette() === ModernBlackColorPalette || colorPaletteMode == ColorPaletteMode.PitchBlack) {
                         Color(0xFF1A1A1A) // Gray dark for pitch black themes
@@ -211,7 +212,7 @@ fun About(navController: androidx.navigation.NavController) {
                                         modifier = Modifier
                                             .background(
                                                 color = colorPalette().accent.copy(alpha = 0.2f),
-                                                shape = RoundedCornerShape(4.dp)
+                                                shape = uiRoundnessShape()
                                             )
                                             .padding(horizontal = 6.dp, vertical = 2.dp)
                                     ) {
@@ -242,7 +243,7 @@ fun About(navController: androidx.navigation.NavController) {
                              verticalAlignment = Alignment.CenterVertically,
                              modifier = Modifier
                                  .fillMaxWidth()
-                                 .clickable {
+                                 .clip(uiRoundnessShape()).clickable {
                                      val url = "${Repository.GITHUB}/${Repository.OWNER}"
                                      uriHandler.openUri(url)
                                  }
@@ -286,10 +287,10 @@ fun About(navController: androidx.navigation.NavController) {
                              }
                              .shadow(
                                  elevation = 8.dp,
-                                 shape = RoundedCornerShape(16.dp),
+                                 shape = uiRoundnessShape(),
                                  spotColor = colorPalette().accent.copy(alpha = 0.3f)
                              ),
-                     shape = RoundedCornerShape(16.dp),
+                     shape = uiRoundnessShape(),
                      colors = CardDefaults.cardColors(
                          containerColor = if (colorPalette() === PureBlackColorPalette || colorPalette() === ModernBlackColorPalette || colorPaletteMode == ColorPaletteMode.PitchBlack) {
                              Color(0xFF1A1A1A) // Gray dark for pitch black themes
@@ -393,7 +394,7 @@ fun About(navController: androidx.navigation.NavController) {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(36.dp)
-                                    .clickable {
+                                    .clip(uiRoundnessShape()).clickable {
                                         val prefs = app.n_zik.android.appContext().getSharedPreferences("settings", 0)
                                         val checkBeta = prefs.getBoolean(app.it.fast4x.rimusic.utils.checkBetaUpdatesKey, app.n_zik.android.updater.services.Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == "b")
                                         app.kreate.android.me.knighthat.utils.Toaster.i(R.string.checking_for_updates)
@@ -401,7 +402,7 @@ fun About(navController: androidx.navigation.NavController) {
                                         navController.navigate(app.it.fast4x.rimusic.enums.NavRoutes.updater.name)
                                     },
                                 colors = CardDefaults.cardColors(containerColor = colorPalette().accent),
-                                shape = RoundedCornerShape(8.dp)
+                                shape = uiRoundnessShape()
                             ) {
                                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                                     BasicText(
@@ -535,8 +536,8 @@ fun About(navController: androidx.navigation.NavController) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable { translatorsExpanded = !translatorsExpanded }
+                            .clip(uiRoundnessShape())
+                            .clip(uiRoundnessShape()).clickable { translatorsExpanded = !translatorsExpanded }
                             .padding(vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -587,8 +588,8 @@ fun About(navController: androidx.navigation.NavController) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable { developersExpanded = !developersExpanded }
+                            .clip(uiRoundnessShape())
+                            .clip(uiRoundnessShape()).clickable { developersExpanded = !developersExpanded }
                             .padding(vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -636,6 +637,9 @@ fun About(navController: androidx.navigation.NavController) {
 
     }
 }
+
+
+
 
 
 

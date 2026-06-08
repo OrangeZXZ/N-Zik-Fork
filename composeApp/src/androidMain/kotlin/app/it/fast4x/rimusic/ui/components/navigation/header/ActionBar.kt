@@ -1,4 +1,6 @@
-package app.it.fast4x.rimusic.ui.components.navigation.header
+﻿package app.it.fast4x.rimusic.ui.components.navigation.header
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -103,7 +105,7 @@ fun ActionBar(
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .size(32.dp)
-                    .clip(CircleShape)
+                    .clip(uiRoundnessShape())
                     .clickable { expanded = !expanded }
             )
         else HeaderIcon( R.drawable.ytmusic, size = 30.dp ) { expanded = !expanded }
@@ -125,5 +127,8 @@ fun ActionBar(
     )
 // END
 }
+
+
+
 
 

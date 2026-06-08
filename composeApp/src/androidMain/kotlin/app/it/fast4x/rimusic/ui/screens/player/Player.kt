@@ -1,4 +1,6 @@
 package app.it.fast4x.rimusic.ui.screens.player
+
+import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.appRunningInBackground
 
 import app.n_zik.android.core.database.*
@@ -147,13 +149,11 @@ import app.it.fast4x.rimusic.enums.CarouselSize
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.PlayerBackgroundColors
-import app.it.fast4x.rimusic.enums.PlayerThumbnailSize
 import app.it.fast4x.rimusic.enums.PlayerType
 import app.it.fast4x.rimusic.enums.QueueLoopType
 import app.it.fast4x.rimusic.enums.QueueType
 import app.it.fast4x.rimusic.enums.SwipeAnimationNoThumbnail
 import app.it.fast4x.rimusic.enums.ThumbnailCoverType
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.ThumbnailType
 import app.it.fast4x.rimusic.models.Info
 import app.it.fast4x.rimusic.models.ui.toUiMedia
@@ -206,8 +206,7 @@ import app.it.fast4x.rimusic.utils.playNext
 import app.it.fast4x.rimusic.utils.playPrevious
 import app.it.fast4x.rimusic.utils.playbackStateState
 import app.it.fast4x.rimusic.utils.playerBackgroundColorsKey
-import app.it.fast4x.rimusic.utils.playerThumbnailSizeKey
-import app.it.fast4x.rimusic.utils.playerThumbnailSizeLKey
+import app.it.fast4x.rimusic.utils.thumbnailSizeLDpKey
 import app.it.fast4x.rimusic.utils.playerTypeKey
 import app.it.fast4x.rimusic.utils.positionAndDurationState
 import app.it.fast4x.rimusic.utils.queueDurationExpandedKey
@@ -229,7 +228,6 @@ import app.it.fast4x.rimusic.utils.swipeAnimationsNoThumbnailKey
 import app.it.fast4x.rimusic.utils.textoutlineKey
 import app.it.fast4x.rimusic.utils.thumbnailFadeExKey
 import app.it.fast4x.rimusic.utils.thumbnailFadeKey
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import app.it.fast4x.rimusic.utils.thumbnailSpacingKey
 import app.it.fast4x.rimusic.utils.thumbnailSpacingLKey
 import app.it.fast4x.rimusic.utils.thumbnailTapEnabledKey
@@ -269,8 +267,8 @@ fun Player(
     val disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
     val showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     val effectRotationEnabled by rememberPreference(effectRotationKey, false)
-    val playerThumbnailSize by rememberPreference( playerThumbnailSizeKey, PlayerThumbnailSize.Biggest )
-    var playerThumbnailSizeL by rememberPreference( playerThumbnailSizeLKey, PlayerThumbnailSize.Biggest )
+    val thumbnailSizeDp by rememberPreference( app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 85f )
+    val thumbnailSizeLDp by rememberPreference( app.it.fast4x.rimusic.utils.thumbnailSizeLDpKey, 30f )
     val showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
     var thumbnailSpacing  by rememberPreference( thumbnailSpacingKey, 0f )
     var thumbnailSpacingL  by rememberPreference( thumbnailSpacingLKey, 0f )
@@ -308,8 +306,7 @@ fun Player(
     val carouselSize by rememberPreference( carouselSizeKey, CarouselSize.Biggest )
     val clickLyricsText by rememberPreference( clickOnLyricsTextKey, true )
     var extraspace by rememberPreference( extraspaceKey, false )
-    val thumbnailRoundness by rememberPreference( thumbnailRoundnessKey, ThumbnailRoundness.Medium )
-    val thumbnailType by rememberPreference( thumbnailTypeKey, ThumbnailType.Modern )
+        val thumbnailType by rememberPreference( thumbnailTypeKey, ThumbnailType.Modern )
     val statsfornerds by rememberPreference( statsfornerdsKey, false )
     val topPadding by rememberPreference( topPaddingKey, true )
     var swipeAnimationNoThumbnail by rememberPreference( swipeAnimationsNoThumbnailKey, SwipeAnimationNoThumbnail.Sliding )
@@ -713,7 +710,7 @@ fun Player(
                         0.25f
                     ) else Color.Black.copy(0.25f) else Color.Transparent else Color.Transparent
                 )
-                .combinedClickable(
+                .clip(uiRoundnessShape()).combinedClickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = {
@@ -997,7 +994,7 @@ fun Player(
 
                         )
                     }
-                    .padding(all = if (isLandscape) playerThumbnailSizeL.size.dp else playerThumbnailSize.size.dp)
+                    .padding(all = if (thumbnailShape() == CircleShape) 0.dp else if (isLandscape) ((100f - thumbnailSizeLDp) * 1.5f).dp else ((100f - thumbnailSizeDp) * 1.5f).dp)
                     .thumbnailpause(
                         shouldBePlaying = shouldBePlaying
                     )
@@ -1134,7 +1131,7 @@ fun Player(
                                                     rotationZ = if ((it == pagerStateFS.settledPage) && (isShowingLyrics || showthumbnail)) rotation.value else 0f
                                                 }
                                             }
-                                            .combinedClickable(
+                                            .clip(uiRoundnessShape()).combinedClickable(
                                                 interactionSource = remember { MutableInteractionSource() },
                                                 indication = null,
                                                 onClick = {
@@ -1312,7 +1309,7 @@ fun Player(
                          ) {
                              if ( showthumbnail && !isShowingVisualizer ) {
                                  val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
-                                 val pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSizeL.size.dp)
+                                 val pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*((100f - thumbnailSizeLDp) * 1.5f).dp)
 
                                  LaunchedEffect(pagerState, binder.player.currentMediaItemIndex) {
                                      if (appRunningInBackground || isShowingLyrics) {
@@ -1333,7 +1330,7 @@ fun Player(
                                  HorizontalPager(
                                      state = pagerState,
                                      pageSize = PageSize.Fixed( Dimensions.thumbnails.player.song ),
-                                     pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*playerThumbnailSizeL.size.dp),
+                                     pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*((100f - thumbnailSizeLDp) * 1.5f).dp),
                                      contentPadding = PaddingValues(start = ((maxWidth - maxHeight)/2).coerceAtLeast(0.dp), end = ((maxWidth - maxHeight)/2 + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp).coerceAtLeast(0.dp)),
                                      beyondViewportPageCount = 3,
                                      flingBehavior = fling,
@@ -1353,7 +1350,7 @@ fun Player(
 
                                      val coverModifier = Modifier
                                          .aspectRatio(1f)
-                                         .padding(all = playerThumbnailSizeL.size.dp)
+                                         .padding(all = ((100f - thumbnailSizeLDp) * 1.5f).dp)
                                          .graphicsLayer {
                                              val pageOffSet =
                                                  ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
@@ -1380,12 +1377,12 @@ fun Player(
                                          }
                                          .conditional(thumbnailType == ThumbnailType.Modern) {
                                              doubleShadowDrop(
-                                                 if (showCoverThumbnailAnimation) CircleShape else thumbnailRoundness.shape,
+                                                 if (showCoverThumbnailAnimation) CircleShape else app.n_zik.android.thumbnailShape(),
                                                  4.dp,
                                                  8.dp
                                              )
                                          }
-                                         .clip(thumbnailRoundness.shape)
+                                         .clip(app.n_zik.android.thumbnailShape())
                                          .combinedClickable(
                                              interactionSource = remember { MutableInteractionSource() },
                                              indication = null,
@@ -1673,8 +1670,8 @@ fun Player(
                                                            alpha = (2f - startOffset) / 2f
                                                        }
                                                    }
-                                                   .clip(RoundedCornerShape(20.dp))
-                                                   .combinedClickable(
+                                                   .clip(uiRoundnessShape())
+                                                   .clip(uiRoundnessShape()).combinedClickable(
                                                        interactionSource = remember { MutableInteractionSource() },
                                                        indication = null,
                                                        onClick = {
@@ -1803,7 +1800,7 @@ fun Player(
                                 contentDescription = null,
                                 colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                                 modifier = Modifier
-                                    .clickable {
+                                    .clip(uiRoundnessShape()).clickable {
                                         onDismiss()
                                     }
                                     .rotate(rotationAngle)
@@ -1816,7 +1813,7 @@ fun Player(
                             colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                             contentDescription = "app icon in player",
                             modifier = Modifier.size( 24.dp )
-                                               .clickable {
+                                               .clip(uiRoundnessShape()).clickable {
                                                    onDismiss()
                                                    navController.navigate(NavRoutes.home.name)
                                                }
@@ -1828,7 +1825,7 @@ fun Player(
                                     contentDescription = null,
                                     colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                                     modifier = Modifier
-                                        .clickable {
+                                        .clip(uiRoundnessShape()).clickable {
                                             val currentMediaItem = binder.player.currentMediaItem
                                             if (currentMediaItem != null) {
                                                 menuState.display {
@@ -1902,14 +1899,14 @@ fun Player(
                                      }
                                  }
 
-                                 val pageSpacing = (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousel) (3*carouselSize.size.dp) else (2*playerThumbnailSize.size.dp))
+                                 val pageSpacing = (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousel) (3*carouselSize.size.dp) else (2*((100f - thumbnailSizeDp) * 1.5f).dp))
                                  val animatePageSpacing by animateDpAsState(
                                      if (expandedplayer) (thumbnailSpacing.toInt()*0.01*(screenHeight) - if (carousel) (3*carouselSize.size.dp) else (2*carouselSize.size.dp)) else 10.dp,
                                      label = ""
                                  )
 
                                  val animatePadding by animateDpAsState(
-                                     if (expandedplayer) carouselSize.size.dp else playerThumbnailSize.size.dp
+                                     if (expandedplayer) carouselSize.size.dp else if (thumbnailShape() == CircleShape) 0.dp else ((100f - thumbnailSizeDp) * 1.5f).dp
                                  )
                                  VerticalPager(
                                      state = pagerState,
@@ -1969,12 +1966,12 @@ fun Player(
                                          }
                                          .conditional(thumbnailType == ThumbnailType.Modern) {
                                              doubleShadowDrop(
-                                                 if (showCoverThumbnailAnimation) CircleShape else thumbnailRoundness.shape,
+                                                 if (showCoverThumbnailAnimation) CircleShape else app.n_zik.android.thumbnailShape(),
                                                  4.dp,
                                                  8.dp
                                              )
                                          }
-                                         .clip(thumbnailRoundness.shape)
+                                         .clip(app.n_zik.android.thumbnailShape())
                                          .combinedClickable(
                                              interactionSource = remember { MutableInteractionSource() },
                                              indication = null,
@@ -2218,7 +2215,7 @@ fun Player(
                     shape = thumbnailShape()
                 ) {}
             },
-            shape = thumbnailRoundness.shape
+            shape = app.n_zik.android.thumbnailShape()
         ) {
             Queue(
                 navController = navController,
@@ -2247,7 +2244,7 @@ fun Player(
                     shape = thumbnailShape()
                 ) {}
             },
-            shape = thumbnailRoundness.shape
+            shape = app.n_zik.android.thumbnailShape()
         ) {
             SearchYoutubeEntity(
                 navController = navController,
@@ -2275,6 +2272,9 @@ fun PagerState.LaunchedEffectScrollToPage(
         }
     }
 }
+
+
+
 
 
 

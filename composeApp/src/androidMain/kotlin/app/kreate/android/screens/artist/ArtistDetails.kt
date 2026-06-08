@@ -1,4 +1,8 @@
-package app.kreate.android.screens.artist
+﻿package app.kreate.android.screens.artist
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -325,7 +329,7 @@ fun ArtistDetails(
                             tint = colorPalette().textSecondary,
                             modifier = Modifier
                                 .padding(end = 12.dp)
-                                .clickable {
+                                .clip(uiRoundnessShape()).clickable {
                                     scope.launch(Dispatchers.IO) {
                                         val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
                                         if (section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null) {
@@ -364,7 +368,7 @@ fun ArtistDetails(
                             tint = colorPalette().textSecondary,
                             modifier = Modifier
                                 .padding(end = 12.dp)
-                                .clickable {
+                                .clip(uiRoundnessShape()).clickable {
                                     scope.launch(Dispatchers.IO) {
                                         val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
                                         if (section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null) {
@@ -402,7 +406,7 @@ fun ArtistDetails(
                             imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             contentDescription = null,
                             tint = colorPalette().textSecondary,
-                            modifier = Modifier.clickable {
+                            modifier = Modifier.clip(uiRoundnessShape()).clickable {
                                 val path = "$browseId?params=${section.moreEndpoint?.params}"
 
                                 val route: NavRoutes = if( section.items.fastAll { it is Innertube.SongItem } )
@@ -464,7 +468,7 @@ fun ArtistDetails(
                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                 disableScrollingText = disableScrollingText,
                                 isYoutubeAlbum = album.isYoutubeAlbum,
-                                modifier = Modifier.clickable {
+                                modifier = Modifier.clip(uiRoundnessShape()).clickable {
                                     navController.navigate("${NavRoutes.album.name}/${album.id}")
                                 }
                             )
@@ -483,7 +487,7 @@ fun ArtistDetails(
                                 thumbnailSizePx = albumThumbnailSizePx,
                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                 disableScrollingText = disableScrollingText,
-                                modifier = Modifier.clickable {
+                                modifier = Modifier.clip(uiRoundnessShape()).clickable {
                                     navController.navigate("${NavRoutes.playlist.name}/${playlist.key}")
                                 }
                             )
@@ -503,7 +507,7 @@ fun ArtistDetails(
                                 thumbnailWidthDp = 128.dp,
                                 alternative = true,
                                 disableScrollingText = disableScrollingText,
-                                modifier = Modifier.combinedClickable(
+                                modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
                                     onLongClick = {
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                         menuState.display {
@@ -535,7 +539,7 @@ fun ArtistDetails(
                                 thumbnailSizePx = albumThumbnailSizePx,
                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                 disableScrollingText = disableScrollingText,
-                                modifier = Modifier.clickable {
+                                modifier = Modifier.clip(uiRoundnessShape()).clickable {
                                     navController.navigate("${NavRoutes.artist.name}/${artist.key}")
                                 }
                             )
@@ -628,4 +632,7 @@ fun ArtistDetails(
         }
     }
 }
+
+
+
 

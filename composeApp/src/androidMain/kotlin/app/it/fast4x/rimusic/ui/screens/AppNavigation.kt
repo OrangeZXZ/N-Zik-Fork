@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens
+﻿package app.it.fast4x.rimusic.ui.screens
 
 import app.n_zik.android.core.database.*
 
@@ -46,7 +46,6 @@ import app.kreate.android.themed.rimusic.screen.artist.ArtistVideos
 import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.StatisticsType
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.TransitionEffect
 import app.it.fast4x.rimusic.extensions.games.pacman.Pacman
 import app.it.fast4x.rimusic.extensions.games.snake.SnakeGame
@@ -73,7 +72,6 @@ import app.it.fast4x.rimusic.utils.homeScreenTabIndexKey
 import app.it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import app.it.fast4x.rimusic.utils.preferences
 import app.it.fast4x.rimusic.utils.rememberPreference
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import app.it.fast4x.rimusic.utils.transitionEffectKey
 
 @androidx.annotation.OptIn()
@@ -96,11 +94,7 @@ fun AppNavigation(
     @Composable
     fun modalBottomSheetPage(content: @Composable () -> Unit) {
         var showSheet by rememberSaveable { mutableStateOf(true) }
-        val thumbnailRoundness by rememberPreference(
-            thumbnailRoundnessKey,
-            ThumbnailRoundness.Medium
-        )
-
+        
         CustomModalBottomSheet(
             showSheet = showSheet,
             onDismissRequest = {
@@ -116,7 +110,7 @@ fun AppNavigation(
                     //shape = thumbnailShape
                 ) {}
             },
-            shape = thumbnailRoundness.shape
+            shape = app.n_zik.android.thumbnailShape()
         ) {
             content()
         }
@@ -448,5 +442,6 @@ fun AppNavigation(
         }
     }
 }
+
 
 

@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.playlist
+﻿package app.it.fast4x.rimusic.ui.screens.playlist
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.core.database.*
 
@@ -89,7 +93,6 @@ import app.it.fast4x.rimusic.cleanPrefix
 
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Playlist
 import app.it.fast4x.rimusic.models.Song
@@ -139,7 +142,6 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -276,11 +278,7 @@ fun PlaylistSongList(
         mutableStateOf(false)
     }
 
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
-
+    
     var showYoutubeLikeConfirmDialog by remember {
         mutableStateOf(false)
     }
@@ -494,7 +492,7 @@ fun PlaylistSongList(
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
                                                 if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true)
@@ -525,7 +523,7 @@ fun PlaylistSongList(
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
                                                 if (playlistPage?.songs?.isNotEmpty() == true)
@@ -559,7 +557,7 @@ fun PlaylistSongList(
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
                                                 playlistPage?.songs?.filter { it.asMediaItem.mediaId !in dislikedSongs }
@@ -583,7 +581,7 @@ fun PlaylistSongList(
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
                                                 binder?.stopRadio()
@@ -611,7 +609,7 @@ fun PlaylistSongList(
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             val songs = playlistPage?.songs.orEmpty()
                                             if( songs.fastAny { it.key in dislikedSongs } ) {
@@ -638,7 +636,7 @@ fun PlaylistSongList(
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             menuState.display {
                                                 PlaylistsItemMenu(
@@ -696,7 +694,7 @@ fun PlaylistSongList(
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
                                                 Toaster.noInternet()
@@ -727,7 +725,7 @@ fun PlaylistSongList(
                                     onClick = {},
                                     modifier = Modifier
                                         .padding(horizontal = 5.dp)
-                                        .combinedClickable(
+                                        .clip(uiRoundnessShape()).combinedClickable(
                                             onClick = {
                                                 if (isNetworkConnected(context)) {
                                                     if (localPlaylist?.isYoutubePlaylist == true) {
@@ -856,7 +854,7 @@ fun PlaylistSongList(
                                     .fillMaxWidth()
                                     .background(
                                         colorPalette().background4,
-                                        shape = thumbnailRoundness.shape
+                                        shape = app.n_zik.android.thumbnailShape()
                                     )
                                     .focusRequester(focusRequester)
                                     .onFocusChanged {
@@ -904,7 +902,7 @@ fun PlaylistSongList(
                                 modifier = Modifier
                                     .padding(all = 8.dp)
                                     .size(18.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             translateEnabled = !translateEnabled
                                         },
@@ -914,7 +912,7 @@ fun PlaylistSongList(
                                     )
                             )
                             BasicText(
-                                text = "“",
+                                text = "â€œ",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = (-8).dp)
@@ -960,7 +958,7 @@ fun PlaylistSongList(
                             )
 
                             BasicText(
-                                text = "„",
+                                text = "â€ž",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = 4.dp)
@@ -1067,6 +1065,10 @@ fun PlaylistSongList(
         }
     }
 }
+
+
+
+
 
 
 

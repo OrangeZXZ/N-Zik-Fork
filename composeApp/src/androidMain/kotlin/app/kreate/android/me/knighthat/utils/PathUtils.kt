@@ -1,4 +1,8 @@
-package app.kreate.android.me.knighthat.utils
+﻿package app.kreate.android.me.knighthat.utils
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -83,7 +87,7 @@ object PathUtils {
             tint = colorPalette().textDisabled,
             contentDescription = null,
             modifier = Modifier.size( typography().xs.fontSize.value.dp )
-                               .clickable {
+                               .clip(uiRoundnessShape()).clickable {
                                    onSpecificAddressClick( findCommonPath( paths ) )
                                }
         )
@@ -111,10 +115,13 @@ object PathUtils {
                     color = colorPalette().text,
                     fontWeight = FontWeight.Bold
                 ),
-                modifier = Modifier.clickable { onSpecificAddressClick( capturedCurrentPath ) }
+                modifier = Modifier.clip(uiRoundnessShape()).clickable { onSpecificAddressClick( capturedCurrentPath ) }
             )
         }
     }
 }
+
+
+
 
 

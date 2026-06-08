@@ -1,6 +1,7 @@
-package app.it.fast4x.rimusic.ui.screens.player
+﻿package app.it.fast4x.rimusic.ui.screens.player
 
 import app.n_zik.android.core.database.*
+import app.n_zik.android.uiRoundnessShape
 
 import android.app.SearchManager
 import android.content.ActivityNotFoundException
@@ -179,6 +180,7 @@ import timber.log.Timber
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import app.n_zik.android.uiRoundnessShape
 
 val textFieldColors: TextFieldColors
     @Composable
@@ -681,7 +683,7 @@ fun Lyrics(
                                 isPicking = true
                             },
                             modifier = Modifier
-                                .background(shape = RoundedCornerShape(4.dp), color = Color.White)
+                                .background(shape = uiRoundnessShape(), color = Color.White)
                                 .padding(all = 4.dp)
                                 .size(24.dp)
                                 .align(Alignment.CenterVertically)
@@ -791,7 +793,7 @@ fun Lyrics(
                                             },
                                             modifier = Modifier
                                                 .background(
-                                                    shape = RoundedCornerShape(4.dp),
+                                                    shape = uiRoundnessShape(),
                                                     color = Color.White
                                                 )
                                                 .padding(all = 4.dp)
@@ -1300,7 +1302,7 @@ fun Lyrics(
                                         modifier = Modifier
                                             .padding(vertical = 4.dp, horizontal = 32.dp)
                                             .align(if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center)
-                                            .clickable(
+                                            .clip(uiRoundnessShape()).clickable(
                                                 interactionSource = remember { MutableInteractionSource() },
                                                 indication = if (clickLyricsText) ripple(true) else null,
                                                 onClick = {
@@ -1350,7 +1352,7 @@ fun Lyrics(
                                             .graphicsLayer{
                                                 alpha = animateOpacity
                                             }
-                                            .clickable(
+                                            .clip(uiRoundnessShape()).clickable(
                                                 interactionSource = remember { MutableInteractionSource() },
                                                 indication = if (clickLyricsText) ripple(true) else null,
                                                 onClick = {
@@ -1365,7 +1367,7 @@ fun Lyrics(
                                                 ) else if (lyricsHighlight == LyricsHighlight.Black) Color.Black.copy(
                                                     0.5f
                                                 ) else Color.Transparent else Color.Transparent,
-                                                RoundedCornerShape(6.dp)
+                                                uiRoundnessShape()
                                             )
                                             .conditional(lyricsHighlight != LyricsHighlight.None) { fillMaxWidth() }
                                     )
@@ -1399,7 +1401,7 @@ fun Lyrics(
                                             .graphicsLayer{
                                                 alpha = animateOpacity
                                             }
-                                            .clickable(
+                                            .clip(uiRoundnessShape()).clickable(
                                                 interactionSource = remember { MutableInteractionSource() },
                                                 indication = if (clickLyricsText) ripple(true) else null,
                                                 onClick = {
@@ -1439,7 +1441,7 @@ fun Lyrics(
                                      ),
                                      modifier = Modifier
                                          .padding(vertical = 4.dp, horizontal = 32.dp)
-                                         .clickable {
+                                         .clip(uiRoundnessShape()).clickable {
                                              if (enableClick)
                                                  binder?.player?.seekTo(sentence.first)
                                          }
@@ -1814,7 +1816,7 @@ fun Lyrics(
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(colorPalette().text),
                         modifier = Modifier
-                            .clickable(
+                            .clip(uiRoundnessShape()).clickable(
                                 indication = ripple(bounded = false),
                                 interactionSource = remember { MutableInteractionSource() },
                                 onClick = {
@@ -1836,14 +1838,14 @@ fun Lyrics(
                         Box(modifier = Modifier
                             .align(Alignment.Center)
                             .size(45.dp)
-                            .background(colorPalette().accent, RoundedCornerShape(15.dp))
+                            .background(colorPalette().accent, uiRoundnessShape())
                         ){}
                         Image(
                             painter = painterResource(if (binder?.player?.isPlaying == true) R.drawable.pause else R.drawable.play),
                             contentDescription = null,
                             colorFilter = ColorFilter.tint(if (colorPaletteName == ColorPaletteName.PureBlack) Color.Black else colorPalette().text),
                             modifier = Modifier
-                                .clickable(
+                                .clip(uiRoundnessShape()).clickable(
                                     indication = ripple(bounded = false),
                                     interactionSource = remember { MutableInteractionSource() },
                                     onClick = {
@@ -1866,7 +1868,7 @@ fun Lyrics(
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(colorPalette().text),
                         modifier = Modifier
-                            .clickable(
+                            .clip(uiRoundnessShape()).clickable(
                                 indication = ripple(bounded = false),
                                 interactionSource = remember { MutableInteractionSource() },
                                 onClick = {
@@ -1912,7 +1914,7 @@ fun Lyrics(
                     colorFilter = ColorFilter.tint(DefaultDarkColorPalette.text),
                     modifier = Modifier
                         .padding(all = 4.dp)
-                        .clickable(
+                        .clip(uiRoundnessShape()).clickable(
                             indication = ripple(bounded = false),
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
@@ -2497,5 +2499,8 @@ fun SelectLyricFromTrack(
         }
     }
 }*/
+
+
+
 
 

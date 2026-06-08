@@ -1,4 +1,6 @@
-package app.it.fast4x.rimusic.ui.screens.settings
+﻿package app.it.fast4x.rimusic.ui.screens.settings
+
+import app.n_zik.android.uiRoundnessShape
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
@@ -496,5 +498,7 @@ fun OtherSettings() {
 
     }
 }
+
+
 
 

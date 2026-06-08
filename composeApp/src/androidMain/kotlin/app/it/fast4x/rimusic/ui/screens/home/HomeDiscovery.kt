@@ -1,4 +1,6 @@
-package app.it.fast4x.rimusic.ui.screens.home
+﻿package app.it.fast4x.rimusic.ui.screens.home
+
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.core.database.*
 
@@ -60,7 +62,6 @@ import app.n_zik.android.core.database.Database
 import app.n_zik.android.LocalPlayerAwareWindowInsets
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavigationBarPosition
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.UiType
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.ShimmerHost
@@ -79,7 +80,6 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showSearchTabKey
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 
@@ -191,7 +191,7 @@ fun HomeDiscovery(
                                             thumbnailSizePx = thumbnailPx,
                                             thumbnailSizeDp = thumbnailDp,
                                             alternative = true,
-                                            modifier = Modifier.clickable(onClick = {
+                                            modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
                                                 onNewReleaseAlbumClick(
                                                     it.key
                                                 )
@@ -219,7 +219,7 @@ fun HomeDiscovery(
                                 thumbnailSizePx = thumbnailPx,
                                 thumbnailSizeDp = thumbnailDp,
                                 alternative = true,
-                                modifier = Modifier.clickable(onClick = { onNewReleaseAlbumClick(it.key) }),
+                                modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = { onNewReleaseAlbumClick(it.key) }),
                                 disableScrollingText = disableScrollingText
                             )
                         }
@@ -320,11 +320,7 @@ fun MoodItemColored(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
-
+    
     val moodColor by remember { derivedStateOf { Color(mood.stripeColor) } }
 
     Column (
@@ -333,7 +329,7 @@ fun MoodItemColored(
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
-            .clip(thumbnailRoundness.shape)
+            .clip(app.n_zik.android.thumbnailShape())
             .clickable { onClick() }
 
     ) {
@@ -375,11 +371,7 @@ fun MoodGridItemColored(
     modifier: Modifier = Modifier,
     thumbnailSizeDp: Dp
 ) {
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
-
+    
     val moodColor by remember { derivedStateOf { Color(mood.stripeColor) } }
 
     Column (
@@ -388,7 +380,7 @@ fun MoodGridItemColored(
         modifier = modifier
             .size(thumbnailSizeDp,thumbnailSizeDp)
             .padding(5.dp)
-            .clickable { onClick() }
+            .clip(uiRoundnessShape()).clickable { onClick() }
 
     ) {
         Row(
@@ -396,7 +388,7 @@ fun MoodGridItemColored(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxSize(0.9f)
-                .clip(thumbnailRoundness.shape)
+                .clip(app.n_zik.android.thumbnailShape())
 
         ) {
             Row(
@@ -436,11 +428,7 @@ fun MoodItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
-
+    
 
     Column (
         verticalArrangement = Arrangement.SpaceAround,
@@ -448,14 +436,14 @@ fun MoodItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
-            .clip(thumbnailRoundness.shape)
+            .clip(app.n_zik.android.thumbnailShape())
             .clickable { onClick() }
 
     ) {
         Box(
             modifier = Modifier
                 .requiredWidth(150.dp)
-                .background(color = colorPalette().background4, shape = thumbnailRoundness.shape)
+                .background(color = colorPalette().background4, shape = app.n_zik.android.thumbnailShape())
                 .fillMaxWidth(0.9f)
                 .padding(all = 10.dp)
         ){
@@ -482,11 +470,7 @@ fun MoodGridItem(
     modifier: Modifier = Modifier,
     thumbnailSizeDp: Dp
 ) {
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
-
+    
 
     Column (
         verticalArrangement = Arrangement.SpaceAround,
@@ -494,13 +478,13 @@ fun MoodGridItem(
         modifier = modifier
             .size(thumbnailSizeDp,thumbnailSizeDp)
             //.background(colorPalette().background1)
-            .clip(thumbnailRoundness.shape)
+            .clip(app.n_zik.android.thumbnailShape())
             .clickable { onClick() }
 
     ) {
         Box(
             modifier = Modifier
-                .background(color = colorPalette().background4, shape = thumbnailRoundness.shape)
+                .background(color = colorPalette().background4, shape = app.n_zik.android.thumbnailShape())
                 .fillMaxSize(0.9f)
                 .padding(horizontal = 10.dp)
                 .padding(vertical = 50.dp)
@@ -532,6 +516,9 @@ fun MoodItemPlaceholder(
             .size(width, 64.dp)
     )
 }
+
+
+
 
 
 

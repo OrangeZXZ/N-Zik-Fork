@@ -59,6 +59,7 @@ import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.multiFloatActionIconOffsetXkey
 import app.it.fast4x.rimusic.utils.multiFloatActionIconOffsetYkey
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.n_zik.android.uiRoundnessShape
 
 enum class MultiFabState {
     Collapsed, Expanded
@@ -109,7 +110,7 @@ fun MultiFloatingActionsButton (
     val modifier = if (currentState == MultiFabState.Expanded)
         Modifier
             .fillMaxSize()
-            .clickable(indication = null,
+            .clip(uiRoundnessShape()).clickable(indication = null,
                 interactionSource = remember { MutableInteractionSource() }) {
                 currentState = MultiFabState.Collapsed
             } else Modifier.fillMaxSize()
@@ -179,14 +180,14 @@ fun MultiFloatingActionsButton (
 
                             }
                         }
-                        .clip(RoundedCornerShape(16.dp))
+                        .clip(uiRoundnessShape())
                         //.background(colorPalette().favoritesIcon)
                         .background(colorPalette().background2)
                         //.padding(all = 20.dp)
                         //.padding(horizontal = 20.dp)
                         .height(64.dp)
                         .width(64.dp)
-                        .combinedClickable(
+                        .clip(uiRoundnessShape()).combinedClickable(
                             onClick = {
                                 if (!useAsActionsMenu)
                                     if (currentState == MultiFabState.Collapsed) onClick() else stateChange()
@@ -264,11 +265,11 @@ fun SmallFloatingActionButtonRow(
                 text = item.label,
                 modifier = Modifier
                     .padding(start = 6.dp, end = 6.dp, top = 4.dp, bottom = 4.dp)
-                    .clickable(onClick = { item.onFabItemClicked() })
+                    .clip(uiRoundnessShape()).clickable(onClick = { item.onFabItemClicked() })
             )
         }
         SmallFloatingActionButton(
-            shape = CircleShape,
+            shape = app.n_zik.android.uiRoundnessShape(),
             modifier = Modifier
                 .padding(4.dp),
             onClick = { item.onFabItemClicked() },
@@ -283,6 +284,10 @@ fun SmallFloatingActionButtonRow(
         }
     }
 }
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.settings
+﻿package app.it.fast4x.rimusic.ui.screens.settings
 
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
@@ -57,7 +57,6 @@ import it.fast4x.piped.models.Session
 import app.n_zik.android.appContext
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.colorPalette
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.n_zik.android.extensions.discord.DiscordLoginAndGetToken
 import app.n_zik.android.extensions.discord.DiscordPresenceManager
 import app.it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
@@ -85,7 +84,6 @@ import app.it.fast4x.rimusic.utils.preferences
 import app.it.fast4x.rimusic.utils.rememberEncryptedPreference
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.restartActivityKey
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import app.it.fast4x.rimusic.utils.ytAccountChannelHandleKey
 import app.it.fast4x.rimusic.utils.ytAccountEmailKey
 import app.it.fast4x.rimusic.utils.ytAccountNameKey
@@ -107,11 +105,7 @@ import app.n_zik.android.typography
 @Composable
 fun AccountsSettings() {
     val context = LocalContext.current
-    val thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
-
+    
     var restartActivity by rememberPreference(restartActivityKey, false)
     var restartService by rememberSaveable { mutableStateOf(false) }
 
@@ -312,7 +306,7 @@ fun AccountsSettings() {
                                         shape = thumbnailShape()
                                     ) {}
                                 },
-                                shape = thumbnailRoundness.shape
+                                shape = app.n_zik.android.thumbnailShape()
                             ) {
                                 YouTubeLogin(
                                     onLogin = { cookieRetrieved ->
@@ -759,7 +753,7 @@ fun AccountsSettings() {
                                             shape = thumbnailShape()
                                         ) {}
                                     },
-                                    shape = thumbnailRoundness.shape
+                                    shape = app.n_zik.android.thumbnailShape()
                                 ) {
                                     DiscordLoginAndGetToken(
                                         navController = rememberNavController(),
@@ -802,6 +796,7 @@ fun isYouTubeLoggedIn(): Boolean {
     val isLoggedIn = cookie?.let { parseCookieString(it) }?.contains("SAPISID") == true
     return isLoggedIn
 }
+
 
 
 

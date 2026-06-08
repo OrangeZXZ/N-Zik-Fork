@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.mood
+﻿package app.it.fast4x.rimusic.ui.screens.mood
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -140,7 +144,7 @@ fun MoodList(
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         alternative = true,
-                                        modifier = Modifier.clickable {
+                                        modifier = Modifier.clip(uiRoundnessShape()).clickable {
                                             childItem.info?.endpoint?.browseId?.let {
                                                 //albumRoute.global(it)
                                                 navController.navigate(route = "${NavRoutes.album.name}/$it")
@@ -154,7 +158,7 @@ fun MoodList(
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         alternative = true,
-                                        modifier = Modifier.clickable {
+                                        modifier = Modifier.clip(uiRoundnessShape()).clickable {
                                             childItem.info?.endpoint?.browseId?.let {
                                                 navController.navigate(route = "${NavRoutes.artist.name}/$it")
                                             }
@@ -167,7 +171,7 @@ fun MoodList(
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         alternative = true,
-                                        modifier = Modifier.clickable {
+                                        modifier = Modifier.clip(uiRoundnessShape()).clickable {
                                             childItem.info?.endpoint?.let { endpoint ->
                                                 /*
                                                 playlistRoute.global(
@@ -218,6 +222,9 @@ fun MoodList(
         )
     }
 }
+
+
+
 
 
 

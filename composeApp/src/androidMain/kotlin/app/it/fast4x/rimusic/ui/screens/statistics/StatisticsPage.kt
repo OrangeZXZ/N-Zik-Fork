@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.statistics
+﻿package app.it.fast4x.rimusic.ui.screens.statistics
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.core.database.*
 
@@ -59,7 +63,6 @@ import app.it.fast4x.rimusic.enums.MaxStatisticsItems
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.StatisticsCategory
 import app.it.fast4x.rimusic.enums.StatisticsType
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.models.Song
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.ButtonsRow
@@ -93,7 +96,6 @@ import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showStatsListeningTimeKey
 import app.it.fast4x.rimusic.utils.statisticsCategoryKey
 import app.n_zik.android.core.coil.thumbnail
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -128,11 +130,7 @@ fun StatisticsPage(
 
     val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
 
-    val thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
-
+    
     val showStatsListeningTime by rememberPreference(showStatsListeningTimeKey, true)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
@@ -300,7 +298,7 @@ fun StatisticsPage(
                                         modifier = Modifier
                                             .background(
                                                 color = colorPalette().background4,
-                                                shape = thumbnailRoundness.shape
+                                                shape = app.n_zik.android.thumbnailShape()
                                             )
 
                                     )
@@ -352,7 +350,7 @@ fun StatisticsPage(
                                 },
                                 modifier = Modifier
                                     .background(colorPalette().background0)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onLongClick = {
                                             menuState.display {
                                                 NonQueuedMediaItemMenu(
@@ -400,7 +398,7 @@ fun StatisticsPage(
                             thumbnailSizeDp = artistThumbnailSizeDp,
                             alternative = true,
                             modifier = Modifier
-                                .clickable(onClick = {
+                                .clip(uiRoundnessShape()).clickable(onClick = {
                                     if (artists[it].id != "") {
                                         navController.navigate("${NavRoutes.artist.name}/${artists[it].id}")
                                     }
@@ -426,7 +424,7 @@ fun StatisticsPage(
                             thumbnailSizeDp = albumThumbnailSizeDp,
                             alternative = true,
                             modifier = Modifier
-                                .clickable(onClick = {
+                                .clip(uiRoundnessShape()).clickable(onClick = {
                                     if (albums[it].id != "")
                                         navController.navigate("${NavRoutes.album.name}/${albums[it].id}")
                                 }),
@@ -494,7 +492,7 @@ fun StatisticsPage(
                             thumbnailSizeDp = playlistThumbnailSizeDp,
                             alternative = true,
                             modifier = Modifier
-                                .clickable(onClick = {
+                                .clip(uiRoundnessShape()).clickable(onClick = {
                                     val playlistId: String = playlists[it].playlist.id.toString()
                                     if ( playlistId.isEmpty() ) return@clickable    // Fail-safe??
 
@@ -535,6 +533,10 @@ fun StatisticsPage(
 
         }
 }
+
+
+
+
 
 
 

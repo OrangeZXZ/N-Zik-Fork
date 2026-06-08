@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
@@ -44,7 +48,7 @@ fun Title(
         modifier = modifier
             .fillMaxWidth()
             //.windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-            .clickable(enabled = onClick != null) {
+            .clip(uiRoundnessShape()).clickable(enabled = onClick != null) {
                 if (enableClick)
                     onClick?.invoke()
             }
@@ -91,7 +95,7 @@ fun Title2Actions(
         modifier = modifier
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-            .clickable(enabled = onClick1 != null) {
+            .clip(uiRoundnessShape()).clickable(enabled = onClick1 != null) {
                 if (enableClick)
                     onClick1?.invoke()
             }
@@ -115,7 +119,7 @@ fun Title2Actions(
                 tint = colorPalette().text,
                 modifier = Modifier
                     .padding(end = 12.dp)
-                    .clickable {
+                    .clip(uiRoundnessShape()).clickable {
                         onClick2.invoke()
                     }
             )
@@ -127,7 +131,7 @@ fun Title2Actions(
                 contentDescription = null,
                 tint = colorPalette().text,
                 modifier = Modifier
-                    .clickable {
+                    .clip(uiRoundnessShape()).clickable {
                     onClick1.invoke()
                 }
             )
@@ -153,7 +157,7 @@ fun Title3Actions(
         modifier = modifier
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
-            .clickable(enabled = onClick1 != null) {
+            .clip(uiRoundnessShape()).clickable(enabled = onClick1 != null) {
                 if (enableClick)
                     onClick1?.invoke()
             }
@@ -176,7 +180,7 @@ fun Title3Actions(
                 tint = colorPalette().text,
                 modifier = Modifier
                     .padding(end = 12.dp)
-                    .clickable {
+                    .clip(uiRoundnessShape()).clickable {
                         onClick3.invoke()
                     }
             )
@@ -189,7 +193,7 @@ fun Title3Actions(
                 tint = colorPalette().text,
                 modifier = Modifier
                     .padding(end = 12.dp)
-                    .clickable {
+                    .clip(uiRoundnessShape()).clickable {
                         onClick2.invoke()
                     }
             )
@@ -201,7 +205,7 @@ fun Title3Actions(
                 contentDescription = null,
                 tint = colorPalette().text,
                 modifier = Modifier
-                    .clickable {
+                    .clip(uiRoundnessShape()).clickable {
                         onClick1.invoke()
                     }
             )
@@ -245,5 +249,8 @@ fun TitleMiniSection(
         modifier = modifier.padding(top = 5.dp)
     )
 }
+
+
+
 
 

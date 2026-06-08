@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.home
+﻿package app.it.fast4x.rimusic.ui.screens.home
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -262,7 +266,7 @@ fun HomePage(
                                         downloadState = Download.STATE_STOPPED,
                                         disableScrollingText = disableScrollingText,
                                         isNowPlaying = false,
-                                        modifier = Modifier.clickable(onClick = {
+                                        modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
                                             binder?.player?.forcePlay(item.asMediaItem)
                                         })
                                     )
@@ -276,7 +280,7 @@ fun HomePage(
                                         thumbnailSizePx = albumThumbnailSizePx,
                                         thumbnailSizeDp = albumThumbnailSizeDp,
                                         disableScrollingText = disableScrollingText,
-                                        modifier = Modifier.clickable(onClick = {
+                                        modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
                                             navController.navigate("${NavRoutes.album.name}/${item.key}")
                                         })
 
@@ -289,7 +293,7 @@ fun HomePage(
                                         thumbnailSizePx = artistThumbnailSizePx,
                                         thumbnailSizeDp = artistThumbnailSizeDp,
                                         disableScrollingText = disableScrollingText,
-                                        modifier = Modifier.clickable(onClick = {
+                                        modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
                                             navController.navigate("${NavRoutes.artist.name}/${item.key}")
                                         })
                                     )
@@ -302,7 +306,7 @@ fun HomePage(
                                         thumbnailSizePx = playlistThumbnailSizePx,
                                         thumbnailSizeDp = playlistThumbnailSizeDp,
                                         disableScrollingText = disableScrollingText,
-                                        modifier = Modifier.clickable(onClick = {
+                                        modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
                                             navController.navigate("${NavRoutes.playlist.name}/${item.key}")
                                         })
                                     )
@@ -347,6 +351,9 @@ fun HomePage(
 
     }
 }
+
+
+
 
 
 

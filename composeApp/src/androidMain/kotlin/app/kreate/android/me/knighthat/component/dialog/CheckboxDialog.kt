@@ -1,4 +1,8 @@
-package app.kreate.android.me.knighthat.component.dialog
+﻿package app.kreate.android.me.knighthat.component.dialog
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -83,7 +87,7 @@ abstract class CheckboxDialog(activeState: MutableState<Boolean>): ConfirmDialog
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding( vertical = 3.dp )
-                                   .clickable(
+                                   .clip(uiRoundnessShape()).clickable(
                                        interactionSource = remember { MutableInteractionSource() },
                                        indication = null,
                                        onClick = ::onShortClick
@@ -112,4 +116,7 @@ abstract class CheckboxDialog(activeState: MutableState<Boolean>): ConfirmDialog
         }
     }
 }
+
+
+
 

@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +14,7 @@ import app.it.fast4x.rimusic.utils.color
 import app.it.fast4x.rimusic.utils.medium
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 fun DialogTextButton(
@@ -33,13 +34,16 @@ fun DialogTextButton(
         text = text,
         style = typography().xs.medium.color(textColor),
         modifier = modifier
-            .clip(RoundedCornerShape(36.dp))
+            .clip(uiRoundnessShape())
             .background(if (primary) colorPalette().accent else Color.Transparent)
             //.background(if (primary) colorPalette.accent else colorPalette.background4)
-            .clickable(enabled = enabled, onClick = onClick)
+            .clip(uiRoundnessShape()).clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 20.dp, vertical = 16.dp)
     )
 }
+
+
+
 
 
 

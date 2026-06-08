@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -38,27 +39,28 @@ private fun appIconClickAction(
     countToReveal.intValue++
 
     val message: String =
-        when( countToReveal.intValue ) {
+        when (countToReveal.intValue) {
             10 -> {
                 countToReveal.intValue = 0
-                navController.navigate( NavRoutes.gamePacman.name )
+                navController.navigate(NavRoutes.gamePacman.name)
                 ""
             }
+
             3 -> context.getString(R.string.easter_egg_click_message)
             6 -> context.getString(R.string.easter_egg_keep_going)
             9 -> context.getString(R.string.easter_egg_number_one)
             else -> ""
         }
-    if( message.isNotEmpty() )
-        Toaster.n( message, Toast.LENGTH_LONG )
+    if (message.isNotEmpty())
+        Toaster.n(message, Toast.LENGTH_LONG)
 }
 
 private fun appIconLongClickAction(
     navController: NavController,
     context: Context
 ) {
-    Toaster.n( context.getString(R.string.easter_egg_last), Toast.LENGTH_LONG )
-    navController.navigate( NavRoutes.gameSnake.name )
+    Toaster.n(context.getString(R.string.easter_egg_last), Toast.LENGTH_LONG)
+    navController.navigate(NavRoutes.gameSnake.name)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -68,22 +70,24 @@ private fun AppLogo(
     context: Context
 ) {
     val countToReveal = remember { mutableIntStateOf(0) }
-    val modifier = Modifier.combinedClickable(
-        onClick = { appIconClickAction( navController, countToReveal, context ) },
-        onLongClick = { appIconLongClickAction( navController, context ) }
-    )
+    val modifier = Modifier
+        .clip(app.n_zik.android.uiRoundnessShape())
+        .combinedClickable(
+            onClick = { appIconClickAction(navController, countToReveal, context) },
+            onLongClick = { appIconLongClickAction(navController, context) }
+        )
 
     Image(
         bitmap = APP_ICON_IMAGE_BITMAP,
         contentDescription = "App's icon",
-        modifier = modifier.size( 36.dp )
+        modifier = modifier.size(36.dp)
     )
 }
 
 @Composable
-private fun AppLogoText( navController: NavController ) {
+private fun AppLogoText(navController: NavController) {
     val iconTextClick: () -> Unit = {
-        if ( NavRoutes.home.isNotHere( navController ) )
+        if (NavRoutes.home.isNotHere(navController))
             navController.navigate(NavRoutes.home.name)
     }
 
@@ -96,6 +100,7 @@ private fun AppLogoText( navController: NavController ) {
             color = AppBar.contentColor()
         ),
         modifier = Modifier
+            .clip(app.n_zik.android.uiRoundnessShape())
             .clickable { iconTextClick() }
             .padding(horizontal = 8.dp)
     )
@@ -108,13 +113,13 @@ fun AppTitle(
     context: Context
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy( 5.dp ),
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AppLogo( navController, context )
-        AppLogoText( navController )
+        AppLogo(navController, context)
+        AppLogoText(navController)
 
-        if(Preference.parentalControl())
+        if (Preference.parentalControl())
             Button(
                 iconId = R.drawable.shield_checkmark,
                 color = AppBar.contentColor(),
@@ -133,12 +138,14 @@ fun AppTitle(
                 ),
                 modifier = Modifier
                     .clickable {
-                        Toaster.s( R.string.info_debug_mode_is_enabled )
+                        Toaster.s(R.string.info_debug_mode_is_enabled)
                         navController.navigate(NavRoutes.settings.name)
                     }
             )
     }
 // END
 }
+
+
 
 

@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.colorPalette
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 fun PrimaryButton(
@@ -25,8 +26,8 @@ fun PrimaryButton(
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .clickable(enabled = enabled, onClick = onClick)
+            .clip(uiRoundnessShape())
+            .clip(uiRoundnessShape()).clickable(enabled = enabled, onClick = onClick)
             .background(colorPalette().background2)
             .size(62.dp)
     ) {
@@ -40,6 +41,9 @@ fun PrimaryButton(
         )
     }
 }
+
+
+
 
 
 

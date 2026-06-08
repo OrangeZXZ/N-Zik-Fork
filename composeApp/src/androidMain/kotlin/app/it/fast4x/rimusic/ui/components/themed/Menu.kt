@@ -36,6 +36,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 inline fun Menu(
@@ -54,8 +55,8 @@ inline fun Menu(
             .verticalScroll(rememberScrollState())
             .fillMaxWidth()
             .let {
-                if (isLandscape) it.clip(RoundedCornerShape(16.dp))
-                else it.clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                if (isLandscape) it.clip(uiRoundnessShape())
+                else it.clip(uiRoundnessShape())
             }
             .background(colorPalette().background1)
             .padding(top = 2.dp)
@@ -81,7 +82,7 @@ fun MenuEntry(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         modifier = Modifier
-            .combinedClickable(enabled = enabled, onClick = onClick, onLongClick = onLongClick)
+            .clip(uiRoundnessShape()).combinedClickable(enabled = enabled, onClick = onClick, onLongClick = onLongClick)
             .fillMaxWidth()
             .alpha(if (enabled) 1f else 0.4f)
             .padding(horizontal = 24.dp)
@@ -162,8 +163,8 @@ inline fun <T> LazyMenu(
             }
             .fillMaxWidth()
             .let {
-                if (isLandscape) it.clip(RoundedCornerShape(16.dp))
-                else it.clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                if (isLandscape) it.clip(uiRoundnessShape())
+                else it.clip(uiRoundnessShape())
             }
             .background(colorPalette().background1)
             .padding(top = 2.dp)
@@ -178,3 +179,6 @@ inline fun <T> LazyMenu(
         )
     }
 }
+
+
+

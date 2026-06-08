@@ -1,6 +1,7 @@
 package app.it.fast4x.rimusic.ui.components.navigation.nav
 
 import androidx.compose.runtime.CompositionLocalProvider
+import app.n_zik.android.uiRoundnessShape
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateColor
@@ -44,6 +45,7 @@ import app.n_zik.android.showStatsIconInNav
 import app.it.fast4x.rimusic.ui.components.themed.Button
 import app.it.fast4x.rimusic.ui.components.themed.TextIconButton
 import app.it.fast4x.rimusic.ui.styling.Dimensions
+import app.n_zik.android.uiRoundnessShape
 
 // Shown when "Navigation bar position" is set to "top" or "bottom"
 class HorizontalNavigationBar(
@@ -53,10 +55,11 @@ class HorizontalNavigationBar(
     modifier: Modifier = Modifier
 ): AbstractNavigationBar( navController, modifier ) {
 
+    @Composable
     private fun navButtonProperties(): Modifier {
         val padding: Dp = 4.dp
         val size: Dp = 24.dp
-        val border: Shape = CircleShape
+        val border: Shape = uiRoundnessShape()
 
         return Modifier.padding( all = padding )
                        .size( size )
@@ -110,8 +113,7 @@ class HorizontalNavigationBar(
                     TextIconButton( text, iconId, color, 0.dp, 20.dp, textSpacing = if (isFloating) 12.dp else 5.dp, isCompact = isFloating )
 
             val contentModifier = Modifier
-                .clip(RoundedCornerShape(if (isFloating) 14.dp else 12.dp))
-                .clickable(onClick = { onTabChanged(index) })
+                .clip(uiRoundnessShape()).clickable(onClick = { onTabChanged(index) })
 
             addButton( button, contentModifier )
         }
@@ -174,9 +176,9 @@ class HorizontalNavigationBar(
 
                 val scrollState = rememberScrollState()
                 val roundedCornerShape = when {
-                    isFloating -> RoundedCornerShape(24.dp)
-                    NavigationBarPosition.Bottom.isCurrent() -> RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)
-                    else -> RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)
+                    isFloating -> uiRoundnessShape()
+                    NavigationBarPosition.Bottom.isCurrent() -> uiRoundnessShape()
+                    else -> uiRoundnessShape()
                 }
 
                 // Settings button only visible when
@@ -230,6 +232,13 @@ class HorizontalNavigationBar(
         }
     }
 }
+
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,10 @@
+New: 
+- added a new UI roundness for the entire app, that allow you managing the roudness of the app.
+
+Fixed: 
+- Accurately positioned slider step dots over the track using a precise Canvas implementation, resolving edge clipping and padding issues.
+
+Improved: 
+- Added back preview for thumbnal size, roudness and ui roudness
+- Redesigned the slider component to feature a Material 3 Expressive "Jelly" spring animation for the thumb.
+- Implemented a continuous sliding experience with a seamless magnetic grip for preset values.

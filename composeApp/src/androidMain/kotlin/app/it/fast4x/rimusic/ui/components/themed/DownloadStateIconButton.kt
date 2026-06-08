@@ -1,5 +1,9 @@
-@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+﻿@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.components.themed
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -48,7 +52,7 @@ fun DownloadStateIconButton(
                 ){
         androidx.compose.foundation.layout.Box(
             modifier = Modifier
-                .clickable(
+                .clip(uiRoundnessShape()).clickable(
                     indication = indication ?: ripple(bounded = false, radius = 24.dp),
                     interactionSource = remember { MutableInteractionSource() },
                     enabled = enabled,
@@ -82,7 +86,7 @@ fun DownloadStateIconButton(
             contentDescription = null,
             colorFilter = ColorFilter.tint(color),
             modifier = Modifier
-                .clickable(
+                .clip(uiRoundnessShape()).clickable(
                     indication = indication ?: ripple(bounded = false),
                     interactionSource = remember { MutableInteractionSource() },
                     enabled = enabled,
@@ -92,5 +96,8 @@ fun DownloadStateIconButton(
         )
     }
 }
+
+
+
 
 

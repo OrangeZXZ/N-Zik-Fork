@@ -1,4 +1,8 @@
-package app.kreate.android.me.knighthat.component.menu
+﻿package app.kreate.android.me.knighthat.component.menu
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
@@ -63,7 +67,7 @@ object ListMenu {
         horizontalArrangement = Arrangement.spacedBy( 24.dp ),
         modifier = modifier.fillMaxWidth()
                            .alpha( if (enabled) 1f else 0.4f )
-                           .combinedClickable(
+                           .clip(uiRoundnessShape()).combinedClickable(
                                enabled = enabled,
                                onClick = onClick,
                                onLongClick = onLongClick
@@ -94,5 +98,8 @@ object ListMenu {
         trailingContent()
     }
 }
+
+
+
 
 

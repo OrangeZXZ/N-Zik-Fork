@@ -1,4 +1,8 @@
-package app.kreate.android.themed.rimusic.screen.artist
+﻿package app.kreate.android.themed.rimusic.screen.artist
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -132,7 +136,7 @@ fun ArtistAlbums(
                             thumbnailSizePx = thumbnailSizePx,
                             thumbnailSizeDp = thumbnailSizeDp,
                             alternative = true,
-                            modifier = Modifier.clickable(onClick = {
+                            modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
                                 NavRoutes.album.navigateHere(navController, it.key)
                             }),
                             disableScrollingText = disableScrollingText
@@ -144,3 +148,6 @@ fun ArtistAlbums(
     }
 
 }
+
+
+

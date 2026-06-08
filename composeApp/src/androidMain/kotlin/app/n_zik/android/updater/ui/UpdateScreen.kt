@@ -1,15 +1,17 @@
-@file:kotlin.OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+﻿@file:kotlin.OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 package app.n_zik.android.updater.ui
 
 import app.n_zik.android.updater.services.*
 import app.n_zik.android.updater.models.*
 import app.n_zik.android.updater.ui.*
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.updater.services.Updater
 import app.n_zik.android.updater.services.UpdateDownloadManager
 import app.n_zik.android.updater.models.UpdaterConstants
 import app.n_zik.android.updater.models.GithubRelease
 import app.n_zik.android.updater.models.MajorUpdateConfig
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -83,6 +85,7 @@ import app.n_zik.android.BuildConfig
 import app.n_zik.android.R
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 fun UpdateScreen(navController: NavController) {
@@ -158,7 +161,7 @@ fun UpdateScreen(navController: NavController) {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(containerColor = colorPalette().background1),
-                            shape = RoundedCornerShape(12.dp),
+                            shape = uiRoundnessShape(),
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                         ) {
                             Column(
@@ -188,7 +191,7 @@ fun UpdateScreen(navController: NavController) {
                                     Spacer(modifier = Modifier.height(12.dp))
                                     androidx.compose.material3.LinearWavyProgressIndicator(
                                         progress = { state.progress },
-                                        modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(4.dp)),
+                                        modifier = Modifier.fillMaxWidth().height(8.dp).clip(uiRoundnessShape()),
                                         color = colorPalette().accent,
                                         trackColor = colorPalette().background2
                                     )
@@ -199,8 +202,8 @@ fun UpdateScreen(navController: NavController) {
                                     ) {
                                         Box(
                                             modifier = Modifier
-                                                .clip(RoundedCornerShape(8.dp))
-                                                .clickable {
+                                                .clip(uiRoundnessShape())
+                                                .clip(uiRoundnessShape()).clickable {
                                                     Toaster.i(R.string.download_cancelled)
                                                     UpdateDownloadManager.cancelDownload(context)
                                                 }
@@ -231,11 +234,11 @@ fun UpdateScreen(navController: NavController) {
                                     Card(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .clickable {
+                                            .clip(uiRoundnessShape()).clickable {
                                                 UpdateDownloadManager.installApk(context, state.filePath)
                                             },
                                         colors = CardDefaults.cardColors(containerColor = colorPalette().accent),
-                                        shape = RoundedCornerShape(8.dp)
+                                        shape = uiRoundnessShape()
                                     ) {
                                         Row(
                                             modifier = Modifier
@@ -278,7 +281,7 @@ fun UpdateScreen(navController: NavController) {
                                     Card(
                                         modifier = Modifier
                                             .weight(1f)
-                                            .clickable {
+                                            .clip(uiRoundnessShape()).clickable {
                                                 UpdateDownloadManager.startDownload(
                                                     context,
                                                     Updater.build.downloadUrl,
@@ -286,7 +289,7 @@ fun UpdateScreen(navController: NavController) {
                                                 )
                                             },
                                         colors = CardDefaults.cardColors(containerColor = colorPalette().accent),
-                                        shape = RoundedCornerShape(12.dp)
+                                        shape = uiRoundnessShape()
                                     ) {
                                         Box(
                                             modifier = Modifier
@@ -316,12 +319,12 @@ fun UpdateScreen(navController: NavController) {
                                     Card(
                                         modifier = Modifier
                                             .weight(1f)
-                                            .clickable {
+                                            .clip(uiRoundnessShape()).clickable {
                                                 Toaster.i(R.string.checking_for_updates)
                                                 Updater.checkForUpdate(true, checkBetaUpdates, showDialog = false)
                                             },
                                         colors = CardDefaults.cardColors(containerColor = colorPalette().background1),
-                                        shape = RoundedCornerShape(12.dp),
+                                        shape = uiRoundnessShape(),
                                         border = androidx.compose.foundation.BorderStroke(1.dp, colorPalette().accent.copy(alpha = 0.5f))
                                     ) {
                                         Box(
@@ -350,7 +353,7 @@ fun UpdateScreen(navController: NavController) {
                                 Card(
                                     modifier = Modifier
                                         .weight(1f)
-                                        .clickable {
+                                        .clip(uiRoundnessShape()).clickable {
                                             val rawVersion = if (hasUpdate) newVersion else currentVersion
                                             val cleanVersion = rawVersion.removePrefix("v")
                                             val tag = if (Updater.extractBuildType(cleanVersion) == UpdaterConstants.TYPE_BETA) {
@@ -361,7 +364,7 @@ fun UpdateScreen(navController: NavController) {
                                             uriHandler.openUri("${Repository.REPO_URL}/releases/tag/$tag")
                                         },
                                     colors = CardDefaults.cardColors(containerColor = colorPalette().background1),
-                                    shape = RoundedCornerShape(12.dp),
+                                    shape = uiRoundnessShape(),
                                     border = androidx.compose.foundation.BorderStroke(1.dp, colorPalette().textSecondary.copy(alpha = 0.5f))
                                 ) {
                                     Box(
@@ -422,7 +425,7 @@ fun UpdateScreen(navController: NavController) {
                                     colorPalette().background1
                                 }
                             ),
-                            shape = RoundedCornerShape(16.dp),
+                            shape = uiRoundnessShape(),
                             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                         ) {
                             Box(modifier = Modifier.fillMaxWidth()) {
@@ -525,7 +528,7 @@ fun UpdateScreen(navController: NavController) {
                                         Box(
                                             modifier = Modifier
                                                 .size(64.dp)
-                                                .clip(CircleShape)
+                                                .clip(uiRoundnessShape())
                                                 .background(colorPalette().accent.copy(alpha = 0.1f)),
                                             contentAlignment = Alignment.Center
                                         ) {
@@ -557,7 +560,7 @@ fun UpdateScreen(navController: NavController) {
                                         Box(
                                             modifier = Modifier
                                                 .size(64.dp)
-                                                .clip(CircleShape)
+                                                .clip(uiRoundnessShape())
                                                 .background(colorPalette().accent.copy(alpha = 0.1f)),
                                             contentAlignment = Alignment.Center
                                         ) {
@@ -583,7 +586,7 @@ fun UpdateScreen(navController: NavController) {
                                         Box(
                                             modifier = Modifier
                                                 .size(64.dp)
-                                                .clip(CircleShape)
+                                                .clip(uiRoundnessShape())
                                                 .background(colorPalette().accent.copy(alpha = 0.1f)),
                                             contentAlignment = Alignment.Center
                                         ) {
@@ -669,7 +672,7 @@ fun UpdateScreen(navController: NavController) {
                                     colorPalette().background1
                                 }
                             ),
-                            shape = RoundedCornerShape(16.dp),
+                            shape = uiRoundnessShape(),
                             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                         ) {
                             Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
@@ -765,11 +768,11 @@ fun ChangelogCard(changelogText: String, colorPaletteMode: ColorPaletteMode) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { expanded = !expanded },
+                    .clip(uiRoundnessShape()).clickable { expanded = !expanded },
                 colors = CardDefaults.cardColors(
                     containerColor = Color.Transparent
                 ),
-                shape = RoundedCornerShape(8.dp),
+                shape = uiRoundnessShape(),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
                 Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
@@ -820,7 +823,7 @@ fun ChangelogCard(changelogText: String, colorPaletteMode: ColorPaletteMode) {
                                         modifier = Modifier
                                             .padding(top = 6.dp)
                                             .size(6.dp)
-                                            .clip(RoundedCornerShape(3.dp))
+                                            .clip(uiRoundnessShape())
                                             .background(
                                                 when (section.first.lowercase()) {
                                                     UpdaterConstants.CHANGELOG_NEW -> Color(0xFF4CAF50)
@@ -846,3 +849,7 @@ fun ChangelogCard(changelogText: String, colorPaletteMode: ColorPaletteMode) {
         }
     }
 }
+
+
+
+

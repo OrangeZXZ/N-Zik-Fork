@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
@@ -47,10 +51,13 @@ fun ScrollText (
         overflow = TextOverflow.Ellipsis,
         maxLines = 1,
         modifier = Modifier.horizontalScroll(scrollState, true)
-            .clickable { onClick() }
+            .clip(uiRoundnessShape()).clickable { onClick() }
             .fillMaxWidth()
     )
 
 }
+
+
+
 
 

@@ -1,6 +1,9 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
+
+import androidx.compose.ui.draw.clip
 
 import app.n_zik.android.core.database.*
+import app.n_zik.android.uiRoundnessShape
 
 
 import android.annotation.SuppressLint
@@ -121,6 +124,7 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 import app.kreate.android.me.knighthat.component.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
+import app.n_zik.android.uiRoundnessShape
 
 @ExperimentalTextApi
 @ExperimentalAnimationApi
@@ -1086,7 +1090,7 @@ fun MediaItemMenu(
                             .absoluteOffset(0.dp, -10.dp)
                             .align(Alignment.TopCenter)
                             .size(30.dp)
-                            .clickable { onDismiss() }
+                            .clip(uiRoundnessShape()).clickable { onDismiss() }
                     )
                 }
 
@@ -1168,7 +1172,7 @@ fun MediaItemMenu(
                                     thumbnailSizeDp = thumbnailArtistSizeDp,
                                     alternative = true,
                                     modifier = Modifier
-                                        .clickable(onClick = {
+                                        .clip(uiRoundnessShape()).clickable(onClick = {
                                             if (onGoToArtist != null) {
                                                 onDismiss()
                                                 onGoToArtist(artist.id)
@@ -1331,7 +1335,7 @@ fun MediaItemMenu(
                                     modifier = modifier
                                         .background(
                                             color = colorPalette().background0,
-                                            shape = RoundedCornerShape(16.dp)
+                                            shape = uiRoundnessShape()
                                         )
                                         .padding(horizontal = 16.dp, vertical = 8.dp)
                                         .animateContentSize()
@@ -2054,6 +2058,10 @@ fun AddToPlaylistArtistSongsMenu(
         }
     }
 }
+
+
+
+
 
 
 

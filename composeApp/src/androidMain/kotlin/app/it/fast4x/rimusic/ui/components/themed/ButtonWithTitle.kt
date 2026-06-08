@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
@@ -22,6 +22,7 @@ import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 fun ButtonWithTitle(
@@ -39,9 +40,9 @@ fun ButtonWithTitle(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(48.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .clip(uiRoundnessShape())
                 .background(colorPalette().favoritesIcon)
-                .clickable(onClick = onClick)
+                .clip(uiRoundnessShape()).clickable(onClick = onClick)
         ) {
             Icon(
                 painter = painterResource(icon),
@@ -58,6 +59,9 @@ fun ButtonWithTitle(
         )
     }
 }
+
+
+
 
 
 

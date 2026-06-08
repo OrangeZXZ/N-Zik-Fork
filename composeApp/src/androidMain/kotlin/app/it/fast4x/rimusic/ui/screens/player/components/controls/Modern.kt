@@ -3,6 +3,7 @@ package app.it.fast4x.rimusic.ui.screens.player.components.controls
 
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.CircularWavyProgressIndicator
+import app.n_zik.android.uiRoundnessShape
 
 import android.os.Build
 import androidx.compose.animation.core.animateFloatAsState
@@ -91,6 +92,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.sync.YouTubeSync
+import app.n_zik.android.uiRoundnessShape
 
 
 @UnstableApi
@@ -158,7 +160,7 @@ fun InfoAlbumAndArtistModern(
             }
 
             var modifierTitle = Modifier
-                .combinedClickable (
+                .clip(uiRoundnessShape()).combinedClickable (
                     indication = ripple(bounded = true),
                     interactionSource = remember { MutableInteractionSource() },
                     onClick = {
@@ -317,7 +319,7 @@ fun InfoAlbumAndArtistModern(
         }
 
         var modifierArtist = Modifier
-            .combinedClickable (
+            .clip(uiRoundnessShape()).combinedClickable (
                 indication = ripple(bounded = true),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
@@ -404,9 +406,9 @@ fun ControlsModern(
           onClick = {},
           modifier = Modifier
               .size(55.dp)
-              .doubleShadowDrop(RoundedCornerShape(8.dp), 4.dp, 8.dp)
-              .clip(RoundedCornerShape(8.dp))
-              .combinedClickable(
+              .doubleShadowDrop(uiRoundnessShape(), 4.dp, 8.dp)
+              .clip(uiRoundnessShape())
+              .clip(uiRoundnessShape()).combinedClickable(
                   indication = ripple(bounded = true),
                   interactionSource = remember { MutableInteractionSource() },
                   onClick = {
@@ -436,7 +438,7 @@ fun ControlsModern(
           Box(
              contentAlignment = Alignment.Center,
              modifier = Modifier
-                 .clip(CircleShape)
+                 .clip(uiRoundnessShape())
                  .combinedClickable(
                      indication = ripple(bounded = false),
                      interactionSource = remember { MutableInteractionSource() },
@@ -471,7 +473,7 @@ fun ControlsModern(
                   modifier = Modifier
                       .rotate(rotationAngle)
                       .dropShadow(
-                          CircleShape,
+                          app.n_zik.android.uiRoundnessShape(),
                           if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) Color.Black.copy(0.75f) else Color.Transparent,
                           6.dp,
                           0.dp,
@@ -511,9 +513,9 @@ fun ControlsModern(
               backgroundColor = colorPalette().background2.copy(0.95f),
               onClick = {},
               modifier = Modifier
-                  .doubleShadowDrop(RoundedCornerShape(8.dp), 4.dp, 8.dp)
-                  .clip(RoundedCornerShape(8.dp))
-                  .combinedClickable(
+                  .doubleShadowDrop(uiRoundnessShape(), 4.dp, 8.dp)
+                  .clip(uiRoundnessShape())
+                  .clip(uiRoundnessShape()).combinedClickable(
                       indication = ripple(bounded = true),
                       interactionSource = remember { MutableInteractionSource() },
                       onClick = {
@@ -600,9 +602,9 @@ fun ControlsModern(
         onClick = {},
         modifier = Modifier
             .size(55.dp)
-            .doubleShadowDrop(RoundedCornerShape(8.dp), 4.dp, 8.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .combinedClickable(
+            .doubleShadowDrop(uiRoundnessShape(), 4.dp, 8.dp)
+            .clip(uiRoundnessShape())
+            .clip(uiRoundnessShape()).combinedClickable(
                 indication = ripple(bounded = true),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
@@ -612,7 +614,7 @@ fun ControlsModern(
                 },
                 onLongClick = {}
             )
-            .clip(RoundedCornerShape(8.dp))
+            .clip(uiRoundnessShape())
 
       ) {
           Image(
@@ -657,7 +659,7 @@ fun ControlsModern(
                       .padding(10.dp)
                       .size(34.dp)
                       .rotate(rotationAngle)
-                      .combinedClickable(
+                      .clip(uiRoundnessShape()).combinedClickable(
                           interactionSource = null,
                           indication = null,
                           onClick = {
@@ -695,7 +697,7 @@ fun ControlsModern(
                       .rotate(rotationAngle)
                       .size(44.dp)
                       .align(Alignment.Center)
-                      .combinedClickable(
+                      .clip(uiRoundnessShape()).combinedClickable(
                           interactionSource = null,
                           indication = null,
                           onClick = {
@@ -734,7 +736,7 @@ fun ControlsModern(
                       .padding(10.dp)
                       .size(34.dp)
                       .rotate(rotationAngle)
-                      .combinedClickable(
+                      .clip(uiRoundnessShape()).combinedClickable(
                           interactionSource = null,
                           indication = null,
                           onClick = {
@@ -752,6 +754,11 @@ fun ControlsModern(
 
 
 }
+
+
+
+
+
 
 
 

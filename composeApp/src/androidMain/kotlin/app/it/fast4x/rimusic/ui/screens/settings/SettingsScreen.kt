@@ -83,6 +83,7 @@ import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
 import app.kreate.android.me.knighthat.component.dialog.RestartAppDialog
 import app.kreate.android.me.knighthat.utils.Toaster
+import app.n_zik.android.uiRoundnessShape
 
 
 @ExperimentalTextApi
@@ -278,8 +279,8 @@ fun OtherSwitchSettingEntry(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .clickable(onClick = { onCheckedChange(!isChecked) }),
+            .clip(uiRoundnessShape())
+            .clip(uiRoundnessShape()).clickable(onClick = { onCheckedChange(!isChecked) }),
         color = Color.Transparent
     ) {
         Box(
@@ -300,7 +301,7 @@ fun OtherSwitchSettingEntry(
                         .size(32.dp)
                         .background(
                             color = colorPalette().accent.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(8.dp)
+                            shape = uiRoundnessShape()
                         ),
                     contentAlignment = Alignment.Center
                 ) {
@@ -383,7 +384,7 @@ fun SettingsEntry(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
-            .clickable(enabled = isEnabled, onClick = onClick)
+            .clip(uiRoundnessShape()).clickable(enabled = isEnabled, onClick = onClick)
             .alpha(if (isEnabled) 1f else 0.5f)
             //.padding(start = 16.dp)
             //.padding(all = 16.dp)
@@ -629,7 +630,9 @@ fun SliderSettingsEntry(
     toDisplay: @Composable (Float) -> String = { it.toString() },
     steps: Int = 0,
     isEnabled: Boolean = true,
-    usePadding: Boolean = true
+    usePadding: Boolean = true,
+    icon: Int? = null,
+    trailingContent: (@Composable () -> Unit)? = null
 ) = Column(modifier = modifier) {
 
     val manualEnterDialog = object: IDialog {
@@ -642,11 +645,13 @@ fun SliderSettingsEntry(
 
         override var isActive: Boolean by rememberSaveable { mutableStateOf(false) }
         override var value: String by remember( valueFloat ) {
-            mutableStateOf( "%.1f".format( valueFloat ).replace(",", ".") )
+            val formatted = if (valueFloat % 1f == 0f) valueFloat.toInt().toString() else "%.1f".format( valueFloat ).replace(",", ".")
+            mutableStateOf( formatted )
         }
 
         override fun onSet( newValue: String ) {
-            this.valueFloat = newValue.toFloatOrNull() ?: return
+            val parsed = newValue.toFloatOrNull() ?: return
+            this.valueFloat = parsed.coerceIn(range.start, range.endInclusive)
             onSlide( this.valueFloat )
             onSlideComplete()
 
@@ -655,13 +660,25 @@ fun SliderSettingsEntry(
     }
     manualEnterDialog.Render()
 
-    SettingsEntry(
-        title = title,
-        text = "$text (${toDisplay(state)})",
-        onClick = manualEnterDialog::onShortClick,
-        isEnabled = isEnabled,
-        //usePadding = usePadding
-    )
+    if (icon != null) {
+        OtherSettingsEntry(
+            title = title,
+            text = "$text (${toDisplay(state)})",
+            icon = icon,
+            onClick = manualEnterDialog::onShortClick,
+            trailingContent = trailingContent,
+            modifier = Modifier.alpha(if (isEnabled) 1f else 0.5f)
+        )
+    } else {
+        SettingsEntry(
+            title = title,
+            text = "$text (${toDisplay(state)})",
+            onClick = manualEnterDialog::onShortClick,
+            isEnabled = isEnabled,
+            trailingContent = trailingContent
+            //usePadding = usePadding
+        )
+    }
 
     Slider(
         state = state,
@@ -722,10 +739,10 @@ fun SettingsSectionCard(
                 .padding(horizontal = 16.dp)
                 .shadow(
                     elevation = 4.dp,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = uiRoundnessShape(),
                     spotColor = colorPalette().accent.copy(alpha = 0.2f)
                 ),
-            shape = RoundedCornerShape(12.dp),
+            shape = uiRoundnessShape(),
             colors = CardDefaults.cardColors(
                 containerColor = if (colorPalette() === PureBlackColorPalette || colorPalette() === ModernBlackColorPalette || colorPaletteMode == ColorPaletteMode.PitchBlack) {
                     Color(0xFF1A1A1A) // Gray dark for pitch black themes
@@ -748,7 +765,7 @@ fun SettingsSectionCard(
                             .size(32.dp)
                             .background(
                                 color = colorPalette().accent.copy(alpha = 0.1f),
-                                shape = RoundedCornerShape(8.dp)
+                                shape = uiRoundnessShape()
                             ),
                         contentAlignment = Alignment.Center
                     ) {
@@ -811,8 +828,8 @@ fun OtherSettingsEntry(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .clickable(onClick = onClick),
+            .clip(uiRoundnessShape())
+            .clip(uiRoundnessShape()).clickable(onClick = onClick),
         color = Color.Transparent
     ) {
         Box(
@@ -833,7 +850,7 @@ fun OtherSettingsEntry(
                         .size(32.dp)
                         .background(
                             color = colorPalette().accent.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(8.dp)
+                            shape = uiRoundnessShape()
                         ),
                     contentAlignment = Alignment.Center
                 ) {
@@ -932,7 +949,7 @@ fun OtherInfoSettingsEntry(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clip(RoundedCornerShape(8.dp)),
+            .clip(uiRoundnessShape()),
         color = Color.Transparent
     ) {
         Box(
@@ -952,7 +969,7 @@ fun OtherInfoSettingsEntry(
                         .size(32.dp)
                         .background(
                             color = colorPalette().accent.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(8.dp)
+                            shape = uiRoundnessShape()
                         ),
                     contentAlignment = Alignment.Center
                 ) {
@@ -1011,8 +1028,8 @@ fun CacheSettingsEntry(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .clickable(onClick = onClick),
+            .clip(uiRoundnessShape())
+            .clip(uiRoundnessShape()).clickable(onClick = onClick),
         color = Color.Transparent
     ) {
         Box(
@@ -1033,7 +1050,7 @@ fun CacheSettingsEntry(
                         .size(32.dp)
                         .background(
                             color = colorPalette().accent.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(8.dp)
+                            shape = uiRoundnessShape()
                         ),
                     contentAlignment = Alignment.Center
                 ) {
@@ -1101,8 +1118,8 @@ fun ModernSettingsEntry(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .clickable(onClick = onClick)
+            .clip(uiRoundnessShape())
+            .clip(uiRoundnessShape()).clickable(onClick = onClick)
             .padding(12.dp)
             ) {
                 // Icon
@@ -1111,7 +1128,7 @@ fun ModernSettingsEntry(
                         .size(32.dp)
                         .background(
                             color = colorPalette().accent.copy(alpha = 0.1f),
-                            shape = RoundedCornerShape(8.dp)
+                            shape = uiRoundnessShape()
                         ),
                     contentAlignment = Alignment.Center
                 ) {
@@ -1149,6 +1166,9 @@ fun ModernSettingsEntry(
                 )
     }
 }
+
+
+
 
 
 

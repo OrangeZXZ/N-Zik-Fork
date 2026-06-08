@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.podcast
+﻿package app.it.fast4x.rimusic.ui.screens.podcast
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.LocalPlayerAwareWindowInsets
 
 import app.n_zik.android.core.database.*
@@ -77,7 +81,6 @@ import it.fast4x.innertube.requests.podcastPage
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.enums.NavRoutes
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Playlist
 import app.n_zik.android.playback.services.isLocal
@@ -120,7 +123,6 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -175,11 +177,7 @@ fun Podcast(
         mutableStateOf(Download.STATE_STOPPED)
     }
 
-    var thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
-
+    
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     var totalPlayTimes = 0L
@@ -350,7 +348,7 @@ fun Podcast(
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             downloadState = Download.STATE_DOWNLOADING
                                             if (podcastPage?.listEpisode?.isNotEmpty() == true)
@@ -378,7 +376,7 @@ fun Podcast(
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             downloadState = Download.STATE_DOWNLOADING
                                             if (podcastPage?.listEpisode?.isNotEmpty() == true)
@@ -409,7 +407,7 @@ fun Podcast(
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             podcastPage?.listEpisode?.map(Innertube.Podcast.EpisodeItem::asMediaItem)?.let { mediaItems ->
                                                 binder?.player?.enqueue(mediaItems, context)
@@ -428,7 +426,7 @@ fun Podcast(
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             if (podcastPage?.listEpisode?.isNotEmpty() == true) {
                                                 binder?.stopRadio()
@@ -453,7 +451,7 @@ fun Podcast(
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             val mediaItem = binder?.player?.currentMediaItem ?: podcastPage?.listEpisode?.first()?.asMediaItem
                                             mediaItem?.let { binder?.startRadio( it ) }
@@ -471,7 +469,7 @@ fun Podcast(
                                 onClick = {},
                                 modifier = Modifier
                                     .padding(horizontal = 5.dp)
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             menuState.display {
                                                 PlaylistsItemMenu(
@@ -596,7 +594,7 @@ fun Podcast(
                                     .fillMaxWidth()
                                     .background(
                                         colorPalette().background4,
-                                        shape = thumbnailRoundness.shape
+                                        shape = app.n_zik.android.thumbnailShape()
                                     )
                                     .focusRequester(focusRequester)
                                     .onFocusChanged {
@@ -673,7 +671,7 @@ fun Podcast(
                             thumbnailSizeDp = songThumbnailSizeDp,
                             modifier = Modifier
                                 .background(colorPalette().background0)
-                                .combinedClickable(
+                                .clip(uiRoundnessShape()).combinedClickable(
                                     onLongClick = {
                                         menuState.display {
                                             NonQueuedMediaItemMenu(
@@ -733,6 +731,10 @@ fun Podcast(
         }
     }
 }
+
+
+
+
 
 
 

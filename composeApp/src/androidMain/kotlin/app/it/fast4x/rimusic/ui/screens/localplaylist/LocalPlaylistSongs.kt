@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.localplaylist
+﻿package app.it.fast4x.rimusic.ui.screens.localplaylist
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.LocalPlayerAwareWindowInsets
 
 import app.n_zik.android.core.database.*
@@ -75,7 +79,6 @@ import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.PlaylistSongSortBy
 import app.it.fast4x.rimusic.enums.RecommendationsNumber
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.models.SongPlaylistMap
@@ -134,7 +137,6 @@ import app.it.fast4x.rimusic.utils.saveImageToInternalStorage
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
 import app.it.fast4x.rimusic.utils.syncSongsInPipedPlaylist
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -524,11 +526,7 @@ fun LocalPlaylistSongs(
 
     var autosync by rememberPreference(autosyncKey, false)
 
-    val thumbnailRoundness by rememberPreference(
-        thumbnailRoundnessKey,
-        ThumbnailRoundness.Medium
-    )
-
+    
 
     val reorderingState = rememberReorderingState(
         lazyListState = lazyListState,
@@ -619,7 +617,7 @@ fun LocalPlaylistSongs(
                         .fillMaxSize(0.99F)
                         .background(
                             color = colorPalette().background1,
-                            shape = thumbnailRoundness.shape
+                            shape = app.n_zik.android.thumbnailShape()
                         )
                 ) {
 
@@ -719,7 +717,7 @@ fun LocalPlaylistSongs(
                                     color = if (isRecommendationEnabled) colorPalette().text else colorPalette().textDisabled,
                                     onClick = {},
                                     modifier = Modifier
-                                        .combinedClickable(
+                                        .clip(uiRoundnessShape()).combinedClickable(
                                             onClick = {
                                                 isRecommendationEnabled = !isRecommendationEnabled
                                             },
@@ -967,6 +965,10 @@ fun LocalPlaylistSongs(
             )
     }
 }
+
+
+
+
 
 
 

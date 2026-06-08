@@ -1,6 +1,7 @@
-package app.it.fast4x.rimusic.ui.components.themed
+﻿package app.it.fast4x.rimusic.ui.components.themed
 
 import app.n_zik.android.core.database.*
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.animateFloatAsState
@@ -116,7 +117,6 @@ import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
-import app.it.fast4x.rimusic.enums.ThumbnailRoundness
 import app.it.fast4x.rimusic.enums.ValidationType
 import app.n_zik.android.isBassBoostEnabled
 import app.it.fast4x.rimusic.models.Album
@@ -158,16 +158,17 @@ import app.it.fast4x.rimusic.utils.playbackSpeedKey
 import app.it.fast4x.rimusic.utils.playbackVolumeKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.removeYTSongFromPlaylist
+import app.n_zik.android.uiRoundnessShape
 
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.setDeviceVolume
 import app.it.fast4x.rimusic.utils.setGlobalVolume
 import app.it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
+import app.n_zik.android.uiRoundnessShape
 
 import app.it.fast4x.rimusic.utils.thumbnailFadeExKey
 import app.it.fast4x.rimusic.utils.thumbnailFadeKey
-import app.it.fast4x.rimusic.utils.thumbnailRoundnessKey
 import app.it.fast4x.rimusic.utils.thumbnailSpacingKey
 import app.it.fast4x.rimusic.utils.thumbnailSpacingLKey
 import kotlinx.coroutines.CoroutineScope
@@ -176,6 +177,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import app.n_zik.android.uiRoundnessShape
 
 
 @Composable
@@ -323,7 +325,7 @@ fun ConfirmationDialog(
                 modifier = modifier
                     .fillMaxWidth(0.9f)
                     .padding(16.dp),
-                shape = RoundedCornerShape(16.dp),
+                shape = uiRoundnessShape(),
                 colors = CardDefaults.cardColors(
                     containerColor = colorPalette.background1
                 ),
@@ -355,7 +357,7 @@ fun ConfirmationDialog(
                                 containerColor = colorPalette.background2,
                                 contentColor = colorPalette.text
                             ),
-                            shape = RoundedCornerShape(12.dp)
+                            shape = uiRoundnessShape()
                         ) {
                             Text(
                                 text = cancelText,
@@ -373,7 +375,7 @@ fun ConfirmationDialog(
                                 containerColor = colorPalette.accent,
                                 contentColor = colorPalette.textSecondary
                             ),
-                            shape = RoundedCornerShape(12.dp)
+                            shape = uiRoundnessShape()
                         ) {
                             Text(
                                 text = confirmText,
@@ -410,7 +412,7 @@ inline fun DefaultDialog(
                     .padding(all = 10.dp)
                     .background(
                         color = colorPalette().background1,
-                        shape = RoundedCornerShape(8.dp)
+                        shape = uiRoundnessShape()
                     )
                     .padding(horizontal = 24.dp, vertical = 16.dp),
                 content = content
@@ -443,7 +445,7 @@ fun <T> ValueSelectorDialog(
                 modifier = modifier
                     .fillMaxWidth(0.9f)
                     .padding(16.dp),
-                shape = RoundedCornerShape(16.dp),
+                shape = uiRoundnessShape(),
                 colors = CardDefaults.cardColors(
                     containerColor = colorPalette.background1
                 ),
@@ -493,7 +495,7 @@ fun <T> ValueSelectorDialog(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(0.dp),
                                 modifier = Modifier
-                                    .clickable(
+                                    .clip(uiRoundnessShape()).clickable(
                                         onClick = {
                                             onDismiss()
                                             onValueSelected(value)
@@ -501,7 +503,7 @@ fun <T> ValueSelectorDialog(
                                     )
                                     .padding(vertical = 0.dp, horizontal = 16.dp)
                                     .fillMaxWidth()
-                                    .clip(RoundedCornerShape(8.dp))
+                                    .clip(uiRoundnessShape())
                             ) {
                                 RadioButton(
                                     selected = selectedValue == value,
@@ -535,7 +537,7 @@ fun <T> ValueSelectorDialog(
                             containerColor = colorPalette.background2,
                             contentColor = colorPalette.text
                         ),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = uiRoundnessShape()
                     ) {
                         Text(
                             text = stringResource(R.string.cancel),
@@ -561,7 +563,7 @@ inline fun SelectorDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
+                .background(color = colorPalette().background1, shape = uiRoundnessShape())
                 .padding(vertical = 16.dp)
         ) {
             BasicText(
@@ -581,7 +583,7 @@ inline fun SelectorDialog(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier
-                            .clickable(
+                            .clip(uiRoundnessShape()).clickable(
                                 onClick = {
                                     onDismiss()
                                     onValueSelected(value.id)
@@ -636,13 +638,12 @@ inline fun SelectorArtistsDialog(
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
-    val thumbnailRoundness by rememberPreference(thumbnailRoundnessKey, ThumbnailRoundness.Medium)
-
+    
     Dialog(onDismissRequest = onDismiss) {
         Box(
             modifier = modifier
                 .requiredSize(if (isLandscape) (0.85 * screenHeight) else (0.85 * screenWidth))
-                .clip(thumbnailRoundness.shape)
+                .clip(app.n_zik.android.thumbnailShape())
                 .background(color = colorPalette().background1)
         ) {
             if (values != null) {
@@ -676,7 +677,7 @@ inline fun SelectorArtistsDialog(
                                 contentScale = ContentScale.Fit,
                                 modifier = Modifier
                                     .requiredSize(if (isLandscape) (0.85 * screenHeight) else (0.85 * screenWidth))
-                                    .clickable(
+                                    .clip(uiRoundnessShape()).clickable(
                                         onClick = {
                                             onDismiss()
                                             onValueSelected(browseId)
@@ -770,7 +771,7 @@ inline fun InputNumericDialog(
         Column(
             modifier = modifier
                 .padding(all = 10.dp)
-                .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
+                .background(color = colorPalette().background1, shape = uiRoundnessShape())
                 .padding(vertical = 16.dp)
                 .requiredHeight(190.dp)
         ) {
@@ -811,7 +812,7 @@ inline fun InputNumericDialog(
                             modifier = Modifier
                                 .width(30.dp)
                                 .height(30.dp)
-                                .clickable(
+                                .clip(uiRoundnessShape()).clickable(
                                     indication = rememberRipple(bounded = false),
                                     interactionSource = remember { MutableInteractionSource() },
                                     enabled = true,
@@ -903,7 +904,7 @@ inline fun InputTextDialog(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
+            shape = uiRoundnessShape(),
             colors = CardDefaults.cardColors(
                 containerColor = colorPalette().background1
             ),
@@ -953,7 +954,7 @@ inline fun InputTextDialog(
                          keyboardType = if (validationType == ValidationType.Ip) KeyboardType.Number else KeyboardType.Text
                      ),
                      singleLine = true,
-                     shape = RoundedCornerShape(12.dp)
+                     shape = uiRoundnessShape()
                  )
 
                 // Error message
@@ -1008,7 +1009,7 @@ inline fun InputTextDialog(
                             containerColor = colorPalette().background2,
                             contentColor = colorPalette().text
                         ),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = uiRoundnessShape()
                     ) {
                         Text(
                             text = stringResource(R.string.cancel),
@@ -1040,7 +1041,7 @@ inline fun InputTextDialog(
                             containerColor = colorPalette().accent,
                             contentColor = colorPalette().textSecondary
                         ),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = uiRoundnessShape()
                     ) {
                         Text(
                             text = stringResource(R.string.confirm),
@@ -1080,7 +1081,7 @@ inline fun StringListDialog(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
+            shape = uiRoundnessShape(),
             colors = CardDefaults.cardColors(
                 containerColor = colorPalette().background1
             ),
@@ -1107,7 +1108,7 @@ inline fun StringListDialog(
                             containerColor = colorPalette().accent,
                             contentColor = colorPalette().textSecondary
                         ),
-                        shape = RoundedCornerShape(12.dp)
+                        shape = uiRoundnessShape()
                     ) {
                         Text(
                             text = addTitle,
@@ -1132,8 +1133,8 @@ inline fun StringListDialog(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .clickable { }
+                                    .clip(uiRoundnessShape())
+                                    .clip(uiRoundnessShape()).clickable { }
                                     .padding(horizontal = 12.dp, vertical = 8.dp)
                             ) {
                                 BasicText(
@@ -1187,7 +1188,7 @@ inline fun StringListDialog(
                         containerColor = colorPalette().background2,
                         contentColor = colorPalette().text
                     ),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = uiRoundnessShape()
                 ) {
                     Text(
                         text = stringResource(R.string.cancel),
@@ -1249,7 +1250,7 @@ inline fun GenericDialog(
         Column(
             modifier = modifier
                 .padding(all = 48.dp)
-                .background(color = colorPalette().background1, shape = RoundedCornerShape(8.dp))
+                .background(color = colorPalette().background1, shape = uiRoundnessShape())
                 .padding(vertical = 16.dp)
         ) {
             BasicText(
@@ -1322,7 +1323,7 @@ fun NewVersionDialog (
                     colorFilter = ColorFilter.tint(colorPalette().shimmer),
                     modifier = Modifier
                         .size(30.dp)
-                        .clickable {
+                        .clip(uiRoundnessShape()).clickable {
                             onDismiss()
                             uriHandler.openUri("https://github.com/fast4x/RiMusic/releases/latest")
                         }
@@ -1349,7 +1350,7 @@ fun NewVersionDialog (
                     colorFilter = ColorFilter.tint(colorPalette().shimmer),
                     modifier = Modifier
                         .size(30.dp)
-                        .clickable {
+                        .clip(uiRoundnessShape()).clickable {
                             onDismiss()
                             uriHandler.openUri("https://github.com/fast4x/RiMusic/releases/download/$updatedVersionName/app-foss-release.apk")
                         }
@@ -1858,7 +1859,7 @@ fun AppearancePresetDialog(
                         Box(
                             modifier = Modifier
                                 .padding(4.dp)
-                                .clip(RoundedCornerShape(2.dp))
+                                .clip(uiRoundnessShape())
                                 .background(color)
                                 .weight(lineWeight.value)
                                 .size(5.dp)
@@ -1998,7 +1999,7 @@ fun SongMatchingDialog(
             modifier = Modifier
                 .fillMaxWidth(if (isLandscape) 0.5f else 0.9f)
                 .fillMaxHeight(if (isLandscape) 0.9f else 0.7f)
-                .background(color = colorPalette().background1,shape = RoundedCornerShape(8.dp))
+                .background(color = colorPalette().background1,shape = uiRoundnessShape())
         ) {
             fun filteredText(text : String): String{
                 val filteredText = text
@@ -2037,7 +2038,7 @@ fun SongMatchingDialog(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, colorPalette().text, shape = RoundedCornerShape(8.dp))
+                    .border(1.dp, colorPalette().text, shape = uiRoundnessShape())
                     .padding(horizontal = 5.dp)
                     .padding(vertical = 10.dp)
             ) {
@@ -2050,7 +2051,7 @@ fun SongMatchingDialog(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .padding(end = 5.dp)
-                            .clip(RoundedCornerShape(5.dp))
+                            .clip(uiRoundnessShape())
                             .size(40.dp)
                     )
                     if (songToRematch.likedAt != null) {
@@ -2141,7 +2142,7 @@ fun SongMatchingDialog(
                         startSearch = true
                     },
                     modifier = Modifier
-                        .background(shape = RoundedCornerShape(4.dp),color = Color.White)
+                        .background(shape = uiRoundnessShape(),color = Color.White)
                         .padding(all = 4.dp)
                         .size(24.dp)
                         .align(Alignment.CenterVertically)
@@ -2159,7 +2160,7 @@ fun SongMatchingDialog(
                                     .fillMaxWidth()
                                     .padding(horizontal = 10.dp)
                                     .padding(vertical = 10.dp)
-                                    .clickable(onClick = {
+                                    .clip(uiRoundnessShape()).clickable(onClick = {
                                         Database.asyncTransaction {
                                             if (isYouTubeSyncEnabled() && playlist?.isYoutubePlaylist == true && playlist.isEditable){
                                                 CoroutineScope(Dispatchers.IO).launch {
@@ -2215,7 +2216,7 @@ fun SongMatchingDialog(
                                         contentScale = ContentScale.Crop,
                                         modifier = Modifier
                                             .padding(end = 5.dp)
-                                            .clip(RoundedCornerShape(5.dp))
+                                            .clip(uiRoundnessShape())
                                             .size(30.dp)
                                     )
                                     if (song.asSong.likedAt != null) {
@@ -3056,7 +3057,7 @@ fun <T> ValueSelectorDialogBody(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
-                    .clickable(
+                    .clip(uiRoundnessShape()).clickable(
                         onClick = {
                             onDismiss()
                             onValueSelected(value)
@@ -3112,5 +3113,9 @@ fun <T> ValueSelectorDialogBody(
         )
     }
 }
+
+
+
+
 
 

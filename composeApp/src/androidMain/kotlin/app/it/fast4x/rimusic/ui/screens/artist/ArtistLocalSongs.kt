@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.artist
+﻿package app.it.fast4x.rimusic.ui.screens.artist
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.LocalPlayerAwareWindowInsets
 
 import app.n_zik.android.core.database.*
@@ -159,7 +163,7 @@ fun ArtistLocalSongs(
                     color = colorPalette().text,
                     iconSize = 24.dp,
                     onClick = {},
-                    modifier = Modifier.combinedClickable(
+                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
                         onClick = { showConfirmDownloadAllDialog = true },
                         onLongClick = { Toaster.i(context.resources.getString(R.string.info_download_all_songs)) }
                     )
@@ -169,7 +173,7 @@ fun ArtistLocalSongs(
                     color = colorPalette().text,
                     iconSize = 24.dp,
                     onClick = {},
-                    modifier = Modifier.combinedClickable(
+                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
                         onClick = { showConfirmDeleteDownloadDialog = true },
                         onLongClick = { Toaster.i(context.resources.getString(R.string.info_remove_all_downloaded_songs)) }
                     )
@@ -180,7 +184,7 @@ fun ArtistLocalSongs(
                     color = if (!songs.isNullOrEmpty()) colorPalette().text else colorPalette().textDisabled,
                     iconSize = 24.dp,
                     onClick = {},
-                    modifier = Modifier.combinedClickable(
+                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
                         onClick = { if (!songs.isNullOrEmpty()) binder?.player?.enqueue(songs!!.map(Song::asMediaItem), context) },
                         onLongClick = { Toaster.i(context.resources.getString(R.string.info_enqueue_songs)) }
                     )
@@ -191,7 +195,7 @@ fun ArtistLocalSongs(
                     color = if (!songs.isNullOrEmpty()) colorPalette().text else colorPalette().textDisabled,
                     iconSize = 24.dp,
                     onClick = {},
-                    modifier = Modifier.combinedClickable(
+                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
                         onClick = {
                             songs?.let { songs ->
                                 if (songs.isNotEmpty()) {
@@ -387,7 +391,7 @@ fun ArtistLocalSongs(
                                 iconSize = 24.dp,
                                 onClick = {},
                                 modifier = Modifier
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             showConfirmDownloadAllDialog = true
                                         },
@@ -426,7 +430,7 @@ fun ArtistLocalSongs(
                                 iconSize = 24.dp,
                                 onClick = {},
                                 modifier = Modifier
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             showConfirmDeleteDownloadDialog = true
                                         },
@@ -466,7 +470,7 @@ fun ArtistLocalSongs(
                                 iconSize = 24.dp,
                                 onClick = {  },
                                 modifier = Modifier
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             binder?.player?.enqueue(songs!!.map(Song::asMediaItem), context)
                                         },
@@ -482,7 +486,7 @@ fun ArtistLocalSongs(
                                 iconSize = 24.dp,
                                 onClick = {},
                                 modifier = Modifier
-                                    .combinedClickable(
+                                    .clip(uiRoundnessShape()).combinedClickable(
                                         onClick = {
                                             songs?.let { songs ->
                                                 if (songs.isNotEmpty()) {
@@ -639,6 +643,9 @@ fun ArtistHeader(
         )
     }
 }
+
+
+
 
 
 

@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.ui.screens.home
+﻿package app.it.fast4x.rimusic.ui.screens.home
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import app.n_zik.android.core.database.*
 
@@ -294,7 +298,7 @@ fun HomeLibrary(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                                .clickable(onClick = {
+                                .clip(uiRoundnessShape()).clickable(onClick = {
                                     search.hideIfEmpty()
                                     onPlaylistClick(preview.playlist)
                                 }),
@@ -334,6 +338,9 @@ fun HomeLibrary(
         }
     }
 }
+
+
+
 
 
 

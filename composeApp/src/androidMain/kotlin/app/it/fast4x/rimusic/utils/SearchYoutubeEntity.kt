@@ -1,4 +1,8 @@
-package app.it.fast4x.rimusic.utils
+﻿package app.it.fast4x.rimusic.utils
+
+import androidx.compose.ui.draw.clip
+
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -118,7 +122,7 @@ fun SearchYoutubeEntity (
                             thumbnailHeightDp = thumbnailHeightDp,
                             modifier = Modifier
                                 .background(colorPalette().background0)
-                                .combinedClickable(
+                                .clip(uiRoundnessShape()).combinedClickable(
                                     onLongClick = {
                                         menuState.display {
                                             VideoItemMenu(
@@ -155,6 +159,9 @@ fun SearchYoutubeEntity (
         }
     }
 }
+
+
+
 
 
 

@@ -1,7 +1,8 @@
-@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+﻿@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.components
 
 import app.n_zik.android.core.database.*
+import app.n_zik.android.uiRoundnessShape
 
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
@@ -68,6 +69,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.sync.YouTubeSync
+import app.n_zik.android.uiRoundnessShape
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,7 +102,7 @@ fun SwipeableContent(
         SwipeToDismissBox(
             gesturesEnabled = isSwipeToActionEnabled,
             modifier = modifier
-                .clip(RoundedCornerShape(10.dp)),
+                .clip(uiRoundnessShape()),
             state = dismissState,
             backgroundContent = {
                 val offset = try { dismissState.requireOffset() } catch (e: Exception) { 0f }
@@ -333,6 +335,7 @@ fun SwipeableAlbumItem(
     }
 
 }
+
 
 
 
