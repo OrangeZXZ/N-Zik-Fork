@@ -94,7 +94,7 @@
   <string name="neither_save_new_searched_query">Nu salva noile căutări și nu afișa istoricul</string>
   <string name="clear_search_history">Șterge istoricul căutărilor</string>
   <string name="history_is_empty">Istoricul este gol</string>
-  <string name="service_lifetime">DURATA SERVICIULUI</string>
+  <string name="service_lifetime">Durata duratei de viață</string>
   <string name="battery_optimizations_applied">Dacă sunt aplicate optimizările bateriei, notificarea de redare poate dispărea brusc atunci când este pusă pe pauză.</string>
   <string name="is_android12">Începând cu Android 12, dezactivarea optimizărilor bateriei este necesară pentru ca opțiunea „Serviciul invincibil” să aibă efect.</string>
   <string name="ignore_battery_optimizations">Ignoră optimizările bateriei</string>
@@ -170,9 +170,9 @@
   <string name="languages">Limbi</string>
   <string name="app_language">Limba aplicației</string>
   <string name="in_alphabetical_order">În ordine alfabetică:</string>
-  <string name="contributors">CONTRIBUITORI</string>
-  <string name="troubleshooting">DEPANARE</string>
-  <string name="social">SOCIAL</string>
+  <string name="contributors">Colaboratori</string>
+  <string name="troubleshooting">Depanare</string>
+  <string name="social">Sociale</string>
   <string name="english">Engleză (English)</string>
   <string name="italian">Italiană (Italiano)</string>
   <string name="czech">Cehă (Čeština)</string>
@@ -289,7 +289,7 @@
   <string name="do_you_really_want_to_download_all">Vrei cu adevărat să descarci toate melodiile?</string>
   <string name="import_playlist">Importă playlist-ul</string>
   <string name="lang_ukrainian">Ucraineană (Українська)</string>
-  <string name="proxy">PROXY</string>
+  <string name="proxy">Proxy</string>
   <string name="enable_proxy">Activează Proxy</string>
   <string name="proxy_mode">Mod Proxy</string>
   <string name="proxy_host">Gazdă Proxy</string>
@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">Acest dosar există deja.</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Ești sigur că vrei să elimini acest dosar din lista neagră?</string>
   <string name="player_appearance">Aspectul playerului</string>
-  <string name="player_action_bar">BARA DE ACȚIUNE A PLAYERULUI</string>
+  <string name="player_action_bar">Bara de acțiune a jucătorului</string>
   <string name="tab_data">Date</string>
   <string name="image_cache_max_size">Dimensiunea maximă a cache-ului de imagini</string>
   <string name="network_status">Quality Status</string>
@@ -391,7 +391,7 @@
   <string name="tab_miscellaneous">Diverse</string>
   <string name="swipe_to_action">Glisează pentru acțiune</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Efectuează acțiuni glisând la stânga sau la dreapta pe o melodie</string>
-  <string name="smart_recommendations">RECOMANDĂRI INTELIGENTE</string>
+  <string name="smart_recommendations">Recomandări inteligente</string>
   <string name="player_collapsed_disable_swiping_down">Dezactivează glisarea în jos</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Evită închiderea playerului și curățarea cozii prin glisarea în jos când este minimizat</string>
   <string name="sort_date_liked">Data aprecierii</string>
@@ -592,11 +592,11 @@
   <string name="cache_location_private">Privat</string>
   <string name="cache_location_system">Sistem</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">Nu se poate redenumi un playlist lunar sau online sau piped</string>
-  <string name="debug">DEBUG</string>
+  <string name="debug">Debug</string>
   <string name="enable_log_debug">Activează jurnalele de depanare</string>
   <string name="if_enabled_create_a_log_file_to_highlight_errors">Dacă este activat, creează un fișier jurnal pentru a evidenția erorile</string>
   <string name="copy_log_to_clipboard">Copiază jurnalul în clipboard</string>
-  <string name="piped_account">PIPED</string>
+  <string name="piped_account">Piped</string>
   <string name="enable_piped_syncronization">Activează sincronizarea Piped</string>
   <string name="piped_change_instance">Schimbă instanța</string>
   <string name="piped_username">Nume de utilizator</string>
@@ -606,7 +606,7 @@
   <string name="piped_connected_to_s">Conectat la %s</string>
   <string name="fake_audio_bar">Val fals</string>
   <string name="copy_crash_log_to_clipboard">Copiază jurnalul de erori în clipboard</string>
-  <string name="title_backup_and_restore">COPIE DE SIGURANȚĂ ȘI RESTAURARE</string>
+  <string name="title_backup_and_restore">Backup și restaurare</string>
   <string name="message_excluded_s_songs">%s melodii excluse</string>
   <string name="show_thumbnail">Afișează miniatura</string>
   <string name="show_lyrics_thumbnail">Afișează miniatura pentru versuri</string>
@@ -814,7 +814,7 @@
   <string name="resume_automatically_when_app_opens">Reia redarea automat când aplicația este deschisă</string>
   <string name="notificationPlayerFirstIcon">Primul buton</string>
   <string name="notificationPlayerSecondIcon">Al doilea buton</string>
-  <string name="notification_player">NOTIFICARE DE PLAYER</string>
+  <string name="notification_player">Jucător notificări</string>
   <string name="repeat">Repetă</string>
   <string name="original_lyrics">Versuri originale</string>
   <string name="translated_lyrics">Versuri traduse</string>
@@ -1146,4 +1146,7 @@
   <string name="failed_to_install">Instalare eșuată: %s</string>
   <string name="last_check">Ultima verificare: %s</string>
   <string name="no_items">Niciun articol</string>
+  <string name="no_song_found">Nicio melodie găsită</string>
+  <string name="listen_history">Istoric de ascultare</string>
+  <string name="clear_listen_history">Curăță istoricul ascultării</string>
 </resources>
