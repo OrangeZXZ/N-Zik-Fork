@@ -1,0 +1,4 @@
+Hotfix:
+- Fixed circular thumbnail on 36dp for small thumbnails
+- Fixed removed padding in the appearance settings
+- Fixed UI that get reseted to default
