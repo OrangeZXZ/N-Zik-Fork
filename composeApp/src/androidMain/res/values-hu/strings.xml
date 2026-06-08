@@ -94,7 +94,7 @@
   <string name="neither_save_new_searched_query">Sem új keresett lekérdezések mentése, sem előzmények megjelenítése</string>
   <string name="clear_search_history">Keresési előzmények törlése</string>
   <string name="history_is_empty">Nincs előzmény</string>
-  <string name="service_lifetime">SZOLGÁLTATÁS ÉLETTARTAMA</string>
+  <string name="service_lifetime">Service lifetime</string>
   <string name="battery_optimizations_applied">Ha az akkumulátor optimalizálását alkalmazza, a lejátszási értesítés hirtelen eltűnhet, amikor a lejátszás szünetel.</string>
   <string name="is_android12">Since Android 12, disabling battery optimizations is required for the \"Invisible service\" option to take effect.</string>
   <string name="ignore_battery_optimizations">Akkumulátoroptimalizálás figyelmen kívül hagyása</string>
@@ -170,9 +170,9 @@
   <string name="languages">Nyelvek</string>
   <string name="app_language">Alkalmazás nyelve</string>
   <string name="in_alphabetical_order">Ábécé sorrendben:</string>
-  <string name="contributors">HOZZÁJÁRULÓK</string>
-  <string name="troubleshooting">HIBAELHÁRÍTÁS</string>
-  <string name="social">KÖZÖSSÉGI</string>
+  <string name="contributors">Contributors</string>
+  <string name="troubleshooting">Troubleshooting</string>
+  <string name="social">Social</string>
   <string name="english">Angol</string>
   <string name="italian">Olasz (Italiano)</string>
   <string name="czech">Cseh (Čeština)</string>
@@ -289,7 +289,7 @@
   <string name="do_you_really_want_to_download_all">Biztosan le akarod tölteni az összeset?</string>
   <string name="import_playlist">Lejátszási lista importálása</string>
   <string name="lang_ukrainian">Ukrainian (Українська)</string>
-  <string name="proxy">PROXY</string>
+  <string name="proxy">Proxy</string>
   <string name="enable_proxy">Proxy engedélyezése</string>
   <string name="proxy_mode">Proxy mód</string>
   <string name="proxy_host">Proxy hoszt</string>
@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">This folder already exists</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Biztos, hogy el akarod távolítani ezt a mappát a feketelistáról?</string>
   <string name="player_appearance">Player Appearance</string>
-  <string name="player_action_bar">LEJÁTSZÓ AKCIÓ SÁV</string>
+  <string name="player_action_bar">Player action bar</string>
   <string name="tab_data">Adat</string>
   <string name="image_cache_max_size">Kép gyorsítótár maximális mérete</string>
   <string name="network_status">Quality Status</string>
@@ -391,7 +391,7 @@
   <string name="tab_miscellaneous">Misc</string>
   <string name="swipe_to_action">Swipe for action</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Perform actions by swiping left or right on a song within vertical list of songs</string>
-  <string name="smart_recommendations">OKOS AJÁNLÁSOK</string>
+  <string name="smart_recommendations">Smart recommendations</string>
   <string name="player_collapsed_disable_swiping_down">Letiltja a lefelé húzást</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Kerüld el a lejátszó bezárását és a várólista tisztítását a lefelé húzással, miközben az minimalizálva van</string>
   <string name="sort_date_liked">Date Favorited</string>
@@ -592,7 +592,7 @@
   <string name="cache_location_private">Privát</string>
   <string name="cache_location_system">Rendszer</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">Cannot rename a monthly or online or piped playlist</string>
-  <string name="debug">Hibakeresés</string>
+  <string name="debug">Debug</string>
   <string name="enable_log_debug">Enable debug logs</string>
   <string name="if_enabled_create_a_log_file_to_highlight_errors">Ha engedélyezve van, létrehoz egy naplófájlt a hibák kiemeléséhez</string>
   <string name="copy_log_to_clipboard">Napló másolása a vágólapra</string>
@@ -606,7 +606,7 @@
   <string name="piped_connected_to_s">Csatlakozva a következőhöz: %s</string>
   <string name="fake_audio_bar">Fake Waveform</string>
   <string name="copy_crash_log_to_clipboard">Összeomlási napló másolása a vágólapra</string>
-  <string name="title_backup_and_restore">BIZTONSÁGI MENTÉS ÉS VISSZAÁLLÍTÁS</string>
+  <string name="title_backup_and_restore">Backup and restore</string>
   <string name="message_excluded_s_songs">Kizárt %s dalok</string>
   <string name="show_thumbnail">Miniatűr megjelenítése</string>
   <string name="show_lyrics_thumbnail">A dalszöveg indexképének megjelenítése</string>
@@ -814,7 +814,7 @@
   <string name="resume_automatically_when_app_opens">Resume playback automatically when the app is opened</string>
   <string name="notificationPlayerFirstIcon">First button</string>
   <string name="notificationPlayerSecondIcon">Second button</string>
-  <string name="notification_player">NOTIFICATION PLAYER</string>
+  <string name="notification_player">Notification Player</string>
   <string name="repeat">Repeat</string>
   <string name="original_lyrics">Original lyrics</string>
   <string name="translated_lyrics">Translated lyrics</string>
@@ -1146,4 +1146,7 @@
   <string name="failed_to_install">Failed to install: %s</string>
   <string name="last_check">Last check: %s</string>
   <string name="no_items">No items</string>
+  <string name="no_song_found">No song found</string>
+  <string name="listen_history">Listen history</string>
+  <string name="clear_listen_history">Clear listen history</string>
 </resources>
