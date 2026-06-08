@@ -1149,4 +1149,6 @@
   <string name="no_song_found">لا توجد أغنية</string>
   <string name="listen_history">سجل الاستماع</string>
   <string name="clear_listen_history">مسح سجل الاستماع</string>
+  <string name="ui_roundness">موجة واجهة المستخدم</string>
+  <string name="app_name">N-Zik</string>
 </resources>
