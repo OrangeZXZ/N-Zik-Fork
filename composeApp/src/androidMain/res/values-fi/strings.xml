@@ -1149,4 +1149,6 @@
   <string name="no_song_found">Kappaletta ei löytynyt</string>
   <string name="listen_history">Kuuntele historiaa</string>
   <string name="clear_listen_history">Tyhjennä kuunteluhistoria</string>
+  <string name="ui_roundness">Käyttöliittymän Ääni</string>
+  <string name="app_name">N-Zik</string>
 </resources>
