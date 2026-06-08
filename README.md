@@ -32,18 +32,45 @@
 [![Localization Progress](https://badges.crowdin.net/N-Zik/localized.svg)](https://crowdin.com/project/N-Zik) [![License: GPL v3](https://img.shields.io/github/license/NEVARLeVrai/N-Zik?color=blue)](https://www.gnu.org/licenses/gpl-3.0)
 [![CodeFactor](https://www.codefactor.io/repository/github/nevarlevrai/n-zik/badge)](https://www.codefactor.io/repository/github/nevarlevrai/n-zik)
 
+<br>
+<br>
+</div>
+
+<div align="center">
+
+<img src="https://static.vecteezy.com/system/resources/thumbnails/024/493/268/original/warning-sign-on-red-background-free-video.jpg" width="80%">
+<br>
+<br>
+<br>
+
+⏳ **Only [![Android Lockdown](https://img.shields.io/badge/J--85-red?style=flat-round&logo=android&logoColor=white)](https://keepandroidopen.org) days remaining until Android Lockdown**
+
+Starting in **September 2026**, Google will require **identity verification for all Android developers**, including those distributing applications **outside of Google Play**.
+
+As a **Free and Open Source Software (FOSS)** project, **N-Zik** opposes this requirement due to its impact on developer privacy, independent distribution, and software freedom.
+
+📖 [Learn more](https://keepandroidopen.org) · ✍️ [Sign the petition](https://www.change.org/p/stop-google-from-limiting-apk-file-usage/)
+
+</div>
+<br>
+<br>
+
+<div align="center">
+
 ## 📚 Wiki
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/NEVARLeVrai/N-Zik)
 
-<br>
+<br><br>
 
 ## 🌍 Community
 
 Join the N-Zik Discord:
 
-[![Discord Widget](https://discord.com/api/guilds/1345079801324634193/widget.png?style=banner3)](https://discord.gg/bneHC7QRje)
-<br>
+[![Discord](https://discord.com/api/guilds/1345079801324634193/widget.png?style=banner3)](https://discord.gg/bneHC7QRje)
+
+<br><br>
+
 </div>
 
 # 🎧 Features
