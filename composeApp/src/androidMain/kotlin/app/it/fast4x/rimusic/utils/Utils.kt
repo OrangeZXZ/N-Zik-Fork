@@ -181,17 +181,13 @@ val Song.asMediaItem: MediaItem
                         artistsText
                     }
                 )
-                .setArtworkUri(thumbnailUrl?.thumbnail(1200)?.toUri())
+                .setArtworkUri(thumbnailUrl?.thumbnail(1200)?.toUri() ?: app.n_zik.android.playback.models.MediaItemMapper.drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
                 .setExtras(
                     bundleOf(
                         "durationText" to durationText,
                         EXPLICIT_BUNDLE_TAG to title.startsWith( EXPLICIT_PREFIX, true ),
                         EXTRAS_KEY_IS_EXPLICIT to title.startsWith( EXPLICIT_PREFIX, true )
-                    ).apply {
-                        if (!isLocal) {
-                            putLong("android.media.metadata.DURATION", duration * 1000L)
-                        }
-                    }
+                    )
                 )
                 .setIsPlayable(true)
                 .setIsBrowsable(false)

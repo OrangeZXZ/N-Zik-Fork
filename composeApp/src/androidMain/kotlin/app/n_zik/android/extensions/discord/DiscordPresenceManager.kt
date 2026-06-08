@@ -257,7 +257,8 @@ class DiscordPresenceManager(
             )
             lastToken = token
         }
-        val largeImageUrl = mediaItem?.mediaMetadata?.artworkUri?.toString() ?: getLargeImageFallback()
+        val rawUri = mediaItem?.mediaMetadata?.artworkUri?.toString()
+        val largeImageUrl = if (rawUri != null && rawUri.startsWith("http")) rawUri else getLargeImageFallback()
         val smallImageUrl = getSmallImageUrl()
         val largeTextValue = if (state.isNotBlank()) "$details - $state" else details
         

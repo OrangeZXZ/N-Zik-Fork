@@ -64,10 +64,17 @@ object MediaItemMapper {
         var metadataBuilder = baseItem.mediaMetadata.buildUpon()
 
         if (song.isLocal) {
-            metadataBuilder = metadataBuilder.setArtworkUri(drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
-        } else if (song.thumbnailUrl == null) {
-            metadataBuilder = metadataBuilder.setArtworkUri(drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
+            metadataBuilder.setArtworkUri(drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
         }
+
+
+
+        val extras = android.os.Bundle(metadataBuilder.build().extras ?: android.os.Bundle()).apply {
+            if (!song.isLocal) {
+                putLong("android.media.metadata.DURATION", app.it.fast4x.rimusic.utils.durationTextToMillis(song.durationText.orEmpty()))
+            }
+        }
+        metadataBuilder.setExtras(extras)
 
         return if (path.contains(MediaSessionConstants.ID_SEARCH_VIDEOS)) {
             baseItem.buildUpon()
@@ -92,11 +99,7 @@ object MediaItemMapper {
             .buildUpon()
             .setExtras(bundle)
 
-        if (song.isLocal) {
-            metadataBuilder = metadataBuilder.setArtworkUri(drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
-        } else if (song.thumbnailUrl == null) {
-            metadataBuilder = metadataBuilder.setArtworkUri(drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
-        }
+
 
         return mediaItem.buildUpon().setMediaMetadata(metadataBuilder.build()).build()
     }
