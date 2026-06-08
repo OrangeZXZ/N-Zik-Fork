@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components.themed
+package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.compose.ui.draw.clip
 
@@ -56,14 +56,14 @@ fun IconButton(
         painter = painterResource(icon),
         contentDescription = null,
         colorFilter = ColorFilter.tint(color),
-        modifier = Modifier
-            .clip(uiRoundnessShape()).clickable(
+        modifier = modifier
+            .clip(uiRoundnessShape())
+            .clickable(
                 indication = indication ?: ripple(bounded = false),
                 interactionSource = remember { MutableInteractionSource() },
                 enabled = enabled,
                 onClick = onClick
             )
-            .then(modifier)
     )
 }
 

@@ -1,4 +1,4 @@
-﻿@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.items
 
 import app.n_zik.android.core.database.*
@@ -395,9 +395,8 @@ fun SongItem(
                     color = colorPalette().favoritesIcon,
                     iconSize = 12.dp,
                     modifier = Modifier
-                        //.padding(start = 4.dp)
                         .align(Alignment.BottomStart)
-                        .absoluteOffset(-8.dp, 0.dp)
+                        .padding(4.dp)
 
                 )
             /*
