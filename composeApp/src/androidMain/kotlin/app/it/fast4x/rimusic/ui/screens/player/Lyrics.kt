@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.player
+package app.it.fast4x.rimusic.ui.screens.player
 
 import app.n_zik.android.core.database.*
 import app.n_zik.android.uiRoundnessShape
@@ -1718,6 +1718,7 @@ fun Lyrics(
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
+                        .padding(bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 24.dp else 0.dp)
                         .fillMaxWidth(0.4f)
                 ) {
                     trailingContent()
@@ -1728,6 +1729,10 @@ fun Lyrics(
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
+                    .padding(
+                        start = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 24.dp else 0.dp,
+                        bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 24.dp else 0.dp
+                    )
                     .fillMaxWidth(if (trailingContent == null) 0.30f else 0.22f)
             ) {
                 if (isLandscape && !showlyricsthumbnail)
@@ -1887,6 +1892,10 @@ fun Lyrics(
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
+                    .padding(
+                        end = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 24.dp else 0.dp,
+                        bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 24.dp else 0.dp
+                    )
                     .fillMaxWidth(0.2f)
             ) {
 

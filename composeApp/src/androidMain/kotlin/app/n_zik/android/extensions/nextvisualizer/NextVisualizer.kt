@@ -1,4 +1,4 @@
-﻿package app.n_zik.android.extensions.nextvisualizer
+package app.n_zik.android.extensions.nextvisualizer
 
 import androidx.compose.ui.draw.clip
 
@@ -259,6 +259,10 @@ fun NextVisualizer() {
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
+                            .padding(
+                                bottom = if (app.n_zik.android.thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 24.dp else 0.dp,
+                                horizontal = if (app.n_zik.android.thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 24.dp else 0.dp
+                            )
                             .fillMaxWidth()
                             .height(50.dp)
                     ) {

@@ -994,7 +994,7 @@ fun Player(
 
                         )
                     }
-                    .padding(all = if (thumbnailShape() == CircleShape) 0.dp else if (isLandscape) ((100f - thumbnailSizeLDp) * 1.5f).dp else ((100f - thumbnailSizeDp) * 1.5f).dp)
+                    .padding(all = if (isLandscape) ((100f - thumbnailSizeLDp) * 1.5f).dp else ((100f - thumbnailSizeDp) * 1.5f).dp)
                     .thumbnailpause(
                         shouldBePlaying = shouldBePlaying
                     )
@@ -1906,7 +1906,7 @@ fun Player(
                                  )
 
                                  val animatePadding by animateDpAsState(
-                                     if (expandedplayer) carouselSize.size.dp else if (thumbnailShape() == CircleShape) 0.dp else ((100f - thumbnailSizeDp) * 1.5f).dp
+                                     if (expandedplayer) carouselSize.size.dp else ((100f - thumbnailSizeDp) * 1.5f).dp
                                  )
                                  VerticalPager(
                                      state = pagerState,
