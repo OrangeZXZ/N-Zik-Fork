@@ -94,7 +94,7 @@
   <string name="neither_save_new_searched_query">Neukládat nové vyhledané dotazy ani zobrazovat historii</string>
   <string name="clear_search_history">Vymazat historii vyhledávání</string>
   <string name="history_is_empty">Historie je prázdná</string>
-  <string name="service_lifetime">ŽIVOTNOST SLUŽBY</string>
+  <string name="service_lifetime">Životnost služby</string>
   <string name="battery_optimizations_applied">Pokud je použita optimalizace baterie, může oznámení o přehrávání při pozastavení náhle zmizet.</string>
   <string name="is_android12">Od Androidu 12 je k tomu, aby se možnost \"Nezničitelná služba\" projevila, nutné vypnout optimalizace baterie.</string>
   <string name="ignore_battery_optimizations">Ignorovat optimalizace baterie</string>
@@ -170,9 +170,9 @@
   <string name="languages">Jazyky</string>
   <string name="app_language">Jazyk aplikace</string>
   <string name="in_alphabetical_order">V abecedním pořadí:</string>
-  <string name="contributors">PŘISPĚVATELÉ</string>
-  <string name="troubleshooting">ODSTRAŇOVÁNÍ PROBLÉMŮ</string>
-  <string name="social">SOCIÁLNÍ SÍŤ</string>
+  <string name="contributors">Přispěvatelé</string>
+  <string name="troubleshooting">Řešení problémů</string>
+  <string name="social">Sociální</string>
   <string name="english">Angličtina (English)</string>
   <string name="italian">Italština (Italiano)</string>
   <string name="czech">Čeština</string>
@@ -289,7 +289,7 @@
   <string name="do_you_really_want_to_download_all">Opravdu chcete stahovat vše?</string>
   <string name="import_playlist">Importovat playlist</string>
   <string name="lang_ukrainian">Ukrajinština (Украї́нська)</string>
-  <string name="proxy">PROXY</string>
+  <string name="proxy">Proxy server</string>
   <string name="enable_proxy">Povolit Proxy</string>
   <string name="proxy_mode">Režim proxy</string>
   <string name="proxy_host">Hostitel proxy</string>
@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">Tato složka již existuje.</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Opravdu chcete tuto složku odstranit z blacklistu?</string>
   <string name="player_appearance">Vzhled přehrávače</string>
-  <string name="player_action_bar">PANEL AKCÍ PŘEHRÁVAČE</string>
+  <string name="player_action_bar">Panel akcí hráče</string>
   <string name="tab_data">Data</string>
   <string name="image_cache_max_size">Maximální velikost mezipaměti obrázků</string>
   <string name="network_status">Stav kvality</string>
@@ -391,7 +391,7 @@
   <string name="tab_miscellaneous">Různé</string>
   <string name="swipe_to_action">Akce přejetím</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Přejetím prstem po skladbě doleva nebo doprava aktivujete nabídku akcí</string>
-  <string name="smart_recommendations">CHYTRÁ DOPORUČENÍ</string>
+  <string name="smart_recommendations">Chytré doporučení</string>
   <string name="player_collapsed_disable_swiping_down">Zakázat přejetí dolů</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Vyhněte se zavírání přehrávače a vyčištění fronty přejetím prstem dolů, když je minimalizovaný</string>
   <string name="sort_date_liked">Datum oblíbení</string>
@@ -592,11 +592,11 @@
   <string name="cache_location_private">Soukromé</string>
   <string name="cache_location_system">Systémové</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">Cannot rename a monthly or online or piped playlist</string>
-  <string name="debug">DEBUG</string>
+  <string name="debug">Debug</string>
   <string name="enable_log_debug">Vytvářet debugovací log</string>
   <string name="if_enabled_create_a_log_file_to_highlight_errors">Vytvořit log soubor pro zvýraznění chyb</string>
   <string name="copy_log_to_clipboard">Zkopírovat log do schránky</string>
-  <string name="piped_account">PIPED</string>
+  <string name="piped_account">Piped</string>
   <string name="enable_piped_syncronization">Povolit synchonizaci s piped</string>
   <string name="piped_change_instance">Změnit instanci</string>
   <string name="piped_username">Uživatelské jméno</string>
@@ -606,7 +606,7 @@
   <string name="piped_connected_to_s">Připojit k %s</string>
   <string name="fake_audio_bar">Falešná lišta zvuku</string>
   <string name="copy_crash_log_to_clipboard">Zkopírovat log pádu do schránky</string>
-  <string name="title_backup_and_restore">ZÁLOHA A OBNOVENÍ</string>
+  <string name="title_backup_and_restore">Zálohování a obnovení</string>
   <string name="message_excluded_s_songs">Vyloučeno %s skladeb</string>
   <string name="show_thumbnail">Zobrazit miniaturu</string>
   <string name="show_lyrics_thumbnail">Zobrazit miniaturu pro písňový text</string>
@@ -814,7 +814,7 @@
   <string name="resume_automatically_when_app_opens">Automatické obnovení přehrávání po otevření aplikace</string>
   <string name="notificationPlayerFirstIcon">První tlačítko</string>
   <string name="notificationPlayerSecondIcon">Druhé tlačítko</string>
-  <string name="notification_player">PŘEHRÁVAČ UPOZORNĚNÍ</string>
+  <string name="notification_player">Přehrávač oznámení</string>
   <string name="repeat">Opakovat</string>
   <string name="original_lyrics">Původní písňové texty</string>
   <string name="translated_lyrics">Přeložené písňové texty</string>
@@ -1146,4 +1146,7 @@
   <string name="failed_to_install">Nepodařilo se nainstalovat: %s</string>
   <string name="last_check">Poslední kontrola: %s</string>
   <string name="no_items">Žádné položky</string>
+  <string name="no_song_found">Nenalezena žádná skladba</string>
+  <string name="listen_history">Historie poslechů</string>
+  <string name="clear_listen_history">Vymazat historii poslech</string>
 </resources>
