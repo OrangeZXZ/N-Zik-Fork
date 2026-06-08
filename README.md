@@ -43,11 +43,12 @@
 <br>
 <br>
 
-⏳ **Only [![Android Lockdown](https://img.shields.io/badge/J--85-red?style=flat-round&logo=android&logoColor=white)](https://keepandroidopen.org) days remaining until Android Lockdown**
+<h2>⏳ Only <a href="https://keepandroidopen.org"><img src="https://img.shields.io/badge/J--85-red?style=flat-round&logo=android&logoColor=white" alt="Android Lockdown"/></a> days remaining until Android Lockdown</h2>
 
 Starting in **September 2026**, Google will require **identity verification for all Android developers**, including those distributing applications **outside of Google Play**.
 
-As a **Free and Open Source Software (FOSS)** project, **N-Zik** opposes this requirement due to its impact on developer privacy, independent distribution, and software freedom.
+
+As a **Free and Open Source Software (FOSS)** project, **N‑Zik** and his **developer** opposes this requirement due to its impact on developer privacy, independent distribution, and software freedom.
 
 📖 [Learn more](https://keepandroidopen.org) · ✍️ [Sign the petition](https://www.change.org/p/stop-google-from-limiting-apk-file-usage/)
 
