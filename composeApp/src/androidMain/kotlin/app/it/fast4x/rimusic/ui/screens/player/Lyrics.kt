@@ -1729,11 +1729,8 @@ fun Lyrics(
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(
-                        start = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 32.dp else 0.dp,
-                        bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 80.dp else 0.dp
-                    )
-                    .fillMaxWidth(if (trailingContent == null) 0.30f else 0.22f)
+                    .padding(bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 16.dp else 0.dp)
+                    .fillMaxWidth(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 0.5f else if (trailingContent == null) 0.30f else 0.22f)
             ) {
                 if (isLandscape && !showlyricsthumbnail)
                     IconButton(
@@ -1892,11 +1889,8 @@ fun Lyrics(
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(
-                        end = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 32.dp else 0.dp,
-                        bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 80.dp else 0.dp
-                    )
-                    .fillMaxWidth(0.2f)
+                    .padding(bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 16.dp else 0.dp)
+                    .fillMaxWidth(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 0.5f else 0.2f)
             ) {
 
 
@@ -1910,8 +1904,7 @@ fun Lyrics(
                             if (translateEnabled) showLanguagesList = true
                         },
                         modifier = Modifier
-                            //.padding(horizontal = 8.dp)
-                            .padding(bottom = 10.dp)
+                            .padding(bottom = 10.dp, start = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 8.dp else 0.dp)
                             .align(Alignment.BottomStart)
                             .size(24.dp)
                     )
@@ -1922,6 +1915,8 @@ fun Lyrics(
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(DefaultDarkColorPalette.text),
                     modifier = Modifier
+                        .align(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) Alignment.BottomStart else Alignment.BottomEnd)
+                        .padding(start = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 48.dp else 0.dp)
                         .padding(all = 4.dp)
                         .clip(uiRoundnessShape()).clickable(
                             indication = ripple(bounded = false),
@@ -2454,7 +2449,6 @@ fun Lyrics(
                         )
                         .padding(all = 8.dp)
                         .size(20.dp)
-                        .align(Alignment.BottomEnd)
                 )
             }
         }

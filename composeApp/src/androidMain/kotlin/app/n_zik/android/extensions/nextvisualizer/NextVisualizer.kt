@@ -260,10 +260,7 @@ fun NextVisualizer() {
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .padding(
-                                horizontal = if (app.n_zik.android.thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 32.dp else 0.dp
-                            )
-                            .padding(
-                                bottom = if (app.n_zik.android.thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 80.dp else 0.dp
+                                bottom = if (app.n_zik.android.thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 16.dp else 0.dp
                             )
                             .fillMaxWidth()
                             .height(50.dp)
