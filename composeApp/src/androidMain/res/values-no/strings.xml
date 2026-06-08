@@ -94,7 +94,7 @@
   <string name="neither_save_new_searched_query">Hverken lagre nye søk eller vis historikk</string>
   <string name="clear_search_history">Tøm søkehistorikk</string>
   <string name="history_is_empty">Historikken er tom</string>
-  <string name="service_lifetime">LEVETID</string>
+  <string name="service_lifetime">Levetid for bruk</string>
   <string name="battery_optimizations_applied">Hvis batterioptimaliseringer brukes, kan avspillingsvarselet plutselig forsvinne ved pausing.</string>
   <string name="is_android12">Siden Android 12 er det nødvendig å deaktivere batterioptimaliseringer for \"Usynlig tjeneste\" valget om å tre i kraft.</string>
   <string name="ignore_battery_optimizations">Ignorer batterioptimaliseringer</string>
@@ -170,9 +170,9 @@
   <string name="languages">Språk</string>
   <string name="app_language">Appspråk</string>
   <string name="in_alphabetical_order">I alfabetisk rekkefølge:</string>
-  <string name="contributors">BIDRAGERE</string>
-  <string name="troubleshooting">FEILSØKING</string>
-  <string name="social">SOSIALT</string>
+  <string name="contributors">Bidragsytere</string>
+  <string name="troubleshooting">Feilsøking</string>
+  <string name="social">Sosial</string>
   <string name="english">Engelsk</string>
   <string name="italian">Italiensk (Italiano)</string>
   <string name="czech">Tjekkisk (Čeština)</string>
@@ -289,7 +289,7 @@
   <string name="do_you_really_want_to_download_all">Ønsker du virkelig å laste ned alt?</string>
   <string name="import_playlist">Importer spilleliste</string>
   <string name="lang_ukrainian">Ukrainsk/e (″″″″″″″″″″″″)</string>
-  <string name="proxy">PROXY</string>
+  <string name="proxy">Mellomtjener</string>
   <string name="enable_proxy">Aktiver Proxy</string>
   <string name="proxy_mode">Proxy Modus</string>
   <string name="proxy_host">Proxy Vert</string>
@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">Denne mappen finnes allerede</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Er du sikker på at du vil fjerne denne mappen fra svartelisten?</string>
   <string name="player_appearance">Spillerens utseende</string>
-  <string name="player_action_bar">SPILLER HANDLINGSLINJE</string>
+  <string name="player_action_bar">Spiller handlingslinje</string>
   <string name="tab_data">Data</string>
   <string name="image_cache_max_size">Maks størrelse på bildebuffer</string>
   <string name="network_status">Kvalitet Status</string>
@@ -391,7 +391,7 @@
   <string name="tab_miscellaneous">Diverse</string>
   <string name="swipe_to_action">Sveip for handling</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Utfør handlinger ved å sveipe til venstre eller høyre på en sang i en loddrett liste over sanger</string>
-  <string name="smart_recommendations">SMARTE ANBEFALINGER</string>
+  <string name="smart_recommendations">Smarte anbefalinger</string>
   <string name="player_collapsed_disable_swiping_down">Deaktiver sveiping ned</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Unngå å lukke spilleren og rydde i køen ved å sveipe ned mens den er minimert</string>
   <string name="sort_date_liked">Favorisert dato</string>
@@ -592,11 +592,11 @@
   <string name="cache_location_private">Privat</string>
   <string name="cache_location_system">System</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">Cannot rename a monthly or online or piped playlist</string>
-  <string name="debug">FEILSØKING</string>
+  <string name="debug">Debug</string>
   <string name="enable_log_debug">Aktiver feilsøkingslogger</string>
   <string name="if_enabled_create_a_log_file_to_highlight_errors">Hvis aktivert, opprett en loggfil for å utheve feil</string>
   <string name="copy_log_to_clipboard">Kopier logg til utklippstavlen</string>
-  <string name="piped_account">PIPED</string>
+  <string name="piped_account">Piped</string>
   <string name="enable_piped_syncronization">Aktiver rørsynkronisering</string>
   <string name="piped_change_instance">Endre forekomst</string>
   <string name="piped_username">Brukernavn</string>
@@ -606,7 +606,7 @@
   <string name="piped_connected_to_s">Koblet til %s</string>
   <string name="fake_audio_bar">Falsk Waveform</string>
   <string name="copy_crash_log_to_clipboard">Kopier krasjlogg til utklippstavlen</string>
-  <string name="title_backup_and_restore">SIKKERHETSKOPIER OG GJENOPPRETT</string>
+  <string name="title_backup_and_restore">Sikkerhetskopiering og gjenoppretting</string>
   <string name="message_excluded_s_songs">Ekskludert %s sanger</string>
   <string name="show_thumbnail">Vis miniatyrbilder</string>
   <string name="show_lyrics_thumbnail">Vis miniatyrbilde for sangtekst</string>
@@ -814,7 +814,7 @@
   <string name="resume_automatically_when_app_opens">Fortsett avspilling automatisk når programmet åpnes</string>
   <string name="notificationPlayerFirstIcon">Første knapp</string>
   <string name="notificationPlayerSecondIcon">Andre knapp</string>
-  <string name="notification_player">VARSLING SPILLER</string>
+  <string name="notification_player">Notifikasjon Spiller</string>
   <string name="repeat">Gjenta</string>
   <string name="original_lyrics">Originale tekster</string>
   <string name="translated_lyrics">Oversatte sangtekster</string>
@@ -1146,4 +1146,7 @@
   <string name="failed_to_install">Kunne ikke installere: %s</string>
   <string name="last_check">Siste sjekk: %s</string>
   <string name="no_items">Ingen elementer</string>
+  <string name="no_song_found">Ingen sang funnet</string>
+  <string name="listen_history">Lytt historikk</string>
+  <string name="clear_listen_history">Slett littehistorie</string>
 </resources>
