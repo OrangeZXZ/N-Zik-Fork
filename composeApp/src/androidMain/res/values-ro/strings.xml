@@ -1149,4 +1149,6 @@
   <string name="no_song_found">Nicio melodie găsită</string>
   <string name="listen_history">Istoric de ascultare</string>
   <string name="clear_listen_history">Curăță istoricul ascultării</string>
+  <string name="ui_roundness">Rotunjire UI</string>
+  <string name="app_name">N-Zik</string>
 </resources>
