@@ -1314,7 +1314,7 @@ fun AppearanceSettings(
                         )
 
                         androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
-                            listOf(0f to "0", 9f to "9", 18f to "18", 27f to "27", 36f to "Max").forEach { (v, label) ->
+                            listOf(0f to "0", 10f to "10", 20f to "20", 28f to "28", 36f to "Max").forEach { (v, label) ->
                                 val isSelected = uiRoundnessDp.toInt() == v.toInt()
                                 androidx.compose.material3.TextButton(
                                     onClick = { uiRoundnessDp = v },
