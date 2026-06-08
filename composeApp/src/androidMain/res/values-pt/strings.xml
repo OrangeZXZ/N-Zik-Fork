@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">Esta pasta já existe</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Tem a certeza que quer remover esta pasta da lista negra?</string>
   <string name="player_appearance">Aparência do Jogador</string>
-  <string name="player_action_bar">Player action bar</string>
+  <string name="player_action_bar">Barra de ação do Player</string>
   <string name="tab_data">Dados</string>
   <string name="image_cache_max_size">Tamanho máximo do cache de imagens</string>
   <string name="network_status">Estado da Qualidade</string>
@@ -606,7 +606,7 @@
   <string name="piped_connected_to_s">Ligado a %s</string>
   <string name="fake_audio_bar">Onda de Falso</string>
   <string name="copy_crash_log_to_clipboard">Copiar log de erro para área de transferência</string>
-  <string name="title_backup_and_restore">Backup and restore</string>
+  <string name="title_backup_and_restore">Backup e restauração</string>
   <string name="message_excluded_s_songs">%s músicas excluídas</string>
   <string name="show_thumbnail">Mostrar miniatura</string>
   <string name="show_lyrics_thumbnail">Mostrar miniatura para letras</string>
@@ -814,7 +814,7 @@
   <string name="resume_automatically_when_app_opens">Retomar a reprodução automaticamente quando o aplicativo for aberto</string>
   <string name="notificationPlayerFirstIcon">Primeiro botão</string>
   <string name="notificationPlayerSecondIcon">Segundo botão</string>
-  <string name="notification_player">Notification Player</string>
+  <string name="notification_player">Reprodutor de notificação</string>
   <string name="repeat">Repetir</string>
   <string name="original_lyrics">Letra original</string>
   <string name="translated_lyrics">Letra traduzida</string>
@@ -1147,6 +1147,6 @@
   <string name="last_check">Última verificação: %s</string>
   <string name="no_items">Nenhum item</string>
   <string name="no_song_found">Nenhuma música encontrada</string>
-  <string name="listen_history">Listen history</string>
-  <string name="clear_listen_history">Clear listen history</string>
+  <string name="listen_history">Histórico de escuta</string>
+  <string name="clear_listen_history">Limpar histórico de escutas</string>
 </resources>
