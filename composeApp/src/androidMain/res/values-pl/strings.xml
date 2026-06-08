@@ -1149,4 +1149,6 @@
   <string name="no_song_found">Nie znaleziono piosenki</string>
   <string name="listen_history">Historia słuchania</string>
   <string name="clear_listen_history">Wyczyść historię słuchania</string>
+  <string name="ui_roundness">Runda interfejsu użytkownika</string>
+  <string name="app_name">N-Zik</string>
 </resources>
