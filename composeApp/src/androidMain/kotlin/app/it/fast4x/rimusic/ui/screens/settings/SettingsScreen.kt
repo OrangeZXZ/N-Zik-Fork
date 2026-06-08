@@ -692,7 +692,7 @@ fun SliderSettingsEntry(
         modifier = Modifier
             .height(36.dp)
             .alpha(if (isEnabled) 1f else 0.5f)
-            .let { if (usePadding) it.padding(start = 32.dp, end = 16.dp) else it }
+            .let { if (usePadding) it.padding(start = 32.dp, end = 32.dp) else it }
             .padding(vertical = 16.dp)
             .fillMaxWidth()
     )

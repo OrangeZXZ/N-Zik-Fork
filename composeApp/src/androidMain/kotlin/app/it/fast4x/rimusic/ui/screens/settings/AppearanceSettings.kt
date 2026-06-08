@@ -1185,20 +1185,20 @@ fun AppearanceSettings(
                         )
                     )
                         if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(search.inputValue, true)) {
-                            SliderSettingsEntry(
-                                icon = R.drawable.resize,
-                                title = stringResource(R.string.player_thumbnail_size),
-                                text = "",
-                                state = thumbnailSizeLDp,
-                                range = 0f..100f,
-                                steps = 3,
-                                onSlide = { thumbnailSizeLDp = it },
-                                toDisplay = { it.toInt().toString() },
-                                trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeLDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } } },
-                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                            )
+                            androidx.compose.foundation.layout.Column(modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)) {
+                                SliderSettingsEntry(
+                                    icon = R.drawable.resize,
+                                    title = stringResource(R.string.player_thumbnail_size),
+                                    text = "",
+                                    state = thumbnailSizeLDp,
+                                    range = 0f..100f,
+                                    steps = 3,
+                                    onSlide = { thumbnailSizeLDp = it },
+                                    toDisplay = { it.toInt().toString() },
+                                    trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeLDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } } }
+                                )
 
-                            androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
+                                androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
                                 listOf(0f to "Min", 25f to "25%", 50f to "50%", 75f to "75%", 100f to "Max").forEach { (v, label) ->
                                     val isSelected = thumbnailSizeLDp.toInt() == v.toInt()
                                     androidx.compose.material3.TextButton(
@@ -1216,6 +1216,7 @@ fun AppearanceSettings(
                                 }
                             }
                         }
+                        }
                 } else {
                     if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
                             search.inputValue,
@@ -1223,20 +1224,20 @@ fun AppearanceSettings(
                         )
                     )
                         if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(search.inputValue, true)) {
-                            SliderSettingsEntry(
-                                icon = R.drawable.resize,
-                                title = stringResource(R.string.player_thumbnail_size),
-                                text = "",
-                                state = thumbnailSizeDp,
-                                range = 0f..100f,
-                                steps = 3,
-                                onSlide = { thumbnailSizeDp = it },
-                                toDisplay = { it.toInt().toString() },
-                                trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } } },
-                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                            )
+                            androidx.compose.foundation.layout.Column(modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)) {
+                                SliderSettingsEntry(
+                                    icon = R.drawable.resize,
+                                    title = stringResource(R.string.player_thumbnail_size),
+                                    text = "",
+                                    state = thumbnailSizeDp,
+                                    range = 0f..100f,
+                                    steps = 3,
+                                    onSlide = { thumbnailSizeDp = it },
+                                    toDisplay = { it.toInt().toString() },
+                                    trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } } }
+                                )
 
-                            androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
+                                androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
                                 listOf(0f to "Min", 25f to "25%", 50f to "50%", 75f to "75%", 100f to "Max").forEach { (v, label) ->
                                     val isSelected = thumbnailSizeDp.toInt() == v.toInt()
                                     androidx.compose.material3.TextButton(
@@ -1254,6 +1255,7 @@ fun AppearanceSettings(
                                 }
                             }
                         }
+                        }
                 }
 
                 if (search.inputValue.isBlank() || stringResource(R.string.thumbnail_roundness).contains(
@@ -1262,20 +1264,20 @@ fun AppearanceSettings(
                     )
                 )
                     if (search.inputValue.isBlank() || stringResource(R.string.thumbnail_roundness).contains(search.inputValue, true)) {
-                        SliderSettingsEntry(
-                            icon = R.drawable.image,
-                            title = stringResource(R.string.thumbnail_roundness),
-                            text = "",
-                            state = thumbnailRoundnessDp,
-                            range = 0f..48f,
-                            steps = 3,
-                            onSlide = { thumbnailRoundnessDp = it },
-                            toDisplay = { it.toInt().toString() },
-                            trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                        )
+                        androidx.compose.foundation.layout.Column(modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)) {
+                            SliderSettingsEntry(
+                                icon = R.drawable.image,
+                                title = stringResource(R.string.thumbnail_roundness),
+                                text = "",
+                                state = thumbnailRoundnessDp,
+                                range = 0f..48f,
+                                steps = 3,
+                                onSlide = { thumbnailRoundnessDp = it },
+                                toDisplay = { it.toInt().toString() },
+                                trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } }
+                            )
 
-                        androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
+                            androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
                             listOf(0f to "0", 12f to "12", 24f to "24", 36f to "36", 48f to "Max").forEach { (v, label) ->
                                 val isSelected = thumbnailRoundnessDp.toInt() == v.toInt()
                                 androidx.compose.material3.TextButton(
@@ -1292,6 +1294,7 @@ fun AppearanceSettings(
                                 }
                             }
                         }
+                    }
                     }
 
                 if (search.inputValue.isBlank() || stringResource(app.n_zik.android.R.string.ui_roundness).contains(
