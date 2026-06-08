@@ -1,0 +1,36 @@
+name: Update Android Lockdown Countdown
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-countdown:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Calculate days remaining
+        id: countdown
+        run: |
+          TARGET="2026-09-01"
+          DAYS=$(( ( $(date -d "$TARGET" +%s) - $(date -d "$(date +%Y-%m-%d)" +%s) ) / 86400 ))
+          [ $DAYS -lt 0 ] && DAYS=0
+          echo "days=$DAYS" >> $GITHUB_OUTPUT
+
+      - name: Update README
+        run: |
+          DAYS="${{ steps.countdown.outputs.days }}"
+          sed -i "s|J--[0-9]*-red|J--${DAYS}-red|g" README.md
+
+      - name: Commit if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update Android lockdown countdown (${{ steps.countdown.outputs.days }} days left)"
+          file_pattern: README.md
