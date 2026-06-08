@@ -1149,4 +1149,6 @@
   <string name="no_song_found">Δεν βρέθηκε τραγούδι</string>
   <string name="listen_history">Ακούστε το ιστορικό</string>
   <string name="clear_listen_history">Εκκαθάριση ιστορικού αφής</string>
+  <string name="ui_roundness">Στρογγυλό UI</string>
+  <string name="app_name">N-Zik</string>
 </resources>
