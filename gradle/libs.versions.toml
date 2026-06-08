@@ -48,6 +48,7 @@ koin = "4.2.1"
 kermit = "2.1.0"
 kotlinx-serialization = "1.11.0"
 composeReorderable = "3.1.0"
+freedroidwarn = "V1.13"
 
 [libraries]
 # Kotlinx
@@ -157,6 +158,7 @@ brotli = { group = "org.brotli", name = "dec", version.ref = "brotli" }
 desugaring-nio = { group = "com.android.tools", name = "desugar_jdk_libs_nio", version.ref = "desugaring" }
 compose-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmer" }
 compose-reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "composeReorderable" }
+freedroidwarn = { module = "com.github.woheller69:FreeDroidWarn", version.ref = "freedroidwarn" }
 
 [plugins]
 # Multiplatform

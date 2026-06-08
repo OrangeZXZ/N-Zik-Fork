@@ -262,6 +262,7 @@ dependencies {
     implementation(projects.kugou)
     implementation(projects.lrclib)
     implementation(projects.piped)
+    implementation(libs.freedroidwarn)
 
     implementation(projects.metrolist) {
         exclude(group = "com.google.protobuf", module = "protobuf-java")

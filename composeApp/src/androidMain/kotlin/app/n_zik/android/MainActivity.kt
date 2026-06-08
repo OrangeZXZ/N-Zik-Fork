@@ -238,6 +238,7 @@ import java.util.Objects
 import kotlin.math.sqrt
 import kotlin.system.exitProcess
 import androidx.compose.foundation.shape.RoundedCornerShape
+import org.woheller69.freeDroidWarn.FreeDroidWarn
 
 @UnstableApi
 class MainActivity :
@@ -304,6 +305,7 @@ class MainActivity :
     @ExperimentalComposeUiApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FreeDroidWarn.showWarningOnUpgrade(this, BuildConfig.VERSION_CODE)
         MonetCompat.enablePaletteCompat()
 
         enableEdgeToEdge(
