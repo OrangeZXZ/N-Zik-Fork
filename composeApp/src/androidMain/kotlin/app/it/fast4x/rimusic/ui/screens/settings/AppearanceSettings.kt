@@ -9,13 +9,16 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.Alignment
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
@@ -1186,6 +1189,28 @@ fun AppearanceSettings(
                                 title = stringResource(R.string.player_thumbnail_size),
                                 selectedValue = playerThumbnailSizeL,
                                 onValueSelected = { playerThumbnailSizeL = it },
+                                trailingContent = @Composable {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(36.dp)
+                                            .border(
+                                                width = 1.dp,
+                                                color = colorPalette().accent,
+                                                shape = thumbnailRoundness.shape
+                                            ),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .padding((playerThumbnailSizeL.size * 0.15f).dp)
+                                                .fillMaxSize()
+                                                .background(
+                                                    color = colorPalette().accent.copy(alpha = 0.5f),
+                                                    shape = thumbnailRoundness.shape
+                                                )
+                                        )
+                                    }
+                                },
                                 valueText = { it.text },
                                 modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                             )
@@ -1202,6 +1227,28 @@ fun AppearanceSettings(
                                 title = stringResource(R.string.player_thumbnail_size),
                                 selectedValue = playerThumbnailSize,
                                 onValueSelected = { playerThumbnailSize = it },
+                                trailingContent = @Composable {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(36.dp)
+                                            .border(
+                                                width = 1.dp,
+                                                color = colorPalette().accent,
+                                                shape = thumbnailRoundness.shape
+                                            ),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .padding((playerThumbnailSize.size * 0.15f).dp)
+                                                .fillMaxSize()
+                                                .background(
+                                                    color = colorPalette().accent.copy(alpha = 0.5f),
+                                                    shape = thumbnailRoundness.shape
+                                                )
+                                        )
+                                    }
+                                },
                                 valueText = { it.text },
                                 modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                             )
@@ -1236,6 +1283,21 @@ fun AppearanceSettings(
                             title = stringResource(R.string.thumbnail_roundness),
                             selectedValue = thumbnailRoundness,
                             onValueSelected = { thumbnailRoundness = it },
+                            trailingContent = @Composable {
+                                Spacer(
+                                    modifier = Modifier
+                                        .size(36.dp)
+                                        .background(
+                                            color = colorPalette().accent.copy(alpha = 0.5f),
+                                            shape = thumbnailRoundness.shape
+                                        )
+                                        .border(
+                                            width = 1.dp,
+                                            color = colorPalette().accent,
+                                            shape = thumbnailRoundness.shape
+                                        )
+                                )
+                            },
                             valueText = { it.text },
                             modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                         )

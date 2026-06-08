@@ -797,7 +797,8 @@ fun OtherSettingsEntry(
     text: String,
     icon: Int,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    trailingContent: (@Composable () -> Unit)? = null
 ) {
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
@@ -865,6 +866,10 @@ fun OtherSettingsEntry(
                     }
                 }
 
+                if (trailingContent != null) {
+                    trailingContent()
+                }
+
                 // Arrow indicator
                 Icon(
                     painter = painterResource(R.drawable.chevron_forward),
@@ -885,6 +890,7 @@ inline fun <reified T : Enum<T>> OtherEnumValueSelectorSettingsEntry(
     selectedValue: T,
     noinline onValueSelected: (T) -> Unit,
     modifier: Modifier = Modifier,
+    noinline trailingContent: (@Composable () -> Unit)? = null,
     noinline valueText: @Composable (T) -> String  = { it.name }
 ) {
     var isShowingDialog by remember {
@@ -897,7 +903,10 @@ inline fun <reified T : Enum<T>> OtherEnumValueSelectorSettingsEntry(
             title = title,
             selectedValue = selectedValue,
             values = enumValues<T>().toList(),
-            onValueSelected = onValueSelected,
+            onValueSelected = {
+                onValueSelected(it)
+                isShowingDialog = false
+            },
             valueText = valueText
         )
     }
@@ -907,6 +916,7 @@ inline fun <reified T : Enum<T>> OtherEnumValueSelectorSettingsEntry(
         text = text ?: valueText(selectedValue),
         icon = icon,
         modifier = modifier,
+        trailingContent = trailingContent,
         onClick = { isShowingDialog = true }
     )
 }
