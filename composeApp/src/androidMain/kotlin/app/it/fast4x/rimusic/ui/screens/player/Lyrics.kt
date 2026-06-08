@@ -1718,7 +1718,7 @@ fun Lyrics(
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 24.dp else 0.dp)
+                        .padding(bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 80.dp else 0.dp)
                         .fillMaxWidth(0.4f)
                 ) {
                     trailingContent()
@@ -1730,8 +1730,8 @@ fun Lyrics(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(
-                        start = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 24.dp else 0.dp,
-                        bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 24.dp else 0.dp
+                        start = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 32.dp else 0.dp,
+                        bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 80.dp else 0.dp
                     )
                     .fillMaxWidth(if (trailingContent == null) 0.30f else 0.22f)
             ) {
@@ -1893,8 +1893,8 @@ fun Lyrics(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(
-                        end = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 24.dp else 0.dp,
-                        bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 24.dp else 0.dp
+                        end = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 32.dp else 0.dp,
+                        bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 80.dp else 0.dp
                     )
                     .fillMaxWidth(0.2f)
             ) {
