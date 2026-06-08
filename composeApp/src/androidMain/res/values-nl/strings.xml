@@ -1149,4 +1149,6 @@
   <string name="no_song_found">Geen nummer gevonden</string>
   <string name="listen_history">Luister geschiedenis</string>
   <string name="clear_listen_history">Wis luistergeschiedenis</string>
+  <string name="ui_roundness">UI geluidshinder</string>
+  <string name="app_name">N-Zik</string>
 </resources>
