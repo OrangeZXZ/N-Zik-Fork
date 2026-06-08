@@ -1276,7 +1276,7 @@ fun AppearanceSettings(
                         )
 
                         androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
-                            listOf(0f to "0", 12f to "12", 24f to "24", 36f to "Max").forEach { (v, label) ->
+                            listOf(0f to "0", 12f to "12", 18f to "18", 27f to "27", 36f to "Max").forEach { (v, label) ->
                                 val isSelected = thumbnailRoundnessDp.toInt() == v.toInt()
                                 androidx.compose.material3.TextButton(
                                     onClick = { thumbnailRoundnessDp = v },
