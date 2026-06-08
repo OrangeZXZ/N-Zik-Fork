@@ -1305,8 +1305,8 @@ fun AppearanceSettings(
                             title = stringResource(app.n_zik.android.R.string.ui_roundness),
                             text = "",
                             state = uiRoundnessDp,
-                            range = 0f..36f,
-
+                            range = 0f..40f,
+                            steps = 3,
                             onSlide = { uiRoundnessDp = it },
                             toDisplay = { it.toInt().toString() },
                             trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(uiRoundnessDp.dp, 0.4f))).border(width = 1.dp, color = colorPalette().accent, shape = androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(uiRoundnessDp.dp, 0.4f)))) } },
@@ -1314,7 +1314,7 @@ fun AppearanceSettings(
                         )
 
                         androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
-                            listOf(0f to "0", 10f to "10", 20f to "20", 28f to "28", 36f to "Max").forEach { (v, label) ->
+                            listOf(0f to "0", 10f to "10", 20f to "20", 30f to "30", 40f to "Max").forEach { (v, label) ->
                                 val isSelected = uiRoundnessDp.toInt() == v.toInt()
                                 androidx.compose.material3.TextButton(
                                     onClick = { uiRoundnessDp = v },

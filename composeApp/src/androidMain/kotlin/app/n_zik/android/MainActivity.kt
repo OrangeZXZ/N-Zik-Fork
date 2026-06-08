@@ -561,7 +561,7 @@ class MainActivity :
                                 applyFontPadding,
                                 fontType
                             ),
-                            thumbnailShape = if (thumbnailRoundnessDp >= 36f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(thumbnailRoundnessDp.dp),
+                            thumbnailShape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(thumbnailRoundnessDp.dp),
                             uiRoundnessShape = RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(uiRoundnessDp.dp, 0.4f))
                         )
                     )
@@ -850,7 +850,7 @@ class MainActivity :
                                     sharedPreferences.getFloat(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 12f)
 
                                 appearance = appearance.copy(
-                                    thumbnailShape = if (thumbnailRoundnessDp >= 36f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(thumbnailRoundnessDp.dp)
+                                    thumbnailShape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(thumbnailRoundnessDp.dp)
                                 )
                             }
 
