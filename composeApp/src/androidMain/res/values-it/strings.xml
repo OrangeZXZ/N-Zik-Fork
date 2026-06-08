@@ -1149,4 +1149,6 @@
   <string name="no_song_found">Nessuna canzone trovata</string>
   <string name="listen_history">Ascolta cronologia</string>
   <string name="clear_listen_history">Cancella cronologia ascolti</string>
+  <string name="ui_roundness">Roundness Dell\'UI</string>
+  <string name="app_name">N-Zik</string>
 </resources>
