@@ -1268,7 +1268,7 @@ fun AppearanceSettings(
                             text = "",
                             state = thumbnailRoundnessDp,
                             range = 0f..36f,
-                            steps = 3,
+
                             onSlide = { thumbnailRoundnessDp = it },
                             toDisplay = { it.toInt().toString() },
                             trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = androidx.compose.foundation.shape.RoundedCornerShape(thumbnailRoundnessDp.dp)).border(width = 1.dp, color = colorPalette().accent, shape = androidx.compose.foundation.shape.RoundedCornerShape(thumbnailRoundnessDp.dp))) } },
@@ -1306,7 +1306,7 @@ fun AppearanceSettings(
                             text = "",
                             state = uiRoundnessDp,
                             range = 0f..36f,
-                            steps = 3,
+
                             onSlide = { uiRoundnessDp = it },
                             toDisplay = { it.toInt().toString() },
                             trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(uiRoundnessDp.dp, 0.4f))).border(width = 1.dp, color = colorPalette().accent, shape = androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(uiRoundnessDp.dp, 0.4f)))) } },
