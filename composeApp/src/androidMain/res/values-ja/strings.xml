@@ -94,7 +94,7 @@
   <string name="neither_save_new_searched_query">新たな検索語句の保存も履歴の表示もしない</string>
   <string name="clear_search_history">検索履歴を削除</string>
   <string name="history_is_empty">履歴なし</string>
-  <string name="service_lifetime">サービスの稼働時間を伸ばす</string>
+  <string name="service_lifetime">サービス有効期間</string>
   <string name="battery_optimizations_applied">充電最適化を使用中、一時停止時に再生通知が突然消えることがあります。</string>
   <string name="is_android12">Android 12 以降では、「不可視サービス」オプションを有効にするには、バッテリーの最適化を無効にする必要があります。</string>
   <string name="ignore_battery_optimizations">充電最適化を無視</string>
@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">このフォルダは既に存在します</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">このフォルダをブラックリストから除去しますか？</string>
   <string name="player_appearance">プレイヤーの外観</string>
-  <string name="player_action_bar">プレイヤーの操作用バー</string>
+  <string name="player_action_bar">プレイヤーアクションバー</string>
   <string name="tab_data">データ</string>
   <string name="image_cache_max_size">画像キャッシュの最大サイズ</string>
   <string name="network_status">品質の状態</string>
@@ -391,7 +391,7 @@
   <string name="tab_miscellaneous">その他</string>
   <string name="swipe_to_action">スワイプしてアクション</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">曲の垂直リスト内の曲を左右にスワイプして操作を実行</string>
-  <string name="smart_recommendations">スマートなおすすめ</string>
+  <string name="smart_recommendations">スマートレコメンデーション</string>
   <string name="player_collapsed_disable_swiping_down">下スワイプを無効化</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">最小化されている間、下スワイプでプレイヤーを閉じること、キューの除去をしない</string>
   <string name="sort_date_liked">お気に入り日時</string>
@@ -592,7 +592,7 @@
   <string name="cache_location_private">プライベート</string>
   <string name="cache_location_system">システム</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">Cannot rename a monthly or online or piped playlist</string>
-  <string name="debug">デバッグ</string>
+  <string name="debug">Debug</string>
   <string name="enable_log_debug">デバッグログを有効にする</string>
   <string name="if_enabled_create_a_log_file_to_highlight_errors">有効なら、エラーに焦点を当てたログファイルを作成します</string>
   <string name="copy_log_to_clipboard">ログをクリップボードにコピー</string>
@@ -814,7 +814,7 @@
   <string name="resume_automatically_when_app_opens">アプリを開いたときに再生を自動的に再開</string>
   <string name="notificationPlayerFirstIcon">最初のボタン</string>
   <string name="notificationPlayerSecondIcon">2番目のボタン</string>
-  <string name="notification_player">プレイヤー通知</string>
+  <string name="notification_player">通知プレーヤー</string>
   <string name="repeat">繰り返す</string>
   <string name="original_lyrics">オリジナルの歌詞</string>
   <string name="translated_lyrics">翻訳された歌詞</string>
@@ -1146,4 +1146,7 @@
   <string name="failed_to_install">インストールに失敗しました: %s</string>
   <string name="last_check">最終確認： %s</string>
   <string name="no_items">アイテムがありません</string>
+  <string name="no_song_found">曲が見つかりません</string>
+  <string name="listen_history">Listen history</string>
+  <string name="clear_listen_history">リッスン履歴をクリア</string>
 </resources>
