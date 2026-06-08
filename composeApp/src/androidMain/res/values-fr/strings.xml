@@ -94,7 +94,7 @@
   <string name="neither_save_new_searched_query">Ne pas enregistrer de nouvelles recherches ainsi que l’historique</string>
   <string name="clear_search_history">Effacer l’historique de recherche</string>
   <string name="history_is_empty">L’historique est vide</string>
-  <string name="service_lifetime">SERVICE SUPPLEMENTAIRE D\'OPTIMISATION</string>
+  <string name="service_lifetime">Durée de vie du service</string>
   <string name="battery_optimizations_applied">Si des optimisations de la batterie sont appliquées, la notification de lecture peut soudainement disparaître en cas de pause.</string>
   <string name="is_android12">Depuis Android 12, la désactivation des optimisations de la batterie est nécessaire pour que l’option \"Service protégé\" prenne effet.</string>
   <string name="ignore_battery_optimizations">Ignorer les optimisations de la batterie</string>
@@ -170,9 +170,9 @@
   <string name="languages">Langues</string>
   <string name="app_language">Langues de l\'application</string>
   <string name="in_alphabetical_order">Dans l\'ordre alphabétique :</string>
-  <string name="contributors">CONTRIBUTEURS</string>
-  <string name="troubleshooting">DÉPANNAGE</string>
-  <string name="social">SOCIALE</string>
+  <string name="contributors">Contributeurs</string>
+  <string name="troubleshooting">Dépannage</string>
+  <string name="social">Réseaux sociaux</string>
   <string name="english">Anglais (English)</string>
   <string name="italian">Italien (Italiano)</string>
   <string name="czech">Tchèque (Čeština)</string>
@@ -289,7 +289,7 @@
   <string name="do_you_really_want_to_download_all">Voulez-vous vraiment tout télécharger ?</string>
   <string name="import_playlist">Importer une playlist</string>
   <string name="lang_ukrainian">Ukrainien (українська)</string>
-  <string name="proxy">PROXY</string>
+  <string name="proxy">Proxy</string>
   <string name="enable_proxy">Activer le Proxy</string>
   <string name="proxy_mode">Mode du proxy</string>
   <string name="proxy_host">Hôte du proxy</string>
@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">Ce dossier existe déjà.</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Êtes-vous sûr de vouloir supprimer ce dossier de la liste noire ?</string>
   <string name="player_appearance">Apparence du Lecteur</string>
-  <string name="player_action_bar">BARRE D\'ACTION DU LECTEUR</string>
+  <string name="player_action_bar">Barre d\'action du joueur</string>
   <string name="tab_data">Données</string>
   <string name="image_cache_max_size">Taille maximale du cache des images</string>
   <string name="network_status">Quality Status</string>
@@ -391,7 +391,7 @@
   <string name="tab_miscellaneous">Divers</string>
   <string name="swipe_to_action">Action associée au balayage</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Activer le menu d\'action en faisant glisser le titre vers la gauche ou la droite</string>
-  <string name="smart_recommendations">RECOMMANDATIONS INTELLIGENTES</string>
+  <string name="smart_recommendations">Recommandation intelligente</string>
   <string name="player_collapsed_disable_swiping_down">Désactiver le glissement vers le bas</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Éviter de fermer le lecteur et de nettoyer la file en glissant vers le bas pendant qu\'il est minimisé</string>
   <string name="sort_date_liked">Date de mise en favoris</string>
@@ -593,11 +593,11 @@
   <string name="cache_location_private">Privé</string>
   <string name="cache_location_system">Système</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">Impossible de renommer une playlist mensuelle, en ligne ou canalisée</string>
-  <string name="debug">DÉBOGAGE</string>
+  <string name="debug">Debug</string>
   <string name="enable_log_debug">Activer le journal du débogage</string>
   <string name="if_enabled_create_a_log_file_to_highlight_errors">Si activé, créez un fichier journal pour mettre en surbrillance les erreurs</string>
   <string name="copy_log_to_clipboard">Copier les journaux dans le presse-papiers</string>
-  <string name="piped_account">PIPED</string>
+  <string name="piped_account">Piped</string>
   <string name="enable_piped_syncronization">Activer la syncronisation de piped</string>
   <string name="piped_change_instance">Changer d\'instance</string>
   <string name="piped_username">Nom d’utilisateur</string>
@@ -607,7 +607,7 @@
   <string name="piped_connected_to_s">Connecté à %s</string>
   <string name="fake_audio_bar">Fausse barre audio</string>
   <string name="copy_crash_log_to_clipboard">Copier le journal des plantages dans le presse-papiers</string>
-  <string name="title_backup_and_restore">SAUVEGARDE ET RESTAURATION</string>
+  <string name="title_backup_and_restore">Sauvegarde et restauration</string>
   <string name="message_excluded_s_songs">Titres %s exclus</string>
   <string name="show_thumbnail">Afficher la miniature</string>
   <string name="show_lyrics_thumbnail">Afficher la miniature pour les paroles</string>
@@ -816,7 +816,7 @@ Volume BAS : titre précédent</string>
   <string name="resume_automatically_when_app_opens">Reprendre la lecture automatiquement lorsque l\'application est ouverte</string>
   <string name="notificationPlayerFirstIcon">Premier bouton</string>
   <string name="notificationPlayerSecondIcon">Deuxième bouton</string>
-  <string name="notification_player">LECTEUR DE NOTIFICATION</string>
+  <string name="notification_player">Lecteur de notification</string>
   <string name="repeat">Répéter</string>
   <string name="original_lyrics">Paroles originales</string>
   <string name="translated_lyrics">Paroles traduites</string>
@@ -1148,4 +1148,7 @@ Volume BAS : titre précédent</string>
   <string name="failed_to_install">Échec de l\'installation : %s</string>
   <string name="last_check">Dernière vérification : %s</string>
   <string name="no_items">Aucun élément</string>
+  <string name="no_song_found">Aucune chanson trouvée</string>
+  <string name="listen_history">Historique des écoutes</string>
+  <string name="clear_listen_history">Effacer l\'historique d\'écoute</string>
 </resources>
