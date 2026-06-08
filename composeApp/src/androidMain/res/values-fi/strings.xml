@@ -94,7 +94,7 @@
   <string name="neither_save_new_searched_query">Ei tallenna uusia hakuja eikä näytä hakuhistoriaa</string>
   <string name="clear_search_history">Tyhjennä hakuhistoria</string>
   <string name="history_is_empty">Historia on tyhjä</string>
-  <string name="service_lifetime">Palvelun elinikä</string>
+  <string name="service_lifetime">Käyttöiän kesto</string>
   <string name="battery_optimizations_applied">Jos akun optimointia käytetään, soittoilmoitus voidaan yhtäkkiä poistaa, kun soitto on keskeytetty.</string>
   <string name="is_android12">Koska Android 12, akun optimoinnin poistaminen käytöstä on tarpeen, jotta \"Näkymätön palvelu\" voi astua voimaan.</string>
   <string name="ignore_battery_optimizations">Ohita akun optimointi</string>
@@ -170,9 +170,9 @@
   <string name="languages">Kielet</string>
   <string name="app_language">Sovelluksen kieli</string>
   <string name="in_alphabetical_order">Aakkosjärjestyksessä:</string>
-  <string name="contributors">OSALLISTUJAT</string>
-  <string name="troubleshooting">ONGELMIEN SELVITTÄMINEN</string>
-  <string name="social">SOSIAALINEN</string>
+  <string name="contributors">Avustajat</string>
+  <string name="troubleshooting">Vianmääritys</string>
+  <string name="social">Sosiaalinen</string>
   <string name="english">englanti</string>
   <string name="italian">italia</string>
   <string name="czech">tšekki</string>
@@ -289,7 +289,7 @@
   <string name="do_you_really_want_to_download_all">Haluatko varmasti ladata kaikki?</string>
   <string name="import_playlist">Tuo soittolista</string>
   <string name="lang_ukrainian">Ukraina (- VVVVVVVV)</string>
-  <string name="proxy">VÄLITYSPALVELIN</string>
+  <string name="proxy">Välityspalvelin</string>
   <string name="enable_proxy">Ota välityspalvelin käyttöön</string>
   <string name="proxy_mode">Välityspalvelimen protokolla</string>
   <string name="proxy_host">Välityspalvelimen isäntänimi</string>
@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">Tämä kansio on jo olemassa</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Oletko varma, että haluat poistaa tämän kansion mustalta listalta?</string>
   <string name="player_appearance">Soittimen Ulkonäkö</string>
-  <string name="player_action_bar">SOITTIMEN TOIMINTOPALKKI</string>
+  <string name="player_action_bar">Soittimen toimintopalkki</string>
   <string name="tab_data">Tiedot</string>
   <string name="image_cache_max_size">Kuvien välimuistin enimmäiskoko</string>
   <string name="network_status">Laatu Tila</string>
@@ -391,7 +391,7 @@
   <string name="tab_miscellaneous">Sekalaiset</string>
   <string name="swipe_to_action">Pyyhkäise toimintoa varten</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Suorita toiminnot pyyhkäisemällä kappale vasemmalle tai oikealle pystysuoran kappaleiden listan sisällä</string>
-  <string name="smart_recommendations">ÄLYKKÄÄT SUOSITUKSET</string>
+  <string name="smart_recommendations">Älykkäät suositukset</string>
   <string name="player_collapsed_disable_swiping_down">Poista pyyhkäisy alas -toiminto</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Vältä soittimen sulkeminen ja jonon puhdistaminen pyyhkäisemällä alaspäin, kun se on pienennettynä</string>
   <string name="sort_date_liked">Pvm Suosikki</string>
@@ -592,11 +592,11 @@
   <string name="cache_location_private">Yksityinen</string>
   <string name="cache_location_system">Järjestelmä</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">Kuukausittaista-, online- tai Piped-soittolistaa ei voi nimetä uudelleen</string>
-  <string name="debug">DEBUG</string>
+  <string name="debug">Debug</string>
   <string name="enable_log_debug">Ota virheenkorjauslokit käyttöön</string>
   <string name="if_enabled_create_a_log_file_to_highlight_errors">Jos käytössä, luo lokitiedoston virheiden löytämiseksi</string>
   <string name="copy_log_to_clipboard">Kopioi loki leikepöydälle</string>
-  <string name="piped_account">PIPED</string>
+  <string name="piped_account">Piped</string>
   <string name="enable_piped_syncronization">Ota putkitettu synkronointi käyttöön</string>
   <string name="piped_change_instance">Vaihda Pakettia</string>
   <string name="piped_username">Käyttäjätunnus</string>
@@ -606,7 +606,7 @@
   <string name="piped_connected_to_s">Yhdistetty kohteeseen %s</string>
   <string name="fake_audio_bar">Fake Waveform</string>
   <string name="copy_crash_log_to_clipboard">Kopioi kaatumisloki leikepöydälle</string>
-  <string name="title_backup_and_restore">VARMUUSKOPIOI JA PALAUTA</string>
+  <string name="title_backup_and_restore">Varmuuskopioi ja palauta</string>
   <string name="message_excluded_s_songs">Poisjätetty %s kappale(tta)</string>
   <string name="show_thumbnail">Näytä pienoiskuva</string>
   <string name="show_lyrics_thumbnail">Näytä pienoiskuva sanoituksille</string>
@@ -814,7 +814,7 @@
   <string name="resume_automatically_when_app_opens">Jatka toistoa automaattisesti, kun sovellus avataan</string>
   <string name="notificationPlayerFirstIcon">Ensimmäinen painike</string>
   <string name="notificationPlayerSecondIcon">Toinen painike</string>
-  <string name="notification_player">SOITIN ILMOITUSNÄYTÖSSÄ</string>
+  <string name="notification_player">Ilmoitusten Pelaaja</string>
   <string name="repeat">Uudelleentoisto</string>
   <string name="original_lyrics">Alkuperäiset sanoitukset</string>
   <string name="translated_lyrics">Käännetyt sanoitukset</string>
@@ -1146,4 +1146,7 @@
   <string name="failed_to_install">Asennus epäonnistui: %s</string>
   <string name="last_check">Viimeisin tarkistus: %s</string>
   <string name="no_items">Ei kohteita</string>
+  <string name="no_song_found">Kappaletta ei löytynyt</string>
+  <string name="listen_history">Kuuntele historiaa</string>
+  <string name="clear_listen_history">Tyhjennä kuunteluhistoria</string>
 </resources>
