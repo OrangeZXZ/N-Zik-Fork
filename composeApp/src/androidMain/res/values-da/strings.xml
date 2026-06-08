@@ -94,7 +94,7 @@
   <string name="neither_save_new_searched_query">Hverken gem nye søgninger eller vis historik</string>
   <string name="clear_search_history">Ryd søgehistorik</string>
   <string name="history_is_empty">Historik er tom</string>
-  <string name="service_lifetime">TJENESTE LEVETID</string>
+  <string name="service_lifetime">Service levetid</string>
   <string name="battery_optimizations_applied">Hvis batterioptimeringer er aktiveret, kan afspilningsnotifikationen forsvinde, når den er på pause.</string>
   <string name="is_android12">Siden Android 12 er det nødvendigt at deaktivere batterioptimeringer for, at indstillingen \"Uovervindelig tjeneste\" kan træde i kraft.</string>
   <string name="ignore_battery_optimizations">Ignorér batterioptimeringer</string>
@@ -170,9 +170,9 @@
   <string name="languages">Sprog</string>
   <string name="app_language">Appsprog</string>
   <string name="in_alphabetical_order">I alfabetisk orden:</string>
-  <string name="contributors">BIDRAGSYDERE</string>
-  <string name="troubleshooting">FEJLSØGNING</string>
-  <string name="social">SOCIAL</string>
+  <string name="contributors">Bidragydere</string>
+  <string name="troubleshooting">Fejlfinding</string>
+  <string name="social">Social</string>
   <string name="english">Engelsk</string>
   <string name="italian">Italiensk (Italiano)</string>
   <string name="czech">Tjekkisk (Čeština)</string>
@@ -289,7 +289,7 @@
   <string name="do_you_really_want_to_download_all">Vil du virkelig hente alle?</string>
   <string name="import_playlist">Importér playliste</string>
   <string name="lang_ukrainian">Ukrainsk</string>
-  <string name="proxy">PROXY</string>
+  <string name="proxy">Proxy</string>
   <string name="enable_proxy">Aktivér proxy</string>
   <string name="proxy_mode">Proxytilstand</string>
   <string name="proxy_host">Proxyvært</string>
@@ -375,7 +375,7 @@
   <string name="this_folder_already_exists">Denne mappe findes allerede.</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Er du sikker på, at du vil fjerne denne mappe fra sortlisten?</string>
   <string name="player_appearance">Udseende</string>
-  <string name="player_action_bar">AFSPILLERHANDLINGSLINJE</string>
+  <string name="player_action_bar">Spiller handlingsbjælke</string>
   <string name="tab_data">Data</string>
   <string name="image_cache_max_size">Maks. størrelse for billedcache</string>
   <string name="network_status">Kvalitet Status</string>
@@ -391,7 +391,7 @@
   <string name="tab_miscellaneous">Diverse</string>
   <string name="swipe_to_action">Stryg for handling</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Aktivér handlingsmenuen ved at stryge sangen til venstre eller højre</string>
-  <string name="smart_recommendations">SMARTE ANBEFALINGER</string>
+  <string name="smart_recommendations">Smart anbefaling</string>
   <string name="player_collapsed_disable_swiping_down">Deaktivér stryge ned</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Undgå at lukke afspilleren og rydde køen ved at stryge ned, når den er minimeret</string>
   <string name="sort_date_liked">\'Kan lide\'-dato</string>
@@ -592,11 +592,11 @@
   <string name="cache_location_private">Privat</string>
   <string name="cache_location_system">System</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">Kan ikke omdøbe en månedlig, online eller Piped-playliste</string>
-  <string name="debug">FEJLFINDING</string>
+  <string name="debug">Debug</string>
   <string name="enable_log_debug">Aktivér logfejlfinding</string>
   <string name="if_enabled_create_a_log_file_to_highlight_errors">Hvis aktiveret, oprettes en logfil for at fremhæve fejl</string>
   <string name="copy_log_to_clipboard">Kopiér log til udklipsholder</string>
-  <string name="piped_account">PIPED</string>
+  <string name="piped_account">Piped</string>
   <string name="enable_piped_syncronization">Aktivér Piped-synkronisering</string>
   <string name="piped_change_instance">Skift instans</string>
   <string name="piped_username">Brugernavn</string>
@@ -606,7 +606,7 @@
   <string name="piped_connected_to_s">Forbundet til %s</string>
   <string name="fake_audio_bar">Falsk lydbølge</string>
   <string name="copy_crash_log_to_clipboard">Kopiér nedbrudslog til udklipsholder</string>
-  <string name="title_backup_and_restore">SIKKERHEDSKOPIERING OG GENDANNELSE</string>
+  <string name="title_backup_and_restore">Sikkerhedskopiér og gendan</string>
   <string name="message_excluded_s_songs">Ekskluderede %s sange</string>
   <string name="show_thumbnail">Vis miniaturebillede</string>
   <string name="show_lyrics_thumbnail">Vis miniaturebillede for sangtekster</string>
@@ -814,7 +814,7 @@
   <string name="resume_automatically_when_app_opens">Genoptag afspilning automatisk, når appen åbnes</string>
   <string name="notificationPlayerFirstIcon">Første knap</string>
   <string name="notificationPlayerSecondIcon">Anden knap</string>
-  <string name="notification_player">NOTIFIKATIONSAFSPILLER</string>
+  <string name="notification_player">Notifikation Spiller</string>
   <string name="repeat">Gentag</string>
   <string name="original_lyrics">Originale sangtekster</string>
   <string name="translated_lyrics">Oversatte sangtekster</string>
@@ -1146,4 +1146,7 @@
   <string name="failed_to_install">Kunne ikke installere: %s</string>
   <string name="last_check">Sidste check: %s</string>
   <string name="no_items">Ingen elementer</string>
+  <string name="no_song_found">Ingen sang fundet</string>
+  <string name="listen_history">Lyt til historik</string>
+  <string name="clear_listen_history">Ryd lyttehistorik</string>
 </resources>
