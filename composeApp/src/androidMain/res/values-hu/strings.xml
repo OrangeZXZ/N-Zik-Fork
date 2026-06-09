@@ -1154,4 +1154,15 @@
   <string name="clear_listen_history">Clear listen history</string>
   <string name="ui_roundness">UI Roundness</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">Visualizer Line Thickness</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">Start</string>
+  <string name="pacman_stop">Megállít</string>
+  <string name="pacman_game_over">GAME OVER</string>
+  <string name="pacman_you_won">YOU WON !</string>
+  <string name="game_direction_up">Up</string>
+  <string name="game_direction_down">Down</string>
+  <string name="game_direction_left">Balra</string>
+  <string name="game_direction_right">Jobbra</string>
+  <string name="snake_title">Snake Game</string>
 </resources>
