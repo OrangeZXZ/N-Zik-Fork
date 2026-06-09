@@ -1154,4 +1154,15 @@
   <string name="clear_listen_history">Vymazat historii poslech</string>
   <string name="ui_roundness">Kolo UI</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">Tloušťka čáry vizualizace</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">Začít</string>
+  <string name="pacman_stop">Stop</string>
+  <string name="pacman_game_over">HERNÍ PŘEHLED</string>
+  <string name="pacman_you_won">JSTE ZAPNUTÍ!</string>
+  <string name="game_direction_up">Nahoru</string>
+  <string name="game_direction_down">Dolů</string>
+  <string name="game_direction_left">Vlevo</string>
+  <string name="game_direction_right">Vpravo</string>
+  <string name="snake_title">Hráč</string>
 </resources>
