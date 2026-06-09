@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">CACHE CANÇONS (per reproductor)</string>
   <string name="song_cache_by_download">CACHE CANÇONS (per descarregar)</string>
   <string name="visualizer">Visualitzador</string>
+  <string name="visualizer_white_color_option">Visualizers Color</string>
+  <string name="color_white">Blanc</string>
+  <string name="color_custom">Color personalitzat</string>
   <string name="visualizer_require_mic_permission">Visualitzador REQUEREIX PERMÍS DE MICRÒFON</string>
   <string name="restart_app_please">Reinicieu l\'aplicació, si us plau.</string>
   <string name="listen_on_piped">Escolta a Piped</string>
