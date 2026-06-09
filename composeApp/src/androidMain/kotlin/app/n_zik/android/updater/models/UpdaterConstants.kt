@@ -20,8 +20,12 @@ object UpdaterConstants {
 
     const val PREFIX_VERSION = "v"
 
-    const val CHANGELOG_NEW = "new"
+    const val CHANGELOG_ADDED = "added"
     const val CHANGELOG_CHANGED = "changed"
     const val CHANGELOG_IMPROVED = "improved"
     const val CHANGELOG_FIXED = "fixed"
+    const val CHANGELOG_REFACTOR = "refactor"
+    const val CHANGELOG_OTHER = "other"
+    const val CHANGELOG_REMOVED = "removed"
+    const val CHANGELOG_DEPRECATED = "deprecated"
 }

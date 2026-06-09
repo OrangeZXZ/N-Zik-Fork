@@ -1,4 +1,4 @@
-﻿package app.n_zik.android.updater.ui
+package app.n_zik.android.updater.ui
 
 import app.n_zik.android.updater.services.*
 import app.n_zik.android.updater.models.*
@@ -249,10 +249,12 @@ class ChangelogsDialog(
                                      Icon(
                                          painter = painterResource(
                                              when (section.title.lowercase()) {
-                                                 UpdaterConstants.CHANGELOG_NEW -> R.drawable.add
+                                                 UpdaterConstants.CHANGELOG_ADDED -> R.drawable.add
                                                  UpdaterConstants.CHANGELOG_CHANGED -> R.drawable.title_edit
-                                                 UpdaterConstants.CHANGELOG_IMPROVED -> R.drawable.refresh_circle
+                                                 UpdaterConstants.CHANGELOG_IMPROVED, UpdaterConstants.CHANGELOG_REFACTOR -> R.drawable.refresh_circle
                                                  UpdaterConstants.CHANGELOG_FIXED -> R.drawable.alert
+                                                 UpdaterConstants.CHANGELOG_REMOVED, UpdaterConstants.CHANGELOG_DEPRECATED -> R.drawable.close
+                                                 UpdaterConstants.CHANGELOG_OTHER -> R.drawable.information
                                                  else -> R.drawable.information
                                              }
                                          ),
@@ -326,10 +328,12 @@ class ChangelogsDialog(
                                         .clip(uiRoundnessShape())
                                         .background(
                                             when (sections[selectedTab].title.lowercase()) {
-                                                UpdaterConstants.CHANGELOG_NEW -> Color(0xFF4CAF50) // Vert
+                                                UpdaterConstants.CHANGELOG_ADDED -> Color(0xFF4CAF50) // Vert
                                                 UpdaterConstants.CHANGELOG_CHANGED -> Color(0xFFFF9800) // Orange
-                                                UpdaterConstants.CHANGELOG_IMPROVED -> Color(0xFF2196F3) // Bleu
+                                                UpdaterConstants.CHANGELOG_IMPROVED, UpdaterConstants.CHANGELOG_REFACTOR -> Color(0xFF2196F3) // Bleu
                                                 UpdaterConstants.CHANGELOG_FIXED -> Color(0xFFF44336) // Rouge
+                                                UpdaterConstants.CHANGELOG_REMOVED, UpdaterConstants.CHANGELOG_DEPRECATED -> Color(0xFF9E9E9E) // Gris
+                                                UpdaterConstants.CHANGELOG_OTHER -> Color(0xFF9C27B0) // Violet
                                                 else -> colorPalette().accent
                                             }
                                         )
