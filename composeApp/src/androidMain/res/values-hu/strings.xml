@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">DAL GYORSÍTÓTÁR (a lejátszó által)</string>
   <string name="song_cache_by_download">DAL GYORSÍTÓTÁR (letöltés alapján)</string>
   <string name="visualizer">Vizualizáció</string>
+  <string name="visualizer_white_color_option">Visualizers Color</string>
+  <string name="color_white">Fehér</string>
+  <string name="color_custom">Custom Color</string>
   <string name="visualizer_require_mic_permission">A vizualizációhoz MIKROFON ENGEDÉLY SZÜKSÉGES</string>
   <string name="restart_app_please">Kérjük, indítsd újra az alkalmazást.</string>
   <string name="listen_on_piped">Hallgasd a Piped-en</string>
