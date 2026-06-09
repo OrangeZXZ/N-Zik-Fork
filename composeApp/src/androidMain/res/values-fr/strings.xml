@@ -1156,4 +1156,15 @@ Volume BAS : titre précédent</string>
   <string name="clear_listen_history">Effacer l\'historique d\'écoute</string>
   <string name="ui_roundness">Arrondi de l\'interface utilisateur</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">Épaisseur de la ligne du visualiseur</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">Début</string>
+  <string name="pacman_stop">Arrêter</string>
+  <string name="pacman_game_over">JEU AUCUN</string>
+  <string name="pacman_you_won">VOUS AVEZ GAGNÉ !</string>
+  <string name="game_direction_up">Monter</string>
+  <string name="game_direction_down">Bas</string>
+  <string name="game_direction_left">À gauche</string>
+  <string name="game_direction_right">À droite</string>
+  <string name="snake_title">Jeu serpent</string>
 </resources>
