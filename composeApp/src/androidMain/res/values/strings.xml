@@ -1154,4 +1154,5 @@
 <string name="clear_listen_history">Clear listen history</string>
 <string name="ui_roundness">UI Roundness</string>
 <string name="app_name">N-Zik</string>
+<string name="visualizer_line_thickness">Visualizer Line Thickness</string>
 </resources>

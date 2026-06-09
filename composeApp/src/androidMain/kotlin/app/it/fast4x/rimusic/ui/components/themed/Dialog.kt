@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components.themed
+package app.it.fast4x.rimusic.ui.components.themed
 
 import app.n_zik.android.core.database.*
 import app.n_zik.android.uiRoundnessShape
@@ -72,6 +72,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -3111,6 +3112,193 @@ fun <T> ValueSelectorDialogBody(
             text = stringResource(R.string.cancel),
             onClick = onDismiss
         )
+    }
+}
+
+@Composable
+fun VisualizerParamsDialog(
+    onDismiss: () -> Unit
+) {
+    var showvisthumbnail by rememberPreference(app.it.fast4x.rimusic.utils.showvisthumbnailKey, true)
+    var blackBackgroundForVisThumbnail by rememberPreference(app.it.fast4x.rimusic.utils.blackBackgroundForVisThumbnailKey, true)
+    var showVisualizerButtons by rememberPreference(app.it.fast4x.rimusic.utils.showVisualizerButtonsKey, true)
+    var showVisualizerStateKey by rememberPreference(app.it.fast4x.rimusic.utils.showVisualizerStateKey, false)
+    
+    var visualizerLineThickness by rememberPreference(app.it.fast4x.rimusic.utils.visualizerLineThicknessKey, 6f)
+    var currentVisualizer by rememberPreference(app.it.fast4x.rimusic.utils.currentVisualizerKey, 0)
+    
+    DefaultDialog(
+        onDismiss = onDismiss
+    ) {
+        TitleSection(stringResource(R.string.visualizer))
+
+        // Line thickness
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            TitleMiniSection(stringResource(R.string.visualizer_line_thickness))
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth().alpha(if (currentVisualizer == 0 || currentVisualizer == 20) 1f else 0.5f)
+        ) {
+            IconButton(
+                onClick = {
+                    if (currentVisualizer == 0 || currentVisualizer == 20) visualizerLineThickness = 6f
+                },
+                icon = R.drawable.sound_effect,
+                color = colorPalette().favoritesIcon,
+                modifier = Modifier.size(20.dp)
+            )
+            SliderControl(
+                state = visualizerLineThickness,
+                onSlide = { if (currentVisualizer == 0 || currentVisualizer == 20) visualizerLineThickness = it },
+                onSlideComplete = {},
+                toDisplay = { "%.0f".format(it) },
+                range = 1f..20f
+            )
+        }
+        
+        Spacer(Modifier.height(10.dp))
+        
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(uiRoundnessShape())
+                .clickable(onClick = { showVisualizerStateKey = !showVisualizerStateKey })
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.bookmark),
+                contentDescription = null,
+                tint = colorPalette().accent,
+                modifier = Modifier.size(24.dp)
+            )
+            BasicText(
+                text = stringResource(R.string.save_visualizer_state),
+                style = typography().xs.semiBold.copy(color = colorPalette().text),
+                modifier = Modifier.weight(1f)
+            )
+            androidx.compose.material3.Switch(
+                checked = showVisualizerStateKey,
+                onCheckedChange = { showVisualizerStateKey = it },
+                colors = androidx.compose.material3.SwitchDefaults.colors(
+                    checkedThumbColor = colorPalette().onAccent,
+                    checkedTrackColor = colorPalette().accent,
+                    uncheckedThumbColor = colorPalette().text,
+                    uncheckedTrackColor = colorPalette().background2,
+                    uncheckedBorderColor = Color.Transparent
+                )
+            )
+        }
+        
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(uiRoundnessShape())
+                .clickable(onClick = { showvisthumbnail = !showvisthumbnail })
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.equalizer),
+                contentDescription = null,
+                tint = colorPalette().accent,
+                modifier = Modifier.size(24.dp)
+            )
+            BasicText(
+                text = stringResource(R.string.showvisthumbnail),
+                style = typography().xs.semiBold.copy(color = colorPalette().text),
+                modifier = Modifier.weight(1f)
+            )
+            androidx.compose.material3.Switch(
+                checked = showvisthumbnail,
+                onCheckedChange = { showvisthumbnail = it },
+                colors = androidx.compose.material3.SwitchDefaults.colors(
+                    checkedThumbColor = colorPalette().onAccent,
+                    checkedTrackColor = colorPalette().accent,
+                    uncheckedThumbColor = colorPalette().text,
+                    uncheckedTrackColor = colorPalette().background2,
+                    uncheckedBorderColor = Color.Transparent
+                )
+            )
+        }
+        
+        androidx.compose.animation.AnimatedVisibility(visible = showvisthumbnail) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp)
+                    .clip(uiRoundnessShape())
+                    .clickable(onClick = { blackBackgroundForVisThumbnail = !blackBackgroundForVisThumbnail })
+                    .padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.images_sharp),
+                    contentDescription = null,
+                    tint = colorPalette().accent,
+                    modifier = Modifier.size(24.dp)
+                )
+                BasicText(
+                    text = stringResource(R.string.black_background_for_visualizer),
+                    style = typography().xs.semiBold.copy(color = colorPalette().text),
+                    modifier = Modifier.weight(1f)
+                )
+                androidx.compose.material3.Switch(
+                    checked = blackBackgroundForVisThumbnail,
+                    onCheckedChange = { blackBackgroundForVisThumbnail = it },
+                    colors = androidx.compose.material3.SwitchDefaults.colors(
+                        checkedThumbColor = colorPalette().onAccent,
+                        checkedTrackColor = colorPalette().accent,
+                        uncheckedThumbColor = colorPalette().text,
+                        uncheckedTrackColor = colorPalette().background2,
+                        uncheckedBorderColor = Color.Transparent
+                    )
+                )
+            }
+        }
+        
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(uiRoundnessShape())
+                .clickable(onClick = { showVisualizerButtons = !showVisualizerButtons })
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.menu),
+                contentDescription = null,
+                tint = colorPalette().accent,
+                modifier = Modifier.size(24.dp)
+            )
+            BasicText(
+                text = stringResource(R.string.show_visualizer_buttons),
+                style = typography().xs.semiBold.copy(color = colorPalette().text),
+                modifier = Modifier.weight(1f)
+            )
+            androidx.compose.material3.Switch(
+                checked = showVisualizerButtons,
+                onCheckedChange = { showVisualizerButtons = it },
+                colors = androidx.compose.material3.SwitchDefaults.colors(
+                    checkedThumbColor = colorPalette().onAccent,
+                    checkedTrackColor = colorPalette().accent,
+                    uncheckedThumbColor = colorPalette().text,
+                    uncheckedTrackColor = colorPalette().background2,
+                    uncheckedBorderColor = Color.Transparent
+                )
+            )
+        }
     }
 }
 

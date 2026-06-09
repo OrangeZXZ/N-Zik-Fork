@@ -281,9 +281,9 @@ fun DefaultAppearanceSettings() {
     clickLyricsText = true
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
     showBackgroundLyrics = false
-    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 12f)
-    var uiRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.uiRoundnessDpKey, 20f)
-    thumbnailRoundnessDp = 18f
+    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 20f)
+    var uiRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.uiRoundnessDpKey, 25f)
+    thumbnailRoundnessDp = 20f
     var miniPlayerType by rememberPreference(
         miniPlayerTypeKey,
         MiniPlayerType.Essential
@@ -411,6 +411,10 @@ fun AppearanceSettings(
         playerVisualizerTypeKey,
         PlayerVisualizerType.Disabled
     )
+    var visualizerLineThickness by rememberPreference(
+        app.it.fast4x.rimusic.utils.visualizerLineThicknessKey,
+        6f
+    )
 
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
     var thumbnailSizeDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 85f)
@@ -461,8 +465,8 @@ fun AppearanceSettings(
 
     val search = Search()
 
-    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 12f)
-    var uiRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.uiRoundnessDpKey, 20f)
+    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 20f)
+    var uiRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.uiRoundnessDpKey, 25f)
 
     var miniPlayerType by rememberPreference(
         miniPlayerTypeKey,
@@ -1940,6 +1944,20 @@ fun AppearanceSettings(
                             valueText = { stringResource(it.text) },
                             modifier = Modifier.padding(start = 25.dp),
                             icon = R.drawable.color_palette
+                        )
+                    }
+
+                    if (search.inputValue.isBlank() || stringResource(R.string.visualizer_line_thickness).contains(search.inputValue, true)) {
+                        SliderSettingsEntry(
+                            icon = R.drawable.settings,
+                            title = stringResource(R.string.visualizer_line_thickness),
+                            text = "",
+                            state = visualizerLineThickness,
+                            onSlide = { visualizerLineThickness = it },
+                            range = 1f..10f,
+                            steps = 9,
+                            toDisplay = { it.toInt().toString() },
+                            modifier = Modifier.padding(start = 25.dp)
                         )
                     }
 

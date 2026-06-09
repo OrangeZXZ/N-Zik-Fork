@@ -1911,7 +1911,7 @@ fun Lyrics(
 
 
                 Image(
-                    painter = painterResource(R.drawable.ellipsis_vertical),
+                    painter = painterResource(R.drawable.settings),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(DefaultDarkColorPalette.text),
                     modifier = Modifier

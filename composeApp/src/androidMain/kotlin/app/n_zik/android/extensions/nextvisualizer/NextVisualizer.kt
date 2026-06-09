@@ -245,8 +245,10 @@ fun NextVisualizer() {
                 }
             }
             
-            val visualizersList = remember(bitmapCover, circleBitmap, color) {
-                createVisualizersList(bitmapCover, circleBitmap, color)
+            val visualizerLineThickness by rememberPreference(app.it.fast4x.rimusic.utils.visualizerLineThicknessKey, 6f)
+            
+            val visualizersList = remember(bitmapCover, circleBitmap, color, visualizerLineThickness) {
+                createVisualizersList(bitmapCover, circleBitmap, color, visualizerLineThickness)
             }
             
             var currentVisualizer by rememberPreference(currentVisualizerKey, 0)
@@ -261,6 +263,14 @@ fun NextVisualizer() {
                 showControls = true
                 delay(3000)
                 showControls = false
+            }
+            
+            var showVisualizerParamsDialog by remember { mutableStateOf(false) }
+            
+            if (showVisualizerParamsDialog) {
+                app.it.fast4x.rimusic.ui.components.themed.VisualizerParamsDialog(
+                    onDismiss = { showVisualizerParamsDialog = false }
+                )
             }
 
             Box(
@@ -278,6 +288,13 @@ fun NextVisualizer() {
                         .fillMaxHeight(),
                     factory = { visualizerView },
                     update = {
+                        // Read states to trigger real-time updates
+                        visualizerLineThickness.hashCode()
+                        visualizerWhiteColorOption.hashCode()
+                        visualizerCustomColor.hashCode()
+                        dominantColor.hashCode()
+                        bitmapCover.hashCode()
+
                         it.setup(helper, visualizersList[currentVisualizer])
                     }
                 )
@@ -289,7 +306,7 @@ fun NextVisualizer() {
                     modifier = Modifier.align(Alignment.BottomCenter)
                 ) {
                     Row(
-                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        horizontalArrangement = if (app.n_zik.android.thumbnailShape() == androidx.compose.foundation.shape.CircleShape) Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally) else Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .padding(
@@ -324,6 +341,16 @@ fun NextVisualizer() {
                         color = colorPalette().text,
                         modifier = Modifier.size(32.dp)
                     )
+                    
+                    IconButton(
+                        onClick = {
+                            controlsTimerKey++
+                            showVisualizerParamsDialog = true
+                        },
+                        icon = R.drawable.settings,
+                        color = colorPalette().text,
+                        modifier = Modifier.size(32.dp)
+                    )
                     }
                 }
             }
@@ -331,7 +358,7 @@ fun NextVisualizer() {
     }
 }
 
-fun createVisualizersList(background: Bitmap, circleBitmap: Bitmap, color: Int): List<Painter> {
+fun createVisualizersList(background: Bitmap, circleBitmap: Bitmap, color: Int, visualizerLineThickness: Float = 6f): List<Painter> {
     val ampR = 6f
     val ampRfm = 3.3f
     val smoothWfm = 0.4f
@@ -340,7 +367,7 @@ fun createVisualizersList(background: Bitmap, circleBitmap: Bitmap, color: Int):
     val yR = 0f
     return listOf(
         // Basic components
-        Move(WfmAnalog(colorPaint = color, ampR = ampRfm, smooth = smoothWfm)),
+        Move(WfmAnalog(colorPaint = color, ampR = ampRfm, smooth = smoothWfm).apply { paint.strokeWidth = visualizerLineThickness }),
         Move(FftBar(colorPaint = color, ampR = ampR), yR = 0.5f),
         Move(FftBar(colorPaint = color, side = "b", ampR = ampR), yR = -0.5f),
         Compose(
@@ -388,7 +415,7 @@ fun createVisualizersList(background: Bitmap, circleBitmap: Bitmap, color: Int):
         ),
         // Composition
         Compose(
-            WfmAnalog(colorPaint = color, ampR = ampRfm, smooth = smoothWfm).apply { paint.alpha = 150 },
+            WfmAnalog(colorPaint = color, ampR = ampRfm, smooth = smoothWfm).apply { paint.alpha = 150; paint.strokeWidth = visualizerLineThickness },
             Shake(
                 Compose(
                     Rotate(FftCWave(colorPaint = color, ampR = ampRMin)),

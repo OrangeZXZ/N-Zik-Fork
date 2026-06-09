@@ -1,3 +1,10 @@
 Added: Information about android lockdown mode, after update.
 Added: New Visualizer options and moved them to a dedicated Settings section.
 Improved: NextVisualizer implementation, customizing default themes, removing unnecessary options, adjusting WfmAnalog thickness, and fixing color generation logic.
+Changed: Visualizer settings dialog is now accessed via a settings gear icon that appears alongside the visualizer controls, instead of a long-press.
+Changed: Default UI Roundness changed to 25.
+Fixed: Visualizer settings (like line thickness) now update in real-time across the app without needing to reopen the view.
+Fixed: Line thickness setting correctly activates for visualizers containing the FM wave (index 0 and 20).
+Changed: Default thumbnail roundness changed to 20 to match the user preference default.
+Improved: Visualizer controls are now conditionally compressed to stay within the circle when the cover is set to be fully rounded (CircleShape).
+Improved: The lyrics menu icon was changed to a settings gear for better consistency.

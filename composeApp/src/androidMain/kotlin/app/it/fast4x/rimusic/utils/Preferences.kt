@@ -379,6 +379,15 @@ const val bassboostLevelKey = "bassboostLevel"
 const val audioReverbPresetKey = "audioReverbPreset"
 const val handleAudioFocusEnabledKey = "handleAudioFocusEnabled"
 
+
+const val thumbnailSizeDpKey = "thumbnailSizeDpKey"
+const val thumbnailSizeLDpKey = "thumbnailSizeLDpKey"
+const val thumbnailRoundnessDpKey = "thumbnailRoundnessDpKey"
+const val uiRoundnessDpKey = "uiRoundnessDpKey"
+
+const val visualizerLineThicknessKey = "visualizerLineThickness"
+
+
 /*
 @PublishedApi
 internal val defaultJson = Json {
@@ -585,21 +594,63 @@ fun rememberPreference(key: String, defaultValue: HomePage?): MutableState<HomeP
 @Composable
 fun rememberPreference(key: String, defaultValue: Boolean): MutableState<Boolean> {
     val context = LocalContext.current
-    return remember {
-        mutableStatePreferenceOf(context.preferences.getBoolean(key, defaultValue)) {
-            context.preferences.edit { putBoolean(key, it) }
+    val prefs = context.preferences
+    val state = remember {
+        mutableStatePreferenceOf(prefs.getBoolean(key, defaultValue)) {
+            prefs.edit { putBoolean(key, it) }
         }
     }
+    
+    val listener = remember(prefs, key) {
+        android.content.SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
+            if (changedKey == key) {
+                val newValue = sharedPreferences.getBoolean(key, defaultValue)
+                if (state.value != newValue) {
+                    state.value = newValue
+                }
+            }
+        }
+    }
+    
+    androidx.compose.runtime.DisposableEffect(prefs, listener) {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+        onDispose {
+            prefs.unregisterOnSharedPreferenceChangeListener(listener)
+        }
+    }
+
+    return state
 }
 
 @Composable
 fun rememberPreference(key: String, defaultValue: Int): MutableState<Int> {
     val context = LocalContext.current
-    return remember {
-        mutableStatePreferenceOf(context.preferences.getInt(key, defaultValue)) {
-            context.preferences.edit { putInt(key, it) }
+    val prefs = context.preferences
+    val state = remember {
+        mutableStatePreferenceOf(prefs.getInt(key, defaultValue)) {
+            prefs.edit { putInt(key, it) }
         }
     }
+    
+    val listener = remember(prefs, key) {
+        android.content.SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
+            if (changedKey == key) {
+                val newValue = sharedPreferences.getInt(key, defaultValue)
+                if (state.value != newValue) {
+                    state.value = newValue
+                }
+            }
+        }
+    }
+    
+    androidx.compose.runtime.DisposableEffect(prefs, listener) {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+        onDispose {
+            prefs.unregisterOnSharedPreferenceChangeListener(listener)
+        }
+    }
+
+    return state
 }
 
 
@@ -607,21 +658,63 @@ fun rememberPreference(key: String, defaultValue: Int): MutableState<Int> {
 @Composable
 fun rememberPreference(key: String, defaultValue: Float): MutableState<Float> {
     val context = LocalContext.current
-    return remember {
-        mutableStatePreferenceOf(context.preferences.getFloat(key, defaultValue)) {
-            context.preferences.edit { putFloat(key, it) }
+    val prefs = context.preferences
+    val state = remember {
+        mutableStatePreferenceOf(prefs.getFloat(key, defaultValue)) {
+            prefs.edit { putFloat(key, it) }
         }
     }
+    
+    val listener = remember(prefs, key) {
+        android.content.SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
+            if (changedKey == key) {
+                val newValue = sharedPreferences.getFloat(key, defaultValue)
+                if (state.value != newValue) {
+                    state.value = newValue
+                }
+            }
+        }
+    }
+    
+    androidx.compose.runtime.DisposableEffect(prefs, listener) {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+        onDispose {
+            prefs.unregisterOnSharedPreferenceChangeListener(listener)
+        }
+    }
+
+    return state
 }
 
 @Composable
 fun rememberPreference(key: String, defaultValue: Long): MutableState<Long> {
     val context = LocalContext.current
-    return remember {
-        mutableStatePreferenceOf(context.preferences.getLong(key, defaultValue)) {
-            context.preferences.edit { putLong(key, it) }
+    val prefs = context.preferences
+    val state = remember {
+        mutableStatePreferenceOf(prefs.getLong(key, defaultValue)) {
+            prefs.edit { putLong(key, it) }
         }
     }
+    
+    val listener = remember(prefs, key) {
+        android.content.SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
+            if (changedKey == key) {
+                val newValue = sharedPreferences.getLong(key, defaultValue)
+                if (state.value != newValue) {
+                    state.value = newValue
+                }
+            }
+        }
+    }
+    
+    androidx.compose.runtime.DisposableEffect(prefs, listener) {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+        onDispose {
+            prefs.unregisterOnSharedPreferenceChangeListener(listener)
+        }
+    }
+
+    return state
 }
 
 @Composable
@@ -689,9 +782,4 @@ inline fun <T> mutableStatePreferenceOf(
         })
 
 
-
-const val thumbnailSizeDpKey = "thumbnailSizeDpKey"
-const val thumbnailSizeLDpKey = "thumbnailSizeLDpKey"
-const val thumbnailRoundnessDpKey = "thumbnailRoundnessDpKey"
-const val uiRoundnessDpKey = "uiRoundnessDpKey"
 
