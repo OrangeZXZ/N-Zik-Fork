@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.player
+package app.n_zik.android.extensions.nextvisualizer.views
 
 import android.Manifest
 import android.content.Intent
@@ -111,13 +111,14 @@ fun NextVisualizer(
             AnimatedVisibility(
                 visible = isDisplayed,
                 enter = fadeIn(tween(500)),
-                exit = fadeOut(tween(500))
+                exit = fadeOut(tween(500)),
+                modifier = Modifier.fillMaxSize()
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(if (!showvisthumbnail || !blackBackgroundForVisThumbnail) Color.Transparent else Color.Black.copy(0.6f))
                         .clip(thumbnailShape())
+                        .background(if (!showvisthumbnail || !blackBackgroundForVisThumbnail) Color.Transparent else Color.Black.copy(0.6f))
                 ) {
                     app.n_zik.android.extensions.nextvisualizer.NextVisualizer()
                 }

@@ -1,6 +1,5 @@
 back button in add to playlist in sub menu doesnt go back
 if i click on back button accros the app somes menu lost transition ??
-When long pressing an ui or a song the effect of longpress doesnt have corner radius, on multiple UI
 Add artist video category under artist page, only video works not live performance
 Remove old fast4x innertube api and Kreate innertube api
 Update YTB sync to use new innertube api also update eevery sync like album artists songs ect...

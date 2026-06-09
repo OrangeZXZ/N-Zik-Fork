@@ -22,9 +22,13 @@ class FftWaveRgb(
 ) : Painter() {
 
     override var paint: Paint = Paint()
-    private val wave = FftWave(Paint(flags).apply {
-        style = Paint.Style.FILL;xfermode = PorterDuffXfermode(PorterDuff.Mode.ADD)
-    }, startHz, endHz, num, interpolator, side, mirror, power, ampR)
+    private val wave = FftWave(
+        paint = Paint(flags).apply {
+            style = Paint.Style.FILL;xfermode = PorterDuffXfermode(PorterDuff.Mode.ADD)
+        },
+        startHz = startHz, endHz = endHz, num = num, interpolator = interpolator, 
+        side = side, mirror = mirror, power = power, ampR = ampR
+    )
 
     override fun calc(helper: VisualizerHelper) {
         wave.calc(helper)

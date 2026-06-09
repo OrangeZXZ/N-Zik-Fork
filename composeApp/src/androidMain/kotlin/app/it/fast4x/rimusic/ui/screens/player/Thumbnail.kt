@@ -59,6 +59,8 @@ import app.n_zik.android.playback.exceptions.UnplayableException
 import app.n_zik.android.playback.exceptions.VideoIdMismatchException
 import app.n_zik.android.playback.services.isLocal
 import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
+import app.n_zik.android.extensions.nextvisualizer.views.NextVisualizer
 import app.it.fast4x.rimusic.ui.components.themed.RotateThumbnailCoverAnimation
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.px

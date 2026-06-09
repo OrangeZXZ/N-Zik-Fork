@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -54,6 +56,7 @@ import app.it.fast4x.rimusic.enums.PlayerPlayButtonType
 import app.it.fast4x.rimusic.enums.PlayerTimelineSize
 import app.it.fast4x.rimusic.enums.PlayerTimelineType
 import app.it.fast4x.rimusic.enums.PlayerType
+import app.it.fast4x.rimusic.enums.PlayerVisualizerType
 import app.it.fast4x.rimusic.enums.PrevNextSongs
 import app.it.fast4x.rimusic.enums.QueueType
 import app.it.fast4x.rimusic.enums.SongsNumber
@@ -146,6 +149,7 @@ import app.it.fast4x.rimusic.utils.showthumbnailKey
 import app.it.fast4x.rimusic.utils.showvisthumbnailKey
 import app.it.fast4x.rimusic.utils.showVisualizerButtonsKey
 import app.it.fast4x.rimusic.utils.blackBackgroundForVisThumbnailKey
+import app.it.fast4x.rimusic.utils.playerVisualizerTypeKey
 import app.it.fast4x.rimusic.utils.statsExpandedKey
 import app.it.fast4x.rimusic.utils.statsfornerdsKey
 import app.it.fast4x.rimusic.utils.swipeAnimationsNoThumbnailKey
@@ -213,6 +217,10 @@ fun DefaultAppearanceSettings() {
     showDownloadButtonBackgroundPlayer = true
     var visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
     visualizerEnabled = false
+    var visualizerWhiteColorOption by rememberPreference(app.it.fast4x.rimusic.utils.visualizerWhiteColorOptionKey, app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.White)
+    visualizerWhiteColorOption = app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.White
+    var visualizerCustomColor by rememberPreference(app.it.fast4x.rimusic.utils.visualizerCustomColorKey, android.graphics.Color.WHITE)
+    visualizerCustomColor = android.graphics.Color.WHITE
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
     playerTimelineType = PlayerTimelineType.Wavy
     var thumbnailSizeDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 85f)
@@ -391,12 +399,19 @@ fun AppearanceSettings(
         true
     )
     var visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
-    /*
+    var visualizerWhiteColorOption by rememberPreference(
+        app.it.fast4x.rimusic.utils.visualizerWhiteColorOptionKey,
+        app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.White
+    )
+    var visualizerCustomColor by rememberPreference(
+        app.it.fast4x.rimusic.utils.visualizerCustomColorKey,
+        android.graphics.Color.WHITE
+    )
     var playerVisualizerType by rememberPreference(
         playerVisualizerTypeKey,
         PlayerVisualizerType.Disabled
     )
-    */
+
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
     var thumbnailSizeDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 85f)
     var thumbnailSizeLDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeLDpKey, 0f)
@@ -567,8 +582,7 @@ fun AppearanceSettings(
 
         if (playerBackgroundColors != PlayerBackgroundColors.BlurredCoverColor)
             showthumbnail = true
-        if (!visualizerEnabled) showvisthumbnail = false
-        if (!showthumbnail) {showlyricsthumbnail = false; showvisthumbnail = false}
+        if (!showthumbnail) {showlyricsthumbnail = false}
         if (playerType == PlayerType.Modern) {
             showlyricsthumbnail = false
             showvisthumbnail = false
@@ -1088,45 +1102,6 @@ fun AppearanceSettings(
                                 modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                             )
                         }
-                    if (visualizerEnabled) {
-                        if (search.inputValue.isBlank() || stringResource(R.string.showvisthumbnail).contains(
-                                search.inputValue,
-                                true
-                            )
-                        )
-                            if (search.inputValue.isBlank() || stringResource(R.string.showvisthumbnail).contains(search.inputValue, true)) {
-                                OtherSwitchSettingEntry(
-                    icon = R.drawable.equalizer,
-                                    title = stringResource(R.string.showvisthumbnail),
-                                    text = "",
-                                    isChecked = showvisthumbnail,
-                                    onCheckedChange = { showvisthumbnail = it },
-                                    modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                                )
-                            }
-                            AnimatedVisibility(visible = showvisthumbnail) {
-                                if (search.inputValue.isBlank() || stringResource(R.string.black_background_for_visualizer).contains(search.inputValue, true)) {
-                                    OtherSwitchSettingEntry(
-                                        icon = R.drawable.images_sharp,
-                                        title = stringResource(R.string.black_background_for_visualizer),
-                                        text = "",
-                                        isChecked = blackBackgroundForVisThumbnail,
-                                        onCheckedChange = { blackBackgroundForVisThumbnail = it },
-                                        modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 45.dp else 20.dp)
-                                    )
-                                }
-                            }
-                            if (search.inputValue.isBlank() || stringResource(R.string.show_visualizer_buttons).contains(search.inputValue, true)) {
-                                OtherSwitchSettingEntry(
-                                    icon = R.drawable.menu,
-                                    title = stringResource(R.string.show_visualizer_buttons),
-                                    text = "",
-                                    isChecked = showVisualizerButtons,
-                                    onCheckedChange = { showVisualizerButtons = it },
-                                    modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                                )
-                            }
-                    }
                 }
 
                 if (search.inputValue.isBlank() || stringResource(R.string.show_cover_thumbnail_animation).contains(
@@ -1953,6 +1928,77 @@ fun AppearanceSettings(
                             text = stringResource(R.string.save_visualizer_state_description),
                             isChecked = showVisualizerStateKey,
                             onCheckedChange = { showVisualizerStateKey = it },
+                            modifier = Modifier.padding(start = 25.dp)
+                        )
+                    }
+
+                    if (search.inputValue.isBlank() || stringResource(R.string.visualizer_white_color_option).contains(search.inputValue, true)) {
+                        OtherEnumValueSelectorSettingsEntry(
+                            title = stringResource(R.string.visualizer_white_color_option),
+                            selectedValue = visualizerWhiteColorOption,
+                            onValueSelected = { visualizerWhiteColorOption = it },
+                            valueText = { stringResource(it.text) },
+                            modifier = Modifier.padding(start = 25.dp),
+                            icon = R.drawable.color_palette
+                        )
+                    }
+
+                    AnimatedVisibility(visible = visualizerWhiteColorOption == app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.Custom) {
+                        var showColorPicker by remember { mutableStateOf(false) }
+                        val customColorString = stringResource(R.string.color_custom)
+                        OtherSettingsEntry(
+                            title = customColorString,
+                            text = "",
+                            icon = R.drawable.color_palette,
+                            onClick = { showColorPicker = true },
+                            modifier = Modifier.padding(start = 40.dp),
+                            trailingContent = {
+                                Box(
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .background(androidx.compose.ui.graphics.Color(visualizerCustomColor))
+                                        .border(BorderStroke(1.dp, androidx.compose.ui.graphics.Color.LightGray))
+                                )
+                            }
+                        )
+                        if (showColorPicker) {
+                            app.it.fast4x.rimusic.ui.components.themed.DialogColorPicker(onDismiss = { showColorPicker = false }) {
+                                visualizerCustomColor = it.toArgb()
+                                showColorPicker = false
+                                app.kreate.android.me.knighthat.utils.Toaster.n(R.string.info_color_s_applied, customColorString)
+                            }
+                        }
+                    }
+                    
+                    if (search.inputValue.isBlank() || stringResource(R.string.showvisthumbnail).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            icon = R.drawable.equalizer,
+                            title = stringResource(R.string.showvisthumbnail),
+                            text = "",
+                            isChecked = showvisthumbnail,
+                            onCheckedChange = { showvisthumbnail = it },
+                            modifier = Modifier.padding(start = 25.dp)
+                        )
+                    }
+                    AnimatedVisibility(visible = showvisthumbnail) {
+                        if (search.inputValue.isBlank() || stringResource(R.string.black_background_for_visualizer).contains(search.inputValue, true)) {
+                            OtherSwitchSettingEntry(
+                                icon = R.drawable.images_sharp,
+                                title = stringResource(R.string.black_background_for_visualizer),
+                                text = "",
+                                isChecked = blackBackgroundForVisThumbnail,
+                                onCheckedChange = { blackBackgroundForVisThumbnail = it },
+                                modifier = Modifier.padding(start = 45.dp)
+                            )
+                        }
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.show_visualizer_buttons).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            icon = R.drawable.menu,
+                            title = stringResource(R.string.show_visualizer_buttons),
+                            text = "",
+                            isChecked = showVisualizerButtons,
+                            onCheckedChange = { showVisualizerButtons = it },
                             modifier = Modifier.padding(start = 25.dp)
                         )
                     }

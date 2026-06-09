@@ -13,7 +13,7 @@ import kotlin.math.min
 class FftCBar(
     val colorPaint: Int = Color.WHITE,
     override var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = colorPaint;style = Paint.Style.STROKE;strokeWidth = 2f
+        color = colorPaint;style = Paint.Style.FILL;strokeWidth = 2f
     },
     //
     var startHz: Int = 0,
@@ -27,7 +27,7 @@ class FftCBar(
     var power: Boolean = true,
     //
     var radiusR: Float = .4f,
-    var gapX: Float = 0f,
+    var gapX: Float = 4f,
     var ampR: Float = 1f
 ) : Painter() {
 

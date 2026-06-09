@@ -162,6 +162,7 @@ import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
+import app.n_zik.android.extensions.nextvisualizer.views.NextVisualizer
 import app.it.fast4x.rimusic.ui.components.themed.PlayerMenu
 import app.it.fast4x.rimusic.ui.components.themed.RotateThumbnailCoverAnimationModern
 import app.it.fast4x.rimusic.ui.components.themed.ThumbnailOffsetDialog

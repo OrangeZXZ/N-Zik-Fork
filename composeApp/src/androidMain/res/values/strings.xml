@@ -222,6 +222,9 @@
 <string name="song_cache_by_player">SONG CACHE (by Player)</string>
 <string name="song_cache_by_download">SONG CACHE (by Download)</string>
 <string name="visualizer">Visualizer</string>
+<string name="visualizer_white_color_option">Visualizers Color</string>
+<string name="color_white">White</string>
+<string name="color_custom">Custom Color</string>
 <string name="visualizer_require_mic_permission">Visualizer REQUIRE MIC PERMISSION</string>
 <string name="restart_app_please">Restart app please.</string>
 <string name="listen_on_piped">Listen on Piped</string>

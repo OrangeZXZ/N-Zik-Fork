@@ -9,7 +9,7 @@ import app.n_zik.android.extensions.nextvisualizer.utils.VisualizerHelper
 class WfmAnalog(
     val colorPaint: Int = Color.WHITE,
     override var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = colorPaint;style = Paint.Style.STROKE;strokeWidth = 2f
+        color = colorPaint;style = Paint.Style.STROKE;strokeWidth = 6f
     },
     //
     var num: Int = 256,

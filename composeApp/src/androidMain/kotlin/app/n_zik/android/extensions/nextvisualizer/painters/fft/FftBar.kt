@@ -11,7 +11,7 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction
 class FftBar(
     val colorPaint: Int = Color.WHITE,
     override var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = colorPaint;style = Paint.Style.STROKE;strokeWidth = 2f
+        color = colorPaint;style = Paint.Style.FILL;strokeWidth = 2f
     },
     //
     var startHz: Int = 0,
@@ -24,7 +24,7 @@ class FftBar(
     var mirror: Boolean = false,
     var power: Boolean = false,
     //
-    var gapX: Float = 0f,
+    var gapX: Float = 4f,
     var ampR: Float = 1f
 ) : Painter() {
 

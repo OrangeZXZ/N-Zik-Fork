@@ -1,0 +1,3 @@
+Added: Information about android lockdown mode, after update.
+Added: New Visualizer options and moved them to a dedicated Settings section.
+Improved: NextVisualizer implementation, customizing default themes, removing unnecessary options, adjusting WfmAnalog thickness, and fixing color generation logic.

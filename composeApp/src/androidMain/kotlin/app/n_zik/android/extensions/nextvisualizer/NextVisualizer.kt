@@ -39,6 +39,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -68,6 +69,7 @@ import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Compose
 import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Glitch
 import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Move
 import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Shake
+import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Scale
 import app.n_zik.android.extensions.nextvisualizer.painters.waveform.WfmAnalog
 import app.n_zik.android.extensions.nextvisualizer.utils.Preset
 import app.n_zik.android.extensions.nextvisualizer.utils.VisualizerHelper
@@ -85,6 +87,8 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showVisualizerButtonsKey
 import app.it.fast4x.rimusic.utils.visualizerEnabledKey
+import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Rotate
+import app.n_zik.android.thumbnailShape
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -156,7 +160,36 @@ fun NextVisualizer() {
 
             var bitmapCover by remember { mutableStateOf(APP_ICON_BITMAP) }
             var circleBitmap by remember { mutableStateOf(Icon.getCircledBitmap(APP_ICON_BITMAP)) }
-            val color = colorPalette().text.hashCode()
+            val visualizerWhiteColorOption by rememberPreference(app.it.fast4x.rimusic.utils.visualizerWhiteColorOptionKey, app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.White)
+            val visualizerCustomColor by rememberPreference(app.it.fast4x.rimusic.utils.visualizerCustomColorKey, android.graphics.Color.WHITE)
+            var dominantColor by remember { mutableStateOf(android.graphics.Color.WHITE) }
+            
+            val isDarkTheme = colorPalette().isDark
+            LaunchedEffect(bitmapCover, isDarkTheme) {
+                kotlinx.coroutines.withContext(Dispatchers.Default) {
+                    try {
+                        val dynPalette = app.it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf(bitmapCover, isDarkTheme)
+                        if (dynPalette != null) {
+                            dominantColor = dynPalette.accent.toArgb()
+                        } else {
+                            val palette = androidx.palette.graphics.Palette.from(bitmapCover).generate()
+                            dominantColor = palette.getDominantColor(android.graphics.Color.WHITE)
+                        }
+                    } catch (e: Exception) {
+                        dominantColor = android.graphics.Color.WHITE
+                    }
+                }
+            }
+            
+            val accentColor = colorPalette().accent
+            val color = remember(visualizerWhiteColorOption, visualizerCustomColor, accentColor, dominantColor) {
+                when (visualizerWhiteColorOption) {
+                    app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.White -> android.graphics.Color.WHITE
+                    app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.Theme -> accentColor.toArgb()
+                    app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.Cover -> dominantColor
+                    app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.Custom -> visualizerCustomColor
+                }
+            }
 
             val coroutineScope = rememberCoroutineScope()
             val currentArtworkUri = binder?.player?.currentMediaItem?.mediaMetadata?.artworkUri
@@ -233,7 +266,7 @@ fun NextVisualizer() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(uiRoundnessShape()).clickable(
+                    .clip(thumbnailShape()).clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ) { controlsTimerKey++ }
@@ -299,111 +332,71 @@ fun NextVisualizer() {
 }
 
 fun createVisualizersList(background: Bitmap, circleBitmap: Bitmap, color: Int): List<Painter> {
-    val ampR = 4f
-    val smoothWave = 0.6f
+    val ampR = 6f
+    val ampRfm = 3.3f
+    val smoothWfm = 0.4f
+    val smooth = 0.6f
+    val ampRMin = 2f
     val yR = 0f
     return listOf(
         // Basic components
-        Move(WfmAnalog(colorPaint = color, ampR = ampR, smooth = smoothWave)),
+        Move(WfmAnalog(colorPaint = color, ampR = ampRfm, smooth = smoothWfm)),
         Move(FftBar(colorPaint = color, ampR = ampR), yR = 0.5f),
-        Move(FftLine(colorPaint = color, ampR = ampR), yR = 0.5f),
-        Move(FftWave(ampR = ampR), yR = 0.5f),
-        Move(FftWaveRgb(ampR = ampR), yR = 0.5f),
-        Compose(
-            Move(WfmAnalog(colorPaint = color), yR = -.3f),
-            Move(FftBar(colorPaint = color), yR = -.1f),
-            Move(FftLine(colorPaint = color), yR = .1f),
-            Move(FftWave(), yR = .3f),
-            Move(FftWaveRgb(), yR = .5f)
-        ),
         Move(FftBar(colorPaint = color, side = "b", ampR = ampR), yR = -0.5f),
-        Move(FftLine(colorPaint = color, side = "b", ampR = ampR), yR = -0.5f),
-        Move(FftWave(side = "b", ampR = ampR), yR = -0.5f),
-        Move(FftWaveRgb(side = "b", ampR = ampR), yR = -0.5f),
         Compose(
-            Move(FftBar(colorPaint = color, side = "b"), yR = -0.5f),
-            Move(FftLine(colorPaint = color, side = "b"), yR = -0.3f),
-            Move(FftWave(side = "b"), yR = -0.1f),
-            Move(FftWaveRgb(side = "b"), yR = 0.1f)
+            Move(FftBar(colorPaint = color, ampR = 4f), yR = 0.5f),
+            Scale(Move(FftBar(colorPaint = color, side = "b", ampR = 4f), yR = -0.5f), scaleX = -1f)
         ),
-        Move(FftBar(colorPaint = color, side = "ab", ampR = ampR), yR = 0f),
-        Move(FftLine(colorPaint = color, side = "ab", ampR = ampR), yR = 0f),
-        Move(FftWave(side = "ab", ampR = ampR), yR = 0f),
-        Move(FftWaveRgb(side = "ab", ampR = ampR), yR = 0f),
+        Move(FftLine(colorPaint = color, ampR = ampR), yR = 0.5f),
+        Move(FftLine(colorPaint = color, side = "b", ampR = ampR), yR = -0.5f),
+        Compose(
+            Move(FftLine(colorPaint = color, ampR = 4f), yR = 0.5f),
+            Scale(Move(FftLine(colorPaint = color, side = "b", ampR = 4f), yR = -0.5f), scaleX = -1f)
+        ),
+
+        Move(FftWave(colorPaint = color, ampR = ampR), yR = 0.5f),
+        Move(FftWave(colorPaint = color, side = "b", ampR = ampR), yR = -0.5f),
+        Compose(
+            Move(FftWave(colorPaint = color, ampR = 4f), yR = 0.5f),
+            Scale(Move(FftWave(colorPaint = color, side = "b", ampR = 4f), yR = -0.5f), scaleX = -1f)
+        ),
+
+        Move(FftBar(colorPaint = color, side = "ab", ampR = 4f), yR = 0f),
+        Move(FftLine(colorPaint = color, side = "ab", ampR = 4f), yR = 0f),
+        Move(FftWave(colorPaint = color, side = "ab", ampR = 4f), yR = 0f),
         Compose(
             Move(FftBar(colorPaint = color, side = "ab"), yR = -.3f),
-            Move(FftLine(colorPaint = color, side = "ab"), yR = -.1f),
-            Move(FftWave(side = "ab"), yR = .1f),
-            Move(FftWaveRgb(side = "ab"), yR = .3f)
+            Move(FftLine(colorPaint = color, side = "ab"), yR = 0f),
+            Move(FftWave(colorPaint = color, side = "ab"), yR = .3f)
         ),
         // Basic components (Circle)
-        Move(FftCLine(colorPaint = color, ampR = ampR)),
-        FftCWave(colorPaint = color, ampR = ampR),
-        Move(FftCWaveRgb(colorPaint = color, ampR = ampR)),
+        Move(FftCLine(colorPaint = color, ampR = ampRMin)),
+        FftCWave(colorPaint = color, ampR = ampRMin),
+        FftCWave(side = "b", colorPaint = color, ampR = ampRMin),
         Compose(
-            Move(FftCLine(colorPaint = color, ampR = ampR)),
-            FftCWave(colorPaint = color, ampR = ampR),
-            Move(FftCWaveRgb(colorPaint = color, ampR = ampR))
+            Move(FftCLine(colorPaint = color, side = "b", ampR = ampRMin)),
+            FftCWave(side = "b", colorPaint = color, ampR = ampRMin)
         ),
-        Move(FftCLine(colorPaint = color, side = "b", ampR = ampR)),
-        FftCWave(side = "b", colorPaint = color, ampR = ampR),
-        Move(FftCWaveRgb(side = "b",colorPaint = color, ampR = ampR)),
         Compose(
-            Move(FftCLine(colorPaint = color, side = "b", ampR = ampR)),
-            FftCWave(side = "b", colorPaint = color, ampR = ampR),
-            Move(FftCWaveRgb(side = "b",colorPaint = color, ampR = ampR)),
+            Move(FftCLine(colorPaint = color, side = "ab", ampR = ampRMin)),
+            FftCWave(side = "ab", colorPaint = color, ampR = ampRMin)
         ),
-        Move(FftCLine(colorPaint = color, side = "ab", ampR = ampR)),
-        FftCWave(side = "ab", colorPaint = color, ampR = ampR),
-        Move(FftCWaveRgb(side = "ab", colorPaint = color, ampR = ampR)),
-        Compose(
-            Move(FftCLine(colorPaint = color, side = "ab", ampR = ampR)),
-            FftCWave(side = "ab", colorPaint = color, ampR = ampR),
-            Move(FftCWaveRgb(side = "ab", colorPaint = color, ampR = ampR))
-        ),
-        //Blend
-        Blend(
-            Move(FftLine(colorPaint = color, ampR = ampR).apply {
-                paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
-            }, yR = 0.5f),
-            Gradient(preset = Gradient.LINEAR_HORIZONTAL)
-        ),
-        Blend(
-            Move(FftLine(colorPaint = color, ampR = ampR).apply {
-                paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
-            }, yR = 0.5f),
-            Gradient(preset = Gradient.LINEAR_VERTICAL, hsv = true)
-        ),
-        Blend(
-            Move(FftLine(colorPaint = color, ampR = ampR).apply {
-                paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
-            }, yR = 0.5f),
-            Gradient(preset = Gradient.LINEAR_VERTICAL_MIRROR, hsv = true)
-        ),
-        Blend(
-            Move(FftLine(colorPaint = color, ampR = ampR).apply {
-                paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
-            }, yR = 0.5f),
-            Gradient(preset = Gradient.RADIAL)
-        ),
-        Move(Blend(
-            FftCBar(colorPaint = color, side = "ab", gapX = 8f, ampR = ampR).apply {
+        Move(
+            FftCBar(colorPaint = color, side = "ab", gapX = 8f, ampR = ampRMin).apply {
                 paint.style = Paint.Style.FILL
-            },
-            Gradient(preset = Gradient.SWEEP, hsv = true)
-        )),
+            }
+        ),
         // Composition
-        Glitch(Beat(Preset.getPresetWithBitmap("cIcon", circleBitmap))),
         Compose(
-            WfmAnalog(colorPaint = color, ampR = ampR, smooth = smoothWave).apply { paint.alpha = 150 },
-            Shake(Preset.getPresetWithBitmap("cWaveRgbIcon", circleBitmap)).apply {
+            WfmAnalog(colorPaint = color, ampR = ampRfm, smooth = smoothWfm).apply { paint.alpha = 150 },
+            Shake(
+                Compose(
+                    Rotate(FftCWave(colorPaint = color, ampR = ampRMin)),
+                    app.n_zik.android.extensions.nextvisualizer.painters.misc.Icon(circleBitmap)
+                )
+            ).apply {
                 animX.duration = 1000
                 animY.duration = 2000
-            }),
-        Compose(
-            Preset.getPresetWithBitmap("liveBg", background),
-            FftCLine(colorPaint = color, ampR = ampR).apply {
-                paint.strokeWidth = 8f;paint.strokeCap = Paint.Cap.ROUND
             }
         )
     )

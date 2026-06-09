@@ -9,8 +9,9 @@ import app.n_zik.android.extensions.nextvisualizer.utils.VisualizerHelper
 import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction
 
 class FftWave(
+    val colorPaint: Int = Color.WHITE,
     override var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.WHITE
+        color = colorPaint
     },
     //
     var startHz: Int = 0,
