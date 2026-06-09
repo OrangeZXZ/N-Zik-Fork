@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">PAMIĘĆ PODRĘCZNA (Odtwarzacz)</string>
   <string name="song_cache_by_download">PAMIĘĆ PODRĘCZNA (Pobrane)</string>
   <string name="visualizer">Wizualizator</string>
+  <string name="visualizer_white_color_option">Kolor wizualizatorów</string>
+  <string name="color_white">Biały</string>
+  <string name="color_custom">Custom Color</string>
   <string name="visualizer_require_mic_permission">Wizualizator wymaga uprawnień do mikrofonu</string>
   <string name="restart_app_please">Zrestartuj aplikację.</string>
   <string name="listen_on_piped">Posłuchaj na Piped</string>
