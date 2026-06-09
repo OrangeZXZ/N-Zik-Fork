@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">CACHE MELODII (Automatic)</string>
   <string name="song_cache_by_download">CACHE MELODII (Descărcare)</string>
   <string name="visualizer">Vizualizator</string>
+  <string name="visualizer_white_color_option">Culoare vizualizatori</string>
+  <string name="color_white">Alb</string>
+  <string name="color_custom">Culoare personalizată</string>
   <string name="visualizer_require_mic_permission">Vizualizatorul NECESITA PERMISIUNEA MICROFONULUI</string>
   <string name="restart_app_please">Repornește aplicația, te rog.</string>
   <string name="listen_on_piped">Ascultă pe Piped</string>
