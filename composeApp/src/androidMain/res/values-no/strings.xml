@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">SANG BUFFER (av Spiller)</string>
   <string name="song_cache_by_download">SONG BUFFER (av Nedlasting)</string>
   <string name="visualizer">Visualisering</string>
+  <string name="visualizer_white_color_option">Farge for visualiserer</string>
+  <string name="color_white">Hvit</string>
+  <string name="color_custom">Custom Color</string>
   <string name="visualizer_require_mic_permission">Visualisering TRENGER MIC TILLATELSE</string>
   <string name="restart_app_please">Vennligst start appen på nytt.</string>
   <string name="listen_on_piped">Lytt på Piped</string>
