@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">מטמון השיר (לפי נגן)</string>
   <string name="song_cache_by_download">מטמון השיר (לפי הורדה)</string>
   <string name="visualizer">הנפשה</string>
+  <string name="visualizer_white_color_option">Visualizers Color</string>
+  <string name="color_white">White</string>
+  <string name="color_custom">Custom Color</string>
   <string name="visualizer_require_mic_permission">Visualizer REQUIRE MIC PERMISSION</string>
   <string name="restart_app_please">הפעל בבקשה מחדש את האפליקציה.</string>
   <string name="listen_on_piped">האזינו ב Piped</string>

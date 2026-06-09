@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">SONG CACHE (av spelare)</string>
   <string name="song_cache_by_download">SONG CACHE (av nedladdning)</string>
   <string name="visualizer">Visualizer</string>
+  <string name="visualizer_white_color_option">Visualiserarnas färg</string>
+  <string name="color_white">Vit</string>
+  <string name="color_custom">Custom Color</string>
   <string name="visualizer_require_mic_permission">Visualizer KRÄVER ÅTKOMST TILL MIKROFONEN</string>
   <string name="restart_app_please">Vänligen starta om appen.</string>
   <string name="listen_on_piped">Lyssna på Piped</string>

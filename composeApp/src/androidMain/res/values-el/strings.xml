@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">ΚΡΥΦΗ ΜΝΗΜΗ (Από αναπαραγωγό μουσικής)</string>
   <string name="song_cache_by_download">ΚΡΥΦΗ ΜΝΗΜΗ (Από λήψεις)</string>
   <string name="visualizer">Απεικονίσεις</string>
+  <string name="visualizer_white_color_option">Χρώμα Οπτικών Εφαρμογών</string>
+  <string name="color_white">White</string>
+  <string name="color_custom">Custom Color</string>
   <string name="visualizer_require_mic_permission">Οι απεικονίσεις απαιτούν πρόσβαση στο μικρόφωνο</string>
   <string name="restart_app_please">Παρακαλώ επανεκκινήστε την εφαρμογή.</string>
   <string name="listen_on_piped">Ακούστε στο Piped</string>

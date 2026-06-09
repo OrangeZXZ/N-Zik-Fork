@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">КЕШ ПЕСМЕ (од Плејера)</string>
   <string name="song_cache_by_download">КЕШ ПЕСМЕ (према Преузимању)</string>
   <string name="visualizer">Визуализатор</string>
+  <string name="visualizer_white_color_option">Visualizers Color</string>
+  <string name="color_white">Бела</string>
+  <string name="color_custom">Custom Color</string>
   <string name="visualizer_require_mic_permission">Визуализатор ЗАХТЕВА ДОЗВОЛУ ЗА МИКРОФОН</string>
   <string name="restart_app_please">Поново покрените апликацију молим вас.</string>
   <string name="listen_on_piped">Слушај на Пипед</string>

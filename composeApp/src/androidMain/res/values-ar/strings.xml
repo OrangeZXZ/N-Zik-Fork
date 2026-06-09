@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">ذاكرة التخزين المؤقتة (من المشغل)</string>
   <string name="song_cache_by_download">ذاكرة التخزين المؤقتة (من التحميلات)</string>
   <string name="visualizer">المؤثرات المرئية</string>
+  <string name="visualizer_white_color_option">لون المرئيات</string>
+  <string name="color_white">White</string>
+  <string name="color_custom">Custom Color</string>
   <string name="visualizer_require_mic_permission">يتطلب إذن الميكروفون لتشغيل المؤثرات المرئية</string>
   <string name="restart_app_please">يرجى إعادة تشغيل التطبيق.</string>
   <string name="listen_on_piped">الإستماع على piped</string>

@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">КЭШ ФАЙЛОВ (воспроизведения)</string>
   <string name="song_cache_by_download">КЭШ ФАЙЛОВ (загрузки)</string>
   <string name="visualizer">Визуализация</string>
+  <string name="visualizer_white_color_option">Цвет визуализаторов</string>
+  <string name="color_white">Белый</string>
+  <string name="color_custom">Пользовательский цвет</string>
   <string name="visualizer_require_mic_permission">Для визуализации ТРЕБУЕТСЯ ДОСТУП К МИКРОФОНУ</string>
   <string name="restart_app_please">Перезапустите приложение.</string>
   <string name="listen_on_piped">Слушать в Piped</string>

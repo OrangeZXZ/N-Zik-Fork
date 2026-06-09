@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">曲のキャッシュ (プレイヤーによる)</string>
   <string name="song_cache_by_download">曲のキャッシュ (ダウンロードによる)</string>
   <string name="visualizer">ビジュアライザー</string>
+  <string name="visualizer_white_color_option">ビジュアライザーの色</string>
+  <string name="color_white">白</string>
+  <string name="color_custom">カスタムカラー</string>
   <string name="visualizer_require_mic_permission">ビジュアライザーにはマイクの許可が必要です</string>
   <string name="restart_app_please">アプリを再起動してください。</string>
   <string name="listen_on_piped">Pipedで聴く</string>

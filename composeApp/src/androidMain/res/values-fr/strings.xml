@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">CACHE DE TITRE (Pour le lecteur)</string>
   <string name="song_cache_by_download">CACHE DE TITRE (Pour le télechargement)</string>
   <string name="visualizer">Visualiseur</string>
+  <string name="visualizer_white_color_option">Couleur des Visualiseurs</string>
+  <string name="color_white">Blanc</string>
+  <string name="color_custom">Couleur personnalisée</string>
   <string name="visualizer_require_mic_permission">Visualiseur exige L\'AUTORISATION DU MICRO</string>
   <string name="restart_app_please">Redémarrez l\'application</string>
   <string name="listen_on_piped">Écouter sur Piped</string>

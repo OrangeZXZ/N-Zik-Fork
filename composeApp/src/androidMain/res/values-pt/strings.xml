@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">CACHE DA MÚSICA (por Player)</string>
   <string name="song_cache_by_download">CACHE DA MÚSICA (por Transferência)</string>
   <string name="visualizer">Visualizador</string>
+  <string name="visualizer_white_color_option">Cor dos Visualizadores</string>
+  <string name="color_white">Branco</string>
+  <string name="color_custom">Cor personalizada</string>
   <string name="visualizer_require_mic_permission">Vizualizador REQUER PERMISSÃO DO MICROFONE</string>
   <string name="restart_app_please">Reiniciar aplicativo, por favor.</string>
   <string name="listen_on_piped">Ouvir no Piped</string>
