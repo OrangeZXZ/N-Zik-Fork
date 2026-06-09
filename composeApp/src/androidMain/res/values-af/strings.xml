@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">LIEDJIE CACHE (volgens Speler)</string>
   <string name="song_cache_by_download">SONG CACHE (by Download)</string>
   <string name="visualizer">Visualiseerder</string>
+  <string name="visualizer_white_color_option">Visualizers Color</string>
+  <string name="color_white">White</string>
+  <string name="color_custom">Custom Color</string>
   <string name="visualizer_require_mic_permission">Visualiseerder BENODIG MIKROFOON TOESTEMMING</string>
   <string name="restart_app_please">Herbegin app asseblief.</string>
   <string name="listen_on_piped">Luister op Piped</string>
