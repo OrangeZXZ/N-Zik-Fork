@@ -1154,4 +1154,15 @@
   <string name="clear_listen_history">Εκκαθάριση ιστορικού αφής</string>
   <string name="ui_roundness">Στρογγυλό UI</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">Πάχος Γραμμής Οπτικοποίησης</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">Έναρξη</string>
+  <string name="pacman_stop">Διακοπή</string>
+  <string name="pacman_game_over">ΠΑΙΧΝΙΔΙΑ OVER</string>
+  <string name="pacman_you_won">ΕΧΕΤΕ ΚΕΡΔΟΣ !</string>
+  <string name="game_direction_up">Επάνω</string>
+  <string name="game_direction_down">Κάτω</string>
+  <string name="game_direction_left">Left</string>
+  <string name="game_direction_right">Right</string>
+  <string name="snake_title">Παιχνίδι Φιδιού</string>
 </resources>
