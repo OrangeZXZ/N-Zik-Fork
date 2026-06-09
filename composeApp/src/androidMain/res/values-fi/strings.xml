@@ -1154,4 +1154,15 @@
   <string name="clear_listen_history">Tyhjennä kuunteluhistoria</string>
   <string name="ui_roundness">Käyttöliittymän Ääni</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">Visualisoijan Viivan Paksuus</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">Aloita</string>
+  <string name="pacman_stop">Stop</string>
+  <string name="pacman_game_over">PELI OVER</string>
+  <string name="pacman_you_won">Sinä voitit !</string>
+  <string name="game_direction_up">Ylös</string>
+  <string name="game_direction_down">Alas</string>
+  <string name="game_direction_left">Vasen</string>
+  <string name="game_direction_right">Oikea</string>
+  <string name="snake_title">Käärme Peli</string>
 </resources>

@@ -1154,4 +1154,15 @@
   <string name="clear_listen_history">Limpar histórico de escutas</string>
   <string name="ui_roundness">Redondidade da UI</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">Espessura da Linha Visualizador</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">Iniciar</string>
+  <string name="pacman_stop">Pausa</string>
+  <string name="pacman_game_over">FIM DE JOGO</string>
+  <string name="pacman_you_won">VOCÊ GANHOU !</string>
+  <string name="game_direction_up">Acima</string>
+  <string name="game_direction_down">Abaixo</string>
+  <string name="game_direction_left">Esquerda</string>
+  <string name="game_direction_right">Direita</string>
+  <string name="snake_title">Jogo de serpentes</string>
 </resources>

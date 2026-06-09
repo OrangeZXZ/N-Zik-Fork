@@ -1154,4 +1154,15 @@
   <string name="clear_listen_history">Wis luistergeschiedenis</string>
   <string name="ui_roundness">UI geluidshinder</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">Visualizer lijndikte</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">Beginnen</string>
+  <string name="pacman_stop">Stoppen</string>
+  <string name="pacman_game_over">SPEL VOOR</string>
+  <string name="pacman_you_won">JIJ WE WEN!</string>
+  <string name="game_direction_up">Omhoog</string>
+  <string name="game_direction_down">Omlaag</string>
+  <string name="game_direction_left">Links</string>
+  <string name="game_direction_right">Rechts</string>
+  <string name="snake_title">Slang Spel</string>
 </resources>

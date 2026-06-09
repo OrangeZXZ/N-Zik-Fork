@@ -1154,4 +1154,15 @@
   <string name="clear_listen_history">Listenverlauf löschen</string>
   <string name="ui_roundness">UI-Rundung</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">Liniendicke Visualizer</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">Start</string>
+  <string name="pacman_stop">Stopp</string>
+  <string name="pacman_game_over">SPIEL OVER</string>
+  <string name="pacman_you_won">DU GEWINNEN!</string>
+  <string name="game_direction_up">Hoch</string>
+  <string name="game_direction_down">Unten</string>
+  <string name="game_direction_left">Links</string>
+  <string name="game_direction_right">Rechts</string>
+  <string name="snake_title">Schlangenspiel</string>
 </resources>

@@ -1154,4 +1154,15 @@
   <string name="clear_listen_history">Slett littehistorie</string>
   <string name="ui_roundness">UI Rundhet</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">Visualiser linjetykkelse</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">Begynn</string>
+  <string name="pacman_stop">Stopp</string>
+  <string name="pacman_game_over">SPILL OVER</string>
+  <string name="pacman_you_won">DU VANT!</string>
+  <string name="game_direction_up">Opp</string>
+  <string name="game_direction_down">Ned</string>
+  <string name="game_direction_left">Venstre</string>
+  <string name="game_direction_right">Høyre</string>
+  <string name="snake_title">Slange spill</string>
 </resources>

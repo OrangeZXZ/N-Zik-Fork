@@ -1154,4 +1154,15 @@
   <string name="clear_listen_history">Curăță istoricul ascultării</string>
   <string name="ui_roundness">Rotunjire UI</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">Grosime linie vizualizator</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">Pornire</string>
+  <string name="pacman_stop">Oprește</string>
+  <string name="pacman_game_over">DESCHIDE JOC</string>
+  <string name="pacman_you_won">DUMNEAVOASTRĂ!</string>
+  <string name="game_direction_up">Sus</string>
+  <string name="game_direction_down">Jos</string>
+  <string name="game_direction_left">Stânga</string>
+  <string name="game_direction_right">Dreapta</string>
+  <string name="snake_title">Joc de șarpe</string>
 </resources>

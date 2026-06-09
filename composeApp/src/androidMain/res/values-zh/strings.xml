@@ -1154,4 +1154,15 @@
   <string name="clear_listen_history">清除监听历史记录</string>
   <string name="ui_roundness">界面圆角</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">可视化器线厚度</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">开始</string>
+  <string name="pacman_stop">停止</string>
+  <string name="pacman_game_over">游戏可用</string>
+  <string name="pacman_you_won">你赢了！</string>
+  <string name="game_direction_up">上移</string>
+  <string name="game_direction_down">向下</string>
+  <string name="game_direction_left">左侧</string>
+  <string name="game_direction_right">右侧</string>
+  <string name="snake_title">蛇游戏</string>
 </resources>

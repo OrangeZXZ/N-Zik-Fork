@@ -1154,4 +1154,15 @@
   <string name="clear_listen_history">リッスン履歴をクリア</string>
   <string name="ui_roundness">UIの丸さ</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">ビジュアライザーの線の太さ</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">開始</string>
+  <string name="pacman_stop">停止</string>
+  <string name="pacman_game_over">ゲームオーバー</string>
+  <string name="pacman_you_won">優勝！</string>
+  <string name="game_direction_up">上へ</string>
+  <string name="game_direction_down">下</string>
+  <string name="game_direction_left">左</string>
+  <string name="game_direction_right">右</string>
+  <string name="snake_title">ヘビゲーム</string>
 </resources>

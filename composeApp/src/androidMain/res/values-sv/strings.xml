@@ -1154,4 +1154,15 @@
   <string name="clear_listen_history">Rensa lyssningshistorik</string>
   <string name="ui_roundness">UI Roundness</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">Tjocklek på Visualizer Linje</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">Starta</string>
+  <string name="pacman_stop">Stoppa</string>
+  <string name="pacman_game_over">SPEL ÖVER</string>
+  <string name="pacman_you_won">DU VÄNNER !</string>
+  <string name="game_direction_up">Upp</string>
+  <string name="game_direction_down">Ner</string>
+  <string name="game_direction_left">Vänster</string>
+  <string name="game_direction_right">Höger</string>
+  <string name="snake_title">Orm Spel</string>
 </resources>
