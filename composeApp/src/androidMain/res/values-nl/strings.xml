@@ -222,6 +222,9 @@
   <string name="song_cache_by_player">SONG CACHE (door speler)</string>
   <string name="song_cache_by_download">SONG CACHE (door download)</string>
   <string name="visualizer">Visualizer</string>
+  <string name="visualizer_white_color_option">Kleur Visualiers</string>
+  <string name="color_white">White</string>
+  <string name="color_custom">Custom Color</string>
   <string name="visualizer_require_mic_permission">Visualizer MICROFOONTOEGANG VEREIST</string>
   <string name="restart_app_please">Herstart app alstublieft.</string>
   <string name="listen_on_piped">Luister op Piped</string>
