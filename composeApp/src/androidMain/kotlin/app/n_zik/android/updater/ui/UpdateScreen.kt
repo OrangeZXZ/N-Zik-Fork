@@ -783,8 +783,8 @@ fun ChangelogCard(changelogText: String, colorPaletteMode: ColorPaletteMode) {
                         Icon(
                             painter = painterResource(
                                 when (section.first.lowercase()) {
-                                    UpdaterConstants.CHANGELOG_NEW -> R.drawable.add
-                                    UpdaterConstants.CHANGELOG_CHANGED -> R.drawable.title_edit
+                                    UpdaterConstants.CHANGELOG_ADDED -> R.drawable.add
+                                    UpdaterConstants.CHANGELOG_CHANGED -> R.drawable.pencil
                                     UpdaterConstants.CHANGELOG_IMPROVED -> R.drawable.refresh_circle
                                     UpdaterConstants.CHANGELOG_FIXED -> R.drawable.alert
                                     else -> R.drawable.information
@@ -826,7 +826,7 @@ fun ChangelogCard(changelogText: String, colorPaletteMode: ColorPaletteMode) {
                                             .clip(uiRoundnessShape())
                                             .background(
                                                 when (section.first.lowercase()) {
-                                                    UpdaterConstants.CHANGELOG_NEW -> Color(0xFF4CAF50)
+                                                    UpdaterConstants.CHANGELOG_ADDED -> Color(0xFF4CAF50)
                                                     UpdaterConstants.CHANGELOG_CHANGED -> Color(0xFFFF9800)
                                                     UpdaterConstants.CHANGELOG_IMPROVED -> Color(0xFF2196F3)
                                                     UpdaterConstants.CHANGELOG_FIXED -> Color(0xFFF44336)
