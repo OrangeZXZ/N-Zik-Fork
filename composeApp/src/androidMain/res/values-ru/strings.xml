@@ -1154,4 +1154,15 @@
   <string name="clear_listen_history">Очистить историю прослушивания</string>
   <string name="ui_roundness">Округление пользовательского интерфейса</string>
   <string name="app_name">N-Zik</string>
+  <string name="visualizer_line_thickness">Толщина линии визуализации</string>
+  <string name="pacman_title">Pacman</string>
+  <string name="pacman_start">Начать</string>
+  <string name="pacman_stop">Стоп</string>
+  <string name="pacman_game_over">ИГРАТЬ БОЛЬШЕ</string>
+  <string name="pacman_you_won">Вы выиграли!</string>
+  <string name="game_direction_up">Вверх</string>
+  <string name="game_direction_down">Вниз</string>
+  <string name="game_direction_left">Слева</string>
+  <string name="game_direction_right">Справа</string>
+  <string name="snake_title">Игра с змеями</string>
 </resources>
