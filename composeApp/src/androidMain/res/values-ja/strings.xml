@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">左</string>
   <string name="game_direction_right">右</string>
   <string name="snake_title">ヘビゲーム</string>
+  <string name="pacman_close">閉じる</string>
+  <string name="snake_score">得点: %1$s</string>
+  <string name="snake_new_game">新しいゲーム</string>
+  <string name="snake_reset">リセット</string>
+  <string name="snake_start">開始</string>
+  <string name="snake_pause">一時停止</string>
+  <string name="snake_resume">再開</string>
+  <string name="snake_game_over">ゲーム終了</string>
+  <string name="snake_retry">再試行する</string>
+  <string name="snake_exit">終了</string>
+  <string name="skip_time_buttons">時間ボタンをスキップ</string>
 </resources>
