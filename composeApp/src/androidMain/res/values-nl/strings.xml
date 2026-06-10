@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Links</string>
   <string name="game_direction_right">Rechts</string>
   <string name="snake_title">Slang Spel</string>
+  <string name="pacman_close">Afsluiten</string>
+  <string name="snake_score">Punt: %1$s</string>
+  <string name="snake_new_game">Nieuwe partij</string>
+  <string name="snake_reset">Reset</string>
+  <string name="snake_start">Beginnen</string>
+  <string name="snake_pause">Onderbreken</string>
+  <string name="snake_resume">Hervatten</string>
+  <string name="snake_game_over">Partij afgelopen</string>
+  <string name="snake_retry">Opnieuw</string>
+  <string name="snake_exit">Afsluiten</string>
+  <string name="skip_time_buttons">Tijdsknoppen overslaan</string>
 </resources>
