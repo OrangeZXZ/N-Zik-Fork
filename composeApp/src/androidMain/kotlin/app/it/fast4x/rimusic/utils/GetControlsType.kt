@@ -33,7 +33,8 @@ fun GetControls(
     isBuffering: Boolean,
     likedAt: Long?,
     mediaId: String,
-    onBlurScaleChange: (Float) -> Unit
+    onBlurScaleChange: (Float) -> Unit,
+    dynamicColorPalette: app.it.fast4x.rimusic.ui.styling.ColorPalette
 ) {
     val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Essential)
     val playerPlayButtonType by rememberPreference(
@@ -98,7 +99,8 @@ fun GetControls(
                 mediaId = mediaId,
                 playerPlayButtonType = playerPlayButtonType,
                 isGradientBackgroundEnabled = isGradientBackgroundEnabled,
-                onShowSpeedPlayerDialog = { showSpeedPlayerDialog = true }
+                onShowSpeedPlayerDialog = { showSpeedPlayerDialog = true },
+                dynamicColorPalette = dynamicColorPalette
             )
 
         if (playerControlsType == PlayerControlsType.Modern)
@@ -110,7 +112,8 @@ fun GetControls(
                 isBuffering = isBuffering,
                 playerPlayButtonType = playerPlayButtonType,
                 isGradientBackgroundEnabled = isGradientBackgroundEnabled,
-                onShowSpeedPlayerDialog = { showSpeedPlayerDialog = true }
+                onShowSpeedPlayerDialog = { showSpeedPlayerDialog = true },
+                dynamicColorPalette = dynamicColorPalette
             )
     }
 }

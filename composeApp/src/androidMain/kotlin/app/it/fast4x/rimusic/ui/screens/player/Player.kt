@@ -1031,6 +1031,7 @@ fun Player(
             isBuffering = isBuffering,
             position = position,
             duration = duration,
+            dynamicColorPalette = dynamicColorPalette,
             modifier = modifier,
         )
     }
@@ -1728,7 +1729,8 @@ fun Player(
                                                 .padding(vertical = 4.dp)
                                                 .fillMaxWidth(),
                                             onBlurScaleChange = { blurAdjuster.strength = it },
-                                            isExplicit = mediaItem.isExplicit
+                                            isExplicit = mediaItem.isExplicit,
+                                            dynamicColorPalette = dynamicColorPalette
                                         )
                                     }
                                 }

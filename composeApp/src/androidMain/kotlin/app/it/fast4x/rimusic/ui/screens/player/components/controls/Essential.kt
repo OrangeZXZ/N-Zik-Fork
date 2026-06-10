@@ -1,4 +1,4 @@
-﻿@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.screens.player.components.controls
 
 import app.n_zik.android.uiRoundnessShape
@@ -390,7 +390,14 @@ fun ControlsEssential(
     isBuffering: Boolean,
     isGradientBackgroundEnabled: Boolean,
     onShowSpeedPlayerDialog: () -> Unit,
+    dynamicColorPalette: app.it.fast4x.rimusic.ui.styling.ColorPalette
 ) {
+    val playerControlsColors by rememberPreference(app.it.fast4x.rimusic.utils.playerControlsColorsKey, app.n_zik.android.enums.PlayerControlsColors.Monochrome)
+    val controlsColor = when (playerControlsColors) {
+        app.n_zik.android.enums.PlayerControlsColors.Cover -> dynamicColorPalette.accent
+        app.n_zik.android.enums.PlayerControlsColors.Monochrome -> Color.White
+        else -> colorPalette().accent
+    }
     val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
     var effectRotationEnabled by rememberPreference(effectRotationKey, false)
@@ -442,7 +449,7 @@ fun ControlsEssential(
     Image(
         painter = painterResource(R.drawable.play_skip_back),
         contentDescription = null,
-        colorFilter = ColorFilter.tint(colorPalette().text),
+        colorFilter = ColorFilter.tint(controlsColor),
         modifier = Modifier
             .clip(uiRoundnessShape()).combinedClickable(
                 indication = ripple(bounded = false),
@@ -539,7 +546,7 @@ fun ControlsEssential(
             Image(
                 painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                 contentDescription = null,
-                colorFilter = ColorFilter.tint(if ((playerPlayButtonType == PlayerPlayButtonType.Disabled) || ((colorPaletteName == ColorPaletteName.Dynamic) && (colorPaletteMode == ColorPaletteMode.PitchBlack))) colorPalette().accent else colorPalette().text),
+                colorFilter = ColorFilter.tint(if ((playerPlayButtonType == PlayerPlayButtonType.Disabled) || ((colorPaletteName == ColorPaletteName.Dynamic) && (colorPaletteMode == ColorPaletteMode.PitchBlack))) colorPalette().accent else controlsColor),
                 modifier = Modifier
                     .rotate(rotationAngle)
                     .align(Alignment.Center)
@@ -575,7 +582,7 @@ fun ControlsEssential(
     Image(
         painter = painterResource(R.drawable.play_skip_forward),
         contentDescription = null,
-        colorFilter = ColorFilter.tint(colorPalette().text),
+        colorFilter = ColorFilter.tint(controlsColor),
         modifier = Modifier
             .clip(uiRoundnessShape()).combinedClickable(
                 indication = ripple(bounded = false),

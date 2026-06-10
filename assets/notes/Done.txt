@@ -30,3 +30,6 @@ Fixed: Removed double bottom padding from the global Scaffold to restore the flo
 Added: Option to disable navigation backstack to return directly to the Home screen on back press.
 Added: Loudness amplification (Volume boost level) setting on top of loudness normalization (#236).
 Added: Loudness sliders in the Playback parameters dialog (long-press play) synced with General Settings.
+Added: Option to change player controls color based on album cover or theme (#436).
+Fixed: Real-time UI updates for Player control colors without requiring app restart.
+Changed: Default startup song from Måneskin's Beggin to The Weeknd's Blinding Lights.

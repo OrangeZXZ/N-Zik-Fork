@@ -1,4 +1,4 @@
-﻿@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.screens.player
 
 import app.n_zik.android.core.database.*
@@ -113,6 +113,14 @@ import app.kreate.android.me.knighthat.sync.YouTubeSync
 import app.kreate.android.me.knighthat.utils.Toaster
 import kotlin.math.absoluteValue
 import app.n_zik.android.uiRoundnessShape
+import androidx.compose.runtime.LaunchedEffect
+import app.it.fast4x.rimusic.utils.getBitmapFromUrl
+import app.n_zik.android.core.coil.thumbnail
+import app.it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
+import androidx.compose.foundation.isSystemInDarkTheme
+import app.it.fast4x.rimusic.enums.ColorPaletteMode
+import app.it.fast4x.rimusic.utils.colorPaletteModeKey
+import androidx.compose.ui.graphics.Color
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -177,6 +185,31 @@ fun MiniPlayer(
         miniPlayerTypeKey,
         MiniPlayerType.Essential
     )
+
+    val color = colorPalette()
+    var dynamicColorPalette by remember { mutableStateOf( color ) }
+    val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
+    val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
+
+    LaunchedEffect(mediaItem.mediaId) {
+        try {
+            val imageUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(1000).toString()
+            val bitmap = getBitmapFromUrl(
+                context,
+                imageUrl
+            )
+            dynamicColorPalette = dynamicColorPaletteOf(bitmap, !lightTheme) ?: color
+        } catch (e: Exception) {
+            dynamicColorPalette = color
+        }
+    }
+
+    val playerControlsColors by rememberPreference(app.it.fast4x.rimusic.utils.playerControlsColorsKey, app.n_zik.android.enums.PlayerControlsColors.Monochrome)
+    val controlsColorText = when (playerControlsColors) {
+        app.n_zik.android.enums.PlayerControlsColors.Cover -> dynamicColorPalette.accent
+        app.n_zik.android.enums.PlayerControlsColors.Monochrome -> Color.White
+        else -> colorPalette().accent
+    }
 
     fun toggleLike() {
         CoroutineScope( Dispatchers.IO ).launch {
@@ -407,7 +440,7 @@ fun MiniPlayer(
                if (miniPlayerType == MiniPlayerType.Essential)
                 app.it.fast4x.rimusic.ui.components.themed.IconButton(
                     icon = R.drawable.play_skip_back,
-                    color = colorPalette().iconButtonPlayer,
+                    color = controlsColorText,
                     onClick = {
                         binder.player.playPrevious()
                         if (effectRotationEnabled) isRotated = !isRotated
@@ -446,7 +479,7 @@ fun MiniPlayer(
                         Image(
                             painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                             contentDescription = null,
-                            colorFilter = ColorFilter.tint(colorPalette().iconButtonPlayer),
+                            colorFilter = ColorFilter.tint(controlsColorText),
                             modifier = Modifier
                                 .rotate(rotationAngle)
                                 .align(Alignment.Center)
@@ -457,7 +490,7 @@ fun MiniPlayer(
                if (miniPlayerType == MiniPlayerType.Essential)
                 app.it.fast4x.rimusic.ui.components.themed.IconButton(
                     icon = R.drawable.play_skip_forward,
-                    color = colorPalette().iconButtonPlayer,
+                    color = controlsColorText,
                     onClick = {
                         binder.player.playNext()
                         if (effectRotationEnabled) isRotated = !isRotated

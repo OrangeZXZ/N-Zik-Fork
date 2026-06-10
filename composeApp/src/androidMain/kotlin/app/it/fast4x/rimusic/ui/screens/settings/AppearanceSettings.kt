@@ -50,6 +50,7 @@ import app.it.fast4x.rimusic.enums.MiniPlayerType
 import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.NotificationButtons
 import app.it.fast4x.rimusic.enums.PlayerBackgroundColors
+import app.n_zik.android.enums.PlayerControlsColors
 import app.it.fast4x.rimusic.enums.PlayerControlsType
 import app.it.fast4x.rimusic.enums.PlayerInfoType
 import app.it.fast4x.rimusic.enums.PlayerPlayButtonType
@@ -106,6 +107,7 @@ import app.it.fast4x.rimusic.utils.notificationPlayerFirstIconKey
 import app.it.fast4x.rimusic.utils.notificationPlayerSecondIconKey
 import app.it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import app.it.fast4x.rimusic.utils.playerControlsTypeKey
+import app.it.fast4x.rimusic.utils.playerControlsColorsKey
 import app.it.fast4x.rimusic.utils.playerEnableLyricsPopupMessageKey
 import app.it.fast4x.rimusic.utils.playerInfoShowIconsKey
 import app.it.fast4x.rimusic.utils.playerInfoTypeKey
@@ -482,6 +484,7 @@ fun AppearanceSettings(
 
     var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
     var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Essential)
+    var playerControlsColors by rememberPreference(playerControlsColorsKey, PlayerControlsColors.Monochrome)
     var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
     var transparentBackgroundActionBarPlayer by rememberPreference(
         transparentBackgroundPlayerActionBarKey,
@@ -1498,6 +1501,23 @@ fun AppearanceSettings(
                     selectedValue = playerControlsType,
                     onValueSelected = {
                         playerControlsType = it
+                    },
+                    valueText = { it.text }
+                )
+            }
+
+        if (search.inputValue.isBlank() || stringResource(R.string.player_controls_colors).contains(
+                search.inputValue,
+                true
+            )
+        )
+            if (search.inputValue.isBlank() || stringResource(R.string.player_controls_colors).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.color_palette,
+                    title = stringResource(R.string.player_controls_colors),
+                    selectedValue = playerControlsColors,
+                    onValueSelected = {
+                        playerControlsColors = it
                     },
                     valueText = { it.text }
                 )

@@ -197,6 +197,7 @@ const val showMonthlyPlaylistInQuickPicksKey = "showMonthlyPlaylistInQuickPicks"
 const val showMonthlyPlaylistInLibraryKey = "showMonthlyPlaylistInLibrary"
 const val enableQuickPicksPageKey = "enableQuickPicksPage"
 const val playerBackgroundColorsKey = "playerBackgroundColors"
+const val playerControlsColorsKey = "playerControlsColors"
 const val animatedGradientKey = "animatedGradient"
 const val rotatingAlbumCoverKey = "rotatingAlbumCover"
 const val playerControlsTypeKey = "playerControlsType"
@@ -758,11 +759,32 @@ fun rememberPreference(key: String, defaultValue: String): MutableState<String> 
 @Composable
 inline fun <reified T : Enum<T>> rememberPreference(key: String, defaultValue: T): MutableState<T> {
     val context = LocalContext.current
-    return remember {
-        mutableStatePreferenceOf(context.preferences.getEnum(key, defaultValue)) {
-            context.preferences.edit { putEnum(key, it) }
+    val prefs = context.preferences
+    val state = remember {
+        mutableStatePreferenceOf(prefs.getEnum(key, defaultValue)) {
+            prefs.edit { putEnum(key, it) }
         }
     }
+
+    val listener = remember(prefs, key) {
+        android.content.SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
+            if (changedKey == key) {
+                val newValue = sharedPreferences.getEnum(key, defaultValue)
+                if (state.value != newValue) {
+                    state.value = newValue
+                }
+            }
+        }
+    }
+    
+    androidx.compose.runtime.DisposableEffect(prefs, listener) {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+        onDispose {
+            prefs.unregisterOnSharedPreferenceChangeListener(listener)
+        }
+    }
+
+    return state
 }
 
 fun clearPreference(context: Context, key: String): Unit {

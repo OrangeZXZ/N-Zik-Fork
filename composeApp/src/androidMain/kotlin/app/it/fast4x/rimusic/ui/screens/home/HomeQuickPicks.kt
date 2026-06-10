@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.it.fast4x.rimusic.ui.screens.home
 
 import androidx.compose.ui.draw.clip
 
@@ -264,7 +264,7 @@ fun HomeQuickPicks(
                                     if (relatedPageResult == null || trending?.id != trendingList.firstOrNull()?.id) {
                                         relatedPageResult = Innertube.relatedPage(
                                             NextBody(
-                                                videoId = (trending?.id ?: "HZnNt9nnEhw")
+                                                videoId = (trending?.id ?: "4NRXx6U8ABQ")
                                             )
                                         )
                                         // relatedInit = relatedPageResult?.getOrNull()
@@ -286,7 +286,7 @@ fun HomeQuickPicks(
                                         relatedPageResult =
                                             Innertube.relatedPage(
                                                 NextBody(
-                                                    videoId = (trending?.id ?: "HZnNt9nnEhw")
+                                                    videoId = (trending?.id ?: "4NRXx6U8ABQ")
                                                 )
                                             )
                                         // relatedInit = relatedPageResult?.getOrNull()
@@ -311,7 +311,7 @@ fun HomeQuickPicks(
                                         relatedPageResult =
                                             Innertube.relatedPage(
                                                 NextBody(
-                                                    videoId = (trending?.id ?: "HZnNt9nnEhw")
+                                                    videoId = (trending?.id ?: "4NRXx6U8ABQ")
                                                 )
                                             )
                                         // relatedInit = relatedPageResult?.getOrNull()

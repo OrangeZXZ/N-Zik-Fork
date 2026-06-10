@@ -94,6 +94,7 @@ fun Controls(
     isBuffering: Boolean,
     position: () -> Long,
     duration: () -> Long,
+    dynamicColorPalette: app.it.fast4x.rimusic.ui.styling.ColorPalette,
     modifier: Modifier = Modifier
 ) = Controls(
     navController = navController,
@@ -117,6 +118,7 @@ fun Controls(
     position = position,
     duration = duration,
     isExplicit = mediaItem.isExplicit,
+    dynamicColorPalette = dynamicColorPalette,
     modifier = modifier
 )
 
@@ -146,6 +148,7 @@ fun Controls(
     position: () -> Long,
     duration: () -> Long,
     isExplicit: Boolean,
+    dynamicColorPalette: app.it.fast4x.rimusic.ui.styling.ColorPalette,
     modifier: Modifier = Modifier
 ) {
     val binder = LocalPlayerServiceBinder.current
@@ -253,6 +256,7 @@ fun Controls(
                 }
                 if (!isShowingLyrics || controlsExpanded) {
                     GetControls(
+                        dynamicColorPalette = dynamicColorPalette,
                         binder = binder,
                         position = position,
                         shouldBePlaying = shouldBePlaying,
@@ -333,6 +337,7 @@ fun Controls(
                             .weight(0.4f)
                     )
                     GetControls(
+                        dynamicColorPalette = dynamicColorPalette,
                         binder = binder,
                         position = position,
                         shouldBePlaying = shouldBePlaying,
@@ -347,6 +352,7 @@ fun Controls(
                     )
                 } else {
                     GetControls(
+                        dynamicColorPalette = dynamicColorPalette,
                         binder = binder,
                         position = position,
                         shouldBePlaying = shouldBePlaying,
@@ -438,6 +444,7 @@ fun Controls(
                         .conditional(expandedlandscape) { height(15.dp) }
                 )
                 GetControls(
+                    dynamicColorPalette = dynamicColorPalette,
                     binder = binder,
                     position = position,
                     shouldBePlaying = shouldBePlaying, isBuffering = isBuffering,
@@ -453,6 +460,7 @@ fun Controls(
                 )
             } else {
                 GetControls(
+                    dynamicColorPalette = dynamicColorPalette,
                     binder = binder,
                     position = position,
                     shouldBePlaying = shouldBePlaying, isBuffering = isBuffering,

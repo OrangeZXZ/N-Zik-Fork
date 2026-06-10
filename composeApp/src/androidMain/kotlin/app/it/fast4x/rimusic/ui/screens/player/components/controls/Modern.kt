@@ -391,7 +391,19 @@ fun ControlsModern(
     playerPlayButtonType: PlayerPlayButtonType,
     isGradientBackgroundEnabled: Boolean,
     onShowSpeedPlayerDialog: () -> Unit,
+    dynamicColorPalette: app.it.fast4x.rimusic.ui.styling.ColorPalette
 ) {
+    val playerControlsColors by rememberPreference(app.it.fast4x.rimusic.utils.playerControlsColorsKey, app.n_zik.android.enums.PlayerControlsColors.Monochrome)
+    val controlsColorText = when (playerControlsColors) {
+        app.n_zik.android.enums.PlayerControlsColors.Cover -> dynamicColorPalette.accent
+        app.n_zik.android.enums.PlayerControlsColors.Monochrome -> Color.White
+        else -> colorPalette().accent
+    }
+    val controlsColorAccent = when (playerControlsColors) {
+        app.n_zik.android.enums.PlayerControlsColors.Cover -> dynamicColorPalette.accent
+        app.n_zik.android.enums.PlayerControlsColors.Monochrome -> Color.White
+        else -> colorPalette().accent
+    }
     var effectRotationEnabled by rememberPreference(effectRotationKey, false)
     var isRotated by rememberSaveable { mutableStateOf(false) }
     val rotationAngle by animateFloatAsState(
@@ -426,7 +438,7 @@ fun ControlsModern(
           Image(
               painter = painterResource(R.drawable.play_skip_back),
               contentDescription = null,
-              colorFilter = ColorFilter.tint(colorPalette().text),
+              colorFilter = ColorFilter.tint(controlsColorText),
               modifier = Modifier
                   .padding(10.dp)
                   .size(26.dp)
@@ -499,7 +511,7 @@ fun ControlsModern(
                   Image(
                       painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                       contentDescription = null,
-                      colorFilter = ColorFilter.tint(colorPalette().text),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
+                      colorFilter = ColorFilter.tint(controlsColorText),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                       modifier = Modifier
                           .rotate(rotationAngle)
                           .align(Alignment.Center)
@@ -566,7 +578,7 @@ fun ControlsModern(
                   Image(
                       painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                       contentDescription = null,
-                      colorFilter = ColorFilter.tint(colorPalette().text),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
+                      colorFilter = ColorFilter.tint(controlsColorText),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                       modifier = Modifier
                           .rotate(rotationAngle)
                           .align(Alignment.Center)
@@ -620,7 +632,7 @@ fun ControlsModern(
           Image(
               painter = painterResource(R.drawable.play_skip_forward),
               contentDescription = null,
-              colorFilter = ColorFilter.tint(colorPalette().text),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
+              colorFilter = ColorFilter.tint(controlsColorText),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
               modifier = Modifier
                   .padding(10.dp)
                   .size(26.dp)
@@ -654,7 +666,7 @@ fun ControlsModern(
               Image(
                   painter = painterResource(R.drawable.play_skip_back),
                   contentDescription = null,
-                  colorFilter = ColorFilter.tint(colorPalette().accent),
+                  colorFilter = ColorFilter.tint(controlsColorAccent),
                   modifier = Modifier
                       .padding(10.dp)
                       .size(34.dp)
@@ -692,7 +704,7 @@ fun ControlsModern(
               Image(
                   painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
                   contentDescription = null,
-                  colorFilter = ColorFilter.tint(colorPalette().accent),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
+                  colorFilter = ColorFilter.tint(controlsColorAccent),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                   modifier = Modifier
                       .rotate(rotationAngle)
                       .size(44.dp)
@@ -731,7 +743,7 @@ fun ControlsModern(
               Image(
                   painter = painterResource(R.drawable.play_skip_forward),
                   contentDescription = null,
-                  colorFilter = ColorFilter.tint(colorPalette().accent),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
+                  colorFilter = ColorFilter.tint(controlsColorAccent),  //ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
                   modifier = Modifier
                       .padding(10.dp)
                       .size(34.dp)

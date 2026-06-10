@@ -1078,6 +1078,10 @@
 <string name="notifications">Notifications</string>
 <string name="playback">Playback</string>
 <string name="player_controls">Player Controls</string>
+<string name="player_controls_colors">Player controls colors</string>
+<string name="theme_color">Theme color</string>
+<string name="cover_color">Cover color</string>
+<string name="monochrome">Monochrome</string>
 <string name="queue_management">Queue Management</string>
 <string name="app_behavior">App Behavior</string>
 <string name="audio_effects">Audio Effects</string>
