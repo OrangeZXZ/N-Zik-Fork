@@ -2182,8 +2182,10 @@ class PlayerServiceModern : MediaLibraryService(),
         // 3. Fallback: YouTube Music albums often lack album metadata but share the exact same artwork URL
         val currentArtwork = currentMeta.artworkUri?.toString()
         val nextArtwork = nextMeta.artworkUri?.toString()
-        if (!currentArtwork.isNullOrBlank() && !currentArtwork.startsWith("android.resource") && currentArtwork == nextArtwork) {
-            return true
+        if (!currentArtwork.isNullOrBlank() && !currentArtwork.startsWith("android.resource")) {
+            val baseCurrent = currentArtwork.substringBefore("=").substringBefore("?")
+            val baseNext = nextArtwork?.substringBefore("=")?.substringBefore("?")
+            if (baseCurrent == baseNext) return true
         }
 
         return false
