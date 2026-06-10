@@ -30,7 +30,7 @@ jobs:
           sed -i "s|J--[0-9]*-red|J--${DAYS}-red|g" README.md
 
       - name: Commit if changed
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "chore: update Android lockdown countdown (${{ steps.countdown.outputs.days }} days left)"
           file_pattern: README.md
