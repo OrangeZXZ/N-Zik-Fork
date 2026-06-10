@@ -64,6 +64,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -158,6 +159,8 @@ import app.it.fast4x.rimusic.utils.playbackPitchKey
 import app.it.fast4x.rimusic.utils.playbackSpeedKey
 import app.it.fast4x.rimusic.utils.playbackVolumeKey
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.volumeNormalizationKey
+import app.it.fast4x.rimusic.utils.volumeBoostLevelKey
 import app.it.fast4x.rimusic.utils.removeYTSongFromPlaylist
 import app.n_zik.android.uiRoundnessShape
 
@@ -2468,6 +2471,9 @@ fun PlaybackParamsDialog(
     var playbackDuration by rememberPreference(playbackDurationKey, defaultDuration)
     var blurStrength  by rememberPreference(blurStrengthKey, defaultStrength)
     var bassBoost  by rememberPreference(bassboostLevelKey, defaultBassboost)
+    val volumeNormalization by rememberPreference(volumeNormalizationKey, false)
+    var loudnessBaseGain by rememberPreference(app.it.fast4x.rimusic.utils.loudnessBaseGainKey, 0f)
+    var volumeBoostLevel by rememberPreference(volumeBoostLevelKey, 0f)
 
     DefaultDialog(
         onDismiss = {
@@ -3027,6 +3033,80 @@ fun PlaybackParamsDialog(
                 onSlideComplete = {},
                 toDisplay = { "%.1f".format(bassBoost) },
                 range = 0.0f..1.0f
+            )
+
+        }
+
+        var newValueBaseGain by remember(loudnessBaseGain) { mutableFloatStateOf(loudnessBaseGain) }
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            TitleMiniSection(stringResource(R.string.settings_loudness_base_gain))
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = {
+                    newValueBaseGain = 0f
+                    loudnessBaseGain = 0f
+                },
+                icon = R.drawable.volume_up,
+                color = colorPalette().favoritesIcon,
+                modifier = Modifier.size(20.dp)
+            )
+
+            SliderControl(
+                isEnabled = volumeNormalization,
+                state = newValueBaseGain,
+                onSlide = { newValueBaseGain = it },
+                onSlideComplete = { loudnessBaseGain = newValueBaseGain },
+                toDisplay = { "%.1f dB".format(it).replace(",", ".") },
+                range = -20f..20f,
+                steps = 3
+            )
+        }
+
+        var newValueVolume by remember(volumeBoostLevel) { mutableFloatStateOf(volumeBoostLevel) }
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            TitleMiniSection(stringResource(R.string.loudness_boost_level))
+        }
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = {
+                    newValueVolume = 0f
+                    volumeBoostLevel = 0f
+                },
+                icon = R.drawable.volume_up,
+                color = colorPalette().favoritesIcon,
+                modifier = Modifier
+                    .size(20.dp)
+            )
+
+            SliderControl(
+                isEnabled = volumeNormalization,
+                state = newValueVolume,
+                onSlide = {
+                    newValueVolume = it
+                },
+                onSlideComplete = { volumeBoostLevel = newValueVolume },
+                toDisplay = { "%.2f dB".format(it).replace(",", ".") },
+                range = -30f..30f,
+                steps = 3
             )
 
         }

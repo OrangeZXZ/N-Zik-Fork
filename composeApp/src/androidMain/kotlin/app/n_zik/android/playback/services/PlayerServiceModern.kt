@@ -184,6 +184,7 @@ import app.it.fast4x.rimusic.utils.timer
 import app.it.fast4x.rimusic.utils.toggleRepeatMode
 import app.it.fast4x.rimusic.utils.toggleShuffleMode
 import app.it.fast4x.rimusic.utils.volumeNormalizationKey
+import app.it.fast4x.rimusic.utils.volumeBoostLevelKey
 import app.it.fast4x.rimusic.utils.wallpaperTypeKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -701,7 +702,7 @@ class PlayerServiceModern : MediaLibraryService(),
                     sharedPreferences.getBoolean(key, isPersistentQueueEnabled)
             }
 
-            volumeNormalizationKey, loudnessBaseGainKey -> maybeNormalizeVolume()
+            volumeNormalizationKey, loudnessBaseGainKey, volumeBoostLevelKey -> maybeNormalizeVolume()
 
             resumePlaybackWhenDeviceConnectedKey -> maybeResumePlaybackWhenDeviceConnected()
 
@@ -1086,6 +1087,7 @@ class PlayerServiceModern : MediaLibraryService(),
         }
 
         val baseGain = preferences.getFloat(loudnessBaseGainKey, 5.00f)
+        val volumeBoostLevel = preferences.getFloat(volumeBoostLevelKey, 0f)
         player.currentMediaItem?.mediaId?.let { songId ->
             volumeNormalizationJob?.cancel()
             volumeNormalizationJob = coroutineScope.launch(Dispatchers.Main) {
@@ -1105,7 +1107,7 @@ class PlayerServiceModern : MediaLibraryService(),
                             }
 
                             try {
-                                loudnessEnhancer?.setTargetGain(baseGain.toMb() - loudnessMb)
+                                loudnessEnhancer?.setTargetGain(baseGain.toMb() + volumeBoostLevel.toMb() - loudnessMb)
                                 loudnessEnhancer?.enabled = true
                             } catch (e: Exception) {
                                 Timber.e("PlayerService maybeNormalizeVolume apply targetGain ${e.stackTraceToString()}")

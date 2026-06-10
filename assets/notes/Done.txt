@@ -28,3 +28,5 @@ Fixed: Top bar back button and title now animate smoothly with sliding and fadin
 Fixed: Burger menu dropdown correctly anchors to the right side of the action bar.
 Fixed: Removed double bottom padding from the global Scaffold to restore the floating bar's correct position at the bottom of the screen.
 Added: Option to disable navigation backstack to return directly to the Home screen on back press.
+Added: Loudness amplification (Volume boost level) setting on top of loudness normalization (#236).
+Added: Loudness sliders in the Playback parameters dialog (long-press play) synced with General Settings.

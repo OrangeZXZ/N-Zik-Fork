@@ -41,6 +41,7 @@ import app.n_zik.android.R
 import app.n_zik.android.LocalPlayerAwareWindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.ui.unit.sp
 import app.n_zik.android.LocalPlayerServiceBinder
 
 import app.n_zik.android.colorPalette
@@ -131,6 +132,7 @@ import app.it.fast4x.rimusic.utils.skipMediaOnErrorKey
 import app.it.fast4x.rimusic.utils.skipSilenceKey
 import app.it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import app.it.fast4x.rimusic.utils.volumeNormalizationKey
+import app.it.fast4x.rimusic.utils.volumeBoostLevelKey
 import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
 
@@ -165,6 +167,7 @@ fun GeneralSettings(
     var skipSilence by rememberPreference(skipSilenceKey, false)
     var skipMediaOnError by rememberPreference(skipMediaOnErrorKey, false)
     var volumeNormalization by rememberPreference(volumeNormalizationKey, false)
+    var volumeBoostLevel by rememberPreference(volumeBoostLevelKey, 0f)
 
     var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
 
@@ -921,7 +924,8 @@ fun GeneralSettings(
                                 restartService = true
                             },
                             toDisplay = { stringResource(R.string.format_ms, it.toLong()) },
-                            range = 1.00f..2000.000f
+                            range = 1.00f..2000.000f,
+                            icon = R.drawable.time
                         )
                     }
 
@@ -944,6 +948,9 @@ fun GeneralSettings(
                 val initialValue by remember { derivedStateOf { loudnessBaseGain } }
                 var newValue by remember(initialValue) { mutableFloatStateOf(initialValue) }
 
+                val initialValueVolume by remember { derivedStateOf { volumeBoostLevel } }
+                var newValueVolume by remember(initialValueVolume) { mutableFloatStateOf(initialValueVolume) }
+
                 Column(
                     modifier = Modifier.padding(start = 25.dp)
                 ) {
@@ -956,9 +963,67 @@ fun GeneralSettings(
                             onSlideComplete = {
                                 loudnessBaseGain = newValue
                             },
-                            toDisplay = { "%.1f dB".format(loudnessBaseGain).replace(",", ".") },
-                            range = -20f..20f
+                            toDisplay = { "%.1f dB".format(it).replace(",", ".") },
+                            range = -20f..20f,
+                            steps = 3,
+                            icon = R.drawable.volume_up
                         )
+                        androidx.compose.foundation.layout.Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly
+                        ) {
+                            listOf(-20f to "-20", -10f to "-10", 0f to "0", 10f to "10", 20f to "20").forEach { (v, label) ->
+                                val isSelected = loudnessBaseGain.toInt() == v.toInt()
+                                androidx.compose.material3.TextButton(
+                                    onClick = { loudnessBaseGain = v; newValue = v },
+                                    shape = app.n_zik.android.uiRoundnessShape(),
+                                    colors = androidx.compose.material3.ButtonDefaults.textButtonColors(containerColor = if (isSelected) colorPalette().accent.copy(alpha = 0.2f) else androidx.compose.ui.graphics.Color.Transparent)
+                                ) {
+                                    androidx.compose.material3.Text(
+                                        text = label,
+                                        fontSize = 12.sp,
+                                        color = if (isSelected) colorPalette().accent else colorPalette().text,
+                                        fontWeight = if (isSelected) androidx.compose.ui.text.font.FontWeight.Bold else null
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    if (search.inputValue.isBlank() || stringResource(R.string.loudness_boost_level).contains(search.inputValue, true) || (stringResource(R.string.loudness_boost_level_info)).contains(search.inputValue, true)) {
+                        SliderSettingsEntry(
+                            title = stringResource(R.string.loudness_boost_level),
+                            text = stringResource(R.string.loudness_boost_level_info),
+                            state = newValueVolume,
+                            onSlide = { newValueVolume = it },
+                            onSlideComplete = {
+                                volumeBoostLevel = newValueVolume
+                            },
+                            toDisplay = { "%.2f dB".format(it).replace(",", ".") },
+                            range = -30f..30f,
+                            steps = 3,
+                            icon = R.drawable.volume_up
+                        )
+                        androidx.compose.foundation.layout.Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly
+                        ) {
+                            listOf(-30f to "-30", -15f to "-15", 0f to "0", 15f to "15", 30f to "30").forEach { (v, label) ->
+                                val isSelected = volumeBoostLevel.toInt() == v.toInt()
+                                androidx.compose.material3.TextButton(
+                                    onClick = { volumeBoostLevel = v; newValueVolume = v },
+                                    shape = app.n_zik.android.uiRoundnessShape(),
+                                    colors = androidx.compose.material3.ButtonDefaults.textButtonColors(containerColor = if (isSelected) colorPalette().accent.copy(alpha = 0.2f) else androidx.compose.ui.graphics.Color.Transparent)
+                                ) {
+                                    androidx.compose.material3.Text(
+                                        text = label,
+                                        fontSize = 12.sp,
+                                        color = if (isSelected) colorPalette().accent else colorPalette().text,
+                                        fontWeight = if (isSelected) androidx.compose.ui.text.font.FontWeight.Bold else null
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -991,7 +1056,8 @@ fun GeneralSettings(
                                 bassboostLevel = newValue
                             },
                             toDisplay = { "%.1f".format(bassboostLevel).replace(",", ".") },
-                            range = 0f..1f
+                            range = 0f..1f,
+                            icon = R.drawable.equalizer
                         )
                     }
                 }
