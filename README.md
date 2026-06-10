@@ -290,8 +290,7 @@ Join us on Crowdin!
 
 This project has no relation to the original author of [Kreate](https://github.com/knighthat/Kreate).
 
-Furthermore, its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube,  
-Google LLC, or any of its affiliates or subsidiaries.
+Furthermore, its contents are not affiliated with, funded, authorized, endorsed by, or in any way associated with YouTube, Google LLC, or any of its affiliates or subsidiaries.
 
 Any trademarks, service marks, trade names, or other intellectual property rights used in this project remain the property of their respective owners.
 
