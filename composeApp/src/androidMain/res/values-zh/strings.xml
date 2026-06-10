@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">左侧</string>
   <string name="game_direction_right">右侧</string>
   <string name="snake_title">蛇游戏</string>
+  <string name="pacman_close">关闭</string>
+  <string name="snake_score">Score: %1$s</string>
+  <string name="snake_new_game">New Game</string>
+  <string name="snake_reset">Reset</string>
+  <string name="snake_start">开始</string>
+  <string name="snake_pause">Pause</string>
+  <string name="snake_resume">Resume</string>
+  <string name="snake_game_over">Game Over</string>
+  <string name="snake_retry">重试</string>
+  <string name="snake_exit">Exit</string>
+  <string name="skip_time_buttons">Skip time buttons</string>
 </resources>
