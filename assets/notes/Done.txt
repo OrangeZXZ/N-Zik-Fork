@@ -13,3 +13,8 @@ Added: Custom colors and icons for 'Refactor' and 'Other' sections in the Change
 Improved: Snake game completely rebuilt with Canvas for smoother performance and better scaling.
 Fixed: Pacman game layout and scaling issues completely resolved.
 Refactor: Games have been properly consolidated in the 'games' directory with strings moved to resources.
+Changed: Error screen no longer displays the retry and exit buttons.
+Changed: Player image layout set to take 90% of screen width and default thumbnail radius set to 12.
+Added: Option to show/hide skip time buttons (rewind/forward) in player appearance settings.
+Fixed: Translation feature in Playlist screen now works correctly.
+Fixed: Corrupted text strings (incorrect quotation marks) in translation popups on Artist, Album, and Playlist screens.

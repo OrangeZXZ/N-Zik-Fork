@@ -1,4 +1,4 @@
-﻿package app.kreate.android.themed.rimusic.screen.player.timeline
+package app.kreate.android.themed.rimusic.screen.player.timeline
 
 import androidx.compose.ui.draw.clip
 
@@ -164,11 +164,14 @@ fun DurationIndicator(
         modifier = Modifier.padding( horizontal = 10.dp )
                            .fillMaxWidth()
     ) {
-        SkipTimeButton(
-            binder, position, Long::minus, ::maxOf, 0, "Rewind", "Rewind 5 seconds", "Rewinds 30 seconds", Modifier.rotate( 180f )
-        )
+        val showSkipTimeButtons by app.it.fast4x.rimusic.utils.rememberPreference( app.it.fast4x.rimusic.utils.showSkipTimeButtonsKey, true )
+        if (showSkipTimeButtons) {
+            SkipTimeButton(
+                binder, position, Long::minus, ::maxOf, 0, "Rewind", "Rewind 5 seconds", "Rewinds 30 seconds", Modifier.rotate( 180f )
+            )
 
-        Spacer( Modifier.width( 5.dp ) )
+            Spacer( Modifier.width( 5.dp ) )
+        }
 
         /**
          * Current implement of [rememberPreference] creates new [MutableState]
@@ -241,11 +244,13 @@ fun DurationIndicator(
             OutlinedText( toDisplay, outlineColor )
         }
 
-        Spacer( Modifier.width( 5.dp ) )
+        if (showSkipTimeButtons) {
+            Spacer( Modifier.width( 5.dp ) )
 
-        SkipTimeButton(
-            binder, position, Long::plus, ::minOf, duration, "Forward", "Forward 5 seconds", "Forward 30 seconds"
-        )
+            SkipTimeButton(
+                binder, position, Long::plus, ::minOf, duration, "Forward", "Forward 5 seconds", "Forward 30 seconds"
+            )
+        }
     }
 }
 

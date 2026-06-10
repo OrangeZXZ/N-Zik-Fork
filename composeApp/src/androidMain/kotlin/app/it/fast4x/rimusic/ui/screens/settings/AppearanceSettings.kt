@@ -139,6 +139,7 @@ import app.it.fast4x.rimusic.utils.showLikeButtonBackgroundPlayerKey
 import app.it.fast4x.rimusic.utils.showLyricsStateKey
 import app.it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import app.it.fast4x.rimusic.utils.showRemainingSongTimeKey
+import app.it.fast4x.rimusic.utils.showSkipTimeButtonsKey
 import app.it.fast4x.rimusic.utils.showTopActionsBarKey
 import app.it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import app.it.fast4x.rimusic.utils.showVisualizerStateKey
@@ -276,6 +277,7 @@ fun DefaultAppearanceSettings() {
     var showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
     showNextSongsInPlayer = false
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
+    var showSkipTimeButtons by rememberPreference(showSkipTimeButtonsKey, true)
     showRemainingSongTime = true
     var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     clickLyricsText = true
@@ -460,6 +462,7 @@ fun AppearanceSettings(
     )
     var showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
+    var showSkipTimeButtons by rememberPreference(showSkipTimeButtonsKey, true)
     var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
 
@@ -1706,6 +1709,21 @@ fun AppearanceSettings(
                     text = "",
                     isChecked = showRemainingSongTime,
                     onCheckedChange = { showRemainingSongTime = it }
+                )
+            }
+
+        if (search.inputValue.isBlank() || stringResource(R.string.skip_time_buttons).contains(
+                search.inputValue,
+                true
+            )
+        )
+            if (search.inputValue.isBlank() || stringResource(R.string.skip_time_buttons).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    title = stringResource(R.string.skip_time_buttons),
+                    text = "",
+                    isChecked = showSkipTimeButtons,
+                    onCheckedChange = { showSkipTimeButtons = it },
+                    icon = R.drawable.play_forward
                 )
             }
 
