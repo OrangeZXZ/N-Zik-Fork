@@ -1,4 +1,4 @@
-﻿@file:kotlin.OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+@file:kotlin.OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
 package app.n_zik.android.updater.ui
 
 import app.n_zik.android.updater.services.*
@@ -69,7 +69,6 @@ import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.CheckUpdateState
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.n_zik.android.typography
-import app.it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import app.it.fast4x.rimusic.ui.styling.ModernBlackColorPalette
 import app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import app.it.fast4x.rimusic.utils.bold
@@ -142,9 +141,6 @@ fun UpdateScreen(navController: NavController) {
     androidx.compose.material3.Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = colorPalette().background0,
-        topBar = {
-            AppHeader( navController ).Draw()
-        },
         bottomBar = {
             // Floating Action button at the bottom
             Box(

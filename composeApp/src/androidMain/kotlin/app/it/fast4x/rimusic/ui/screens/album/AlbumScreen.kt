@@ -58,7 +58,6 @@ import app.it.fast4x.rimusic.enums.TransitionEffect
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.SongAlbumMap
-import app.it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.playerPositionKey
 import app.it.fast4x.rimusic.utils.rememberPreference
@@ -142,26 +141,17 @@ fun AlbumScreen(
 
     val thumbnailPainter = ImageCacheFactory.Painter( album?.thumbnailUrl )
 
-    androidx.compose.material3.Scaffold(
-        modifier = Modifier,
-        containerColor = colorPalette().background0,
-        topBar = {
-            if( UiType.RiMusic.isCurrent() )
-                AppHeader( navController ).Draw()
-        }
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        Box(
-            modifier = Modifier.padding(it)
-                .fillMaxSize()
+
+        Row(
+            modifier = Modifier.fillMaxSize()
+                .background( colorPalette().background0 )
         ) {
+            val topPadding = if ( UiType.ViMusic.isCurrent() ) 30.dp else 0.dp
 
-            Row(
-                modifier = Modifier.fillMaxSize()
-                    .background( colorPalette().background0 )
-            ) {
-                val topPadding = if ( UiType.ViMusic.isCurrent() ) 30.dp else 0.dp
-
-                AnimatedContent(
+            AnimatedContent(
                     targetState = 0,
                     transitionSpec = {
                         when (transitionEffect) {
@@ -239,17 +229,16 @@ fun AlbumScreen(
                             )
                         }
                     }
-                }
             }
+        }
 
-            //**
-            Box(
-                modifier = modifier.padding( vertical = 5.dp ).align(
-                    if( playerPosition == PlayerPosition.Top ) Alignment.TopCenter else Alignment.BottomCenter
-                )
-            ) {
-                miniPlayer.invoke()
-            }
+        //**
+        Box(
+            modifier = modifier.padding( vertical = 5.dp ).align(
+                if( playerPosition == PlayerPosition.Top ) Alignment.TopCenter else Alignment.BottomCenter
+            )
+        ) {
+            miniPlayer.invoke()
         }
     }
 }

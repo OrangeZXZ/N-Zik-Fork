@@ -41,6 +41,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Scaffold
+import app.it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import app.kreate.android.themed.rimusic.screen.artist.ArtistAlbums
 import app.kreate.android.themed.rimusic.screen.artist.ArtistVideos
 import app.n_zik.android.core.database.Database
@@ -143,7 +146,13 @@ fun AppNavigation(
             }
         }
 
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = { AppHeader(navController).Draw() },
+        containerColor = androidx.compose.ui.graphics.Color.Transparent
+    ) { innerPadding ->
     NavHost(
+        modifier = Modifier.fillMaxSize().padding(top = innerPadding.calculateTopPadding()),
         navController = navController,
         startDestination = NavRoutes.home.name,
         enterTransition = enterTransition,
@@ -435,6 +444,7 @@ fun AppNavigation(
             app.n_zik.android.updater.ui.UpdateScreen(navController = navController)
         }
     }
+    } // end Scaffold
 }
 
 

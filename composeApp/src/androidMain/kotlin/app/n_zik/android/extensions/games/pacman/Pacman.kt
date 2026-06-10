@@ -51,7 +51,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import app.it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import app.it.fast4x.rimusic.utils.bold
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
@@ -366,21 +365,13 @@ fun PacmanGameScreen(
         Pair(x, y)
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = colorPalette().background0,
-        topBar = {
-            AppHeader(navController).Draw()
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(colorPalette().background0)
-                .padding(paddingValues),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorPalette().background0),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceAround
@@ -665,7 +656,6 @@ fun PacmanGameScreen(
                         }
                     }
                 }
-            }
         }
     }
 }

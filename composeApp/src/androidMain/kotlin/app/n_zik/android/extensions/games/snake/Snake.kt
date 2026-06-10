@@ -45,8 +45,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
-import androidx.compose.material3.Scaffold
-import app.it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -246,13 +244,12 @@ fun SnakeGameScreen(
     onEvent: (SnakeGameEvent) -> Unit,
     navController: NavController
 ) {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = colorPalette().background0,
-        topBar = {
-            AppHeader(navController).Draw()
-        }
-    ) { paddingValues ->
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorPalette().background0),
+        contentAlignment = Alignment.Center
+    ) {
         val animatedSnake = state.snake.map { coord ->
             val x by animateFloatAsState(
                 targetValue = coord.x.toFloat(),
@@ -268,8 +265,7 @@ fun SnakeGameScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(colorPalette().background0)
-                .padding(paddingValues),
+                .background(colorPalette().background0),
             contentAlignment = Alignment.Center
         ) {
             Column(

@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components.navigation.header
+package app.it.fast4x.rimusic.ui.components.navigation.header
 
 import app.n_zik.android.uiRoundnessShape
 
@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
@@ -97,34 +98,36 @@ fun ActionBar(
     // Search Icon
     HeaderIcon( R.drawable.search) { navController.navigate(NavRoutes.search.name) }
 
-    if (isLoggedIn) {
-        if (accountThumbnail.isNotEmpty())
-            ImageCacheFactory.AsyncImage(
-                thumbnailUrl = accountThumbnail,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .size(32.dp)
-                    .clip(uiRoundnessShape())
-                    .clickable { expanded = !expanded }
-            )
-        else HeaderIcon( R.drawable.ytmusic, size = 30.dp ) { expanded = !expanded }
-    } else HeaderIcon( R.drawable.burger ) { expanded = !expanded }
-
-    // Define actions for when item inside menu clicked,
-    // and when user clicks on places other than the menu (dismiss)
-    val onItemClick: (NavRoutes) -> Unit = {
-        expanded = false
-        navController.navigate(it.name)
+    Box {
+        if (isLoggedIn) {
+            if (accountThumbnail.isNotEmpty())
+                ImageCacheFactory.AsyncImage(
+                    thumbnailUrl = accountThumbnail,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                        .size(32.dp)
+                        .clip(uiRoundnessShape())
+                        .clickable { expanded = !expanded }
+                )
+            else HeaderIcon( R.drawable.ytmusic, size = 30.dp ) { expanded = !expanded }
+        } else HeaderIcon( R.drawable.burger ) { expanded = !expanded }
+    
+        // Define actions for when item inside menu clicked,
+        // and when user clicks on places other than the menu (dismiss)
+        val onItemClick: (NavRoutes) -> Unit = {
+            expanded = false
+            navController.navigate(it.name)
+        }
+        val onDismissRequest: () -> Unit = { expanded = false }
+    
+        // Hamburger menu
+        HamburgerMenu(
+            expanded = expanded,
+            onItemClick = onItemClick,
+            onDismissRequest = onDismissRequest
+        )
     }
-    val onDismissRequest: () -> Unit = { expanded = false }
-
-    // Hamburger menu
-    HamburgerMenu(
-        expanded = expanded,
-        onItemClick = onItemClick,
-        onDismissRequest = onDismissRequest
-    )
 // END
 }
 

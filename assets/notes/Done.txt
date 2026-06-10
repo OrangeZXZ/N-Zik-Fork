@@ -21,5 +21,9 @@ Added: New flat wave visualizer option to NextVisualizer.
 Added: Visualizer background now smoothly fades out when music is paused.
 Added: Option to hide the android status bar globally across the app.
 Added: Audio crossfade feature between songs (disabled by default in settings).
-Removed: Old and unused visualizers
+Removed: Old and unused visualizers.
 Fixed: Thumbnail crossfade visual glitch where previous track artwork incorrectly loaded the new track's artwork.
+Refactor: Global AppHeader implemented to be static across the app, fixing transition losses when navigating and reducing unnecessary recompositions.
+Fixed: Top bar back button and title now animate smoothly with sliding and fading transitions.
+Fixed: Burger menu dropdown correctly anchors to the right side of the action bar.
+Fixed: Removed double bottom padding from the global Scaffold to restore the floating bar's correct position at the bottom of the screen.

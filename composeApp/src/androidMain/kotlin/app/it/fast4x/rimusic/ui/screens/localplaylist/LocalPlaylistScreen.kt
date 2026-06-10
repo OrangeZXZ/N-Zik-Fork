@@ -42,7 +42,6 @@ import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.PlayerPosition
 import app.it.fast4x.rimusic.enums.TransitionEffect
 import app.it.fast4x.rimusic.enums.UiType
-import app.it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import app.it.fast4x.rimusic.utils.playerPositionKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.transitionEffectKey
@@ -65,26 +64,17 @@ fun LocalPlaylistScreen(
     val saveableStateHolder = rememberSaveableStateHolder()
     PersistMapCleanup(tagPrefix = "localPlaylist/$playlistId/")
 
-    androidx.compose.material3.Scaffold(
-        modifier = modifier,
-        containerColor = colorPalette().background0,
-        topBar = {
-            if( UiType.RiMusic.isCurrent() )
-                AppHeader( navController ).Draw()
-        }
+    //**
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
     ) {
-        //**
-        Box(
-            modifier = Modifier
-                .padding(it)
+
+        Row(
+            modifier = modifier
+                .background(colorPalette().background0)
                 .fillMaxSize()
         ) {
-
-            Row(
-                modifier = modifier
-                    .background(colorPalette().background0)
-                    .fillMaxSize()
-            ) {
                 val topPadding = if ( UiType.ViMusic.isCurrent() ) 30.dp else 0.dp
 
                 AnimatedContent(
@@ -166,9 +156,5 @@ fun LocalPlaylistScreen(
             ) {
                 miniPlayer.invoke()
             }
-        }
     }
 }
-
-
-

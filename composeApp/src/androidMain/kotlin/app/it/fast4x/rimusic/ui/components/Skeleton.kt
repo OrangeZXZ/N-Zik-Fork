@@ -15,14 +15,12 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.n_zik.android.BuildConfig
@@ -38,7 +36,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.NavigationBarType
-import app.it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import app.it.fast4x.rimusic.ui.components.navigation.nav.AbstractNavigationBar
 import app.it.fast4x.rimusic.ui.components.navigation.nav.HorizontalNavigationBar
 import app.it.fast4x.rimusic.ui.components.navigation.nav.VerticalNavigationBar
@@ -114,20 +111,12 @@ fun Skeleton(
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                if( UiType.RiMusic.isCurrent() )
-                    AppHeader( navController ).Draw()
-
                 if ( NavigationBarPosition.Top.isCurrent() )
                     navigationBar.Draw()
             }
         }
 
-        val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-        val modifier: Modifier =
-            if( UiType.ViMusic.isCurrent() && navigationBar is HorizontalNavigationBar)
-                Modifier
-            else
-                Modifier.nestedScroll( scrollBehavior.nestedScrollConnection )
+        val modifier: Modifier = Modifier
 
         Scaffold(
             modifier = modifier,
