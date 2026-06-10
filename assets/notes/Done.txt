@@ -8,7 +8,6 @@ Fixed: Line thickness setting correctly activates for visualizers containing the
 Changed: Default thumbnail roundness changed to 20 to match the user preference default.
 Improved: Visualizer controls are now conditionally compressed to stay within the circle when the cover is set to be fully rounded (CircleShape).
 Improved: The lyrics menu icon was changed to a settings gear for better consistency.
-
 Added: Custom colors and icons for 'Refactor' and 'Other' sections in the Changelog.
 Improved: Snake game completely rebuilt with Canvas for smoother performance and better scaling.
 Fixed: Pacman game layout and scaling issues completely resolved.
@@ -18,3 +17,4 @@ Changed: Player image layout set to take 90% of screen width and default thumbna
 Added: Option to show/hide skip time buttons (rewind/forward) in player appearance settings.
 Fixed: Translation feature in Playlist screen now works correctly.
 Fixed: Corrupted text strings (incorrect quotation marks) in translation popups on Artist, Album, and Playlist screens.
+Added: New flat wave visualizer option to NextVisualizer.

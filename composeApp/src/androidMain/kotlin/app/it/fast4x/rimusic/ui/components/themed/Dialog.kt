@@ -3144,11 +3144,11 @@ fun VisualizerParamsDialog(
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().alpha(if (currentVisualizer == 0 || currentVisualizer == 20) 1f else 0.5f)
+            modifier = Modifier.fillMaxWidth().alpha(if (currentVisualizer == 0 || currentVisualizer == 1 || currentVisualizer == 21) 1f else 0.5f)
         ) {
             IconButton(
                 onClick = {
-                    if (currentVisualizer == 0 || currentVisualizer == 20) visualizerLineThickness = 6f
+                    if (currentVisualizer == 0 || currentVisualizer == 1 || currentVisualizer == 21) visualizerLineThickness = 6f
                 },
                 icon = R.drawable.sound_effect,
                 color = colorPalette().favoritesIcon,
@@ -3156,7 +3156,7 @@ fun VisualizerParamsDialog(
             )
             SliderControl(
                 state = visualizerLineThickness,
-                onSlide = { if (currentVisualizer == 0 || currentVisualizer == 20) visualizerLineThickness = it },
+                onSlide = { if (currentVisualizer == 0 || currentVisualizer == 1 || currentVisualizer == 21) visualizerLineThickness = it },
                 onSlideComplete = {},
                 toDisplay = { "%.0f".format(it) },
                 range = 1f..20f

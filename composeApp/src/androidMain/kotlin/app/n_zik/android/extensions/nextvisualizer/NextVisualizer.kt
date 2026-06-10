@@ -58,6 +58,7 @@ import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftCBar
 import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftCLine
 import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftCWave
 import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftCWaveRgb
+import app.n_zik.android.extensions.nextvisualizer.painters.fft.FlatWave
 import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftLine
 import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftWave
 import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftWaveRgb
@@ -368,6 +369,7 @@ fun createVisualizersList(background: Bitmap, circleBitmap: Bitmap, color: Int, 
     return listOf(
         // Basic components
         Move(WfmAnalog(colorPaint = color, ampR = ampRfm, smooth = smoothWfm).apply { paint.strokeWidth = visualizerLineThickness }),
+        Move(FlatWave(colorPaint = color, ampR = 3f).apply { paint.strokeWidth = visualizerLineThickness }),
         Move(FftBar(colorPaint = color, ampR = ampR), yR = 0.5f),
         Move(FftBar(colorPaint = color, side = "b", ampR = ampR), yR = -0.5f),
         Compose(
