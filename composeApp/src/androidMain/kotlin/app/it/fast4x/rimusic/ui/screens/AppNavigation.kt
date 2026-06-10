@@ -40,6 +40,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
@@ -76,6 +77,20 @@ import app.it.fast4x.rimusic.utils.pauseSearchHistoryKey
 import app.it.fast4x.rimusic.utils.preferences
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.transitionEffectKey
+import app.it.fast4x.rimusic.utils.disableNavigationBackStackKey
+import android.content.Context
+
+fun NavHostController.navigateClean(route: String, context: Context) {
+    val disableBackStack = context.preferences.getBoolean(disableNavigationBackStackKey, false)
+    if (disableBackStack) {
+        navigate(route) {
+            popUpTo(NavRoutes.home.name) { saveState = false }
+            launchSingleTop = true
+        }
+    } else {
+        navigate(route)
+    }
+}
 
 @androidx.annotation.OptIn()
 @OptIn(
@@ -146,6 +161,16 @@ fun AppNavigation(
             }
         }
 
+    val disableBackStack by rememberPreference(app.it.fast4x.rimusic.utils.disableNavigationBackStackKey, false)
+    val currentEntry by navController.currentBackStackEntryAsState()
+    val isHome = currentEntry?.destination?.route?.startsWith(NavRoutes.home.name) ?: true
+
+    androidx.activity.compose.BackHandler(enabled = disableBackStack && !isHome) {
+        navController.navigate(NavRoutes.home.name) {
+            popUpTo(NavRoutes.home.name) { inclusive = true }
+        }
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { AppHeader(navController).Draw() },
@@ -161,7 +186,7 @@ fun AppNavigation(
         popExitTransition = exitTransition
     ) {
         val navigateToPlaylist =
-            { browseId: String -> navController.navigate("${NavRoutes.playlist.name}/$browseId") }
+            { browseId: String -> navController.navigateClean("${NavRoutes.playlist.name}/$browseId", context) }
 
         composable(route = NavRoutes.home.name) {
             HomeScreen(

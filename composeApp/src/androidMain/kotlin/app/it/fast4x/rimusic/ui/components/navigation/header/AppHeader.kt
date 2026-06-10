@@ -38,6 +38,7 @@ import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.n_zik.android.uiRoundnessShape
+import app.it.fast4x.rimusic.utils.preferences
 
 class AppHeader(
     val navController: NavController
@@ -99,8 +100,16 @@ class AppHeader(
                             .size(48.dp)
                             .clip(uiRoundnessShape())
                             .clickable {
-                                if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED)
-                                    navController.popBackStack()
+                                if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
+                                    val disableBackStack = context.preferences.getBoolean(app.it.fast4x.rimusic.utils.disableNavigationBackStackKey, false)
+                                    if (disableBackStack) {
+                                        navController.navigate(app.it.fast4x.rimusic.enums.NavRoutes.home.name) {
+                                            popUpTo(app.it.fast4x.rimusic.enums.NavRoutes.home.name) { inclusive = true }
+                                        }
+                                    } else {
+                                        navController.popBackStack()
+                                    }
+                                }
                             },
                         contentAlignment = Alignment.Center
                     ) {

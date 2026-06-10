@@ -571,6 +571,7 @@ fun UiSettings(
     var showFloatingIcon by rememberPreference(showFloatingIconKey, false)
     var menuStyle by rememberPreference(menuStyleKey, MenuStyle.List)
     var transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Fade)
+    var disableBackStack by rememberPreference(app.it.fast4x.rimusic.utils.disableNavigationBackStackKey, false)
 
     var showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
     var showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
@@ -1247,6 +1248,16 @@ fun UiSettings(
                             valueText = { it.text },
                             values = TransitionEffect.values().toList(),
                             onDismiss = { showTransDialog = false }
+                        )
+                    }
+
+                    if (search.inputValue.isBlank() || stringResource(R.string.disable_navigation_back_stack).contains(search.inputValue,true)) {
+                        OtherSwitchSettingEntry(
+                            title = stringResource(R.string.disable_navigation_back_stack),
+                            text = stringResource(R.string.disable_navigation_back_stack_description),
+                            icon = R.drawable.chevron_back,
+                            isChecked = disableBackStack,
+                            onCheckedChange = { disableBackStack = it }
                         )
                     }
 

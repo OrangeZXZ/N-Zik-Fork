@@ -27,3 +27,4 @@ Refactor: Global AppHeader implemented to be static across the app, fixing trans
 Fixed: Top bar back button and title now animate smoothly with sliding and fading transitions.
 Fixed: Burger menu dropdown correctly anchors to the right side of the action bar.
 Fixed: Removed double bottom padding from the global Scaffold to restore the floating bar's correct position at the bottom of the screen.
+Added: Option to disable navigation backstack to return directly to the Home screen on back press.

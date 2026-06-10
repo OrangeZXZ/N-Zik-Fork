@@ -1182,4 +1182,6 @@
   <string name="crossfade_duration">Crossfade duration</string>
   <string name="crossfade_gapless">Gapless Crossfade</string>
   <string name="crossfade_gapless_description">Do not crossfade tracks from the same album</string>
+  <string name="disable_navigation_back_stack">Go back directly to home</string>
+  <string name="disable_navigation_back_stack_description">When enabled, pressing Back skips intermediate pages and returns directly to the home screen</string>
 </resources>
