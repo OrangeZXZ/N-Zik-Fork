@@ -7,6 +7,7 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +34,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.R
 import app.n_zik.android.thumbnailShape
 import app.n_zik.android.typography
@@ -54,6 +58,21 @@ fun NextVisualizer(
     val visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
     var blackBackgroundForVisThumbnail by rememberPreference(blackBackgroundForVisThumbnailKey, true)
+    
+    val binder = LocalPlayerServiceBinder.current
+    var isPlaying by remember(binder) { mutableStateOf(binder?.player?.isPlaying == true) }
+
+    DisposableEffect(binder) {
+        val listener = object : Player.Listener {
+            override fun onIsPlayingChanged(isPlayingChanged: Boolean) {
+                isPlaying = isPlayingChanged
+            }
+        }
+        binder?.player?.addListener(listener)
+        onDispose {
+            binder?.player?.removeListener(listener)
+        }
+    }
 
     if (visualizerEnabled) {
         val permission = Manifest.permission.RECORD_AUDIO
@@ -114,11 +133,17 @@ fun NextVisualizer(
                 exit = fadeOut(tween(500)),
                 modifier = Modifier.fillMaxSize()
             ) {
+                val backgroundColor by animateColorAsState(
+                    targetValue = if (!showvisthumbnail || !blackBackgroundForVisThumbnail || !isPlaying) Color.Transparent else Color.Black.copy(0.6f),
+                    animationSpec = tween(500),
+                    label = "VisualizerBackground"
+                )
+                
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(thumbnailShape())
-                        .background(if (!showvisthumbnail || !blackBackgroundForVisThumbnail) Color.Transparent else Color.Black.copy(0.6f))
+                        .background(backgroundColor)
                 ) {
                     app.n_zik.android.extensions.nextvisualizer.NextVisualizer()
                 }

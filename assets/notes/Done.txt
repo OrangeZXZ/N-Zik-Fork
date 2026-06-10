@@ -18,3 +18,4 @@ Added: Option to show/hide skip time buttons (rewind/forward) in player appearan
 Fixed: Translation feature in Playlist screen now works correctly.
 Fixed: Corrupted text strings (incorrect quotation marks) in translation popups on Artist, Album, and Playlist screens.
 Added: New flat wave visualizer option to NextVisualizer.
+Added: Visualizer background now smoothly fades out when music is paused.
