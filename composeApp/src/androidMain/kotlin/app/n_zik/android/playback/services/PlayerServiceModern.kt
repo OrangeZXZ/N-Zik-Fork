@@ -2120,6 +2120,15 @@ class PlayerServiceModern : MediaLibraryService(),
 
         val targetMediaId = player.currentMediaItem?.mediaId
 
+        val nextIndex = if (player.repeatMode == Player.REPEAT_MODE_ONE) {
+            player.currentMediaItemIndex
+        } else {
+            player.nextMediaItemIndex
+        }
+        val nextArtworkUri = if (nextIndex != C.INDEX_UNSET) {
+            player.getMediaItemAt(nextIndex).mediaMetadata.artworkUri?.toString()
+        } else null
+
         Timber.d("Crossfade: Scheduled preload in $delayUntilPreload ms, start in $delayMs ms")
 
         crossfadeTriggerJob =
@@ -2127,6 +2136,15 @@ class PlayerServiceModern : MediaLibraryService(),
                 delay(delayUntilPreload)
                 if (isActive && player.isPlaying && player.currentMediaItem?.mediaId == targetMediaId) {
                     preloadCrossfade(triggerTime)
+                    
+                    if (nextArtworkUri != null) {
+                        try {
+                            // Preload cover art to avoid UI lag on switch
+                            app.n_zik.android.core.coil.ImageCacheFactory.preloadImage(nextArtworkUri)
+                        } catch (e: Exception) {
+                            Timber.e(e, "Crossfade: Failed to preload cover art")
+                        }
+                    }
                     
                     val remainingDelay = triggerTime - player.currentPosition
                     if (remainingDelay > 0) {
