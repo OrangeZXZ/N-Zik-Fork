@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Venstre</string>
   <string name="game_direction_right">Høyre</string>
   <string name="snake_title">Slange spill</string>
+  <string name="pacman_close">Lukk</string>
+  <string name="snake_score">Poeng: %1$s</string>
+  <string name="snake_new_game">Nytt parti</string>
+  <string name="snake_reset">Tilbakestill</string>
+  <string name="snake_start">Begynn</string>
+  <string name="snake_pause">pause</string>
+  <string name="snake_resume">Fortsett</string>
+  <string name="snake_game_over">Spillet er slutt</string>
+  <string name="snake_retry">Prøv igjen</string>
+  <string name="snake_exit">Avslutt</string>
+  <string name="skip_time_buttons">Hopp over tidsknapper</string>
 </resources>

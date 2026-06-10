@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Stânga</string>
   <string name="game_direction_right">Dreapta</string>
   <string name="snake_title">Joc de șarpe</string>
+  <string name="pacman_close">Inchide</string>
+  <string name="snake_score">Scor: %1$s</string>
+  <string name="snake_new_game">Partidă nouă</string>
+  <string name="snake_reset">Resetează</string>
+  <string name="snake_start">Pornire</string>
+  <string name="snake_pause">Întrerupeți</string>
+  <string name="snake_resume">Reluare</string>
+  <string name="snake_game_over">Partida s-a terminat</string>
+  <string name="snake_retry">Reîncercați</string>
+  <string name="snake_exit">Ieșire</string>
+  <string name="skip_time_buttons">Omitere butoane timp</string>
 </resources>

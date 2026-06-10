@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Links</string>
   <string name="game_direction_right">Rechts</string>
   <string name="snake_title">Schlangenspiel</string>
+  <string name="pacman_close">Schließen</string>
+  <string name="snake_score">Punkte: %1$s</string>
+  <string name="snake_new_game">Neues Spiel</string>
+  <string name="snake_reset">Zurücksetzen</string>
+  <string name="snake_start">Start</string>
+  <string name="snake_pause">Pause</string>
+  <string name="snake_resume">Fortsetzen</string>
+  <string name="snake_game_over">Spiel vorbei</string>
+  <string name="snake_retry">Wiederholen</string>
+  <string name="snake_exit">Beenden</string>
+  <string name="skip_time_buttons">Zeittasten überspringen</string>
 </resources>

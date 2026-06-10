@@ -1167,4 +1167,15 @@ Volume BAS : titre précédent</string>
   <string name="game_direction_left">À gauche</string>
   <string name="game_direction_right">À droite</string>
   <string name="snake_title">Jeu serpent</string>
+  <string name="pacman_close">Fermer</string>
+  <string name="snake_score">Score : %1$s</string>
+  <string name="snake_new_game">Nouveau jeu</string>
+  <string name="snake_reset">Réinitialiser</string>
+  <string name="snake_start">Début</string>
+  <string name="snake_pause">Mettre en pause</string>
+  <string name="snake_resume">Reprendre</string>
+  <string name="snake_game_over">Fin de partie</string>
+  <string name="snake_retry">Réessayer</string>
+  <string name="snake_exit">Quitter</string>
+  <string name="skip_time_buttons">Ignorer les boutons de temps</string>
 </resources>

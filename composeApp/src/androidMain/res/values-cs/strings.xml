@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Vlevo</string>
   <string name="game_direction_right">Vpravo</string>
   <string name="snake_title">Hráč</string>
+  <string name="pacman_close">Zavřít</string>
+  <string name="snake_score">Skóre: %1$s</string>
+  <string name="snake_new_game">Nová hra</string>
+  <string name="snake_reset">Obnovit</string>
+  <string name="snake_start">Začít</string>
+  <string name="snake_pause">Pozastavit</string>
+  <string name="snake_resume">Pokračovat</string>
+  <string name="snake_game_over">Konec hry</string>
+  <string name="snake_retry">Opakovat</string>
+  <string name="snake_exit">Ukončit</string>
+  <string name="skip_time_buttons">Přeskočit tlačítka času</string>
 </resources>
