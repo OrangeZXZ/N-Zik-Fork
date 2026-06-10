@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">왼쪽</string>
   <string name="game_direction_right">오른쪽</string>
   <string name="snake_title">Snake Game</string>
+  <string name="pacman_close">Close</string>
+  <string name="snake_score">Score: %1$s</string>
+  <string name="snake_new_game">New Game</string>
+  <string name="snake_reset">초기화</string>
+  <string name="snake_start">Start</string>
+  <string name="snake_pause">Pause</string>
+  <string name="snake_resume">Resume</string>
+  <string name="snake_game_over">Game Over</string>
+  <string name="snake_retry">Retry</string>
+  <string name="snake_exit">Exit</string>
+  <string name="skip_time_buttons">Skip time buttons</string>
 </resources>
