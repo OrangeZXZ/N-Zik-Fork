@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.playlist
+package app.it.fast4x.rimusic.ui.screens.playlist
 
 import androidx.compose.ui.draw.clip
 
@@ -898,7 +898,7 @@ fun PlaylistSongList(
                                     .text else colorPalette()
                                     .textDisabled,
                                 enabled = true,
-                                onClick = {},
+                                onClick = { translateEnabled = !translateEnabled },
                                 modifier = Modifier
                                     .padding(all = 8.dp)
                                     .size(18.dp)
@@ -912,7 +912,7 @@ fun PlaylistSongList(
                                     )
                             )
                             BasicText(
-                                text = "â€œ",
+                                text = "“",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = (-8).dp)
@@ -958,7 +958,7 @@ fun PlaylistSongList(
                             )
 
                             BasicText(
-                                text = "â€ž",
+                                text = "”",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = 4.dp)

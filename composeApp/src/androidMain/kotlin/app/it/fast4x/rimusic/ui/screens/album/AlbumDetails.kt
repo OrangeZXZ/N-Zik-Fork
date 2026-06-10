@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.album
+package app.it.fast4x.rimusic.ui.screens.album
 
 import androidx.compose.ui.draw.clip
 
@@ -500,7 +500,7 @@ fun AlbumDetails(
                             translate.ToolBarButton()
 
                             BasicText(
-                                text = "â€œ",
+                                text = "“",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = (-8).dp)
@@ -545,7 +545,7 @@ fun AlbumDetails(
                             )
 
                             BasicText(
-                                text = "â€ž",
+                                text = "”",
                                 style = typography().xxl.semiBold,
                                 modifier = Modifier
                                     .offset(y = 4.dp)

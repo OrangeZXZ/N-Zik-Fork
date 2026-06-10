@@ -1,4 +1,4 @@
-﻿package app.kreate.android.screens.artist
+package app.kreate.android.screens.artist
 
 import androidx.compose.ui.draw.clip
 
@@ -569,7 +569,7 @@ fun ArtistDetails(
                         translate.ToolBarButton()
 
                         BasicText(
-                            text = "\u25C0",
+                            text = "“",
                             style = typography().xxl.semiBold,
                             modifier = Modifier.offset( y = (-8).dp )
                                                .align( Alignment.Top )
@@ -612,7 +612,7 @@ fun ArtistDetails(
                         )
 
                         BasicText(
-                            text = "\u25C0",
+                            text = "”",
                             style = typography().xxl.semiBold,
                             modifier = Modifier.offset( y = 4.dp )
                                                .align( Alignment.Bottom )
