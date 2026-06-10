@@ -2161,11 +2161,32 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     private fun isNextItemGapless(): Boolean {
-        val current = player.currentMediaItem?.mediaMetadata ?: return false
+        val current = player.currentMediaItem ?: return false
         val nextIndex = player.nextMediaItemIndex
         if (nextIndex == C.INDEX_UNSET) return false
-        val next = player.getMediaItemAt(nextIndex).mediaMetadata
-        return !current.albumTitle.isNullOrBlank() && current.albumTitle == next.albumTitle
+        val next = player.getMediaItemAt(nextIndex)
+
+        val currentMeta = current.mediaMetadata
+        val nextMeta = next.mediaMetadata
+
+        // 1. Check explicitly set albumId in extras
+        val currentAlbumId = currentMeta.extras?.getString("albumId")
+        val nextAlbumId = nextMeta.extras?.getString("albumId")
+        if (!currentAlbumId.isNullOrBlank() && currentAlbumId == nextAlbumId) return true
+
+        // 2. Check explicitly set albumTitle
+        val currentAlbumTitle = currentMeta.albumTitle?.toString()
+        val nextAlbumTitle = nextMeta.albumTitle?.toString()
+        if (!currentAlbumTitle.isNullOrBlank() && currentAlbumTitle == nextAlbumTitle) return true
+
+        // 3. Fallback: YouTube Music albums often lack album metadata but share the exact same artwork URL
+        val currentArtwork = currentMeta.artworkUri?.toString()
+        val nextArtwork = nextMeta.artworkUri?.toString()
+        if (!currentArtwork.isNullOrBlank() && !currentArtwork.startsWith("android.resource") && currentArtwork == nextArtwork) {
+            return true
+        }
+
+        return false
     }
 
     private fun createCrossfadeExoPlayer(): ExoPlayer {
