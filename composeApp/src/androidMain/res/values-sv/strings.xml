@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Vänster</string>
   <string name="game_direction_right">Höger</string>
   <string name="snake_title">Orm Spel</string>
+  <string name="pacman_close">Stäng</string>
+  <string name="snake_score">Poäng: %1$s</string>
+  <string name="snake_new_game">Nytt spel</string>
+  <string name="snake_reset">Återställ</string>
+  <string name="snake_start">Starta</string>
+  <string name="snake_pause">Pausa</string>
+  <string name="snake_resume">Fortsätt</string>
+  <string name="snake_game_over">Partiet är över</string>
+  <string name="snake_retry">Försök igen</string>
+  <string name="snake_exit">Avsluta</string>
+  <string name="skip_time_buttons">Hoppa över tidsknappar</string>
 </resources>
