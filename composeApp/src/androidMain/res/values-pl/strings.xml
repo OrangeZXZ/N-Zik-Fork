@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Lewo</string>
   <string name="game_direction_right">Prawo</string>
   <string name="snake_title">Gra Snake</string>
+  <string name="pacman_close">Zamknij</string>
+  <string name="snake_score">Wynik: %1$s</string>
+  <string name="snake_new_game">Nowa gra</string>
+  <string name="snake_reset">Reset</string>
+  <string name="snake_start">Rozpocznij</string>
+  <string name="snake_pause">Wstrzymaj</string>
+  <string name="snake_resume">Wznów</string>
+  <string name="snake_game_over">Koniec gry</string>
+  <string name="snake_retry">Ponów próbę</string>
+  <string name="snake_exit">Wyjście</string>
+  <string name="skip_time_buttons">Pomiń przyciski czasu</string>
 </resources>

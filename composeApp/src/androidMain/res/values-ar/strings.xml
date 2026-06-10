@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Left</string>
   <string name="game_direction_right">Right</string>
   <string name="snake_title">لعبة الثعبان</string>
+  <string name="pacman_close">أغلق</string>
+  <string name="snake_score">النتيجة: %1$s</string>
+  <string name="snake_new_game">لعبة جديدة</string>
+  <string name="snake_reset">Reset</string>
+  <string name="snake_start">ابدأ</string>
+  <string name="snake_pause">إيقاف</string>
+  <string name="snake_resume">استئناف</string>
+  <string name="snake_game_over">انتهت المباراة</string>
+  <string name="snake_retry">إعادة المحاولة</string>
+  <string name="snake_exit">الخروج</string>
+  <string name="skip_time_buttons">تخطي الأزرار الزمنية</string>
 </resources>

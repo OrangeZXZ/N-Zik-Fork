@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Esquerda</string>
   <string name="game_direction_right">Direita</string>
   <string name="snake_title">Jogo de serpentes</string>
+  <string name="pacman_close">FECHAR</string>
+  <string name="snake_score">Pontuação: %1$s</string>
+  <string name="snake_new_game">Novo jogo</string>
+  <string name="snake_reset">Reiniciar</string>
+  <string name="snake_start">Iniciar</string>
+  <string name="snake_pause">Suspender</string>
+  <string name="snake_resume">Retomar</string>
+  <string name="snake_game_over">Fim de Jogo</string>
+  <string name="snake_retry">Repetir</string>
+  <string name="snake_exit">Sair</string>
+  <string name="skip_time_buttons">Ignorar botões de tempo</string>
 </resources>

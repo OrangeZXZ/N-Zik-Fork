@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Vasen</string>
   <string name="game_direction_right">Oikea</string>
   <string name="snake_title">Käärme Peli</string>
+  <string name="pacman_close">Sulje</string>
+  <string name="snake_score">Pisteet: %1$s</string>
+  <string name="snake_new_game">Uusi Peli</string>
+  <string name="snake_reset">Nollaa</string>
+  <string name="snake_start">Aloita</string>
+  <string name="snake_pause">Tauko</string>
+  <string name="snake_resume">Jatka</string>
+  <string name="snake_game_over">Peli Päällä</string>
+  <string name="snake_retry">Yritä Uudelleen</string>
+  <string name="snake_exit">Poistu</string>
+  <string name="skip_time_buttons">Ohita aikapainikkeet</string>
 </resources>

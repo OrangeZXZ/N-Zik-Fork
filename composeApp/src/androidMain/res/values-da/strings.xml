@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Venstre</string>
   <string name="game_direction_right">Højre</string>
   <string name="snake_title">Slange Spil</string>
+  <string name="pacman_close">Luk</string>
+  <string name="snake_score">Score: %1$s</string>
+  <string name="snake_new_game">Nyt Spil</string>
+  <string name="snake_reset">Nulstil</string>
+  <string name="snake_start">Start</string>
+  <string name="snake_pause">Pause</string>
+  <string name="snake_resume">Genoptag</string>
+  <string name="snake_game_over">Spil Slut</string>
+  <string name="snake_retry">Forsøg igen</string>
+  <string name="snake_exit">Afslut</string>
+  <string name="skip_time_buttons">Spring tidsknapper over</string>
 </resources>

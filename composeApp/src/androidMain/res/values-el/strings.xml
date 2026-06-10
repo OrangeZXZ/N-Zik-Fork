@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Left</string>
   <string name="game_direction_right">Right</string>
   <string name="snake_title">Παιχνίδι Φιδιού</string>
+  <string name="pacman_close">Κλείσιμο</string>
+  <string name="snake_score">Βαθμολογία: %1$s</string>
+  <string name="snake_new_game">Νέο Παιχνίδι</string>
+  <string name="snake_reset">Reset</string>
+  <string name="snake_start">Έναρξη</string>
+  <string name="snake_pause">Παύση</string>
+  <string name="snake_resume">Συνέχιση</string>
+  <string name="snake_game_over">Τέλος Παιχνιδιού</string>
+  <string name="snake_retry">Επανάληψη</string>
+  <string name="snake_exit">Έξοδος</string>
+  <string name="skip_time_buttons">Παράλειψη πλήκτρων χρόνου</string>
 </resources>

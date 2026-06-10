@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Ліворуч</string>
   <string name="game_direction_right">Праворуч</string>
   <string name="snake_title">Чарівна змії</string>
+  <string name="pacman_close">Закрити</string>
+  <string name="snake_score">Score: %1$s</string>
+  <string name="snake_new_game">Нова гра</string>
+  <string name="snake_reset">Скинути</string>
+  <string name="snake_start">Старт</string>
+  <string name="snake_pause">Пауза</string>
+  <string name="snake_resume">Поновити</string>
+  <string name="snake_game_over">Гру завершено</string>
+  <string name="snake_retry">Повторити спробу</string>
+  <string name="snake_exit">Вийти</string>
+  <string name="skip_time_buttons">Пропустити кнопки часу</string>
 </resources>
