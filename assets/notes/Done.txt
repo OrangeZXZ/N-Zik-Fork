@@ -22,3 +22,4 @@ Added: Visualizer background now smoothly fades out when music is paused.
 Added: Option to hide the android status bar globally across the app.
 Added: Audio crossfade feature between songs (disabled by default in settings).
 Removed: Old and unused visualizers
+Fixed: Thumbnail crossfade visual glitch where previous track artwork incorrectly loaded the new track's artwork.

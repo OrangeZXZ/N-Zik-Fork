@@ -138,9 +138,7 @@ fun Thumbnail(
     val explicterror = stringResource(R.string.parental_control_is_enabled)
     val formatUnsupported = stringResource(R.string.error_file_unsupported_format)
 
-    var artImageAvailable by remember {
-        mutableStateOf(true)
-    }
+
 
     val clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
@@ -167,23 +165,7 @@ fun Thumbnail(
 
     val window = nullableWindow ?: return
 
-    val coverPainter = ImageCacheFactory.Painter(
-        thumbnailUrl = window.mediaItem.mediaMetadata.artworkUri.toString(),
-        onError = { 
-            artImageAvailable = false 
-            // Retry loading after a short delay
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(1000) // Wait 1 second
-                if (!artImageAvailable) {
-                    // Try to preload the image
-                    ImageCacheFactory.preloadImage(window.mediaItem.mediaMetadata.artworkUri.toString())
-                }
-            }
-        },
-        onSuccess = { 
-            artImageAvailable = true 
-        }
-    )
+
 
     val showCoverThumbnailAnimation by rememberPreference(showCoverThumbnailAnimationKey, false)
     var coverThumbnailAnimation by rememberPreference(coverThumbnailAnimationKey, ThumbnailCoverType.Vinyl)
@@ -221,6 +203,28 @@ fun Thumbnail(
         },
         contentAlignment = Alignment.Center, label = ""
     ) { currentWindow ->
+
+        var artImageAvailable by remember {
+            mutableStateOf(true)
+        }
+
+        val coverPainter = ImageCacheFactory.Painter(
+            thumbnailUrl = currentWindow.mediaItem.mediaMetadata.artworkUri.toString(),
+            onError = { 
+                artImageAvailable = false 
+                // Retry loading after a short delay
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(1000) // Wait 1 second
+                    if (!artImageAvailable) {
+                        // Try to preload the image
+                        ImageCacheFactory.preloadImage(currentWindow.mediaItem.mediaMetadata.artworkUri.toString())
+                    }
+                }
+            },
+            onSuccess = { 
+                artImageAvailable = true 
+            }
+        )
 
         val thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
 
