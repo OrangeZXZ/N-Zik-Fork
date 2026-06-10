@@ -268,7 +268,7 @@ fun Player(
     val disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
     val showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     val effectRotationEnabled by rememberPreference(effectRotationKey, false)
-    val thumbnailSizeDp by rememberPreference( app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 85f )
+    val thumbnailSizeDp by rememberPreference( app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 90f )
     val thumbnailSizeLDp by rememberPreference( app.it.fast4x.rimusic.utils.thumbnailSizeLDpKey, 30f )
     val showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
     var thumbnailSpacing  by rememberPreference( thumbnailSpacingKey, 0f )

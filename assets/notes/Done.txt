@@ -8,3 +8,8 @@ Fixed: Line thickness setting correctly activates for visualizers containing the
 Changed: Default thumbnail roundness changed to 20 to match the user preference default.
 Improved: Visualizer controls are now conditionally compressed to stay within the circle when the cover is set to be fully rounded (CircleShape).
 Improved: The lyrics menu icon was changed to a settings gear for better consistency.
+
+Added: Custom colors and icons for 'Refactor' and 'Other' sections in the Changelog.
+Improved: Snake game completely rebuilt with Canvas for smoother performance and better scaling.
+Fixed: Pacman game layout and scaling issues completely resolved.
+Refactor: Games have been properly consolidated in the 'games' directory with strings moved to resources.

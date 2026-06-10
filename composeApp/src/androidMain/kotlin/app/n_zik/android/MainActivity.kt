@@ -529,7 +529,7 @@ class MainActivity :
                     val colorPaletteName =
                         getEnum(colorPaletteNameKey, ColorPaletteName.Dynamic)
                     val colorPaletteMode = getEnum(colorPaletteModeKey, ColorPaletteMode.Dark)
-                    val thumbnailRoundnessDp = getFloat(thumbnailRoundnessDpKey, 20f)
+                    val thumbnailRoundnessDp = getFloat(thumbnailRoundnessDpKey, 12f)
                     val uiRoundnessDp = getFloat("uiRoundnessDpKey", 25f)
                     val useSystemFont = getBoolean(useSystemFontKey, false)
                     val applyFontPadding = getBoolean(applyFontPaddingKey, false)
@@ -849,7 +849,7 @@ class MainActivity :
 
                             app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey -> {
                                 val thumbnailRoundnessDp =
-                                    sharedPreferences.getFloat(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 20f)
+                                    sharedPreferences.getFloat(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 12f)
 
                                 appearance = appearance.copy(
                                     thumbnailShape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))

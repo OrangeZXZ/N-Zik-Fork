@@ -23,7 +23,7 @@ import androidx.navigation.NavController
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
-import app.it.fast4x.rimusic.extensions.games.pacman.Pacman
+import app.n_zik.android.extensions.games.pacman.Pacman
 import app.it.fast4x.rimusic.ui.components.themed.Button
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 
@@ -75,7 +75,7 @@ class AppHeader(
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
         val context = LocalContext.current
 
-        if (showGames) Pacman()
+        if (showGames) Pacman(navController)
 
         TopAppBar(
             title = { AppTitle( navController, context ) },
@@ -86,7 +86,3 @@ class AppHeader(
         )
     }
 }
-
-
-
-

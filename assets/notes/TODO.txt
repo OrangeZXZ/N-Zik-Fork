@@ -3,7 +3,6 @@ if i click on back button accros the app somes menu lost transition ??
 Add artist video category under artist page, only video works not live performance
 Remove old fast4x innertube api and Kreate innertube api
 Update YTB sync to use new innertube api also update eevery sync like album artists songs ect...
-Fix easter eggs
 Add back dislike button in player, android auto and notification still support it
 Update HomeAlbum page for sync
 Optimized transition between section in home songs

@@ -223,8 +223,8 @@ fun DefaultAppearanceSettings() {
     visualizerCustomColor = android.graphics.Color.WHITE
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
     playerTimelineType = PlayerTimelineType.Wavy
-    var thumbnailSizeDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 85f)
-    thumbnailSizeDp = 100f
+    var thumbnailSizeDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 90f)
+    thumbnailSizeDp = 90f
     var playerTimelineSize by rememberPreference(
         playerTimelineSizeKey,
         PlayerTimelineSize.Biggest
@@ -281,9 +281,9 @@ fun DefaultAppearanceSettings() {
     clickLyricsText = true
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
     showBackgroundLyrics = false
-    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 20f)
+    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 12f)
     var uiRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.uiRoundnessDpKey, 25f)
-    thumbnailRoundnessDp = 20f
+    thumbnailRoundnessDp = 12f
     var miniPlayerType by rememberPreference(
         miniPlayerTypeKey,
         MiniPlayerType.Essential
@@ -417,7 +417,7 @@ fun AppearanceSettings(
     )
 
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
-    var thumbnailSizeDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 85f)
+    var thumbnailSizeDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 90f)
     var thumbnailSizeLDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeLDpKey, 0f)
     var playerTimelineSize by rememberPreference(
         playerTimelineSizeKey,
@@ -465,7 +465,7 @@ fun AppearanceSettings(
 
     val search = Search()
 
-    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 20f)
+    var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 12f)
     var uiRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.uiRoundnessDpKey, 25f)
 
     var miniPlayerType by rememberPreference(

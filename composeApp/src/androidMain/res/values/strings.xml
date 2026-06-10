@@ -1165,4 +1165,14 @@
   <string name="game_direction_left">Left</string>
   <string name="game_direction_right">Right</string>
   <string name="snake_title">Snake Game</string>
+  <string name="pacman_close">Close</string>
+  <string name="snake_score">Score: %1$s</string>
+  <string name="snake_new_game">New Game</string>
+  <string name="snake_reset">Reset</string>
+  <string name="snake_start">Start</string>
+  <string name="snake_pause">Pause</string>
+  <string name="snake_resume">Resume</string>
+  <string name="snake_game_over">Game Over</string>
+  <string name="snake_retry">Retry</string>
+  <string name="snake_exit">Exit</string>
 </resources>

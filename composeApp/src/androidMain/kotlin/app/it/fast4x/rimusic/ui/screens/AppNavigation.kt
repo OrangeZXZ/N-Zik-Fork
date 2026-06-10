@@ -47,8 +47,8 @@ import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.StatisticsType
 import app.it.fast4x.rimusic.enums.TransitionEffect
-import app.it.fast4x.rimusic.extensions.games.pacman.Pacman
-import app.it.fast4x.rimusic.extensions.games.snake.SnakeGame
+import app.n_zik.android.extensions.games.pacman.Pacman
+import app.n_zik.android.extensions.games.snake.SnakeGame
 import app.it.fast4x.rimusic.models.Mood
 import app.it.fast4x.rimusic.models.SearchQuery
 import app.it.fast4x.rimusic.ui.components.CustomModalBottomSheet
@@ -164,17 +164,11 @@ fun AppNavigation(
         }
 
         composable(route = NavRoutes.gamePacman.name) {
-            modalBottomSheetPage {
-                Pacman()
-            }
-
+            Pacman(navController = navController)
         }
 
         composable(route = NavRoutes.gameSnake.name) {
-            modalBottomSheetPage {
-                SnakeGame()
-            }
-
+            SnakeGame(navController = navController)
         }
 
         composable(route = NavRoutes.queue.name) {
@@ -442,6 +436,8 @@ fun AppNavigation(
         }
     }
 }
+
+
 
 
 
