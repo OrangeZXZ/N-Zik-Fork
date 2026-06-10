@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.settings
+package app.it.fast4x.rimusic.ui.screens.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Spacer
@@ -181,6 +181,7 @@ import app.it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
 
 
+import app.it.fast4x.rimusic.utils.hideStatusBarKey
 import app.it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import app.it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import app.it.fast4x.rimusic.utils.showPinnedPlaylistsKey
@@ -231,6 +232,9 @@ fun DefaultUiSettings() {
         false
     )
     resumePlaybackWhenDeviceConnected = false
+
+    var hideStatusBar by rememberPreference(hideStatusBarKey, false)
+    hideStatusBar = false
 
     var skipSilence by rememberPreference(skipSilenceKey, false)
     skipSilence = false
@@ -529,6 +533,7 @@ fun UiSettings(
     var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
 
     var disableIconButtonOnTop by rememberPreference(disableIconButtonOnTopKey, false)
+    var hideStatusBar by rememberPreference(hideStatusBarKey, false)
     var lastPlayerTimelineType by rememberPreference(lastPlayerTimelineTypeKey, PlayerTimelineType.Default)
     var lastThumbnailSizeDp by rememberPreference(lastThumbnailSizeDpKey, 30f)
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
@@ -1370,6 +1375,16 @@ fun UiSettings(
                             isChecked = applyFontPadding,
                             onCheckedChange = { applyFontPadding = it },
                             icon = R.drawable.resize
+                        )
+                    }
+
+                    if (search.inputValue.isBlank() || stringResource(R.string.hide_status_bar).contains(search.inputValue,true)) {
+                        OtherSwitchSettingEntry(
+                            title = stringResource(R.string.hide_status_bar),
+                            text = "",
+                            isChecked = hideStatusBar,
+                            onCheckedChange = { hideStatusBar = it },
+                            icon = R.drawable.eye_off
                         )
                     }
                 }

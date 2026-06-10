@@ -19,3 +19,4 @@ Fixed: Translation feature in Playlist screen now works correctly.
 Fixed: Corrupted text strings (incorrect quotation marks) in translation popups on Artist, Album, and Playlist screens.
 Added: New flat wave visualizer option to NextVisualizer.
 Added: Visualizer background now smoothly fades out when music is paused.
+Added: Option to hide the android status bar globally across the app.

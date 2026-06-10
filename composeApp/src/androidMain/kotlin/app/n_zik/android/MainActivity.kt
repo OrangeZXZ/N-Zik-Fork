@@ -43,9 +43,11 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.material3.RippleConfiguration
@@ -209,6 +211,7 @@ import app.it.fast4x.rimusic.utils.proxyModeKey
 import app.it.fast4x.rimusic.utils.proxyPortKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.restartActivityKey
+import app.it.fast4x.rimusic.utils.hideStatusBarKey
 import app.it.fast4x.rimusic.utils.setDefaultPalette
 import app.it.fast4x.rimusic.utils.shakeEventEnabledKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerVideoKey
@@ -729,6 +732,7 @@ class MainActivity :
                             transitionEffectKey,
                             playerBackgroundColorsKey,
                             miniPlayerTypeKey,
+                            hideStatusBarKey,
                             restartActivityKey
                                 -> {
                                 this@MainActivity.recreate()
@@ -942,8 +946,9 @@ class MainActivity :
             // Using appearance directly, Pitch Black is managed in setDynamicPalette
             val finalAppearance = appearance
 
-
-
+            SideEffect {
+                setSystemBarAppearance(finalAppearance.colorPalette.isDark)
+            }
 
             BoxWithConstraints(
                 modifier = Modifier
@@ -953,7 +958,7 @@ class MainActivity :
 
 
                 val density = LocalDensity.current
-                val windowsInsets = WindowInsets.systemBars
+                val windowsInsets = WindowInsets.systemBars.union(WindowInsets.displayCutout)
                 val bottomDp = with(density) { windowsInsets.getBottom(density).toDp() }
 
                 val playerSheetState = rememberPlayerSheetState(
@@ -1357,9 +1362,16 @@ class MainActivity :
     }
 
     private fun setSystemBarAppearance(isDark: Boolean) {
-        with(WindowCompat.getInsetsController(window, window.decorView.rootView)) {
+        val hideStatusBar = preferences.getBoolean(hideStatusBarKey, false)
+        with(WindowCompat.getInsetsController(window, window.decorView)) {
             isAppearanceLightStatusBars = !isDark
             isAppearanceLightNavigationBars = !isDark
+            if (hideStatusBar) {
+                systemBarsBehavior = androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                hide(androidx.core.view.WindowInsetsCompat.Type.statusBars())
+            } else {
+                show(androidx.core.view.WindowInsetsCompat.Type.statusBars())
+            }
         }
 
         if (!isAtLeastAndroid6) {

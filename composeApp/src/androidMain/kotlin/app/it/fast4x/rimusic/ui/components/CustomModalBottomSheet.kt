@@ -77,7 +77,8 @@ fun CustomModalBottomSheet(
                 val view = LocalView.current
                 val colorPalette = colorPalette()
                 (view.parent as? androidx.compose.ui.window.DialogWindowProvider)?.window?.let { window ->
-                    androidx.compose.runtime.DisposableEffect(window, containerColor, colorPalette) {
+                    val hideStatusBar by rememberPreference(app.it.fast4x.rimusic.utils.hideStatusBarKey, false)
+                    androidx.compose.runtime.DisposableEffect(window, containerColor, colorPalette, hideStatusBar) {
                         val luminance = androidx.core.graphics.ColorUtils.calculateLuminance(containerColor.toArgb())
                         val isLightBackground = luminance > 0.5 
 
@@ -90,6 +91,13 @@ fun CustomModalBottomSheet(
                             val insetsController = WindowCompat.getInsetsController(window, view)
                             insetsController.isAppearanceLightNavigationBars = isLightBackground
                             insetsController.isAppearanceLightStatusBars = isLightBackground
+                            
+                            if (hideStatusBar) {
+                                insetsController.systemBarsBehavior = androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                                insetsController.hide(androidx.core.view.WindowInsetsCompat.Type.statusBars())
+                            } else {
+                                insetsController.show(androidx.core.view.WindowInsetsCompat.Type.statusBars())
+                            }
                         }
 
                         if (view.isAttachedToWindow) {

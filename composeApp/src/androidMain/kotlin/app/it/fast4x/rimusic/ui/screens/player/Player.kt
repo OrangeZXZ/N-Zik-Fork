@@ -41,6 +41,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -50,6 +51,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
@@ -192,6 +194,7 @@ import app.it.fast4x.rimusic.utils.discoverKey
 import app.it.fast4x.rimusic.utils.doubleShadowDrop
 import app.it.fast4x.rimusic.utils.durationTextToMillis
 import app.it.fast4x.rimusic.utils.effectRotationKey
+import app.it.fast4x.rimusic.utils.expandedplayertoggleKey
 import app.it.fast4x.rimusic.utils.expandedplayerKey
 import app.it.fast4x.rimusic.utils.extraspaceKey
 import app.it.fast4x.rimusic.utils.fadingedgeKey
@@ -508,7 +511,7 @@ fun Player(
         }
     }
 
-    val windowInsets = WindowInsets.systemBars
+    val windowInsets = WindowInsets.systemBars.union(WindowInsets.displayCutout)
 
     var updateBrush by remember { mutableStateOf(false) }
 

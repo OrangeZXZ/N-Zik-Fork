@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.player
+package app.it.fast4x.rimusic.ui.screens.player
 
 import androidx.compose.ui.draw.clip
 
@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -130,7 +132,7 @@ fun Queue(
 ) {
     // Essentials
     val context = LocalContext.current
-    val windowInsets = WindowInsets.systemBars
+    val windowInsets = WindowInsets.systemBars.union(WindowInsets.displayCutout)
     val binder = LocalPlayerServiceBinder.current
     val player = binder?.player ?: return
     val coroutineScope = rememberCoroutineScope()
