@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Izquierda</string>
   <string name="game_direction_right">Derecha</string>
   <string name="snake_title">Serpiente</string>
+  <string name="pacman_close">Cerrar</string>
+  <string name="snake_score">Puntuación: %1$s</string>
+  <string name="snake_new_game">Nuevo Juego</string>
+  <string name="snake_reset">Restablecer</string>
+  <string name="snake_start">Comenzar</string>
+  <string name="snake_pause">Pausa</string>
+  <string name="snake_resume">Reanudar</string>
+  <string name="snake_game_over">Fin del Juego</string>
+  <string name="snake_retry">Reintentar</string>
+  <string name="snake_exit">Salir</string>
+  <string name="skip_time_buttons">Omitir botones de tiempo</string>
 </resources>
