@@ -2165,7 +2165,7 @@ class PlayerServiceModern : MediaLibraryService(),
         val nextIndex = player.nextMediaItemIndex
         if (nextIndex == C.INDEX_UNSET) return false
         val next = player.getMediaItemAt(nextIndex).mediaMetadata
-        return current.albumTitle != null && current.albumTitle == next.albumTitle
+        return !current.albumTitle.isNullOrBlank() && current.albumTitle == next.albumTitle
     }
 
     private fun createCrossfadeExoPlayer(): ExoPlayer {
@@ -2240,37 +2240,48 @@ class PlayerServiceModern : MediaLibraryService(),
             player.addListener(crossfadeSyncListener)
         }
 
-        crossfadeJob =
-            coroutineScope.launch(kotlinx.coroutines.Dispatchers.Main) {
-                val duration = crossfadeDuration.toLong()
+        crossfadeJob = coroutineScope.launch(kotlinx.coroutines.Dispatchers.Main) {
+            try {
+                // Wait until the primary player has finished buffering the new song
+                // We use a timeout so it doesn't hang forever
+                val timeoutMs = 15000L
+                val startTime = System.currentTimeMillis()
+                while (player.playbackState != Player.STATE_READY && isActive) {
+                    if (System.currentTimeMillis() - startTime > timeoutMs) break
+                    delay(50)
+                }
+
+                // If cancelled while waiting
+                if (!isActive) return@launch
+
                 val steps = 20
-                val stepTime = duration / steps
+                val durationMs = crossfadeDuration.toLong()
+                val stepTime = durationMs / steps
 
-                try {
-                    for (i in 1..steps) {
-                        if (!isActive) break
-                        while (!player.playWhenReady && isActive) {
-                            delay(100)
-                        }
-
-                        val progress = i / steps.toFloat()
-                        val fadeIn = 1.0f - (1.0f - progress) * (1.0f - progress)
-                        val fadeOut = (1.0f - progress) * (1.0f - progress)
-
-                        try {
-                            player.volume = startVolume * fadeIn
-                            secPlayer.volume = startVolume * fadeOut
-                        } catch (e: Exception) {
-                            break
-                        }
-                        delay(stepTime)
+                for (i in 1..steps) {
+                    if (!isActive) break
+                    while (!player.playWhenReady && isActive) {
+                        delay(100)
                     }
 
-                    player.volume = startVolume
-                    secPlayer.volume = 0f
-                } catch (e: Exception) {
-                    Timber.e(e, "Error during crossfade")
-                } finally {
+                    val progress = i / steps.toFloat()
+                    val fadeIn = 1.0f - (1.0f - progress) * (1.0f - progress)
+                    val fadeOut = (1.0f - progress) * (1.0f - progress)
+
+                    try {
+                        player.volume = startVolume * fadeIn
+                        secPlayer.volume = startVolume * fadeOut
+                    } catch (e: Exception) {
+                        break
+                    }
+                    delay(stepTime)
+                }
+
+                player.volume = startVolume
+                secPlayer.volume = 0f
+            } catch (e: Exception) {
+                Timber.e(e, "Error during crossfade")
+            } finally {
                     cleanupCrossfade()
                 }
             }
