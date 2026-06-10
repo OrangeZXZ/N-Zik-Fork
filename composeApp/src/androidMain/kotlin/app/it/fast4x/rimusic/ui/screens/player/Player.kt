@@ -222,6 +222,11 @@ import app.it.fast4x.rimusic.utils.shouldBePlaying
 import app.it.fast4x.rimusic.utils.showButtonPlayerMenuKey
 import app.it.fast4x.rimusic.utils.showCoverThumbnailAnimationKey
 import app.it.fast4x.rimusic.utils.showTopActionsBarKey
+import app.it.fast4x.rimusic.utils.showalbumcoverKey
+import app.it.fast4x.rimusic.utils.showlyricsthumbnailKey
+import app.it.fast4x.rimusic.utils.showsongsKey
+import app.it.fast4x.rimusic.utils.playerSwipeSensitivityKey
+import app.n_zik.android.enums.PlayerSwipeSensitivity
 import app.it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import app.it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import app.it.fast4x.rimusic.utils.showthumbnailKey
@@ -351,6 +356,7 @@ fun Player(
     var isShowingLyrics by showLyricsState
 
     // User preferences (switch)
+    val playerSwipeSensitivity by rememberPreference(playerSwipeSensitivityKey, PlayerSwipeSensitivity.Medium)
    var shouldRememberVisualizerState by rememberPreference("showVisualizerStateKey", false)
    var shouldRememberLyricsState by rememberPreference("showLyricsStateKey", false)
 
@@ -737,19 +743,20 @@ fun Player(
                         detectHorizontalDragGestures(
                             onHorizontalDrag = { _, dragAmount ->
                                 try {
-                                    deltaX = dragAmount
+                                    deltaX += dragAmount
                                 } catch (e: IllegalStateException) {
                                     // View may have been detached during drag
                                 }
                             },
                             onDragStart = {
+                                deltaX = 0f
                             },
                             onDragEnd = {
                                 try {
                                     if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
-                                        if (deltaX > 5) {
+                                        if (deltaX > playerSwipeSensitivity.threshold) {
                                             binder.player.playPrevious()
-                                        } else if (deltaX < -5) {
+                                        } else if (deltaX < -playerSwipeSensitivity.threshold) {
                                             binder.player.playNext()
                                         }
                                     }
@@ -980,15 +987,16 @@ fun Player(
                     .pointerInput(Unit) {
                         detectHorizontalDragGestures(
                             onHorizontalDrag = { _, dragAmount ->
-                                deltaX = dragAmount
+                                deltaX += dragAmount
                             },
                             onDragStart = {
+                                deltaX = 0f
                             },
                             onDragEnd = {
                                 if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
-                                    if (deltaX > 5) {
+                                    if (deltaX > playerSwipeSensitivity.threshold) {
                                         binder.player.playPrevious()
-                                    } else if (deltaX < -5) {
+                                    } else if (deltaX < -playerSwipeSensitivity.threshold) {
                                         binder.player.playNext()
                                     }
 
@@ -1229,15 +1237,16 @@ fun Player(
                                 .pointerInput(Unit) {
                                     detectHorizontalDragGestures(
                                         onHorizontalDrag = { _, dragAmount ->
-                                            deltaX = dragAmount
+                                            deltaX += dragAmount
                                         },
                                         onDragStart = {
+                                            deltaX = 0f
                                         },
                                         onDragEnd = {
                                             if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
-                                                if (deltaX > 5) {
+                                                if (deltaX > playerSwipeSensitivity.threshold) {
                                                     binder.player.playPrevious()
-                                                } else if (deltaX < -5) {
+                                                } else if (deltaX < -playerSwipeSensitivity.threshold) {
                                                     binder.player.playNext()
                                                 }
 
@@ -1277,15 +1286,16 @@ fun Player(
                                     .pointerInput(Unit) {
                                         detectHorizontalDragGestures(
                                             onHorizontalDrag = { _, dragAmount ->
-                                                deltaX = dragAmount
+                                                deltaX += dragAmount
                                             },
                                             onDragStart = {
+                                                deltaX = 0f
                                             },
                                             onDragEnd = {
                                                 if (!disablePlayerHorizontalSwipe) {
-                                                    if (deltaX > 5) {
+                                                    if (deltaX > playerSwipeSensitivity.threshold) {
                                                         binder.player.playPrevious()
-                                                    } else if (deltaX < -5) {
+                                                    } else if (deltaX < -playerSwipeSensitivity.threshold) {
                                                         binder.player.playNext()
                                                     }
 
@@ -1459,15 +1469,16 @@ fun Player(
                                         .pointerInput(Unit) {
                                             detectHorizontalDragGestures(
                                                 onHorizontalDrag = { _, dragAmount ->
-                                                    deltaX = dragAmount
+                                                    deltaX += dragAmount
                                                 },
                                                 onDragStart = {
+                                                    deltaX = 0f
                                                 },
                                                 onDragEnd = {
                                                     if (!disablePlayerHorizontalSwipe && playerType == PlayerType.Essential) {
-                                                        if (deltaX > 5) {
+                                                        if (deltaX > playerSwipeSensitivity.threshold) {
                                                             binder.player.playPrevious()
-                                                        } else if (deltaX < -5) {
+                                                        } else if (deltaX < -playerSwipeSensitivity.threshold) {
                                                             binder.player.playNext()
                                                         }
 
@@ -2053,15 +2064,16 @@ fun Player(
                             .pointerInput(Unit) {
                                 detectHorizontalDragGestures(
                                     onHorizontalDrag = { _, dragAmount ->
-                                        deltaX = dragAmount
+                                        deltaX += dragAmount
                                     },
                                     onDragStart = {
+                                        deltaX = 0f
                                     },
                                     onDragEnd = {
                                         if (!disablePlayerHorizontalSwipe) {
-                                            if (deltaX > 5) {
+                                            if (deltaX > playerSwipeSensitivity.threshold) {
                                                 binder.player.playPrevious()
-                                            } else if (deltaX <-5){
+                                            } else if (deltaX < -playerSwipeSensitivity.threshold){
                                                 binder.player.playNext()
                                             }
 

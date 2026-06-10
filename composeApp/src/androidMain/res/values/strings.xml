@@ -1190,4 +1190,9 @@
 <string name="crossfade_gapless_description">Do not crossfade tracks from the same album</string>
 <string name="disable_navigation_back_stack">Go back directly to home</string>
 <string name="disable_navigation_back_stack_description">When enabled, pressing Back skips intermediate pages and returns directly to the home screen</string>
+<string name="player_swipe_sensitivity">Player Swipe Sensitivity</string>
+<string name="ps_low">Low</string>
+<string name="ps_medium">Medium</string>
+<string name="ps_high">High</string>
+<string name="ps_very_high">Very High</string>
 </resources>

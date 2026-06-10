@@ -87,6 +87,8 @@ import app.it.fast4x.rimusic.utils.colorPaletteNameKey
 import app.it.fast4x.rimusic.utils.controlsExpandedKey
 import app.it.fast4x.rimusic.utils.coverThumbnailAnimationKey
 import app.it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
+import app.it.fast4x.rimusic.utils.playerSwipeSensitivityKey
+import app.n_zik.android.enums.PlayerSwipeSensitivity
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey
 import app.it.fast4x.rimusic.utils.effectRotationKey
 import app.it.fast4x.rimusic.utils.enableWallpaperKey
@@ -392,6 +394,7 @@ fun AppearanceSettings(
         PlayerPlayButtonType.Rectangular
     )
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
+    var playerSwipeSensitivity by rememberPreference(playerSwipeSensitivityKey, PlayerSwipeSensitivity.Medium)
 
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
     var showLikeButtonBackgroundPlayer by rememberPreference(
@@ -1836,6 +1839,19 @@ fun AppearanceSettings(
                     onCheckedChange = { disablePlayerHorizontalSwipe = it }
                 )
             }
+
+        AnimatedVisibility(visible = !disablePlayerHorizontalSwipe) {
+            if (search.inputValue.isBlank() || stringResource(R.string.player_swipe_sensitivity).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.gesture,
+                    title = stringResource(R.string.player_swipe_sensitivity),
+                    selectedValue = playerSwipeSensitivity,
+                    onValueSelected = { playerSwipeSensitivity = it },
+                    valueText = { it.text },
+                    modifier = Modifier.padding(start = 25.dp)
+                )
+            }
+        }
 
         if (search.inputValue.isBlank() || stringResource(R.string.player_rotating_buttons).contains(
                 search.inputValue,

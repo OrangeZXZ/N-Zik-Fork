@@ -112,6 +112,8 @@ import app.it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import app.it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import app.it.fast4x.rimusic.utils.disableIconButtonOnTopKey
 import app.it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
+import app.it.fast4x.rimusic.utils.playerSwipeSensitivityKey
+import app.n_zik.android.enums.PlayerSwipeSensitivity
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey
 import app.it.fast4x.rimusic.utils.discoverKey
 import app.it.fast4x.rimusic.utils.effectRotationKey
@@ -255,6 +257,8 @@ fun DefaultUiSettings() {
     uiType = UiType.RiMusic
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
     disablePlayerHorizontalSwipe = false
+    var playerSwipeSensitivity by rememberPreference(playerSwipeSensitivityKey, PlayerSwipeSensitivity.Medium)
+    playerSwipeSensitivity = PlayerSwipeSensitivity.Medium
     var lastPlayerPlayButtonType by rememberPreference(lastPlayerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
     lastPlayerPlayButtonType = PlayerPlayButtonType.Rectangular
     var colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)

@@ -33,3 +33,5 @@ Added: Loudness sliders in the Playback parameters dialog (long-press play) sync
 Added: Option to change player controls color based on album cover or theme (#436).
 Fixed: Real-time UI updates for Player control colors without requiring app restart.
 Changed: Default startup song from Måneskin's Beggin to The Weeknd's Blinding Lights.
+Fixed: Translation language names encoding in strings.xml.
+Fixed: Player horizontal swipe gesture sensitivity. Added a new UI setting to adjust the swipe threshold (Low, Medium, High, Very High).
