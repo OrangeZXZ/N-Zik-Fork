@@ -1165,4 +1165,15 @@
   <string name="game_direction_left">Слева</string>
   <string name="game_direction_right">Справа</string>
   <string name="snake_title">Игра с змеями</string>
+  <string name="pacman_close">Закрыть</string>
+  <string name="snake_score">Счёт: %1$s</string>
+  <string name="snake_new_game">Новая игра</string>
+  <string name="snake_reset">Сбросить</string>
+  <string name="snake_start">Начать</string>
+  <string name="snake_pause">Пауза</string>
+  <string name="snake_resume">Возобновить</string>
+  <string name="snake_game_over">Игра окончена</string>
+  <string name="snake_retry">Повторить</string>
+  <string name="snake_exit">Выход</string>
+  <string name="skip_time_buttons">Пропустить кнопки времени</string>
 </resources>
