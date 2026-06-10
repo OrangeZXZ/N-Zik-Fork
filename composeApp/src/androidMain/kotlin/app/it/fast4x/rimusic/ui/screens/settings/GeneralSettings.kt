@@ -174,6 +174,9 @@ fun GeneralSettings(
     var navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconOnly)
     var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
     var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
+    var crossfadeEnabled by rememberPreference(app.it.fast4x.rimusic.utils.crossfadeEnabledKey, false)
+    var crossfadeDuration by rememberPreference(app.it.fast4x.rimusic.utils.crossfadeDurationKey, 3000)
+    var crossfadeGapless by rememberPreference(app.it.fast4x.rimusic.utils.crossfadeGaplessKey, false)
 
     val search = Search()
 
@@ -546,6 +549,47 @@ fun GeneralSettings(
                               onDismiss = { showPauseBetweenSongsDialog = false }
                           )
                                            }
+
+                     if (search.inputValue.isBlank() || stringResource(R.string.crossfade).contains(search.inputValue, true)) {
+                         OtherSwitchSettingEntry(
+                             title = stringResource(R.string.crossfade),
+                             text = stringResource(R.string.crossfade_description),
+                             isChecked = crossfadeEnabled,
+                             onCheckedChange = { crossfadeEnabled = it },
+                             icon = R.drawable.shuffle
+                         )
+                     }
+
+                     var showCrossfadeDurationDialog by remember { mutableStateOf(false) }
+                     if (search.inputValue.isBlank() || stringResource(R.string.crossfade_duration).contains(search.inputValue,true)) {
+                         OtherSettingsEntry(
+                             title = stringResource(R.string.crossfade_duration),
+                             text = "${crossfadeDuration / 1000}s",
+                             onClick = { showCrossfadeDurationDialog = true },
+                             icon = R.drawable.time
+                         )
+                     }
+                     
+                     if (showCrossfadeDurationDialog) {
+                         ValueSelectorDialog(
+                             title = stringResource(R.string.crossfade_duration),
+                             selectedValue = crossfadeDuration,
+                             onValueSelected = { crossfadeDuration = it },
+                             valueText = { "${it / 1000}s" },
+                             values = listOf(1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 12000, 15000, 20000),
+                             onDismiss = { showCrossfadeDurationDialog = false }
+                         )
+                     }
+
+                     if (search.inputValue.isBlank() || stringResource(R.string.crossfade_gapless).contains(search.inputValue, true)) {
+                         OtherSwitchSettingEntry(
+                             title = stringResource(R.string.crossfade_gapless),
+                             text = stringResource(R.string.crossfade_gapless_description),
+                             isChecked = crossfadeGapless,
+                             onCheckedChange = { crossfadeGapless = it },
+                             icon = R.drawable.album
+                         )
+                     }
                  }
              )
          }

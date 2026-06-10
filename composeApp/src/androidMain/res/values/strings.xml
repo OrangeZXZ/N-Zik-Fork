@@ -1177,4 +1177,9 @@
   <string name="snake_exit">Exit</string>
   <string name="skip_time_buttons">Skip time buttons</string>
   <string name="hide_status_bar">Hide status bar</string>
+  <string name="crossfade">Crossfade</string>
+  <string name="crossfade_description">Enable smooth transition between songs</string>
+  <string name="crossfade_duration">Crossfade duration</string>
+  <string name="crossfade_gapless">Gapless Crossfade</string>
+  <string name="crossfade_gapless_description">Do not crossfade tracks from the same album</string>
 </resources>

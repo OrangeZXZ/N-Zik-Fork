@@ -7,6 +7,9 @@ import app.n_zik.android.playback.models.*
 import app.n_zik.android.playback.exceptions.*
 import app.n_zik.android.playback.utils.*
 
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.delay
+
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -751,7 +754,8 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-        
+        scheduleCrossfade()
+
         val networkQuality = NetworkQualityHelper.getCurrentNetworkQuality(this)
         Timber.d("PlayerServiceModern: onMediaItemTransition - Current Network Quality for next song: $networkQuality")
 
@@ -813,6 +817,7 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+        scheduleCrossfade()
         if (reason == Player.TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED) {
             maybeSavePlayerQueue()
         }
@@ -836,6 +841,8 @@ class PlayerServiceModern : MediaLibraryService(),
      */
     @UnstableApi
     override fun onIsPlayingChanged(isPlaying: Boolean) {
+        if (isPlaying) scheduleCrossfade()
+        
         val item = player.currentMediaItem
         val title = item?.mediaMetadata?.title ?: "<none>"
         val duration = player.duration
@@ -1528,6 +1535,10 @@ class PlayerServiceModern : MediaLibraryService(),
     ) {
         Timber.d("PlayerServiceModern onPositionDiscontinuity oldPosition ${oldPosition.mediaItemIndex} newPosition ${newPosition.mediaItemIndex} reason $reason")
         
+        if (reason == Player.DISCONTINUITY_REASON_SEEK) {
+            scheduleCrossfade()
+        }
+
         // Discord presence: update on seek/skip
         if (reason == Player.DISCONTINUITY_REASON_SEEK || reason == Player.DISCONTINUITY_REASON_SKIP) {
             if (preferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
@@ -2052,6 +2063,210 @@ class PlayerServiceModern : MediaLibraryService(),
 
         }
     }
+
+    // --- Crossfade Logic ---
+    private var isCrossfading = false
+    private var crossfadeJob: kotlinx.coroutines.Job? = null
+    private var crossfadeTriggerJob: kotlinx.coroutines.Job? = null
+    private var fadingPlayer: ExoPlayer? = null
+    private var secondaryPlayer: ExoPlayer? = null
+
+    private val crossfadeDuration: Int
+        get() = preferences.getInt(app.it.fast4x.rimusic.utils.crossfadeDurationKey, 3000)
+
+    private val crossfadeGapless: Boolean
+        get() = preferences.getBoolean(app.it.fast4x.rimusic.utils.crossfadeGaplessKey, false)
+
+    private val crossfadeEnabled: Boolean
+        get() = preferences.getBoolean(app.it.fast4x.rimusic.utils.crossfadeEnabledKey, false)
+
+    private val secondaryPlayerListener = object : Player.Listener {
+        override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+            cleanupCrossfade()
+        }
+    }
+
+    private val crossfadeSyncListener = object : Player.Listener {
+        override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+            if (isCrossfading && secondaryPlayer != null) {
+                secondaryPlayer?.playWhenReady = playWhenReady
+            }
+        }
+    }
+
+    private fun scheduleCrossfade() {
+        crossfadeTriggerJob?.cancel()
+        crossfadeTriggerJob = null
+        
+        if (!isCrossfading && secondaryPlayer != null) {
+            Timber.d("Crossfade: Releasing unused secondary player")
+            secondaryPlayer?.removeListener(secondaryPlayerListener)
+            secondaryPlayer?.release()
+            secondaryPlayer = null
+        }
+
+        if (!crossfadeEnabled) return
+        if (player.duration == C.TIME_UNSET) return
+        if (player.duration <= crossfadeDuration) return
+        if (crossfadeGapless && isNextItemGapless()) return
+        if (!player.hasNextMediaItem() && player.repeatMode != Player.REPEAT_MODE_ONE) return
+
+        val triggerTime = player.duration - crossfadeDuration.toLong()
+        val delayMs = triggerTime - player.currentPosition
+        if (delayMs <= 0) return
+
+        val preloadAdvanceMs = 15000L
+        val delayUntilPreload = maxOf(0L, delayMs - preloadAdvanceMs)
+
+        val targetMediaId = player.currentMediaItem?.mediaId
+
+        Timber.d("Crossfade: Scheduled preload in $delayUntilPreload ms, start in $delayMs ms")
+
+        crossfadeTriggerJob =
+            coroutineScope.launch(kotlinx.coroutines.Dispatchers.Main) {
+                delay(delayUntilPreload)
+                if (isActive && player.isPlaying && player.currentMediaItem?.mediaId == targetMediaId) {
+                    preloadCrossfade(triggerTime)
+                    
+                    val remainingDelay = triggerTime - player.currentPosition
+                    if (remainingDelay > 0) {
+                        delay(remainingDelay)
+                    }
+                    
+                    if (isActive && player.isPlaying && player.currentMediaItem?.mediaId == targetMediaId) {
+                        startCrossfade()
+                    }
+                } else {
+                    Timber.d("Crossfade: Preload cancelled, condition not met")
+                }
+            }
+    }
+
+    private fun isNextItemGapless(): Boolean {
+        val current = player.currentMediaItem?.mediaMetadata ?: return false
+        val nextIndex = player.nextMediaItemIndex
+        if (nextIndex == C.INDEX_UNSET) return false
+        val next = player.getMediaItemAt(nextIndex).mediaMetadata
+        return current.albumTitle != null && current.albumTitle == next.albumTitle
+    }
+
+    private fun createCrossfadeExoPlayer(): ExoPlayer {
+        return ExoPlayer.Builder(this)
+            .setMediaSourceFactory(createMediaSourceFactory())
+            .setRenderersFactory(createRendersFactory())
+            .setWakeMode(C.WAKE_MODE_NETWORK)
+            .setAudioAttributes(
+                androidx.media3.common.AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                    .build(),
+                false // NEVER handle audio focus for secondary player
+            )
+            .setUsePlatformDiagnostics(false)
+            .build()
+    }
+
+    private fun preloadCrossfade(triggerTime: Long) {
+        if (isCrossfading || secondaryPlayer != null) return
+        Timber.d("Crossfade: Preloading current song for fade out...")
+
+        val currentIndex = player.currentMediaItemIndex
+        if (currentIndex == C.INDEX_UNSET) return
+
+        secondaryPlayer = createCrossfadeExoPlayer()
+        val secPlayer = secondaryPlayer!!
+        secPlayer.addListener(secondaryPlayerListener)
+
+        val itemCount = player.mediaItemCount
+        val items = mutableListOf<androidx.media3.common.MediaItem>()
+        for (i in 0 until itemCount) {
+            items.add(player.getMediaItemAt(i))
+        }
+
+        secPlayer.setMediaItems(items)
+        secPlayer.seekTo(currentIndex, triggerTime)
+        secPlayer.volume = player.volume
+        secPlayer.repeatMode = player.repeatMode
+        secPlayer.shuffleModeEnabled = player.shuffleModeEnabled
+
+        secPlayer.prepare()
+        secPlayer.playWhenReady = false
+    }
+
+    private fun startCrossfade() {
+        if (isCrossfading) return
+        Timber.d("Crossfade: Starting crossfade now!")
+
+        val secPlayer = secondaryPlayer ?: return
+        isCrossfading = true
+
+        val startVolume = player.volume
+        
+        // Start fading player exactly in sync with primary
+        secPlayer.playWhenReady = player.playWhenReady
+
+        // Mute primary player before skipping
+        player.volume = 0f
+        
+        val nextIndex = if (player.repeatMode == Player.REPEAT_MODE_ONE) {
+            player.currentMediaItemIndex
+        } else {
+            player.nextMediaItemIndex
+        }
+        
+        if (nextIndex != C.INDEX_UNSET) {
+            // Remove listener so it doesn't pause secPlayer while buffering
+            player.removeListener(crossfadeSyncListener)
+            // Skip the primary player to the next song! UI updates instantly!
+            player.seekTo(nextIndex, 0)
+            player.addListener(crossfadeSyncListener)
+        }
+
+        crossfadeJob =
+            coroutineScope.launch(kotlinx.coroutines.Dispatchers.Main) {
+                val duration = crossfadeDuration.toLong()
+                val steps = 20
+                val stepTime = duration / steps
+
+                try {
+                    for (i in 1..steps) {
+                        if (!isActive) break
+                        while (!player.playWhenReady && isActive) {
+                            delay(100)
+                        }
+
+                        val progress = i / steps.toFloat()
+                        val fadeIn = 1.0f - (1.0f - progress) * (1.0f - progress)
+                        val fadeOut = (1.0f - progress) * (1.0f - progress)
+
+                        try {
+                            player.volume = startVolume * fadeIn
+                            secPlayer.volume = startVolume * fadeOut
+                        } catch (e: Exception) {
+                            break
+                        }
+                        delay(stepTime)
+                    }
+
+                    player.volume = startVolume
+                    secPlayer.volume = 0f
+                } catch (e: Exception) {
+                    Timber.e(e, "Error during crossfade")
+                } finally {
+                    cleanupCrossfade()
+                }
+            }
+    }
+
+    private fun cleanupCrossfade() {
+        player.removeListener(crossfadeSyncListener)
+        secondaryPlayer?.stop()
+        secondaryPlayer?.release()
+        secondaryPlayer = null
+        fadingPlayer = null
+        isCrossfading = false
+    }
+    // --- End Crossfade Logic ---
 
     companion object {
         const val NotificationId = 1001
