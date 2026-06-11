@@ -1,3 +1,6 @@
+Hotfix:
+- Fixed changelog not showing up, here the changelog!
+
 Added:
 - Information about android lockdown mode, after update.
 - New Visualizer options and moved them to a dedicated Settings section.
