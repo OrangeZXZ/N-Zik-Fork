@@ -1,5 +1,7 @@
 package app.n_zik.android.extensions.audiobar.views
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -42,7 +44,8 @@ fun SeekBarStaticAudioWaves(
     isPlaying: Boolean,
     onPositionChange: (Long) -> Unit,
     onPositionChangeFinished: (() -> Unit)? = null,
-    audioSessionId: () -> Int = { -1 }
+    audioSessionId: () -> Int = { -1 },
+    unplayedColor: Color = Color.Unspecified
 ) {
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
@@ -85,7 +88,7 @@ fun SeekBarStaticAudioWaves(
     }
 
     val playedColor = colorPalette().accent
-    val unplayedColor = colorPalette().textSecondary.copy(alpha = 0.3f)
+    val defaultUnplayedColor = if (unplayedColor != Color.Unspecified) unplayedColor else colorPalette().textSecondary.copy(alpha = 0.3f)
 
     val displayAmplitudes = amplitudes ?: remember(uiMedia?.id) {
         val seed = uiMedia?.id?.hashCode()?.toLong() ?: System.currentTimeMillis()
@@ -120,6 +123,11 @@ fun SeekBarStaticAudioWaves(
     if (displayAmplitudes.isNotEmpty()) {
         // Draw static waves
         val progress = if (duration > 0) position.toFloat() / duration.toFloat() else 0f
+        
+        val waveAmplitudeMultiplier by animateFloatAsState(
+            targetValue = if (isPlaying) 1f else 0f,
+            animationSpec = tween(durationMillis = 300)
+        )
         
         val updatedOnPositionChange by rememberUpdatedState(onPositionChange)
         val updatedOnPositionChangeFinished by rememberUpdatedState(onPositionChangeFinished)
@@ -165,6 +173,7 @@ fun SeekBarStaticAudioWaves(
             Canvas(modifier = Modifier.fillMaxWidth().fillMaxHeight()) {
                 val canvasWidth = size.width
                 val canvasHeight = size.height
+                if (canvasWidth <= 0f || canvasHeight <= 0f) return@Canvas
                 
                 val maxAmp = displayAmplitudes.maxOrNull()?.toFloat()?.coerceAtLeast(1f) ?: 1f
                 
@@ -190,19 +199,33 @@ fun SeekBarStaticAudioWaves(
                     
                     // Normalize chunk amplitude between 0.1 and 1.0
                     val normalizedAmp = (chunkMax / maxAmp).coerceIn(0.1f, 1.0f)
-                    val barHeight = canvasHeight * normalizedAmp
+                    val currentAmp = 0.05f + (normalizedAmp - 0.05f) * waveAmplitudeMultiplier
+                    val barHeight = canvasHeight * currentAmp
                     
                     val x = i * (barWidth + spacing)
                     val y = (canvasHeight - barHeight) / 2f
                     
                     val isPlayed = (i.toFloat() / barCount) <= progress
-                    val barColor = if (isPlayed) playedColor else unplayedColor
+                    val barColor = if (isPlayed) playedColor else defaultUnplayedColor
                     
                     drawRoundRect(
                         color = barColor,
                         topLeft = Offset(x, y),
                         size = Size(barWidth, barHeight),
                         cornerRadius = CornerRadius(barWidth / 2, barWidth / 2)
+                    )
+                }
+                
+                if (!isPlaying) {
+                    val thumbWidthPx = 2.dp.toPx()
+                    val thumbX = (canvasWidth * progress) - (thumbWidthPx / 2f)
+                    val maxThumbX = (canvasWidth - thumbWidthPx).coerceAtLeast(0f)
+                    val safeThumbX = thumbX.coerceIn(0f, maxThumbX)
+                    drawRoundRect(
+                        color = playedColor,
+                        topLeft = Offset(safeThumbX, 0f),
+                        size = Size(thumbWidthPx, canvasHeight),
+                        cornerRadius = CornerRadius(thumbWidthPx / 2, thumbWidthPx / 2)
                     )
                 }
             }

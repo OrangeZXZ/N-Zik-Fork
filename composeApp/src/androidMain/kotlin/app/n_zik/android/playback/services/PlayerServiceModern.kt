@@ -578,6 +578,15 @@ class PlayerServiceModern : MediaLibraryService(),
         }
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return try {
+            super.onStartCommand(intent, flags, startId)
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to start service safely (ForegroundServiceStartNotAllowedException)")
+            START_NOT_STICKY
+        }
+    }
+
     override fun onBind(intent: Intent?) = super.onBind(intent) ?: binder
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession =
