@@ -70,6 +70,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -1157,21 +1158,28 @@ class MainActivity :
                         }
 
                 }
-                DisposableEffect(binder?.player) {
+                var isPlayerInitialized by rememberSaveable { mutableStateOf(false) }
+                val playerUpdateTrigger by binder?.playerUpdateTrigger?.collectAsState(0) ?: remember { mutableStateOf(0) }
+                DisposableEffect(binder?.player, playerUpdateTrigger) {
                     val player = binder?.player ?: return@DisposableEffect onDispose { }
 
-                    if (player.currentMediaItem == null) {
-                        if (playerState.isVisible) {
-                            showPlayer = false
-                        }
-                    } else {
-                        if (launchedFromNotification) {
-                            intent.replaceExtras(Bundle())
-                            if (preferences.getBoolean(keepPlayerMinimizedKey, false))
+                    setDynamicPalette(player.currentMediaItem?.mediaMetadata?.artworkUri?.thumbnail(1000)?.toString())
+
+                    if (!isPlayerInitialized) {
+                        isPlayerInitialized = true
+                        if (player.currentMediaItem == null) {
+                            if (playerState.isVisible) {
                                 showPlayer = false
-                            else showPlayer = true
+                            }
                         } else {
-                            showPlayer = false
+                            if (launchedFromNotification) {
+                                intent.replaceExtras(Bundle())
+                                if (preferences.getBoolean(keepPlayerMinimizedKey, false))
+                                    showPlayer = false
+                                else showPlayer = true
+                            } else {
+                                showPlayer = false
+                            }
                         }
                     }
 

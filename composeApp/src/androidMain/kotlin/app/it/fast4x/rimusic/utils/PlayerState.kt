@@ -24,21 +24,26 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import app.kreate.android.me.knighthat.utils.Toaster
 
 @Composable
-inline fun Player.DisposableListener(crossinline listenerProvider: () -> Player.Listener) {
-    DisposableEffect(this) {
+fun Player.DisposableListener(
+    key1: Any? = null,
+    listenerProvider: () -> Player.Listener
+) {
+    DisposableEffect(this, key1) {
         val listener = listenerProvider()
         addListener(listener)
-        onDispose { removeListener(listener) }
+        onDispose {
+            removeListener(listener)
+        }
     }
 }
 
 @Composable
-fun Player.positionAndDurationState(): State<Pair<Long, Long>> {
-    val state = remember {
+fun Player.positionAndDurationState(key1: Any? = null): State<Pair<Long, Long>> {
+    val state = remember(key1) {
         mutableStateOf(currentPosition to duration)
     }
 
-    LaunchedEffect(this) {
+    LaunchedEffect(this, key1) {
         var isSeeking = false
         var needsUpdate = false
 
@@ -116,12 +121,12 @@ fun rememberEqualizerLauncher(
     }
 }
 @Composable
-fun Player.playbackStateState(): State<Int> {
-    val state = remember {
+fun Player.playbackStateState(key1: Any? = null): State<Int> {
+    val state = remember(key1) {
         mutableStateOf(playbackState)
     }
 
-    DisposableListener {
+    DisposableListener(key1) {
         object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 state.value = playbackState

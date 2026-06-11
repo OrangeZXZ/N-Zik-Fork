@@ -135,23 +135,25 @@ fun MiniPlayer(
 
     val context = LocalContext.current
 
-    var nullableMediaItem by remember {
+    val playerUpdateTrigger by binder.playerUpdateTrigger.collectAsState()
+
+    var nullableMediaItem by remember(playerUpdateTrigger) {
         mutableStateOf(
             binder.player.currentMediaItem,
             neverEqualPolicy()
         )
     }
-    var shouldBePlaying by remember { mutableStateOf(binder.player.shouldBePlaying) }
+    var shouldBePlaying by remember(playerUpdateTrigger) { mutableStateOf(binder.player.shouldBePlaying) }
     val hapticFeedback = LocalHapticFeedback.current
 
-    var playerError by remember {
+    var playerError by remember(playerUpdateTrigger) {
         mutableStateOf<PlaybackException?>(binder.player.playerError)
     }
-    var isBuffering by remember {
+    var isBuffering by remember(playerUpdateTrigger) {
         mutableStateOf(binder.player.playbackState == Player.STATE_BUFFERING)
     }
 
-    binder.player.DisposableListener {
+    binder.player.DisposableListener(playerUpdateTrigger) {
         object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 nullableMediaItem = mediaItem
@@ -217,8 +219,8 @@ fun MiniPlayer(
         }
     }
 
-    val positionAndDurationState = binder.player.positionAndDurationState()
-    val durationState = remember {
+    val positionAndDurationState = binder.player.positionAndDurationState(playerUpdateTrigger)
+    val durationState = remember(positionAndDurationState) {
         derivedStateOf { positionAndDurationState.value.second }
     }
 

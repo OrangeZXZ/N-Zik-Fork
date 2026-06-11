@@ -8,8 +8,8 @@ enum class PlayerType(
     @field:StringRes override val textId: Int
 ): TextView {
 
-    Essential( R.string.pcontrols_modern ),
-    Modern( R.string.pcontrols_essential );
+    Essential( R.string.pcontrols_essential ),
+    Modern( R.string.pcontrols_modern );
 }
 
 
