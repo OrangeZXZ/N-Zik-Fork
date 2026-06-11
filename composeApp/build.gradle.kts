@@ -113,8 +113,8 @@ android {
         applicationId = "com.nevar.nzik"
         minSdk = 24
         targetSdk = 37
-        versionCode = 49
-        versionName = "4.5.1"
+        versionCode = 50
+        versionName = "4.5.2"
 
         /*
                 UNIVERSAL VARIABLES
