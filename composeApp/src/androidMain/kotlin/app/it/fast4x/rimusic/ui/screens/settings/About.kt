@@ -244,7 +244,7 @@ fun About(navController: androidx.navigation.NavController) {
                              modifier = Modifier
                                  .fillMaxWidth()
                                  .clip(uiRoundnessShape()).clickable {
-                                     val url = "${Repository.GITHUB}/${Repository.OWNER}"
+                                     val url = "${Repository.GITHUB}/${Repository.REAL_OWNER}"
                                      uriHandler.openUri(url)
                                  }
                          ) {
