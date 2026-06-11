@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -104,6 +105,7 @@ fun Thumbnail(
 ) {
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
+    val playerUpdateTrigger by binder?.playerUpdateTrigger?.collectAsState() ?: remember { mutableStateOf(0) }
     val player = binder?.player ?: return
 
     val (thumbnailSizeDp, thumbnailSizePx) = Dimensions.thumbnails.player.song.let {
@@ -111,7 +113,7 @@ fun Thumbnail(
     }
 
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
-    var nullableWindow by remember {
+    var nullableWindow by remember(playerUpdateTrigger) {
         mutableStateOf(player.currentWindow)
     }
 

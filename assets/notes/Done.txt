@@ -5,3 +5,6 @@
 - Migrated `modules/discordrpc` into a standalone GitHub repository and re-added it as a submodule
 - Updated project references and submodule URLs for the move to the N-Zik-Group organization
 - Fixed crossfade buffering using a 0-volume preload hack and added crossfade cancellation on manual skip/seek
+- Implemented gapless crossfade using player role reversal and seamless audio handoff
+- Refined crossfade to use the stunt double technique so the UI updates instantly while keeping playback gapless
+- Fixed UI components (Thumbnail and Player HorizontalPager) to properly update and animate when the active player instance is swapped during crossfade

@@ -58,6 +58,7 @@ import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import timber.log.Timber
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -322,14 +323,18 @@ fun Player(
     val expandPlayerState = rememberPreference( expandedplayerKey, false )
     var expandedplayer by expandPlayerState
 
+    val playerUpdateTrigger by binder.playerUpdateTrigger.collectAsState()
 
-    if (binder.player.currentTimeline.windowCount == 0) return
-
-    var nullableMediaItem by remember {
+    val nullableMediaItemState = remember {
         mutableStateOf(binder.player.currentMediaItem, neverEqualPolicy())
     }
+    remember(playerUpdateTrigger) {
+        nullableMediaItemState.value = binder.player.currentMediaItem
+        true
+    }
+    var nullableMediaItem by nullableMediaItemState
 
-    var shouldBePlaying by remember {
+    var shouldBePlaying by remember(playerUpdateTrigger) {
         mutableStateOf(binder.player.shouldBePlaying)
     }
 
@@ -408,10 +413,21 @@ fun Player(
         )
     }
 
-    var mediaItems by remember {
-        mutableStateOf(binder.player.currentTimeline.mediaItems)
+    val mediaItemsState = remember { mutableStateOf<List<MediaItem>>(emptyList()) }
+    remember(playerUpdateTrigger) {
+        mediaItemsState.value = if (binder.player.currentTimeline.windowCount > 0) {
+            val items = mutableListOf<MediaItem>()
+            for (i in 0 until binder.player.currentTimeline.windowCount) {
+                items.add(binder.player.getMediaItemAt(i))
+            }
+            items
+        } else {
+            emptyList()
+        }
+        true
     }
-    var playerError by remember {
+    var mediaItems by mediaItemsState
+    var playerError by remember(playerUpdateTrigger) {
         mutableStateOf<PlaybackException?>(binder.player.playerError)
     }
 
@@ -449,7 +465,7 @@ fun Player(
         }
     }
 
-    binder.player.DisposableListener {
+    binder.player.DisposableListener(playerUpdateTrigger) {
         object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 nullableMediaItem = mediaItem
@@ -474,6 +490,8 @@ fun Player(
 
     val
             mediaItem = nullableMediaItem ?: return
+            
+    if (binder.player.currentTimeline.windowCount == 0 || mediaItems.isEmpty()) return
 
     val pagerState = rememberPagerState(pageCount = { mediaItems.size })
     val pagerStateFS = rememberPagerState(pageCount = { mediaItems.size })
@@ -488,15 +506,15 @@ fun Player(
         ?: flowOf(null))
         .collectAsState(initial = null)
 
-    val positionAndDurationState = binder.player.positionAndDurationState()
-    val playbackState by binder.player.playbackStateState()
+    val positionAndDurationState = binder.player.positionAndDurationState(playerUpdateTrigger)
+    val playbackState by binder.player.playbackStateState(playerUpdateTrigger)
     val isBuffering = playbackState == Player.STATE_BUFFERING
 
-    val durationState = remember {
+    val durationState = remember(positionAndDurationState) {
         derivedStateOf { positionAndDurationState.value.second }
     }
 
-    val timeRemainingState = remember {
+    val timeRemainingState = remember(durationState, positionAndDurationState) {
         derivedStateOf { 
             if (durationState.value == androidx.media3.common.C.TIME_UNSET) 0
             else durationState.value.toInt() - positionAndDurationState.value.first.toInt() 
@@ -1074,7 +1092,7 @@ fun Player(
                      state = pagerStateFS,
                      snapPositionalThreshold = 0.20f
                  )
-                 pagerStateFS.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
+                 pagerStateFS.LaunchedEffectScrollToPage(binder, playerUpdateTrigger, binder.player.currentMediaItemIndex, appRunningInBackground)
 
                  LaunchedEffect(pagerStateFS) {
                      var previousPage = pagerStateFS.settledPage
@@ -1129,7 +1147,7 @@ fun Player(
                      }
 
                      BlurredCover(
-                         thumbnailUrl = binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString(),
+                         thumbnailUrl = mediaItems.getOrNull(it)?.mediaMetadata?.artworkUri?.toString() ?: "",
                          blurAdjuster = blurAdjuster,
                          showThumbnail = showthumbnail,
                          noBlur = noblur,
@@ -1326,11 +1344,16 @@ fun Player(
                                  val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
                                  val pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*((100f - thumbnailSizeLDp) * 1.5f).dp)
 
-                                 LaunchedEffect(pagerState, binder.player.currentMediaItemIndex) {
-                                     if (appRunningInBackground || isShowingLyrics) {
-                                         pagerState.scrollToPage(binder.player.currentMediaItemIndex)
-                                     } else {
-                                         pagerState.animateScrollToPage(binder.player.currentMediaItemIndex)
+                                 val context = androidx.compose.ui.platform.LocalContext.current
+                                 LaunchedEffect(playerUpdateTrigger) {
+                                     val targetIndex = binder.player.currentMediaItemIndex
+                                     if (pagerState.currentPage != targetIndex || pagerState.targetPage != targetIndex) {
+                                         kotlinx.coroutines.delay(50)
+                                         if (appRunningInBackground || isShowingLyrics) {
+                                             pagerState.scrollToPage(targetIndex)
+                                         } else {
+                                             pagerState.animateScrollToPage(targetIndex)
+                                         }
                                      }
                                  }
 
@@ -1360,7 +1383,7 @@ fun Player(
                                      ) {
 
                                      val coverPainter = ImageCacheFactory.Painter(
-                                         thumbnailUrl = binder.player.getMediaItemAt( it ).mediaMetadata.artworkUri.toString()
+                                         thumbnailUrl = mediaItems.getOrNull(it)?.mediaMetadata?.artworkUri?.toString() ?: ""
                                      )
 
                                      val coverModifier = Modifier
@@ -1453,9 +1476,9 @@ fun Player(
                                                      .matchParentSize()
                                                  ) {
                                                      NowPlayingSongIndicator(
-                                                         binder.player.getMediaItemAt(
+                                                         mediaItems.getOrNull(
                                                              binder.player.currentMediaItemIndex
-                                                         ).mediaId, binder.player,
+                                                         )?.mediaId ?: "", binder.player,
                                                          Dimensions.thumbnails.album
                                                      )
                                                  }
@@ -1549,7 +1572,7 @@ fun Player(
                    val scaleAnimationFloat by animateFloatAsState(
                        if (isDraggedFS) 0.85f else 1f, label = ""
                    )
-                   pagerStateFS.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
+                    pagerStateFS.LaunchedEffectScrollToPage(binder, playerUpdateTrigger, binder.player.currentMediaItemIndex, appRunningInBackground)
 
                     LaunchedEffect(pagerStateFS) {
                         var previousPage = pagerStateFS.settledPage
@@ -1622,7 +1645,7 @@ fun Player(
                                 }
                         ) {
                             BlurredCover(
-                                thumbnailUrl = binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString(),
+                                thumbnailUrl = mediaItems.getOrNull(it)?.mediaMetadata?.artworkUri?.toString() ?: "",
                                 blurAdjuster = blurAdjuster,
                                 showThumbnail = showthumbnail,
                                 noBlur = noblur,
@@ -1728,8 +1751,8 @@ fun Player(
                                                 mediaItem.toUiMedia(durationState.value)
                                             },
                                             mediaId = mediaItem.mediaId,
-                                            title = cleanPrefix( player.getMediaItemAt(it).mediaMetadata.title.toString() ),
-                                            artist = cleanPrefix( player.getMediaItemAt(it).mediaMetadata.artist.toString() ),
+                                            title = mediaItems.getOrNull(it)?.mediaMetadata?.title?.toString() ?: "",
+                                            artist = cleanPrefix( mediaItems.getOrNull(it)?.mediaMetadata?.artist.toString() ),
                                             artistIds = artistInfos,
                                             albumId = albumId,
                                             shouldBePlaying = shouldBePlaying,
@@ -1768,7 +1791,7 @@ fun Player(
                 }
 
                BlurredCover(
-                   thumbnailUrl = binder.player.mediaMetadata.artworkUri.toString(),
+                   thumbnailUrl = mediaItems.getOrNull(pagerStateFS.currentPage)?.mediaMetadata?.artworkUri?.toString() ?: "",
                    blurAdjuster = blurAdjuster,
                    showThumbnail = showthumbnail,
                    noBlur = noblur,
@@ -1905,7 +1928,7 @@ fun Player(
                              if (playerType == PlayerType.Modern) {
                                  val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
 
-                                 pagerState.LaunchedEffectScrollToPage(binder.player.currentMediaItemIndex)
+                                 pagerState.LaunchedEffectScrollToPage(binder, playerUpdateTrigger, binder.player.currentMediaItemIndex, appRunningInBackground)
 
                                  LaunchedEffect(pagerState) {
                                      var previousPage = pagerState.settledPage
@@ -1948,7 +1971,7 @@ fun Player(
                                  ){
 
                                      val coverPainter = ImageCacheFactory.Painter(
-                                         thumbnailUrl = binder.player.getMediaItemAt(it).mediaMetadata.artworkUri.toString()
+                                         thumbnailUrl = mediaItems.getOrNull(it)?.mediaMetadata?.artworkUri?.toString() ?: ""
                                      )
 
                                      val coverModifier = Modifier
@@ -2044,9 +2067,9 @@ fun Player(
                                                      .matchParentSize()
                                                  ) {
                                                      NowPlayingSongIndicator(
-                                                         binder.player.getMediaItemAt(
+                                                         mediaItems.getOrNull(
                                                              binder.player.currentMediaItemIndex
-                                                         ).mediaId, binder.player,
+                                                         )?.mediaId ?: "", binder.player,
                                                          Dimensions.thumbnails.album
                                                      )
                                                  }
@@ -2279,14 +2302,22 @@ fun Player(
 @Composable
 @androidx.annotation.OptIn(UnstableApi::class)
 fun PagerState.LaunchedEffectScrollToPage(
-    index: Int
+    binder: app.n_zik.android.playback.services.PlayerServiceModern.Binder,
+    playerUpdateTrigger: Int,
+    index: Int,
+    appRunningInBackground: Boolean
 ) {
     val pagerState = this
-    LaunchedEffect(pagerState, index) {
-        if (!appRunningInBackground) {
-            pagerState.animateScrollToPage(index)
-        } else {
-            pagerState.scrollToPage(index)
+    val context = androidx.compose.ui.platform.LocalContext.current
+    LaunchedEffect(playerUpdateTrigger, index) {
+        val targetIndex = binder.player.currentMediaItemIndex
+        if (pagerState.currentPage != targetIndex || pagerState.targetPage != targetIndex) {
+            kotlinx.coroutines.delay(50)
+            if (!appRunningInBackground) {
+                pagerState.animateScrollToPage(targetIndex)
+            } else {
+                pagerState.scrollToPage(targetIndex)
+            }
         }
     }
 }

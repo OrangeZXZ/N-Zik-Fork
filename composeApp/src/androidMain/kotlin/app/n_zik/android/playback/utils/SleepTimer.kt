@@ -3,7 +3,6 @@ package app.n_zik.android.playback.utils
 import app.n_zik.android.playback.services.*
 import app.n_zik.android.playback.models.*
 import app.n_zik.android.playback.exceptions.*
-import app.n_zik.android.playback.utils.*
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -19,7 +18,7 @@ import kotlin.time.Duration.Companion.minutes
 
 class SleepTimer(
     private val scope: CoroutineScope,
-    val player: Player,
+    var player: Player,
 ) : Player.Listener {
     private var sleepTimerJob: Job? = null
     var triggerTime by mutableLongStateOf(-1L)
@@ -65,5 +64,3 @@ class SleepTimer(
         }
     }
 }
-
-
