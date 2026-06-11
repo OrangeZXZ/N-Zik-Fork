@@ -35,5 +35,4 @@ project(":ktor-client-brotli").projectDir = file("extensions/ktor-client-brotli"
 // Submodules
 include(":discordrpc")
 project(":discordrpc").projectDir = file("modules/discordrpc")
-include(":innertube")
-project(":innertube").projectDir = file("modules/innertube")
+
