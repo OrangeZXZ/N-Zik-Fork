@@ -1195,5 +1195,6 @@
 <string name="ps_medium">Medium</string>
 <string name="ps_high">High</string>
 <string name="ps_very_high">Very High</string>
-<string name="visualizer_bar">VisualizerBar</string>
+<string name="visualizer_bar">Visualizer bar</string>
+<string name="static_audio_waves">Audio bar</string>
 </resources>
