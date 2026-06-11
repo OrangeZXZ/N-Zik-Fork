@@ -263,7 +263,7 @@ fun About(navController: androidx.navigation.NavController) {
                              )
                                  Spacer(modifier = Modifier.width(3.dp))
                              BasicText(
-                                 text = Repository.OWNER,
+                                 text = Repository.REAL_OWNER,
                                      style = typography().xs.secondary.copy(
                                      textDecoration = TextDecoration.Underline,
                                      color = colorPalette().accent,
