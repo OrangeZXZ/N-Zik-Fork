@@ -20,7 +20,9 @@ enum class PlayerTimelineType(
 
     ThinBar( R.string.thin_bar ),
 
-    ColoredBar( R.string.colored_bar );
+    ColoredBar( R.string.colored_bar ),
+
+    VisualizerBar( R.string.visualizer_bar );
 }
 
 

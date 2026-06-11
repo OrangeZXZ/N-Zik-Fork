@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.utils
+package app.it.fast4x.rimusic.utils
 
 import androidx.annotation.OptIn
 import androidx.compose.animation.core.Animatable
@@ -116,6 +116,7 @@ fun GetSeekBar(
             && playerTimelineType != PlayerTimelineType.FakeAudioBar
             && playerTimelineType != PlayerTimelineType.ThinBar
             && playerTimelineType != PlayerTimelineType.ColoredBar
+            && playerTimelineType != PlayerTimelineType.VisualizerBar
             )
             SeekBarCustom(
                 type = playerTimelineType,
@@ -218,9 +219,14 @@ fun GetSeekBar(
             )
         }
 
-        if (playerTimelineType == PlayerTimelineType.FakeAudioBar)
+        if (playerTimelineType == PlayerTimelineType.FakeAudioBar || playerTimelineType == PlayerTimelineType.VisualizerBar) {
+            val isFake = playerTimelineType == PlayerTimelineType.FakeAudioBar
             SeekBarAudioWaves(
-                progressPercentage = { ProgressPercentage.safeValue((position().toFloat() / duration().toFloat()).coerceIn(0f,1f)) },
+                audioSessionIdProvider = { if (isFake) null else try { binder.player.audioSessionId } catch (e: Exception) { null } },
+                isPlaying = binder.player.isPlaying,
+                isRealtime = !isFake,
+                isFake = isFake,
+                progressPercentage = { ProgressPercentage.safeValue((position().toFloat() / duration().toFloat()).coerceIn(0f, 1f)) },
                 playedColor = colorPalette().accent,
                 notPlayedColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
                 waveInteraction = {
@@ -229,9 +235,9 @@ fun GetSeekBar(
                     scrubbingPosition = null
                 },
                 modifier = Modifier
-                    .height(40.dp)
-                    //.pulsatingEffect(currentValue = position.toFloat() / duration.toFloat(), isVisible = true)
+                    .height(if (!isFake) 50.dp else 40.dp)
             )
+        }
 
 
         if (playerTimelineType == PlayerTimelineType.ColoredBar)

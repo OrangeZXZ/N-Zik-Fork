@@ -1,6 +1,6 @@
 package app.it.fast4x.rimusic.ui.components
 
-
+import android.media.audiofx.Visualizer
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -10,12 +10,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,15 +29,37 @@ import androidx.compose.ui.util.lerp
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
+import kotlin.math.sqrt
 import kotlin.random.Random
+import androidx.compose.ui.platform.LocalContext
 import androidx.annotation.FloatRange
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.unit.Dp
+import kotlinx.coroutines.delay
+import android.Manifest
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.text.BasicText
+import app.n_zik.android.R
+import app.n_zik.android.typography
+import app.it.fast4x.rimusic.utils.hasPermission
+import app.it.fast4x.rimusic.utils.isCompositionLaunched
+import app.it.fast4x.rimusic.utils.semiBold
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 
 private const val waveWidthPercentOfSpaceAvailable = 0.5f
 
 @Composable
 fun SeekBarAudioWaves(
+    audioSessionIdProvider: () -> Int? = { null },
+    isPlaying: Boolean = false,
+    isRealtime: Boolean = false,
+    isFake: Boolean = false,
     progressPercentage: () -> ProgressPercentage,
     playedColor: Color,
     notPlayedColor: Color,
@@ -41,13 +67,115 @@ fun SeekBarAudioWaves(
     modifier: Modifier = Modifier,
 ) {
     BoxWithConstraints(modifier) {
+        val maxWidth = this.maxWidth
         val updatedWaveInteraction by rememberUpdatedState(waveInteraction)
+        val context = LocalContext.current
+        val permission = Manifest.permission.RECORD_AUDIO
+        
+        var audioSessionId by remember { mutableStateOf(audioSessionIdProvider()) }
+        
+        LaunchedEffect(isPlaying) {
+            while (isPlaying) {
+                val newId = audioSessionIdProvider()
+                if (newId != null && newId != audioSessionId) {
+                    audioSessionId = newId
+                }
+                delay(500)
+            }
+        }
+        
+        var hasPermission by remember(isCompositionLaunched()) {
+            mutableStateOf(context.applicationContext.hasPermission(permission))
+        }
+
+        val launcher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission(),
+            onResult = { hasPermission = it }
+        )
+
         val numberOfWaves = remember(maxWidth) {
             (maxWidth / 3f).value.roundToInt() //5f default
         }
         val waveWidth = remember(maxWidth) {
             (maxWidth / numberOfWaves.toFloat()) * waveWidthPercentOfSpaceAvailable
         }
+
+        var liveWaveform by remember(numberOfWaves) {
+            mutableStateOf(ByteArray(numberOfWaves) { 0.toByte() })
+        }
+
+        if (isRealtime && !hasPermission) {
+            LaunchedEffect(Unit) { launcher.launch(permission) }
+        }
+
+        if (isRealtime && hasPermission && audioSessionId != null && isPlaying) {
+            val currentSessionId = audioSessionId!!
+            LaunchedEffect(currentSessionId, isPlaying) {
+                val helper = app.n_zik.android.extensions.nextvisualizer.utils.VisualizerHelper(currentSessionId)
+                
+                try {
+                    while (true) {
+                        val fft = helper.getFft()
+                        
+                        if (fft.isNotEmpty() && liveWaveform.isNotEmpty()) {
+                            val newWaveform = liveWaveform.clone()
+                            
+                            val actualSamplingRate = 44100
+                            val binsToUse = kotlin.math.max(1, (2500 * fft.size) / actualSamplingRate)
+                            
+                            val binsPerWave = kotlin.math.max(1, binsToUse / liveWaveform.size)
+                            
+                            for (index in liveWaveform.indices) {
+                                val startBin = index * binsPerWave
+                                val endBin = startBin + binsPerWave
+                                
+                                var sumMagnitude = 0f
+                                var count = 0
+                                
+                                for (bin in startBin until endBin) {
+                                    val fftIndex = bin * 2 + 2 // +2 to skip DC and Nyquist
+                                    if (fftIndex + 1 < fft.size) {
+                                        val real = fft[fftIndex].toInt()
+                                        val imag = fft[fftIndex + 1].toInt()
+                                        val magnitude = sqrt((real * real + imag * imag).toFloat())
+                                        sumMagnitude += magnitude
+                                        count++
+                                    }
+                                }
+                                
+                                val avgMagnitude = if (count > 0) sumMagnitude / count else 0f
+                                val weight = 1.0f + (index.toFloat() / liveWaveform.size) * 2.0f
+                                val blockAmplitude = (avgMagnitude * 3.5f * weight).toInt().coerceIn(0, 127)
+                                newWaveform[index] = blockAmplitude.toByte()
+                            }
+                            liveWaveform = newWaveform
+                        }
+                        delay(40) // Poll at 25fps
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        } else if (isRealtime && !isPlaying) {
+            // Decay to flat when paused
+            LaunchedEffect(isPlaying) {
+                while(true) {
+                    var allZero = true
+                    val newWaveform = liveWaveform.clone()
+                    for (index in newWaveform.indices) {
+                        val oldVal = newWaveform[index].toInt() and 0xFF
+                        if (oldVal > 0) {
+                            newWaveform[index] = kotlin.math.max(0, oldVal - 8).toByte()
+                            allZero = false
+                        }
+                    }
+                    if (allZero) break
+                    liveWaveform = newWaveform
+                    delay(50)
+                }
+            }
+        }
+
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
@@ -74,26 +202,52 @@ fun SeekBarAudioWaves(
                     }
                 },
         ) {
-            repeat(numberOfWaves) { waveIndex ->
-                FakeAudioWavePill(
-                    progressPercentage = progressPercentage,
-                    numberOfWaves = numberOfWaves,
-                    waveIndex = waveIndex,
-                    playedColor = playedColor,
-                    notPlayedColor = notPlayedColor,
-                    modifier = Modifier.width(waveWidth),
+            if (isRealtime && !hasPermission) {
+                BasicText(
+                    text = stringResource(R.string.require_mic_permission),
+                    modifier = Modifier.fillMaxWidth(),
+                    style = typography().xs.semiBold.copy(color = notPlayedColor, textAlign = TextAlign.Center)
                 )
+            } else {
+                repeat(numberOfWaves) { waveIndex ->
+                    AudioWavePill(
+                        waveform = if (isFake) null else liveWaveform,
+                        progressPercentage = progressPercentage,
+                        numberOfWaves = numberOfWaves,
+                        waveIndex = waveIndex,
+                        playedColor = playedColor,
+                        notPlayedColor = notPlayedColor,
+                        modifier = Modifier.width(waveWidth),
+                    )
+                }
             }
+        }
+
+        if (!isPlaying) {
+            val thumbWidth = 2.dp
+            val offsetDp = (maxWidth * progressPercentage().value) - (thumbWidth / 2)
+            val maxOffset = if (maxWidth > thumbWidth) maxWidth - thumbWidth else 0.dp
+            val safeOffset = offsetDp.coerceIn(0.dp, maxOffset)
+            
+            Surface(
+                shape = CircleShape,
+                color = playedColor,
+                modifier = Modifier
+                    .offset(x = safeOffset)
+                    .width(thumbWidth)
+                    .fillMaxHeight()
+            ) {}
         }
     }
 }
 
-private const val minWaveHeightFraction = 0.1f
+private const val minWaveHeightFraction = 0.05f
 private const val maxWaveHeightFractionForSideWaves = 0.1f
-private const val maxWaveHeightFraction = 1.0f
+private const val maxWaveHeightFraction = 0.85f
 
 @Composable
-private fun FakeAudioWavePill(
+private fun AudioWavePill(
+    waveform: ByteArray?,
     progressPercentage: () -> ProgressPercentage,
     numberOfWaves: Int,
     waveIndex: Int,
@@ -101,33 +255,56 @@ private fun FakeAudioWavePill(
     notPlayedColor: Color,
     modifier: Modifier = Modifier,
 ) {
-    val height = remember(waveIndex, numberOfWaves) {
-        val wavePosition = waveIndex + 1
-        val centerPoint = numberOfWaves / 2
-        val distanceFromCenterPoint = abs(centerPoint - wavePosition)
-        val percentageToCenterPoint = ((centerPoint - distanceFromCenterPoint).toFloat() / centerPoint)
-        val maxHeightFraction = lerp(
-            maxWaveHeightFractionForSideWaves,
-            maxWaveHeightFraction,
-            percentageToCenterPoint,
-        )
-        val validMaxHeightFraction = if (maxHeightFraction.isNaN()) 0.1f else maxHeightFraction
-        if (validMaxHeightFraction <= minWaveHeightFraction) {
-            validMaxHeightFraction
+    val height = remember(waveIndex, numberOfWaves, waveform) {
+        if (waveform != null && waveform.isNotEmpty()) {
+            val bucketIndex = ((waveIndex.toFloat() / numberOfWaves.toFloat()) * waveform.size).toInt().coerceIn(0, waveform.size - 1)
+            val amplitude = waveform[bucketIndex].toInt() and 0xFF
+            val fraction = amplitude.toFloat() / 128f
+            lerp(minWaveHeightFraction, maxWaveHeightFraction, fraction).coerceIn(minWaveHeightFraction, maxWaveHeightFraction)
         } else {
-            Random.nextDouble(minWaveHeightFraction.toDouble(), validMaxHeightFraction.toDouble()).toFloat()
+            val wavePosition = waveIndex + 1
+            val centerPoint = numberOfWaves / 2
+            val distanceFromCenterPoint = abs(centerPoint - wavePosition)
+            val percentageToCenterPoint = ((centerPoint - distanceFromCenterPoint).toFloat() / centerPoint)
+            val maxHeightFraction = lerp(
+                maxWaveHeightFractionForSideWaves,
+                maxWaveHeightFraction,
+                percentageToCenterPoint,
+            )
+            val validMaxHeightFraction = if (maxHeightFraction.isNaN()) 0.1f else maxHeightFraction
+            if (validMaxHeightFraction <= minWaveHeightFraction) {
+                validMaxHeightFraction
+            } else {
+                Random.nextDouble(minWaveHeightFraction.toDouble(), validMaxHeightFraction.toDouble()).toFloat()
+            }
         }
     }
+    
+    val animatedHeight = remember { androidx.compose.animation.core.Animatable(minWaveHeightFraction) }
+    
+    LaunchedEffect(height) {
+        if (height >= animatedHeight.value) {
+            animatedHeight.snapTo(height)
+        } else {
+            animatedHeight.animateTo(
+                targetValue = height,
+                animationSpec = androidx.compose.animation.core.tween(
+                    durationMillis = 90, 
+                    easing = androidx.compose.animation.core.LinearEasing
+                )
+            )
+        }
+    }
+    
     val hasPlayedThisWave by remember {
         derivedStateOf { progressPercentage().value * numberOfWaves > waveIndex }
     }
     Surface(
         shape = CircleShape,
         color = if (hasPlayedThisWave) playedColor else notPlayedColor,
-        modifier = modifier.fillMaxHeight(fraction = height),
+        modifier = modifier.fillMaxHeight(fraction = animatedHeight.value),
     ) {}
 }
-
 
 @JvmInline
 value class ProgressPercentage(
@@ -161,12 +338,5 @@ value class ProgressPercentage(
 }
 
 fun interface WaveInteraction {
-    /**
-     * [horizontalProgressPercentage] is a value that shows where in the horizontal spectrum the wave was interacted
-     * with.
-     * Ranges from 0.0f when interacted on the far left to 1.0f on the far right.
-     */
     fun onInteraction(horizontalProgressPercentage: ProgressPercentage)
 }
-
-

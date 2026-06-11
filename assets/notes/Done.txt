@@ -1,0 +1,2 @@
+Added: Real-time audio wave visualization in the seekbar
+Fixed: Concurrent execution with NextVisualizer by implementing a shared visualizer system

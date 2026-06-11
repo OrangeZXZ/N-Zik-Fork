@@ -4,34 +4,59 @@ import android.media.audiofx.Visualizer
 import android.os.Handler
 import timber.log.Timber
 
-class VisualizerHelper(sessionId: Int) {
+class VisualizerHelper(val sessionId: Int) {
 
-    private val visualizer: Visualizer = Visualizer(sessionId)
-    private val fftBuff: ByteArray
-    private val fftMF: FloatArray
-    private val fftM: DoubleArray
-    private val waveBuff: ByteArray
+    companion object {
+        private val sharedVisualizers = java.util.concurrent.ConcurrentHashMap<Int, Visualizer>()
+
+        @Synchronized
+        fun getSharedVisualizer(sessionId: Int): Visualizer? {
+            if (sessionId < 0) return null
+            if (sharedVisualizers.containsKey(sessionId)) {
+                return sharedVisualizers[sessionId]
+            }
+            return try {
+                val v = Visualizer(sessionId)
+                v.enabled = false
+                v.captureSize = Visualizer.getCaptureSizeRange()[1]
+                v.enabled = true
+                sharedVisualizers[sessionId] = v
+                v
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+        
+        @Synchronized
+        fun releaseShared() {
+            sharedVisualizers.values.forEach { it.release() }
+            sharedVisualizers.clear()
+        }
+    }
+
+    private val fftBuff: ByteArray = ByteArray(Visualizer.getCaptureSizeRange()[1])
+    private val waveBuff: ByteArray = ByteArray(Visualizer.getCaptureSizeRange()[1])
+    private val fftMF: FloatArray = FloatArray(fftBuff.size / 2 - 1)
+    private val fftM: DoubleArray = DoubleArray(fftBuff.size / 2 - 1)
     private lateinit var handler: Handler
     private lateinit var runnable: Runnable
 
-    init {
-        visualizer.enabled = false
-        visualizer.captureSize = Visualizer.getCaptureSizeRange()[1]
-        fftBuff = ByteArray(visualizer.captureSize)
-        waveBuff = ByteArray(visualizer.captureSize)
-        fftMF = FloatArray(fftBuff.size / 2 - 1)
-        fftM = DoubleArray(fftBuff.size / 2 - 1)
-        visualizer.enabled = true
-    }
-
     fun getFft(): ByteArray {
-        if (visualizer.enabled) visualizer.getFft(fftBuff)
+        val visualizer = getSharedVisualizer(sessionId)
+        visualizer?.let { if (it.enabled) it.getFft(fftBuff) }
         return fftBuff
     }
 
     fun getWave(): ByteArray {
-        if (visualizer.enabled) visualizer.getWaveForm(waveBuff)
+        val visualizer = getSharedVisualizer(sessionId)
+        visualizer?.let { if (it.enabled) it.getWaveForm(waveBuff) }
         return waveBuff
+    }
+
+    fun getSamplingRate(): Int {
+        val visualizer = getSharedVisualizer(sessionId)
+        return try { visualizer?.samplingRate ?: 44100000 } catch (e: Exception) { 44100000 }
     }
 
     fun getFftMagnitude(): DoubleArray {
@@ -107,8 +132,7 @@ class VisualizerHelper(sessionId: Int) {
      * Release visualizer when not using anymore
      */
     fun release() {
-        visualizer.enabled = false
-        visualizer.release()
+        // We use a shared visualizer, so we don't release it here.
     }
 
 }
