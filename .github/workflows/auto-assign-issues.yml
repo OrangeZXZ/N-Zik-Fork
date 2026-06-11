@@ -23,7 +23,7 @@ jobs:
         uses: actions/github-script@v9
         with:
           script: |
-            const MAIN_ASSIGNEE = 'NEVARLeVrai';
+            const MAIN_ASSIGNEE = 'N-Zik-Group';
             const PROTECTED_ASSIGNEES = ['orangezxz'];
 
             const mode = context.eventName === 'workflow_dispatch'

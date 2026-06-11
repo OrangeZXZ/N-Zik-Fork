@@ -31,25 +31,24 @@ jobs:
       - uses: actions/checkout@v6
         with:
           submodules: true
-  
+
       - name: Get downstream (local) version
         id: downstream
         run: |
           echo "Contents of build.gradle.kts:"
           cat composeApp/build.gradle.kts
-  
+
           versionCode=$(grep -E '^\s*versionCode\s*=' composeApp/build.gradle.kts | sed 's/[^0-9]*//g')
           versionName=$(grep -E '^\s*versionName\s*=' composeApp/build.gradle.kts | sed -E 's/.*"(.+)".*/\1/')
-  
+
           echo "version=$versionName" >> $GITHUB_OUTPUT
           echo "code=$versionCode" >> $GITHUB_OUTPUT
-  
+
       - name: Get upstream version
         id: upstream
         run: |
           tag_name="$(curl -s https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest | jq -r .tag_name)"
           echo "version=${tag_name#v}" >> $GITHUB_OUTPUT
-
 
   verify-version:
     needs: [versioning]
@@ -89,8 +88,8 @@ jobs:
       - name: Setup Java 21
         uses: actions/setup-java@v5.2.0
         with:
-          java-version: "21"
-          distribution: "corretto"
+          java-version: '21'
+          distribution: 'corretto'
 
       - name: Restore Gradle dependencies & build cache
         uses: actions/cache@v5
@@ -112,7 +111,6 @@ jobs:
           name: unsigned-release
           path: composeApp/build/outputs/apk/beta/*.apk
 
-
   sign-apks:
     name: Sign APK
     needs: [build-beta]
@@ -129,13 +127,13 @@ jobs:
         uses: Tlaster/android-sign@v1.2.2
         with:
           releaseDirectory: upstream/unsigned
-          signingKeyBase64: "${{ secrets.RELEASE_KEYSTORE }}"
-          keyStorePassword: "${{ secrets.RELEASE_KEYSTORE_PASSWD }}"
-          alias: "${{ secrets.RELEASE_KEY_ALIAS }}"
-          keyPassword: "${{ secrets.RELEASE_KEY_PASSWD }}"
+          signingKeyBase64: '${{ secrets.RELEASE_KEYSTORE }}'
+          keyStorePassword: '${{ secrets.RELEASE_KEYSTORE_PASSWD }}'
+          alias: '${{ secrets.RELEASE_KEY_ALIAS }}'
+          keyPassword: '${{ secrets.RELEASE_KEY_PASSWD }}'
           output: signed
         env:
-          BUILD_TOOLS_VERSION: "34.0.0"
+          BUILD_TOOLS_VERSION: '34.0.0'
 
       - name: Remove trails
         run: |
@@ -167,25 +165,25 @@ jobs:
             ## ⚠️ Beta Release v${{ needs.versioning.outputs.downstream }}-b
             ---
             <div align="center">
-              <img alt="N-Zik Logo" src="https://github.com/NEVARLeVrai/N-Zik/blob/main/assets/design/ic_banner2.png?raw=true" width="1000" />
-              <p><b>N-Zik</b> - by @NEVARLeVrai</p>
+              <img alt="N-Zik Logo" src="https://github.com/N-Zik-Group/N-Zik/blob/main/assets/design/ic_banner2.png?raw=true" width="1000" />
+              <p><b>N-Zik</b> - by @N-Zik-Group</p>
               <p><i>This is a <b>BETA build</b>, intended for testing only.</i></p>
             </div>
 
             ## 🔎 Verification
-            
+
             > Always verify the signature before installing any APK downloaded from GitHub or other distributors.
-            
+
             ### Public key hashes
-            
+
             | Algorithm | Hash digest                                                        |
             |-----------|--------------------------------------------------------------------|
             | SHA-256   | 504cdeb65e52070f0515f9ad295a288a4894d0924e9ef5d6080fdea5bdf841d6 |
             | SHA-1     | 16e766c566e511c7d83f40e30850be27b7040a43                         |
             | MD5       | 16e2bdf083316967c6a2dd5a0391bb76                                 |
-            
+
             ### Certificate hashes
-            
+
             | Algorithm | Hash digest                                                        |
             |-----------|--------------------------------------------------------------------|
             | SHA-256   | b473991ec08a17996a9ef2405934ce35d333ea38135ebfc1b6f4d2ab953132aa |
@@ -193,23 +191,23 @@ jobs:
             | MD5       | 5ae0045983899ab7ca5db38ef785d6ab                                 |
 
             ## 📲 Installation
-            
+
             ⚠️ This is a **BETA release**, not a stable version.  
             It is intended **only for testing and feedback**.
-            
+
             1. Download the **Full BETA build** below.  
             2. Verify its signature using the hashes provided.  
             3. Install on your device (you may need to allow installation from outside the Play Store).  
-            
+
             Please report any crashes, bugs, or unexpected behavior.
-            
+
             ## 📦 Available Build
-            
+
             - **Full (BETA)** – Complete build with all components.  
               ⚠️ May contain bugs or experimental features.
-            
+
             ## 🔄 Update Policy
-            
+
             - 🟡 **Beta Build (-b)**  
               - **Default:** Update notifications for **Beta** are **enabled by default**.  
               - **User options:**  
@@ -224,8 +222,8 @@ jobs:
 
             ## 🔗 Changelog & Downloads
 
-            - Full changelog: [Compare v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }}](https://github.com/NEVARLeVrai/N-Zik/compare/v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }})  
-            - [Changelog text file](https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt)
+            - Full changelog: [Compare v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }}](https://github.com/N-Zik-Group/N-Zik/compare/v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }})  
+            - [Changelog text file](https://github.com/N-Zik-Group/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt)
 
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
@@ -239,7 +237,7 @@ jobs:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           CONTENT: |
             ⚠️ **||<@&1345079801324634195>|| BETA VERSION v${{ needs.versioning.outputs.downstream }}-b AVAILABLE!**
-            
+
             🧪 Help us test the latest features!
           DESCRIPTION: |
             ## 📲 Installation
@@ -272,13 +270,13 @@ jobs:
             ## 🔗 Changelog & Downloads
 
             - 📥 **Full BETA APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-b/N-Zik-beta.apk
-            - 📄 **Changelog:** <https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt>
+            - 📄 **Changelog:** <https://github.com/N-Zik-Group/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt>
             - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-b>
         run: |
           jq -n \
             --arg content "$CONTENT" \
             --arg username "N-Zik Beta" \
-            --arg avatar "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png" \
+            --arg avatar "https://raw.githubusercontent.com/N-Zik-Group/N-Zik/main/assets/discord/fallback_app.png" \
             --arg desc "$DESCRIPTION" \
             '{
               content: $content,
@@ -293,5 +291,5 @@ jobs:
                 }
               }]
             }' > payload.json
-          
+
           curl -X POST -H "Content-Type: application/json" -d @payload.json $WEBHOOK_URL

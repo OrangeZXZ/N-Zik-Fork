@@ -25,12 +25,12 @@
 
   <br>
   
-[![Latest Version](https://img.shields.io/github/v/release/NEVARLeVrai/N-Zik?label=Latest%20Version)](https://github.com/NEVARLeVrai/N-Zik/releases/latest)
+[![Latest Version](https://img.shields.io/github/v/release/N-Zik-Group/N-Zik?label=Latest%20Version)](https://github.com/N-Zik-Group/N-Zik/releases/latest)
 
-[![Total Downloads (all releases)](<https://img.shields.io/github/downloads/NEVARLeVrai/N-Zik/total?label=Total%20Downloads%20(all)>)](https://github.com/NEVARLeVrai/N-Zik/releases) [![Latest Release Downloads](https://img.shields.io/github/downloads/NEVARLeVrai/N-Zik/latest/total?label=Latest%20Release%20Downloads)](https://github.com/NEVARLeVrai/N-Zik/releases/latest)
+[![Total Downloads (all releases)](<https://img.shields.io/github/downloads/N-Zik-Group/N-Zik/total?label=Total%20Downloads%20(all)>)](https://github.com/N-Zik-Group/N-Zik/releases) [![Latest Release Downloads](https://img.shields.io/github/downloads/N-Zik-Group/N-Zik/latest/total?label=Latest%20Release%20Downloads)](https://github.com/N-Zik-Group/N-Zik/releases/latest)
 
-[![Localization Progress](https://badges.crowdin.net/N-Zik/localized.svg)](https://crowdin.com/project/N-Zik) [![License: GPL v3](https://img.shields.io/github/license/NEVARLeVrai/N-Zik?color=blue)](https://www.gnu.org/licenses/gpl-3.0)
-[![CodeFactor](https://www.codefactor.io/repository/github/nevarlevrai/n-zik/badge)](https://www.codefactor.io/repository/github/nevarlevrai/n-zik)
+[![Localization Progress](https://badges.crowdin.net/N-Zik/localized.svg)](https://crowdin.com/project/N-Zik) [![License: GPL v3](https://img.shields.io/github/license/N-Zik-Group/N-Zik?color=blue)](https://www.gnu.org/licenses/gpl-3.0)
+[![CodeFactor](https://www.codefactor.io/repository/github/N-Zik-Group/n-zik/badge)](https://www.codefactor.io/repository/github/N-Zik-Group/n-zik)
 
 <br>
 <br>
@@ -60,7 +60,7 @@ As a **Free and Open Source Software (FOSS)** project, **N‑Zik** and his **dev
 
 ## 📚 Wiki
 
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/NEVARLeVrai/N-Zik)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/N-Zik-Group/N-Zik)
 
 <br><br>
 
@@ -190,10 +190,10 @@ Here are the languages currently supported:
 # 📲 Installation
 
 **Stable versions are available here:**  
-[![GitHub](./assets/get-it-on/GitHub.png)](https://github.com/NEVARLeVrai/N-Zik/releases/latest)
+[![GitHub](./assets/get-it-on/GitHub.png)](https://github.com/N-Zik-Group/N-Zik/releases/latest)
 
 **Beta versions are available here:**  
-[![BetaVersions](https://github.com/NEVARLeVrai/N-Zik/blob/main/assets/get-it-on/GitHubBeta.png?raw=true)](https://github.com/NEVARLeVrai/N-Zik/releases?q=&type=prerelease)
+[![BetaVersions](https://github.com/N-Zik-Group/N-Zik/blob/main/assets/get-it-on/GitHubBeta.png?raw=true)](https://github.com/N-Zik-Group/N-Zik/releases?q=&type=prerelease)
 
 # 🤝 Contributing
 
@@ -207,7 +207,7 @@ Feel free to fix bugs, enhance features, or suggest new ideas.
 Use this command to clone the repo
 
 ```
-git clone -b main --single-branch --recursive https://github.com/NEVARLeVrai/N-Zik.git
+git clone -b main --single-branch --recursive https://github.com/N-Zik-Group/N-Zik.git
 ```
 
 Don't forget to add 'release_notes.txt' in ComposeApp/res/raw/release_notes.txt
@@ -266,25 +266,25 @@ Join us on Crowdin!
 
 ## 🛠️ Build & Deployment
 
-[![Build Full and Minified](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/build-all-flavors-weekly.yml/badge.svg)](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/build-all-flavors-weekly.yml)  
-[![Build Beta](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/build-beta-flavor.yaml/badge.svg)](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/build-beta-flavor.yaml)  
-[![Automatic Cache Builder](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/cache-builder.yaml/badge.svg)](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/cache-builder.yaml)
+[![Build Full and Minified](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-all-flavors-weekly.yml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-all-flavors-weekly.yml)  
+[![Build Beta](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-beta-flavor.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-beta-flavor.yaml)  
+[![Automatic Cache Builder](https://github.com/N-Zik-Group/N-Zik/actions/workflows/cache-builder.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/cache-builder.yaml)
 ## 🔄 Automation & Maintenance
 
-[![Automatic Dependency Submission](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/dependency-graph/auto-submission/badge.svg)](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/dependency-graph/auto-submission)  
-[![Dependabot Updates](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/dependabot/dependabot-updates)  
-[![Chores](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/house-keeper.yaml/badge.svg)](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/house-keeper.yaml)  
-[![Close stale tickets weekly](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/close-stale-tickets.yaml/badge.svg)](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/close-stale-tickets.yaml)  
-[![Comment or close on label](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/comment-on-label.yaml/badge.svg)](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/comment-on-label.yaml)  
-[![CodeQL](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/github-code-scanning/codeql)  
+[![Automatic Dependency Submission](https://github.com/N-Zik-Group/N-Zik/actions/workflows/dependency-graph/auto-submission/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/dependency-graph/auto-submission)  
+[![Dependabot Updates](https://github.com/N-Zik-Group/N-Zik/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/dependabot/dependabot-updates)  
+[![Chores](https://github.com/N-Zik-Group/N-Zik/actions/workflows/house-keeper.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/house-keeper.yaml)  
+[![Close stale tickets weekly](https://github.com/N-Zik-Group/N-Zik/actions/workflows/close-stale-tickets.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/close-stale-tickets.yaml)  
+[![Comment or close on label](https://github.com/N-Zik-Group/N-Zik/actions/workflows/comment-on-label.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/comment-on-label.yaml)  
+[![CodeQL](https://github.com/N-Zik-Group/N-Zik/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/github-code-scanning/codeql)  
 
 ## 🌐 Localization
 
-[![Sync Crowdin Translations](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/sync-crowdin-translations.yaml/badge.svg)](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/sync-crowdin-translations.yaml)
+[![Sync Crowdin Translations](https://github.com/N-Zik-Group/N-Zik/actions/workflows/sync-crowdin-translations.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/sync-crowdin-translations.yaml)
 
 ## 👥 Contributors
 
-[![Fetch, create, and update repo's contributors](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/weekly-update-contributors.yaml/badge.svg)](https://github.com/NEVARLeVrai/N-Zik/actions/workflows/weekly-update-contributors.yaml)
+[![Fetch, create, and update repo's contributors](https://github.com/N-Zik-Group/N-Zik/actions/workflows/weekly-update-contributors.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/weekly-update-contributors.yaml)
 
 # ⚠️ Disclaimer
 

@@ -67,11 +67,11 @@ class DiscordPresenceManager(
     }
 
     private fun getSmallImageUrl(): String {
-        return "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png"
+        return "https://raw.githubusercontent.com/N-Zik-Group/N-Zik/main/assets/discord/fallback_app.png"
     }
 
     private fun getLargeImageFallback(): String {
-        return "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_album.png"
+        return "https://raw.githubusercontent.com/N-Zik-Group/N-Zik/main/assets/discord/fallback_album.png"
     }
 
     /**
@@ -262,7 +262,7 @@ class DiscordPresenceManager(
         val smallImageUrl = getSmallImageUrl()
         val largeTextValue = if (state.isNotBlank()) "$details - $state" else details
         
-        val buttonsList = mutableListOf(Button(label = "Get N-Zik", url = "https://github.com/NEVARLeVrai/N-Zik/"))
+        val buttonsList = mutableListOf(Button(label = "Get N-Zik", url = "https://github.com/N-Zik-Group/N-Zik/"))
         if (mediaItem != null) {
             buttonsList.add(Button(label = "Listen to YTMusic", url = "https://music.youtube.com/watch?v=${mediaItem.mediaId}"))
         }

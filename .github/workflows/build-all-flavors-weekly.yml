@@ -214,7 +214,7 @@ jobs:
             ## ✨ What's New in v${{ needs.versioning.outputs.downstream }}
             ---
             <div align="center">
-              <img alt="N-Zik Logo" src="https://github.com/NEVARLeVrai/N-Zik/blob/main/assets/design/ic_banner2.png?raw=true" width="1000" />
+              <img alt="N-Zik Logo" src="https://github.com/N-Zik-Group/N-Zik/blob/main/assets/design/ic_banner2.png?raw=true" width="1000" />
               <p><b>N-Zik</b> - by @NEVARLeVrai</p>
             </div>
             
@@ -272,8 +272,8 @@ jobs:
             
             ## 🔗 Changelog & Downloads
             
-            - Full changelog: [Compare v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }}](https://github.com/NEVARLeVrai/N-Zik/compare/v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }})  
-            - [Changelog text file](https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt)
+            - Full changelog: [Compare v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }}](https://github.com/N-Zik-Group/N-Zik/compare/v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }})  
+            - [Changelog text file](https://github.com/N-Zik-Group/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt)
 
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
@@ -350,13 +350,13 @@ jobs:
 
             - 📥 **Full APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}/N-Zik-full.apk
             - 📥 **Minified APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}/N-Zik-minified.apk
-            - 📄 **Changelog:** <https://github.com/NEVARLeVrai/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt>
+            - 📄 **Changelog:** <https://github.com/N-Zik-Group/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt>
             - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}>
         run: |
           jq -n \
             --arg content "$CONTENT" \
             --arg username "N-Zik Stable" \
-            --arg avatar "https://raw.githubusercontent.com/NEVARLeVrai/N-Zik/main/assets/discord/fallback_app.png" \
+            --arg avatar "https://raw.githubusercontent.com/N-Zik-Group/N-Zik/main/assets/discord/fallback_app.png" \
             --arg desc "$DESCRIPTION" \
             '{
               content: $content,
