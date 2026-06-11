@@ -755,6 +755,9 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+        if (!isInternalCrossfadeSeek && (reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK || reason == Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED)) {
+            cancelCrossfadeAndReset()
+        }
         scheduleCrossfade()
 
         val networkQuality = NetworkQualityHelper.getCurrentNetworkQuality(this)
@@ -1537,6 +1540,10 @@ class PlayerServiceModern : MediaLibraryService(),
     ) {
         Timber.d("PlayerServiceModern onPositionDiscontinuity oldPosition ${oldPosition.mediaItemIndex} newPosition ${newPosition.mediaItemIndex} reason $reason")
         
+        if (!isInternalCrossfadeSeek && (reason == Player.DISCONTINUITY_REASON_SEEK || reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT || reason == Player.DISCONTINUITY_REASON_SKIP)) {
+            cancelCrossfadeAndReset()
+        }
+
         if (reason == Player.DISCONTINUITY_REASON_SEEK) {
             scheduleCrossfade()
         }
@@ -2072,6 +2079,7 @@ class PlayerServiceModern : MediaLibraryService(),
     private var crossfadeTriggerJob: kotlinx.coroutines.Job? = null
     private var fadingPlayer: ExoPlayer? = null
     private var secondaryPlayer: ExoPlayer? = null
+    private var isInternalCrossfadeSeek = false
 
     private val crossfadeDuration: Int
         get() = preferences.getInt(app.it.fast4x.rimusic.utils.crossfadeDurationKey, 3000)
@@ -2209,7 +2217,7 @@ class PlayerServiceModern : MediaLibraryService(),
             .build()
     }
 
-    private fun preloadCrossfade(triggerTime: Long) {
+    private suspend fun preloadCrossfade(triggerTime: Long) {
         if (isCrossfading || secondaryPlayer != null) return
         Timber.d("Crossfade: Preloading current song for fade out...")
 
@@ -2225,6 +2233,31 @@ class PlayerServiceModern : MediaLibraryService(),
         for (i in 0 until itemCount) {
             items.add(player.getMediaItemAt(i))
         }
+
+        // --- Hack: Preload NEXT song into cache at 0 volume ---
+        val nextIndex = if (player.repeatMode == Player.REPEAT_MODE_ONE) {
+            currentIndex
+        } else {
+            player.nextMediaItemIndex
+        }
+        if (nextIndex != C.INDEX_UNSET) {
+            Timber.d("Crossfade: Briefly playing next song at 0 volume to cache it...")
+            secPlayer.setMediaItem(player.getMediaItemAt(nextIndex))
+            secPlayer.volume = 0f
+            secPlayer.prepare()
+            secPlayer.playWhenReady = true
+            
+            // Wait until it actually buffers a bit
+            var waitTime = 0
+            while(secPlayer.playbackState != Player.STATE_READY && isActive && waitTime < 2000) {
+                delay(50)
+                waitTime += 50
+            }
+            // Let it download roughly 500ms into cache to ensure instant playback later
+            if (isActive) delay(500)
+            secPlayer.stop()
+        }
+        // -----------------------------------------------------
 
         secPlayer.setMediaItems(items)
         secPlayer.seekTo(currentIndex, triggerTime)
@@ -2261,7 +2294,9 @@ class PlayerServiceModern : MediaLibraryService(),
             // Remove listener so it doesn't pause secPlayer while buffering
             player.removeListener(crossfadeSyncListener)
             // Skip the primary player to the next song! UI updates instantly!
+            isInternalCrossfadeSeek = true
             player.seekTo(nextIndex, 0)
+            isInternalCrossfadeSeek = false
             player.addListener(crossfadeSyncListener)
         }
 
@@ -2306,6 +2341,18 @@ class PlayerServiceModern : MediaLibraryService(),
                     cleanupCrossfade()
                 }
             }
+    }
+
+    private fun cancelCrossfadeAndReset() {
+        if (isCrossfading || crossfadeTriggerJob != null) {
+            Timber.d("Crossfade: Cancelling crossfade due to user skip/seek")
+            crossfadeJob?.cancel()
+            crossfadeJob = null
+            crossfadeTriggerJob?.cancel()
+            crossfadeTriggerJob = null
+            player.volume = preferences.getFloat(playbackVolumeKey, 1f)
+            cleanupCrossfade()
+        }
     }
 
     private fun cleanupCrossfade() {
