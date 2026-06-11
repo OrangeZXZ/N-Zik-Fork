@@ -1,2 +1,6 @@
 Added: Real-time audio wave visualization in the seekbar
 Fixed: Concurrent execution with NextVisualizer by implementing a shared visualizer system
+Added: True static waveform timeline extraction and display based on MediaExtractor (for cached songs)
+Removed: Deprecated "Fake Audio Bar" logic, fully replaced with dynamic and static Audio Waves
+Added: Automatic cleanup for waveform cache when clearing song downloads, offline cache, or listen history
+Improved: Static waveform visualization aesthetics (real & fake) with dynamic amplitudes and removed unnecessary extraction logs

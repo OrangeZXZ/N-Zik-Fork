@@ -813,7 +813,7 @@ fun UiSettings(
                                 if (uiType == UiType.ViMusic) {
                                     disablePlayerHorizontalSwipe = true
                                     disableIconButtonOnTop = true
-                                    playerTimelineType = PlayerTimelineType.FakeAudioBar
+                                    playerTimelineType = PlayerTimelineType.AudioWaves
                                     visualizerEnabled = false
                                     thumbnailSizeDp = 30f
                                     thumbnailTapEnabled = true

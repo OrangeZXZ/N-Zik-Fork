@@ -54,9 +54,9 @@ import app.it.fast4x.rimusic.enums.PauseBetweenSongs
 import app.it.fast4x.rimusic.enums.PlayerTimelineType
 import app.it.fast4x.rimusic.models.ui.UiMedia
 import app.n_zik.android.typography
-import app.it.fast4x.rimusic.ui.components.ProgressPercentage
+import app.n_zik.android.extensions.audiobar.views.ProgressPercentage
 import app.it.fast4x.rimusic.ui.components.SeekBar
-import app.it.fast4x.rimusic.ui.components.SeekBarAudioWaves
+import app.n_zik.android.extensions.audiobar.views.SeekBarVisualizer
 import app.it.fast4x.rimusic.ui.components.SeekBarColored
 import app.it.fast4x.rimusic.ui.components.SeekBarCustom
 import app.it.fast4x.rimusic.ui.components.SeekBarThin
@@ -113,11 +113,12 @@ fun GetSeekBar(
 
         if (playerTimelineType != PlayerTimelineType.Default
             && playerTimelineType != PlayerTimelineType.Wavy
-            && playerTimelineType != PlayerTimelineType.FakeAudioBar
+            && playerTimelineType != PlayerTimelineType.AudioWaves
             && playerTimelineType != PlayerTimelineType.ThinBar
             && playerTimelineType != PlayerTimelineType.ColoredBar
             && playerTimelineType != PlayerTimelineType.VisualizerBar
-            )
+            && playerTimelineType != PlayerTimelineType.BodiedBar
+        )
             SeekBarCustom(
                 type = playerTimelineType,
                 value = scrubbingPosition ?: position(),
@@ -219,13 +220,10 @@ fun GetSeekBar(
             )
         }
 
-        if (playerTimelineType == PlayerTimelineType.FakeAudioBar || playerTimelineType == PlayerTimelineType.VisualizerBar) {
-            val isFake = playerTimelineType == PlayerTimelineType.FakeAudioBar
-            SeekBarAudioWaves(
-                audioSessionIdProvider = { if (isFake) null else try { binder.player.audioSessionId } catch (e: Exception) { null } },
+        if (playerTimelineType == PlayerTimelineType.VisualizerBar) {
+            SeekBarVisualizer(
+                audioSessionIdProvider = { try { binder.player.audioSessionId } catch (e: Exception) { null } },
                 isPlaying = binder.player.isPlaying,
-                isRealtime = !isFake,
-                isFake = isFake,
                 progressPercentage = { ProgressPercentage.safeValue((position().toFloat() / duration().toFloat()).coerceIn(0f, 1f)) },
                 playedColor = colorPalette().accent,
                 notPlayedColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary,
@@ -235,10 +233,25 @@ fun GetSeekBar(
                     scrubbingPosition = null
                 },
                 modifier = Modifier
-                    .height(if (!isFake) 50.dp else 40.dp)
+                    .height(50.dp)
             )
         }
 
+        if (playerTimelineType == PlayerTimelineType.AudioWaves) {
+            app.n_zik.android.extensions.audiobar.views.SeekBarStaticAudioWaves(
+                uiMedia = media,
+                position = scrubbingPosition ?: position(),
+                duration = duration(),
+                isPlaying = binder.player.isPlaying,
+                onPositionChange = { scrubbingPosition = it },
+                onPositionChangeFinished = {
+                    scrubbingPosition?.let { binder.player.seekTo(it) }
+                    scrubbingPosition = null
+                },
+                audioSessionId = { try { binder.player.audioSessionId } catch (e: Exception) { -1 } },
+                modifier = Modifier.fillMaxWidth().height(40.dp)
+            )
+        }
 
         if (playerTimelineType == PlayerTimelineType.ColoredBar)
             SeekBarColored(

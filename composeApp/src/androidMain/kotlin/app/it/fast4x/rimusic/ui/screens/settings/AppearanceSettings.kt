@@ -768,7 +768,7 @@ fun AppearanceSettings(
                 playerBackgroundColors = PlayerBackgroundColors.BlurredCoverColor
                 blurStrength = 50f
                 playerInfoType = PlayerInfoType.Essential
-                playerTimelineType = PlayerTimelineType.FakeAudioBar
+                playerTimelineType = PlayerTimelineType.AudioWaves
                 playerTimelineSize = PlayerTimelineSize.Biggest
                 playerControlsType = PlayerControlsType.Modern
                 playerPlayButtonType = PlayerPlayButtonType.Disabled

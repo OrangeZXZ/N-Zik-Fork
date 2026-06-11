@@ -130,6 +130,8 @@ fun DataSettings() {
                         cache.removeResource(song)
                     }
                 }
+                val deleted = java.io.File(context.filesDir, "waveforms").deleteRecursively()
+                android.util.Log.d("NZik_DataSettings", "Waveforms cache deleted (offline songs): $deleted")
                 cleanCacheOfflineSongs = false
                 cacheCleanedCounter++
             }
@@ -156,6 +158,8 @@ fun DataSettings() {
                         }
                     }
                 }
+                val deleted = java.io.File(context.filesDir, "waveforms").deleteRecursively()
+                android.util.Log.d("NZik_DataSettings", "Waveforms cache deleted (downloads): $deleted")
                 cleanDownloadCache = false
                 cacheCleanedCounter++
             }
@@ -559,6 +563,8 @@ fun DataSettings() {
                             Database.asyncTransaction {
                                 eventTable.deleteAll()
                             }
+                            val deleted = java.io.File(context.filesDir, "waveforms").deleteRecursively()
+                            android.util.Log.d("NZik_DataSettings", "Waveforms cache deleted (history clear): $deleted")
                             Toaster.done()
                         }
                     )

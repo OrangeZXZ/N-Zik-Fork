@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components
+package app.n_zik.android.extensions.audiobar.views
 
 import android.media.audiofx.Visualizer
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -55,11 +55,9 @@ import androidx.compose.ui.unit.dp
 private const val waveWidthPercentOfSpaceAvailable = 0.5f
 
 @Composable
-fun SeekBarAudioWaves(
+fun SeekBarVisualizer(
     audioSessionIdProvider: () -> Int? = { null },
     isPlaying: Boolean = false,
-    isRealtime: Boolean = false,
-    isFake: Boolean = false,
     progressPercentage: () -> ProgressPercentage,
     playedColor: Color,
     notPlayedColor: Color,
@@ -104,11 +102,11 @@ fun SeekBarAudioWaves(
             mutableStateOf(ByteArray(numberOfWaves) { 0.toByte() })
         }
 
-        if (isRealtime && !hasPermission) {
+        if (!hasPermission) {
             LaunchedEffect(Unit) { launcher.launch(permission) }
         }
 
-        if (isRealtime && hasPermission && audioSessionId != null && isPlaying) {
+        if (hasPermission && audioSessionId != null && isPlaying) {
             val currentSessionId = audioSessionId!!
             LaunchedEffect(currentSessionId, isPlaying) {
                 val helper = app.n_zik.android.extensions.nextvisualizer.utils.VisualizerHelper(currentSessionId)
@@ -156,7 +154,7 @@ fun SeekBarAudioWaves(
                     e.printStackTrace()
                 }
             }
-        } else if (isRealtime && !isPlaying) {
+        } else if (!isPlaying) {
             // Decay to flat when paused
             LaunchedEffect(isPlaying) {
                 while(true) {
@@ -202,7 +200,7 @@ fun SeekBarAudioWaves(
                     }
                 },
         ) {
-            if (isRealtime && !hasPermission) {
+            if (!hasPermission) {
                 BasicText(
                     text = stringResource(R.string.require_mic_permission),
                     modifier = Modifier.fillMaxWidth(),
@@ -211,7 +209,7 @@ fun SeekBarAudioWaves(
             } else {
                 repeat(numberOfWaves) { waveIndex ->
                     AudioWavePill(
-                        waveform = if (isFake) null else liveWaveform,
+                        waveform = liveWaveform,
                         progressPercentage = progressPercentage,
                         numberOfWaves = numberOfWaves,
                         waveIndex = waveIndex,

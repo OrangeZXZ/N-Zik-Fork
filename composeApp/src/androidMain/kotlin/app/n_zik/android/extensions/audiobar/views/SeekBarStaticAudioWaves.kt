@@ -27,11 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import app.it.fast4x.rimusic.models.ui.UiMedia
 import app.n_zik.android.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.ui.components.ProgressPercentage
-import app.it.fast4x.rimusic.ui.components.SeekBarAudioWaves
 import app.n_zik.android.colorPalette
 import app.n_zik.android.download.utils.MyDownloadHelper
 import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
+import kotlinx.coroutines.isActive
 import kotlin.math.abs
 
 @Composable
@@ -62,15 +61,23 @@ fun SeekBarStaticAudioWaves(
             amplitudes = null // CLEAR previous waveform
             isExtracting = true
             
-            // Retry loop in case the stream hasn't started caching yet
-            var extracted: List<Int>? = null
-            for (i in 0..5) { // Try 6 times (up to 3 seconds)
-                extracted = WaveformExtractor.getOrExtractWaveform(context, uiMedia.id, caches)
-                if (extracted != null) break
-                kotlinx.coroutines.delay(500)
+            while (amplitudes == null && isActive) {
+                var extracted: List<Int>? = null
+                // Fast retries at the beginning
+                for (i in 0..5) { 
+                    extracted = WaveformExtractor.getOrExtractWaveform(context, uiMedia.id, caches)
+                    if (extracted != null) break
+                    kotlinx.coroutines.delay(500)
+                }
+                
+                amplitudes = extracted
+                isExtracting = false
+                
+                if (extracted == null) {
+                    // Not fully cached yet. Wait 5 seconds before trying again (in case it's currently downloading/streaming)
+                    kotlinx.coroutines.delay(5000)
+                }
             }
-            amplitudes = extracted
-            isExtracting = false
         } else {
             amplitudes = null
             isExtracting = false
@@ -80,7 +87,37 @@ fun SeekBarStaticAudioWaves(
     val playedColor = colorPalette().accent
     val unplayedColor = colorPalette().textSecondary.copy(alpha = 0.3f)
 
-    if (amplitudes != null) {
+    val displayAmplitudes = amplitudes ?: remember(uiMedia?.id) {
+        val seed = uiMedia?.id?.hashCode()?.toLong() ?: System.currentTimeMillis()
+        val random = java.util.Random(seed)
+        
+        List(150) { i ->
+            val wavePosition = i + 1
+            val centerPoint = 150 / 2
+            val distanceFromCenterPoint = kotlin.math.abs(centerPoint - wavePosition)
+            val percentageToCenterPoint = ((centerPoint - distanceFromCenterPoint).toFloat() / centerPoint)
+            
+            // Interpolate max height from 10% at edges to 85% at center
+            val maxHeightFraction = androidx.compose.ui.util.lerp(
+                0.1f,
+                0.85f,
+                percentageToCenterPoint
+            )
+            
+            val validMaxHeightFraction = if (maxHeightFraction.isNaN()) 0.1f else maxHeightFraction
+            
+            val amplitude = if (validMaxHeightFraction <= 0.05f) {
+                0.05f
+            } else {
+                0.05f + random.nextFloat() * (validMaxHeightFraction - 0.05f)
+            }
+            
+            // Map fraction to 0-100 amplitude
+            (amplitude * 100f).toInt().coerceIn(5, 100)
+        }
+    }
+
+    if (displayAmplitudes.isNotEmpty()) {
         // Draw static waves
         val progress = if (duration > 0) position.toFloat() / duration.toFloat() else 0f
         
@@ -129,26 +166,26 @@ fun SeekBarStaticAudioWaves(
                 val canvasWidth = size.width
                 val canvasHeight = size.height
                 
-                val maxAmp = amplitudes!!.maxOrNull()?.toFloat()?.coerceAtLeast(1f) ?: 1f
+                val maxAmp = displayAmplitudes.maxOrNull()?.toFloat()?.coerceAtLeast(1f) ?: 1f
                 
-                val barCount = 100 // We draw 100 bars across the width
+                val barCount = 150 // We draw 150 bars across the width
                 val barWidth = canvasWidth / (barCount * 1.5f) // Leave space between bars
                 val spacing = (canvasWidth - (barWidth * barCount)) / (barCount - 1).coerceAtLeast(1)
                 
-                // Group the amplitudes into 100 chunks
-                val chunkSize = (amplitudes!!.size.toFloat() / barCount).coerceAtLeast(1f)
+                // Group the amplitudes into 150 chunks
+                val chunkSize = (displayAmplitudes.size.toFloat() / barCount).coerceAtLeast(1f)
                 
                 for (i in 0 until barCount) {
-                    val startIdx = (i * chunkSize).toInt().coerceIn(0, amplitudes!!.size - 1)
-                    val endIdx = ((i + 1) * chunkSize).toInt().coerceIn(0, amplitudes!!.size)
+                    val startIdx = (i * chunkSize).toInt().coerceIn(0, displayAmplitudes.size - 1)
+                    val endIdx = ((i + 1) * chunkSize).toInt().coerceIn(0, displayAmplitudes.size)
                     
                     var chunkMax = 0
                     if (startIdx < endIdx) {
                         for (j in startIdx until endIdx) {
-                            if (amplitudes!![j] > chunkMax) chunkMax = amplitudes!![j]
+                            if (displayAmplitudes[j] > chunkMax) chunkMax = displayAmplitudes[j]
                         }
                     } else {
-                        chunkMax = amplitudes!![startIdx]
+                        chunkMax = displayAmplitudes[startIdx]
                     }
                     
                     // Normalize chunk amplitude between 0.1 and 1.0
@@ -170,25 +207,5 @@ fun SeekBarStaticAudioWaves(
                 }
             }
         }
-    } else {
-        val currentPosition by rememberUpdatedState(position)
-        val currentDuration by rememberUpdatedState(duration)
-
-        // Fallback to real-time fake audio waves
-        SeekBarAudioWaves(
-            modifier = modifier.height(40.dp),
-            audioSessionIdProvider = { null },
-            isPlaying = isPlaying,
-            isRealtime = false,
-            isFake = true,
-            progressPercentage = { ProgressPercentage.safeValue((if (currentDuration > 0) currentPosition.toFloat() / currentDuration.toFloat() else 0f).coerceIn(0f, 1f)) },
-            playedColor = playedColor,
-            notPlayedColor = unplayedColor,
-            waveInteraction = {
-                val newPosition = (it.value * currentDuration).toLong()
-                onPositionChange(newPosition)
-                onPositionChangeFinished?.invoke()
-            }
-        )
     }
 }
