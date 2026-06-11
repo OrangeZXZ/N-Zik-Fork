@@ -2,8 +2,3 @@
 	path = modules/innertube
 	url = https://gitlab.com/tannguyen047/innertube-kotlin.git
 	branch = dev
-[submodule "strings-modifier"]
-	path = scripts/strings-modifier
-	url = https://gitlab.com/tannguyen047/string-modifier
-	branch = dev
-
