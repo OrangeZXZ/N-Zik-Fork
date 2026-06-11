@@ -3,3 +3,4 @@
 - Removed unused `scripts/strings-modifier` submodule
 - Removed unused `modules/innertube` submodule (the app uses `extensions/innertube` instead)
 - Migrated `modules/discordrpc` into a standalone GitHub repository and re-added it as a submodule
+- Updated project references and submodule URLs for the move to the N-Zik-Group organization
