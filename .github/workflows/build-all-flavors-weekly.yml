@@ -198,6 +198,8 @@ jobs:
   upload-to-release:
     needs: [build_time, versioning, sign-apks]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  
     steps:
       - name: Download signed APKs
         uses: actions/download-artifact@v8.0.1
