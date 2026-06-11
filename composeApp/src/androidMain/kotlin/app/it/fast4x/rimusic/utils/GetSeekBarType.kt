@@ -249,6 +249,7 @@ fun GetSeekBar(
                     scrubbingPosition = null
                 },
                 audioSessionId = { try { binder.player.audioSessionId } catch (e: Exception) { -1 } },
+                unplayedColor = if (transparentbar) Color.Transparent else colorPalette().textSecondary.copy(alpha = 0.3f),
                 modifier = Modifier.fillMaxWidth().height(40.dp)
             )
         }

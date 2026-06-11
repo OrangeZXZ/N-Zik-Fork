@@ -72,8 +72,32 @@ fun SeekBarVisualizer(
         
         var audioSessionId by remember { mutableStateOf(audioSessionIdProvider()) }
         
+        val binder = app.n_zik.android.LocalPlayerServiceBinder.current
+        var localIsPlaying by remember(binder, isPlaying) { mutableStateOf(binder?.player?.isPlaying ?: isPlaying) }
+
+        androidx.compose.runtime.DisposableEffect(binder) {
+            val listener = object : androidx.media3.common.Player.Listener {
+                override fun onIsPlayingChanged(isPlayingChanged: Boolean) {
+                    localIsPlaying = isPlayingChanged
+                }
+            }
+            binder?.player?.addListener(listener)
+            // Catch state change if media started instantly
+            binder?.player?.isPlaying?.let { localIsPlaying = it }
+            onDispose {
+                binder?.player?.removeListener(listener)
+            }
+        }
+        
+        // Also respect parameter updates just in case
         LaunchedEffect(isPlaying) {
-            while (isPlaying) {
+            if (isPlaying != localIsPlaying) {
+                localIsPlaying = isPlaying
+            }
+        }
+
+        LaunchedEffect(localIsPlaying) {
+            while (localIsPlaying) {
                 val newId = audioSessionIdProvider()
                 if (newId != null && newId != audioSessionId) {
                     audioSessionId = newId
@@ -106,9 +130,9 @@ fun SeekBarVisualizer(
             LaunchedEffect(Unit) { launcher.launch(permission) }
         }
 
-        if (hasPermission && audioSessionId != null && isPlaying) {
+        if (hasPermission && audioSessionId != null && localIsPlaying) {
             val currentSessionId = audioSessionId!!
-            LaunchedEffect(currentSessionId, isPlaying) {
+            LaunchedEffect(currentSessionId, localIsPlaying) {
                 val helper = app.n_zik.android.extensions.nextvisualizer.utils.VisualizerHelper(currentSessionId)
                 
                 try {
@@ -154,9 +178,9 @@ fun SeekBarVisualizer(
                     e.printStackTrace()
                 }
             }
-        } else if (!isPlaying) {
+        } else if (!localIsPlaying) {
             // Decay to flat when paused
-            LaunchedEffect(isPlaying) {
+            LaunchedEffect(localIsPlaying) {
                 while(true) {
                     var allZero = true
                     val newWaveform = liveWaveform.clone()
@@ -221,7 +245,7 @@ fun SeekBarVisualizer(
             }
         }
 
-        if (!isPlaying) {
+        if (!localIsPlaying) {
             val thumbWidth = 2.dp
             val offsetDp = (maxWidth * progressPercentage().value) - (thumbWidth / 2)
             val maxOffset = if (maxWidth > thumbWidth) maxWidth - thumbWidth else 0.dp

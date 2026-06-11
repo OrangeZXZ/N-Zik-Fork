@@ -4,3 +4,10 @@ Added: True static waveform timeline extraction and display based on MediaExtrac
 Removed: Deprecated "Fake Audio Bar" logic, fully replaced with dynamic and static Audio Waves
 Added: Automatic cleanup for waveform cache when clearing song downloads, offline cache, or listen history
 Improved: Static waveform visualization aesthetics (real & fake) with dynamic amplitudes and removed unnecessary extraction logs
+Fixed: App crash on background playback due to ForegroundServiceStartNotAllowedException in PlayerServiceModern
+Fixed: IllegalArgumentException crash in SeekBarStaticAudioWaves on Canvas initialization with zero dimensions
+Added: Flat line animation when paused/stopped and current position thumb indicator for static timelines
+Improved: Seekbars properly handle transparent mode background colors
+Fixed: Reverted GetSeekBarType.kt to use binder.player.isPlaying and introduced internal isPlayerPlaying DisposableEffect inside SeekBarStaticAudioWaves to accurately track ExoPlayer playback state independent of parent recomposition.
+Fixed: Fixed race condition in SeekBarStaticAudioWaves where isPlaying state transition was missed if ExoPlayer started instantly from cache
+Fixed: Fixed visualizer bar (SeekBarVisualizer) stuck as flat line on cached songs by adding internal ExoPlayer listener instead of relying on stale parent state
