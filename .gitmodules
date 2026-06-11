@@ -1,0 +1,3 @@
+[submodule "modules/discordrpc"]
+	path = modules/discordrpc
+	url = https://github.com/NEVARLeVrai/DiscordRPC-Android.git
