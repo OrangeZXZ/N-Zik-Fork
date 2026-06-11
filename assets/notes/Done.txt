@@ -1,0 +1,2 @@
+- Fixed crossfade issues (equal-power fade, increased steps, removed pause during transition) in PlayerServiceModern
+- Removed unused `metrolist-innertube` submodule and cleaned up its dependencies

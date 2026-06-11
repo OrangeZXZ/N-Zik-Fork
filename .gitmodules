@@ -6,7 +6,4 @@
 	path = scripts/strings-modifier
 	url = https://gitlab.com/tannguyen047/string-modifier
 	branch = dev
-[submodule "metrolist-innertube"]
-	path = modules/metrolist-innertube
-	url = https://github.com/NEVARLeVrai/Metrolist-innertube.git
-	branch = main
+

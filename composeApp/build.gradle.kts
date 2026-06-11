@@ -69,10 +69,6 @@ kotlin {
             implementation(projects.piped)
             implementation(projects.invidious)
 
-            implementation(projects.metrolist) {
-                exclude(group = "com.google.protobuf", module = "protobuf-java")
-                exclude(group = "com.github.mostafaalagamy", module = "MetrolistExtractor")
-            }
 
             implementation(libs.room)
             implementation(libs.room.runtime)
@@ -264,10 +260,6 @@ dependencies {
     implementation(projects.piped)
     implementation(libs.freedroidwarn)
 
-    implementation(projects.metrolist) {
-        exclude(group = "com.google.protobuf", module = "protobuf-java")
-        exclude(group = "com.github.mostafaalagamy", module = "MetrolistExtractor")
-    }
 
     coreLibraryDesugaring(libs.desugaring.nio)
 

@@ -2267,31 +2267,27 @@ class PlayerServiceModern : MediaLibraryService(),
 
         crossfadeJob = coroutineScope.launch(kotlinx.coroutines.Dispatchers.Main) {
             try {
-                // Wait until the primary player has finished buffering the new song
-                // We use a timeout so it doesn't hang forever
-                val timeoutMs = 15000L
-                val startTime = System.currentTimeMillis()
-                while (player.playbackState != Player.STATE_READY && isActive) {
-                    if (System.currentTimeMillis() - startTime > timeoutMs) break
-                    delay(50)
-                }
+                // Don't block waiting for STATE_READY — that causes the audible pause.
+                // Instead, start the fade immediately. The primary player's volume ramps
+                // up gradually, so any brief buffering is masked by the still-playing
+                // secondary player (old song fading out).
 
-                // If cancelled while waiting
-                if (!isActive) return@launch
-
-                val steps = 20
+                val steps = 50
                 val durationMs = crossfadeDuration.toLong()
                 val stepTime = durationMs / steps
 
                 for (i in 1..steps) {
                     if (!isActive) break
+                    // Only freeze the fade if user explicitly paused, not for buffering
                     while (!player.playWhenReady && isActive) {
                         delay(100)
                     }
 
                     val progress = i / steps.toFloat()
-                    val fadeIn = 1.0f - (1.0f - progress) * (1.0f - progress)
-                    val fadeOut = (1.0f - progress) * (1.0f - progress)
+                    // Equal-power crossfade: sqrt curves ensure constant perceived loudness
+                    // throughout the transition — no sudden drowning or volume dip
+                    val fadeIn = kotlin.math.sqrt(progress)
+                    val fadeOut = kotlin.math.sqrt(1.0f - progress)
 
                     try {
                         player.volume = startVolume * fadeIn

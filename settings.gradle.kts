@@ -36,8 +36,4 @@ project(":ktor-client-brotli").projectDir = file("extensions/ktor-client-brotli"
 include(":discordrpc")
 project(":discordrpc").projectDir = file("modules/discordrpc")
 include(":innertube")
-project(":innertube").projectDir = file("modules/innertube")
-include(":metrolist")
-val metrolistNestedDir = file("modules/metrolist-innertube/innertube")
-val metrolistRootDir = file("modules/metrolist-innertube")
-project(":metrolist").projectDir = if (metrolistNestedDir.isDirectory) metrolistNestedDir else metrolistRootDir
+project(":innertube").projectDir = file("modules/innertube")

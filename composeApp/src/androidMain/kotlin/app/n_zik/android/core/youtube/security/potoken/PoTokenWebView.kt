@@ -7,7 +7,6 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import androidx.annotation.MainThread
 import androidx.collection.ArrayMap
-import com.metrolist.innertube.YouTube
 import app.n_zik.android.BuildConfig
 import it.fast4x.innertube.utils.getProxy
 import kotlinx.coroutines.CoroutineExceptionHandler
