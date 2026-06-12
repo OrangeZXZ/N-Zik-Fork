@@ -15,9 +15,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.zIndex
-import app.it.fast4x.compose.reordering.draggedItem
-import app.it.fast4x.compose.reordering.rememberReorderingState
-import app.it.fast4x.compose.reordering.reorder
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 import androidx.compose.material3.Icon
 import androidx.compose.ui.res.painterResource

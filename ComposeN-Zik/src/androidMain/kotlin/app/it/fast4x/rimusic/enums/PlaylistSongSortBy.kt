@@ -25,7 +25,7 @@ enum class PlaylistSongSortBy(
 
     RelativePlayTime( R.string.relative_listening_time, R.drawable.stats_chart ),
 
-    Position( R.string.sort_position, R.drawable.position ),
+    Custom( R.string.sort_custom_order, R.drawable.position ),
 
     Title( R.string.sort_title, R.drawable.text ),
 

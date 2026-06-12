@@ -20,7 +20,9 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.utils.isAtLeastAndroid14
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import app.kreate.android.me.knighthat.utils.Toaster
 
 class Reposition private constructor(
@@ -53,21 +55,17 @@ class Reposition private constructor(
     override fun onShortClick() = super.onShortClick()
 
     override fun onConfirm() {
-        Database.asyncTransaction {
-            if( isAtLeastAndroid14 )
-                songPlaylistMapTable.shufflePositions( playlistId )
-            else
-                // This is a slower version, kept for backward-compatibility
-                runBlocking( Dispatchers.Default ) {
-                    songPlaylistMapTable.allSongsOf( playlistId )
-                                        .first()
-                                        .shuffled()
-                                        .mapIndexed { index, song ->
-                                            SongPlaylistMap( song.id, playlistId, index )
-                                        }
-                }.also( songPlaylistMapTable::updateReplace )
-
-            Toaster.done()
+        CoroutineScope( Dispatchers.Default ).launch {
+            val currentItems = Database.songPlaylistMapTable.allSongsOf( playlistId ).first()
+            val shuffledItems = currentItems.shuffled()
+            Database.asyncTransaction {
+                shuffledItems.forEachIndexed { index, song ->
+                    Database.songPlaylistMapTable.updatePosition( playlistId, song.id, index )
+                }
+            }
+            withContext( Dispatchers.Main ) {
+                Toaster.done()
+            }
         }
 
         onDismiss()

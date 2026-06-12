@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.localplaylist
+package app.it.fast4x.rimusic.ui.screens.localplaylist
 
 import androidx.compose.ui.draw.clip
 
@@ -61,9 +61,12 @@ import androidx.navigation.NavController
 import app.n_zik.android.R
 import com.github.doyaaaaaken.kotlincsv.client.KotlinCsvExperimental
 import app.it.fast4x.compose.persist.persistList
-import app.it.fast4x.compose.reordering.draggedItem
-import app.it.fast4x.compose.reordering.rememberReorderingState
-import app.it.fast4x.compose.reordering.reorder
+import sh.calvin.reorderable.rememberReorderableLazyListState
+import sh.calvin.reorderable.ReorderableItem
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.NextBody
@@ -528,30 +531,28 @@ fun LocalPlaylistSongs(
 
     
 
-    val reorderingState = rememberReorderingState(
-        lazyListState = lazyListState,
-        key = items,
-        onDragEnd = { fromIndex, toIndex ->
-            Database.asyncTransaction {
-                if( !isAtLeastAndroid14 ) {
-                    // This block should function exactly to the SQL statement
-                    // Except it's slower
-                    val mutableItems = items.toMutableList()
-                    val movedSong = mutableItems.removeAt( fromIndex )
-                    mutableItems.add( toIndex, movedSong )
+    val hapticFeedback = LocalHapticFeedback.current
+    val reorderingState = rememberReorderableLazyListState(
+        lazyListState = lazyListState
+    ) { from, to ->
+        val mutableItems = itemsOnDisplay.toMutableList()
+        val fromIndex = mutableItems.indexOfFirst { it.id == from.key }
+        val toIndex = mutableItems.indexOfFirst { it.id == to.key }
+        
+        if (fromIndex != -1 && toIndex != -1) {
+            val movedSong = mutableItems.removeAt( fromIndex )
+            mutableItems.add( toIndex, movedSong )
+            itemsOnDisplay = mutableItems
 
-                    mutableItems.mapIndexed { index, song ->
-                                    SongPlaylistMap( song.id, playlistId, index )
-                                }
-                                .also( songPlaylistMapTable::updateReplace )
-                } else
-                    // SQL statement makes faster adjustment with better optimization
-                    // Unfortunately, it requires Android 31+ to work.
-                    songPlaylistMapTable.move( playlistId, fromIndex, toIndex )
+            CoroutineScope( Dispatchers.Default ).launch {
+                Database.asyncTransaction {
+                    mutableItems.forEachIndexed { index, song ->
+                        Database.songPlaylistMapTable.updatePosition( playlistId, song.id, index )
+                    }
+                }
             }
-        },
-        extraItemCount = 1
-    )
+        }
+    }
 
     renameDialog.Render()
     exportDialog.Render()
@@ -578,7 +579,7 @@ fun LocalPlaylistSongs(
     ) {
         //LookaheadScope {
         LazyColumn(
-            state = reorderingState.lazyListState,
+            state = lazyListState,
             //contentPadding = LocalPlayerAwareWindowInsets.current
             //    .only(WindowInsetsSides.Vertical + WindowInsetsSides.End)
             //    .asPaddingValues(),
@@ -738,7 +739,7 @@ fun LocalPlaylistSongs(
                     mutableListOf<Button>().apply {
                         if (playlistNotMonthlyType)
                             this.add( pin )
-                        if ( sort.sortBy == PlaylistSongSortBy.Position )
+                        if ( sort.sortBy == PlaylistSongSortBy.Custom )
                             this.add( positionLock )
 
                         this.add( downloadAllDialog )
@@ -753,7 +754,8 @@ fun LocalPlaylistSongs(
                             this.add( listenOnYT )
                         }
                         this.add( renameDialog )
-                        this.add( renumberDialog )
+                        if ( sort.sortBy == PlaylistSongSortBy.Custom )
+                            this.add( renumberDialog )
                         this.add( deleteDialog )
                         this.add( exportDialog )
                         this.add( thumbnailPicker )
@@ -796,42 +798,43 @@ fun LocalPlaylistSongs(
                 contentType = { _, song -> song },
             ) { index, song ->
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .draggedItem(
-                            reorderingState = reorderingState,
-                            index = index
-                        )
-                        .zIndex(2f)
-                ) {
-                    val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
-
-                    // Drag anchor
-                    if ( !positionLock.isLocked() ) {
+                    ReorderableItem(
+                        reorderingState,
+                        key = song.id
+                    ) { isDraggingItem ->
                         Box(
-                            modifier = Modifier.padding( end = 16.dp ) // Accommodate horizontal padding of SongItem
-                                               .size( 24.dp )
-                                               .zIndex( 2f )
-                                               .align( Alignment.CenterEnd ),
-                            contentAlignment = Alignment.Center
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .zIndex(2f)
                         ) {
+                            val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
 
-                            IconButton(
-                                icon = R.drawable.reorder,
-                                color = colorPalette().textDisabled,
-                                indication = rippleIndication,
-                                onClick = {},
-                                modifier = Modifier
-                                    .reorder(
-                                        reorderingState = reorderingState,
-                                        index = index
+                            // Drag anchor
+                            if ( !positionLock.isLocked() && sort.sortBy == PlaylistSongSortBy.Custom ) {
+                                Box(
+                                    modifier = Modifier.padding( end = 16.dp ) // Accommodate horizontal padding of SongItem
+                                                       .size( 24.dp )
+                                                       .zIndex( 2f )
+                                                       .align( Alignment.CenterEnd ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+
+                                    IconButton(
+                                        icon = R.drawable.reorder,
+                                        color = colorPalette().textDisabled,
+                                        indication = rippleIndication,
+                                        onClick = {},
+                                        modifier = Modifier
+                                            .draggableHandle(
+                                                onDragStarted = {
+                                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                }
+                                            )
                                     )
-                            )
-                        }
-                    }
+                                }
+                            }
 
-                    SwipeableQueueItem(
+                            SwipeableQueueItem(
                         mediaItem = song.asMediaItem,
                         onPlayNext = {
                             binder?.player?.addNext(song.asMediaItem)
@@ -931,8 +934,8 @@ fun LocalPlaylistSongs(
                         )
                     }
                 }
-
             }
+        }
 
             item(
                 key = "footer",
@@ -949,7 +952,7 @@ fun LocalPlaylistSongs(
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,
                 iconId = R.drawable.shuffle,
-                visible = !reorderingState.isDragging,
+                visible = !reorderingState.isAnyItemDragging,
                 onClick = {
                     getMediaItems().let { songs ->
                         if (songs.isNotEmpty()) {

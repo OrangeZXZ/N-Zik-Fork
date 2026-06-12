@@ -178,6 +178,9 @@ interface SongPlaylistMapTable {
     // aren't exist, that's OK - IGNORE it.
     fun move( playlistId: Long, from: Int, to: Int ): Int
 
+    @Query("UPDATE SongPlaylistMap SET position = :position WHERE playlistId = :playlistId AND songId = :songId")
+    fun updatePosition( playlistId: Long, songId: String, position: Int )
+
     /**
      * Insert provided song into indicated playlist
      * at the next available position.
@@ -340,7 +343,7 @@ interface SongPlaylistMapTable {
         PlaylistSongSortBy.DatePlayed       -> sortSongsByDatePlayed( playlistId )
         PlaylistSongSortBy.PlayTime         -> sortSongsByPlayTime( playlistId )
         PlaylistSongSortBy.RelativePlayTime -> sortSongsByRelativePlayTime( playlistId )
-        PlaylistSongSortBy.Position         -> sortSongsByPosition( playlistId )
+        PlaylistSongSortBy.Custom           -> sortSongsByPosition( playlistId )
         PlaylistSongSortBy.Title            -> sortSongsByTitle( playlistId )
         PlaylistSongSortBy.Duration         -> sortSongsByDuration( playlistId )
         PlaylistSongSortBy.DateLiked        -> sortSongsByLikedAt( playlistId )
