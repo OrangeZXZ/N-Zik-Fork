@@ -156,7 +156,7 @@ fun HomeSongs(
      * > This variable should **_NOT_** be set to `false` while inside **first** phrase,
      * and should **_NOT_** be set to `true` while in **second** phrase.
      */
-    var isLoading by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect( itemSelector.isActive ) {
         if( itemSelector.isActive )

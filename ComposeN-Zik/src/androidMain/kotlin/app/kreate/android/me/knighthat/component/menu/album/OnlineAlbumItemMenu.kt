@@ -368,8 +368,33 @@ class OnlineAlbumItemMenu private constructor(
             override fun onLongClick() {}
         }
 
-        val downloadAll = DownloadAllSongsDialog { songs ?: emptyList() }
-        val deleteAll = DeleteAllDownloadedSongsDialog { songs ?: emptyList() }
+        val downloadAllDialog = DownloadAllSongsDialog { songs ?: emptyList() }
+        val downloadAll = object : MenuIcon by downloadAllDialog, Descriptive by downloadAllDialog, Clickable {
+            override fun onShortClick() {
+                if (songs == null) {
+                    Toaster.w(R.string.opening_url)
+                } else if (songs!!.isNotEmpty()) {
+                    downloadAllDialog.onShortClick()
+                } else {
+                    Toaster.e(R.string.no_song_found)
+                }
+            }
+            override fun onLongClick() {}
+        }
+
+        val deleteAllDialog = DeleteAllDownloadedSongsDialog { songs ?: emptyList() }
+        val deleteAll = object : MenuIcon by deleteAllDialog, Descriptive by deleteAllDialog, Clickable {
+            override fun onShortClick() {
+                if (songs == null) {
+                    Toaster.w(R.string.opening_url)
+                } else if (songs!!.isNotEmpty()) {
+                    deleteAllDialog.onShortClick()
+                } else {
+                    Toaster.e(R.string.no_song_found)
+                }
+            }
+            override fun onLongClick() {}
+        }
 
         val changeTitle = object : MenuIcon, Descriptive, Clickable {
             override val iconId: Int = R.drawable.title_edit
@@ -430,6 +455,8 @@ class OnlineAlbumItemMenu private constructor(
                 .fillMaxWidth()
                 .background(colorPalette().background0)
         ) {
+            downloadAllDialog.Render()
+            deleteAllDialog.Render()
             AlbumItemDisplay(album = album)
 
             if (menuStyle == MenuStyle.List)

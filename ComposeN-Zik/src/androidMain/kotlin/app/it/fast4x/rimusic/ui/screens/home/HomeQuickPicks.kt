@@ -11,6 +11,9 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
+import app.kreate.android.me.knighthat.component.menu.video.VideoItemMenu
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -738,9 +741,10 @@ fun HomeQuickPicks(
                                         thumbnailSizePx = albumThumbnailSizePx,
                                         thumbnailSizeDp = albumThumbnailSizeDp,
                                         alternative = true,
-                                        modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
-                                            onAlbumClick(it.key)
-                                        }),
+                                        modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                            onClick = { onAlbumClick(it.key) },
+                                            onLongClick = { menuState.display { OnlineAlbumItemMenu(navController = navController, album = it).MenuComponent() } }
+                                        ),
                                         disableScrollingText = disableScrollingText
                                     )
                                 }
@@ -764,9 +768,10 @@ fun HomeQuickPicks(
                                     thumbnailSizePx = albumThumbnailSizePx,
                                     thumbnailSizeDp = albumThumbnailSizeDp,
                                     alternative = true,
-                                    modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
-                                        onAlbumClick(it.key)
-                                    }),
+                                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                        onClick = { onAlbumClick(it.key) },
+                                        onLongClick = { menuState.display { OnlineAlbumItemMenu(navController = navController, album = it).MenuComponent() } }
+                                    ),
                                     disableScrollingText = disableScrollingText
                                 )
                             }
@@ -793,7 +798,10 @@ fun HomeQuickPicks(
                                     thumbnailSizeDp = albumThumbnailSizeDp,
                                     alternative = true,
                                     modifier = Modifier
-                                        .clip(uiRoundnessShape()).clickable(onClick = { onAlbumClick(album.key) }),
+                                        .clip(uiRoundnessShape()).combinedClickable(
+                                            onClick = { onAlbumClick(album.key) },
+                                            onLongClick = { menuState.display { OnlineAlbumItemMenu(navController = navController, album = album).MenuComponent() } }
+                                        ),
                                     disableScrollingText = disableScrollingText
                                 )
                             }
@@ -1160,10 +1168,10 @@ fun HomeQuickPicks(
                                             thumbnailSizePx = albumThumbnailSizePx,
                                             thumbnailSizeDp = albumThumbnailSizeDp,
                                             disableScrollingText = disableScrollingText,
-                                            modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
-                                                navController.navigate("${NavRoutes.album.name}/${item.key}")
-                                            })
-
+                                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                onClick = { navController.navigate("${NavRoutes.album.name}/${item.key}") },
+                                                onLongClick = { menuState.display { OnlineAlbumItemMenu(navController = navController, album = item).MenuComponent() } }
+                                            )
                                         )
                                     }
 
@@ -1201,13 +1209,16 @@ fun HomeQuickPicks(
                                             thumbnailHeightDp = playlistThumbnailSizeDp,
                                             thumbnailWidthDp = playlistThumbnailSizeDp,
                                             disableScrollingText = disableScrollingText,
-                                            modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
-                                                binder?.stopRadio()
-                                                if (isVideoEnabled())
-                                                    binder?.player?.playVideo(item.asMediaItem)
-                                                else
-                                                    binder?.player?.forcePlay(item.asMediaItem)
-                                            })
+                                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                onClick = {
+                                                    binder?.stopRadio()
+                                                    if (isVideoEnabled())
+                                                        binder?.player?.playVideo(item.asMediaItem)
+                                                    else
+                                                        binder?.player?.forcePlay(item.asMediaItem)
+                                                },
+                                                onLongClick = { menuState.display { VideoItemMenu(navController = navController, song = item.asSong).MenuComponent() } }
+                                            )
                                         )
                                     }
 

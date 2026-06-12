@@ -35,6 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.bodies.NextBody
+import it.fast4x.innertube.requests.nextPage
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.appContext
 import app.n_zik.android.colorPalette
@@ -381,17 +384,58 @@ class AlbumItemMenu private constructor(
             add(downloadAll)
             add(deleteAll)
             
-            artistsData.forEach { artist ->
-                add(object : MenuIcon, Descriptive, Clickable {
-                    override val iconId: Int = R.drawable.people
-                    override val messageId: Int = R.string.artists
-                    @get:Composable
-                    override val menuIconTitle: String get() = stringResource(R.string.more_of) + " ${artist.name ?: ""}"
-                    override fun onShortClick() {
-                        menuState.hide()
-                        navController.navigate("${NavRoutes.artist.name}/${artist.id}")
+            if (artistsData.isEmpty()) {
+                val artistNames = album.authorsText
+                    ?.split(",")
+                    ?.map { it.trim() }
+                    ?.filter { it.isNotBlank() }
+                    ?: emptyList()
+
+                val firstSong = songs.firstOrNull()
+                if (firstSong != null) {
+                    if (artistNames.size <= 1) {
+                        add(app.kreate.android.me.knighthat.component.song.GoToArtist(navController, firstSong))
+                    } else {
+                        artistNames.forEach { artistName ->
+                            add(object : MenuIcon, Descriptive, Clickable {
+                                override val iconId: Int = R.drawable.people
+                                override val messageId: Int = R.string.artists
+                                @get:Composable
+                                override val menuIconTitle: String get() = stringResource(R.string.more_of) + " $artistName"
+                                override fun onShortClick() {
+                                    menuState.hide()
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        it.fast4x.innertube.Innertube.nextPage(it.fast4x.innertube.models.bodies.NextBody(videoId = firstSong.id))
+                                            ?.getOrNull()
+                                            ?.itemsPage?.items?.firstOrNull()
+                                            ?.authors
+                                            ?.find { it.name?.equals(artistName, ignoreCase = true) == true }
+                                            ?.endpoint
+                                            ?.takeIf { !it.browseId.isNullOrBlank() }
+                                            ?.let {
+                                                val path = "${it.browseId}?params=${it.params.orEmpty()}"
+                                                app.it.fast4x.rimusic.enums.NavRoutes.artist.navigateHere(navController, path)
+                                            }
+                                    }
+                                }
+                                override fun onLongClick() {}
+                            })
+                        }
                     }
-                })
+                }
+            } else {
+                artistsData.forEach { artist ->
+                    add(object : MenuIcon, Descriptive, Clickable {
+                        override val iconId: Int = R.drawable.people
+                        override val messageId: Int = R.string.artists
+                        @get:Composable
+                        override val menuIconTitle: String get() = stringResource(R.string.more_of) + " ${artist.name ?: ""}"
+                        override fun onShortClick() {
+                            menuState.hide()
+                            navController.navigate("${NavRoutes.artist.name}/${artist.id}")
+                        }
+                    })
+                }
             }
 
             add(changeTitle)

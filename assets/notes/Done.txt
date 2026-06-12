@@ -31,3 +31,7 @@ Removed: Completely deleted old app.it.fast4x.compose.reordering package
 UI: Moved renumber dialog icon next to position lock in local playlist
 UI: Added smooth AnimatedContent transition for toolbar buttons (TabToolBar)
 Fixed: Random 'no items' text flash in HomeSongs while database items were synchronizing to UI
+
+Fixed: Online menus (Album and Video) not rendering content in HomeQuickPicks and ArtistDetails due to missing .MenuComponent() invocation
+Added: Full long-click context menu support for AlbumItem and VideoItem in HomeQuickPicks
+Added: "More from this artist" navigation option in OnlineAlbumItemMenu and VideoItemMenu
