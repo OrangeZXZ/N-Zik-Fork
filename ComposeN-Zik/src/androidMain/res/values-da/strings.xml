@@ -767,6 +767,8 @@
   <string name="piped_custom_instance">Brugerdefineret Piped-instans</string>
   <string name="create_new_playlist">Opret ny playliste</string>
   <string name="settings_loudness_base_gain">Basisforstærkning for lydstyrke</string>
+  <string name="loudness_boost_level">Højttaler boost niveau</string>
+  <string name="loudness_boost_level_info">Yderligere loudness niveau, der skal bruges uden at overdrive det, kan beskadige enheden</string>
   <string name="settings_target_gain_loudness_info">Målforstærkning for lydstyrkenormalisering</string>
   <string name="error_media_cannot_be_played">Medie kan ikke afspilles</string>
   <string name="full_screen_lyrics_components">Sangtekstkomponenter i fuldskærm</string>
@@ -1076,6 +1078,10 @@
   <string name="notifications">Notifikationer</string>
   <string name="playback">Afspilning</string>
   <string name="player_controls">Afspiller Styring</string>
+  <string name="player_controls_colors">Afspiller styrer farver</string>
+  <string name="theme_color">Tema farve</string>
+  <string name="cover_color">Omslagsfarve</string>
+  <string name="monochrome">Monokrom</string>
   <string name="queue_management">Håndtering Af Kø</string>
   <string name="app_behavior">App Opførsel</string>
   <string name="audio_effects">Lyd Effekter</string>
@@ -1176,4 +1182,19 @@
   <string name="snake_retry">Forsøg igen</string>
   <string name="snake_exit">Afslut</string>
   <string name="skip_time_buttons">Spring tidsknapper over</string>
+  <string name="hide_status_bar">Skjul statuslinje</string>
+  <string name="crossfade">Crossfade</string>
+  <string name="crossfade_description">Aktiver jævn overgang mellem sange</string>
+  <string name="crossfade_duration">Krydsovertoning varighed</string>
+  <string name="crossfade_gapless">Gapless Crossfade</string>
+  <string name="crossfade_gapless_description">Kryds ikke spor fra det samme album</string>
+  <string name="disable_navigation_back_stack">Gå tilbage direkte til hjemmet</string>
+  <string name="disable_navigation_back_stack_description">Når aktiveret, skal du trykke på Tilbage spring over mellemliggende sider og vender tilbage direkte til startskærmen</string>
+  <string name="player_swipe_sensitivity">Afspiller Stryg Følsomhed</string>
+  <string name="ps_low">Lav</string>
+  <string name="ps_medium">Mellem</string>
+  <string name="ps_high">Høj</string>
+  <string name="ps_very_high">Meget Høj</string>
+  <string name="visualizer_bar">Visualizer bar</string>
+  <string name="static_audio_waves">Lydbjælke</string>
 </resources>
