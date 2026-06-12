@@ -122,8 +122,13 @@ fun SeekBarVisualizer(
             (maxWidth / numberOfWaves.toFloat()) * waveWidthPercentOfSpaceAvailable
         }
 
-        var liveWaveform by remember(numberOfWaves) {
+        var liveWaveform by remember {
             mutableStateOf(ByteArray(numberOfWaves) { 0.toByte() })
+        }
+        LaunchedEffect(numberOfWaves) {
+            if (liveWaveform.size != numberOfWaves) {
+                liveWaveform = ByteArray(numberOfWaves) { 0.toByte() }
+            }
         }
 
         if (!hasPermission) {
@@ -166,12 +171,14 @@ fun SeekBarVisualizer(
                                 }
                                 
                                 val avgMagnitude = if (count > 0) sumMagnitude / count else 0f
+                                
                                 val weight = 1.0f + (index.toFloat() / liveWaveform.size) * 2.0f
                                 val blockAmplitude = (avgMagnitude * 3.5f * weight).toInt().coerceIn(0, 127)
                                 newWaveform[index] = blockAmplitude.toByte()
                             }
                             liveWaveform = newWaveform
                         }
+                        
                         delay(40) // Poll at 25fps
                     }
                 } catch (e: Exception) {
@@ -244,6 +251,8 @@ fun SeekBarVisualizer(
                 }
             }
         }
+
+
 
         if (!localIsPlaying) {
             val thumbWidth = 2.dp
