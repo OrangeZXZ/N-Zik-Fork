@@ -767,6 +767,8 @@
   <string name="piped_custom_instance">Vlastní instance Piped</string>
   <string name="create_new_playlist">Vytvořit nový playlist</string>
   <string name="settings_loudness_base_gain">Zesílení základní hlasitosti</string>
+  <string name="loudness_boost_level">Úroveň zvýšení hlasitosti</string>
+  <string name="loudness_boost_level_info">Dodatečná úroveň hlasitosti, která se použije, aniž by byla překročena, může poškodit zařízení</string>
   <string name="settings_target_gain_loudness_info">Cílové zesílení pro normalizaci hlasitosti</string>
   <string name="error_media_cannot_be_played">Média nelze přehrát</string>
   <string name="full_screen_lyrics_components">Komponenty písňových textů na celou obrazovku</string>
@@ -1076,6 +1078,10 @@
   <string name="notifications">Oznámení</string>
   <string name="playback">Přehrát</string>
   <string name="player_controls">Ovládání přehrávače</string>
+  <string name="player_controls_colors">Barvy ovládání přehrávače</string>
+  <string name="theme_color">Barva motivu</string>
+  <string name="cover_color">Barva obalu</string>
+  <string name="monochrome">Monochromní</string>
   <string name="queue_management">Správa fronty</string>
   <string name="app_behavior">Chování aplikace</string>
   <string name="audio_effects">Zvukové efekty</string>
@@ -1176,4 +1182,19 @@
   <string name="snake_retry">Opakovat</string>
   <string name="snake_exit">Ukončit</string>
   <string name="skip_time_buttons">Přeskočit tlačítka času</string>
+  <string name="hide_status_bar">Skrýt stavový řádek</string>
+  <string name="crossfade">Crossfade</string>
+  <string name="crossfade_description">Povolit plynulý přechod mezi skladbami</string>
+  <string name="crossfade_duration">Doba trvání prolínání</string>
+  <string name="crossfade_gapless">Gapless Crossfade</string>
+  <string name="crossfade_gapless_description">Neprotínat skladby ze stejného alba</string>
+  <string name="disable_navigation_back_stack">Přejít zpět přímo na domov</string>
+  <string name="disable_navigation_back_stack_description">Pokud je povoleno, stisknutím tlačítka Zpět přeskočí mezistránky a vrátí se přímo na domovskou obrazovku</string>
+  <string name="player_swipe_sensitivity">Citlivost posunutí přehrávače</string>
+  <string name="ps_low">Nízká</string>
+  <string name="ps_medium">Střední</string>
+  <string name="ps_high">Vysoká</string>
+  <string name="ps_very_high">Velmi vysoká</string>
+  <string name="visualizer_bar">Vizualizátor</string>
+  <string name="static_audio_waves">Zvuková lišta</string>
 </resources>
