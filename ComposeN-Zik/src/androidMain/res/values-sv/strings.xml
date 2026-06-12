@@ -767,6 +767,8 @@
   <string name="piped_custom_instance">Piped custom instance</string>
   <string name="create_new_playlist">Skapa ny spellista</string>
   <string name="settings_loudness_base_gain">Loudness base gain</string>
+  <string name="loudness_boost_level">Höjdgrad för ljudstyrka</string>
+  <string name="loudness_boost_level_info">Ytterligare ljudnivå, som ska användas utan att överdriva, kan skada enheten</string>
   <string name="settings_target_gain_loudness_info">Target gain for the loudness normalization</string>
   <string name="error_media_cannot_be_played">Låten kan inte spelas</string>
   <string name="full_screen_lyrics_components">Komponenter för helskärm</string>
@@ -1076,6 +1078,10 @@
   <string name="notifications">Aviseringar</string>
   <string name="playback">Uppspelning</string>
   <string name="player_controls">Spelarens kontroller</string>
+  <string name="player_controls_colors">Spelaren kontrollerar färger</string>
+  <string name="theme_color">Tema färg</string>
+  <string name="cover_color">Omslagsfärg</string>
+  <string name="monochrome">Monokrom</string>
   <string name="queue_management">Köhantering</string>
   <string name="app_behavior">Appens beteende</string>
   <string name="audio_effects">Ljud effekter</string>
@@ -1176,4 +1182,19 @@
   <string name="snake_retry">Försök igen</string>
   <string name="snake_exit">Avsluta</string>
   <string name="skip_time_buttons">Hoppa över tidsknappar</string>
+  <string name="hide_status_bar">Dölj statusfältet</string>
+  <string name="crossfade">Crossfade</string>
+  <string name="crossfade_description">Aktivera smidig övergång mellan låtar</string>
+  <string name="crossfade_duration">Övertoning varaktighet</string>
+  <string name="crossfade_gapless">Genomskinlig övertoning</string>
+  <string name="crossfade_gapless_description">Inte crossfade låtar från samma album</string>
+  <string name="disable_navigation_back_stack">Gå tillbaka direkt till hemmet</string>
+  <string name="disable_navigation_back_stack_description">När det är aktiverat, trycker du på Tillbaka hoppar över mellansidor och återvänder direkt till startskärmen</string>
+  <string name="player_swipe_sensitivity">Svep känslighet för spelare</string>
+  <string name="ps_low">Låg</string>
+  <string name="ps_medium">Mellan</string>
+  <string name="ps_high">Hög</string>
+  <string name="ps_very_high">Mycket hög</string>
+  <string name="visualizer_bar">Visualizer bar</string>
+  <string name="static_audio_waves">Ljudfält</string>
 </resources>
