@@ -415,25 +415,18 @@ fun ControlsModern(
   if (playerPlayButtonType != PlayerPlayButtonType.Disabled) {
       CustomElevatedButton(
           backgroundColor = colorPalette().background2.copy(0.95f),
-          onClick = {},
+          onClick = {
+              if (jumpPrevious == "") jumpPrevious = "0"
+              if(!binder.player.hasPreviousMediaItem() || (jumpPrevious != "0" && binder.player.currentPosition > jumpPrevious.toInt()*1000)){
+                  binder.player.seekTo(0)
+              }
+              else binder.player.playPrevious()
+              if (effectRotationEnabled) isRotated = !isRotated
+          },
           modifier = Modifier
               .size(55.dp)
               .doubleShadowDrop(uiRoundnessShape(), 4.dp, 8.dp)
               .clip(uiRoundnessShape())
-              .clip(uiRoundnessShape()).combinedClickable(
-                  indication = ripple(bounded = true),
-                  interactionSource = remember { MutableInteractionSource() },
-                  onClick = {
-                      if (jumpPrevious == "") jumpPrevious = "0"
-                      if(!binder.player.hasPreviousMediaItem() || (jumpPrevious != "0" && binder.player.currentPosition > jumpPrevious.toInt()*1000)){
-                          binder.player.seekTo(0)
-                      }
-                      else binder.player.playPrevious()
-                      if (effectRotationEnabled) isRotated = !isRotated
-                  },
-                  onLongClick = {}
-              )
-
       ) {
           Image(
               painter = painterResource(R.drawable.play_skip_back),
@@ -527,19 +520,6 @@ fun ControlsModern(
               modifier = Modifier
                   .doubleShadowDrop(uiRoundnessShape(), 4.dp, 8.dp)
                   .clip(uiRoundnessShape())
-                  .clip(uiRoundnessShape()).combinedClickable(
-                      indication = ripple(bounded = true),
-                      interactionSource = remember { MutableInteractionSource() },
-                      onClick = {
-                          if (shouldBePlaying) {
-                              binder.gracefulPause()
-                          } else {
-                              binder.gracefulPlay()
-                          }
-                          if (effectRotationEnabled) isRotated = !isRotated
-                      },
-                      onLongClick = onShowSpeedPlayerDialog
-                  )
                   .bounceClick()
                   .width(playerPlayButtonType.width.dp)
                   .height(playerPlayButtonType.height.dp)
@@ -611,21 +591,14 @@ fun ControlsModern(
 
     CustomElevatedButton(
         backgroundColor = colorPalette().background2.copy(0.95f),
-        onClick = {},
+        onClick = {
+            //binder.player.forceSeekToNext()
+            binder.player.playNext()
+            if (effectRotationEnabled) isRotated = !isRotated
+        },
         modifier = Modifier
             .size(55.dp)
             .doubleShadowDrop(uiRoundnessShape(), 4.dp, 8.dp)
-            .clip(uiRoundnessShape())
-            .clip(uiRoundnessShape()).combinedClickable(
-                indication = ripple(bounded = true),
-                interactionSource = remember { MutableInteractionSource() },
-                onClick = {
-                    //binder.player.forceSeekToNext()
-                    binder.player.playNext()
-                    if (effectRotationEnabled) isRotated = !isRotated
-                },
-                onLongClick = {}
-            )
             .clip(uiRoundnessShape())
 
       ) {

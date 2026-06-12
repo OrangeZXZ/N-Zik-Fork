@@ -6,8 +6,9 @@ import app.n_zik.android.uiRoundnessShape
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Indication
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HeaderIconButton(
     onClick: () -> Unit,
@@ -29,7 +31,8 @@ fun HeaderIconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     indication: Indication? = null,
-    iconSize: Dp? = 20.dp
+    iconSize: Dp? = 20.dp,
+    onLongClick: (() -> Unit)? = null
 ) {
     IconButton(
         icon = icon,
@@ -37,12 +40,14 @@ fun HeaderIconButton(
         onClick = onClick,
         enabled = enabled,
         indication = indication,
+        onLongClick = onLongClick,
         modifier = modifier
             .padding(all = 2.dp)
             .size(iconSize ?: 18.dp)
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun IconButton(
     onClick: () -> Unit,
@@ -50,7 +55,8 @@ fun IconButton(
     color: Color,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    indication: Indication? = null
+    indication: Indication? = null,
+    onLongClick: (() -> Unit)? = null
 ) {
     Image(
         painter = painterResource(icon),
@@ -58,11 +64,12 @@ fun IconButton(
         colorFilter = ColorFilter.tint(color),
         modifier = modifier
             .clip(uiRoundnessShape())
-            .clickable(
+            .combinedClickable(
                 indication = indication ?: ripple(bounded = false),
                 interactionSource = remember { MutableInteractionSource() },
                 enabled = enabled,
-                onClick = onClick
+                onClick = onClick,
+                onLongClick = onLongClick
             )
     )
 }

@@ -1,4 +1,4 @@
-﻿@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.kreate.android.me.knighthat.component
 
 import app.n_zik.android.core.database.*
@@ -9,6 +9,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -103,23 +105,33 @@ private interface SongIndicator: Icon {
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun ToolBarButton() {
-        val modifier = this.modifier
-                                     .size(sizeDp)
-                                     .clip(uiRoundnessShape()).combinedClickable(
-                                         onClick = ::onShortClick,
-                                         onLongClick = {
-                                             if(this is Clickable)
-                                                 this.onLongClick()
-                                         }
-                                     )
-
-        IconButton(
-            icon = iconId,
-            color = color,
-            enabled = isEnabled,
-            onClick = {},
-            modifier = modifier
-        )
+        val interactionSource = remember { MutableInteractionSource() }
+        Box(
+            modifier = this.modifier
+                .size(sizeDp)
+                .clip(uiRoundnessShape())
+                .combinedClickable(
+                    interactionSource = interactionSource,
+                    indication = androidx.compose.material3.ripple(
+                        bounded = false,
+                        radius = 20.dp
+                    ),
+                    enabled = isEnabled,
+                    onClick = ::onShortClick,
+                    onLongClick = {
+                        if (this is Clickable)
+                            this.onLongClick()
+                    }
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            androidx.compose.material3.Icon(
+                painter = androidx.compose.ui.res.painterResource(iconId),
+                contentDescription = null,
+                modifier = Modifier.size(sizeDp),
+                tint = if (isEnabled) color else color.copy(alpha = 0.5f)
+            )
+        }
 
         Spacer( Modifier.padding(horizontal = 3.dp) )
     }

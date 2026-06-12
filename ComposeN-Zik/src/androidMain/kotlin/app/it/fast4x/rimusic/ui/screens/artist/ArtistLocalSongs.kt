@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.artist
+package app.it.fast4x.rimusic.ui.screens.artist
 
 import androidx.compose.ui.draw.clip
 
@@ -159,53 +159,45 @@ fun ArtistLocalSongs(
             ) {
                 FollowButton { localArtist }.ToolBarButton()
                 HeaderIconButton(
-                    icon = R.drawable.downloaded,
-                    color = colorPalette().text,
-                    iconSize = 24.dp,
-                    onClick = {},
-                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
-                        onClick = { showConfirmDownloadAllDialog = true },
-                        onLongClick = { Toaster.i(context.resources.getString(R.string.info_download_all_songs)) }
-                    )
-                )
-                HeaderIconButton(
                     icon = R.drawable.download,
                     color = colorPalette().text,
                     iconSize = 24.dp,
-                    onClick = {},
-                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
-                        onClick = { showConfirmDeleteDownloadDialog = true },
-                        onLongClick = { Toaster.i(context.resources.getString(R.string.info_remove_all_downloaded_songs)) }
-                    )
+                    modifier = Modifier.clip(uiRoundnessShape()),
+                    onClick = { showConfirmDownloadAllDialog = true },
+                    onLongClick = { Toaster.i(context.resources.getString(R.string.info_download_all_songs)) }
+                )
+                HeaderIconButton(
+                    icon = R.drawable.downloaded,
+                    color = colorPalette().text,
+                    iconSize = 24.dp,
+                    modifier = Modifier.clip(uiRoundnessShape()),
+                    onClick = { showConfirmDeleteDownloadDialog = true },
+                    onLongClick = { Toaster.i(context.resources.getString(R.string.info_remove_all_downloaded_songs)) }
                 )
                 HeaderIconButton(
                     icon = R.drawable.enqueue,
                     enabled = !songs.isNullOrEmpty(),
                     color = if (!songs.isNullOrEmpty()) colorPalette().text else colorPalette().textDisabled,
                     iconSize = 24.dp,
-                    onClick = {},
-                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
-                        onClick = { if (!songs.isNullOrEmpty()) binder?.player?.enqueue(songs!!.map(Song::asMediaItem), context) },
-                        onLongClick = { Toaster.i(context.resources.getString(R.string.info_enqueue_songs)) }
-                    )
+                    modifier = Modifier.clip(uiRoundnessShape()),
+                    onClick = { if (!songs.isNullOrEmpty()) binder?.player?.enqueue(songs!!.map(Song::asMediaItem), context) },
+                    onLongClick = { Toaster.i(context.resources.getString(R.string.info_enqueue_songs)) }
                 )
                 HeaderIconButton(
                     icon = R.drawable.shuffle,
                     enabled = !songs.isNullOrEmpty(),
                     color = if (!songs.isNullOrEmpty()) colorPalette().text else colorPalette().textDisabled,
                     iconSize = 24.dp,
-                    onClick = {},
-                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
-                        onClick = {
-                            songs?.let { songs ->
-                                if (songs.isNotEmpty()) {
-                                    binder?.stopRadio()
-                                    binder?.player?.forcePlayFromBeginning(songs.shuffled().map(Song::asMediaItem))
-                                }
+                    modifier = Modifier.clip(uiRoundnessShape()),
+                    onClick = {
+                        songs?.let { songs ->
+                            if (songs.isNotEmpty()) {
+                                binder?.stopRadio()
+                                binder?.player?.forcePlayFromBeginning(songs.shuffled().map(Song::asMediaItem))
                             }
-                        },
-                        onLongClick = { Toaster.i(context.resources.getString(R.string.info_shuffle)) }
-                    )
+                        }
+                    },
+                    onLongClick = { Toaster.i(context.resources.getString(R.string.info_shuffle)) }
                 )
             }
         }
@@ -386,19 +378,16 @@ fun ArtistLocalSongs(
                         headerContent {
 
                             HeaderIconButton(
-                                icon = R.drawable.downloaded,
+                                icon = R.drawable.download,
                                 color = colorPalette().text,
                                 iconSize = 24.dp,
-                                onClick = {},
-                                modifier = Modifier
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.clip(uiRoundnessShape()),
                                         onClick = {
                                             showConfirmDownloadAllDialog = true
                                         },
                                         onLongClick = {
                                             Toaster.i(context.resources.getString(R.string.info_download_all_songs))
                                         }
-                                    )
                             )
 
                             if (showConfirmDownloadAllDialog) {
@@ -425,19 +414,16 @@ fun ArtistLocalSongs(
                             }
 
                             HeaderIconButton(
-                                icon = R.drawable.download,
+                                icon = R.drawable.downloaded,
                                 color = colorPalette().text,
                                 iconSize = 24.dp,
-                                onClick = {},
-                                modifier = Modifier
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.clip(uiRoundnessShape()),
                                         onClick = {
                                             showConfirmDeleteDownloadDialog = true
                                         },
                                         onLongClick = {
                                             Toaster.i(context.resources.getString(R.string.info_remove_all_downloaded_songs))
                                         }
-                                    )
                             )
 
                             if (showConfirmDeleteDownloadDialog) {
@@ -468,25 +454,20 @@ fun ArtistLocalSongs(
                                 enabled = !songs.isNullOrEmpty(),
                                 color = if (!songs.isNullOrEmpty()) colorPalette().text else colorPalette().textDisabled,
                                 iconSize = 24.dp,
-                                onClick = {  },
-                                modifier = Modifier
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.clip(uiRoundnessShape()),
                                         onClick = {
                                             binder?.player?.enqueue(songs!!.map(Song::asMediaItem), context)
                                         },
                                         onLongClick = {
                                             Toaster.i(context.resources.getString(R.string.info_enqueue_songs))
                                         }
-                                    )
                             )
                             HeaderIconButton(
                                 icon = R.drawable.shuffle,
                                 enabled = !songs.isNullOrEmpty(),
                                 color = if (!songs.isNullOrEmpty()) colorPalette().text else colorPalette().textDisabled,
                                 iconSize = 24.dp,
-                                onClick = {},
-                                modifier = Modifier
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.clip(uiRoundnessShape()),
                                         onClick = {
                                             songs?.let { songs ->
                                                 if (songs.isNotEmpty()) {
@@ -500,7 +481,6 @@ fun ArtistLocalSongs(
                                         onLongClick = {
                                             Toaster.i(context.resources.getString(R.string.info_shuffle))
                                         }
-                                    )
                             )
                         }
 

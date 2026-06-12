@@ -447,28 +447,29 @@ fun SongItem(
                             icon = R.drawable.add_in_playlist,
                             color = if (colorPaletteName == ColorPaletteName.PureBlack) Color.Black else colorPalette().text,
                             enabled = true,
-                            onClick = {},
+                            onClick = {
+                                menuState.display {
+                                    if (binder != null) {
+                                        AddToPlaylistPlayerMenu(
+                                            navController = navController,
+                                            onDismiss = {
+                                                menuState.hide()
+                                            },
+                                            mediaItem = mediaItem,
+                                            binder = binder,
+                                            onClosePlayer = {},
+                                        )
+                                    }
+                                }
+                            },
+                            onLongClick = {
+                                Toaster.i( R.string.playlistindicatorinfo2 )
+                            },
                             modifier = Modifier
                                 .size(14.dp)
                                 .background(colorPalette().accent, CircleShape)
                                 .padding(all = 3.dp)
-                                .clip(uiRoundnessShape()).combinedClickable(onClick = {
-                                    menuState.display {
-                                        if (binder != null) {
-                                            AddToPlaylistPlayerMenu(
-                                                navController = navController,
-                                                onDismiss = {
-                                                    menuState.hide()
-                                                },
-                                                mediaItem = mediaItem,
-                                                binder = binder,
-                                                onClosePlayer = {},
-                                            )
-                                        }
-                                    }
-                                }, onLongClick = {
-                                    Toaster.i( R.string.playlistindicatorinfo2 )
-                                })
+                                .clip(uiRoundnessShape())
                         )
                         Spacer(modifier = Modifier.padding(horizontal = 3.dp))
                     }
@@ -557,28 +558,29 @@ fun SongItem(
                         icon = R.drawable.add_in_playlist,
                         color = if (colorPaletteName == ColorPaletteName.PureBlack) Color.Black else colorPalette().text,
                         enabled = true,
-                        onClick = {},
+                        onClick = {
+                            menuState.display {
+                                if (binder != null) {
+                                    AddToPlaylistPlayerMenu(
+                                        navController = navController,
+                                        onDismiss = {
+                                            menuState.hide()
+                                        },
+                                        mediaItem = mediaItem,
+                                        binder = binder,
+                                        onClosePlayer = {},
+                                    )
+                                }
+                            }
+                        },
+                        onLongClick = {
+                            Toaster.i( R.string.playlistindicatorinfo2 )
+                        },
                         modifier = Modifier
                             .size(18.dp)
                             .background(colorPalette().accent, CircleShape)
                             .padding(all = 3.dp)
-                            .clip(uiRoundnessShape()).combinedClickable(onClick = {
-                                menuState.display {
-                                    if (binder != null) {
-                                        AddToPlaylistPlayerMenu(
-                                            navController = navController,
-                                            onDismiss = {
-                                                menuState.hide()
-                                            },
-                                            mediaItem = mediaItem,
-                                            binder = binder,
-                                            onClosePlayer = {},
-                                        )
-                                    }
-                                }
-                            }, onLongClick = {
-                                Toaster.i( R.string.playlistindicatorinfo2 )
-                            })
+                            .clip(uiRoundnessShape())
                     )
                 }
             }
