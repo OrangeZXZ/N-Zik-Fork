@@ -767,6 +767,8 @@
   <string name="piped_custom_instance">Pipedカスタムインスタンス</string>
   <string name="create_new_playlist">新規プレイリストを作成</string>
   <string name="settings_loudness_base_gain">ラウドネスのゲイン</string>
+  <string name="loudness_boost_level">ラウドネスブースト</string>
+  <string name="loudness_boost_level_info">過度に使用せずにラウドネスを追加すると、デバイスが損傷する可能性があります</string>
   <string name="settings_target_gain_loudness_info">ラウドネスノーマライゼーションの目標ゲイン</string>
   <string name="error_media_cannot_be_played">曲を再生できません</string>
   <string name="full_screen_lyrics_components">全画面歌詞のコンポーネント</string>
@@ -1076,6 +1078,10 @@
   <string name="notifications">通知</string>
   <string name="playback">再生</string>
   <string name="player_controls">プレイヤーコントロール</string>
+  <string name="player_controls_colors">プレイヤーが色を制御します</string>
+  <string name="theme_color">テーマの色</string>
+  <string name="cover_color">カバーの色</string>
+  <string name="monochrome">モノクローム</string>
   <string name="queue_management">キュー管理</string>
   <string name="app_behavior">アプリの動作</string>
   <string name="audio_effects">オーディオエフェクト</string>
@@ -1176,4 +1182,19 @@
   <string name="snake_retry">再試行する</string>
   <string name="snake_exit">終了</string>
   <string name="skip_time_buttons">時間ボタンをスキップ</string>
+  <string name="hide_status_bar">ステータスバーを隠す</string>
+  <string name="crossfade">Crossfade</string>
+  <string name="crossfade_description">曲間のスムーズな切り替えを有効にする</string>
+  <string name="crossfade_duration">クロスフェードの長さ</string>
+  <string name="crossfade_gapless">ギャップレスクロスフェード</string>
+  <string name="crossfade_gapless_description">同じアルバムからトラックをクロスフェードしない</string>
+  <string name="disable_navigation_back_stack">ホームに直接戻る</string>
+  <string name="disable_navigation_back_stack_description">有効にすると、戻るを押して中間ページをスキップし、ホーム画面に直接戻ります</string>
+  <string name="player_swipe_sensitivity">プレイヤーのスワイプ感度</string>
+  <string name="ps_low">低</string>
+  <string name="ps_medium">中</string>
+  <string name="ps_high">高</string>
+  <string name="ps_very_high">非常に高い</string>
+  <string name="visualizer_bar">ビジュアライザーバー</string>
+  <string name="static_audio_waves">オーディオ バー</string>
 </resources>
