@@ -384,6 +384,12 @@ fun HomeSongs(
 
     val rippleIndication = ripple(bounded = false)
 
+    val showNoItems by remember {
+        derivedStateOf {
+            !isLoading && itemsOnDisplay.isEmpty() && (items.isEmpty() || search.inputValue.isNotEmpty())
+        }
+    }
+
     LazyColumn(
         state = lazyListState,
         userScrollEnabled = !isLoading,
@@ -397,7 +403,7 @@ fun HomeSongs(
                 count = 20,
                 key = { it }
             ) { SongItemPlaceholder() }
-        } else if (itemsOnDisplay.isEmpty()) {
+        } else if (showNoItems) {
             item {
                 Box(
                     modifier = Modifier.fillParentMaxSize(),

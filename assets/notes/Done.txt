@@ -30,3 +30,4 @@ Fixed: Custom sorting visibility logic applied to LocalPlaylistSongs
 Removed: Completely deleted old app.it.fast4x.compose.reordering package
 UI: Moved renumber dialog icon next to position lock in local playlist
 UI: Added smooth AnimatedContent transition for toolbar buttons (TabToolBar)
+Fixed: Random 'no items' text flash in HomeSongs while database items were synchronizing to UI
