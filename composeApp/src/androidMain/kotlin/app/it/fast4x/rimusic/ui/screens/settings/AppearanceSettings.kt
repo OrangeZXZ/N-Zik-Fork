@@ -222,8 +222,8 @@ fun DefaultAppearanceSettings() {
     showDownloadButtonBackgroundPlayer = true
     var visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
     visualizerEnabled = false
-    var visualizerWhiteColorOption by rememberPreference(app.it.fast4x.rimusic.utils.visualizerWhiteColorOptionKey, app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.White)
-    visualizerWhiteColorOption = app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.White
+    var visualizerWhiteColorOption by rememberPreference(app.it.fast4x.rimusic.utils.visualizerWhiteColorOptionKey, enums.VisualizerWhiteColorOption.White)
+    visualizerWhiteColorOption = enums.VisualizerWhiteColorOption.White
     var visualizerCustomColor by rememberPreference(app.it.fast4x.rimusic.utils.visualizerCustomColorKey, android.graphics.Color.WHITE)
     visualizerCustomColor = android.graphics.Color.WHITE
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
@@ -408,7 +408,7 @@ fun AppearanceSettings(
     var visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
     var visualizerWhiteColorOption by rememberPreference(
         app.it.fast4x.rimusic.utils.visualizerWhiteColorOptionKey,
-        app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.White
+        enums.VisualizerWhiteColorOption.White
     )
     var visualizerCustomColor by rememberPreference(
         app.it.fast4x.rimusic.utils.visualizerCustomColorKey,
@@ -1998,7 +1998,7 @@ fun AppearanceSettings(
                             title = stringResource(R.string.visualizer_white_color_option),
                             selectedValue = visualizerWhiteColorOption,
                             onValueSelected = { visualizerWhiteColorOption = it },
-                            valueText = { stringResource(it.text) },
+                            valueText = { stringResource(when(it) { enums.VisualizerWhiteColorOption.White -> R.string.color_white; enums.VisualizerWhiteColorOption.Theme -> R.string.bg_colors_background_from_theme; enums.VisualizerWhiteColorOption.Cover -> R.string.bg_colors_background_from_cover; enums.VisualizerWhiteColorOption.Custom -> R.string.color_custom }) },
                             modifier = Modifier.padding(start = 25.dp),
                             icon = R.drawable.color_palette
                         )
@@ -2018,7 +2018,7 @@ fun AppearanceSettings(
                         )
                     }
 
-                    AnimatedVisibility(visible = visualizerWhiteColorOption == app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.Custom) {
+                    AnimatedVisibility(visible = visualizerWhiteColorOption == enums.VisualizerWhiteColorOption.Custom) {
                         var showColorPicker by remember { mutableStateOf(false) }
                         val customColorString = stringResource(R.string.color_custom)
                         OtherSettingsEntry(

@@ -51,6 +51,7 @@ import app.it.fast4x.rimusic.utils.semiBold
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import utils.VisualizerHelper
 
 private const val waveWidthPercentOfSpaceAvailable = 0.5f
 
@@ -138,7 +139,7 @@ fun SeekBarVisualizer(
         if (hasPermission && audioSessionId != null && localIsPlaying) {
             val currentSessionId = audioSessionId!!
             LaunchedEffect(currentSessionId, localIsPlaying) {
-                val helper = app.n_zik.android.extensions.nextvisualizer.utils.VisualizerHelper(currentSessionId)
+                val helper = VisualizerHelper(currentSessionId)
                 
                 try {
                     while (true) {

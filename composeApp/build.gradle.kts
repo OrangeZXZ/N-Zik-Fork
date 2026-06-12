@@ -49,6 +49,7 @@ kotlin {
             implementation(libs.androidx.webkit)
             implementation(libs.ktor.okhttp)
             implementation(projects.discordrpc)
+            implementation(projects.nextvisualizer)
 
             // Related to built-in game, maybe removed in future?
             implementation(libs.compose.runtime.livedata)

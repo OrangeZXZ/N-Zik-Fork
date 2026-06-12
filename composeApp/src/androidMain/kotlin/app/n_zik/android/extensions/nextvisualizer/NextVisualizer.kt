@@ -52,29 +52,29 @@ import app.kreate.android.drawable.APP_ICON_BITMAP
 import app.n_zik.android.core.coil.resize
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.colorPalette
-import app.n_zik.android.extensions.nextvisualizer.painters.Painter
-import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftBar
-import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftCBar
-import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftCLine
-import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftCWave
-import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftCWaveRgb
-import app.n_zik.android.extensions.nextvisualizer.painters.fft.FlatWave
-import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftLine
-import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftWave
-import app.n_zik.android.extensions.nextvisualizer.painters.fft.FftWaveRgb
-import app.n_zik.android.extensions.nextvisualizer.painters.misc.Gradient
-import app.n_zik.android.extensions.nextvisualizer.painters.misc.Icon
-import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Beat
-import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Blend
-import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Compose
-import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Glitch
-import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Move
-import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Shake
-import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Scale
-import app.n_zik.android.extensions.nextvisualizer.painters.waveform.WfmAnalog
-import app.n_zik.android.extensions.nextvisualizer.utils.Preset
-import app.n_zik.android.extensions.nextvisualizer.utils.VisualizerHelper
-import app.n_zik.android.extensions.nextvisualizer.views.VisualizerView
+import painters.Painter
+import painters.fft.FftBar
+import painters.fft.FftCBar
+import painters.fft.FftCLine
+import painters.fft.FftCWave
+import painters.fft.FftCWaveRgb
+import painters.fft.FlatWave
+import painters.fft.FftLine
+import painters.fft.FftWave
+import painters.fft.FftWaveRgb
+import painters.misc.Gradient
+import painters.misc.Icon
+import painters.modifier.Beat
+import painters.modifier.Blend
+import painters.modifier.Compose
+import painters.modifier.Glitch
+import painters.modifier.Move
+import painters.modifier.Shake
+import painters.modifier.Scale
+import painters.waveform.WfmAnalog
+import utils.Preset
+import utils.VisualizerHelper
+import views.VisualizerView
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.components.themed.SecondaryTextButton
@@ -88,7 +88,7 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showVisualizerButtonsKey
 import app.it.fast4x.rimusic.utils.visualizerEnabledKey
-import app.n_zik.android.extensions.nextvisualizer.painters.modifier.Rotate
+import painters.modifier.Rotate
 import app.n_zik.android.thumbnailShape
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -161,7 +161,7 @@ fun NextVisualizer() {
 
             var bitmapCover by remember { mutableStateOf(APP_ICON_BITMAP) }
             var circleBitmap by remember { mutableStateOf(Icon.getCircledBitmap(APP_ICON_BITMAP)) }
-            val visualizerWhiteColorOption by rememberPreference(app.it.fast4x.rimusic.utils.visualizerWhiteColorOptionKey, app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.White)
+            val visualizerWhiteColorOption by rememberPreference(app.it.fast4x.rimusic.utils.visualizerWhiteColorOptionKey, enums.VisualizerWhiteColorOption.White)
             val visualizerCustomColor by rememberPreference(app.it.fast4x.rimusic.utils.visualizerCustomColorKey, android.graphics.Color.WHITE)
             var dominantColor by remember { mutableStateOf(android.graphics.Color.WHITE) }
             
@@ -185,10 +185,10 @@ fun NextVisualizer() {
             val accentColor = colorPalette().accent
             val color = remember(visualizerWhiteColorOption, visualizerCustomColor, accentColor, dominantColor) {
                 when (visualizerWhiteColorOption) {
-                    app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.White -> android.graphics.Color.WHITE
-                    app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.Theme -> accentColor.toArgb()
-                    app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.Cover -> dominantColor
-                    app.n_zik.android.extensions.nextvisualizer.enums.VisualizerWhiteColorOption.Custom -> visualizerCustomColor
+                    enums.VisualizerWhiteColorOption.White -> android.graphics.Color.WHITE
+                    enums.VisualizerWhiteColorOption.Theme -> accentColor.toArgb()
+                    enums.VisualizerWhiteColorOption.Cover -> dominantColor
+                    enums.VisualizerWhiteColorOption.Custom -> visualizerCustomColor
                 }
             }
 
@@ -421,7 +421,7 @@ fun createVisualizersList(background: Bitmap, circleBitmap: Bitmap, color: Int, 
             Shake(
                 Compose(
                     Rotate(FftCWave(colorPaint = color, ampR = ampRMin)),
-                    app.n_zik.android.extensions.nextvisualizer.painters.misc.Icon(circleBitmap)
+                    painters.misc.Icon(circleBitmap)
                 )
             ).apply {
                 animX.duration = 1000
