@@ -17,3 +17,4 @@ Refactored: Extracted nextvisualizer into an independent git submodule, flattene
 Refactored: Renamed the main application module from composeApp to ComposeN-Zik
 Fixed: Widespread bug where combinedClickable on IconButton intercepted clicks and made songs unclickable across the app
 Fixed: Layout bug where minimumInteractiveComponentSize on inline indicator icons (like explicit "E") forced a 48dp size, crushing the UI in song items
+Fixed: Swapped inverted icons in DownloadAllSongsDialog and DeleteAllDownloadedSongsDialog

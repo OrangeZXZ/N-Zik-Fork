@@ -1,4 +1,4 @@
-﻿package app.kreate.android.themed.rimusic.screen.player
+package app.kreate.android.themed.rimusic.screen.player
 
 import app.n_zik.android.core.database.*
 import app.n_zik.android.uiRoundnessShape
@@ -15,6 +15,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -488,19 +489,25 @@ fun BoxScope.ActionBar(
                 if (showButtonPlayerDiscover) {
                     var discoverIsEnabled by discoverState
 
-                    IconButton(
-                        icon = R.drawable.star_brilliant,
-                        color = if (discoverIsEnabled) colorPalette().text else colorPalette().textDisabled,
-                        onClick = {},
+                    Box(
                         modifier = Modifier
-                            .size(24.dp)
-                            .clip(uiRoundnessShape()).combinedClickable(
+                            .minimumInteractiveComponentSize()
+                            .clip(uiRoundnessShape())
+                            .combinedClickable(
                                 onClick = { discoverIsEnabled = !discoverIsEnabled },
                                 onLongClick = {
                                     Toaster.i(R.string.discoverinfo)
                                 }
-                            )
-                    )
+                            ),
+                        contentAlignment = androidx.compose.ui.Alignment.Center
+                    ) {
+                        androidx.compose.material3.Icon(
+                            painter = androidx.compose.ui.res.painterResource(R.drawable.star_brilliant),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                            tint = if (discoverIsEnabled) colorPalette().text else colorPalette().textDisabled
+                        )
+                    }
                 }
 
                 val showButtonPlayerDownload by rememberPreference( showButtonPlayerDownloadKey, true )

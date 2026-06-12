@@ -16,7 +16,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -231,6 +230,8 @@ fun PlaylistSongList(
     }
 
     var filter: String? by rememberSaveable { mutableStateOf(null) }
+    var showConfirmDownloadAllDialog by remember { mutableStateOf(false) }
+    var showConfirmDeleteDownloadDialog by remember { mutableStateOf(false) }
     var saveCheck by remember { mutableStateOf(false) }
 
     val sectionTextModifier = Modifier
@@ -487,47 +488,27 @@ fun PlaylistSongList(
                             )
 
                             HeaderIconButton(
-                                icon = R.drawable.downloaded,
+                                icon = R.drawable.download,
                                 color = colorPalette().text,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
-                                            if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
-                                                if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true)
-                                                    playlistPage?.songs?.filter { it.asMediaItem.mediaId !in dislikedSongs }
-                                                        ?.forEach {
-                                                            binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                                            Database.asyncTransaction {
-                                                                formatTable.findBySongId( it.key )
-                                                            }
-                                                            manageDownload(
-                                                                context = context,
-                                                                mediaItem = it.asMediaItem,
-                                                                downloadState = false
-                                                            )
-                                                        } else
-                                                    Toaster.e(R.string.disliked_this_collection)
-                                            }
+                                            showConfirmDownloadAllDialog = true
                                         },
                                         onLongClick = {
                                             Toaster.i(R.string.info_download_all_songs)
                                         }
-                                    )
                             )
 
-                            HeaderIconButton(
-                                icon = R.drawable.download,
-                                color = colorPalette().text,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
-                                        onClick = {
-                                            if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
-                                                if (playlistPage?.songs?.isNotEmpty() == true)
-                                                    playlistPage?.songs?.forEach {
+                            if (showConfirmDownloadAllDialog) {
+                                ConfirmationDialog(
+                                    text = stringResource(R.string.do_you_really_want_to_download_all),
+                                    onDismiss = { showConfirmDownloadAllDialog = false },
+                                    onConfirm = {
+                                        showConfirmDownloadAllDialog = false
+                                        if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
+                                            if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true)
+                                                playlistPage?.songs?.filter { it.asMediaItem.mediaId !in dislikedSongs }
+                                                    ?.forEach {
                                                         binder?.cache?.removeResource(it.asMediaItem.mediaId)
                                                         Database.asyncTransaction {
                                                             formatTable.findBySongId( it.key )
@@ -535,18 +516,52 @@ fun PlaylistSongList(
                                                         manageDownload(
                                                             context = context,
                                                             mediaItem = it.asMediaItem,
-                                                            downloadState = true
+                                                            downloadState = false
                                                         )
-                                                    } else {
-                                                    Toaster.e(R.string.disliked_this_collection)
-                                                }
-                                            }
+                                                    } else
+                                                Toaster.e(R.string.disliked_this_collection)
+                                        }
+                                    }
+                                )
+                            }
+
+                            HeaderIconButton(
+                                icon = R.drawable.downloaded,
+                                color = colorPalette().text,
+                                modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
+                                        onClick = {
+                                            showConfirmDeleteDownloadDialog = true
                                         },
                                         onLongClick = {
                                             Toaster.n(R.string.info_remove_all_downloaded_songs)
                                         }
-                                    )
                             )
+
+                            if (showConfirmDeleteDownloadDialog) {
+                                ConfirmationDialog(
+                                    text = stringResource(R.string.do_you_really_want_to_delete_download),
+                                    onDismiss = { showConfirmDeleteDownloadDialog = false },
+                                    onConfirm = {
+                                        showConfirmDeleteDownloadDialog = false
+                                        if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
+                                            if (playlistPage?.songs?.isNotEmpty() == true)
+                                                playlistPage?.songs?.forEach {
+                                                    binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                                    Database.asyncTransaction {
+                                                        formatTable.findBySongId( it.key )
+                                                    }
+                                                    manageDownload(
+                                                        context = context,
+                                                        mediaItem = it.asMediaItem,
+                                                        downloadState = true
+                                                    )
+                                                } else {
+                                                Toaster.e(R.string.disliked_this_collection)
+                                            }
+                                        }
+                                    }
+                                )
+                            }
 
 
 
@@ -554,10 +569,7 @@ fun PlaylistSongList(
                                 icon = R.drawable.enqueue,
                                 enabled = playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true,
                                 color =  if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) colorPalette().text else colorPalette().textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
                                                 playlistPage?.songs?.filter { it.asMediaItem.mediaId !in dislikedSongs }
@@ -571,17 +583,13 @@ fun PlaylistSongList(
                                         onLongClick = {
                                             Toaster.i(R.string.info_enqueue_songs)
                                         }
-                                    )
                             )
 
                             HeaderIconButton(
                                 icon = R.drawable.shuffle,
                                 enabled = playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true,
                                 color = if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) colorPalette().text else colorPalette().textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
                                                 binder?.stopRadio()
@@ -599,22 +607,18 @@ fun PlaylistSongList(
                                         onLongClick = {
                                             Toaster.i( R.string.info_shuffle )
                                         }
-                                    )
                             )
 
                             HeaderIconButton(
                                 icon = R.drawable.radio,
                                 enabled = playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true,
                                 color = if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) colorPalette().text else colorPalette().textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             val songs = playlistPage?.songs.orEmpty()
                                             if( songs.fastAny { it.key in dislikedSongs } ) {
                                                 Toaster.e( R.string.disliked_this_collection )
-                                                return@combinedClickable
+                                                return@HeaderIconButton
                                             }
 
                                             val mediaItem =
@@ -626,17 +630,13 @@ fun PlaylistSongList(
                                         onLongClick = {
                                             Toaster.i( R.string.info_start_radio )
                                         }
-                                    )
                             )
 
 
                             HeaderIconButton(
                                 icon = R.drawable.add_in_playlist,
                                 color = colorPalette().text,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             menuState.display {
                                                 PlaylistsItemMenu(
@@ -685,16 +685,12 @@ fun PlaylistSongList(
                                         onLongClick = {
                                             Toaster.i( R.string.info_add_in_playlist )
                                         }
-                                    )
                             )
                             HeaderIconButton(
                                 icon = R.drawable.heart,
                                 enabled = playlistPage?.songs?.isNotEmpty() == true,
                                 color = colorPalette().text,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             if (!isNetworkConnected(appContext()) && isYouTubeSyncEnabled()) {
                                                 Toaster.noInternet()
@@ -716,16 +712,12 @@ fun PlaylistSongList(
                                         onLongClick = {
                                             Toaster.i( R.string.add_to_favorites )
                                         }
-                                    )
                             )
                             if (isYouTubeSyncEnabled()) {
                                 HeaderIconButton(
                                     icon = if (localPlaylist?.isYoutubePlaylist == true) R.drawable.bookmark else R.drawable.bookmark_outline,
                                     color = colorPalette().text,
-                                    onClick = {},
-                                    modifier = Modifier
-                                        .padding(horizontal = 5.dp)
-                                        .clip(uiRoundnessShape()).combinedClickable(
+                                    modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                             onClick = {
                                                 if (isNetworkConnected(context)) {
                                                     if (localPlaylist?.isYoutubePlaylist == true) {
@@ -769,7 +761,6 @@ fun PlaylistSongList(
                                             onLongClick = {
                                                 Toaster.i( R.string.save_youtube_library )
                                             }
-                                        )
                                 )
                             }
 
@@ -898,18 +889,13 @@ fun PlaylistSongList(
                                     .text else colorPalette()
                                     .textDisabled,
                                 enabled = true,
-                                onClick = { translateEnabled = !translateEnabled },
-                                modifier = Modifier
-                                    .padding(all = 8.dp)
-                                    .size(18.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.padding(all = 8.dp).size(18.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             translateEnabled = !translateEnabled
                                         },
                                         onLongClick = {
                                             Toaster.i( R.string.info_translation )
                                         }
-                                    )
                             )
                             BasicText(
                                 text = "“",
@@ -1015,6 +1001,7 @@ fun PlaylistSongList(
                     ) {
                         SongItem(
                             song = ytSong.asSong,
+                            navController = navController,
                             modifier = Modifier,
 
                             onClick = {

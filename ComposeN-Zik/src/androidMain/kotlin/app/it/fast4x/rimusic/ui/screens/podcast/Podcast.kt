@@ -1,8 +1,9 @@
-﻿package app.it.fast4x.rimusic.ui.screens.podcast
+package app.it.fast4x.rimusic.ui.screens.podcast
 
 import androidx.compose.ui.draw.clip
 
 import app.n_zik.android.uiRoundnessShape
+import app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import app.n_zik.android.LocalPlayerAwareWindowInsets
 
 import app.n_zik.android.core.database.*
@@ -151,6 +152,8 @@ fun Podcast(
     var podcastPage by persist<Innertube.Podcast?>("podcast/$browseId/listEpisodes")
 
     var filter: String? by rememberSaveable { mutableStateOf(null) }
+    var showConfirmDownloadAllDialog by remember { mutableStateOf(false) }
+    var showConfirmDeleteDownloadDialog by remember { mutableStateOf(false) }
     val hapticFeedback = LocalHapticFeedback.current
 
     LaunchedEffect(Unit) {
@@ -343,60 +346,74 @@ fun Podcast(
                             )
 
                             HeaderIconButton(
-                                icon = R.drawable.downloaded,
+                                icon = R.drawable.download,
                                 color = colorPalette().text,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
-                                            downloadState = Download.STATE_DOWNLOADING
-                                            if (podcastPage?.listEpisode?.isNotEmpty() == true)
-                                                podcastPage?.listEpisode?.forEach {
-                                                    binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                                    Database.asyncTransaction {
-                                                        formatTable.findBySongId( it.asMediaItem.mediaId )
-                                                    }
-                                                    manageDownload(
-                                                        context = context,
-                                                        mediaItem = it.asMediaItem,
-                                                        downloadState = false
-                                                    )
-                                                }
+                                            showConfirmDownloadAllDialog = true
                                         },
                                         onLongClick = {
                                             Toaster.i( R.string.info_download_all_songs )
                                         }
-                                    )
                             )
 
-                            HeaderIconButton(
-                                icon = R.drawable.download,
-                                color = colorPalette().text,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
-                                        onClick = {
-                                            downloadState = Download.STATE_DOWNLOADING
-                                            if (podcastPage?.listEpisode?.isNotEmpty() == true)
-                                                podcastPage?.listEpisode?.forEach {
-                                                    binder?.cache?.removeResource(it.asMediaItem.mediaId)
-                                                    Database.asyncTransaction {
-                                                        formatTable.findBySongId( it.asMediaItem.mediaId )
-                                                    }
-                                                    manageDownload(
-                                                        context = context,
-                                                        mediaItem = it.asMediaItem,
-                                                        downloadState = true
-                                                    )
+                            if (showConfirmDownloadAllDialog) {
+                                ConfirmationDialog(
+                                    text = stringResource(R.string.do_you_really_want_to_download_all),
+                                    onDismiss = { showConfirmDownloadAllDialog = false },
+                                    onConfirm = {
+                                        showConfirmDownloadAllDialog = false
+                                        downloadState = Download.STATE_DOWNLOADING
+                                        if (podcastPage?.listEpisode?.isNotEmpty() == true)
+                                            podcastPage?.listEpisode?.forEach {
+                                                binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                                Database.asyncTransaction {
+                                                    formatTable.findBySongId( it.asMediaItem.mediaId )
                                                 }
+                                                manageDownload(
+                                                    context = context,
+                                                    mediaItem = it.asMediaItem,
+                                                    downloadState = false
+                                                )
+                                            }
+                                    }
+                                )
+                            }
+
+                            HeaderIconButton(
+                                icon = R.drawable.downloaded,
+                                color = colorPalette().text,
+                                modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
+                                        onClick = {
+                                            showConfirmDeleteDownloadDialog = true
                                         },
                                         onLongClick = {
                                             Toaster.i( R.string.info_remove_all_downloaded_songs )
                                         }
-                                    )
                             )
+
+                            if (showConfirmDeleteDownloadDialog) {
+                                ConfirmationDialog(
+                                    text = stringResource(R.string.do_you_really_want_to_delete_download),
+                                    onDismiss = { showConfirmDeleteDownloadDialog = false },
+                                    onConfirm = {
+                                        showConfirmDeleteDownloadDialog = false
+                                        downloadState = Download.STATE_DOWNLOADING
+                                        if (podcastPage?.listEpisode?.isNotEmpty() == true)
+                                            podcastPage?.listEpisode?.forEach {
+                                                binder?.cache?.removeResource(it.asMediaItem.mediaId)
+                                                Database.asyncTransaction {
+                                                    formatTable.findBySongId( it.asMediaItem.mediaId )
+                                                }
+                                                manageDownload(
+                                                    context = context,
+                                                    mediaItem = it.asMediaItem,
+                                                    downloadState = true
+                                                )
+                                            }
+                                    }
+                                )
+                            }
 
 
 
@@ -404,10 +421,7 @@ fun Podcast(
                                 icon = R.drawable.enqueue,
                                 enabled = podcastPage?.listEpisode?.isNotEmpty() == true,
                                 color =  if (podcastPage?.listEpisode?.isNotEmpty() == true) colorPalette().text else colorPalette().textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             podcastPage?.listEpisode?.map(Innertube.Podcast.EpisodeItem::asMediaItem)?.let { mediaItems ->
                                                 binder?.player?.enqueue(mediaItems, context)
@@ -416,17 +430,13 @@ fun Podcast(
                                         onLongClick = {
                                             Toaster.i( R.string.info_enqueue_songs )
                                         }
-                                    )
                             )
 
                             HeaderIconButton(
                                 icon = R.drawable.shuffle,
                                 enabled = podcastPage?.listEpisode?.isNotEmpty() == true,
                                 color = if (podcastPage?.listEpisode?.isNotEmpty() ==true) colorPalette().text else colorPalette().textDisabled,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             if (podcastPage?.listEpisode?.isNotEmpty() == true) {
                                                 binder?.stopRadio()
@@ -441,17 +451,13 @@ fun Podcast(
                                         onLongClick = {
                                             Toaster.i( R.string.info_shuffle )
                                         }
-                                    )
                             )
 
                             HeaderIconButton(
                                 icon = R.drawable.radio,
                                 enabled = podcastPage?.listEpisode?.isNotEmpty() == true,
                                 color = colorPalette().text,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             val mediaItem = binder?.player?.currentMediaItem ?: podcastPage?.listEpisode?.first()?.asMediaItem
                                             mediaItem?.let { binder?.startRadio( it ) }
@@ -459,17 +465,13 @@ fun Podcast(
                                         onLongClick = {
                                             Toaster.i( R.string.info_start_radio )
                                         }
-                                    )
                             )
 
 
                             HeaderIconButton(
                                 icon = R.drawable.add_in_playlist,
                                 color = colorPalette().text,
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(horizontal = 5.dp)
-                                    .clip(uiRoundnessShape()).combinedClickable(
+                                modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             menuState.display {
                                                 PlaylistsItemMenu(
@@ -518,7 +520,6 @@ fun Podcast(
                                         onLongClick = {
                                             Toaster.i( R.string.info_add_in_playlist )
                                         }
-                                    )
                             )
 
                         }

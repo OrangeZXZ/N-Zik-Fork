@@ -715,16 +715,13 @@ fun LocalPlaylistSongs(
                                     icon = R.drawable.smart_shuffle,
                                     enabled = true,
                                     color = if (isRecommendationEnabled) colorPalette().text else colorPalette().textDisabled,
-                                    onClick = {},
-                                    modifier = Modifier
-                                        .clip(uiRoundnessShape()).combinedClickable(
+                                    modifier = Modifier.clip(uiRoundnessShape()),
                                             onClick = {
                                                 isRecommendationEnabled = !isRecommendationEnabled
                                             },
                                             onLongClick = {
                                                 Toaster.i( R.string.info_smart_recommendation )
                                             }
-                                        )
                                 )
                             }
                         }

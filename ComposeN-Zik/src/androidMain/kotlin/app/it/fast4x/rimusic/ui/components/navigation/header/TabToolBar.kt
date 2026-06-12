@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components.navigation.header
+package app.it.fast4x.rimusic.ui.components.navigation.header
 
 import androidx.compose.ui.draw.clip
 
@@ -10,6 +10,8 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -143,16 +145,32 @@ object TabToolBar {
         onClick: () -> Unit = {},
         onLongClick: () -> Unit = {}
     ) {
-        Icon(
-            icon,
-            tint,
-            size,
-            enabled,
-            modifier.clip(uiRoundnessShape()).combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
-            ),
-        )
+        val interactionSource = remember { MutableInteractionSource() }
+        Box(
+            modifier = modifier
+                .minimumInteractiveComponentSize()
+                .clip(uiRoundnessShape())
+                .combinedClickable(
+                    interactionSource = interactionSource,
+                    indication = androidx.compose.material3.ripple(
+                        bounded = false,
+                        radius = 20.dp
+                    ),
+                    enabled = enabled,
+                    onClick = onClick,
+                    onLongClick = onLongClick
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            androidx.compose.material3.Icon(
+                painter = icon,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(size)
+                    .padding(horizontal = 4.dp),
+                tint = if (enabled) tint else tint.copy(alpha = 0.5f)
+            )
+        }
     }
 
     @Composable
@@ -190,16 +208,32 @@ object TabToolBar {
         onShortClick: () -> Unit,
         onLongClick: () -> Unit
     ) {
-        Icon(
-            iconId,
-            tint,
-            size,
-            enabled,
-            modifier.clip(uiRoundnessShape()).combinedClickable (
-                onClick = onShortClick,
-                onLongClick = onLongClick
+        val interactionSource = remember { MutableInteractionSource() }
+        Box(
+            modifier = modifier
+                .minimumInteractiveComponentSize()
+                .clip(uiRoundnessShape())
+                .combinedClickable(
+                    interactionSource = interactionSource,
+                    indication = androidx.compose.material3.ripple(
+                        bounded = false,
+                        radius = 20.dp
+                    ),
+                    enabled = enabled,
+                    onClick = onShortClick,
+                    onLongClick = onLongClick
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            androidx.compose.material3.Icon(
+                painter = painterResource(iconId),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(size)
+                    .padding(horizontal = 4.dp),
+                tint = if (enabled) tint else tint.copy(alpha = 0.5f)
             )
-        ) { }
+        }
     }
 
     @Composable
@@ -233,17 +267,31 @@ object TabToolBar {
         onShortClick: () -> Unit,
         onLongClick: () -> Unit
     ) {
-        Toggleable(
-            onIconId,
-            offIconId,
-            toggleCondition,
-            tint,
-            size,
-            modifier.clip(uiRoundnessShape()).combinedClickable (
-                onClick = onShortClick,
-                onLongClick = onLongClick
+        val interactionSource = remember { MutableInteractionSource() }
+        Box(
+            modifier = modifier
+                .minimumInteractiveComponentSize()
+                .clip(uiRoundnessShape())
+                .combinedClickable(
+                    interactionSource = interactionSource,
+                    indication = androidx.compose.material3.ripple(
+                        bounded = false,
+                        radius = 20.dp
+                    ),
+                    onClick = onShortClick,
+                    onLongClick = onLongClick
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            androidx.compose.material3.Icon(
+                painter = painterResource(if (toggleCondition) onIconId else offIconId),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(size)
+                    .padding(horizontal = 4.dp),
+                tint = tint
             )
-        ) { }
+        }
     }
 
     @Composable
@@ -280,18 +328,32 @@ object TabToolBar {
         onShortClick: () -> Unit,
         onLongClick: () -> Unit
     ) {
-        Toggleable(
-            iconId,
-            tintOn,
-            tintOff,
-            toggleCondition,
-            enabled,
-            size,
-            modifier.clip(uiRoundnessShape()).combinedClickable (
-                onClick = onShortClick,
-                onLongClick = onLongClick
+        val interactionSource = remember { MutableInteractionSource() }
+        Box(
+            modifier = modifier
+                .minimumInteractiveComponentSize()
+                .clip(uiRoundnessShape())
+                .combinedClickable(
+                    interactionSource = interactionSource,
+                    indication = androidx.compose.material3.ripple(
+                        bounded = false,
+                        radius = 20.dp
+                    ),
+                    enabled = enabled,
+                    onClick = onShortClick,
+                    onLongClick = onLongClick
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            androidx.compose.material3.Icon(
+                painter = painterResource(iconId),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(size)
+                    .padding(horizontal = 4.dp),
+                tint = if (enabled) (if (toggleCondition) tintOn else tintOff) else colorPalette().textDisabled
             )
-        ) { }
+        }
     }
 }
 
