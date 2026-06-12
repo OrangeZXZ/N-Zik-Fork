@@ -25,9 +25,9 @@ jobs:
   #
   # Topology:
   # Scan Git's commit logs for any changes in 1 of these locations:
-  # - composeApp/androidMain
-  # - composeApp/androidImprovised
-  # - composeApp/androidUpstream
+  # - ComposeN-Zik/androidMain
+  # - ComposeN-Zik/androidImprovised
+  # - ComposeN-Zik/androidUpstream
   # If any changes detect, mark that flavor to build cache later on.
   # Any changes made to "androidMain" will cause both flavor to be rebuilt.
   #
@@ -51,11 +51,11 @@ jobs:
       # Explanations:
       # git log --since="48 hours ago" --name-only --pretty=format:
       # - Show all files that were changed withing 48 hrs.
-      # - Show changed file paths in relative (composeApp/androidMain, etc.)
+      # - Show changed file paths in relative (ComposeN-Zik/androidMain, etc.)
       #
       # Rebuild all cache if a file in this group has changed:
-      # - composeApp/androidMain
-      # - composeApp/commonMain
+      # - ComposeN-Zik/androidMain
+      # - ComposeN-Zik/commonMain
       # - .gradle, .gradle.kts, or gradle-wrapper.properties
       #
       - name: Detect changes in last 48 hours
@@ -63,8 +63,8 @@ jobs:
         run: |
           CHANGES_MADE=false
           if \
-            git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^composeApp/src/androidMain/" || \
-            git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^composeApp/src/commonMain/" || \
+            git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^ComposeN-Zik/src/androidMain/" || \
+            git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^ComposeN-Zik/src/commonMain/" || \
             git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^.*\.gradle.*" || \
             git log --since="48 hours ago" --name-only --pretty=format: | grep -q "^gradle-wrapper.properties"; then
           
@@ -101,7 +101,7 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
             ./build
-            ./composeApp/build
+            ./ComposeN-Zik/build
           # Cache key has flavor's name to prevent override each other
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
@@ -114,3 +114,4 @@ jobs:
           ./gradlew assembleBeta --build-cache --exclude-task packageBeta
           ./gradlew assembleFull --build-cache --exclude-task packageFull
           ./gradlew assembleMinified --build-cache --exclude-task packageMinified
+

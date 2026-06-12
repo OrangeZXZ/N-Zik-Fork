@@ -16,7 +16,7 @@ jobs:
       - name: Get downstream (local) version code
         id: downstream
         run: |
-          echo "code=$(grep -E '^\s*versionCode\s*=' composeApp/build.gradle.kts | awk -F '= ' '{print $2}')" >> $GITHUB_OUTPUT
+          echo "code=$(grep -E '^\s*versionCode\s*=' ComposeN-Zik/build.gradle.kts | awk -F '= ' '{print $2}')" >> $GITHUB_OUTPUT
 
   build-full:
     needs: [versioning]
@@ -30,7 +30,7 @@ jobs:
           submodules: true
 
       - name: Copy changelogs into res/raw
-        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
+        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
         uses: actions/setup-java@v5.2.0
@@ -45,7 +45,7 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
             ./build
-            ./composeApp/build
+            ./ComposeN-Zik/build
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
 
@@ -53,13 +53,13 @@ jobs:
         run: ./gradlew assembleFull
 
       - name: List APK outputs (debug)
-        run: ls -l composeApp/build/outputs/apk/full/
+        run: ls -l ComposeN-Zik/build/outputs/apk/full/
 
       - name: Upload artifacts for signing
         uses: actions/upload-artifact@v7
         with:
           name: unsigned-release
-          path: composeApp/build/outputs/apk/full/*.apk
+          path: ComposeN-Zik/build/outputs/apk/full/*.apk
 
   sign-apks:
     name: Sign all built APKs
@@ -95,3 +95,4 @@ jobs:
         with:
           name: signed-apks
           path: signed/*.apk
+

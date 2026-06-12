@@ -36,8 +36,8 @@ jobs:
       - name: Get downstream (local) version
         id: downstream
         run: |
-          echo "version=$(grep -E '^\s*versionName\s*=' composeApp/build.gradle.kts | awk -F '\"' '{print $2}')" >> $GITHUB_OUTPUT
-          echo "code=$(grep -E '^\s*versionCode\s*=' composeApp/build.gradle.kts | awk -F '= ' '{print $2}')" >> $GITHUB_OUTPUT
+          echo "version=$(grep -E '^\s*versionName\s*=' ComposeN-Zik/build.gradle.kts | awk -F '\"' '{print $2}')" >> $GITHUB_OUTPUT
+          echo "code=$(grep -E '^\s*versionCode\s*=' ComposeN-Zik/build.gradle.kts | awk -F '= ' '{print $2}')" >> $GITHUB_OUTPUT
       - name: Get upstream version
         id: upstream
         run: |
@@ -93,7 +93,7 @@ jobs:
           submodules: true
 
       - name: Copy changelogs into res/raw
-        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
+        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
         uses: actions/setup-java@v5.2.0
@@ -108,7 +108,7 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
             ./build
-            ./composeApp/build
+            ./ComposeN-Zik/build
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
 
@@ -119,7 +119,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: unsigned-full
-          path: composeApp/build/outputs/apk/full/*.apk
+          path: ComposeN-Zik/build/outputs/apk/full/*.apk
       
   build-minified:
     needs: [versioning, verify-version]
@@ -132,7 +132,7 @@ jobs:
           submodules: true
 
       - name: Copy changelogs into res/raw
-        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "composeApp/src/androidMain/res/raw/release_notes.txt"
+        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
         uses: actions/setup-java@v5.2.0
@@ -147,7 +147,7 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
             ./build
-            ./composeApp/build
+            ./ComposeN-Zik/build
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
 
@@ -158,7 +158,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: unsigned-minified
-          path: composeApp/build/outputs/apk/minified/*.apk
+          path: ComposeN-Zik/build/outputs/apk/minified/*.apk
 
   sign-apks:
     name: Sign all built APKs
@@ -209,18 +209,18 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: '*.apk'
-          name: v${{ needs.versioning.outputs.downstream }}-${{ needs.build_time.outputs.date }} | 🛡️ STABLE Build
+          name: v${{ needs.versioning.outputs.downstream }}-${{ needs.build_time.outputs.date }} | ðŸ›¡ï¸ STABLE Build
           tag_name: v${{ needs.versioning.outputs.downstream }}
           make_latest: true
           body: |
-            ## ✨ What's New in v${{ needs.versioning.outputs.downstream }}
+            ## âœ¨ What's New in v${{ needs.versioning.outputs.downstream }}
             ---
             <div align="center">
               <img alt="N-Zik Logo" src="https://github.com/N-Zik-Group/N-Zik/blob/main/assets/design/ic_banner2.png?raw=true" width="1000" />
               <p><b>N-Zik</b> - by @NEVARLeVrai</p>
             </div>
             
-            ## 🔎 Verification
+            ## ðŸ”Ž Verification
             
             > Always check for signature before installing any app you downloaded from GitHub or other APK distributors.
             
@@ -240,7 +240,7 @@ jobs:
             | SHA-1     | ec57f7d61cf2382aecff7444e815e37a601cb1f1                           |
             | MD5       | 5ae0045983899ab7ca5db38ef785d6ab                                   |
             
-            ## 📲 Installation
+            ## ðŸ“² Installation
             
             1. Download the **Full build** below (recommended for all devices).  
             2. Verify its signature using the hashes provided.  
@@ -250,21 +250,21 @@ jobs:
             
             Please report any crashes, bugs, or unexpected behavior.
             
-            ## 📦 Available Builds
+            ## ðŸ“¦ Available Builds
             
-            - **Full** – Complete build with all components.  
-            - **Minified** – Lightweight build, recommended for low-end devices.
+            - **Full** â€“ Complete build with all components.  
+            - **Minified** â€“ Lightweight build, recommended for low-end devices.
             
-            ## 🔄 Update Policy
+            ## ðŸ”„ Update Policy
             
-            - 🟢 **Full Build (-f)** 
+            - ðŸŸ¢ **Full Build (-f)** 
             - **Default:** Update notifications for **Stable** are **enabled by default**.  
               - **User options:** - You can **disable Stable updates** in **Settings > About > Auto update enabled**.  
                 - You can **enable Beta updates** in **Settings > About > Beta update enabled** to test Beta releases.  
-              - **Behavior:** - Without Beta enabled → receives **Stable** updates only.  
-                - With Beta enabled → receives both **Stable + Beta** updates.
+              - **Behavior:** - Without Beta enabled â†’ receives **Stable** updates only.  
+                - With Beta enabled â†’ receives both **Stable + Beta** updates.
                     
-            - 🔵 **Minified Build (-m)** 
+            - ðŸ”µ **Minified Build (-m)** 
             - **Default:** Update notifications for **Stable** are **enabled by default**.  
               - **User options:** - You can **disable Stable updates** in **Settings > About > Auto update enabled**.  
                 - Always updates to the **Full Stable Build**.  
@@ -272,7 +272,7 @@ jobs:
                 
             This lets you decide whether to test new experimental updates or stick with the stable ones.
             
-            ## 🔗 Changelog & Downloads
+            ## ðŸ”— Changelog & Downloads
             
             - Full changelog: [Compare v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }}](https://github.com/N-Zik-Group/N-Zik/compare/v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }})  
             - [Changelog text file](https://github.com/N-Zik-Group/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt)
@@ -292,8 +292,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           label: patched
           message: |
-            🎉 This issue has been fixed and is now available in **v${{ needs.versioning.outputs.downstream }}** 🎉
-            ➤ Download: https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}
+            ðŸŽ‰ This issue has been fixed and is now available in **v${{ needs.versioning.outputs.downstream }}** ðŸŽ‰
+            âž¤ Download: https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}
             This ticket is now closed. If you have any questions, feel free to reply below.
             If needed, the ticket will be reopened for further support.
       - name: Close issues marked as "implemented"
@@ -302,7 +302,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           label: implemented
           message: |
-            ✔️ This feature is now implemented in the app. Therefore, this ticket is closed.
+            âœ”ï¸ This feature is now implemented in the app. Therefore, this ticket is closed.
             If you have any question, feel free to reply below.
             The ticket will be reopened if needed.
 
@@ -310,15 +310,15 @@ jobs:
     needs: [upload-to-release, versioning]
     runs-on: ubuntu-latest
     steps:
-      - name: 🚀 Stable Release Notification
+      - name: ðŸš€ Stable Release Notification
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           CONTENT: |
-            ✨ **||<@&1345079801324634195>|| NEW STABLE RELEASE v${{ needs.versioning.outputs.downstream }}!**
+            âœ¨ **||<@&1345079801324634195>|| NEW STABLE RELEASE v${{ needs.versioning.outputs.downstream }}!**
             
-            🚀 Download now!
+            ðŸš€ Download now!
           DESCRIPTION: |
-            ## 📲 Installation
+            ## ðŸ“² Installation
 
             1. Download the **Full build** below (recommended for all devices).  
             2. Verify its signature using the hashes provided.  
@@ -328,32 +328,32 @@ jobs:
 
             Please report any crashes, bugs, or unexpected behavior.
 
-            ## 📦 Available Builds
+            ## ðŸ“¦ Available Builds
 
-            - **Full** – Complete build with all components.  
-            - **Minified** – Lightweight build, recommended for low-end devices.
+            - **Full** â€“ Complete build with all components.  
+            - **Minified** â€“ Lightweight build, recommended for low-end devices.
 
-            ## 🔄 Update Policy
+            ## ðŸ”„ Update Policy
 
-            - 🟢 **Full Build (-f)** - **Default:** Update notifications for **Stable** are **enabled by default**.  
+            - ðŸŸ¢ **Full Build (-f)** - **Default:** Update notifications for **Stable** are **enabled by default**.  
               - **User options:** - You can **disable Stable updates** in **Settings > About > Auto update enabled**.  
                 - You can **enable Beta updates** in **Settings > About > Beta update enabled** to test Beta releases.  
-              - **Behavior:** - Without Beta enabled → receives **Stable** updates only.  
-                - With Beta enabled → receives both **Stable + Beta** updates.
+              - **Behavior:** - Without Beta enabled â†’ receives **Stable** updates only.  
+                - With Beta enabled â†’ receives both **Stable + Beta** updates.
                     
-            - 🔵 **Minified Build (-m)** - **Default:** Update notifications for **Stable** are **enabled by default**.  
+            - ðŸ”µ **Minified Build (-m)** - **Default:** Update notifications for **Stable** are **enabled by default**.  
               - **User options:** - You can **disable Stable updates** in **Settings > About > Auto update enabled**.  
                 - Always updates to the **Full Stable Build**.  
                 - No Beta option available.
                 
             This lets you decide whether to test new experimental updates or stick with the stable ones.
 
-            ## 🔗 Changelog & Downloads
+            ## ðŸ”— Changelog & Downloads
 
-            - 📥 **Full APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}/N-Zik-full.apk
-            - 📥 **Minified APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}/N-Zik-minified.apk
-            - 📄 **Changelog:** <https://github.com/N-Zik-Group/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt>
-            - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}>
+            - ðŸ“¥ **Full APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}/N-Zik-full.apk
+            - ðŸ“¥ **Minified APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}/N-Zik-minified.apk
+            - ðŸ“„ **Changelog:** <https://github.com/N-Zik-Group/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt>
+            - ðŸš€ **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}>
         run: |
           jq -n \
             --arg content "$CONTENT" \
@@ -368,10 +368,11 @@ jobs:
                 color: 13632401,
                 description: $desc,
                 footer: {
-                  text: "N-Zik Stable • Made by the community, for the community",
+                  text: "N-Zik Stable â€¢ Made by the community, for the community",
                   icon_url: $avatar
                 }
               }]
             }' > payload.json
           
           curl -X POST -H "Content-Type: application/json" -d @payload.json $WEBHOOK_URL
+
