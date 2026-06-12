@@ -159,12 +159,12 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: '*.apk'
-          name: v${{ needs.versioning.outputs.downstream }}-b-${{ needs.build_time.outputs.date }} | ðŸš€ BETA Build
+          name: v${{ needs.versioning.outputs.downstream }}-b-${{ needs.build_time.outputs.date }} | 🚀 BETA Build
           tag_name: v${{ needs.versioning.outputs.downstream }}-b
           prerelease: true
           make_latest: false
           body: |
-            ## âš ï¸ Beta Release v${{ needs.versioning.outputs.downstream }}-b
+            ## ⚠️ Beta Release v${{ needs.versioning.outputs.downstream }}-b
             ---
             <div align="center">
               <img alt="N-Zik Logo" src="https://github.com/N-Zik-Group/N-Zik/blob/main/assets/design/ic_banner2.png?raw=true" width="1000" />
@@ -172,7 +172,7 @@ jobs:
               <p><i>This is a <b>BETA build</b>, intended for testing only.</i></p>
             </div>
 
-            ## ðŸ”Ž Verification
+            ## 🔎 Verification
 
             > Always verify the signature before installing any APK downloaded from GitHub or other distributors.
 
@@ -192,9 +192,9 @@ jobs:
             | SHA-1     | ec57f7d61cf2382aecff7444e815e37a601cb1f1                         |
             | MD5       | 5ae0045983899ab7ca5db38ef785d6ab                                 |
 
-            ## ðŸ“² Installation
+            ## 📲 Installation
 
-            âš ï¸ This is a **BETA release**, not a stable version.  
+            ⚠️ This is a **BETA release**, not a stable version.  
             It is intended **only for testing and feedback**.
 
             1. Download the **Full BETA build** below.  
@@ -203,26 +203,26 @@ jobs:
 
             Please report any crashes, bugs, or unexpected behavior.
 
-            ## ðŸ“¦ Available Build
+            ## 📦 Available Build
 
-            - **Full (BETA)** â€“ Complete build with all components.  
-              âš ï¸ May contain bugs or experimental features.
+            - **Full (BETA)** – Complete build with all components.  
+              ⚠️ May contain bugs or experimental features.
 
-            ## ðŸ”„ Update Policy
+            ## 🔄 Update Policy
 
-            - ðŸŸ¡ **Beta Build (-b)**  
+            - 🟡 **Beta Build (-b)**  
               - **Default:** Update notifications for **Beta** are **enabled by default**.  
               - **User options:**  
                 - You can **disable Beta updates** in **Settings > About > Beta update disabled**.  
                 - You can **enable or disable auto update** in **Settings > About > Auto update enabled**.  
               - **Behavior:**  
-                - Without Beta enabled â†’ automatically upgrades to the latest **Stable** release.  
-                - With Beta enabled â†’ stays on the **Beta channel** and receives **Stable updates** as well.  
-              - âš ï¸ **Note:** This build may contain experimental features and bugs. Only enable Beta updates if you want to test new features.
+                - Without Beta enabled → automatically upgrades to the latest **Stable** release.  
+                - With Beta enabled → stays on the **Beta channel** and receives **Stable updates** as well.  
+              - ⚠️ **Note:** This build may contain experimental features and bugs. Only enable Beta updates if you want to test new features.
 
             This lets you decide whether to test new experimental updates or stick with the stable ones.
 
-            ## ðŸ”— Changelog & Downloads
+            ## 🔗 Changelog & Downloads
 
             - Full changelog: [Compare v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }}](https://github.com/N-Zik-Group/N-Zik/compare/v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }})  
             - [Changelog text file](https://github.com/N-Zik-Group/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt)
@@ -234,17 +234,17 @@ jobs:
     needs: [upload-to-release, versioning]
     runs-on: ubuntu-latest
     steps:
-      - name: ðŸ§ª Beta Release Notification
+      - name: 🧪 Beta Release Notification
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           CONTENT: |
-            âš ï¸ **||<@&1345079801324634195>|| BETA VERSION v${{ needs.versioning.outputs.downstream }}-b AVAILABLE!**
+            ⚠️ **||<@&1345079801324634195>|| BETA VERSION v${{ needs.versioning.outputs.downstream }}-b AVAILABLE!**
 
-            ðŸ§ª Help us test the latest features!
+            🧪 Help us test the latest features!
           DESCRIPTION: |
-            ## ðŸ“² Installation
+            ## 📲 Installation
 
-            âš ï¸ This is a **BETA release**, not a stable version.  
+            ⚠️ This is a **BETA release**, not a stable version.  
             It is intended **only for testing and feedback**.
 
             1. Download the **Full BETA build** below.  
@@ -253,27 +253,27 @@ jobs:
 
             Please report any crashes, bugs, or unexpected behavior.
 
-            ## ðŸ“¦ Available Build
+            ## 📦 Available Build
 
-            - **Full (BETA)** â€“ Complete build with all components.  
-              âš ï¸ May contain bugs or experimental features.
+            - **Full (BETA)** – Complete build with all components.  
+              ⚠️ May contain bugs or experimental features.
 
-            ## ðŸ”„ Update Policy
+            ## 🔄 Update Policy
 
-            - ðŸŸ¡ **Beta Build (-b)** - **Default:** Update notifications for **Beta** are **enabled by default**.  
+            - 🟡 **Beta Build (-b)** - **Default:** Update notifications for **Beta** are **enabled by default**.  
               - **User options:** - You can **disable Beta updates** in **Settings > About > Beta update disabled**.  
                 - You can **enable or disable auto update** in **Settings > About > Auto update enabled**.  
-              - **Behavior:** - Without Beta enabled â†’ automatically upgrades to the latest **Stable** release.  
-                - With Beta enabled â†’ stays on the **Beta channel** and receives **Stable updates** as well.  
-              - âš ï¸ **Note:** This build may contain experimental features and bugs. Only enable Beta updates if you want to test new features.
+              - **Behavior:** - Without Beta enabled → automatically upgrades to the latest **Stable** release.  
+                - With Beta enabled → stays on the **Beta channel** and receives **Stable updates** as well.  
+              - ⚠️ **Note:** This build may contain experimental features and bugs. Only enable Beta updates if you want to test new features.
 
             This lets you decide whether to test new experimental updates or stick with the stable ones.
 
-            ## ðŸ”— Changelog & Downloads
+            ## 🔗 Changelog & Downloads
 
-            - ðŸ“¥ **Full BETA APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-b/N-Zik-beta.apk
-            - ðŸ“„ **Changelog:** <https://github.com/N-Zik-Group/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt>
-            - ðŸš€ **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-b>
+            - 📥 **Full BETA APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-b/N-Zik-beta.apk
+            - 📄 **Changelog:** <https://github.com/N-Zik-Group/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt>
+            - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-b>
         run: |
           jq -n \
             --arg content "$CONTENT" \
@@ -288,11 +288,10 @@ jobs:
                 color: 16711680,
                 description: $desc,
                 footer: {
-                  text: "N-Zik BETA â€¢ Testing & Feedback Needed",
+                  text: "N-Zik BETA • Testing & Feedback Needed",
                   icon_url: $avatar
                 }
               }]
             }' > payload.json
 
           curl -X POST -H "Content-Type: application/json" -d @payload.json $WEBHOOK_URL
-

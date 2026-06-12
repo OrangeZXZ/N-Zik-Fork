@@ -37,4 +37,4 @@ include(":discordrpc")
 project(":discordrpc").projectDir = file("modules/discordrpc")
 include(":nextvisualizer")
 project(":nextvisualizer").projectDir = file("modules/nextvisualizer")
-
+

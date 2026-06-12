@@ -95,4 +95,3 @@ jobs:
         with:
           name: signed-apks
           path: signed/*.apk
-
