@@ -769,6 +769,8 @@ Volume BAS : titre précédent</string>
   <string name="piped_custom_instance">Instance personnalisée pour Piped</string>
   <string name="create_new_playlist">Créer une nouvelle playlist</string>
   <string name="settings_loudness_base_gain">Gain de base du volume sonore</string>
+  <string name="loudness_boost_level">Niveau d\'amplification de la sonorité</string>
+  <string name="loudness_boost_level_info">Niveau de bruit supplémentaire, à utiliser sans exagérer, peut endommager l\'appareil</string>
   <string name="settings_target_gain_loudness_info">Gain cible pour la normalisation du volume sonore</string>
   <string name="error_media_cannot_be_played">Le média ne peut pas être lu</string>
   <string name="full_screen_lyrics_components">Composants des paroles en plein écran</string>
@@ -1078,6 +1080,10 @@ Volume BAS : titre précédent</string>
   <string name="notifications">Notifications</string>
   <string name="playback">Lecture</string>
   <string name="player_controls">Contrôles du joueur</string>
+  <string name="player_controls_colors">Le joueur contrôle les couleurs</string>
+  <string name="theme_color">Couleur du thème</string>
+  <string name="cover_color">Couleur de couverture</string>
+  <string name="monochrome">Monochrome</string>
   <string name="queue_management">Gestion de la file d\'attente</string>
   <string name="app_behavior">Comportement de l\'application</string>
   <string name="audio_effects">Effets Audio</string>
@@ -1178,4 +1184,19 @@ Volume BAS : titre précédent</string>
   <string name="snake_retry">Réessayer</string>
   <string name="snake_exit">Quitter</string>
   <string name="skip_time_buttons">Ignorer les boutons de temps</string>
+  <string name="hide_status_bar">Masquer la barre d\'état</string>
+  <string name="crossfade">Crossfade</string>
+  <string name="crossfade_description">Activer la transition en douceur entre les chansons</string>
+  <string name="crossfade_duration">Durée du fondu enchaîné</string>
+  <string name="crossfade_gapless">Fondu enchaîné sans faille</string>
+  <string name="crossfade_gapless_description">Ne pas faire de fondus croisés à partir du même album</string>
+  <string name="disable_navigation_back_stack">Retourner directement à la page d\'accueil</string>
+  <string name="disable_navigation_back_stack_description">Lorsque cette option est activée, la pression sur Retour saute les pages intermédiaires et retourne directement à l\'écran d\'accueil</string>
+  <string name="player_swipe_sensitivity">Sensibilité du balayage du joueur</string>
+  <string name="ps_low">Bas</string>
+  <string name="ps_medium">Moyen</string>
+  <string name="ps_high">Élevé</string>
+  <string name="ps_very_high">Très haut</string>
+  <string name="visualizer_bar">Barre de visualisation</string>
+  <string name="static_audio_waves">Barre audio</string>
 </resources>
