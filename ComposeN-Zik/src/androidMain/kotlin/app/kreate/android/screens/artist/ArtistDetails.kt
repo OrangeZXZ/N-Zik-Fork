@@ -87,6 +87,7 @@ import app.it.fast4x.rimusic.ui.items.ArtistItem
 import app.it.fast4x.rimusic.ui.items.PlaylistItem
 import app.it.fast4x.rimusic.ui.items.VideoItem
 import app.kreate.android.me.knighthat.component.menu.video.VideoItemMenu
+import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 
 import app.it.fast4x.rimusic.ui.styling.px
@@ -458,8 +459,8 @@ fun ArtistDetails(
                 if( section.items.fastAll { it is Innertube.AlbumItem } )
                     LazyRow {
                         items(
-                            items = section.items.fastMap { (it as Innertube.AlbumItem).asAlbum },
-                            key = Album::id
+                            items = section.items.fastMap { it as Innertube.AlbumItem },
+                            key = Innertube.AlbumItem::key
                         ) { album ->
                             AlbumItem(
                                 album = album,
@@ -467,10 +468,20 @@ fun ArtistDetails(
                                 thumbnailSizePx = albumThumbnailSizePx,
                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                 disableScrollingText = disableScrollingText,
-                                isYoutubeAlbum = album.isYoutubeAlbum,
-                                modifier = Modifier.clip(uiRoundnessShape()).clickable {
-                                    navController.navigate("${NavRoutes.album.name}/${album.id}")
-                                }
+                                modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                    onClick = {
+                                        navController.navigate("${NavRoutes.album.name}/${album.key}")
+                                    },
+                                    onLongClick = {
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        menuState.display {
+                                            OnlineAlbumItemMenu(
+                                                navController = navController,
+                                                album = album
+                                            ).MenuComponent()
+                                        }
+                                    }
+                                )
                             )
                         }
                     }

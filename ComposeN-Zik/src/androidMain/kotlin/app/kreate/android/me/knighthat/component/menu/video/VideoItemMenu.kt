@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.bodies.NextBody
+import it.fast4x.innertube.requests.nextPage
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.appContext
@@ -147,12 +150,73 @@ class VideoItemMenu private constructor(
                 override fun onLongClick() {}
             }
         }
+        // Reactively collect artists from DB for per-artist "More of" buttons
+        val artistsData by remember(song.id) {
+            Database.artistTable.findBySongId(song.id)
+        }.collectAsState(emptyList(), Dispatchers.IO)
+
+        val goToArtistFallback = remember {
+            app.kreate.android.me.knighthat.component.song.GoToArtist( navController, song )
+        }
 
         buttons = mutableListOf<Button>().apply {
             add( startRadio )
             add( playNext )
             add( enqueue )
             add( addToPlaylist )
+            
+            if (artistsData.isEmpty()) {
+                val artistNames = song.artistsText
+                    ?.split(",")
+                    ?.map { it.trim() }
+                    ?.filter { it.isNotBlank() }
+                    ?: emptyList()
+
+                if (artistNames.size <= 1) {
+                    add( goToArtistFallback )
+                } else {
+                    artistNames.forEach { artistName ->
+                        add(object : MenuIcon, Descriptive, Clickable {
+                            override val iconId: Int = R.drawable.people
+                            override val messageId: Int = R.string.artists
+                            @get:Composable
+                            override val menuIconTitle: String get() = stringResource(R.string.more_of) + " $artistName"
+                            override fun onShortClick() {
+                                menuState.hide()
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    it.fast4x.innertube.Innertube.nextPage(it.fast4x.innertube.models.bodies.NextBody(videoId = song.id))
+                                        ?.getOrNull()
+                                        ?.itemsPage?.items?.firstOrNull()
+                                        ?.authors
+                                        ?.find { it.name?.equals(artistName, ignoreCase = true) == true }
+                                        ?.endpoint
+                                        ?.takeIf { !it.browseId.isNullOrBlank() }
+                                        ?.let {
+                                            val path = "${it.browseId}?params=${it.params.orEmpty()}"
+                                            app.it.fast4x.rimusic.enums.NavRoutes.artist.navigateHere(navController, path)
+                                        }
+                                }
+                            }
+                            override fun onLongClick() {}
+                        })
+                    }
+                }
+            } else {
+                artistsData.forEach { artist ->
+                    add(object : MenuIcon, Descriptive, Clickable {
+                        override val iconId: Int = R.drawable.people
+                        override val messageId: Int = R.string.artists
+                        @get:Composable
+                        override val menuIconTitle: String get() = stringResource(R.string.more_of) + " ${artist.name ?: ""}"
+                        override fun onShortClick() {
+                            menuState.hide()
+                            navController.navigate("${app.it.fast4x.rimusic.enums.NavRoutes.artist.name}/${artist.id}")
+                        }
+                        override fun onLongClick() {}
+                    })
+                }
+            }
+
             add( listenOnButton )
         }
         //endregion

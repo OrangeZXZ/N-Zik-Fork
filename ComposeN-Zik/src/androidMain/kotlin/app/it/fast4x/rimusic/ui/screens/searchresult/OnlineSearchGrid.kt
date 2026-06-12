@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.searchresult
+package app.it.fast4x.rimusic.ui.screens.searchresult
 
 import androidx.compose.ui.draw.clip
 
@@ -51,6 +51,7 @@ import app.it.fast4x.rimusic.ui.items.VideoItem
 import app.it.fast4x.rimusic.ui.items.VideoItemPlaceholder
 import app.kreate.android.me.knighthat.component.SongItem
 import app.kreate.android.me.knighthat.component.menu.video.VideoItemMenu
+import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
 import app.kreate.android.me.knighthat.utils.Toaster
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -175,7 +176,15 @@ fun OnlineSearchGrid(
                                 onClick = {
                                     navController.navigate("${NavRoutes.album.name}/${item.key}")
                                 },
-                                onLongClick = {}
+                                onLongClick = {
+                                    menuState.display {
+                                        OnlineAlbumItemMenu(
+                                            navController = navController,
+                                            album = item
+                                        ).MenuComponent()
+                                    }
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                }
                             ),
                         disableScrollingText = disableScrollingText
                     )

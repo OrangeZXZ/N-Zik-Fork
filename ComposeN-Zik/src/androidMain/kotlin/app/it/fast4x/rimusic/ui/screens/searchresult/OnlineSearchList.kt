@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.searchresult
+package app.it.fast4x.rimusic.ui.screens.searchresult
 
 import app.n_zik.android.uiRoundnessShape
 
@@ -62,6 +62,7 @@ import app.it.fast4x.rimusic.ui.items.VideoItem
 import app.it.fast4x.rimusic.ui.items.VideoItemPlaceholder
 import app.kreate.android.me.knighthat.component.SongItem
 import app.kreate.android.me.knighthat.component.menu.video.VideoItemMenu
+import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
 import app.kreate.android.me.knighthat.utils.Toaster
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -156,14 +157,28 @@ fun OnlineSearchList(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(uiRoundnessShape()).clickable {
-                            when (tabIndex) {
-                                1 -> navController.navigate("${NavRoutes.album.name}/${item.key}")
-                                2 -> navController.navigate("${NavRoutes.artist.name}/${item.key}")
-                                4, 5 -> navController.navigate("${NavRoutes.playlist.name}/${item.key}")
-                                6 -> navController.navigate("${NavRoutes.podcast.name}/${item.key}")
+                        .clip(uiRoundnessShape())
+                        .combinedClickable(
+                            onClick = {
+                                when (tabIndex) {
+                                    1 -> navController.navigate("${NavRoutes.album.name}/${item.key}")
+                                    2 -> navController.navigate("${NavRoutes.artist.name}/${item.key}")
+                                    4, 5 -> navController.navigate("${NavRoutes.playlist.name}/${item.key}")
+                                    6 -> navController.navigate("${NavRoutes.podcast.name}/${item.key}")
+                                }
+                            },
+                            onLongClick = {
+                                if (item is Innertube.AlbumItem) {
+                                    menuState.display {
+                                        OnlineAlbumItemMenu(
+                                            navController = navController,
+                                            album = item
+                                        ).MenuComponent()
+                                    }
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                }
                             }
-                        }
+                        )
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically

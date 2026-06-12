@@ -1,4 +1,4 @@
-﻿package app.kreate.android.themed.rimusic.screen.artist
+package app.kreate.android.themed.rimusic.screen.artist
 
 import androidx.compose.ui.draw.clip
 
@@ -47,6 +47,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.utils.Toaster
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
+import app.it.fast4x.rimusic.ui.components.LocalMenuState
 
 @ExperimentalMaterial3Api
 @Composable
@@ -57,6 +62,8 @@ fun ArtistAlbums(
     miniplayer: @Composable () -> Unit
 ) {
     val lazyGridState = rememberLazyGridState()
+    val menuState = LocalMenuState.current
+    val hapticFeedback = LocalHapticFeedback.current
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
@@ -136,9 +143,20 @@ fun ArtistAlbums(
                             thumbnailSizePx = thumbnailSizePx,
                             thumbnailSizeDp = thumbnailSizeDp,
                             alternative = true,
-                            modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
-                                NavRoutes.album.navigateHere(navController, it.key)
-                            }),
+                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                onClick = {
+                                    NavRoutes.album.navigateHere(navController, it.key)
+                                },
+                                onLongClick = {
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    menuState.display {
+                                        OnlineAlbumItemMenu(
+                                            navController = navController,
+                                            album = it
+                                        ).MenuComponent()
+                                    }
+                                }
+                            ),
                             disableScrollingText = disableScrollingText
                         )
                     }
