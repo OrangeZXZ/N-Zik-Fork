@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Sleep Timer button</string>
   <string name="sort_album_year">שנת אלבום</string>
   <string name="sort_position">עמדה</string>
+  <string name="sort_custom_order">Custom order</string>
   <string name="sort_title">כותרת</string>
   <string name="sort_date_played">תאריך ניגון</string>
   <string name="sort_artist">אמן</string>

@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Afficher le bouton du minuteur de mise en veille</string>
   <string name="sort_album_year">Année de l\'album</string>
   <string name="sort_position">Position</string>
+  <string name="sort_custom_order">Commande personnalisée</string>
   <string name="sort_title">Titre</string>
   <string name="sort_date_played">Date de lecture</string>
   <string name="sort_artist">Artiste</string>

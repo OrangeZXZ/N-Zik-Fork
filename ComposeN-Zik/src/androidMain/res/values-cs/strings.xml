@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Zobrazit tlačítko časovače spánku</string>
   <string name="sort_album_year">Rok vydání alba</string>
   <string name="sort_position">Pozice</string>
+  <string name="sort_custom_order">Vlastní objednávka</string>
   <string name="sort_title">Název</string>
   <string name="sort_date_played">Datum přehrání</string>
   <string name="sort_artist">Interpret</string>

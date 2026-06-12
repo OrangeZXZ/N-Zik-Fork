@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Botão Timer para dormir</string>
   <string name="sort_album_year">Ano do Álbum</string>
   <string name="sort_position">Posição</string>
+  <string name="sort_custom_order">Ordem customizada</string>
   <string name="sort_title">Título</string>
   <string name="sort_date_played">Data de reprodução</string>
   <string name="sort_artist">Artista</string>

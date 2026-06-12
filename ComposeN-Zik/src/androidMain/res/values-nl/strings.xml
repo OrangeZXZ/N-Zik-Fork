@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Timer knop slapen</string>
   <string name="sort_album_year">Album Jaar</string>
   <string name="sort_position">Positie</string>
+  <string name="sort_custom_order">Aangepaste volgorde</string>
   <string name="sort_title">Titel</string>
   <string name="sort_date_played">Datum afgespeeld</string>
   <string name="sort_artist">Artiest</string>

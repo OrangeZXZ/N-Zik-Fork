@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Sleep Timer button</string>
   <string name="sort_album_year">Album Year</string>
   <string name="sort_position">Position</string>
+  <string name="sort_custom_order">Custom order</string>
   <string name="sort_title">Title</string>
   <string name="sort_date_played">Date Played</string>
   <string name="sort_artist">Artist</string>

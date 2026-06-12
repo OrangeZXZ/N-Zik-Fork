@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Sleep Timer button</string>
   <string name="sort_album_year">Albüm Yılı</string>
   <string name="sort_position">Pozisyon</string>
+  <string name="sort_custom_order">Custom order</string>
   <string name="sort_title">Başlık</string>
   <string name="sort_date_played">Çalınma Tarihi</string>
   <string name="sort_artist">Sanatçı</string>

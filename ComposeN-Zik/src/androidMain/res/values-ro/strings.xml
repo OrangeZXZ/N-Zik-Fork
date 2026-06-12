@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Butonul „Temporizator de somn”</string>
   <string name="sort_album_year">Anul albumului</string>
   <string name="sort_position">Poziție</string>
+  <string name="sort_custom_order">Comandă personalizată</string>
   <string name="sort_title">Titlu</string>
   <string name="sort_date_played">Data redării</string>
   <string name="sort_artist">Artist</string>
