@@ -54,30 +54,14 @@ object TabToolBar {
         */
         val sizeWithSpacing = TOOLBAR_ICON_SIZE + 15.dp
         var canDisplay by remember { mutableIntStateOf(0) }
-        var isClustered by remember { mutableStateOf(false) }
 
         LaunchedEffect( availableWidth ) {
             canDisplay = (availableWidth / sizeWithSpacing).toInt()
-            isClustered = buttons.size > canDisplay
         }
 
-        val ellipsisMenu = EllipsisMenuComponent.init {
-            buttons.takeLast(
-                /*
-                 * Take what isn't displayed, or 0 if [canDisplay]
-                 * is equal or larger than [button]'s size.
-                 *
-                 * Ellipsis menu will replaces last icon with its icon,
-                 * therefore, `1` is added to include that last icon
-                 * back to the menu
-                 */
-                (buttons.size - canDisplay + 1).coerceAtLeast( 0 )
-            )
-        }
-
-        Row(
-            horizontalArrangement = horizontalArrangement,
-            verticalAlignment = verticalAlignment,
+        androidx.compose.animation.AnimatedContent(
+            targetState = buttons,
+            label = "ToolbarButtonsAnimation",
             modifier = modifier.fillMaxWidth()
                                .padding( HORIZONTAL_PADDING, VERTICAL_PADDING )
                                .onGloballyPositioned {
@@ -85,21 +69,43 @@ object TabToolBar {
                                    val widthDp = it.size.width / density
                                    availableWidth = widthDp.dp - (HORIZONTAL_PADDING * 2)
                                }
-        ) {
-            // Wait until [availableWidth] is set and [canDisplay]
-            // is properly calculated before showing
-            if( canDisplay == 0 ) return@Row
+        ) { targetButtons ->
+            if( canDisplay == 0 ) {
+                Spacer(modifier = Modifier.fillMaxWidth())
+                return@AnimatedContent
+            }
 
-            buttons.take(
+            val isClustered = targetButtons.size > canDisplay
+            val ellipsisMenu = EllipsisMenuComponent.init {
+                targetButtons.takeLast(
+                    /*
+                     * Take what isn't displayed, or 0 if [canDisplay]
+                     * is equal or larger than [button]'s size.
+                     *
+                     * Ellipsis menu will replaces last icon with its icon,
+                     * therefore, `1` is added to include that last icon
+                     * back to the menu
+                     */
+                    (targetButtons.size - canDisplay + 1).coerceAtLeast( 0 )
+                )
+            }
+
+            Row(
+                horizontalArrangement = horizontalArrangement,
+                verticalAlignment = verticalAlignment,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                targetButtons.take(
+                    if( isClustered )
+                    // Last item is reserved for ellipsis menu's icon
+                        canDisplay - 1
+                    else
+                        targetButtons.size
+                ).forEach { it.ToolBarButton() }
+
                 if( isClustered )
-                // Last item is reserved for ellipsis menu's icon
-                    canDisplay - 1
-                else
-                    buttons.size
-            ).forEach { it.ToolBarButton() }
-
-            if( isClustered )
-                ellipsisMenu.ToolBarButton()
+                    ellipsisMenu.ToolBarButton()
+            }
         }
     }
 
