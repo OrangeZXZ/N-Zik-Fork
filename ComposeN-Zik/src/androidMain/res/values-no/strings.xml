@@ -767,6 +767,8 @@
   <string name="piped_custom_instance">Piped egendefinert instans</string>
   <string name="create_new_playlist">Lag ny spilleliste</string>
   <string name="settings_loudness_base_gain">Grunnforsterkning for lydstyrke</string>
+  <string name="loudness_boost_level">Nivå for lydstyrke</string>
+  <string name="loudness_boost_level_info">Det ekstra lydnivået, som skal brukes uten å gjøre dette, kan skade enheten</string>
   <string name="settings_target_gain_loudness_info">Målforsterkning for lydstyrkenormalisering</string>
   <string name="error_media_cannot_be_played">Sang kan ikke spilles</string>
   <string name="full_screen_lyrics_components">Fullskjerm sangtekstkomponenter</string>
@@ -1076,6 +1078,10 @@
   <string name="notifications">Varsler</string>
   <string name="playback">Avspilling</string>
   <string name="player_controls">Spiller kontroller</string>
+  <string name="player_controls_colors">Spilleren kontrollerer farger</string>
+  <string name="theme_color">Tema farge</string>
+  <string name="cover_color">Dekningsfarge</string>
+  <string name="monochrome">Monokrom</string>
   <string name="queue_management">Kø administrering</string>
   <string name="app_behavior">Appens oppførsel</string>
   <string name="audio_effects">Lyd Effekter</string>
@@ -1176,4 +1182,19 @@
   <string name="snake_retry">Prøv igjen</string>
   <string name="snake_exit">Avslutt</string>
   <string name="skip_time_buttons">Hopp over tidsknapper</string>
+  <string name="hide_status_bar">Skjul statuslinjen</string>
+  <string name="crossfade">Crossfade</string>
+  <string name="crossfade_description">Aktiver jevn overgang mellom sanger</string>
+  <string name="crossfade_duration">Crossfade varighet</string>
+  <string name="crossfade_gapless">Ulovlig crossfade</string>
+  <string name="crossfade_gapless_description">Ikke crossfade spor fra samme album</string>
+  <string name="disable_navigation_back_stack">Gå tilbake direkte til hjem</string>
+  <string name="disable_navigation_back_stack_description">Når aktivert, trykk Tilbake hopper over mellomliggende sider og returnerer direkte til startskjermen</string>
+  <string name="player_swipe_sensitivity">Spillerens Sveip følsomhet</string>
+  <string name="ps_low">Lav</string>
+  <string name="ps_medium">Medium</string>
+  <string name="ps_high">Høy</string>
+  <string name="ps_very_high">Svært høy</string>
+  <string name="visualizer_bar">Visualiserbar</string>
+  <string name="static_audio_waves">Lydlinje</string>
 </resources>
