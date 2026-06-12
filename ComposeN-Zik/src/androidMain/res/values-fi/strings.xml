@@ -767,6 +767,8 @@
   <string name="piped_custom_instance">Piped:n mukautettu instanssi</string>
   <string name="create_new_playlist">Luo uusi soittolista</string>
   <string name="settings_loudness_base_gain">Äänenvoimakkuuden vahvistus</string>
+  <string name="loudness_boost_level">Äänenvoimakkuuden korostuksen taso</string>
+  <string name="loudness_boost_level_info">Toinen äänenvoimakkuuden taso, jota voidaan käyttää ilman ylitöitä, voi vahingoittaa laitetta</string>
   <string name="settings_target_gain_loudness_info">Tavoitevahvistus äänenvoimakkuuden normalisoimiseksi</string>
   <string name="error_media_cannot_be_played">Kappaletta ei voi toistaa</string>
   <string name="full_screen_lyrics_components">Kokonäytön sanoitusten komponentit</string>
@@ -1076,6 +1078,10 @@
   <string name="notifications">Ilmoitukset</string>
   <string name="playback">Toisto</string>
   <string name="player_controls">Pelaajien Ohjaukset</string>
+  <string name="player_controls_colors">Pelaaja ohjaa värejä</string>
+  <string name="theme_color">Teeman väri</string>
+  <string name="cover_color">Kansikuvien väri</string>
+  <string name="monochrome">Yksivärinen</string>
   <string name="queue_management">Jonon Hallinta</string>
   <string name="app_behavior">Sovelluksen Käyttäytyminen</string>
   <string name="audio_effects">Äänitehosteet</string>
@@ -1176,4 +1182,19 @@
   <string name="snake_retry">Yritä Uudelleen</string>
   <string name="snake_exit">Poistu</string>
   <string name="skip_time_buttons">Ohita aikapainikkeet</string>
+  <string name="hide_status_bar">Piilota tilarivi</string>
+  <string name="crossfade">Crossfade</string>
+  <string name="crossfade_description">Salli tasainen siirtyminen kappaleiden välillä</string>
+  <string name="crossfade_duration">Ristihäivytyksen kesto</string>
+  <string name="crossfade_gapless">Puutteeton Vastahäivytys</string>
+  <string name="crossfade_gapless_description">Älä risteytä kappaleita samasta albumista</string>
+  <string name="disable_navigation_back_stack">Palaa takaisin suoraan kotiin</string>
+  <string name="disable_navigation_back_stack_description">Kun käytössä, painamalla Takaisin ohittaa välisivut ja palaa suoraan aloitusnäyttöön</string>
+  <string name="player_swipe_sensitivity">Pelaajan Pyyhkäisyn Herkkyys</string>
+  <string name="ps_low">Matala</string>
+  <string name="ps_medium">Keskikokoinen</string>
+  <string name="ps_high">Korkea</string>
+  <string name="ps_very_high">Erittäin Korkea</string>
+  <string name="visualizer_bar">Visualisoijan palkki</string>
+  <string name="static_audio_waves">Äänipalkki</string>
 </resources>

@@ -767,6 +767,8 @@
   <string name="piped_custom_instance">Piped custom instance</string>
   <string name="create_new_playlist">Create new playlist</string>
   <string name="settings_loudness_base_gain">Loudness base gain</string>
+  <string name="loudness_boost_level">Επίπεδο ενίσχυσης της έντασης</string>
+  <string name="loudness_boost_level_info">Πρόσθετο επίπεδο έντασης που πρέπει να χρησιμοποιηθεί χωρίς να το παρακάμψει, μπορεί να βλάψει τη συσκευή</string>
   <string name="settings_target_gain_loudness_info">Target gain for the loudness normalization</string>
   <string name="error_media_cannot_be_played">Media cannot be played</string>
   <string name="full_screen_lyrics_components">Full Screen Lyrics Components</string>
@@ -1076,6 +1078,10 @@
   <string name="notifications">Ειδοποιήσεις</string>
   <string name="playback">Αναπαραγωγή</string>
   <string name="player_controls">Στοιχεία Ελέγχου Παίκτη</string>
+  <string name="player_controls_colors">Έλεγχος χρωμάτων του παίκτη</string>
+  <string name="theme_color">Χρώμα θέματος</string>
+  <string name="cover_color">Χρώμα εξωφύλλου</string>
+  <string name="monochrome">Μονόχρωμο</string>
   <string name="queue_management">Διαχείριση Ουράς</string>
   <string name="app_behavior">Συμπεριφορά Εφαρμογής</string>
   <string name="audio_effects">Εφέ Ήχου</string>
@@ -1176,4 +1182,19 @@
   <string name="snake_retry">Επανάληψη</string>
   <string name="snake_exit">Έξοδος</string>
   <string name="skip_time_buttons">Παράλειψη πλήκτρων χρόνου</string>
+  <string name="hide_status_bar">Απόκρυψη γραμμής κατάστασης</string>
+  <string name="crossfade">Crossfade</string>
+  <string name="crossfade_description">Ενεργοποίηση ομαλής μετάβασης μεταξύ τραγουδιών</string>
+  <string name="crossfade_duration">Διάρκεια σταδιακής εξασθένησης</string>
+  <string name="crossfade_gapless">Crossfade Χωρίς Κενό</string>
+  <string name="crossfade_gapless_description">Μην ξεθωριάζετε κομμάτια από το ίδιο άλμπουμ</string>
+  <string name="disable_navigation_back_stack">Πηγαίνετε πίσω απευθείας στο σπίτι</string>
+  <string name="disable_navigation_back_stack_description">Όταν ενεργοποιηθεί, πατώντας Πίσω παραλείπει τις ενδιάμεσες σελίδες και επιστρέφει απευθείας στην αρχική οθόνη</string>
+  <string name="player_swipe_sensitivity">Ευαισθησία Του Παίκτη</string>
+  <string name="ps_low">Χαμηλό</string>
+  <string name="ps_medium">Μεσαίο</string>
+  <string name="ps_high">Υψηλό</string>
+  <string name="ps_very_high">Πολύ Υψηλή</string>
+  <string name="visualizer_bar">Γραμμή απεικόνισης</string>
+  <string name="static_audio_waves">Μπάρα ήχου</string>
 </resources>
