@@ -4,5 +4,4 @@ Remove old fast4x innertube api and Kreate innertube api
 Update YTB sync to use new innertube api also update eevery sync like album artists songs ect...
 Add back dislike button in player, android auto and notification still support it
 Update HomeAlbum page for sync
-Optimized transition between section in home songs
 Make the desktop version
