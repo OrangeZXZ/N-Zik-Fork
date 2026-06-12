@@ -28,3 +28,4 @@ NEW: Now you are able to have a custom reorder of songs in local playlist
 NEW: Now you are able to have a custom reorder of songs in Home songs, home albums, home artists and home libraryFixed: Replaced old drag-and-drop library with sh.calvin.reorderable for local playlist songs
 Fixed: Custom sorting visibility logic applied to LocalPlaylistSongs
 Removed: Completely deleted old app.it.fast4x.compose.reordering package
+UI: Moved renumber dialog icon next to position lock in local playlist

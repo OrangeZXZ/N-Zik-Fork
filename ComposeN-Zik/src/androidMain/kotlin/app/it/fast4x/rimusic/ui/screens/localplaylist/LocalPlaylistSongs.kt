@@ -739,8 +739,10 @@ fun LocalPlaylistSongs(
                     mutableListOf<Button>().apply {
                         if (playlistNotMonthlyType)
                             this.add( pin )
-                        if ( sort.sortBy == PlaylistSongSortBy.Custom )
+                        if ( sort.sortBy == PlaylistSongSortBy.Custom ) {
                             this.add( positionLock )
+                            this.add( renumberDialog )
+                        }
 
                         this.add( downloadAllDialog )
                         this.add( deleteDownloadsDialog )
@@ -754,8 +756,6 @@ fun LocalPlaylistSongs(
                             this.add( listenOnYT )
                         }
                         this.add( renameDialog )
-                        if ( sort.sortBy == PlaylistSongSortBy.Custom )
-                            this.add( renumberDialog )
                         this.add( deleteDialog )
                         this.add( exportDialog )
                         this.add( thumbnailPicker )
