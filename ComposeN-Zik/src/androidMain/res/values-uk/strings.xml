@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Кнопка таймеру сну</string>
   <string name="sort_album_year">Рік альбому</string>
   <string name="sort_position">Позиція</string>
+  <string name="sort_custom_order">Власне замовлення</string>
   <string name="sort_title">Назва</string>
   <string name="sort_date_played">Дата програвання</string>
   <string name="sort_artist">Виконавець</string>
