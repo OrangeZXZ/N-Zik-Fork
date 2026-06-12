@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">スリープタイマーボタン</string>
   <string name="sort_album_year">アルバムの年</string>
   <string name="sort_position">順番</string>
+  <string name="sort_custom_order">カスタム注文</string>
   <string name="sort_title">題名</string>
   <string name="sort_date_played">再生した日付</string>
   <string name="sort_artist">アーティスト</string>
