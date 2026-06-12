@@ -22,6 +22,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -136,7 +137,9 @@ fun AppNavigation(
 
     // Clearing homeScreenTabIndex in opening app.
     val context = LocalContext.current
-    clearPreference(context, homeScreenTabIndexKey)
+    LaunchedEffect(Unit) {
+        clearPreference(context, homeScreenTabIndexKey)
+    }
 
     val enterTransition: (@JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) =
         {
