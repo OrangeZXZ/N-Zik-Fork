@@ -767,6 +767,8 @@
   <string name="piped_custom_instance">Пользовательское зеркало Piped</string>
   <string name="create_new_playlist">Создать новый плейлист</string>
   <string name="settings_loudness_base_gain">Повышение уровня громкости</string>
+  <string name="loudness_boost_level">Уровень громкости</string>
+  <string name="loudness_boost_level_info">Дополнительный уровень громкости, который будет использоваться без переполнения, может повредить устройство</string>
   <string name="settings_target_gain_loudness_info">Целевая громкость для нормализации громкости</string>
   <string name="error_media_cannot_be_played">Песня не может быть воспроизведена</string>
   <string name="full_screen_lyrics_components">Компоненты полноэкранных текстов</string>
@@ -1076,6 +1078,10 @@
   <string name="notifications">Уведомления</string>
   <string name="playback">Воспроизведение</string>
   <string name="player_controls">Управление игроками</string>
+  <string name="player_controls_colors">Цвета плеера</string>
+  <string name="theme_color">Цвет темы</string>
+  <string name="cover_color">Цвет обложки</string>
+  <string name="monochrome">Монохромный</string>
   <string name="queue_management">Управление очередью</string>
   <string name="app_behavior">Поведение приложения</string>
   <string name="audio_effects">Аудио эффекты</string>
@@ -1176,4 +1182,19 @@
   <string name="snake_retry">Повторить</string>
   <string name="snake_exit">Выход</string>
   <string name="skip_time_buttons">Пропустить кнопки времени</string>
+  <string name="hide_status_bar">Скрыть строку состояния</string>
+  <string name="crossfade">Crossfade</string>
+  <string name="crossfade_description">Включить плавный переход между песнями</string>
+  <string name="crossfade_duration">Длительность кроссфейда</string>
+  <string name="crossfade_gapless">Бесперебойное затухание</string>
+  <string name="crossfade_gapless_description">Не кроссфейд треки из того же альбома</string>
+  <string name="disable_navigation_back_stack">Вернуться к дому</string>
+  <string name="disable_navigation_back_stack_description">Когда включено, нажатие Назад пропускает промежуточные страницы и возвращает непосредственно на главный экран</string>
+  <string name="player_swipe_sensitivity">Чувствительность прокрутки игрока</string>
+  <string name="ps_low">Низкий</string>
+  <string name="ps_medium">Средний</string>
+  <string name="ps_high">Высокий</string>
+  <string name="ps_very_high">Очень высокий</string>
+  <string name="visualizer_bar">Панель визуализации</string>
+  <string name="static_audio_waves">Аудио бар</string>
 </resources>
