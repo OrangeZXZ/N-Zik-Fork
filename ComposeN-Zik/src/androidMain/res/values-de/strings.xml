@@ -767,6 +767,8 @@
   <string name="piped_custom_instance">Benutzerdefinierte Instanz</string>
   <string name="create_new_playlist">Neue Wiedergabeliste erstellen</string>
   <string name="settings_loudness_base_gain">Lautstärke Grundverstärkung</string>
+  <string name="loudness_boost_level">Lautstärke-Bootlevel</string>
+  <string name="loudness_boost_level_info">Zusätzlicher Lautstärkepegel, der ohne Übertreibung verwendet werden kann, kann das Gerät beschädigen</string>
   <string name="settings_target_gain_loudness_info">Zielverstärkung für die Lautstärkenormalisierung</string>
   <string name="error_media_cannot_be_played">Titel kann nicht wiedergegeben werden</string>
   <string name="full_screen_lyrics_components">Vollbild-Songtext-Komponenten</string>
@@ -1076,6 +1078,10 @@
   <string name="notifications">Benachrichtigungen</string>
   <string name="playback">Wiedergabe</string>
   <string name="player_controls">Spielersteuerung</string>
+  <string name="player_controls_colors">Player steuert Farben</string>
+  <string name="theme_color">Theme-Farbe</string>
+  <string name="cover_color">Deckelfarbe</string>
+  <string name="monochrome">Monochrom</string>
   <string name="queue_management">Warteschlangen-Management</string>
   <string name="app_behavior">App-Verhalten</string>
   <string name="audio_effects">Audio-Effekte</string>
@@ -1176,4 +1182,19 @@
   <string name="snake_retry">Wiederholen</string>
   <string name="snake_exit">Beenden</string>
   <string name="skip_time_buttons">Zeittasten überspringen</string>
+  <string name="hide_status_bar">Statusleiste ausblenden</string>
+  <string name="crossfade">Crossfade</string>
+  <string name="crossfade_description">Glatten Übergang zwischen Liedern aktivieren</string>
+  <string name="crossfade_duration">Überblendungsdauer</string>
+  <string name="crossfade_gapless">Lückenlose Überblendung</string>
+  <string name="crossfade_gapless_description">Tracks des gleichen Albums nicht überblenden</string>
+  <string name="disable_navigation_back_stack">Direkt nach Hause zurückkehren</string>
+  <string name="disable_navigation_back_stack_description">Wenn aktiviert, überspringt das Drücken von Zurück die Zwischenseiten und kehrt direkt zum Startbildschirm zurück</string>
+  <string name="player_swipe_sensitivity">Spieler Wischempfindlichkeit</string>
+  <string name="ps_low">Niedrig</string>
+  <string name="ps_medium">Mittel</string>
+  <string name="ps_high">Hoch</string>
+  <string name="ps_very_high">Sehr hoch</string>
+  <string name="visualizer_bar">Visualisierungsleiste</string>
+  <string name="static_audio_waves">Audio-Leiste</string>
 </resources>
