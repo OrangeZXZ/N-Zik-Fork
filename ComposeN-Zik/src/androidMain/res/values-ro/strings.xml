@@ -767,6 +767,8 @@
   <string name="piped_custom_instance">Instanță personalizată Piped</string>
   <string name="create_new_playlist">Creează un playlist nou</string>
   <string name="settings_loudness_base_gain">Amplificare de bază a intensității sonore</string>
+  <string name="loudness_boost_level">Nivel de stimulare a puterii</string>
+  <string name="loudness_boost_level_info">Nivel suplimentar de lucire, care poate fi utilizat fără depășirea lui, poate deteriora dispozitivul</string>
   <string name="settings_target_gain_loudness_info">Amplificare țintă pentru normalizarea intensității sonore</string>
   <string name="error_media_cannot_be_played">Melodia nu poate fi redată</string>
   <string name="full_screen_lyrics_components">Componentele versurilor pe tot ecranul</string>
@@ -1076,6 +1078,10 @@
   <string name="notifications">Notificări</string>
   <string name="playback">Redare</string>
   <string name="player_controls">Controale jucător</string>
+  <string name="player_controls_colors">Culori pentru controlul jucătorului</string>
+  <string name="theme_color">Culoarea temei</string>
+  <string name="cover_color">Culoare copertă</string>
+  <string name="monochrome">Monocrom</string>
   <string name="queue_management">Gestionare coadă</string>
   <string name="app_behavior">Comportament aplicație</string>
   <string name="audio_effects">Efecte audio</string>
@@ -1176,4 +1182,19 @@
   <string name="snake_retry">Reîncercați</string>
   <string name="snake_exit">Ieșire</string>
   <string name="skip_time_buttons">Omitere butoane timp</string>
+  <string name="hide_status_bar">Ascunde bara de stare</string>
+  <string name="crossfade">Crossfade</string>
+  <string name="crossfade_description">Activează tranziţia lină între melodii</string>
+  <string name="crossfade_duration">Durată estompare</string>
+  <string name="crossfade_gapless">Argument rudimentar</string>
+  <string name="crossfade_gapless_description">Nu estompa traseele din acelaşi album</string>
+  <string name="disable_navigation_back_stack">Întoarce-te direct la pagina principală</string>
+  <string name="disable_navigation_back_stack_description">Când este activată, apăsați Înapoi sare paginile intermediare și reveniți direct pe ecranul de pornire</string>
+  <string name="player_swipe_sensitivity">Sensibilitate glisare jucător</string>
+  <string name="ps_low">Scăzută</string>
+  <string name="ps_medium">Mediu</string>
+  <string name="ps_high">Înaltă</string>
+  <string name="ps_very_high">Foarte Mare</string>
+  <string name="visualizer_bar">Bară de vizualizare</string>
+  <string name="static_audio_waves">Bară audio</string>
 </resources>
