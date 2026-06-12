@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Mostrar botón del temporizador de apagado</string>
   <string name="sort_album_year">Año del álbum</string>
   <string name="sort_position">Posición</string>
+  <string name="sort_custom_order">Pedido personalizado</string>
   <string name="sort_title">Título</string>
   <string name="sort_date_played">Fecha de reproducción</string>
   <string name="sort_artist">Artista</string>
