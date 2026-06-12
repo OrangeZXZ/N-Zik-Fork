@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Кнопка таймера сна</string>
   <string name="sort_album_year">По году</string>
   <string name="sort_position">По номеру</string>
+  <string name="sort_custom_order">Свой заказ</string>
   <string name="sort_title">По названию</string>
   <string name="sort_date_played">По дате воспроизведения</string>
   <string name="sort_artist">По исполнителю</string>
