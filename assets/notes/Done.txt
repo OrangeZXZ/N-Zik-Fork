@@ -12,3 +12,6 @@ Fixed: Reverted GetSeekBarType.kt to use binder.player.isPlaying and introduced 
 Fixed: Fixed race condition in SeekBarStaticAudioWaves where isPlaying state transition was missed if ExoPlayer started instantly from cache
 Fixed: Fixed visualizer bar (SeekBarVisualizer) stuck as flat line on cached songs by adding internal ExoPlayer listener instead of relying on stale parent state
 Fixed: Fixed stale closure bug in SeekBarVisualizer by preserving MutableState instance across recompositions on layout changes
+
+Refactored: Extracted nextvisualizer into an independent git submodule, flattened its structure and removed its R class dependencies
+Refactored: Renamed the main application module from composeApp to ComposeN-Zik
