@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Uniajastin painike</string>
   <string name="sort_album_year">Albumin julkaisuvuosi</string>
   <string name="sort_position">Paikka</string>
+  <string name="sort_custom_order">Mukautettu tilaus</string>
   <string name="sort_title">Nimi</string>
   <string name="sort_date_played">Viimeksi soitettu</string>
   <string name="sort_artist">Artisti</string>

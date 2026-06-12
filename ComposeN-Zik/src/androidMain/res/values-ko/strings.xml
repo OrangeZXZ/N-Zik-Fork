@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Sleep Timer button</string>
   <string name="sort_album_year">앨범 연도</string>
   <string name="sort_position">위치</string>
+  <string name="sort_custom_order">Custom order</string>
   <string name="sort_title">제목</string>
   <string name="sort_date_played">재생 일자</string>
   <string name="sort_artist">아티스트</string>

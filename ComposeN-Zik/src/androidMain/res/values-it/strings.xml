@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Pulsante Timer spegnimento</string>
   <string name="sort_album_year">Anno Album</string>
   <string name="sort_position">Posizione</string>
+  <string name="sort_custom_order">Ordine personalizzato</string>
   <string name="sort_title">Titolo</string>
   <string name="sort_date_played">Data Riproduzione</string>
   <string name="sort_artist">Artista</string>

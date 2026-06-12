@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Vertoon Slaap Tydhouer-knoppie</string>
   <string name="sort_album_year">Album Jaar</string>
   <string name="sort_position">Posisie</string>
+  <string name="sort_custom_order">Custom order</string>
   <string name="sort_title">Title</string>
   <string name="sort_date_played">Datum Geluister</string>
   <string name="sort_artist">Kunstenaar</string>

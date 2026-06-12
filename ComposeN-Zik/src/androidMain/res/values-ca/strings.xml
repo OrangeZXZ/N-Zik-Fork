@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Mostra el botó del temporitzador de repòs</string>
   <string name="sort_album_year">Any de l\'àlbum</string>
   <string name="sort_position">Posició</string>
+  <string name="sort_custom_order">Custom order</string>
   <string name="sort_title">Títol</string>
   <string name="sort_date_played">Data de reproducció</string>
   <string name="sort_artist">Artista</string>

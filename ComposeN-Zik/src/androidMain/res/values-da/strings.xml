@@ -351,6 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Vis Søvntimer-knap</string>
   <string name="sort_album_year">Albumår</string>
   <string name="sort_position">Position</string>
+  <string name="sort_custom_order">Tilpasset ordre</string>
   <string name="sort_title">Titel</string>
   <string name="sort_date_played">Dato afspillet</string>
   <string name="sort_artist">Kunstner</string>
