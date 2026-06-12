@@ -767,6 +767,8 @@
   <string name="piped_custom_instance">Instancia personalizada de Piped</string>
   <string name="create_new_playlist">Crear nueva lista de reproducción</string>
   <string name="settings_loudness_base_gain">Ganancia base de volumen</string>
+  <string name="loudness_boost_level">Nivel de aumento de ruido</string>
+  <string name="loudness_boost_level_info">Nivel de volumen adicional, a ser usado sin sobrehacer, puede dañar el dispositivo</string>
   <string name="settings_target_gain_loudness_info">Ganancia objetivo para la normalización de volumen</string>
   <string name="error_media_cannot_be_played">El contenido no se puede reproducir</string>
   <string name="full_screen_lyrics_components">Componentes de letra a pantalla completa</string>
@@ -1076,6 +1078,10 @@
   <string name="notifications">Notificaciones</string>
   <string name="playback">Reproducir</string>
   <string name="player_controls">Controles del jugador</string>
+  <string name="player_controls_colors">El jugador controla los colores</string>
+  <string name="theme_color">Color del tema</string>
+  <string name="cover_color">Color de portada</string>
+  <string name="monochrome">Monocromo</string>
   <string name="queue_management">Gestión de colas</string>
   <string name="app_behavior">Comportamiento de App</string>
   <string name="audio_effects">Efectos de audio</string>
@@ -1176,4 +1182,19 @@
   <string name="snake_retry">Reintentar</string>
   <string name="snake_exit">Salir</string>
   <string name="skip_time_buttons">Omitir botones de tiempo</string>
+  <string name="hide_status_bar">Ocultar barra de estado</string>
+  <string name="crossfade">Crossfade</string>
+  <string name="crossfade_description">Habilitar transición suave entre canciones</string>
+  <string name="crossfade_duration">Duración del desvanecimiento</string>
+  <string name="crossfade_gapless">Gapless Crossfade</string>
+  <string name="crossfade_gapless_description">No mezclar pistas del mismo álbum</string>
+  <string name="disable_navigation_back_stack">Volver directamente a casa</string>
+  <string name="disable_navigation_back_stack_description">Cuando está activado, presionando Atrás salta páginas intermedias y regresa directamente a la pantalla de inicio</string>
+  <string name="player_swipe_sensitivity">Sensibilidad de deslizar al jugador</string>
+  <string name="ps_low">Baja</string>
+  <string name="ps_medium">Mediano</string>
+  <string name="ps_high">Alta</string>
+  <string name="ps_very_high">Muy alta</string>
+  <string name="visualizer_bar">Barra de visualizador</string>
+  <string name="static_audio_waves">Barra de audio</string>
 </resources>
