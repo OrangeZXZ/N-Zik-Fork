@@ -319,6 +319,9 @@ interface SongTable {
     @Query("UPDATE Song SET title = :title WHERE id = :songId")
     fun updateTitle( songId: String, title: String ): Int
 
+    @Query("UPDATE Song SET position = :position WHERE id = :songId")
+    fun updatePosition( songId: String, position: Int ): Int
+
     /**
      * @param songId identifier of [Song]
      * @param artistsText artists to display
@@ -353,6 +356,17 @@ interface SongTable {
     fun updateTotalPlayTime( songId: String, value: Long, isIncrement: Boolean = false ): Int
 
     //<editor-fold defaultstate="collapsed" desc="Sort all">
+    @Query("""
+        SELECT DISTINCT * 
+        FROM Song 
+        WHERE totalPlayTimeMs >= :excludeHidden
+        ORDER BY 
+            CASE WHEN position = -1 THEN 1 ELSE 0 END ASC,
+            CASE WHEN position = -1 THEN ROWID ELSE position END ASC
+        LIMIT :limit
+    """)
+    fun sortAllByPosition( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>>
+
     fun sortAllByPlayTime( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
         all( limit, excludeHidden ).map { list ->
             list.sortedBy( Song::totalPlayTimeMs )
@@ -450,10 +464,22 @@ interface SongTable {
         SongSortBy.Artist           -> sortAllByArtist( limit, excludeHidden )
         SongSortBy.Duration         -> sortAllByDuration( limit, excludeHidden )
         SongSortBy.AlbumName        -> sortAllByAlbumName( limit, excludeHidden )
+        SongSortBy.Custom           -> sortAllByPosition( limit, excludeHidden )
     }.map( sortOrder::applyTo )
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Sort favorites">
+    @Query("""
+        SELECT DISTINCT * 
+        FROM Song 
+        WHERE likedAt IS NOT NULL AND likedAt > 0
+        ORDER BY 
+            CASE WHEN position = -1 THEN 1 ELSE 0 END ASC,
+            CASE WHEN position = -1 THEN ROWID ELSE position END ASC
+        LIMIT :limit
+    """)
+    fun sortFavoritesByPosition( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
+
     fun sortFavoritesByArtist( limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allFavorites( limit ).map { list ->
             list.sortedBy( Song::cleanArtistsText )
@@ -543,6 +569,7 @@ interface SongTable {
         SongSortBy.Artist           -> sortFavoritesByArtist()
         SongSortBy.Duration         -> sortFavoritesByDuration()
         SongSortBy.AlbumName        -> sortFavoritesByAlbumName()
+        SongSortBy.Custom           -> sortFavoritesByPosition( limit )
     }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 

@@ -17,6 +17,7 @@ data class Album(
     val timestamp: Long? = null,
     val bookmarkedAt: Long? = null,
     val isYoutubeAlbum: Boolean = false,
+    val position: Int = -1
 ) {
     fun toggleBookmark(): Album {
         return copy(

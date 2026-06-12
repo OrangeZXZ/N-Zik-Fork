@@ -191,7 +191,20 @@ interface ArtistTable {
     """)
     fun toggleFollow( artistId: String ): Int
 
+    @Query("UPDATE Artist SET position = :position WHERE id = :artistId")
+    fun updatePosition( artistId: String, position: Int ): Int
+
     //<editor-fold defaultstate="collapsed" desc="Sort all">
+    @Query("""
+        SELECT DISTINCT * 
+        FROM Artist
+        WHERE bookmarkedAt IS NOT NULL
+        ORDER BY 
+            CASE WHEN position = -1 THEN 1 ELSE 0 END ASC,
+            CASE WHEN position = -1 THEN ROWID ELSE position END ASC
+        LIMIT :limit
+    """)
+    fun sortFollowingByPosition( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>>
     fun sortFollowingByName( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>> =
         allFollowing( limit ).map { list ->
             list.sortedBy( Artist::cleanName )
@@ -223,10 +236,22 @@ interface ArtistTable {
     ): Flow<List<Artist>> = when( sortBy ) {
         ArtistSortBy.Name       -> sortFollowingByName()
         ArtistSortBy.DateAdded  -> allFollowing()
+        ArtistSortBy.Custom     -> sortFollowingByPosition( limit )
     }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Sort artists in library">
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM Artist A
+        JOIN SongArtistMap sam ON sam.artistId = A.id
+        JOIN SongPlaylistMap spm ON spm.songId = sam.songId
+        ORDER BY 
+            CASE WHEN A.position = -1 THEN A.ROWID ELSE A.position END ASC
+        LIMIT :limit
+    """)
+    fun sortInLibraryByPosition( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>>
+
     fun sortInLibraryByName( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>> =
         allInLibrary( limit ).map { list ->
             list.sortedBy( Artist::cleanName )
@@ -259,6 +284,7 @@ interface ArtistTable {
     ): Flow<List<Artist>> = when( sortBy ) {
         ArtistSortBy.Name       -> sortInLibraryByName()
         ArtistSortBy.DateAdded  -> allInLibrary()     // Already sorted by ROWID
+        ArtistSortBy.Custom     -> sortInLibraryByPosition( limit )
     }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 }

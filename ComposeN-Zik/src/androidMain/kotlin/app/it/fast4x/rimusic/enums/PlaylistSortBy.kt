@@ -16,7 +16,9 @@ enum class PlaylistSortBy(
 
     DateAdded( R.string.sort_date_added, R.drawable.calendar ),
 
-    SongCount( R.string.sort_songs_number, R.drawable.medical );
+    SongCount( R.string.sort_songs_number, R.drawable.medical ),
+
+    Custom( R.string.sort_custom_order, R.drawable.position );
 }
 
 

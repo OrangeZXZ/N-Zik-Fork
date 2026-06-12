@@ -26,7 +26,9 @@ enum class SongSortBy(
 
     Duration( R.string.sort_duration, R.drawable.time ),
 
-    AlbumName( R.string.sort_album, R.drawable.album );
+    AlbumName( R.string.sort_album, R.drawable.album ),
+
+    Custom( R.string.sort_custom_order, R.drawable.position );
 }
 
 

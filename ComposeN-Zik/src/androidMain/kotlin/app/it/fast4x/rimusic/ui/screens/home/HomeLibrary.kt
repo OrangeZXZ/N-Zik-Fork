@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.it.fast4x.rimusic.ui.screens.home
 
 import androidx.compose.ui.draw.clip
 
@@ -43,6 +43,14 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.zIndex
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import sh.calvin.reorderable.rememberReorderableLazyGridState
+import sh.calvin.reorderable.ReorderableItem
+import app.kreate.android.themed.rimusic.component.playlist.PositionLock
+import app.it.fast4x.rimusic.enums.PlaylistSortBy
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import app.it.fast4x.compose.persist.persistList
@@ -117,6 +125,7 @@ fun HomeLibrary(
     val search = Search(lazyGridState)
 
     val sort = Sort( HOME_LIBRARY_SORT_BY, HOME_LIBRARY_SORT_ORDER )
+    val positionLock = remember( sort.sortOrder ) { PositionLock(sort.sortOrder) }
     val itemSize = ItemSize.init( HOME_LIBRARY_ITEM_SIZE )
 
     //<editor-fold desc="Songs shuffler">
@@ -225,7 +234,19 @@ fun HomeLibrary(
                 }
 
                 // Sticky tab's tool bar
-                TabToolBar.Buttons( sort, sync, search, shuffle, newPlaylistDialog, importPlaylistDialog, itemSize )
+                TabToolBar.Buttons(
+                    mutableListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>().apply {
+                        add(sort)
+                        if (sort.sortBy == app.it.fast4x.rimusic.enums.PlaylistSortBy.Custom)
+                            add(positionLock)
+                        add(sync)
+                        add(search)
+                        add(shuffle)
+                        add(newPlaylistDialog)
+                        add(importPlaylistDialog)
+                        add(itemSize)
+                    }
+                )
 
                 search.SearchBar( this )
 
@@ -253,6 +274,21 @@ fun HomeLibrary(
                     }
                 }
                 val filteredItems = itemsOnDisplay.filter( condition )
+
+                val hapticFeedback = LocalHapticFeedback.current
+                val reorderableLazyGridState = rememberReorderableLazyGridState(
+                    lazyGridState = lazyGridState
+                ) { from, to ->
+                    val mutableItemsOnDisplay = itemsOnDisplay.toMutableList()
+                    val fromIndex = mutableItemsOnDisplay.indexOfFirst { it.playlist.id == from.key }
+                    val toIndex = mutableItemsOnDisplay.indexOfFirst { it.playlist.id == to.key }
+                    
+                    if (fromIndex != -1 && toIndex != -1) {
+                        val movedItem = mutableItemsOnDisplay.removeAt(fromIndex)
+                        mutableItemsOnDisplay.add(toIndex, movedItem)
+                        itemsOnDisplay = mutableItemsOnDisplay
+                    }
+                }
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     LazyVerticalGrid(
@@ -290,22 +326,59 @@ fun HomeLibrary(
                         items = filteredItems,
                         key = { it.playlist.id }
                     ) { preview ->
-                        PlaylistItem(
-                            playlist = preview,
-                            thumbnailSizeDp = itemSize.size.dp,
-                            thumbnailSizePx = itemSize.size.px,
-                            alternative = true,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                                .clip(uiRoundnessShape()).clickable(onClick = {
-                                    search.hideIfEmpty()
-                                    onPlaylistClick(preview.playlist)
-                                }),
-                            disableScrollingText = disableScrollingText,
-                            isYoutubePlaylist = preview.playlist.isYoutubePlaylist,
-                            isEditable = preview.playlist.isEditable
-                        )
+                        ReorderableItem(
+                            reorderableLazyGridState,
+                            key = preview.playlist.id
+                        ) { isDraggingItem ->
+                            Box(modifier = Modifier) {
+                                if (!positionLock.isLocked() && sort.sortBy == app.it.fast4x.rimusic.enums.PlaylistSortBy.Custom) {
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(4.dp)
+                                            .size(24.dp)
+                                            .align(Alignment.TopEnd)
+                                            .zIndex(2f)
+                                            .draggableHandle(
+                                                onDragStarted = {
+                                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                },
+                                                onDragStopped = {
+                                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                                    val currentItems = itemsOnDisplay.toList()
+                                                    Database.asyncTransaction {
+                                                        currentItems.forEachIndexed { index, preview ->
+                                                            playlistTable.updatePosition(preview.playlist.id, index)
+                                                        }
+                                                    }
+                                                }
+                                            ),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        androidx.compose.material3.Icon(
+                                            painter = androidx.compose.ui.res.painterResource(R.drawable.reorder),
+                                            contentDescription = null,
+                                            tint = if (isDraggingItem) colorPalette().accent else colorPalette().textDisabled
+                                        )
+                                    }
+                                }
+
+                                PlaylistItem(
+                                    playlist = preview,
+                                    thumbnailSizeDp = itemSize.size.dp,
+                                    thumbnailSizePx = itemSize.size.px,
+                                    alternative = true,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(uiRoundnessShape()).clickable(onClick = {
+                                            search.hideIfEmpty()
+                                            onPlaylistClick(preview.playlist)
+                                        }),
+                                    disableScrollingText = disableScrollingText,
+                                    isYoutubePlaylist = preview.playlist.isYoutubePlaylist,
+                                    isEditable = preview.playlist.isEditable
+                                )
+                            }
+                        }
                     }
                 }
 

@@ -252,6 +252,9 @@ interface PlaylistTable {
     """)
     fun togglePin( playlistId: Long ): Int
 
+    @Query("UPDATE Playlist SET position = :position WHERE id = :playlistId")
+    fun updatePosition( playlistId: Long, position: Int ): Int
+
     //<editor-fold defaultstate="collapsed" desc="Sort as preview">
     @Query("""
         SELECT DISTINCT P.*, COUNT(spm.songId) as songCount
@@ -263,6 +266,22 @@ interface PlaylistTable {
         LIMIT :limit
     """)
     fun sortPreviewsByMostPlayed( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>>
+
+    @Query("""
+        SELECT DISTINCT 
+            *,
+            (
+                SELECT COUNT(songId)
+                FROM SongPlaylistMap
+                WHERE playlistId = id
+            ) as songCount
+        FROM Playlist
+        ORDER BY 
+            CASE WHEN position = -1 THEN 1 ELSE 0 END ASC,
+            CASE WHEN position = -1 THEN ROWID ELSE position END ASC
+        LIMIT :limit
+    """)
+    fun sortPreviewsByPosition( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>>
 
     fun sortPreviewsByName( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>> =
         allAsPreview( limit ).map { list ->
@@ -302,6 +321,7 @@ interface PlaylistTable {
         PlaylistSortBy.Name         -> sortPreviewsByName()
         PlaylistSortBy.DateAdded    -> allAsPreview()       // Already sorted by ROWID
         PlaylistSortBy.SongCount    -> sortPreviewsBySongCount()
+        PlaylistSortBy.Custom       -> sortPreviewsByPosition( limit )
     }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 }

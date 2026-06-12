@@ -12,6 +12,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.zIndex
+import app.it.fast4x.compose.reordering.draggedItem
+import app.it.fast4x.compose.reordering.rememberReorderingState
+import app.it.fast4x.compose.reordering.reorder
+import app.kreate.android.themed.rimusic.component.playlist.PositionLock
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
+import app.it.fast4x.rimusic.ui.components.themed.IconButton
+import androidx.compose.material3.ripple
 import androidx.compose.ui.res.stringResource
 import app.n_zik.android.R
 import androidx.compose.foundation.text.BasicText
@@ -26,7 +37,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFilter
@@ -93,6 +106,8 @@ import app.kreate.android.me.knighthat.component.tab.HiddenSongs
 import app.kreate.android.me.knighthat.component.tab.ItemSelector
 import app.kreate.android.me.knighthat.component.tab.Search
 import app.n_zik.android.core.database.ext.FormatWithSong
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @UnstableApi
 @ExperimentalFoundationApi
@@ -124,6 +139,7 @@ fun HomeSongs(
     var items by remember { mutableStateOf(emptyList<Song>()) }
 
     val songSort = Sort ( HOME_SONGS_SORT_BY, HOME_SONGS_SORT_ORDER )
+    val positionLock = remember( songSort.sortOrder ) { PositionLock(songSort.sortOrder) }
     val topPlaylists = PeriodSelector( Preference.HOME_SONGS_TOP_PLAYLIST_PERIOD )
     val hiddenSongs = HiddenSongs()
     val exportDialog = ExportSongsToCSVDialog(
@@ -144,6 +160,16 @@ fun HomeSongs(
      * and should **_NOT_** be set to `true` while in **second** phrase.
      */
     var isLoading by remember { mutableStateOf(false) }
+
+    LaunchedEffect( itemSelector.isActive ) {
+        if( itemSelector.isActive )
+            positionLock.isFirstIcon = true
+    }
+    LaunchedEffect( positionLock.isFirstIcon ) {
+        if( !positionLock.isFirstIcon ) {
+            itemSelector.isActive = false
+        }
+    }
 
     //<editor-fold defaultstate="collapsed" desc="Smart recommendation state">
     val recommendationsNumber by rememberPreference( recommendationsNumberKey, RecommendationsNumber.Adaptive )
@@ -328,9 +354,13 @@ fun HomeSongs(
         }
     }
 
-    LaunchedEffect( builtInPlaylist ) {
+    LaunchedEffect( builtInPlaylist, songSort.sortBy ) {
+        buttons.removeAll { it is Sort<*> || it is PeriodSelector || it is PositionLock || it is DownloadAllSongsDialog || it is DeleteAllDownloadedSongsDialog || it is ExportSongsToCSVDialog }
+        
         val firstButton = if( builtInPlaylist == BuiltInPlaylist.Top ) topPlaylists else songSort
         buttons.add( 0, firstButton )
+        if ( builtInPlaylist != BuiltInPlaylist.Top && songSort.sortBy == SongSortBy.Custom )
+            buttons.add( 1, positionLock )
         buttons.add( 3, downloadAllDialog )
         buttons.add( 4, deleteDownloadsDialog )
         buttons.add( exportDialog )
@@ -341,6 +371,21 @@ fun HomeSongs(
     downloadAllDialog.Render()
     deleteDownloadsDialog.Render()
     //</editor-fold>
+
+    val hapticFeedback = LocalHapticFeedback.current
+    val reorderableLazyListState = rememberReorderableLazyListState(
+        lazyListState = lazyListState
+    ) { from, to ->
+        val fromIndex = itemsOnDisplay.indexOfFirst { it.id == from.key }
+        val toIndex = itemsOnDisplay.indexOfFirst { it.id == to.key }
+
+        if (fromIndex != -1 && toIndex != -1) {
+            val movedSong = itemsOnDisplay.removeAt(fromIndex)
+            itemsOnDisplay.add(toIndex, movedSong)
+        }
+    }
+
+    val rippleIndication = ripple(bounded = false)
 
     LazyColumn(
         state = lazyListState,
@@ -375,12 +420,22 @@ fun HomeSongs(
             items = itemsOnDisplay,
             key = { _, song -> song.id }
         ) { index, song ->
-            val mediaItem = song.asMediaItem
+            ReorderableItem(
+                reorderableLazyListState,
+                key = song.id
+            ) { isDraggingItem ->
+                val mediaItem = song.asMediaItem
 
-            val isLocal by remember { derivedStateOf { mediaItem.isLocal } }
-            val isDownloaded = isLocal || isDownloadedSong( mediaItem.mediaId )
+                val isLocal by remember { derivedStateOf { mediaItem.isLocal } }
+                val isDownloaded = isLocal || isDownloadedSong( mediaItem.mediaId )
 
-            SwipeablePlaylistItem(
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .zIndex(2f)
+                ) {
+
+                SwipeablePlaylistItem(
                 mediaItem = mediaItem,
                 onPlayNext = { binder?.player?.addNext( mediaItem ) },
                 onDownload = {
@@ -409,6 +464,10 @@ fun HomeSongs(
                     navController = navController,
                     isRecommended = isRecommended,
                     modifier = Modifier.animateItem(),
+                    trailingContent = {
+                        if( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom )
+                            Box( Modifier.width( 24.dp ) )
+                    },
                     thumbnailOverlay = {
                         if ( songSort.sortBy == SongSortBy.PlayTime || builtInPlaylist == BuiltInPlaylist.Top ) {
                             var text = song.formattedTotalPlayTime
@@ -453,7 +512,31 @@ fun HomeSongs(
                 )
             }
 
+            if ( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom ) {
+                Icon(
+                    painter = painterResource( R.drawable.reorder ),
+                    contentDescription = null,
+                    tint = colorPalette().textSecondary,
+                    modifier = Modifier
+                        .align( Alignment.CenterEnd )
+                        .draggableHandle(
+                            onDragStarted = { hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress) },
+                            onDragStopped = { 
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove) 
+                                val currentItems = itemsOnDisplay.toList()
+                                Database.asyncTransaction {
+                                    currentItems.forEachIndexed { index, song ->
+                                        songTable.updatePosition( song.id, index )
+                                    }
+                                }
+                            }
+                        )
+                        .padding(end = 12.dp)
+                        .size(20.dp)
+                )
+            }
         }
     }
 }
-
+}
+}

@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.it.fast4x.rimusic.ui.screens.home
 
 import app.n_zik.android.uiRoundnessShape
 
@@ -28,6 +28,15 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.ui.zIndex
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
+import sh.calvin.reorderable.rememberReorderableLazyGridState
+import sh.calvin.reorderable.ReorderableItem
+import app.kreate.android.themed.rimusic.component.playlist.PositionLock
+import app.it.fast4x.rimusic.enums.AlbumSortBy
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
@@ -143,6 +152,7 @@ fun HomeAlbums(
     val search = Search(lazyGridState)
 
     val sort = Sort( HOME_ALBUMS_SORT_BY, HOME_ALBUM_SORT_ORDER )
+    val positionLock = remember( sort.sortOrder ) { PositionLock(sort.sortOrder) }
 
     val itemSize = ItemSize.init( HOME_ALBUM_ITEM_SIZE )
 
@@ -259,7 +269,33 @@ fun HomeAlbums(
                 }
 
                 // Sticky tab's tool bar
-                TabToolBar.Buttons( sort, sync, search, randomizer, shuffle, itemSize )
+                TabToolBar.Buttons(
+                    mutableListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>().apply {
+                        add(sort)
+                        if (sort.sortBy == app.it.fast4x.rimusic.enums.AlbumSortBy.Custom)
+                            add(positionLock)
+                        add(sync)
+                        add(search)
+                        add(randomizer)
+                        add(shuffle)
+                        add(itemSize)
+                    }
+                )
+
+                val hapticFeedback = LocalHapticFeedback.current
+                val reorderableLazyGridState = rememberReorderableLazyGridState(
+                    lazyGridState = lazyGridState
+                ) { from, to ->
+                    val mutableItems = itemsOnDisplay.toMutableList()
+                    val fromIndex = mutableItems.indexOfFirst { it.id == from.key }
+                    val toIndex = mutableItems.indexOfFirst { it.id == to.key }
+
+                    if (fromIndex != -1 && toIndex != -1) {
+                        val movedItem = mutableItems.removeAt(fromIndex)
+                        mutableItems.add(toIndex, movedItem)
+                        itemsOnDisplay = mutableItems
+                    }
+                }
 
 
                 // Sticky search bar
@@ -343,13 +379,49 @@ fun HomeAlbums(
                     }
                     items(
                         items = itemsOnDisplay,
-                        key = Album::id
+                        key = { it.id }
                     ) { album ->
-                        val songs by remember {
-                            Database.songAlbumMapTable
-                                    .allSongsOf( album.id )
-                                    .distinctUntilChanged()
-                        }.collectAsState( emptyList(), Dispatchers.IO )
+                        ReorderableItem(
+                            reorderableLazyGridState,
+                            key = album.id
+                        ) { isDraggingItem ->
+                            Box(modifier = Modifier) {
+                                if (!positionLock.isLocked() && sort.sortBy == app.it.fast4x.rimusic.enums.AlbumSortBy.Custom) {
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(4.dp)
+                                            .size(24.dp)
+                                            .align(Alignment.TopEnd)
+                                            .zIndex(2f)
+                                            .draggableHandle(
+                                                onDragStarted = {
+                                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                },
+                                                onDragStopped = {
+                                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                                    val currentItems = itemsOnDisplay.toList()
+                                                    Database.asyncTransaction {
+                                                        currentItems.forEachIndexed { index, album ->
+                                                            albumTable.updatePosition(album.id, index)
+                                                        }
+                                                    }
+                                                }
+                                            ),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        androidx.compose.material3.Icon(
+                                            painter = androidx.compose.ui.res.painterResource(R.drawable.reorder),
+                                            contentDescription = null,
+                                            tint = if (isDraggingItem) colorPalette().accent else colorPalette().textDisabled
+                                        )
+                                    }
+                                }
+
+                                val songs by remember {
+                                    Database.songAlbumMapTable
+                                            .allSongsOf( album.id )
+                                            .distinctUntilChanged()
+                                }.collectAsState( emptyList(), Dispatchers.IO )
 
                         var showDialogChangeAlbumTitle by remember {
                             mutableStateOf(false)
@@ -412,7 +484,6 @@ fun HomeAlbums(
                             thumbnailSizeDp = itemSize.size.dp,
                             thumbnailSizePx = itemSize.size.px,
                             modifier = Modifier
-                                .animateItem( fadeInSpec = null, fadeOutSpec = null )
                                 .clip(uiRoundnessShape()).combinedClickable(
 
                                     onLongClick = {
@@ -434,6 +505,8 @@ fun HomeAlbums(
                             disableScrollingText = disableScrollingText,
                             isYoutubeAlbum = album.isYoutubeAlbum
                         )
+                            }
+                        }
                     }
                 }
 

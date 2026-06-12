@@ -18,7 +18,8 @@ data class Song(
     val durationText: String?,
     val thumbnailUrl: String?,
     val likedAt: Long? = null,
-    val totalPlayTimeMs: Long = 0
+    val totalPlayTimeMs: Long = 0,
+    val position: Int = -1
 ) {
     companion object {
         fun makePlaceholder( id: String ) =

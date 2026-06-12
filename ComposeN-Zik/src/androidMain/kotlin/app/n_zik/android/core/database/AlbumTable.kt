@@ -230,7 +230,20 @@ interface AlbumTable {
     @Query("UPDATE Album SET title = :title WHERE id = :albumId")
     fun updateTitle( albumId: String, title: String ): Int
 
+    @Query("UPDATE Album SET position = :position WHERE id = :albumId")
+    fun updatePosition( albumId: String, position: Int ): Int
+
     //<editor-fold defaultstate="collapsed" desc="Sort bookmarked">
+    @Query("""
+        SELECT DISTINCT *
+        FROM Album
+        WHERE bookmarkedAt IS NOT NULL
+        ORDER BY 
+            CASE WHEN position = -1 THEN 1 ELSE 0 END ASC,
+            CASE WHEN position = -1 THEN ROWID ELSE position END ASC
+        LIMIT :limit
+    """)
+    fun sortBookmarkedByPosition( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
     fun sortBookmarkedByTitle( limit: Int = Int.MAX_VALUE ): Flow<List<Album>> =
         allBookmarked( limit ).map { list ->
             list.sortedBy( Album::cleanTitle )
@@ -313,10 +326,22 @@ interface AlbumTable {
         AlbumSortBy.Artist      -> sortBookmarkedByArtist()
         AlbumSortBy.Songs       -> sortBookmarkedBySongsCount()
         AlbumSortBy.Duration    -> sortBookmarkedByDuration()
+        AlbumSortBy.Custom      -> sortBookmarkedByPosition( limit )
     }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Sort albums in library">
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM Album A
+        JOIN SongAlbumMap sam ON sam.albumId = A.id
+        JOIN SongPlaylistMap spm ON spm.songId = sam.songId 
+        ORDER BY 
+            CASE WHEN A.position = -1 THEN A.ROWID ELSE A.position END ASC
+        LIMIT :limit
+    """)
+    fun sortInLibraryByPosition( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
+
     fun sortInLibraryByTitle( limit: Int = Int.MAX_VALUE ): Flow<List<Album>> =
         allInLibrary( limit ).map { list ->
             list.sortedBy( Album::cleanTitle )
@@ -398,6 +423,7 @@ interface AlbumTable {
         AlbumSortBy.Artist      -> sortInLibraryByArtist()
         AlbumSortBy.Songs       -> sortInLibraryBySongsCount()
         AlbumSortBy.Duration    -> sortInLibraryByDuration()
+        AlbumSortBy.Custom      -> sortInLibraryByPosition( limit )
     }.map( sortOrder::applyTo ).take( 4 )
     //</editor-fold>
 }

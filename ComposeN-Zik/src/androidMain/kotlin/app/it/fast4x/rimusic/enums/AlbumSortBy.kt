@@ -20,7 +20,9 @@ enum class AlbumSortBy(
 
     Songs( R.string.sort_songs_number, R.drawable.medical ),
 
-    Duration( R.string.sort_duration, R.drawable.time );
+    Duration( R.string.sort_duration, R.drawable.time ),
+
+    Custom( R.string.sort_custom_order, R.drawable.position );
 }
 
 

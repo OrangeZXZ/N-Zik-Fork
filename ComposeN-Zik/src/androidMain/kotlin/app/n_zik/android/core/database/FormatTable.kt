@@ -167,6 +167,18 @@ interface FormatTable {
     """)
     fun sortAllWithSongsByAlbumName( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<FormatWithSong>>
 
+    @Query("""
+        SELECT DISTINCT F.*, S.*
+        FROM Format F
+        JOIN Song S ON S.id = F.songId
+        WHERE totalPlayTimeMs >= :excludeHidden
+          ORDER BY 
+              CASE WHEN S.position = -1 THEN 1 ELSE 0 END ASC,
+              CASE WHEN S.position = -1 THEN F.ROWID ELSE S.position END ASC
+        LIMIT :limit
+    """)
+    fun sortAllWithSongsByPosition( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<FormatWithSong>>
+
     /**
      * Fetch all formats & songs from the database and sort them
      * according to [sortBy] and [sortOrder] based on Song's properties.
@@ -207,6 +219,7 @@ interface FormatTable {
         SongSortBy.Artist           -> sortAllWithSongsByArtist( limit, excludeHidden )
         SongSortBy.Duration         -> sortAllWithSongsByDuration( limit, excludeHidden )
         SongSortBy.AlbumName        -> sortAllWithSongsByAlbumName( limit, excludeHidden )
+        SongSortBy.Custom           -> sortAllWithSongsByPosition( limit, excludeHidden )
     }.map( sortOrder::applyTo )
     //</editor-fold>
 }

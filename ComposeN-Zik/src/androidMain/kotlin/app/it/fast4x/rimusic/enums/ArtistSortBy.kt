@@ -12,7 +12,9 @@ enum class ArtistSortBy(
 
     Name( R.string.sort_artist, R.drawable.text ),
 
-    DateAdded( R.string.sort_date_added, R.drawable.time );
+    DateAdded( R.string.sort_date_added, R.drawable.time ),
+
+    Custom( R.string.sort_custom_order, R.drawable.position );
 }
 
 

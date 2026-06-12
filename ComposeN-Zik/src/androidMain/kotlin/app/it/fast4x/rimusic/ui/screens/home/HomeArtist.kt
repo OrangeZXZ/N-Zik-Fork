@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.it.fast4x.rimusic.ui.screens.home
 
 import androidx.compose.ui.draw.clip
 
@@ -30,6 +30,14 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.ui.zIndex
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.foundation.layout.size
+import sh.calvin.reorderable.rememberReorderableLazyGridState
+import sh.calvin.reorderable.ReorderableItem
+import app.kreate.android.themed.rimusic.component.playlist.PositionLock
+import app.it.fast4x.rimusic.enums.ArtistSortBy
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
@@ -127,6 +135,7 @@ fun HomeArtists(
     val search = Search(lazyGridState)
 
     val sort = Sort( HOME_ARTISTS_SORT_BY, HOME_ARTISTS_SORT_ORDER )
+    val positionLock = remember( sort.sortOrder ) { PositionLock(sort.sortOrder) }
 
     val itemSize = ItemSize.init( HOME_ARTIST_ITEM_SIZE )
 
@@ -222,7 +231,33 @@ fun HomeArtists(
                 }
 
                 // Sticky tab's tool bar
-                TabToolBar.Buttons( sort, sync, search, randomizer, shuffle, itemSize )
+                TabToolBar.Buttons(
+                    mutableListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>().apply {
+                        add(sort)
+                        if (sort.sortBy == app.it.fast4x.rimusic.enums.ArtistSortBy.Custom)
+                            add(positionLock)
+                        add(sync)
+                        add(search)
+                        add(randomizer)
+                        add(shuffle)
+                        add(itemSize)
+                    }
+                )
+
+                val hapticFeedback = LocalHapticFeedback.current
+                val reorderableLazyGridState = rememberReorderableLazyGridState(
+                    lazyGridState = lazyGridState
+                ) { from, to ->
+                    val mutableItems = itemsOnDisplay.toMutableList()
+                    val fromIndex = mutableItems.indexOfFirst { it.id == from.key }
+                    val toIndex = mutableItems.indexOfFirst { it.id == to.key }
+
+                    if (fromIndex != -1 && toIndex != -1) {
+                        val movedItem = mutableItems.removeAt(fromIndex)
+                        mutableItems.add(toIndex, movedItem)
+                        itemsOnDisplay = mutableItems
+                    }
+                }
 
 
                 // Sticky search bar
@@ -304,20 +339,57 @@ fun HomeArtists(
                             }
                         }
                     }
-                    items(items = itemsOnDisplay, key = Artist::id) { artist ->
-                        ArtistItem(
-                            artist = artist,
-                            thumbnailSizeDp = itemSize.size.dp,
-                            thumbnailSizePx = itemSize.size.px,
-                            alternative = true,
-                            modifier = Modifier.animateItem( fadeInSpec = null, fadeOutSpec = null )
-                                               .clip(uiRoundnessShape()).clickable(onClick = {
-                                                   search.hideIfEmpty()
-                                                   onArtistClick( artist )
-                                               }),
-                            disableScrollingText = disableScrollingText,
-                            isYoutubeArtist = artist.isYoutubeArtist
-                        )
+                    items(items = itemsOnDisplay, key = { it.id }) { artist ->
+                        ReorderableItem(
+                            reorderableLazyGridState,
+                            key = artist.id
+                        ) { isDraggingItem ->
+                            Box(modifier = Modifier) {
+                                if (!positionLock.isLocked() && sort.sortBy == app.it.fast4x.rimusic.enums.ArtistSortBy.Custom) {
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(4.dp)
+                                            .size(24.dp)
+                                            .align(Alignment.TopEnd)
+                                            .zIndex(2f)
+                                            .draggableHandle(
+                                                onDragStarted = {
+                                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                },
+                                                onDragStopped = {
+                                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                                    val currentItems = itemsOnDisplay.toList()
+                                                    Database.asyncTransaction {
+                                                        currentItems.forEachIndexed { index, artist ->
+                                                            artistTable.updatePosition(artist.id, index)
+                                                        }
+                                                    }
+                                                }
+                                            ),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        androidx.compose.material3.Icon(
+                                            painter = androidx.compose.ui.res.painterResource(R.drawable.reorder),
+                                            contentDescription = null,
+                                            tint = if (isDraggingItem) colorPalette().accent else colorPalette().textDisabled
+                                        )
+                                    }
+                                }
+
+                                ArtistItem(
+                                    artist = artist,
+                                    thumbnailSizeDp = itemSize.size.dp,
+                                    thumbnailSizePx = itemSize.size.px,
+                                    alternative = true,
+                                    modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
+                                                       search.hideIfEmpty()
+                                                       onArtistClick( artist )
+                                                   }),
+                                    disableScrollingText = disableScrollingText,
+                                    isYoutubeArtist = artist.isYoutubeArtist
+                                )
+                            }
+                        }
                     }
                 }
 

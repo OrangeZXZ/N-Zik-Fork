@@ -58,6 +58,7 @@ import app.n_zik.android.core.database.migration.From26To27Migration
 import app.n_zik.android.core.database.migration.From3To4Migration
 import app.n_zik.android.core.database.migration.From7To8Migration
 import app.n_zik.android.core.database.migration.From8To9Migration
+import app.n_zik.android.core.database.migration.From27To28Migration
 import app.kreate.android.me.knighthat.utils.PropUtils
 
 object Database {
@@ -107,7 +108,8 @@ object Database {
             durationText = song.durationText,       // Force update to new duration text
             thumbnailUrl = PropUtils.retainIfModified( dbSong?.thumbnailUrl, song.thumbnailUrl ),
             likedAt = dbSong?.likedAt,
-            totalPlayTimeMs = dbSong?.totalPlayTimeMs ?: 0
+            totalPlayTimeMs = dbSong?.totalPlayTimeMs ?: 0,
+            position = dbSong?.position ?: -1
         ))
         //</editor-fold>
 
@@ -379,7 +381,7 @@ object Database {
     views = [
         SortedSongPlaylistMap::class
     ],
-    version = 27,
+    version = 28,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -432,7 +434,8 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
                     From23To24Migration(),
                     From24To25Migration(),
                     From25To26Migration(),
-                    From26To27Migration()
+                    From26To27Migration(),
+                    From27To28Migration()
                 )
                 .build()
         }

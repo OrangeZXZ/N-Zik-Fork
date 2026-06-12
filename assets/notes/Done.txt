@@ -19,4 +19,7 @@ Fixed: Widespread bug where combinedClickable on IconButton intercepted clicks a
 Fixed: Layout bug where minimumInteractiveComponentSize on inline indicator icons (like explicit "E") forced a 48dp size, crushing the UI in song items
 Fixed: Swapped inverted icons in DownloadAllSongsDialog and DeleteAllDownloadedSongsDialog
 Fixed: Back navigation from local playlist returning to QuickPicks instead of the last selected tab — wrapped clearPreference(homeScreenTabIndexKey) in LaunchedEffect(Unit) so it only runs once at app startup
-Refactored: LocalPlaylistScreen now uses Skeleton like all other screens for consistent layout and mini-player positioning
+Refactored: LocalPlaylistScreen now uses Skeleton like all other screens for consistent layout and mini-player positioningFixed: Data loss bug in Database where downloading a song overwrote its position, likedAt, and 	otalPlayTimeMs data by mistakenly replacing the DB entity
+Fixed: ConcurrentModificationException and lag in Custom sorting by debouncing database position updates to onDragStopped instead of continuous onMove updates
+Fixed: Duplicate and stale sorting lock icons caused by List reference invalidation during Compose recomposition
+Improved: Unclassified library items (position = -1) are now strictly ordered at the bottom of the list for all Custom sorting screens, preserving users manual ordering
