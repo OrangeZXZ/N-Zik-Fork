@@ -468,7 +468,7 @@ fun HomeSongs(
                     isRecommended = isRecommended,
                     modifier = Modifier.animateItem(),
                     trailingContent = {
-                        if( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom )
+                        if( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom && songSort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending )
                             Box( Modifier.width( 24.dp ) )
                     },
                     thumbnailOverlay = {
@@ -515,7 +515,7 @@ fun HomeSongs(
                 )
             }
 
-            if ( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom ) {
+            if ( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom && songSort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending ) {
                 Icon(
                     painter = painterResource( R.drawable.reorder ),
                     contentDescription = null,

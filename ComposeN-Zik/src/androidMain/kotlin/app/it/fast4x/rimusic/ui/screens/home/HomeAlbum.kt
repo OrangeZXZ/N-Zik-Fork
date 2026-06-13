@@ -385,7 +385,7 @@ fun HomeAlbums(
                             key = album.id
                         ) { isDraggingItem ->
                             Box(modifier = Modifier) {
-                                if (!positionLock.isLocked() && sort.sortBy == app.it.fast4x.rimusic.enums.AlbumSortBy.Custom) {
+                                if (!positionLock.isLocked() && sort.sortBy == app.it.fast4x.rimusic.enums.AlbumSortBy.Custom && sort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending) {
                                     Box(
                                         modifier = Modifier
                                             .padding(4.dp)

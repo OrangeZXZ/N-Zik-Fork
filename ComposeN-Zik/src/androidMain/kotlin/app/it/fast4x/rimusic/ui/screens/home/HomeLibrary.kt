@@ -337,7 +337,7 @@ fun HomeLibrary(
                             key = preview.playlist.id
                         ) { isDraggingItem ->
                             Box(modifier = Modifier) {
-                                if (!positionLock.isLocked() && sort.sortBy == app.it.fast4x.rimusic.enums.PlaylistSortBy.Custom) {
+                                if (!positionLock.isLocked() && sort.sortBy == app.it.fast4x.rimusic.enums.PlaylistSortBy.Custom && sort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending) {
                                     Box(
                                         modifier = Modifier
                                             .padding(4.dp)

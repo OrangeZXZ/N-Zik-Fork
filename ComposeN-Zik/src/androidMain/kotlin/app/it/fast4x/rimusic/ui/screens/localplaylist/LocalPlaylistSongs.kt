@@ -810,7 +810,7 @@ fun LocalPlaylistSongs(
                             val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
 
                             // Drag anchor
-                            if ( !positionLock.isLocked() && sort.sortBy == PlaylistSongSortBy.Custom ) {
+                            if ( !positionLock.isLocked() && sort.sortBy == PlaylistSongSortBy.Custom && sort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending ) {
                                 Box(
                                     modifier = Modifier.padding( end = 16.dp ) // Accommodate horizontal padding of SongItem
                                                        .size( 24.dp )
@@ -889,7 +889,7 @@ fun LocalPlaylistSongs(
                             modifier = Modifier,
 
                             trailingContent = {
-                                if( !positionLock.isLocked() )
+                                if( !positionLock.isLocked() && sort.sortBy == PlaylistSongSortBy.Custom && sort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending )
                                     // Create a fake box to store drag anchor and checkbox
                                     Box( Modifier.width( 24.dp ) )
                             },
