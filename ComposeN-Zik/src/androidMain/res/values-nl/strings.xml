@@ -1199,4 +1199,7 @@
   <string name="visualizer_bar">Equalizer balk</string>
   <string name="static_audio_waves">Audio balk</string>
   <string name="play_all_local_songs">Speel alle lokale nummers af</string>
+  <string name="install_warning">Vergeet niet om een back-up te maken van uw instellingen en muziek database. Een update kan mogelijk corrupt raken of kapot gaan als het databaseschema wordt aangepast, dus dit wordt ten zeerste aanbevolen.</string>
+  <string name="install_yes">Ja, installeren</string>
+  <string name="install_no_backup">Nee, ik zal eerst een back-up maken</string>
 </resources>
