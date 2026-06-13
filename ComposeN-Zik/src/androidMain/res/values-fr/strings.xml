@@ -1200,4 +1200,5 @@ Volume BAS : titre précédent</string>
   <string name="ps_very_high">Très haut</string>
   <string name="visualizer_bar">Barre de visualisation</string>
   <string name="static_audio_waves">Barre audio</string>
+  <string name="play_all_local_songs">Jouer toutes les chansons locales</string>
 </resources>
