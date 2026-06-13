@@ -215,10 +215,83 @@ class OnlineArtistItemMenu private constructor(
 
     @Composable
     override fun MenuComponent() {
-        val displayTitle = artist.info?.name
-        val displayThumbnailUrl = artist.thumbnail?.url
+        var showChangeTitleDialog by remember { mutableStateOf(false) }
+        var showChangeCoverDialog by remember { mutableStateOf(false) }
 
-        buttons = mutableListOf<Button>()
+        val dbArtist by app.n_zik.android.core.database.Database.artistTable.findById(artist.key).collectAsState(initial = null, context = kotlinx.coroutines.Dispatchers.IO)
+
+        var displayTitle by remember { mutableStateOf(artist.info?.name) }
+        var displayThumbnailUrl by remember { mutableStateOf(artist.thumbnail?.url) }
+
+        LaunchedEffect(dbArtist) {
+            dbArtist?.let {
+                displayTitle = it.name
+                displayThumbnailUrl = it.thumbnailUrl
+            }
+        }
+
+        if (showChangeTitleDialog) {
+            app.it.fast4x.rimusic.ui.components.themed.InputTextDialog(
+                onDismiss = { showChangeTitleDialog = false },
+                title = stringResource(app.n_zik.android.R.string.update_title),
+                value = displayTitle ?: "",
+                placeholder = stringResource(app.n_zik.android.R.string.title),
+                setValue = { text ->
+                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                        val currentArtist = dbArtist ?: app.it.fast4x.rimusic.models.Artist(
+                            id = artist.key,
+                            name = artist.info?.name,
+                            thumbnailUrl = artist.thumbnail?.url,
+                            timestamp = System.currentTimeMillis(),
+                            isYoutubeArtist = true
+                        )
+                        app.n_zik.android.core.database.Database.artistTable.upsert(currentArtist.copy(name = text))
+                    }
+                }
+            )
+        }
+
+        if (showChangeCoverDialog) {
+            app.it.fast4x.rimusic.ui.components.themed.InputTextDialog(
+                onDismiss = { showChangeCoverDialog = false },
+                title = stringResource(app.n_zik.android.R.string.update_cover),
+                value = displayThumbnailUrl ?: "",
+                placeholder = stringResource(app.n_zik.android.R.string.cover),
+                setValue = { text ->
+                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                        val currentArtist = dbArtist ?: app.it.fast4x.rimusic.models.Artist(
+                            id = artist.key,
+                            name = artist.info?.name,
+                            thumbnailUrl = artist.thumbnail?.url,
+                            timestamp = System.currentTimeMillis(),
+                            isYoutubeArtist = true
+                        )
+                        app.n_zik.android.core.database.Database.artistTable.upsert(currentArtist.copy(thumbnailUrl = text))
+                    }
+                }
+            )
+        }
+
+        val changeTitle = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
+            override val iconId: Int = app.n_zik.android.R.drawable.title_edit
+            override val messageId: Int = app.n_zik.android.R.string.update_title
+            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
+            override fun onShortClick() { showChangeTitleDialog = true }
+            override fun onLongClick() {}
+        }
+
+        val changeCover = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
+            override val iconId: Int = app.n_zik.android.R.drawable.cover_edit
+            override val messageId: Int = app.n_zik.android.R.string.update_cover
+            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
+            override fun onShortClick() { showChangeCoverDialog = true }
+            override fun onLongClick() {}
+        }
+
+        buttons = mutableListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>().apply {
+            add(changeTitle)
+            add(changeCover)
+        }
 
         Column(
             modifier = Modifier
