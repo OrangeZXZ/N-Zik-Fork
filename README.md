@@ -26,19 +26,17 @@
   
   <br>
   
-
-[![Localization Progress](https://badges.crowdin.net/N-Zik/localized.svg)](https://crowdin.com/project/N-Zik) [![License: GPL v3](https://img.shields.io/github/license/N-Zik-Group/N-Zik?color=blue)](https://www.gnu.org/licenses/gpl-3.0)
-[![CodeFactor](https://www.codefactor.io/repository/github/N-Zik-Group/n-zik/badge)](https://www.codefactor.io/repository/github/N-Zik-Group/n-zik)
-
-<br>
-<br>
 </div>
-
----
 
 <div align="center">
   <img src="download-card.svg" alt="N-Zik Stats" />
   <img src="chart.svg" alt="Download Growth" />
+  
+ <br> <br> 
+
+[![Localization Progress](https://badges.crowdin.net/N-Zik/localized.svg)](https://crowdin.com/project/N-Zik) [![License: GPL v3](https://img.shields.io/github/license/N-Zik-Group/N-Zik?color=blue)](https://www.gnu.org/licenses/gpl-3.0)
+[![CodeFactor](https://www.codefactor.io/repository/github/N-Zik-Group/n-zik/badge)](https://www.codefactor.io/repository/github/N-Zik-Group/n-zik)
+
 </div>
 
 ---
