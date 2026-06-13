@@ -1198,4 +1198,5 @@
   <string name="ps_very_high">Очень высокий</string>
   <string name="visualizer_bar">Панель визуализации</string>
   <string name="static_audio_waves">Аудио бар</string>
+  <string name="play_all_local_songs">Воспроизвести все локальные песни</string>
 </resources>

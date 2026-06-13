@@ -1198,4 +1198,5 @@
   <string name="ps_very_high">Velmi vysoká</string>
   <string name="visualizer_bar">Vizualizátor</string>
   <string name="static_audio_waves">Zvuková lišta</string>
+  <string name="play_all_local_songs">Přehrát všechny lokální skladby</string>
 </resources>
