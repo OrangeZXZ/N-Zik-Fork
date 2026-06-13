@@ -81,7 +81,7 @@ import app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import app.it.fast4x.rimusic.ui.components.tab.ItemSize
 import app.it.fast4x.rimusic.ui.components.tab.TabHeader
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Randomizer
-import app.it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu
+import app.n_zik.android.components.menu.album.AlbumItemMenu
 import app.it.fast4x.rimusic.ui.components.themed.FilterMenu
 import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.it.fast4x.rimusic.ui.components.themed.HeaderIconButton
@@ -488,11 +488,14 @@ fun HomeAlbums(
 
                                     onLongClick = {
                                         menuState.display {
-                                            AlbumsItemMenu(
+                                            AlbumItemMenu(
                                                 navController = navController,
                                                 album = album,
                                                 songs = songs,
-                                                disableScrollingText = disableScrollingText
+                                                binder = binder,
+                                                onTitleChange = { showDialogChangeAlbumTitle = true },
+                                                onAuthorsChange = { showDialogChangeAlbumAuthors = true },
+                                                onCoverChange = { showDialogChangeAlbumCover = true }
                                             )
                                         }
                                     },

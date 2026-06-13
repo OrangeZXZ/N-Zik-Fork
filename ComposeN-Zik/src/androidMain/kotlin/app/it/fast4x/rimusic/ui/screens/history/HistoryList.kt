@@ -56,7 +56,6 @@ import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.components.themed.Loader
-import app.it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenuLibrary
 import app.it.fast4x.rimusic.ui.components.themed.Title
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
 import app.it.fast4x.rimusic.ui.styling.Dimensions
@@ -317,12 +316,10 @@ fun HistoryList(
                                     },
                                     onLongClick = {
                                         menuState.display {
-                                            NonQueuedMediaItemMenuLibrary(
+                                            app.n_zik.android.components.menu.song.SongItemMenu(
                                                 navController = navController,
-                                                mediaItem = mediaItem,
-                                                onDismiss = menuState::hide,
-                                                disableScrollingText = disableScrollingText
-                                            )
+                                                song = mediaItem.asSong
+                                            ).MenuComponent()
                                         }
                                     }
                                 )

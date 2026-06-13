@@ -69,8 +69,8 @@ import app.it.fast4x.rimusic.ui.components.ButtonsRow
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import app.it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import app.it.fast4x.rimusic.ui.items.AlbumItem
+import app.n_zik.android.components.menu.album.AlbumItemMenu
 import app.it.fast4x.rimusic.ui.items.ArtistItem
 import app.n_zik.android.components.menu.artist.LocalArtistItemMenu
 import app.it.fast4x.rimusic.ui.items.PlaylistItem
@@ -389,6 +389,55 @@ fun StatisticsPage(
                         if (albums[it].thumbnailUrl.toString() == "null")
                             UpdateYoutubeAlbum(albums[it].id)
 
+                        val songs by remember {
+                            app.n_zik.android.core.database.Database.songAlbumMapTable
+                                    .allSongsOf( albums[it].id )
+                                    .distinctUntilChanged()
+                        }.collectAsState( emptyList(), Dispatchers.IO )
+
+                        var showDialogChangeAlbumTitle by remember { mutableStateOf(false) }
+                        var showDialogChangeAlbumAuthors by remember { mutableStateOf(false) }
+                        var showDialogChangeAlbumCover by remember { mutableStateOf(false) }
+
+                        var onDismissAlbumDialog: () -> Unit = {}
+                        var titleId = 0
+                        var defValue = ""
+                        var placeholderTextId: Int = 0
+                        var queryBlock: (app.n_zik.android.core.database.AlbumTable, String, String) -> Int = { _, _, _ -> 0}
+
+                        if( showDialogChangeAlbumCover ) {
+                            onDismissAlbumDialog = { showDialogChangeAlbumCover = false }
+                            titleId = app.n_zik.android.R.string.update_cover
+                            defValue = albums[it].thumbnailUrl.toString()
+                            placeholderTextId = app.n_zik.android.R.string.cover
+                            queryBlock = app.n_zik.android.core.database.AlbumTable::updateCover
+                        } else if( showDialogChangeAlbumTitle ) {
+                            onDismissAlbumDialog = { showDialogChangeAlbumTitle = false }
+                            titleId = app.n_zik.android.R.string.update_title
+                            defValue = albums[it].title.toString()
+                            placeholderTextId = app.n_zik.android.R.string.title
+                            queryBlock = app.n_zik.android.core.database.AlbumTable::updateTitle
+                        } else if( showDialogChangeAlbumAuthors ) {
+                            onDismissAlbumDialog = { showDialogChangeAlbumAuthors = false }
+                            titleId = app.n_zik.android.R.string.update_authors
+                            defValue = albums[it].authorsText.toString()
+                            placeholderTextId = app.n_zik.android.R.string.authors
+                            queryBlock = app.n_zik.android.core.database.AlbumTable::updateAuthors
+                        }
+
+                        if( showDialogChangeAlbumTitle || showDialogChangeAlbumAuthors || showDialogChangeAlbumCover )
+                            app.it.fast4x.rimusic.ui.components.themed.InputTextDialog(
+                                onDismiss = onDismissAlbumDialog,
+                                title = stringResource( titleId ),
+                                value = defValue,
+                                placeholder = stringResource( placeholderTextId ),
+                                setValue = { title ->
+                                    if (title.isNotEmpty())
+                                        app.n_zik.android.core.database.Database.asyncTransaction { queryBlock( app.n_zik.android.core.database.Database.albumTable, albums[it].id, title ) }
+                                },
+                                prefix = app.it.fast4x.rimusic.MODIFIED_PREFIX
+                            )
+
                         AlbumItem(
                             thumbnailUrl = albums[it].thumbnailUrl,
                             title = "${it+1}. ${albums[it].title}",
@@ -405,10 +454,14 @@ fun StatisticsPage(
                                     },
                                     onLongClick = {
                                         menuState.display {
-                                            app.it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu(
+                                            AlbumItemMenu(
                                                 navController = navController,
                                                 album = albums[it],
-                                                disableScrollingText = disableScrollingText
+                                                songs = songs,
+                                                binder = binder,
+                                                onTitleChange = { showDialogChangeAlbumTitle = true },
+                                                onAuthorsChange = { showDialogChangeAlbumAuthors = true },
+                                                onCoverChange = { showDialogChangeAlbumCover = true }
                                             )
                                         }
                                     }

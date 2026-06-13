@@ -45,3 +45,5 @@ Fixed: Missing long-click context menus for Artist items across Home screens by 
 Refactored: Centralized and migrated context menus and SongItem components to the new kreate architecture in Statistics, Quick Picks, and Artist Details pages
 Fixed: Thumbnail disappearing bug in Online Artist/Album/Playlist menus caused by empty API strings overriding valid image URLs
 Refactored: Moved menu directory from temporary kreate namespace to the permanent app.n_zik.android.components.menu package across the entire application
+Refactored: Migrated the remaining screens (`HistoryList`, `LocalSongSearch`, `Podcast`, `StatisticsPage`) to use the new `app.n_zik` item menus.
+Removed: Entirely eliminated legacy item menu imports outside of their definition file (`MediaItemMenu.kt`).

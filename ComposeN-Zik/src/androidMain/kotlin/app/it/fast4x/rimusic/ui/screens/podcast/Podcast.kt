@@ -1,5 +1,6 @@
 package app.it.fast4x.rimusic.ui.screens.podcast
 
+import app.it.fast4x.rimusic.utils.asSong
 import androidx.compose.ui.draw.clip
 
 import app.n_zik.android.uiRoundnessShape
@@ -95,7 +96,6 @@ import app.it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import app.it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
-import app.it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import app.it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import app.it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
 import app.it.fast4x.rimusic.ui.components.themed.Loader
@@ -675,16 +675,11 @@ fun Podcast(
                                 .clip(uiRoundnessShape()).combinedClickable(
                                     onLongClick = {
                                         menuState.display {
-                                            NonQueuedMediaItemMenu(
+                                            app.n_zik.android.components.menu.song.SongItemMenu(
                                                 navController = navController,
-                                                onDismiss = {
-                                                    menuState.hide()
-                                                    forceRecompose = true
-                                                },
-                                                mediaItem = song.asMediaItem,
-                                                disableScrollingText = disableScrollingText
-                                            )
-                                        };
+                                                song = song.asMediaItem.asSong
+                                            ).MenuComponent()
+                                        }
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                     },
                                     onClick = {

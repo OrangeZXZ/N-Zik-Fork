@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.search
+package app.it.fast4x.rimusic.ui.screens.search
 
 import androidx.compose.ui.draw.clip
 
@@ -55,7 +55,6 @@ import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.it.fast4x.rimusic.ui.components.themed.Header
-import app.it.fast4x.rimusic.ui.components.themed.InHistoryMediaItemMenu
 import app.it.fast4x.rimusic.ui.items.SongItem
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.px
@@ -272,12 +271,10 @@ fun LocalSongSearch(
                         .clip(uiRoundnessShape()).combinedClickable(
                             onLongClick = {
                                 menuState.display {
-                                    InHistoryMediaItemMenu(
+                                    app.n_zik.android.components.menu.song.SongItemMenu(
                                         navController = navController,
-                                        song = song,
-                                        onDismiss = menuState::hide,
-                                        disableScrollingText = disableScrollingText
-                                    )
+                                        song = song
+                                    ).MenuComponent()
                                 }
                             },
                             onClick = { binder?.startRadio( song ) }
