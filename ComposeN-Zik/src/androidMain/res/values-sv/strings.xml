@@ -1198,4 +1198,5 @@
   <string name="ps_very_high">Mycket hög</string>
   <string name="visualizer_bar">Visualizer bar</string>
   <string name="static_audio_waves">Ljudfält</string>
+  <string name="play_all_local_songs">Spela alla lokala låtar</string>
 </resources>
