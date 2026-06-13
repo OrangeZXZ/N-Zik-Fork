@@ -496,7 +496,7 @@ fun HomeAlbums(
                                                 onTitleChange = { showDialogChangeAlbumTitle = true },
                                                 onAuthorsChange = { showDialogChangeAlbumAuthors = true },
                                                 onCoverChange = { showDialogChangeAlbumCover = true }
-                                            )
+                                            ).MenuComponent()
                                         }
                                     },
                                     onClick = {

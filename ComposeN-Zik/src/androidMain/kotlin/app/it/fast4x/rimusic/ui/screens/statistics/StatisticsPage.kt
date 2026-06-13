@@ -462,7 +462,7 @@ fun StatisticsPage(
                                                 onTitleChange = { showDialogChangeAlbumTitle = true },
                                                 onAuthorsChange = { showDialogChangeAlbumAuthors = true },
                                                 onCoverChange = { showDialogChangeAlbumCover = true }
-                                            )
+                                            ).MenuComponent()
                                         }
                                     }
                                 ),
