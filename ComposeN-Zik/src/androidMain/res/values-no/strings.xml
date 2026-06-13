@@ -1198,4 +1198,5 @@
   <string name="ps_very_high">Svært høy</string>
   <string name="visualizer_bar">Visualiserbar</string>
   <string name="static_audio_waves">Lydlinje</string>
+  <string name="play_all_local_songs">Spill alle lokale sanger</string>
 </resources>
