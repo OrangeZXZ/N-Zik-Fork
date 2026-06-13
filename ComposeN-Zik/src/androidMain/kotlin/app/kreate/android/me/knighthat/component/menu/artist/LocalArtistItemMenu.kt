@@ -54,6 +54,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import app.it.fast4x.rimusic.utils.asMediaItem
+import app.it.fast4x.rimusic.utils.forcePlayAtIndex
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -131,7 +133,7 @@ class LocalArtistItemMenu private constructor(
                         thumbnailUrl = thumbnailUrl,
                         modifier = Modifier
                             .size(Dimensions.thumbnails.album / 2)
-                            .clip(thumbnailShape())
+                            .clip(uiRoundnessShape())
                     )
                 }
 
@@ -257,6 +259,25 @@ class LocalArtistItemMenu private constructor(
             )
         }
 
+        val binder = app.n_zik.android.LocalPlayerServiceBinder.current
+        val songs by Database.artistSongs(artist.id).collectAsState(initial = emptyList(), context = Dispatchers.IO)
+
+        val playAll = object : MenuIcon, Descriptive, Clickable {
+            override val iconId: Int = R.drawable.play
+            override val messageId: Int = R.string.play_all_local_songs
+            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
+            override fun onShortClick() {
+                if (songs.isNotEmpty()) {
+                    binder?.stopRadio()
+                    binder?.player?.forcePlayAtIndex(songs.map { it.asMediaItem }, 0)
+                    menuState.hide()
+                } else {
+                    app.kreate.android.me.knighthat.utils.Toaster.e(R.string.no_song_found)
+                }
+            }
+            override fun onLongClick() {}
+        }
+
         val changeTitle = object : MenuIcon, Descriptive, Clickable {
             override val iconId: Int = R.drawable.title_edit
             override val messageId: Int = R.string.update_title
@@ -274,6 +295,7 @@ class LocalArtistItemMenu private constructor(
         }
 
         buttons = mutableListOf<Button>().apply {
+            add(playAll)
             add(changeTitle)
             add(changeCover)
         }
@@ -286,7 +308,7 @@ class LocalArtistItemMenu private constructor(
             ArtistItemDisplay(
                 title = displayTitle,
                 thumbnailUrl = displayThumbnailUrl,
-                subscribersCount = null
+                subscribersCount = "${songs.size} ${stringResource(R.string.songs)}"
             )
 
             if (menuStyle == MenuStyle.List)

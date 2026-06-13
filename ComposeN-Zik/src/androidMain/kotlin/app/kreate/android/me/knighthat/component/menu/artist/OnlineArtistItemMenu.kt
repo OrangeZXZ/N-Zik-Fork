@@ -53,6 +53,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import app.it.fast4x.rimusic.utils.asSong
+import app.it.fast4x.rimusic.utils.asMediaItem
+import app.it.fast4x.rimusic.utils.forcePlayAtIndex
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -132,7 +136,7 @@ class OnlineArtistItemMenu private constructor(
                         thumbnailUrl = thumbnailUrl,
                         modifier = Modifier
                             .size(Dimensions.thumbnails.album / 2)
-                            .clip(thumbnailShape())
+                            .clip(uiRoundnessShape())
                     )
                 }
 
@@ -272,6 +276,48 @@ class OnlineArtistItemMenu private constructor(
             )
         }
 
+        val binder = app.n_zik.android.LocalPlayerServiceBinder.current
+
+        var artistPage by remember { mutableStateOf<it.fast4x.innertube.requests.ArtistPage?>(null) }
+        var isFetching by remember { mutableStateOf(true) }
+
+        LaunchedEffect(artist.key) {
+            withContext(kotlinx.coroutines.Dispatchers.IO) {
+                artistPage = it.fast4x.innertube.YtMusic.getArtistPage(artist.key).getOrNull()
+            }
+            isFetching = false
+        }
+
+        val playRadio = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
+            override val iconId: Int = app.n_zik.android.R.drawable.radio
+            override val messageId: Int = app.n_zik.android.R.string.start_radio
+            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
+            override fun onShortClick() {
+                if (isFetching) {
+                    app.kreate.android.me.knighthat.utils.Toaster.w(app.n_zik.android.R.string.opening_url)
+                } else {
+                    val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
+                    artistPage?.sections?.forEach { section ->
+                        section.items.forEach { item ->
+                            if (item is Innertube.SongItem) {
+                                item.asSong?.asMediaItem?.let { allMediaItems.add(it) }
+                            } else if (item is Innertube.VideoItem) {
+                                allMediaItems.add(item.asMediaItem)
+                            }
+                        }
+                    }
+                    if (allMediaItems.isNotEmpty()) {
+                        binder?.stopRadio()
+                        binder?.player?.forcePlayAtIndex(allMediaItems, 0)
+                        menuState.hide()
+                    } else {
+                        app.kreate.android.me.knighthat.utils.Toaster.e(app.n_zik.android.R.string.no_song_found)
+                    }
+                }
+            }
+            override fun onLongClick() {}
+        }
+
         val changeTitle = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
             override val iconId: Int = app.n_zik.android.R.drawable.title_edit
             override val messageId: Int = app.n_zik.android.R.string.update_title
@@ -289,6 +335,7 @@ class OnlineArtistItemMenu private constructor(
         }
 
         buttons = mutableListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>().apply {
+            add(playRadio)
             add(changeTitle)
             add(changeCover)
         }
