@@ -39,3 +39,6 @@ Fixed: Missing long-click menus and completely missing items (Songs, Videos) in 
 Added: Long-click context menu support for Album, Playlist, Video and Song items across HomeDiscovery, HomeLibrary, OnlineSearchGrid, and OnlineSearchList.
 Fixed: LocalPlaylistItemMenu and OnlinePlaylistItemMenu compilation errors and missing author info.
 Fixed: OnlineAlbumItemMenu state variables to preserve album metadata edits and display correctly after initial metadata fetch.
+Added: LocalArtistItemMenu and OnlineArtistItemMenu support for ArtistItem across HomeQuickPicks, HomePage, MoodList, OnlineSearchGrid, and OnlineSearchList
+Added: Bookmark toggle support for Local and Online Artist menus
+Fixed: Missing long-click context menus for Artist items across Home screens by migrating to combinedClickable

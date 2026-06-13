@@ -12,7 +12,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.clickable
 import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
+import app.kreate.android.me.knighthat.component.menu.artist.OnlineArtistItemMenu
 import app.kreate.android.me.knighthat.component.menu.video.VideoItemMenu
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
@@ -827,7 +829,10 @@ fun HomeQuickPicks(
                                     thumbnailSizeDp = artistThumbnailSizeDp,
                                     alternative = true,
                                     modifier = Modifier
-                                        .clip(uiRoundnessShape()).clickable(onClick = { onArtistClick(artist.key) }),
+                                        .clip(uiRoundnessShape()).combinedClickable(
+                                            onClick = { onArtistClick(artist.key) },
+                                            onLongClick = { menuState.display { OnlineArtistItemMenu(navController = navController, artist = artist).MenuComponent() } }
+                                        ),
                                     disableScrollingText = disableScrollingText
                                 )
                             }
@@ -1121,7 +1126,12 @@ fun HomeQuickPicks(
                                                 alternative = false,
                                                 modifier = Modifier
                                                     .width(200.dp)
-                                                    .clip(uiRoundnessShape()).clickable(onClick = { onArtistClick(artist.key) }),
+                                                    .clip(uiRoundnessShape()).combinedClickable(
+                                                        onClick = { onArtistClick(artist.key) },
+                                                        onLongClick = {
+                                                            menuState.display { OnlineArtistItemMenu(navController = navController, artist = artist).MenuComponent() }
+                                                        }
+                                                    ),
                                                 disableScrollingText = disableScrollingText
                                             )
                                         }
@@ -1190,9 +1200,14 @@ fun HomeQuickPicks(
                                             thumbnailSizePx = artistThumbnailSizePx,
                                             thumbnailSizeDp = artistThumbnailSizeDp,
                                             disableScrollingText = disableScrollingText,
-                                            modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
-                                                navController.navigate("${NavRoutes.artist.name}/${item.key}")
-                                            })
+                                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                onClick = {
+                                                    navController.navigate("${NavRoutes.artist.name}/${item.key}")
+                                                },
+                                                onLongClick = {
+                                                    menuState.display { OnlineArtistItemMenu(navController = navController, artist = item).MenuComponent() }
+                                                }
+                                            )
                                         )
                                     }
 
@@ -1360,6 +1375,7 @@ fun HomeQuickPicks(
 
     }
 }
+
 
 
 

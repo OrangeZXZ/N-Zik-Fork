@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.statistics
+package app.it.fast4x.rimusic.ui.screens.statistics
 
 import androidx.compose.ui.draw.clip
 
@@ -72,6 +72,7 @@ import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import app.it.fast4x.rimusic.ui.items.AlbumItem
 import app.it.fast4x.rimusic.ui.items.ArtistItem
+import app.kreate.android.me.knighthat.component.menu.artist.LocalArtistItemMenu
 import app.it.fast4x.rimusic.ui.items.PlaylistItem
 import app.it.fast4x.rimusic.ui.items.SongItem
 import app.it.fast4x.rimusic.ui.screens.settings.SettingsEntry
@@ -398,11 +399,18 @@ fun StatisticsPage(
                             thumbnailSizeDp = artistThumbnailSizeDp,
                             alternative = true,
                             modifier = Modifier
-                                .clip(uiRoundnessShape()).clickable(onClick = {
-                                    if (artists[it].id != "") {
-                                        navController.navigate("${NavRoutes.artist.name}/${artists[it].id}")
+                                .clip(uiRoundnessShape()).combinedClickable(
+                                    onClick = {
+                                        if (artists[it].id != "") {
+                                            navController.navigate("${NavRoutes.artist.name}/${artists[it].id}")
+                                        }
+                                    },
+                                    onLongClick = {
+                                        menuState.display {
+                                            LocalArtistItemMenu(artist = artists[it]).MenuComponent()
+                                        }
                                     }
-                                }),
+                                ),
                             disableScrollingText = disableScrollingText
                         )
                     }

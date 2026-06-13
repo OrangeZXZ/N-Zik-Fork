@@ -63,6 +63,8 @@ import app.it.fast4x.rimusic.ui.items.VideoItemPlaceholder
 import app.kreate.android.me.knighthat.component.SongItem
 import app.kreate.android.me.knighthat.component.menu.video.VideoItemMenu
 import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
+import app.kreate.android.me.knighthat.component.menu.artist.OnlineArtistItemMenu
+import app.kreate.android.me.knighthat.component.menu.playlist.OnlinePlaylistItemMenu
 import app.kreate.android.me.knighthat.utils.Toaster
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -182,6 +184,11 @@ fun OnlineSearchList(
                                             navController = navController,
                                             playlist = item
                                         ).MenuComponent()
+                                    }
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                } else if (item is Innertube.ArtistItem) {
+                                    menuState.display {
+                                        OnlineArtistItemMenu(navController = navController, artist = item).MenuComponent()
                                     }
                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 }
@@ -377,6 +384,7 @@ private fun getItemFrom(tabIndex: Int): (it.fast4x.innertube.models.MusicShelfRe
     3 -> Innertube.VideoItem.Companion::from
     else -> Innertube.PlaylistItem.Companion::from
 }
+
 
 
 

@@ -66,6 +66,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
+import app.kreate.android.me.knighthat.component.menu.artist.OnlineArtistItemMenu
 import app.kreate.android.me.knighthat.component.menu.playlist.OnlinePlaylistItemMenu
 import app.it.fast4x.rimusic.ui.items.VideoItem
 import app.kreate.android.me.knighthat.component.SongItem
@@ -202,11 +203,19 @@ fun MoodList(
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         alternative = true,
-                                        modifier = Modifier.clip(uiRoundnessShape()).clickable {
-                                            childItem.info?.endpoint?.browseId?.let {
-                                                navController.navigate(route = "${NavRoutes.artist.name}/$it")
+                                        modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                            onClick = {
+                                                childItem.info?.endpoint?.browseId?.let {
+                                                    navController.navigate(route = "${NavRoutes.artist.name}/$it")
+                                                }
+                                            },
+                                            onLongClick = {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.display {
+                                                    OnlineArtistItemMenu(navController = navController, artist = childItem).MenuComponent()
+                                                }
                                             }
-                                        },
+                                        ),
                                         disableScrollingText = disableScrollingText
                                     )
 
@@ -337,6 +346,7 @@ fun MoodList(
         )
     }
 }
+
 
 
 

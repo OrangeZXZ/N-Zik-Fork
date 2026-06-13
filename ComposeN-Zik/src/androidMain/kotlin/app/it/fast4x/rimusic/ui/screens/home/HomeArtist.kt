@@ -11,7 +11,7 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -101,6 +101,7 @@ import kotlinx.coroutines.withContext
 import app.kreate.android.me.knighthat.component.Sort
 import app.kreate.android.me.knighthat.component.tab.Search
 import app.kreate.android.me.knighthat.component.tab.SongShuffler
+import app.kreate.android.me.knighthat.component.menu.artist.LocalArtistItemMenu
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -307,20 +308,21 @@ fun HomeArtists(
                                             modifier = Modifier
                                                 .align(Alignment.CenterVertically)
                                                 .padding(end = 5.dp)
-                                                .clip(uiRoundnessShape()).clickable {
-                                                    menuState.display {
-                                                        FilterMenu(
-                                                            title = stringResource(R.string.filter_by),
-                                                            onDismiss = menuState::hide,
-                                                            onAll = { filterBy = FilterBy.All },
-                                                            onYoutubeLibrary = {
-                                                                filterBy = FilterBy.YoutubeLibrary
-                                                            },
-                                                            onLocal = { filterBy = FilterBy.Local }
-                                                        )
+                                                .clip(uiRoundnessShape()).combinedClickable(
+                                                    onClick = {
+                                                        menuState.display {
+                                                            FilterMenu(
+                                                                title = stringResource(R.string.filter_by),
+                                                                onDismiss = menuState::hide,
+                                                                onAll = { filterBy = FilterBy.All },
+                                                                onYoutubeLibrary = {
+                                                                    filterBy = FilterBy.YoutubeLibrary
+                                                                },
+                                                                onLocal = { filterBy = FilterBy.Local }
+                                                            )
+                                                        }
                                                     }
-
-                                                }
+                                                )
                                         )
                                         HeaderIconButton(
                                             icon = R.drawable.playlist,
@@ -328,7 +330,7 @@ fun HomeArtists(
                                             onClick = {},
                                             modifier = Modifier
                                                 .offset(0.dp, 2.5.dp)
-                                                .clip(uiRoundnessShape()).clickable(
+                                                .clip(uiRoundnessShape()).combinedClickable(
                                                     interactionSource = remember { MutableInteractionSource() },
                                                     indication = null,
                                                     onClick = {}
@@ -381,10 +383,15 @@ fun HomeArtists(
                                     thumbnailSizeDp = itemSize.size.dp,
                                     thumbnailSizePx = itemSize.size.px,
                                     alternative = true,
-                                    modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
-                                                       search.hideIfEmpty()
-                                                       onArtistClick( artist )
-                                                   }),
+                                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                        onClick = {
+                                            search.hideIfEmpty()
+                                            onArtistClick( artist )
+                                        },
+                                        onLongClick = {
+                                            menuState.display { LocalArtistItemMenu(artist = artist).MenuComponent() }
+                                        }
+                                    ),
                                     disableScrollingText = disableScrollingText,
                                     isYoutubeArtist = artist.isYoutubeArtist
                                 )

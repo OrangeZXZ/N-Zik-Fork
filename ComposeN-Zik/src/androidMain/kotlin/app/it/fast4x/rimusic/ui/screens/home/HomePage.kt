@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.it.fast4x.rimusic.ui.screens.home
 
 import androidx.compose.ui.draw.clip
 
@@ -8,6 +8,7 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -56,6 +57,9 @@ import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.UiType
 import app.n_zik.android.typography
+import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
+import app.kreate.android.me.knighthat.component.menu.artist.OnlineArtistItemMenu
+import app.kreate.android.me.knighthat.component.menu.playlist.OnlinePlaylistItemMenu
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
@@ -293,9 +297,14 @@ fun HomePage(
                                         thumbnailSizePx = artistThumbnailSizePx,
                                         thumbnailSizeDp = artistThumbnailSizeDp,
                                         disableScrollingText = disableScrollingText,
-                                        modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
-                                            navController.navigate("${NavRoutes.artist.name}/${item.key}")
-                                        })
+                                        modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                            onClick = {
+                                                navController.navigate("${NavRoutes.artist.name}/${item.key}")
+                                            },
+                                            onLongClick = {
+                                                menuState.display { OnlineArtistItemMenu(navController = navController, artist = item).MenuComponent() }
+                                            }
+                                        )
                                     )
                                 }
                                 is Innertube.PlaylistItem -> {
