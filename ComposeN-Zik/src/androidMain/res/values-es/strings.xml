@@ -1198,4 +1198,5 @@
   <string name="ps_very_high">Muy alta</string>
   <string name="visualizer_bar">Barra de visualizador</string>
   <string name="static_audio_waves">Barra de audio</string>
+  <string name="play_all_local_songs">Reproducir todas las canciones locales</string>
 </resources>

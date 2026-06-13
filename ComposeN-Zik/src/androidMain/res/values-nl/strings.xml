@@ -1198,4 +1198,5 @@
   <string name="ps_very_high">Zeer hoog</string>
   <string name="visualizer_bar">Equalizer balk</string>
   <string name="static_audio_waves">Audio balk</string>
+  <string name="play_all_local_songs">Speel alle lokale nummers af</string>
 </resources>
