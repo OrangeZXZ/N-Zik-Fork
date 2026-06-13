@@ -3,6 +3,7 @@ name: Update Project Stats and Chart
 on:
   release:
     types: [published]
+  workflow_dispatch:
   schedule:
     - cron: '0 */2 * * *' # Every 2 hours
 
