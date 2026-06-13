@@ -1199,4 +1199,7 @@
   <string name="visualizer_bar">Панель візуалізатора</string>
   <string name="static_audio_waves">Звукова панель</string>
   <string name="play_all_local_songs">Грати всі локальні пісні</string>
+  <string name="install_warning">Будь ласка, не забудьте створити резервну копію ваших налаштувань і баз даних музики. Оновлення може пошкодити її, якщо схема бази даних буде відредагована, тому це настійно рекомендується.</string>
+  <string name="install_yes">Так, встановити</string>
+  <string name="install_no_backup">Ні, я відновлюся спочатку</string>
 </resources>

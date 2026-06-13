@@ -1199,4 +1199,7 @@
   <string name="visualizer_bar">Visualisierungsleiste</string>
   <string name="static_audio_waves">Audio-Leiste</string>
   <string name="play_all_local_songs">Alle lokalen Titel abspielen</string>
+  <string name="install_warning">Bitte denken Sie daran, Ihre Einstellungen und Musikdatenbank zu sichern. Eine Aktualisierung könnte beschädigt oder beschädigt werden, wenn das Datenbankschema bearbeitet wird, daher wird dies dringend empfohlen.</string>
+  <string name="install_yes">Ja, installieren</string>
+  <string name="install_no_backup">Nein, ich werde zuerst ein Backup erstellen</string>
 </resources>

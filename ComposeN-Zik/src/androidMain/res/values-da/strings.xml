@@ -1199,4 +1199,7 @@
   <string name="visualizer_bar">Visualizer bar</string>
   <string name="static_audio_waves">Lydbjælke</string>
   <string name="play_all_local_songs">Afspil alle lokale sange</string>
+  <string name="install_warning">Husk venligst at sikkerhedskopiere dine indstillinger og musikdatabase. En opdatering kan muligvis ødelægge eller ødelægge den, hvis databasen skema er redigeret, så det anbefales stærkt.</string>
+  <string name="install_yes">Ja, installer</string>
+  <string name="install_no_backup">Nej, jeg vil bakke op først</string>
 </resources>

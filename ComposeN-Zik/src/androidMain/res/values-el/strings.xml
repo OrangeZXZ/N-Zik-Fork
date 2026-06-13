@@ -1199,4 +1199,7 @@
   <string name="visualizer_bar">Γραμμή απεικόνισης</string>
   <string name="static_audio_waves">Μπάρα ήχου</string>
   <string name="play_all_local_songs">Αναπαραγωγή όλων των τοπικών τραγουδιών</string>
+  <string name="install_warning">Παρακαλώ θυμηθείτε να δημιουργήσετε αντίγραφα ασφαλείας των ρυθμίσεων και της μουσικής βάσης δεδομένων σας. Μια ενημέρωση ενδέχεται να καταστρέψει ή να την σπάσει εάν το σχήμα βάσης δεδομένων είναι επεξεργασμένο, γι \'αυτό συνιστάται ιδιαίτερα.</string>
+  <string name="install_yes">Ναι, εγκατάσταση</string>
+  <string name="install_no_backup">Όχι, θα δημιουργήσω αντίγραφα ασφαλείας πρώτα</string>
 </resources>

@@ -1199,4 +1199,7 @@
   <string name="visualizer_bar">Barra de visualizador</string>
   <string name="static_audio_waves">Barra de audio</string>
   <string name="play_all_local_songs">Reproducir todas las canciones locales</string>
+  <string name="install_warning">Por favor, recuerde realizar una copia de seguridad de su configuración y base de datos de música. Una actualización podría dañarla o romperla si se edita el esquema de la base de datos, por lo que esto es altamente recomendable.</string>
+  <string name="install_yes">Sí, instalar</string>
+  <string name="install_no_backup">No, primero copia de seguridad</string>
 </resources>
