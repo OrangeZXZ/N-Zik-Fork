@@ -1201,4 +1201,7 @@ Volume BAS : titre précédent</string>
   <string name="visualizer_bar">Barre de visualisation</string>
   <string name="static_audio_waves">Barre audio</string>
   <string name="play_all_local_songs">Jouer toutes les chansons locales</string>
+  <string name="install_warning">N\'oubliez pas de sauvegarder vos paramètres et votre base de données musicale. Une mise à jour peut corrompre ou la casser, si le schéma de la base de données est modifié, c\'est pourquoi il est fortement recommandé.</string>
+  <string name="install_yes">Oui, installer</string>
+  <string name="install_no_backup">Non, je vais d\'abord sauvegarder</string>
 </resources>
