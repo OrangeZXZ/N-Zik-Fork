@@ -254,7 +254,7 @@ class OnlinePlaylistItemMenu private constructor(
             override fun onLongClick() {}
         }
         
-        val downloadAllDialog = app.kreate.android.me.knighthat.component.tab.DownloadAllSongsDialog { songs ?: emptyList() }
+        val downloadAllDialog = app.n_zik.android.components.tab.DownloadAllSongsDialog { songs ?: emptyList() }
         val downloadAll = object : MenuIcon by downloadAllDialog, Descriptive by downloadAllDialog, Clickable {
             override fun onShortClick() {
                 if (songs == null) {
@@ -268,7 +268,7 @@ class OnlinePlaylistItemMenu private constructor(
             override fun onLongClick() {}
         }
 
-        val deleteAllDialog = app.kreate.android.me.knighthat.component.tab.DeleteAllDownloadedSongsDialog { songs ?: emptyList() }
+        val deleteAllDialog = app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog { songs ?: emptyList() }
         val deleteAll = object : MenuIcon by deleteAllDialog, Descriptive by deleteAllDialog, Clickable {
             override fun onShortClick() {
                 if (songs == null) {
@@ -282,32 +282,24 @@ class OnlinePlaylistItemMenu private constructor(
             override fun onLongClick() {}
         }
         
-        var showImportDialog by remember { mutableStateOf(false) }
-
-        if (showImportDialog) {
-            app.it.fast4x.rimusic.ui.components.themed.InputTextDialog(
-                onDismiss = { showImportDialog = false },
-                title = stringResource(R.string.enter_the_playlist_name),
-                value = cleanPrefix(playlist.title ?: ""),
-                placeholder = "Playlist name",
-                setValue = { text ->
-                    val scope = CoroutineScope(Dispatchers.IO)
-                    scope.launch {
-                        app.n_zik.android.core.database.Database.asyncTransaction {
-                            val newPlaylist = app.it.fast4x.rimusic.models.Playlist(name = text, browseId = playlist.key)
-                            val playlistId = app.n_zik.android.core.database.Database.playlistTable.insert(newPlaylist)
-                            songs?.forEach { song ->
-                                app.n_zik.android.core.database.Database.insertIgnore(song.asMediaItem)
-                                app.n_zik.android.core.database.Database.songPlaylistMapTable.map(songId = song.id, playlistId = playlistId)
-                            }
-                        }
+        val importDialog = app.n_zik.android.components.playlist.ImportPlaylistDialog(
+            initialValue = cleanPrefix(playlist.title ?: "")
+        ) { text ->
+            val scope = CoroutineScope(Dispatchers.IO)
+            scope.launch {
+                app.n_zik.android.core.database.Database.asyncTransaction {
+                    val newPlaylist = app.it.fast4x.rimusic.models.Playlist(name = text, browseId = playlist.key)
+                    val playlistId = app.n_zik.android.core.database.Database.playlistTable.insert(newPlaylist)
+                    songs?.forEach { song ->
+                        app.n_zik.android.core.database.Database.insertIgnore(song.asMediaItem)
+                        app.n_zik.android.core.database.Database.songPlaylistMapTable.map(songId = song.id, playlistId = playlistId)
                     }
-                    showImportDialog = false
-                    menuState.hide()
-                    Toaster.done()
                 }
-            )
+            }
+            menuState.hide()
+            Toaster.done()
         }
+        importDialog.Render()
 
         val importPlaylist = object : MenuIcon, Descriptive, Clickable {
             override val iconId: Int = R.drawable.add_in_playlist
@@ -317,7 +309,7 @@ class OnlinePlaylistItemMenu private constructor(
                 if (songs == null) {
                     Toaster.w(R.string.opening_url)
                 } else if (songs!!.isNotEmpty()) {
-                    showImportDialog = true
+                    importDialog.onShortClick()
                 } else {
                     Toaster.e(R.string.no_song_found)
                 }

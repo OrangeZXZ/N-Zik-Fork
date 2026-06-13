@@ -64,7 +64,7 @@ import kotlinx.coroutines.Dispatchers
 import app.kreate.android.me.knighthat.utils.Toaster
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import app.kreate.android.me.knighthat.component.tab.Search
+import app.n_zik.android.components.tab.Search
 
 @Composable
 fun DefaultAIRecommendationSettings() {

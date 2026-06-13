@@ -56,7 +56,7 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.ui.components.themed.Enqueue
-import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
+
 import app.it.fast4x.rimusic.ui.components.themed.PlayNext
 import app.it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import app.it.fast4x.rimusic.utils.addNext
@@ -84,8 +84,11 @@ import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey
-import app.kreate.android.me.knighthat.component.tab.DownloadAllSongsDialog
-import app.kreate.android.me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.tab.DownloadAllSongsDialog
+import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.album.ChangeAlbumTitleDialog
+import app.n_zik.android.components.album.ChangeAlbumAuthorsDialog
+import app.n_zik.android.components.album.ChangeAlbumCoverDialog
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -95,10 +98,7 @@ class AlbumItemMenu private constructor(
     private val songs: List<Song>,
     private val binder: PlayerServiceModern.Binder?,
     override val menuState: MenuState,
-    styleState: MutableState<MenuStyle>,
-    private val onTitleChange: (String) -> Unit,
-    private val onAuthorsChange: (String) -> Unit,
-    private val onCoverChange: (String) -> Unit
+    styleState: MutableState<MenuStyle>
 ) : Menu {
 
     companion object {
@@ -107,10 +107,7 @@ class AlbumItemMenu private constructor(
             navController: NavController,
             album: Album,
             songs: List<Song>,
-            binder: PlayerServiceModern.Binder?,
-            onTitleChange: (String) -> Unit,
-            onAuthorsChange: (String) -> Unit,
-            onCoverChange: (String) -> Unit
+            binder: PlayerServiceModern.Binder?
         ): AlbumItemMenu =
             AlbumItemMenu(
                 navController = navController,
@@ -118,10 +115,7 @@ class AlbumItemMenu private constructor(
                 songs = songs,
                 binder = binder,
                 menuState = LocalMenuState.current,
-                styleState = rememberPreference(menuStyleKey, MenuStyle.List),
-                onTitleChange = onTitleChange,
-                onAuthorsChange = onAuthorsChange,
-                onCoverChange = onCoverChange
+                styleState = rememberPreference(menuStyleKey, MenuStyle.List)
             )
     }
 
@@ -275,51 +269,9 @@ class AlbumItemMenu private constructor(
 
     @Composable
     override fun MenuComponent() {
-        var showChangeTitleDialog by remember { mutableStateOf(false) }
-        var showChangeAuthorsDialog by remember { mutableStateOf(false) }
-        var showChangeCoverDialog by remember { mutableStateOf(false) }
-
-        if (showChangeTitleDialog) {
-            InputTextDialog(
-                onDismiss = { showChangeTitleDialog = false },
-                title = stringResource(R.string.update_title),
-                value = album.title ?: "",
-                placeholder = stringResource(R.string.title),
-                setValue = { newValue ->
-                    onTitleChange(newValue)
-                    showChangeTitleDialog = false
-                    menuState.hide()
-                }
-            )
-        }
-
-        if (showChangeAuthorsDialog) {
-            InputTextDialog(
-                onDismiss = { showChangeAuthorsDialog = false },
-                title = stringResource(R.string.update_authors),
-                value = album.authorsText ?: "",
-                placeholder = stringResource(R.string.artists),
-                setValue = { newValue ->
-                    onAuthorsChange(newValue)
-                    showChangeAuthorsDialog = false
-                    menuState.hide()
-                }
-            )
-        }
-
-        if (showChangeCoverDialog) {
-            InputTextDialog(
-                onDismiss = { showChangeCoverDialog = false },
-                title = stringResource(R.string.update_cover),
-                value = album.thumbnailUrl ?: "",
-                placeholder = stringResource(R.string.cover),
-                setValue = { newValue ->
-                    onCoverChange(newValue)
-                    showChangeCoverDialog = false
-                    menuState.hide()
-                }
-            )
-        }
+        val changeTitle = ChangeAlbumTitleDialog { album }
+        val changeAuthors = ChangeAlbumAuthorsDialog { album }
+        val changeCover = ChangeAlbumCoverDialog { album }
 
         // Collect artists from the first song if available
         // We observe the songs list to react to its population
@@ -338,7 +290,6 @@ class AlbumItemMenu private constructor(
         // Group actions (Download/Delete all)
         val downloadAll = DownloadAllSongsDialog { songs }
         val deleteAll = DeleteAllDownloadedSongsDialog { songs }
-
         // Initialize buttons
         val playNext = PlayNext {
             binder?.player?.addNext(songs.map { it.asMediaItem }, appContext())
@@ -352,30 +303,6 @@ class AlbumItemMenu private constructor(
             onFailure = { _, _ -> },
             finalAction = { menuState.hide() }
         )
-
-        val changeTitle = object : MenuIcon, Descriptive, Clickable {
-            override val iconId: Int = R.drawable.title_edit
-            override val messageId: Int = R.string.update_title
-            @get:Composable
-            override val menuIconTitle: String get() = stringResource(messageId)
-            override fun onShortClick() { showChangeTitleDialog = true }
-        }
-
-        val changeAuthors = object : MenuIcon, Descriptive, Clickable {
-            override val iconId: Int = R.drawable.artists_edit
-            override val messageId: Int = R.string.update_authors
-            @get:Composable
-            override val menuIconTitle: String get() = stringResource(messageId)
-            override fun onShortClick() { showChangeAuthorsDialog = true }
-        }
-
-        val changeCover = object : MenuIcon, Descriptive, Clickable {
-            override val iconId: Int = R.drawable.cover_edit
-            override val messageId: Int = R.string.update_cover
-            @get:Composable
-            override val menuIconTitle: String get() = stringResource(messageId)
-            override fun onShortClick() { showChangeCoverDialog = true }
-        }
 
         buttons = mutableListOf<Button>().apply {
             add(playNext)
@@ -394,7 +321,7 @@ class AlbumItemMenu private constructor(
                 val firstSong = songs.firstOrNull()
                 if (firstSong != null) {
                     if (artistNames.size <= 1) {
-                        add(app.kreate.android.me.knighthat.component.song.GoToArtist(navController, firstSong))
+                        add(app.n_zik.android.components.song.GoToArtist(navController, firstSong))
                     } else {
                         artistNames.forEach { artistName ->
                             add(object : MenuIcon, Descriptive, Clickable {
@@ -450,6 +377,9 @@ class AlbumItemMenu private constructor(
         ) {
             downloadAll.Render()
             deleteAll.Render()
+            changeTitle.Render()
+            changeAuthors.Render()
+            changeCover.Render()
             AlbumItemDisplay(album = album)
 
             if (menuStyle == MenuStyle.List)

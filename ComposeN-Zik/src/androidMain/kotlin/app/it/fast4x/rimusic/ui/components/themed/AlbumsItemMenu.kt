@@ -1,7 +1,4 @@
 package app.it.fast4x.rimusic.ui.components.themed
-import app.n_zik.android.LocalPlayerServiceBinder
-
-import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -13,26 +10,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.core.database.Database
-import app.n_zik.android.appContext
-import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.PlaylistPreview
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
-import app.it.fast4x.rimusic.utils.menuStyleKey
-import app.it.fast4x.rimusic.utils.rememberPreference
 import app.n_zik.android.components.menu.album.AlbumItemMenu
-import app.it.fast4x.rimusic.utils.isNetworkConnected
-import app.it.fast4x.rimusic.utils.menuStyleKey
-import app.it.fast4x.rimusic.utils.playlistSortByKey
-import app.it.fast4x.rimusic.utils.playlistSortOrderKey
-import app.it.fast4x.rimusic.utils.rememberPreference
-import app.it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
-import app.kreate.android.me.knighthat.component.tab.Search
-import app.kreate.android.me.knighthat.utils.Toaster
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -59,8 +45,7 @@ fun AlbumsItemMenu(
     onAddToFavourites: (() -> Unit)? = null,
     disableScrollingText: Boolean
 ) {
-    val binder = app.n_zik.android.LocalPlayerServiceBinder.current
-    val menuState = LocalMenuState.current
+    val binder = LocalPlayerServiceBinder.current
 
     val songs by remember(album.id) {
         Database.songAlbumMapTable
@@ -72,25 +57,6 @@ fun AlbumsItemMenu(
         navController = navController,
         album = album,
         songs = songs,
-        binder = binder,
-        onTitleChange = { newTitle ->
-            Database.asyncTransaction {
-                albumTable.updateTitle(album.id, newTitle)
-            }
-        },
-        onAuthorsChange = { newAuthors ->
-            Database.asyncTransaction {
-                albumTable.updateAuthors(album.id, newAuthors)
-            }
-        },
-        onCoverChange = { newCoverUrl ->
-            Database.asyncTransaction {
-                albumTable.updateCover(album.id, newCoverUrl)
-            }
-        }
+        binder = binder
     ).MenuComponent()
 }
-
-
-
-

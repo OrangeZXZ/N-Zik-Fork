@@ -250,7 +250,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import app.kreate.android.me.knighthat.component.player.BlurAdjuster
+import app.n_zik.android.components.player.BlurAdjuster
 import app.kreate.android.me.knighthat.utils.Toaster
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import kotlin.math.absoluteValue

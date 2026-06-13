@@ -63,23 +63,23 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import app.kreate.android.me.knighthat.component.SongItem
+import app.n_zik.android.components.SongItem
 import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
 import androidx.compose.runtime.mutableStateOf
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
-import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
+
 import app.kreate.android.me.knighthat.utils.Toaster
-import app.kreate.android.me.knighthat.component.song.ChangeAuthorDialog
-import app.kreate.android.me.knighthat.component.song.ExportCacheDialog
-import app.kreate.android.me.knighthat.component.song.GoToAlbum
-import app.kreate.android.me.knighthat.component.song.GoToArtist
-import app.kreate.android.me.knighthat.component.song.RenameSongDialog
-import app.kreate.android.me.knighthat.component.song.ResetSongDialog
-import app.kreate.android.me.knighthat.component.tab.DeleteSongDialog
-import app.kreate.android.me.knighthat.component.tab.LikeComponent
-import app.kreate.android.me.knighthat.component.tab.Radio
+import app.n_zik.android.components.song.ChangeAuthorDialog
+import app.n_zik.android.components.song.ChangeCoverDialog
+import app.n_zik.android.components.song.ExportCacheDialog
+import app.n_zik.android.components.song.GoToAlbum
+import app.n_zik.android.components.song.GoToArtist
+import app.n_zik.android.components.song.RenameSongDialog
+import app.n_zik.android.components.song.ResetSongDialog
+import app.n_zik.android.components.tab.DeleteSongDialog
+import app.n_zik.android.components.tab.LikeComponent
+import app.n_zik.android.components.tab.Radio
 import app.kreate.android.me.knighthat.sync.YouTubeSync
 import timber.log.Timber
 import java.util.Optional
@@ -139,15 +139,7 @@ class SongItemMenu private constructor(
         //<editor-fold defaultstate="collapsed" desc="Buttons">
         val renameSong = RenameSongDialog{ song }
         val changeAuthor = ChangeAuthorDialog{ song }
-        var showChangeCoverDialog by remember { mutableStateOf(false) }
-        val changeCover = object : MenuIcon, Descriptive, Clickable {
-            override val iconId: Int = R.drawable.cover_edit
-            override val messageId: Int = R.string.update_cover
-            @get:Composable
-            override val menuIconTitle: String get() = stringResource(messageId)
-            override fun onShortClick() { showChangeCoverDialog = true }
-            override fun onLongClick() {}
-        }
+        val changeCover = ChangeCoverDialog{ song }
         val startRadio = Radio { listOf(song) }
         val playNext = PlayNext {
             binder?.player?.addNext( listOf(song.asMediaItem), appContext() )
@@ -257,22 +249,7 @@ class SongItemMenu private constructor(
         //<editor-fold desc="Dialog renders">
         renameSong.Render()
         changeAuthor.Render()
-        if (showChangeCoverDialog) {
-            InputTextDialog(
-                onDismiss = { showChangeCoverDialog = false },
-                title = stringResource(R.string.update_cover),
-                value = cleanPrefix(song.thumbnailUrl ?: ""),
-                placeholder = stringResource(R.string.cover),
-                setValue = { newValue ->
-                    Database.asyncTransaction {
-                        Database.songTable.updateCover(song.id, "$MODIFIED_PREFIX$newValue")
-                        Toaster.done()
-                    }
-                    showChangeCoverDialog = false
-                    menuState.hide()
-                }
-            )
-        }
+        changeCover.Render()
         deleteSongDialog.Render()
         resetDialog.Render()
         exportCacheDialog.Render()

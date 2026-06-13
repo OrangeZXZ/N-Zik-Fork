@@ -48,7 +48,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.rememberNavController
 import app.n_zik.android.R
 import io.ktor.http.Url
-import app.kreate.android.me.knighthat.component.dialog.RestartAppDialog
+import app.n_zik.android.components.dialog.RestartAppDialog
 import app.it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.utils.parseCookieString
 import it.fast4x.piped.Piped
@@ -499,13 +499,16 @@ fun AccountsSettings() {
                                         )
                                         
                                         if (showCustomInstanceDialog) {
-                                            app.it.fast4x.rimusic.ui.components.themed.InputTextDialog(
+                                            app.n_zik.android.components.settings.SettingsInputDialog(
                                                 title = stringResource(R.string.piped_custom_instance),
-                                                value = pipedApiBaseUrl,
+                                                initialValue = pipedApiBaseUrl,
                                                 placeholder = stringResource(R.string.piped_custom_instance),
                                                 onDismiss = { showCustomInstanceDialog = false },
-                                                setValue = { pipedApiBaseUrl = it }
-                                            )
+                                                onSetValue = { pipedApiBaseUrl = it }
+                                            ).apply {
+                                                showDialog()
+                                                Render()
+                                            }
                                         }
                                     }
                                 }
@@ -530,13 +533,16 @@ fun AccountsSettings() {
                                 )
                                 
                                 if (showUsernameDialog) {
-                                    app.it.fast4x.rimusic.ui.components.themed.InputTextDialog(
+                                    app.n_zik.android.components.settings.SettingsInputDialog(
                                         title = stringResource(R.string.piped_username),
-                                        value = pipedUsername,
+                                        initialValue = pipedUsername,
                                         placeholder = stringResource(R.string.piped_username),
                                         onDismiss = { showUsernameDialog = false },
-                                        setValue = { pipedUsername = it }
-                                    )
+                                        onSetValue = { pipedUsername = it }
+                                    ).apply {
+                                        showDialog()
+                                        Render()
+                                    }
                                 }
 
                                 var showPasswordDialog by remember { mutableStateOf(false) }
@@ -549,13 +555,16 @@ fun AccountsSettings() {
                                 )
                                 
                                 if (showPasswordDialog) {
-                                    app.it.fast4x.rimusic.ui.components.themed.InputTextDialog(
+                                    app.n_zik.android.components.settings.SettingsInputDialog(
                                         title = stringResource(R.string.piped_password),
-                                        value = pipedPassword,
+                                        initialValue = pipedPassword,
                                         placeholder = stringResource(R.string.piped_password),
                                         onDismiss = { showPasswordDialog = false },
-                                        setValue = { pipedPassword = it }
-                                    )
+                                        onSetValue = { pipedPassword = it }
+                                    ).apply {
+                                        showDialog()
+                                        Render()
+                                    }
                                 }
 
                                 OtherSettingsEntry(

@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.settings
+package app.it.fast4x.rimusic.ui.screens.settings
 
 import app.n_zik.android.uiRoundnessShape
 
@@ -44,7 +44,7 @@ import app.it.fast4x.rimusic.enums.ValidationType
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.components.themed.StringListDialog
-import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import app.n_zik.android.components.settings.SettingsInputDialog
 import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.defaultFolderKey
@@ -202,13 +202,16 @@ fun OtherSettings() {
                         
                         // Only the dialog, not the old component
                         if (showFolderDialog) {
-                            InputTextDialog(
+                            app.n_zik.android.components.settings.SettingsInputDialog(
                                 title = stringResource(R.string.folder_that_will_show_when_you_open_on_device_page),
-                                value = defaultFolder,
+                                initialValue = defaultFolder,
                                 placeholder = stringResource(R.string.folder_that_will_show_when_you_open_on_device_page),
                                 onDismiss = { showFolderDialog = false },
-                                setValue = { defaultFolder = it }
-                            )
+                                onSetValue = { defaultFolder = it }
+                            ).apply {
+                                showDialog()
+                                Render()
+                            }
                         }
                     }
                 }
@@ -359,14 +362,16 @@ fun OtherSettings() {
                             
                             // Only the dialog, not the old component
                             if (showProxyHostDialog) {
-                                InputTextDialog(
+                                app.n_zik.android.components.settings.SettingsInputDialog(
                                     title = stringResource(R.string.proxy_host),
-                                    value = proxyHost,
+                                    initialValue = proxyHost,
                                     placeholder = stringResource(R.string.proxy_host),
                                     onDismiss = { showProxyHostDialog = false },
-                                    setValue = { proxyHost = it },
-                                    validationType = ValidationType.Ip
-                                )
+                                    onSetValue = { proxyHost = it }
+                                ).apply {
+                                    showDialog()
+                                    Render()
+                                }
                             }
                             // Modern wrapper with icon
                             var showProxyPortDialog by remember { mutableStateOf(false) }
@@ -379,13 +384,16 @@ fun OtherSettings() {
                             
                             // Only the dialog, not the old component
                             if (showProxyPortDialog) {
-                                InputTextDialog(
+                                app.n_zik.android.components.settings.SettingsInputDialog(
                                     title = stringResource(R.string.proxy_port),
-                                    value = proxyPort.toString(),
+                                    initialValue = proxyPort.toString(),
                                     placeholder = stringResource(R.string.proxy_port),
                                     onDismiss = { showProxyPortDialog = false },
-                                    setValue = { proxyPort = it.toIntOrNull() ?: 1080 }
-                                )
+                                    onSetValue = { proxyPort = it.toIntOrNull() ?: 1080 }
+                                ).apply {
+                                    showDialog()
+                                    Render()
+                                }
                             }
                         }
                     }

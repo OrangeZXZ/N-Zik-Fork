@@ -69,7 +69,7 @@ import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
 import app.n_zik.android.components.menu.artist.OnlineArtistItemMenu
 import app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu
 import app.it.fast4x.rimusic.ui.items.VideoItem
-import app.kreate.android.me.knighthat.component.SongItem
+import app.n_zik.android.components.SongItem
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import app.n_zik.android.components.menu.song.SongItemMenu
 import app.n_zik.android.components.menu.video.VideoItemMenu

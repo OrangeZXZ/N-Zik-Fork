@@ -107,7 +107,7 @@ import app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import app.it.fast4x.rimusic.ui.items.ArtistItem
 import app.it.fast4x.rimusic.ui.items.PlaylistItem
 import app.it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
-import app.kreate.android.me.knighthat.component.SongItem
+import app.n_zik.android.components.SongItem
 import app.it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import app.it.fast4x.rimusic.ui.items.VideoItem
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
@@ -681,7 +681,7 @@ fun HomeQuickPicks(
                                            )
                         ) {
                             items(recommendations, key = { it.id }) { song ->
-                                app.kreate.android.me.knighthat.component.SongItem(
+                                app.n_zik.android.components.SongItem(
                                     song = song,
                                     navController = navController,
                                     onClick = { binder?.startRadio(song, true) },
@@ -1057,7 +1057,7 @@ fun HomeQuickPicks(
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis
                                             )
-                                            app.kreate.android.me.knighthat.component.SongItem(
+                                            app.n_zik.android.components.SongItem(
                                                 song = song.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
                                                 navController = navController,
                                                 onClick = {
@@ -1153,7 +1153,7 @@ fun HomeQuickPicks(
                                 when (item) {
                                     is Innertube.SongItem -> {
                                         println("Innertube homePage SongItem: ${item.info?.name}")
-                                        app.kreate.android.me.knighthat.component.SongItem(
+                                        app.n_zik.android.components.SongItem(
                                             song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
                                             navController = navController,
                                             onClick = {

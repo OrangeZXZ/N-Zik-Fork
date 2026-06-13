@@ -27,13 +27,16 @@ interface IDialog: Dialog {
     override fun Render() {
         if( !isActive ) return
 
-        InputTextDialog(
-            onDismiss = ::onDismiss,
+        app.n_zik.android.components.settings.SettingsInputDialog(
             title = dialogTitle,
-            value = value,
+            initialValue = value,
             placeholder = placeholder,
-            setValue = ::onSet
-        )
+            onDismiss = ::onDismiss,
+            onSetValue = ::onSet
+        ).apply {
+            showDialog()
+            Render()
+        }
     }
 }
 

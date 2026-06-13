@@ -883,180 +883,7 @@ inline fun InputNumericDialog(
 
 }
 
-@Composable
-inline fun InputTextDialog(
-    modifier: Modifier = Modifier,
-    noinline onDismiss: () -> Unit,
-    title: String,
-    value: String,
-    setValueRequireNotNull: Boolean = true,
-    placeholder: String,
-    crossinline setValue: (String) -> Unit,
-    validationType: ValidationType = ValidationType.None,
-    prefix: String = "",
-) {
-    val txtFieldError = remember { mutableStateOf("") }
-    val txtField = remember { mutableStateOf(cleanPrefix(value)) }
-    val value_cannot_empty = stringResource(R.string.value_cannot_be_empty)
-    val value_must_be_ip_address = stringResource(R.string.value_must_be_ip_address)
-    var checkedState = remember{
-        mutableStateOf(value.startsWith(prefix))
-    }
 
-    Dialog(onDismissRequest = onDismiss) {
-        Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            shape = uiRoundnessShape(),
-            colors = CardDefaults.cardColors(
-                containerColor = colorPalette().background1
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp)
-            ) {
-                                 // Header
-                 BasicText(
-                     text = title,
-                     style = typography().l.semiBold.copy(
-                         color = colorPalette().text
-                     ),
-                     modifier = Modifier.fillMaxWidth()
-                 )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                                 // Text Field
-                 TextField(
-                     modifier = Modifier.fillMaxWidth(),
-                     value = txtField.value,
-                     onValueChange = { txtField.value = it },
-                     placeholder = { 
-                         Text(
-                             text = placeholder,
-                             style = typography().s.copy(
-                                 color = colorPalette().textSecondary
-                             )
-                         ) 
-                     },
-                                           colors = TextFieldDefaults.colors(
-                          focusedContainerColor = colorPalette().background2,
-                          unfocusedContainerColor = colorPalette().background2,
-                          focusedIndicatorColor = Color.Transparent,
-                          unfocusedIndicatorColor = Color.Transparent,
-                          focusedTextColor = colorPalette().text,
-                          unfocusedTextColor = colorPalette().text,
-                          cursorColor = colorPalette().accent,
-                          disabledIndicatorColor = Color.Transparent
-                      ),
-                     textStyle = typography().s.copy(
-                         color = colorPalette().text
-                     ),
-                     keyboardOptions = KeyboardOptions(
-                         keyboardType = if (validationType == ValidationType.Ip) KeyboardType.Number else KeyboardType.Text
-                     ),
-                     singleLine = true,
-                     shape = uiRoundnessShape()
-                 )
-
-                // Error message
-                if (txtFieldError.value.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    BasicText(
-                        text = txtFieldError.value,
-                        style = typography().xs.copy(
-                            color = colorPalette().red
-                        ),
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
-                }
-
-                                 // Prefix checkbox
-                 if (prefix.isNotEmpty()) {
-                     Spacer(modifier = Modifier.height(16.dp))
-                                           Row(
-                          horizontalArrangement = Arrangement.spacedBy(0.dp),
-                          verticalAlignment = Alignment.CenterVertically,
-                          modifier = Modifier.fillMaxWidth()
-                      ) {
-                         Checkbox(
-                             checked = checkedState.value,
-                             onCheckedChange = { checkedState.value = it },
-                             colors = CheckboxDefaults.colors(
-                                 checkedColor = colorPalette().accent,
-                                 uncheckedColor = colorPalette().textSecondary,
-                                 checkmarkColor = colorPalette().textSecondary
-                             )
-                         )
-                         BasicText(
-                             text = stringResource(R.string.set_custom_value),
-                             style = typography().s.copy(
-                                 color = colorPalette().text
-                             )
-                         )
-                     }
-                 }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Action buttons
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Button(
-                        onClick = onDismiss,
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorPalette().background2,
-                            contentColor = colorPalette().text
-                        ),
-                        shape = uiRoundnessShape()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.cancel),
-                            style = typography().s.semiBold
-                        )
-                    }
-
-                    Button(
-                        onClick = {
-                            if (txtField.value.isEmpty() && setValueRequireNotNull) {
-                                txtFieldError.value = value_cannot_empty
-                                return@Button
-                            }
-                            if (txtField.value.isNotEmpty() && validationType == ValidationType.Ip) {
-                                if (!isValidIP(txtField.value)) {
-                                    txtFieldError.value = value_must_be_ip_address
-                                    return@Button
-                                }
-                            }
-                            if (checkedState.value && prefix.isNotEmpty())
-                                setValue(prefix + cleanPrefix(txtField.value))
-                            else
-                                setValue(txtField.value)
-
-                            onDismiss()
-                        },
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorPalette().accent,
-                            contentColor = colorPalette().textSecondary
-                        ),
-                        shape = uiRoundnessShape()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.confirm),
-                            style = typography().s.semiBold
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
 inline fun StringListDialog(
@@ -1204,19 +1031,22 @@ inline fun StringListDialog(
     }
 
     if (showStringAddDialog) {
-        InputTextDialog(
-            onDismiss = { showStringAddDialog = false },
+        app.n_zik.android.components.settings.SettingsInputDialog(
+            title = addTitle,
+            initialValue = "",
             placeholder = addPlaceholder,
-            setValue = {
+            onDismiss = { showStringAddDialog = false },
+            onSetValue = {
                 if (it !in list) {
                     add(it)
                 } else {
                     errorDialog = true
                 }
-            },
-            title = addTitle,
-            value = ""
-        )
+            }
+        ).apply {
+            showDialog()
+            Render()
+        }
     }
 
     if (showStringRemoveDialog) {

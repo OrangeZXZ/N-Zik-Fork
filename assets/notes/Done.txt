@@ -49,4 +49,8 @@ Refactored: Migrated the remaining screens (`HistoryList`, `LocalSongSearch`, `P
 Removed: Entirely eliminated legacy item menu imports outside of their definition file (`MediaItemMenu.kt`).
 Refactored: Migrated PlayerMenu and PlayerItemMenu to the new app.n_zik namespace, finalizing the menu architecture transition.
 Removed: Completely deleted the legacy MediaItemMenu.kt and MediaItemGridMenu.kt files.
-Added: Inline cover editing capability for songs and videos using the generic InputTextDialog directly within SongItemMenu, VideoItemMenu, and PlayerItemMenu.
+Added: Ability to change covers for Songs and Videos.
+Refactored: Replaced temporary inline `InputTextDialog` logic with a modular `ChangeCoverDialog` for Songs and Videos across `SongItemMenu`, `VideoItemMenu`, and `PlayerItemMenu`.
+Refactored: Migrated Album and Artist metadata editing (Title, Authors, Cover) from inline `InputTextDialog` inside `AlbumItemMenu.kt`, `HomeAlbum.kt`, `StatisticsPage.kt`, and `LocalArtistItemMenu.kt` into dedicated modular dialog components (`ChangeAlbumTitleDialog`, `ChangeAlbumAuthorsDialog`, `ChangeAlbumCoverDialog`, `ChangeArtistTitleDialog`, `ChangeArtistCoverDialog`).
+Refactored: Removed all legacy inline InputTextDialog calls from Item Menus (OnlinePlaylistItemMenu, PlaylistsItemMenu, PlaylistsItemGridMenu, PlaylistSongList, PlayerMenu). Created ImportPlaylistDialog for importing and reused NewPlaylistDialog for standard creations, ensuring 100% modularization of context menus.
+Refactored: Removed completely the legacy InputTextDialog component. Migrated all its usages in settings (SettingsScreen, GeneralSettings, AccountsSettings, OtherSettings, IDialog, StringListDialog, Player Lyrics) to the new SettingsInputDialog and dedicated modular Dialogs.

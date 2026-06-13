@@ -67,14 +67,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import app.kreate.android.me.knighthat.component.SongItem
+import app.n_zik.android.components.SongItem
 import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
-import app.kreate.android.me.knighthat.component.song.ChangeAuthorDialog
-import app.kreate.android.me.knighthat.component.song.GoToAlbum
-import app.kreate.android.me.knighthat.component.song.GoToArtist
-import app.kreate.android.me.knighthat.component.song.RenameSongDialog
-import app.kreate.android.me.knighthat.component.tab.Radio
+import app.n_zik.android.components.song.ChangeAuthorDialog
+import app.n_zik.android.components.song.GoToAlbum
+import app.n_zik.android.components.song.GoToArtist
+import app.n_zik.android.components.song.RenameSongDialog
+import app.n_zik.android.components.tab.Radio
 import app.kreate.android.me.knighthat.sync.YouTubeSync
 import timber.log.Timber
 

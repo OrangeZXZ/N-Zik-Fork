@@ -113,15 +113,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
-import app.kreate.android.me.knighthat.component.SongItem
-import app.kreate.android.me.knighthat.component.artist.FollowButton
-import app.kreate.android.me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
-import app.kreate.android.me.knighthat.component.tab.DownloadAllSongsDialog
-import app.kreate.android.me.knighthat.component.tab.ItemSelector
-import app.kreate.android.me.knighthat.component.tab.Radio
-import app.kreate.android.me.knighthat.component.tab.SongShuffler
-import app.kreate.android.me.knighthat.component.ui.screens.DynamicOrientationLayout
-import app.kreate.android.me.knighthat.component.ui.screens.album.Translate
+import app.n_zik.android.components.SongItem
+import app.n_zik.android.components.artist.FollowButton
+import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.tab.DownloadAllSongsDialog
+import app.n_zik.android.components.tab.ItemSelector
+import app.n_zik.android.components.tab.Radio
+import app.n_zik.android.components.tab.SongShuffler
+import app.n_zik.android.components.ui.screens.DynamicOrientationLayout
+import app.n_zik.android.components.ui.screens.album.Translate
 import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi

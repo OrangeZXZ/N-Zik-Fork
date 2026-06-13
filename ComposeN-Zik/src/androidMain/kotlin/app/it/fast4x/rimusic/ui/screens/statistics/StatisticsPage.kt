@@ -74,7 +74,7 @@ import app.n_zik.android.components.menu.album.AlbumItemMenu
 import app.it.fast4x.rimusic.ui.items.ArtistItem
 import app.n_zik.android.components.menu.artist.LocalArtistItemMenu
 import app.it.fast4x.rimusic.ui.items.PlaylistItem
-import app.kreate.android.me.knighthat.component.SongItem
+import app.n_zik.android.components.SongItem
 import app.it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.px
@@ -322,7 +322,7 @@ fun StatisticsPage(
                                 binder?.player?.enqueue(songs.get(it).asMediaItem)
                             }
                         ) {
-                            app.kreate.android.me.knighthat.component.SongItem(
+                            app.n_zik.android.components.SongItem(
                                 song = songs[it],
                                 navController = navController,
                                 onClick = {
@@ -389,54 +389,11 @@ fun StatisticsPage(
                         if (albums[it].thumbnailUrl.toString() == "null")
                             UpdateYoutubeAlbum(albums[it].id)
 
-                        val songs by remember {
+                        val songs by remember(albums[it].id) {
                             app.n_zik.android.core.database.Database.songAlbumMapTable
-                                    .allSongsOf( albums[it].id )
-                                    .distinctUntilChanged()
-                        }.collectAsState( emptyList(), Dispatchers.IO )
-
-                        var showDialogChangeAlbumTitle by remember { mutableStateOf(false) }
-                        var showDialogChangeAlbumAuthors by remember { mutableStateOf(false) }
-                        var showDialogChangeAlbumCover by remember { mutableStateOf(false) }
-
-                        var onDismissAlbumDialog: () -> Unit = {}
-                        var titleId = 0
-                        var defValue = ""
-                        var placeholderTextId: Int = 0
-                        var queryBlock: (app.n_zik.android.core.database.AlbumTable, String, String) -> Int = { _, _, _ -> 0}
-
-                        if( showDialogChangeAlbumCover ) {
-                            onDismissAlbumDialog = { showDialogChangeAlbumCover = false }
-                            titleId = app.n_zik.android.R.string.update_cover
-                            defValue = albums[it].thumbnailUrl.toString()
-                            placeholderTextId = app.n_zik.android.R.string.cover
-                            queryBlock = app.n_zik.android.core.database.AlbumTable::updateCover
-                        } else if( showDialogChangeAlbumTitle ) {
-                            onDismissAlbumDialog = { showDialogChangeAlbumTitle = false }
-                            titleId = app.n_zik.android.R.string.update_title
-                            defValue = albums[it].title.toString()
-                            placeholderTextId = app.n_zik.android.R.string.title
-                            queryBlock = app.n_zik.android.core.database.AlbumTable::updateTitle
-                        } else if( showDialogChangeAlbumAuthors ) {
-                            onDismissAlbumDialog = { showDialogChangeAlbumAuthors = false }
-                            titleId = app.n_zik.android.R.string.update_authors
-                            defValue = albums[it].authorsText.toString()
-                            placeholderTextId = app.n_zik.android.R.string.authors
-                            queryBlock = app.n_zik.android.core.database.AlbumTable::updateAuthors
-                        }
-
-                        if( showDialogChangeAlbumTitle || showDialogChangeAlbumAuthors || showDialogChangeAlbumCover )
-                            app.it.fast4x.rimusic.ui.components.themed.InputTextDialog(
-                                onDismiss = onDismissAlbumDialog,
-                                title = stringResource( titleId ),
-                                value = defValue,
-                                placeholder = stringResource( placeholderTextId ),
-                                setValue = { title ->
-                                    if (title.isNotEmpty())
-                                        app.n_zik.android.core.database.Database.asyncTransaction { queryBlock( app.n_zik.android.core.database.Database.albumTable, albums[it].id, title ) }
-                                },
-                                prefix = app.it.fast4x.rimusic.MODIFIED_PREFIX
-                            )
+                                      .allSongsOf( albums[it].id )
+                                      .distinctUntilChanged()
+                          }.collectAsState( emptyList(), Dispatchers.IO )
 
                         AlbumItem(
                             thumbnailUrl = albums[it].thumbnailUrl,
@@ -458,10 +415,7 @@ fun StatisticsPage(
                                                 navController = navController,
                                                 album = albums[it],
                                                 songs = songs,
-                                                binder = binder,
-                                                onTitleChange = { showDialogChangeAlbumTitle = true },
-                                                onAuthorsChange = { showDialogChangeAlbumAuthors = true },
-                                                onCoverChange = { showDialogChangeAlbumCover = true }
+                                                binder = binder
                                             ).MenuComponent()
                                         }
                                     }

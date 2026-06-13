@@ -118,7 +118,9 @@ fun AlbumScreen(
                            authorsText = PropUtils.retainIfModified( album?.authorsText, authorsText ),
                            shareUrl = online.url,
                            timestamp = album?.timestamp ?: System.currentTimeMillis(),
-                           bookmarkedAt = album?.bookmarkedAt
+                           bookmarkedAt = album?.bookmarkedAt,
+                           isYoutubeAlbum = album?.isYoutubeAlbum == true,
+                           position = album?.position ?: -1
                        ))
 
                        online.songs

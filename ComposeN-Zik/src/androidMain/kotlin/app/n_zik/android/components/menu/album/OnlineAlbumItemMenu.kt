@@ -41,9 +41,11 @@ import app.it.fast4x.rimusic.utils.*
 import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
 import app.kreate.android.me.knighthat.utils.Toaster
-import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
-import app.kreate.android.me.knighthat.component.tab.DownloadAllSongsDialog
-import app.kreate.android.me.knighthat.component.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.album.ChangeAlbumTitleDialog
+import app.n_zik.android.components.album.ChangeAlbumAuthorsDialog
+import app.n_zik.android.components.album.ChangeAlbumCoverDialog
+import app.n_zik.android.components.tab.DownloadAllSongsDialog
+import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
 import app.it.fast4x.rimusic.models.Album
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.R
@@ -241,89 +243,25 @@ class OnlineAlbumItemMenu private constructor(
 
         var songs by remember { mutableStateOf<List<Song>?>(null) }
 
-        var showChangeTitleDialog by remember { mutableStateOf(false) }
-        var showChangeAuthorsDialog by remember { mutableStateOf(false) }
-        var showChangeCoverDialog by remember { mutableStateOf(false) }
-
         var displayTitle by remember { mutableStateOf(album.title ?: album.info?.name) }
         var displayAuthors by remember { mutableStateOf(album.authors?.joinToString(", ") { it.name ?: "" }) }
         var displayYear by remember { mutableStateOf(album.year) }
         var displayThumbnailUrl by remember { mutableStateOf(album.thumbnail?.url) }
 
-        if (showChangeTitleDialog) {
-            InputTextDialog(
-                onDismiss = { showChangeTitleDialog = false },
-                title = stringResource(R.string.update_title),
-                value = displayTitle ?: "",
-                placeholder = stringResource(R.string.title),
-                setValue = { newValue ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        Database.albumTable.insertIgnore(Album(
-                            id = album.key,
-                            title = displayTitle,
-                            thumbnailUrl = displayThumbnailUrl,
-                            year = displayYear,
-                            authorsText = displayAuthors,
-                            shareUrl = "https://music.youtube.com/browse/${album.key}",
-                            timestamp = System.currentTimeMillis()
-                        ))
-                        Database.albumTable.updateTitle(album.key, newValue)
-                    }
-                    showChangeTitleDialog = false
-                    menuState.hide()
-                }
+        val albumProvider = {
+            Album(
+                id = album.key,
+                title = displayTitle,
+                thumbnailUrl = displayThumbnailUrl,
+                year = displayYear,
+                authorsText = displayAuthors,
+                shareUrl = "https://music.youtube.com/browse/${album.key}",
+                timestamp = System.currentTimeMillis()
             )
         }
-
-        if (showChangeAuthorsDialog) {
-            InputTextDialog(
-                onDismiss = { showChangeAuthorsDialog = false },
-                title = stringResource(R.string.update_authors),
-                value = displayAuthors ?: "",
-                placeholder = stringResource(R.string.artists),
-                setValue = { newValue ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        Database.albumTable.insertIgnore(Album(
-                            id = album.key,
-                            title = displayTitle,
-                            thumbnailUrl = displayThumbnailUrl,
-                            year = displayYear,
-                            authorsText = displayAuthors,
-                            shareUrl = "https://music.youtube.com/browse/${album.key}",
-                            timestamp = System.currentTimeMillis()
-                        ))
-                        Database.albumTable.updateAuthors(album.key, newValue)
-                    }
-                    showChangeAuthorsDialog = false
-                    menuState.hide()
-                }
-            )
-        }
-
-        if (showChangeCoverDialog) {
-            InputTextDialog(
-                onDismiss = { showChangeCoverDialog = false },
-                title = stringResource(R.string.update_cover),
-                value = displayThumbnailUrl ?: "",
-                placeholder = stringResource(R.string.cover),
-                setValue = { newValue ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        Database.albumTable.insertIgnore(Album(
-                            id = album.key,
-                            title = displayTitle,
-                            thumbnailUrl = displayThumbnailUrl,
-                            year = displayYear,
-                            authorsText = displayAuthors,
-                            shareUrl = "https://music.youtube.com/browse/${album.key}",
-                            timestamp = System.currentTimeMillis()
-                        ))
-                        Database.albumTable.updateCover(album.key, newValue)
-                    }
-                    showChangeCoverDialog = false
-                    menuState.hide()
-                }
-            )
-        }
+        val changeTitle = ChangeAlbumTitleDialog(albumProvider)
+        val changeAuthors = ChangeAlbumAuthorsDialog(albumProvider)
+        val changeCover = ChangeAlbumCoverDialog(albumProvider)
 
         LaunchedEffect(album.key) {
             withContext(Dispatchers.IO) {
@@ -427,29 +365,7 @@ class OnlineAlbumItemMenu private constructor(
             override fun onLongClick() {}
         }
 
-        val changeTitle = object : MenuIcon, Descriptive, Clickable {
-            override val iconId: Int = R.drawable.title_edit
-            override val messageId: Int = R.string.update_title
-            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
-            override fun onShortClick() { showChangeTitleDialog = true }
-            override fun onLongClick() {}
-        }
 
-        val changeAuthors = object : MenuIcon, Descriptive, Clickable {
-            override val iconId: Int = R.drawable.artists_edit
-            override val messageId: Int = R.string.update_authors
-            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
-            override fun onShortClick() { showChangeAuthorsDialog = true }
-            override fun onLongClick() {}
-        }
-
-        val changeCover = object : MenuIcon, Descriptive, Clickable {
-            override val iconId: Int = R.drawable.cover_edit
-            override val messageId: Int = R.string.update_cover
-            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
-            override fun onShortClick() { showChangeCoverDialog = true }
-            override fun onLongClick() {}
-        }
 
         buttons = mutableListOf<Button>().apply {
             add(playNext)
@@ -486,6 +402,9 @@ class OnlineAlbumItemMenu private constructor(
                 .fillMaxWidth()
                 .background(colorPalette().background0)
         ) {
+            changeTitle.Render()
+            changeAuthors.Render()
+            changeCover.Render()
             downloadAllDialog.Render()
             deleteAllDialog.Render()
             AlbumItemDisplay(

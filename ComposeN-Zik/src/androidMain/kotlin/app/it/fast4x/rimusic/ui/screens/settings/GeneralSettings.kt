@@ -134,10 +134,10 @@ import app.it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import app.it.fast4x.rimusic.utils.volumeNormalizationKey
 import app.it.fast4x.rimusic.utils.volumeBoostLevelKey
 import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
-import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import app.n_zik.android.components.settings.SettingsInputDialog
 
-import app.kreate.android.me.knighthat.component.dialog.RestartAppDialog
-import app.kreate.android.me.knighthat.component.tab.Search
+import app.n_zik.android.components.dialog.RestartAppDialog
+import app.n_zik.android.components.tab.Search
 
 
 @ExperimentalAnimationApi
@@ -418,16 +418,19 @@ fun GeneralSettings(
                      }
                      
                      if (showJumpPreviousDialog) {
-                         InputTextDialog(
+                         app.n_zik.android.components.settings.SettingsInputDialog(
                              title = stringResource(R.string.jump_previous_blank),
-                value = jumpPrevious,
+                             initialValue = jumpPrevious,
                              placeholder = stringResource(R.string.jump_previous_blank),
                              onDismiss = { showJumpPreviousDialog = false },
-                             setValue = { 
-                    if (TextUtils.isDigitsOnly(it))
-                    jumpPrevious = it
+                             onSetValue = { 
+                                 if (TextUtils.isDigitsOnly(it))
+                                     jumpPrevious = it
                              }
-                         )
+                         ).apply {
+                             showDialog()
+                             Render()
+                         }
                      }
 
                                          var showMinListeningTimeDialog by remember { mutableStateOf(false) }

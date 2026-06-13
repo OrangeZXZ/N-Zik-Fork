@@ -94,7 +94,7 @@ import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithSc
 import app.it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import app.it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
-import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import app.n_zik.android.components.playlist.ImportPlaylistDialog
 import app.it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import app.it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import app.it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
@@ -189,26 +189,27 @@ fun Podcast(
             durationTextToMillis(it1) }?.toLong() ?: 0
     }
 
-    if (isImportingPlaylist) {
-        InputTextDialog(
-            onDismiss = { isImportingPlaylist = false },
-            title = stringResource(R.string.enter_the_playlist_name),
-            value = podcastPage?.title ?: "",
-            placeholder = "https://........",
-            setValue = { text ->
-                Database.asyncTransaction {
-                    val playlist = Playlist(name = text, browseId = browseId)
+    val importDialog = ImportPlaylistDialog(
+        initialValue = podcastPage?.title ?: "",
+        onImport = { text ->
+            Database.asyncTransaction {
+                val playlist = Playlist(name = text, browseId = browseId)
 
-                    podcastPage?.listEpisode
-                               ?.map( Innertube.Podcast.EpisodeItem::asMediaItem )
-                               ?.let {
-                                   mapIgnore( playlist, *it.toTypedArray() )
-                               }
+                podcastPage?.listEpisode
+                           ?.map( Innertube.Podcast.EpisodeItem::asMediaItem )
+                           ?.let {
+                               mapIgnore( playlist, *it.toTypedArray() )
+                           }
 
-                    Toaster.done()
-                }
+                Toaster.done()
             }
-        )
+            isImportingPlaylist = false
+        }
+    )
+
+    if (isImportingPlaylist) {
+        importDialog.showDialog()
+        importDialog.Render()
     }
 
     var position by remember {

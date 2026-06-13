@@ -35,6 +35,7 @@ import coil3.request.SuccessResult
 import coil3.toBitmap
 import it.fast4x.innertube.models.Thumbnail
 import app.n_zik.android.appContext
+import app.it.fast4x.rimusic.cleanPrefix
 import app.it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import app.it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import app.it.fast4x.rimusic.enums.ImageQualityFormat
@@ -295,7 +296,8 @@ object ImageCacheFactory {
         contentScale: ContentScale = ContentScale.Crop,
         modifier: Modifier = Modifier.clip(thumbnailShape()).fillMaxSize()
     ) {
-        val validUrl = if (thumbnailUrl.isNullOrBlank() || thumbnailUrl == "null") null else thumbnailUrl
+        val cleanedUrl = thumbnailUrl?.let { cleanPrefix(it) }
+        val validUrl = if (cleanedUrl.isNullOrBlank() || cleanedUrl == "null") null else cleanedUrl
         val decision = getDownloadDecision(validUrl)
         val version by storeVersion.collectAsState()
         var currentUrl by remember(validUrl, version) { 
@@ -372,7 +374,8 @@ object ImageCacheFactory {
         onSuccess: ((State.Success) -> Unit)? = null,
         onError: ((State.Error) -> Unit)? = null
     ): AsyncImagePainter {
-        val validUrl = if (thumbnailUrl.isNullOrBlank() || thumbnailUrl == "null") null else thumbnailUrl
+        val cleanedUrl = thumbnailUrl?.let { cleanPrefix(it) }
+        val validUrl = if (cleanedUrl.isNullOrBlank() || cleanedUrl == "null") null else cleanedUrl
         val decision = getDownloadDecision(validUrl)
         val version by storeVersion.collectAsState()
         var currentUrl by remember(validUrl, version) { 
@@ -449,7 +452,8 @@ object ImageCacheFactory {
         onSuccess: ((State.Success) -> Unit)? = null,
         onError: ((State.Error) -> Unit)? = null
     ) {
-        val validUrl = if (thumbnailUrl.isNullOrBlank() || thumbnailUrl == "null") null else thumbnailUrl
+        val cleanedUrl = thumbnailUrl?.let { cleanPrefix(it) }
+        val validUrl = if (cleanedUrl.isNullOrBlank() || cleanedUrl == "null") null else cleanedUrl
         val decision = getDownloadDecision(validUrl)
         val version by storeVersion.collectAsState()
         var currentUrl by remember(validUrl, version) { 

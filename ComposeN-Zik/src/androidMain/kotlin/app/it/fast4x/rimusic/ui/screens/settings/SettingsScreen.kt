@@ -62,7 +62,7 @@ import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.Skeleton
 import app.it.fast4x.rimusic.ui.components.themed.DialogColorPicker
 import app.it.fast4x.rimusic.ui.components.themed.IDialog
-import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import app.n_zik.android.components.settings.SettingsInputDialog
 import app.it.fast4x.rimusic.ui.components.themed.Slider
 import app.it.fast4x.rimusic.ui.components.themed.StringListDialog
 import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
@@ -81,7 +81,7 @@ import app.it.fast4x.rimusic.utils.color
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
-import app.kreate.android.me.knighthat.component.dialog.RestartAppDialog
+import app.n_zik.android.components.dialog.RestartAppDialog
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.uiRoundnessShape
 
@@ -518,17 +518,19 @@ fun TextDialogSettingEntry(
     //val context = LocalContext.current
 
     if (showDialog) {
-        InputTextDialog(
-            onDismiss = { showDialog = false },
+        app.n_zik.android.components.settings.SettingsInputDialog(
             title = title,
-            value = currentText,
+            initialValue = currentText,
             placeholder = title,
-            setValue = {
+            onDismiss = { showDialog = false },
+            onSetValue = {
                 onTextSave(it)
                 //context.toast("Preference Saved")
-            },
-            validationType = validationType
-        )
+            }
+        ).apply {
+            showDialog()
+            Render()
+        }
         /*
         TextFieldDialog(hintText = title ,
             onDismiss = { showDialog = false },

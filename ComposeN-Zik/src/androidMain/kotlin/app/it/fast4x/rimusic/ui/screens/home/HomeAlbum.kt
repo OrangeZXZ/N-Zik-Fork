@@ -86,7 +86,6 @@ import app.it.fast4x.rimusic.ui.components.themed.FilterMenu
 import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import app.it.fast4x.rimusic.ui.components.themed.HeaderInfo
-import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import app.it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
 import app.it.fast4x.rimusic.ui.items.AlbumItem
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
@@ -115,9 +114,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import app.kreate.android.me.knighthat.component.Sort
-import app.kreate.android.me.knighthat.component.tab.Search
-import app.kreate.android.me.knighthat.component.tab.SongShuffler
+import app.n_zik.android.components.Sort
+import app.n_zik.android.components.tab.Search
+import app.n_zik.android.components.tab.SongShuffler
 import app.n_zik.android.core.database.AlbumTable
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -423,55 +422,6 @@ fun HomeAlbums(
                                             .distinctUntilChanged()
                                 }.collectAsState( emptyList(), Dispatchers.IO )
 
-                        var showDialogChangeAlbumTitle by remember {
-                            mutableStateOf(false)
-                        }
-                        var showDialogChangeAlbumAuthors by remember {
-                            mutableStateOf(false)
-                        }
-                        var showDialogChangeAlbumCover by remember {
-                            mutableStateOf(false)
-                        }
-
-                        var onDismiss: () -> Unit = {}
-                        var titleId = 0
-                        var defValue = ""
-                        var placeholderTextId: Int = 0
-                        var queryBlock: (AlbumTable, String, String) -> Int = { _, _, _ -> 0}
-
-                        if( showDialogChangeAlbumCover ) {
-                            onDismiss = { showDialogChangeAlbumCover = false }
-                            titleId = R.string.update_cover
-                            defValue = album.thumbnailUrl.toString()
-                            placeholderTextId = R.string.cover
-                            queryBlock = AlbumTable::updateCover
-                        } else if( showDialogChangeAlbumTitle ) {
-                            onDismiss = { showDialogChangeAlbumTitle = false }
-                            titleId = R.string.update_title
-                            defValue = album.title.toString()
-                            placeholderTextId = R.string.title
-                            queryBlock = AlbumTable::updateTitle
-                        } else if( showDialogChangeAlbumAuthors ) {
-                            onDismiss = { showDialogChangeAlbumAuthors = false }
-                            titleId = R.string.update_authors
-                            defValue = album.authorsText.toString()
-                            placeholderTextId = R.string.authors
-                            queryBlock = AlbumTable::updateAuthors
-                        }
-
-                        if( showDialogChangeAlbumTitle || showDialogChangeAlbumAuthors || showDialogChangeAlbumCover )
-                            InputTextDialog(
-                                onDismiss = onDismiss,
-                                title = stringResource( titleId ),
-                                value = defValue,
-                                placeholder = stringResource( placeholderTextId ),
-                                setValue = {
-                                    if (it.isNotEmpty())
-                                        Database.asyncTransaction { queryBlock( albumTable, album.id, it ) }
-                                },
-                                prefix = MODIFIED_PREFIX
-                            )
-
                         var position by remember {
                             mutableIntStateOf(0)
                         }
@@ -492,10 +442,7 @@ fun HomeAlbums(
                                                 navController = navController,
                                                 album = album,
                                                 songs = songs,
-                                                binder = binder,
-                                                onTitleChange = { showDialogChangeAlbumTitle = true },
-                                                onAuthorsChange = { showDialogChangeAlbumAuthors = true },
-                                                onCoverChange = { showDialogChangeAlbumCover = true }
+                                                binder = binder
                                             ).MenuComponent()
                                         }
                                     },

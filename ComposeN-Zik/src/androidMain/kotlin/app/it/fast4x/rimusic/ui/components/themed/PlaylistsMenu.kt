@@ -40,8 +40,8 @@ import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
-import app.kreate.android.me.knighthat.component.playlist.NewPlaylistDialog
-import app.kreate.android.me.knighthat.component.tab.Search
+import app.n_zik.android.components.playlist.NewPlaylistDialog
+import app.n_zik.android.components.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter

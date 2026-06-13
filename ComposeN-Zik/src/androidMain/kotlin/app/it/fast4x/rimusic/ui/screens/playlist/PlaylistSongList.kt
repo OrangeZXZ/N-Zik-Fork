@@ -105,7 +105,7 @@ import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithSc
 import app.it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import app.it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
-import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import app.n_zik.android.components.playlist.ImportPlaylistDialog
 import app.it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import app.it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import app.it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent
@@ -152,7 +152,7 @@ import kotlinx.coroutines.withContext
 import app.it.fast4x.rimusic.utils.ExternalUris
 import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
-import app.kreate.android.me.knighthat.component.SongItem
+import app.n_zik.android.components.SongItem
 import app.kreate.android.me.knighthat.utils.Toaster
 
 
@@ -275,10 +275,6 @@ fun PlaylistSongList(
 
     var searching by rememberSaveable { mutableStateOf(false) }
 
-    var isImportingPlaylist by rememberSaveable {
-        mutableStateOf(false)
-    }
-
     
     var showYoutubeLikeConfirmDialog by remember {
         mutableStateOf(false)
@@ -319,27 +315,22 @@ fun PlaylistSongList(
                 .distinctUntilChanged()
     }.collectAsState( emptyList(), Dispatchers.IO )
 
-    if (isImportingPlaylist) {
-        InputTextDialog(
-            onDismiss = { isImportingPlaylist = false },
-            title = stringResource(R.string.enter_the_playlist_name),
-            value = playlistPage?.playlist?.title ?: "",
-            placeholder = "https://........",
-            setValue = { text ->
-                Database.asyncTransaction {
-                    val playlist = Playlist(name = text, browseId = browseId)
+    val importPlaylistDialog = ImportPlaylistDialog(
+        initialValue = playlistPage?.playlist?.title ?: ""
+    ) { text ->
+        Database.asyncTransaction {
+            val playlist = Playlist(name = text, browseId = browseId)
 
-                    playlistPage?.songs
-                                ?.map( Innertube.SongItem::asMediaItem )
-                                ?.let {
-                                    mapIgnore( playlist, *it.toTypedArray() )
-                                }
+            playlistPage?.songs
+                        ?.map( Innertube.SongItem::asMediaItem )
+                        ?.let {
+                            mapIgnore( playlist, *it.toTypedArray() )
+                        }
 
-                    Toaster.done()
-                }
-            }
-        )
+            Toaster.done()
+        }
     }
+    importPlaylistDialog.Render()
 
     var position by remember {
         mutableIntStateOf(0)
@@ -644,7 +635,7 @@ fun PlaylistSongList(
                                                     modifier = Modifier.fillMaxHeight(0.4f),
                                                     onDismiss = menuState::hide,
                                                     onImportOnlinePlaylist = {
-                                                        isImportingPlaylist = true
+                                                        importPlaylistDialog.onShortClick()
                                                     },
 
                                                     onAddToPlaylist = { playlistPreview ->

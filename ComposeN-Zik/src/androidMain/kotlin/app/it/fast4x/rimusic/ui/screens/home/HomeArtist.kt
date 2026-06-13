@@ -98,9 +98,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import app.kreate.android.me.knighthat.component.Sort
-import app.kreate.android.me.knighthat.component.tab.Search
-import app.kreate.android.me.knighthat.component.tab.SongShuffler
+import app.n_zik.android.components.Sort
+import app.n_zik.android.components.tab.Search
+import app.n_zik.android.components.tab.SongShuffler
 import app.n_zik.android.components.menu.artist.LocalArtistItemMenu
 
 @ExperimentalMaterial3Api

@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.it.fast4x.rimusic.ui.screens.home
 
 import app.n_zik.android.uiRoundnessShape
 
@@ -43,7 +43,7 @@ import app.it.fast4x.rimusic.models.Playlist
 import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import app.n_zik.android.components.playlist.NewPlaylistDialog
 import app.it.fast4x.rimusic.ui.items.PlaylistItem
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -65,18 +65,13 @@ fun HomeStatistics(
         mutableStateOf(false)
     }
 
+    val newPlaylistDialog = NewPlaylistDialog(
+        onPlaylistCreated = { isCreatingANewPlaylist = false }
+    )
+
     if (isCreatingANewPlaylist) {
-        InputTextDialog(
-            onDismiss = { isCreatingANewPlaylist = false },
-            title = stringResource(R.string.enter_the_playlist_name),
-            value = "",
-            placeholder = stringResource(R.string.enter_the_playlist_name),
-            setValue = { text ->
-                Database.asyncTransaction {
-                    playlistTable.insert( Playlist(name = text) )
-                }
-            }
-        )
+        newPlaylistDialog.showDialog()
+        newPlaylistDialog.Render()
         /*
         TextFieldDialog(
             hintText = stringResource(R.string.enter_the_playlist_name),

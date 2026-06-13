@@ -39,6 +39,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
+import app.n_zik.android.components.playlist.RenamePlaylistDialog
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.thumbnailShape
 import app.n_zik.android.typography
@@ -230,7 +231,7 @@ class LocalPlaylistItemMenu private constructor(
             }
         }
         
-        val downloadAllDialog = app.kreate.android.me.knighthat.component.tab.DownloadAllSongsDialog { songs ?: emptyList() }
+        val downloadAllDialog = app.n_zik.android.components.tab.DownloadAllSongsDialog { songs ?: emptyList() }
         val downloadAll = object : MenuIcon by downloadAllDialog, Descriptive by downloadAllDialog, Clickable {
             override fun onShortClick() {
                 if (songs == null) {
@@ -244,7 +245,7 @@ class LocalPlaylistItemMenu private constructor(
             override fun onLongClick() {}
         }
 
-        val deleteAllDialog = app.kreate.android.me.knighthat.component.tab.DeleteAllDownloadedSongsDialog { songs ?: emptyList() }
+        val deleteAllDialog = app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog { songs ?: emptyList() }
         val deleteAll = object : MenuIcon by deleteAllDialog, Descriptive by deleteAllDialog, Clickable {
             override fun onShortClick() {
                 if (songs == null) {
@@ -258,24 +259,20 @@ class LocalPlaylistItemMenu private constructor(
             override fun onLongClick() {}
         }
 
-        
-        if (showRenameDialog) {
-            app.it.fast4x.rimusic.ui.components.themed.InputTextDialog(
-                onDismiss = { showRenameDialog = false },
-                title = stringResource(R.string.enter_the_playlist_name),
-                value = cleanPrefix(playlistPreview.playlist.name),
-                placeholder = stringResource(R.string.enter_the_playlist_name),
-                setValue = { text ->
-                    coroutineScope.launch(kotlinx.coroutines.Dispatchers.IO) {
-                        Database.playlistTable.update(playlistPreview.playlist.copy(name = text))
-                    }
-                    showRenameDialog = false
-                    menuState.hide()
-                    Toaster.done()
-                }
-            )
+        val renamePlaylist = RenamePlaylistDialog { playlistPreview.playlist }
+
+        val rename = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
+            override val iconId: Int = R.drawable.title_edit
+            override val messageId: Int = R.string.rename_playlist
+            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
+            override fun onShortClick() { renamePlaylist.onShortClick() }
+            override fun onLongClick() {}
         }
-        
+
+        renamePlaylist.Render()
+        downloadAllDialog.Render()
+        deleteAllDialog.Render()
+
         val playNext = app.it.fast4x.rimusic.ui.components.themed.PlayNext {
             if (songs == null) {
                 Toaster.w(R.string.opening_url)
@@ -307,14 +304,9 @@ class LocalPlaylistItemMenu private constructor(
             list.add(downloadAll)
             list.add(deleteAll)
             
+
             if (playlistPreview.playlist.isEditable) {
-                list.add(object : MenuIcon, Descriptive, Clickable {
-                    override val iconId: Int = R.drawable.title_edit
-                    override val messageId: Int = R.string.rename
-                    @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
-                    override fun onShortClick() { showRenameDialog = true }
-                    override fun onLongClick() {}
-                })
+                list.add(rename)
                 
                 list.add(object : MenuIcon, Descriptive, Clickable {
                     override val iconId: Int = R.drawable.trash

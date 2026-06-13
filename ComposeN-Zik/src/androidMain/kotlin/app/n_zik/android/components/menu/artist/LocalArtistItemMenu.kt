@@ -32,7 +32,7 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
-import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
+
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.conditional
@@ -56,6 +56,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.forcePlayAtIndex
+import app.n_zik.android.components.artist.ChangeArtistTitleDialog
+import app.n_zik.android.components.artist.ChangeArtistCoverDialog
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -216,8 +218,8 @@ class LocalArtistItemMenu private constructor(
 
     @Composable
     override fun MenuComponent() {
-        var showChangeTitleDialog by remember { mutableStateOf(false) }
-        var showChangeCoverDialog by remember { mutableStateOf(false) }
+        val changeTitle = ChangeArtistTitleDialog { artist }
+        val changeCover = ChangeArtistCoverDialog { artist }
 
         var displayTitle by remember { mutableStateOf(artist.name) }
         var displayThumbnailUrl by remember { mutableStateOf(artist.thumbnailUrl) }
@@ -229,34 +231,6 @@ class LocalArtistItemMenu private constructor(
                 displayTitle = it.name
                 displayThumbnailUrl = it.thumbnailUrl
             }
-        }
-
-        if (showChangeTitleDialog) {
-            InputTextDialog(
-                onDismiss = { showChangeTitleDialog = false },
-                title = stringResource(R.string.update_title),
-                value = displayTitle ?: "",
-                placeholder = stringResource(R.string.title),
-                setValue = { text ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        Database.artistTable.update(artist.copy(name = text))
-                    }
-                }
-            )
-        }
-
-        if (showChangeCoverDialog) {
-            InputTextDialog(
-                onDismiss = { showChangeCoverDialog = false },
-                title = stringResource(R.string.update_cover),
-                value = displayThumbnailUrl ?: "",
-                placeholder = stringResource(R.string.cover),
-                setValue = { text ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        Database.artistTable.update(artist.copy(thumbnailUrl = text))
-                    }
-                }
-            )
         }
 
         val binder = app.n_zik.android.LocalPlayerServiceBinder.current
@@ -278,22 +252,6 @@ class LocalArtistItemMenu private constructor(
             override fun onLongClick() {}
         }
 
-        val changeTitle = object : MenuIcon, Descriptive, Clickable {
-            override val iconId: Int = R.drawable.title_edit
-            override val messageId: Int = R.string.update_title
-            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
-            override fun onShortClick() { showChangeTitleDialog = true }
-            override fun onLongClick() {}
-        }
-
-        val changeCover = object : MenuIcon, Descriptive, Clickable {
-            override val iconId: Int = R.drawable.cover_edit
-            override val messageId: Int = R.string.update_cover
-            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
-            override fun onShortClick() { showChangeCoverDialog = true }
-            override fun onLongClick() {}
-        }
-
         buttons = mutableListOf<Button>().apply {
             add(playAll)
             add(changeTitle)
@@ -305,6 +263,8 @@ class LocalArtistItemMenu private constructor(
                 .fillMaxWidth()
                 .background(colorPalette().background0)
         ) {
+            changeTitle.Render()
+            changeCover.Render()
             ArtistItemDisplay(
                 title = displayTitle,
                 thumbnailUrl = displayThumbnailUrl,

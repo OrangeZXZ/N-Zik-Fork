@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.it.fast4x.rimusic.cleanPrefix
@@ -42,6 +43,8 @@ import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
+import app.n_zik.android.components.artist.ChangeArtistTitleDialog
+import app.n_zik.android.components.artist.ChangeArtistCoverDialog
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.uiRoundnessShape
@@ -57,6 +60,8 @@ import kotlinx.coroutines.withContext
 import app.it.fast4x.rimusic.utils.asSong
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.forcePlayAtIndex
+import app.kreate.android.me.knighthat.utils.Toaster
+import app.n_zik.android.LocalPlayerServiceBinder
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -219,13 +224,22 @@ class OnlineArtistItemMenu private constructor(
 
     @Composable
     override fun MenuComponent() {
-        var showChangeTitleDialog by remember { mutableStateOf(false) }
-        var showChangeCoverDialog by remember { mutableStateOf(false) }
-
         val dbArtist by app.n_zik.android.core.database.Database.artistTable.findById(artist.key).collectAsState(initial = null, context = kotlinx.coroutines.Dispatchers.IO)
 
         var displayTitle by remember { mutableStateOf(artist.info?.name) }
         var displayThumbnailUrl by remember { mutableStateOf(artist.thumbnail?.url) }
+
+        val artistProvider = {
+            dbArtist ?: app.it.fast4x.rimusic.models.Artist(
+                id = artist.key,
+                name = displayTitle,
+                thumbnailUrl = displayThumbnailUrl,
+                timestamp = System.currentTimeMillis(),
+                isYoutubeArtist = true
+            )
+        }
+        val changeTitle = ChangeArtistTitleDialog(artistProvider)
+        val changeCover = ChangeArtistCoverDialog(artistProvider)
 
         LaunchedEffect(dbArtist) {
             dbArtist?.let {
@@ -234,49 +248,7 @@ class OnlineArtistItemMenu private constructor(
             }
         }
 
-        if (showChangeTitleDialog) {
-            app.it.fast4x.rimusic.ui.components.themed.InputTextDialog(
-                onDismiss = { showChangeTitleDialog = false },
-                title = stringResource(app.n_zik.android.R.string.update_title),
-                value = displayTitle ?: "",
-                placeholder = stringResource(app.n_zik.android.R.string.title),
-                setValue = { text ->
-                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-                        val currentArtist = dbArtist ?: app.it.fast4x.rimusic.models.Artist(
-                            id = artist.key,
-                            name = artist.info?.name,
-                            thumbnailUrl = artist.thumbnail?.url,
-                            timestamp = System.currentTimeMillis(),
-                            isYoutubeArtist = true
-                        )
-                        app.n_zik.android.core.database.Database.artistTable.upsert(currentArtist.copy(name = text))
-                    }
-                }
-            )
-        }
-
-        if (showChangeCoverDialog) {
-            app.it.fast4x.rimusic.ui.components.themed.InputTextDialog(
-                onDismiss = { showChangeCoverDialog = false },
-                title = stringResource(app.n_zik.android.R.string.update_cover),
-                value = displayThumbnailUrl ?: "",
-                placeholder = stringResource(app.n_zik.android.R.string.cover),
-                setValue = { text ->
-                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-                        val currentArtist = dbArtist ?: app.it.fast4x.rimusic.models.Artist(
-                            id = artist.key,
-                            name = artist.info?.name,
-                            thumbnailUrl = artist.thumbnail?.url,
-                            timestamp = System.currentTimeMillis(),
-                            isYoutubeArtist = true
-                        )
-                        app.n_zik.android.core.database.Database.artistTable.upsert(currentArtist.copy(thumbnailUrl = text))
-                    }
-                }
-            )
-        }
-
-        val binder = app.n_zik.android.LocalPlayerServiceBinder.current
+        val binder = LocalPlayerServiceBinder.current
 
         var artistPage by remember { mutableStateOf<it.fast4x.innertube.requests.ArtistPage?>(null) }
         var isFetching by remember { mutableStateOf(true) }
@@ -289,14 +261,14 @@ class OnlineArtistItemMenu private constructor(
         }
 
         val playRadio = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
-            override val iconId: Int = app.n_zik.android.R.drawable.radio
-            override val messageId: Int = app.n_zik.android.R.string.start_radio
+            override val iconId: Int = R.drawable.radio
+            override val messageId: Int = R.string.start_radio
             @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
             override fun onShortClick() {
                 if (isFetching) {
-                    app.kreate.android.me.knighthat.utils.Toaster.w(app.n_zik.android.R.string.opening_url)
+                    Toaster.w(R.string.opening_url)
                 } else {
-                    val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
+                    val allMediaItems = mutableListOf<MediaItem>()
                     artistPage?.sections?.forEach { section ->
                         section.items.forEach { item ->
                             if (item is Innertube.SongItem) {
@@ -311,26 +283,10 @@ class OnlineArtistItemMenu private constructor(
                         binder?.player?.forcePlayAtIndex(allMediaItems, 0)
                         menuState.hide()
                     } else {
-                        app.kreate.android.me.knighthat.utils.Toaster.e(app.n_zik.android.R.string.no_song_found)
+                        Toaster.e(R.string.no_song_found)
                     }
                 }
             }
-            override fun onLongClick() {}
-        }
-
-        val changeTitle = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
-            override val iconId: Int = app.n_zik.android.R.drawable.title_edit
-            override val messageId: Int = app.n_zik.android.R.string.update_title
-            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
-            override fun onShortClick() { showChangeTitleDialog = true }
-            override fun onLongClick() {}
-        }
-
-        val changeCover = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
-            override val iconId: Int = app.n_zik.android.R.drawable.cover_edit
-            override val messageId: Int = app.n_zik.android.R.string.update_cover
-            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
-            override fun onShortClick() { showChangeCoverDialog = true }
             override fun onLongClick() {}
         }
 
@@ -339,6 +295,9 @@ class OnlineArtistItemMenu private constructor(
             add(changeTitle)
             add(changeCover)
         }
+
+        changeTitle.Render()
+        changeCover.Render()
 
         Column(
             modifier = Modifier

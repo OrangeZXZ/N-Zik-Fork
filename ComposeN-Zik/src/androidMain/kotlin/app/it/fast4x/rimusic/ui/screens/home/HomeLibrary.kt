@@ -96,11 +96,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import app.kreate.android.me.knighthat.component.Sort
-import app.kreate.android.me.knighthat.component.playlist.NewPlaylistDialog
-import app.kreate.android.me.knighthat.component.tab.ImportSongsFromCSV
-import app.kreate.android.me.knighthat.component.tab.Search
-import app.kreate.android.me.knighthat.component.tab.SongShuffler
+import app.n_zik.android.components.Sort
+import app.n_zik.android.components.playlist.NewPlaylistDialog
+import app.n_zik.android.components.tab.ImportSongsFromCSV
+import app.n_zik.android.components.tab.Search
+import app.n_zik.android.components.tab.SongShuffler
 
 
 @ExperimentalMaterial3Api

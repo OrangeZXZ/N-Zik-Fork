@@ -49,7 +49,7 @@ import app.it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
 import app.it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import app.it.fast4x.rimusic.ui.items.VideoItem
 import app.it.fast4x.rimusic.ui.items.VideoItemPlaceholder
-import app.kreate.android.me.knighthat.component.SongItem
+import app.n_zik.android.components.SongItem
 import app.n_zik.android.components.menu.video.VideoItemMenu
 import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
 import app.n_zik.android.components.menu.artist.OnlineArtistItemMenu

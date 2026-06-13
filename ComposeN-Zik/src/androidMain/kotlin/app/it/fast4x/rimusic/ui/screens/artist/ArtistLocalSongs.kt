@@ -92,9 +92,9 @@ import app.it.fast4x.rimusic.utils.conditional
 import app.it.fast4x.rimusic.utils.fadingEdge
 import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.semiBold
-import app.kreate.android.me.knighthat.component.artist.FollowButton
+import app.n_zik.android.components.artist.FollowButton
 import app.it.fast4x.rimusic.utils.addNext
-import app.kreate.android.me.knighthat.component.SongItem
+import app.n_zik.android.components.SongItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi

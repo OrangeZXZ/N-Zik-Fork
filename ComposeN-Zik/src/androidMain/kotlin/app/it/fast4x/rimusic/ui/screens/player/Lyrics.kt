@@ -122,7 +122,7 @@ import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
-import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
+import app.n_zik.android.components.player.EditLyricsDialog
 import app.it.fast4x.rimusic.ui.components.themed.LyricsSizeDialog
 import app.it.fast4x.rimusic.ui.components.themed.Menu
 import app.it.fast4x.rimusic.ui.components.themed.MenuEntry
@@ -239,10 +239,6 @@ fun Lyrics(
         val thumbnailSize = Dimensions.thumbnails.player.song
         val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
 
-        var isEditing by remember(mediaId, isShowingSynchronizedLyrics) {
-            mutableStateOf(false)
-        }
-
         var showPlaceholder by remember {
             mutableStateOf(false)
         }
@@ -250,6 +246,13 @@ fun Lyrics(
         var lyrics by remember {
             mutableStateOf<Lyrics?>(null)
         }
+
+        val editLyricsDialog = EditLyricsDialog(
+            mediaId = mediaId,
+            isShowingSynchronizedLyrics = isShowingSynchronizedLyrics,
+            getLyrics = { lyrics },
+            ensureSongInserted = { ensureSongInserted() }
+        )
 
         val text = if (isShowingSynchronizedLyrics) lyrics?.synced else lyrics?.fixed
 
@@ -615,28 +618,7 @@ fun Lyrics(
         }
 
 
-        if (isEditing) {
-            InputTextDialog(
-                onDismiss = { isEditing = false },
-                setValueRequireNotNull = false,
-                title = stringResource(R.string.enter_the_lyrics),
-                value = text ?: "",
-                placeholder = stringResource(R.string.enter_the_lyrics),
-                setValue = {
-                    Database.asyncTransaction {
-                        ensureSongInserted()
-                        lyricsTable.upsert(
-                            Lyrics(
-                                songId = mediaId,
-                                fixed = if (isShowingSynchronizedLyrics) lyrics?.fixed else it,
-                                synced = if (isShowingSynchronizedLyrics) it else lyrics?.synced,
-                            )
-                        )
-                    }
-
-                }
-            )
-        }
+        editLyricsDialog.Render()
 
         @Composable
         fun SelectLyricFromTrack(
@@ -2380,7 +2362,7 @@ fun Lyrics(
                                             text = stringResource(R.string.edit_lyrics),
                                             onClick = {
                                                 menuState.hide()
-                                                isEditing = true
+                                                editLyricsDialog.onShortClick()
                                             }
                                         )
 

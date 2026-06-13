@@ -49,6 +49,7 @@ import app.it.fast4x.rimusic.PINNED_PREFIX
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
+import app.n_zik.android.components.playlist.NewPlaylistDialog
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.PlaylistSortBy
@@ -67,7 +68,7 @@ import app.it.fast4x.rimusic.utils.playlistSortOrderKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
-import app.kreate.android.me.knighthat.component.tab.Search
+import app.n_zik.android.components.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
 
 @ExperimentalTextApi
@@ -159,36 +160,30 @@ fun PlaylistsItemGridMenu(
                         !it.playlist.isYoutubePlaylist
             }
 
-            var isCreatingNewPlaylist by rememberSaveable {
-                mutableStateOf(false)
-            }
-
             val search = Search()
             val title = stringResource(R.string.playlists)
 
-            if (isCreatingNewPlaylist && onAddToPlaylist != null) {
-                InputTextDialog(
-                    onDismiss = { isCreatingNewPlaylist = false },
-                    title = stringResource(R.string.enter_the_playlist_name),
-                    value = "",
-                    placeholder = stringResource(R.string.enter_the_playlist_name),
-                    setValue = { text ->
-                        onDismiss()
-                        Database.asyncTransaction {
-                            val pId = playlistTable.insert( Playlist(name = text) )
-                            onAddToPlaylist(
-                                PlaylistPreview(
-                                    Playlist(
-                                        id = pId,
-                                        name = text
-                                    ),
-                                    0
-                                )
+            val newPlaylistDialog = NewPlaylistDialog { playlist ->
+                onDismiss()
+                Database.asyncTransaction {
+                    val pId = playlist.id
+                    if (onAddToPlaylist != null) {
+                        onAddToPlaylist(
+                            PlaylistPreview(
+                                Playlist(
+                                    id = pId,
+                                    name = playlist.name
+                                ),
+                                0
                             )
-                        }
-                        Toaster.done()
+                        )
                     }
-                )
+                }
+                Toaster.done()
+            }
+
+            if (onAddToPlaylist != null) {
+                newPlaylistDialog.Render()
             }
 
             BackHandler {
@@ -229,7 +224,7 @@ fun PlaylistsItemGridMenu(
                     )
                     if (onAddToPlaylist != null) {
                         IconButton(
-                            onClick = { isCreatingNewPlaylist = true },
+                            onClick = { newPlaylistDialog.onShortClick() },
                             icon = R.drawable.add_in_playlist,
                             color = colorPalette().text,
                             modifier = Modifier

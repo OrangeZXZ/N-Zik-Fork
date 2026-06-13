@@ -207,8 +207,8 @@ import app.it.fast4x.rimusic.utils.useSystemFontKey
 import app.it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import app.it.fast4x.rimusic.utils.visualizerEnabledKey
 import app.it.fast4x.rimusic.utils.volumeNormalizationKey
-import app.kreate.android.me.knighthat.component.dialog.RestartAppDialog
-import app.kreate.android.me.knighthat.component.tab.Search
+import app.n_zik.android.components.dialog.RestartAppDialog
+import app.n_zik.android.components.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.it.fast4x.rimusic.enums.SearchDisplayOrder
 import app.it.fast4x.rimusic.utils.lastThumbnailSizeDpKey

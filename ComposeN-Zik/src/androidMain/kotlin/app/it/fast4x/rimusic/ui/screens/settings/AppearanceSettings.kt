@@ -174,7 +174,7 @@ import app.it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import app.it.fast4x.rimusic.utils.transparentbarKey
 import app.it.fast4x.rimusic.utils.visualizerEnabledKey
 import app.it.fast4x.rimusic.utils.wallpaperTypeKey
-import app.kreate.android.me.knighthat.component.tab.Search
+import app.n_zik.android.components.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
 
 @Composable

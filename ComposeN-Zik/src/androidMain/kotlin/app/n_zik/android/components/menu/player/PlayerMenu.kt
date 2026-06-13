@@ -64,8 +64,8 @@ import app.it.fast4x.rimusic.models.PlaylistPreview
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
+import app.n_zik.android.components.playlist.NewPlaylistDialog
 import app.it.fast4x.rimusic.ui.components.themed.MenuEntry
-import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import app.it.fast4x.rimusic.ui.components.themed.Menu
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.utils.semiBold
@@ -85,7 +85,7 @@ import androidx.compose.ui.Alignment
 import app.it.fast4x.rimusic.MONTHLY_PREFIX
 import app.it.fast4x.rimusic.PINNED_PREFIX
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
-import app.kreate.android.me.knighthat.component.tab.Search
+import app.n_zik.android.components.tab.Search
 import androidx.compose.ui.unit.times
 import app.n_zik.android.components.menu.player.PlayerItemMenu
 
@@ -273,26 +273,18 @@ fun AddToPlaylistItemMenu(
     mediaItem: MediaItem,
     onGoToPlaylist: ((Long) -> Unit)? = null,
 ) {
-    var isCreatingNewPlaylist by rememberSaveable {
-        mutableStateOf(false)
-    }
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
 
     val screenHeight = configuration.screenHeightDp.dp
 
-    if (isCreatingNewPlaylist) {
-        InputTextDialog(
-            onDismiss = { isCreatingNewPlaylist = false },
-            title = stringResource(R.string.enter_the_playlist_name),
-            value = "",
-            placeholder = stringResource(R.string.enter_the_playlist_name),
-            setValue = { text ->
-                onDismiss()
-                onAddToPlaylist(Playlist(name = text), 0)
-            }
-        )
+    val newPlaylistDialog = NewPlaylistDialog { playlist ->
+        onDismiss()
+        onAddToPlaylist(playlist, 0)
     }
+
+    newPlaylistDialog.Render()
+
     val sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
     val sortOrder by rememberPreference(playlistSortOrderKey, SortOrder.Descending)
     val playlistPreviews by remember {
@@ -351,7 +343,7 @@ fun AddToPlaylistItemMenu(
                 modifier = Modifier.weight(1f).padding(start = 8.dp)
             )
             IconButton(
-                onClick = { isCreatingNewPlaylist = true },
+                onClick = { newPlaylistDialog.onShortClick() },
                 icon = R.drawable.add_in_playlist,
                 color = colorPalette().text,
                 modifier = Modifier
@@ -523,37 +515,29 @@ fun AddToPlaylistArtistSongsMenu(
     onGoToPlaylist: ((Long) -> Unit)? = null,
     onRemoveFromPlaylist: ((Playlist) -> Unit)? = null
 ) {
-    var isCreatingNewPlaylist by rememberSaveable {
-        mutableStateOf(false)
-    }
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
 
     val screenHeight = configuration.screenHeightDp.dp
 
-    if (isCreatingNewPlaylist) {
-        InputTextDialog(
-            onDismiss = { isCreatingNewPlaylist = false },
-            title = stringResource(R.string.enter_the_playlist_name),
-            value = "",
-            placeholder = stringResource(R.string.enter_the_playlist_name),
-            setValue = { text ->
-                onDismiss()
-                Database.asyncTransaction {
-                    val pId = playlistTable.insert( Playlist(name = text) )
-                    onAddToPlaylist(
-                        PlaylistPreview(
-                            Playlist(
-                                id = pId,
-                                name = text
-                            ),
-                            0
-                        )
-                    )
-                }
-            }
-        )
+    val newPlaylistDialog = NewPlaylistDialog { playlist ->
+        onDismiss()
+        Database.asyncTransaction {
+            val pId = playlist.id
+            onAddToPlaylist(
+                PlaylistPreview(
+                    Playlist(
+                        id = pId,
+                        name = playlist.name
+                    ),
+                    0
+                )
+            )
+        }
     }
+
+    newPlaylistDialog.Render()
+
     val sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
     val sortOrder by rememberPreference(playlistSortOrderKey, SortOrder.Descending)
     val playlistPreviews by remember {
@@ -608,7 +592,7 @@ fun AddToPlaylistArtistSongsMenu(
                 modifier = Modifier.weight(1f).padding(start = 8.dp)
             )
             IconButton(
-                onClick = { isCreatingNewPlaylist = true },
+                onClick = { newPlaylistDialog.onShortClick() },
                 icon = R.drawable.add_in_playlist,
                 color = colorPalette().text,
                 modifier = Modifier

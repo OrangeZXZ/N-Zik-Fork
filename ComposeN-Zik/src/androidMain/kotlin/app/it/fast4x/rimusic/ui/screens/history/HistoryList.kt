@@ -74,7 +74,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import app.kreate.android.me.knighthat.component.tab.Search
+import app.n_zik.android.components.tab.Search
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -260,7 +260,7 @@ fun HistoryList(
                                     binder?.player?.enqueue(event.song.asMediaItem)
                                 }
                             ) {
-                                app.kreate.android.me.knighthat.component.SongItem(
+                                app.n_zik.android.components.SongItem(
                                     song = event.song,
                                     navController = navController,
                                     modifier = Modifier,
@@ -306,7 +306,7 @@ fun HistoryList(
                                     binder?.player?.enqueue(mediaItem)
                                 }
                             ) {
-                                app.kreate.android.me.knighthat.component.SongItem(
+                                app.n_zik.android.components.SongItem(
                                     song = mediaItem.asSong,
                                     navController = navController,
                                     modifier = Modifier,

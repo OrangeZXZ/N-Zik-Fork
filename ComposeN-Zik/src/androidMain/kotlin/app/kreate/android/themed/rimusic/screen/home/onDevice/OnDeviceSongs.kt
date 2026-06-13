@@ -67,11 +67,11 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onEach
-import app.kreate.android.me.knighthat.component.FolderItem
-import app.kreate.android.me.knighthat.component.SongItem
-import app.kreate.android.me.knighthat.component.Sort
-import app.kreate.android.me.knighthat.component.tab.ItemSelector
-import app.kreate.android.me.knighthat.component.tab.Search
+import app.n_zik.android.components.FolderItem
+import app.n_zik.android.components.SongItem
+import app.n_zik.android.components.Sort
+import app.n_zik.android.components.tab.ItemSelector
+import app.n_zik.android.components.tab.Search
 import app.kreate.android.me.knighthat.utils.PathUtils
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.kreate.android.me.knighthat.utils.getLocalSongs

@@ -80,14 +80,15 @@ fun ArtistScreenModern(
                    artistPage = online
 
                    Database.asyncTransaction {
-                       val onlineArtist = Artist(
-                           id = browseId,
-                           name =  PropUtils.retainIfModified( localArtist?.name, online.artist.title ),
-                           thumbnailUrl = PropUtils.retainIfModified( localArtist?.thumbnailUrl, online.artist.thumbnail?.url ),
-                           timestamp = localArtist?.timestamp ?: System.currentTimeMillis(),
-                           bookmarkedAt = localArtist?.bookmarkedAt,
-                           isYoutubeArtist = localArtist?.isYoutubeArtist == true
-                       )
+                         val onlineArtist = Artist(
+                             id = browseId,
+                             name =  PropUtils.retainIfModified( localArtist?.name, online.artist.title ),
+                             thumbnailUrl = PropUtils.retainIfModified( localArtist?.thumbnailUrl, online.artist.thumbnail?.url ),
+                             timestamp = localArtist?.timestamp ?: System.currentTimeMillis(),
+                             bookmarkedAt = localArtist?.bookmarkedAt,
+                             isYoutubeArtist = localArtist?.isYoutubeArtist == true,
+                             position = localArtist?.position ?: -1
+                         )
                        artistTable.upsert( onlineArtist )
 
                        online.sections
