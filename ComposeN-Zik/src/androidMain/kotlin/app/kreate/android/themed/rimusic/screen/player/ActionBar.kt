@@ -83,10 +83,10 @@ import app.it.fast4x.rimusic.enums.QueueLoopType
 import app.it.fast4x.rimusic.enums.SongsNumber
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
-import app.it.fast4x.rimusic.ui.components.themed.AddToPlaylistPlayerMenu
+import app.n_zik.android.components.menu.player.AddToPlaylistPlayerMenu
 import app.it.fast4x.rimusic.ui.components.themed.DownloadStateIconButton
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
-import app.it.fast4x.rimusic.ui.components.themed.PlayerMenu
+import app.n_zik.android.components.menu.player.PlayerMenu
 import app.it.fast4x.rimusic.utils.DisposableListener
 import app.it.fast4x.rimusic.utils.actionspacedevenlyKey
 import app.it.fast4x.rimusic.utils.addNext

@@ -5,3 +5,6 @@ Update YTB sync to use new innertube api also update eevery sync like album arti
 Add back dislike button in player, android auto and notification still support it
 Update HomeAlbum page for sync
 Make the desktop version
+
+Ability to change song covers
+Ability to change videos covers

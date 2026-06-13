@@ -62,7 +62,7 @@ import app.n_zik.android.download.services.MyDownloadService
 import app.n_zik.android.playback.services.isLocal
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
-import app.it.fast4x.rimusic.ui.components.themed.AddToPlaylistPlayerMenu
+import app.n_zik.android.components.menu.player.AddToPlaylistPlayerMenu
 import app.it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
