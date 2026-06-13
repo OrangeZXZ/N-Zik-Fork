@@ -47,7 +47,9 @@ import app.n_zik.android.colorPalette
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.uiRoundnessShape
+import app.n_zik.android.thumbnailShape
 import app.n_zik.android.typography
+import app.it.fast4x.rimusic.utils.secondary
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -92,6 +94,7 @@ class LocalArtistItemMenu private constructor(
     private fun ArtistItemDisplay(
         title: String?,
         thumbnailUrl: String?,
+        subscribersCount: String?,
         modifier: Modifier = Modifier
     ) {
         val context = LocalContext.current
@@ -128,7 +131,7 @@ class LocalArtistItemMenu private constructor(
                         thumbnailUrl = thumbnailUrl,
                         modifier = Modifier
                             .size(Dimensions.thumbnails.album / 2)
-                            .clip(uiRoundnessShape())
+                            .clip(thumbnailShape())
                     )
                 }
 
@@ -147,6 +150,21 @@ class LocalArtistItemMenu private constructor(
                         modifier = Modifier
                             .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                     )
+
+                    subscribersCount?.let {
+                        if (it.isNotBlank()) {
+                            BasicText(
+                                text = it,
+                                style = typography().xxs.semiBold.secondary.copy(
+                                    color = colorPalette().textSecondary,
+                                ),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier
+                                    .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
+                            )
+                        }
+                    }
                 }
 
                 // Trailing content (Bookmark & Share)
@@ -267,7 +285,8 @@ class LocalArtistItemMenu private constructor(
         ) {
             ArtistItemDisplay(
                 title = displayTitle,
-                thumbnailUrl = displayThumbnailUrl
+                thumbnailUrl = displayThumbnailUrl,
+                subscribersCount = null
             )
 
             if (menuStyle == MenuStyle.List)
