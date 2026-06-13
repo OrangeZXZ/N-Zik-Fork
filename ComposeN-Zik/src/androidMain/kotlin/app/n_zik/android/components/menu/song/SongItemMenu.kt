@@ -155,7 +155,8 @@ class SongItemMenu private constructor(
                 Timber.e( "Failed to add songs to playlist ${preview.playlist.name} on HomeSongs" )
                 throwable.printStackTrace()
             },
-            finalAction = {}
+            finalAction = {},
+            onDismiss = { openMenu() }
         )
         val deleteSongDialog = DeleteSongDialog().apply {
             song = Optional.of( this@SongItemMenu.song )

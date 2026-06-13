@@ -301,7 +301,8 @@ class AlbumItemMenu private constructor(
             navController = navController,
             mediaItems = { songs.map { it.asMediaItem } },
             onFailure = { _, _ -> },
-            finalAction = { menuState.hide() }
+            finalAction = { menuState.hide() },
+            onDismiss = { openMenu() }
         )
 
         buttons = mutableListOf<Button>().apply {

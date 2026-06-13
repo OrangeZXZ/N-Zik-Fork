@@ -2,8 +2,13 @@ package app.it.fast4x.rimusic.ui.components
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
@@ -27,12 +32,33 @@ class MenuState {
     var isDisplayed by mutableStateOf(false)
         private set
 
-    var content by mutableStateOf<@Composable () -> Unit>({})
+    var transitionKey by mutableStateOf(0)
         private set
 
+    private val contentStack = androidx.compose.runtime.mutableStateListOf<@Composable () -> Unit>()
+
+    val contentState: Pair<Int, @Composable () -> Unit>
+        get() = transitionKey to (contentStack.lastOrNull() ?: {})
+
+    val hasPrevious: Boolean
+        get() = contentStack.size > 1
+
     fun display(content: @Composable () -> Unit) {
-        this.content = content
+        if (!isDisplayed) {
+            contentStack.clear()
+        }
+        contentStack.add(content)
+        this.transitionKey++
         isDisplayed = true
+    }
+
+    fun pop() {
+        if (contentStack.size > 1) {
+            contentStack.removeLast()
+            this.transitionKey--
+        } else {
+            hide()
+        }
     }
 
     fun hide() {
@@ -50,7 +76,7 @@ fun BottomSheetMenu(
         enter = fadeIn(),
         exit = fadeOut()
     ) {
-        BackHandler(onBack = state::hide)
+        BackHandler(onBack = state::pop)
 
         Spacer(
             modifier = Modifier
@@ -70,7 +96,16 @@ fun BottomSheetMenu(
         exit = slideOutVertically { it },
         modifier = modifier
     ) {
-        state.content()
+        AnimatedContent(
+            targetState = state.contentState,
+            transitionSpec = {
+                slideInHorizontally(animationSpec = tween(300)) { width -> width / 2 } + fadeIn(animationSpec = tween(300)) togetherWith 
+                slideOutHorizontally(animationSpec = tween(300)) { width -> -width / 2 } + fadeOut(animationSpec = tween(300))
+            },
+            label = "MenuContentTransition"
+        ) { target ->
+            target.second()
+        }
     }
 }
 

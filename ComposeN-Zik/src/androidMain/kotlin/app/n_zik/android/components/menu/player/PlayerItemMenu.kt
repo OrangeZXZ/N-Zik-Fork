@@ -241,7 +241,8 @@ class PlayerItemMenu private constructor(
             },
             finalAction = {
                 menuState.hide()
-            }
+            },
+            onDismiss = { openMenu() }
         )
 
         // Listen On

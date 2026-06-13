@@ -336,7 +336,11 @@ fun PlaylistSongList(
         mutableIntStateOf(0)
     }
 
-    val thumbnailContent = adaptiveThumbnailContent(playlistPage == null, playlistPage?.playlist?.thumbnail?.url)
+    val thumbnailContent = adaptiveThumbnailContent(
+        isLoading = playlistPage == null,
+        url = playlistPage?.playlist?.thumbnail?.url,
+        isYoutubePlaylist = true
+    )
 
     LayoutWithAdaptiveThumbnail(thumbnailContent = thumbnailContent) {
         Box(
@@ -385,18 +389,16 @@ fun PlaylistSongList(
                                             )
                                     )
                                 }
-                                if (localPlaylist?.isYoutubePlaylist == true) {
-                                   Image(
-                                        painter = painterResource(R.drawable.ytmusic),
-                                        contentDescription = null,
-                                        colorFilter = ColorFilter.tint(
+                                Image(
+                                    painter = painterResource(R.drawable.ytmusic),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(
                                         Color.Red.copy(0.75f).compositeOver(Color.White)
-                                        ),
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .offset(5.dp, 5.dp)
-                                   )
-                                }
+                                    ),
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .offset(5.dp, 5.dp)
+                                )
 
                             AutoResizeText(
                                 text = playlistPage?.playlist?.title ?: "",

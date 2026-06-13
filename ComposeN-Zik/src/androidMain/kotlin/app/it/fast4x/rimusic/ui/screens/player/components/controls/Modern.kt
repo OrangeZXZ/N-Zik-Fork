@@ -295,7 +295,7 @@ fun InfoAlbumAndArtistModern(
 
         if (playerInfoShowIcon) {
             IconButton(
-                icon = if (artistIds?.isEmpty() == true && !media.isLocal) R.drawable.logo_youtube else R.drawable.people,
+                icon = if (artistIds?.isEmpty() == true && !media.isLocal) R.drawable.logo_youtube else if (artistIds?.size == 1) R.drawable.person else R.drawable.people,
                 color = if (artistIds?.isEmpty() == true) colorPalette().textDisabled else colorPalette().text,
                 onClick = {
                     if (artistIds?.isNotEmpty() == true && artistIds.size > 1)

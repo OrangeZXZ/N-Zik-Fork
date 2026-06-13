@@ -3,6 +3,7 @@ package app.it.fast4x.rimusic.ui.components.themed
 import app.n_zik.android.core.database.*
 
 import androidx.compose.foundation.Image
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -53,6 +54,7 @@ class PlaylistsMenu private constructor(
     private val mediaItems: (PlaylistPreview) -> List<MediaItem>,
     private val onFailure: (Throwable, PlaylistPreview) -> Unit,
     private val finalAction: (PlaylistPreview) -> Unit,
+    private val onDismiss: (() -> Unit)?,
     override val menuState: MenuState,
     styleState: MutableState<MenuStyle>
 ): MenuIcon, Descriptive, Menu {
@@ -64,12 +66,14 @@ class PlaylistsMenu private constructor(
             navController: NavController,
             mediaItems: (PlaylistPreview) -> List<MediaItem>,
             onFailure: (Throwable, PlaylistPreview) -> Unit,
-            finalAction: (PlaylistPreview) -> Unit
+            finalAction: (PlaylistPreview) -> Unit,
+            onDismiss: (() -> Unit)? = null
         ) = PlaylistsMenu(
             navController,
             mediaItems,
             onFailure,
             finalAction,
+            onDismiss,
             LocalMenuState.current,
             rememberPreference( menuStyleKey, MenuStyle.List )
         )
@@ -149,6 +153,7 @@ class PlaylistsMenu private constructor(
 
     @Composable
     override fun MenuComponent() {
+
         val playlistPreviews by remember {
             Database.playlistTable.sortPreviewsByName()
         }.collectAsState( emptyList(), Dispatchers.IO )
@@ -176,7 +181,7 @@ class PlaylistsMenu private constructor(
                     .fillMaxWidth()
             ) {
                 IconButton(
-                    onClick = { menuState.hide() },
+                    onClick = { onDismiss?.invoke() ?: menuState.hide() },
                     icon = R.drawable.chevron_back,
                     color = colorPalette().textSecondary,
                     modifier = Modifier

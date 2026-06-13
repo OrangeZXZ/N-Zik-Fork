@@ -32,6 +32,15 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
@@ -1152,7 +1161,21 @@ class MainActivity :
                                 },
                                 shape = uiRoundnessShape()
                             ) {
-                                menuState.content()
+                                AnimatedContent(
+                                    targetState = menuState.contentState,
+                                    transitionSpec = {
+                                        slideInHorizontally(animationSpec = tween(300)) { width -> width / 2 } + fadeIn(animationSpec = tween(300)) togetherWith 
+                                        slideOutHorizontally(animationSpec = tween(300)) { width -> -width / 2 } + fadeOut(animationSpec = tween(300))
+                                    },
+                                    label = "MenuContentTransition"
+                                ) { target ->
+                                    BackHandler(enabled = menuState.hasPrevious) {
+                                        menuState.pop()
+                                    }
+                                    Box(modifier = Modifier.fillMaxWidth()) {
+                                        target.second()
+                                    }
+                                }
                             }
 
                         }

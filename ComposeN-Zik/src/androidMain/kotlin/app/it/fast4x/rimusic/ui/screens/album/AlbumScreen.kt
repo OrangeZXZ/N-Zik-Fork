@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -144,12 +145,15 @@ fun AlbumScreen(
     val thumbnailPainter = ImageCacheFactory.Painter( album?.thumbnailUrl )
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorPalette().background0)
+            .navigationBarsPadding()
     ) {
 
         Row(
             modifier = Modifier.fillMaxSize()
-                .background( colorPalette().background0 )
+                //.background( colorPalette().background0 )
         ) {
             val topPadding = if ( UiType.ViMusic.isCurrent() ) 30.dp else 0.dp
 

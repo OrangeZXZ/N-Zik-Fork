@@ -717,6 +717,16 @@ fun UpdateScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(24.dp))
             }
         }
+        
+        if (showInstallWarningDialog && apkPathToInstall != null) {
+            ConfirmationDialog(
+                text = stringResource(R.string.install_warning),
+                onDismiss = { showInstallWarningDialog = false },
+                onConfirm = { UpdateDownloadManager.installApk(context, apkPathToInstall!!) },
+                confirmText = stringResource(R.string.install_yes),
+                cancelText = stringResource(R.string.install_no_backup)
+            )
+        }
     }
 }
 

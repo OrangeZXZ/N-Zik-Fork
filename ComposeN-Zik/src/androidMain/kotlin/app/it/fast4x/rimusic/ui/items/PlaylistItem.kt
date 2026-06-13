@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.items
+package app.it.fast4x.rimusic.ui.items
 
 import app.n_zik.android.core.database.*
 import app.n_zik.android.uiRoundnessShape
@@ -278,6 +278,9 @@ fun PlaylistItem(
 
                 isYoutubePlaylist ->
                     painterResource( R.drawable.ytmusic ) to Color.Red.copy( .75f ).compositeOver( Color.White )
+
+                browseId?.isNotEmpty() == true ->
+                    painterResource( R.drawable.ytmusic ) to colorPalette().text
 
                 else ->
                     ColorPainter(Color.Transparent) to Color.Transparent

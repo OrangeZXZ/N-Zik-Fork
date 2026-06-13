@@ -617,7 +617,8 @@ fun LocalPlaylistSongs(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         //.background(colorPalette().background4)
-                        .fillMaxSize(0.99F)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                         .background(
                             color = colorPalette().background1,
                             shape = app.n_zik.android.thumbnailShape()

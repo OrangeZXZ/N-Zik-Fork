@@ -139,7 +139,8 @@ class VideoItemMenu private constructor(
                 Timber.e( "Failed to add songs to playlist ${preview.playlist.name} on VideoItemMenu" )
                 throwable.printStackTrace()
             },
-            finalAction = {}
+            finalAction = {},
+            onDismiss = { openMenu() }
         )
 
         // Listen On

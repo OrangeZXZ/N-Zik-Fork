@@ -321,7 +321,8 @@ class OnlineAlbumItemMenu private constructor(
             navController = navController,
             mediaItems = { songs?.map { it.asMediaItem } ?: emptyList() },
             onFailure = { _, _ -> },
-            finalAction = { menuState.hide() }
+            finalAction = { menuState.hide() },
+            onDismiss = { openMenu() }
         )
 
         val addToPlaylist = object : MenuIcon by playlistsMenu, Descriptive by playlistsMenu, Clickable {

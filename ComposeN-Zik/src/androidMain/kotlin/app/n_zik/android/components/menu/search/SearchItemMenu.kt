@@ -141,7 +141,8 @@ class SearchItemMenu private constructor(
                 Timber.e( "Failed to add songs to playlist ${preview.playlist.name} on SearchItemMenu" )
                 throwable.printStackTrace()
             },
-            finalAction = {}
+            finalAction = {},
+            onDismiss = { openMenu() }
         )
 
         // Reactively collect artists from DB for per-artist "More of" buttons

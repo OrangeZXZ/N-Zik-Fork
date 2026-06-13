@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
@@ -54,6 +55,7 @@ fun adaptiveThumbnailContent(
     url: String?,
     shape: Shape? = null,
     showIcon: Boolean = false,
+    isYoutubePlaylist: Boolean = false,
     onOtherVersionAvailable: (() -> Unit)? = {},
     onClick: (() -> Unit)? = {}
 ): @Composable () -> Unit = {
@@ -80,10 +82,27 @@ fun adaptiveThumbnailContent(
                     .background(colorPalette().shimmer)
             )
         } else {
-            ImageCacheFactory.Thumbnail(
+            ImageCacheFactory.AsyncImage(
                 thumbnailUrl = url,
                 modifier = modifier
             )
+            if (isYoutubePlaylist) {
+                androidx.compose.foundation.Image(
+                    painter = androidx.compose.ui.res.painterResource(app.n_zik.android.R.drawable.ytmusic),
+                    colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
+                        androidx.compose.ui.graphics.Color.Red.copy(0.75f)
+                            .compositeOver(androidx.compose.ui.graphics.Color.White)
+                    ),
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(start = if (shape == CircleShape) 0.dp else thumbnailPaddingDp.dp)
+                        .padding(top = 16.dp)
+                        .padding(all = 5.dp)
+                        .size(40.dp),
+                    contentDescription = "Youtube Playlist",
+                    contentScale = androidx.compose.ui.layout.ContentScale.Fit
+                )
+            }
             if(showIcon)
                 onOtherVersionAvailable?.let {
                     Box(
