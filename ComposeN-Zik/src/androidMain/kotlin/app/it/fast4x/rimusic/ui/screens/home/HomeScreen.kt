@@ -179,6 +179,7 @@ fun HomeScreen(
                 )
 
                 4 -> HomeLibrary(
+                    navController = navController,
                     onPlaylistClick = {
                         //localPlaylistRoute(it.id)
                         navController.navigate(route = "${NavRoutes.localPlaylist.name}/${it.id}")

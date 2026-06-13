@@ -856,9 +856,10 @@ fun HomeQuickPicks(
                                     alternative = true,
                                     showSongsCount = false,
                                     isYoutubePlaylist = true,
-                                    modifier = Modifier.clip(uiRoundnessShape()).clickable {
-                                        navController.navigate("${NavRoutes.playlist.name}/${playlist.key}")
-                                    },
+                                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                        onClick = { navController.navigate("${NavRoutes.playlist.name}/${playlist.key}") },
+                                        onLongClick = { menuState.display { app.kreate.android.me.knighthat.component.menu.playlist.OnlinePlaylistItemMenu(navController = navController, playlist = playlist).MenuComponent() } }
+                                    ),
                                     disableScrollingText = disableScrollingText
                                 )
                             }
@@ -999,7 +1000,10 @@ fun HomeQuickPicks(
                                         alternative = true,
                                         showSongsCount = false,
                                         modifier = Modifier
-                                            .clip(uiRoundnessShape()).clickable(onClick = { onPlaylistClick(playlist.key) }),
+                                            .clip(uiRoundnessShape()).combinedClickable(
+                                                onClick = { onPlaylistClick(playlist.key) },
+                                                onLongClick = { menuState.display { app.kreate.android.me.knighthat.component.menu.playlist.OnlinePlaylistItemMenu(navController = navController, playlist = playlist).MenuComponent() } }
+                                            ),
                                         disableScrollingText = disableScrollingText
                                     )
                                 }
@@ -1055,12 +1059,15 @@ fun HomeQuickPicks(
                                                 thumbnailSizePx = songThumbnailSizePx,
                                                 thumbnailSizeDp = songThumbnailSizeDp,
                                                 modifier = Modifier
-                                                    .clip(uiRoundnessShape()).clickable(onClick = {
-                                                        val mediaItem = song.asMediaItem
-                                                        binder?.stopRadio()
-                                                        binder?.player?.forcePlay(mediaItem)
-                                                        binder?.player?.addMediaItems(songs.map { it.asMediaItem })
-                                                    })
+                                                    .clip(uiRoundnessShape()).combinedClickable(
+                                                        onClick = {
+                                                            val mediaItem = song.asMediaItem
+                                                            binder?.stopRadio()
+                                                            binder?.player?.forcePlay(mediaItem)
+                                                            binder?.player?.addMediaItems(songs.map { it.asMediaItem })
+                                                        },
+                                                        onLongClick = { menuState.display { app.kreate.android.me.knighthat.component.menu.song.SongItemMenu(navController = navController, song = song.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder("")).MenuComponent() } }
+                                                    )
                                                     .width(itemWidth),
                                                 disableScrollingText = disableScrollingText,
                                                 isNowPlaying = binder?.player?.isNowPlaying(song.key) ?: false
@@ -1154,9 +1161,10 @@ fun HomeQuickPicks(
                                             downloadState = Download.STATE_STOPPED,
                                             disableScrollingText = disableScrollingText,
                                             isNowPlaying = false,
-                                            modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
-                                                binder?.player?.forcePlay(item.asMediaItem)
-                                            })
+                                            modifier = Modifier.clip(app.n_zik.android.uiRoundnessShape()).combinedClickable(
+                                                onClick = { binder?.player?.forcePlay(item.asMediaItem) },
+                                                onLongClick = { menuState.display { app.kreate.android.me.knighthat.component.menu.song.SongItemMenu(navController = navController, song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder("")).MenuComponent() } }
+                                            )
                                         )
                                     }
 
@@ -1196,9 +1204,10 @@ fun HomeQuickPicks(
                                             thumbnailSizePx = playlistThumbnailSizePx,
                                             thumbnailSizeDp = playlistThumbnailSizeDp,
                                             disableScrollingText = disableScrollingText,
-                                            modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
-                                                navController.navigate("${NavRoutes.playlist.name}/${item.key}")
-                                            })
+                                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                onClick = { navController.navigate("${NavRoutes.playlist.name}/${item.key}") },
+                                                onLongClick = { menuState.display { app.kreate.android.me.knighthat.component.menu.playlist.OnlinePlaylistItemMenu(navController = navController, playlist = item).MenuComponent() } }
+                                            )
                                         )
                                     }
 

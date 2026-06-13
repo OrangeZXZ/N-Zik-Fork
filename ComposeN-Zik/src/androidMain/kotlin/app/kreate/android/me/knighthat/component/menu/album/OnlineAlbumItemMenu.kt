@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.it.fast4x.rimusic.cleanPrefix
+import app.it.fast4x.rimusic.enums.NavRoutes
+import it.fast4x.innertube.requests.albumPage
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
@@ -98,7 +100,10 @@ class OnlineAlbumItemMenu private constructor(
 
     @Composable
     private fun AlbumItemDisplay(
-        album: Innertube.AlbumItem,
+        title: String?,
+        authorsText: String?,
+        year: String?,
+        thumbnailUrl: String?,
         modifier: Modifier = Modifier
     ) {
         val context = LocalContext.current
@@ -132,7 +137,7 @@ class OnlineAlbumItemMenu private constructor(
                     Modifier.size(Dimensions.thumbnails.album / 2)
                 ) {
                     ImageCacheFactory.Thumbnail(
-                        thumbnailUrl = album.thumbnail?.url,
+                        thumbnailUrl = thumbnailUrl,
                         modifier = Modifier
                             .size(Dimensions.thumbnails.album / 2)
                             .clip(thumbnailShape())
@@ -145,7 +150,7 @@ class OnlineAlbumItemMenu private constructor(
                     modifier = Modifier.weight(1f)
                 ) {
                     BasicText(
-                        text = cleanPrefix(album.title ?: ""),
+                        text = cleanPrefix(title ?: ""),
                         style = typography().xs.semiBold.copy(
                             color = colorPalette().text,
                         ),
@@ -155,10 +160,10 @@ class OnlineAlbumItemMenu private constructor(
                             .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                     )
 
-                    album.authors?.joinToString(", ") { it.name ?: "" }?.let { authorsText ->
-                        if (authorsText.isNotBlank()) {
+                    authorsText?.let { authors ->
+                        if (authors.isNotBlank()) {
                             BasicText(
-                                text = cleanPrefix(authorsText),
+                                text = cleanPrefix(authors),
                                 style = typography().xs.semiBold.secondary.copy(
                                     color = colorPalette().textSecondary,
                                 ),
@@ -170,7 +175,7 @@ class OnlineAlbumItemMenu private constructor(
                         }
                     }
 
-                    album.year?.let {
+                    year?.let {
                         if (it.isNotBlank()) {
                             BasicText(
                                 text = it,
@@ -240,20 +245,25 @@ class OnlineAlbumItemMenu private constructor(
         var showChangeAuthorsDialog by remember { mutableStateOf(false) }
         var showChangeCoverDialog by remember { mutableStateOf(false) }
 
+        var displayTitle by remember { mutableStateOf(album.title ?: album.info?.name) }
+        var displayAuthors by remember { mutableStateOf(album.authors?.joinToString(", ") { it.name ?: "" }) }
+        var displayYear by remember { mutableStateOf(album.year) }
+        var displayThumbnailUrl by remember { mutableStateOf(album.thumbnail?.url) }
+
         if (showChangeTitleDialog) {
             InputTextDialog(
                 onDismiss = { showChangeTitleDialog = false },
                 title = stringResource(R.string.update_title),
-                value = album.title ?: "",
+                value = displayTitle ?: "",
                 placeholder = stringResource(R.string.title),
                 setValue = { newValue ->
                     CoroutineScope(Dispatchers.IO).launch {
                         Database.albumTable.insertIgnore(Album(
                             id = album.key,
-                            title = album.title,
-                            thumbnailUrl = album.thumbnail?.url,
-                            year = album.year,
-                            authorsText = album.authors?.joinToString(", ") { it.name ?: "" },
+                            title = displayTitle,
+                            thumbnailUrl = displayThumbnailUrl,
+                            year = displayYear,
+                            authorsText = displayAuthors,
                             shareUrl = "https://music.youtube.com/browse/${album.key}",
                             timestamp = System.currentTimeMillis()
                         ))
@@ -269,16 +279,16 @@ class OnlineAlbumItemMenu private constructor(
             InputTextDialog(
                 onDismiss = { showChangeAuthorsDialog = false },
                 title = stringResource(R.string.update_authors),
-                value = album.authors?.joinToString(", ") { it.name ?: "" } ?: "",
+                value = displayAuthors ?: "",
                 placeholder = stringResource(R.string.artists),
                 setValue = { newValue ->
                     CoroutineScope(Dispatchers.IO).launch {
                         Database.albumTable.insertIgnore(Album(
                             id = album.key,
-                            title = album.title,
-                            thumbnailUrl = album.thumbnail?.url,
-                            year = album.year,
-                            authorsText = album.authors?.joinToString(", ") { it.name ?: "" },
+                            title = displayTitle,
+                            thumbnailUrl = displayThumbnailUrl,
+                            year = displayYear,
+                            authorsText = displayAuthors,
                             shareUrl = "https://music.youtube.com/browse/${album.key}",
                             timestamp = System.currentTimeMillis()
                         ))
@@ -294,16 +304,16 @@ class OnlineAlbumItemMenu private constructor(
             InputTextDialog(
                 onDismiss = { showChangeCoverDialog = false },
                 title = stringResource(R.string.update_cover),
-                value = album.thumbnail?.url ?: "",
+                value = displayThumbnailUrl ?: "",
                 placeholder = stringResource(R.string.cover),
                 setValue = { newValue ->
                     CoroutineScope(Dispatchers.IO).launch {
                         Database.albumTable.insertIgnore(Album(
                             id = album.key,
-                            title = album.title,
-                            thumbnailUrl = album.thumbnail?.url,
-                            year = album.year,
-                            authorsText = album.authors?.joinToString(", ") { it.name ?: "" },
+                            title = displayTitle,
+                            thumbnailUrl = displayThumbnailUrl,
+                            year = displayYear,
+                            authorsText = displayAuthors,
                             shareUrl = "https://music.youtube.com/browse/${album.key}",
                             timestamp = System.currentTimeMillis()
                         ))
@@ -317,9 +327,30 @@ class OnlineAlbumItemMenu private constructor(
 
         LaunchedEffect(album.key) {
             withContext(Dispatchers.IO) {
-                val result = YtMusic.getAlbum(album.key).getOrNull()
+                val result = it.fast4x.innertube.Innertube.albumPage(it.fast4x.innertube.models.bodies.BrowseBody(browseId = album.key))?.getOrNull()
                 if (result != null) {
-                    songs = result.songs.mapNotNull { it.asSong }
+                    displayTitle = result.title ?: displayTitle
+                    displayAuthors = result.authors?.joinToString(", ") { it.name ?: "" } ?: displayAuthors
+                    displayYear = result.year ?: displayYear
+                    displayThumbnailUrl = result.thumbnail?.url ?: displayThumbnailUrl
+                    songs = result.songsPage?.items?.mapNotNull { it.asSong } ?: emptyList()
+                    app.n_zik.android.core.database.Database.asyncTransaction {
+                        app.n_zik.android.core.database.Database.albumTable.insertIgnore(app.it.fast4x.rimusic.models.Album(
+                            id = album.key,
+                            title = displayTitle,
+                            thumbnailUrl = displayThumbnailUrl,
+                            year = displayYear,
+                            authorsText = displayAuthors,
+                            shareUrl = result.url,
+                            timestamp = System.currentTimeMillis()
+                        ))
+                        songs?.forEachIndexed { index, song ->
+                            app.n_zik.android.core.database.Database.insertIgnore(song.asMediaItem)
+                            app.n_zik.android.core.database.Database.songAlbumMapTable.upsert(
+                                listOf(app.it.fast4x.rimusic.models.SongAlbumMap(songId = song.id, albumId = album.key, position = index))
+                            )
+                        }
+                    }
                 } else {
                     songs = emptyList() // Failed to fetch or no songs
                 }
@@ -457,7 +488,12 @@ class OnlineAlbumItemMenu private constructor(
         ) {
             downloadAllDialog.Render()
             deleteAllDialog.Render()
-            AlbumItemDisplay(album = album)
+            AlbumItemDisplay(
+                title = displayTitle,
+                authorsText = displayAuthors,
+                year = displayYear,
+                thumbnailUrl = displayThumbnailUrl
+            )
 
             if (menuStyle == MenuStyle.List)
                 ListMenu()

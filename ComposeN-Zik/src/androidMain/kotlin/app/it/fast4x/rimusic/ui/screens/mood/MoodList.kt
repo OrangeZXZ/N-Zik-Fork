@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.mood
+package app.it.fast4x.rimusic.ui.screens.mood
 
 import androidx.compose.ui.draw.clip
 
@@ -61,6 +61,34 @@ import app.it.fast4x.rimusic.utils.disableScrollingTextKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import app.it.fast4x.rimusic.ui.components.LocalMenuState
+import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
+import app.kreate.android.me.knighthat.component.menu.playlist.OnlinePlaylistItemMenu
+import app.it.fast4x.rimusic.ui.items.VideoItem
+import app.kreate.android.me.knighthat.component.SongItem
+import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
+import app.kreate.android.me.knighthat.component.menu.song.SongItemMenu
+import app.kreate.android.me.knighthat.component.menu.video.VideoItemMenu
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.LocalPlayerServiceBinder
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.remember
+import app.it.fast4x.rimusic.utils.preferences
+import app.it.fast4x.rimusic.models.Song
+import app.kreate.android.me.knighthat.utils.Toaster
+import app.it.fast4x.rimusic.utils.showButtonPlayerVideoKey
+
+import app.it.fast4x.rimusic.utils.addNext
+import app.it.fast4x.rimusic.utils.asMediaItem
+import app.it.fast4x.rimusic.utils.asSong
+import app.it.fast4x.rimusic.utils.enqueue
+import app.it.fast4x.rimusic.utils.forcePlay
+import app.it.fast4x.rimusic.utils.isDownloadedSong
+import app.it.fast4x.rimusic.utils.manageDownload
+import app.it.fast4x.rimusic.utils.playVideo
 
 internal const val defaultBrowseId = "FEmusic_moods_and_genres_category"
 
@@ -93,6 +121,12 @@ fun MoodList(
         .padding(endPaddingValues)
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+
+    val menuState = LocalMenuState.current
+    val hapticFeedback = LocalHapticFeedback.current
+    val context = LocalContext.current
+    val binder = LocalPlayerServiceBinder.current
+    val isVideoEnabled = remember { context.preferences.getBoolean(showButtonPlayerVideoKey, false) }
 
     Column (
         modifier = Modifier
@@ -144,12 +178,22 @@ fun MoodList(
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         alternative = true,
-                                        modifier = Modifier.clip(uiRoundnessShape()).clickable {
-                                            childItem.info?.endpoint?.browseId?.let {
-                                                //albumRoute.global(it)
-                                                navController.navigate(route = "${NavRoutes.album.name}/$it")
+                                        modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                            onClick = {
+                                                childItem.info?.endpoint?.browseId?.let {
+                                                    navController.navigate(route = "${NavRoutes.album.name}/$it")
+                                                }
+                                            },
+                                            onLongClick = {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.display {
+                                                    OnlineAlbumItemMenu(
+                                                        navController = navController,
+                                                        album = childItem
+                                                    ).MenuComponent()
+                                                }
                                             }
-                                        },
+                                        ),
                                         disableScrollingText = disableScrollingText
                                     )
 
@@ -171,29 +215,100 @@ fun MoodList(
                                         thumbnailSizePx = thumbnailSizePx,
                                         thumbnailSizeDp = thumbnailSizeDp,
                                         alternative = true,
-                                        modifier = Modifier.clip(uiRoundnessShape()).clickable {
-                                            childItem.info?.endpoint?.let { endpoint ->
-                                                /*
-                                                playlistRoute.global(
-                                                    p0 = endpoint.browseId,
-                                                    p1 = endpoint.params,
-                                                    p2 = childItem.songCount?.let { it / 100 }
-                                                )
-                                                 */
-                                                navController.navigate(route = "${NavRoutes.playlist.name}/${endpoint.browseId}")
+                                        modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                            onClick = {
+                                                childItem.info?.endpoint?.let { endpoint ->
+                                                    navController.navigate(route = "${NavRoutes.playlist.name}/${endpoint.browseId}")
+                                                }
+                                            },
+                                            onLongClick = {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.display {
+                                                    OnlinePlaylistItemMenu(
+                                                        navController = navController,
+                                                        playlist = childItem
+                                                    ).MenuComponent()
+                                                }
                                             }
-                                            /*
-                                            childItem.info?.endpoint?.browseId?.let {
-                                                playlistRoute.global(
-                                                    it,
-                                                    null
-
-                                                )
-                                            }
-                                             */
-                                        },
+                                        ),
                                         disableScrollingText = disableScrollingText
                                     )
+
+                                    is Innertube.SongItem -> {
+                                        val isDownloaded = isDownloadedSong(childItem.asMediaItem.mediaId)
+                                        SwipeablePlaylistItem(
+                                            mediaItem = childItem.asMediaItem,
+                                            onPlayNext = { binder?.player?.addNext(childItem.asMediaItem) },
+                                            onDownload = {
+                                                binder?.cache?.removeResource(childItem.asMediaItem.mediaId ?: "")
+                                                Database.asyncTransaction {
+                                                    Database.formatTable.updateContentLengthOf(childItem.key ?: "")
+                                                }
+                                                manageDownload(context, childItem.asMediaItem, isDownloaded)
+                                            },
+                                            onEnqueue = { binder?.player?.enqueue(childItem.asMediaItem) }
+                                        ) {
+                                            SongItem(
+                                                song = childItem.asMediaItem.asSong ?: Song.makePlaceholder(""),
+                                                navController = navController,
+                                                modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                    onClick = {
+                                                        binder?.stopRadio()
+                                                        if (isVideoEnabled) binder?.player?.playVideo(childItem.asMediaItem)
+                                                        else binder?.player?.forcePlay(childItem.asMediaItem)
+                                                    },
+                                                    onLongClick = {
+                                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                        menuState.display {
+                                                            SongItemMenu(
+                                                                navController = navController,
+                                                                song = childItem.asMediaItem.asSong ?: Song.makePlaceholder("")
+                                                            ).MenuComponent()
+                                                        }
+                                                    }
+                                                ),
+                                                onClick = {
+                                                    binder?.stopRadio()
+                                                    if (isVideoEnabled) binder?.player?.playVideo(childItem.asMediaItem)
+                                                    else binder?.player?.forcePlay(childItem.asMediaItem)
+                                                }
+                                            )
+                                        }
+                                    }
+
+                                    is Innertube.VideoItem -> {
+                                        SwipeablePlaylistItem(
+                                            mediaItem = childItem.asMediaItem,
+                                            onPlayNext = { binder?.player?.addNext(childItem.asMediaItem) },
+                                            onDownload = { Toaster.w(R.string.downloading_videos_not_supported) },
+                                            onEnqueue = { binder?.player?.enqueue(childItem.asMediaItem) }
+                                        ) {
+                                            VideoItem(
+                                                video = childItem,
+                                                thumbnailWidthDp = thumbnailSizeDp,
+                                                thumbnailHeightDp = thumbnailSizeDp,
+                                                modifier = Modifier
+                                                    .background(colorPalette().background0)
+                                                    .clip(uiRoundnessShape()).combinedClickable(
+                                                        onClick = {
+                                                            binder?.stopRadio()
+                                                            if (isVideoEnabled) binder?.player?.playVideo(childItem.asMediaItem)
+                                                            else binder?.player?.forcePlay(childItem.asMediaItem)
+                                                        },
+                                                        onLongClick = {
+                                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                            menuState.display {
+                                                                VideoItemMenu(
+                                                                    navController = navController,
+                                                                    song = childItem.asMediaItem.asSong ?: Song.makePlaceholder("")
+                                                                ).MenuComponent()
+                                                            }
+                                                        }
+                                                    ),
+                                                disableScrollingText = disableScrollingText
+                                            )
+                                        }
+                                    }
 
                                     else -> {}
                                 }

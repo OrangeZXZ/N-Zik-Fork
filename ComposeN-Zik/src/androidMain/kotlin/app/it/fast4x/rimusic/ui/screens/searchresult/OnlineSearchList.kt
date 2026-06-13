@@ -176,6 +176,14 @@ fun OnlineSearchList(
                                         ).MenuComponent()
                                     }
                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                } else if (item is Innertube.PlaylistItem) {
+                                    menuState.display {
+                                        app.kreate.android.me.knighthat.component.menu.playlist.OnlinePlaylistItemMenu(
+                                            navController = navController,
+                                            playlist = item
+                                        ).MenuComponent()
+                                    }
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 }
                             }
                         )

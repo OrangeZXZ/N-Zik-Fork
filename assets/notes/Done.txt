@@ -35,3 +35,7 @@ Fixed: Random 'no items' text flash in HomeSongs while database items were synch
 Fixed: Online menus (Album and Video) not rendering content in HomeQuickPicks and ArtistDetails due to missing .MenuComponent() invocation
 Added: Full long-click context menu support for AlbumItem and VideoItem in HomeQuickPicks
 Added: "More from this artist" navigation option in OnlineAlbumItemMenu and VideoItemMenu
+Fixed: Missing long-click menus and completely missing items (Songs, Videos) in Moods discovery page
+Added: Long-click context menu support for Album, Playlist, Video and Song items across HomeDiscovery, HomeLibrary, OnlineSearchGrid, and OnlineSearchList.
+Fixed: LocalPlaylistItemMenu and OnlinePlaylistItemMenu compilation errors and missing author info.
+Fixed: OnlineAlbumItemMenu state variables to preserve album metadata edits and display correctly after initial metadata fetch.

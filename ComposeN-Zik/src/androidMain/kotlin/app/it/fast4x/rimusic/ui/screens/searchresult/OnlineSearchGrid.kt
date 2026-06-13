@@ -199,12 +199,23 @@ fun OnlineSearchGrid(
                         alternative = true,
                         showName = false,
                         showInfo = false,
-                        modifier = Modifier.clip(uiRoundnessShape()).clickable {
-                            when (tabIndex) {
-                                4, 5 -> navController.navigate("${NavRoutes.playlist.name}/${item.key}")
-                                6 -> navController.navigate("${NavRoutes.podcast.name}/${item.key}")
+                        modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                            onClick = {
+                                when (tabIndex) {
+                                    4, 5 -> navController.navigate("${NavRoutes.playlist.name}/${item.key}")
+                                    6 -> navController.navigate("${NavRoutes.podcast.name}/${item.key}")
+                                }
+                            },
+                            onLongClick = {
+                                menuState.display {
+                                    app.kreate.android.me.knighthat.component.menu.playlist.OnlinePlaylistItemMenu(
+                                        navController = navController,
+                                        playlist = item
+                                    ).MenuComponent()
+                                }
+                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
-                        },
+                        ),
                         disableScrollingText = disableScrollingText
                     )
                 }

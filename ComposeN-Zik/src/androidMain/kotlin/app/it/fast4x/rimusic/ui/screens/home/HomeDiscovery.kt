@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.it.fast4x.rimusic.ui.screens.home
 
 import app.n_zik.android.uiRoundnessShape
 
@@ -82,12 +82,15 @@ import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showSearchTabKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 
 @SuppressLint("SuspiciousIndentation")
 @UnstableApi
 @OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeDiscovery(
+    navController: androidx.navigation.NavController,
     onMoodClick: (mood: Innertube.Mood.Item) -> Unit,
     onNewReleaseAlbumClick: (String) -> Unit,
     onSearchClick: () -> Unit
@@ -121,6 +124,8 @@ fun HomeDiscovery(
     //Log.d("mediaItemArtists",preferitesArtists.toString())
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
+    val menuState = app.it.fast4x.rimusic.ui.components.LocalMenuState.current
+    val hapticFeedback = androidx.compose.ui.platform.LocalHapticFeedback.current
 
     BoxWithConstraints {
 
@@ -191,11 +196,20 @@ fun HomeDiscovery(
                                             thumbnailSizePx = thumbnailPx,
                                             thumbnailSizeDp = thumbnailDp,
                                             alternative = true,
-                                            modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = {
-                                                onNewReleaseAlbumClick(
-                                                    it.key
-                                                )
-                                            }),
+                                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                onClick = {
+                                                    onNewReleaseAlbumClick(it.key)
+                                                },
+                                                onLongClick = {
+                                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                    menuState.display {
+                                                        app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu(
+                                                            navController = navController,
+                                                            album = it
+                                                        ).MenuComponent()
+                                                    }
+                                                }
+                                            ),
                                             disableScrollingText = disableScrollingText
                                         )
                                // }
@@ -219,7 +233,18 @@ fun HomeDiscovery(
                                 thumbnailSizePx = thumbnailPx,
                                 thumbnailSizeDp = thumbnailDp,
                                 alternative = true,
-                                modifier = Modifier.clip(uiRoundnessShape()).clickable(onClick = { onNewReleaseAlbumClick(it.key) }),
+                                modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                    onClick = { onNewReleaseAlbumClick(it.key) },
+                                    onLongClick = {
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        menuState.display {
+                                            app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu(
+                                                navController = navController,
+                                                album = it
+                                            ).MenuComponent()
+                                        }
+                                    }
+                                ),
                                 disableScrollingText = disableScrollingText
                             )
                         }

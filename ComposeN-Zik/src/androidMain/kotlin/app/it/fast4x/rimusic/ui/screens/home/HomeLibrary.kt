@@ -52,11 +52,14 @@ import sh.calvin.reorderable.ReorderableItem
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 import app.it.fast4x.rimusic.enums.PlaylistSortBy
 import androidx.media3.common.util.UnstableApi
-import app.n_zik.android.R
+import app.kreate.android.me.knighthat.component.menu.playlist.LocalPlaylistItemMenu
+import androidx.navigation.NavController
 import app.it.fast4x.compose.persist.persistList
 import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.MONTHLY_PREFIX
 import app.it.fast4x.rimusic.PINNED_PREFIX
+import app.n_zik.android.R
+import androidx.compose.foundation.combinedClickable
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.YTP_PREFIX
 import app.n_zik.android.colorPalette
@@ -107,10 +110,13 @@ import app.kreate.android.me.knighthat.component.tab.SongShuffler
 @ExperimentalFoundationApi
 @Composable
 fun HomeLibrary(
+    navController: NavController,
     onPlaylistClick: (Playlist) -> Unit,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
+    val menuState = app.it.fast4x.rimusic.ui.components.LocalMenuState.current
+    
     // Essentials
     val lazyGridState = rememberLazyGridState()
 
@@ -369,10 +375,21 @@ fun HomeLibrary(
                                     alternative = true,
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .clip(uiRoundnessShape()).clickable(onClick = {
-                                            search.hideIfEmpty()
-                                            onPlaylistClick(preview.playlist)
-                                        }),
+                                        .clip(uiRoundnessShape())
+                                        .combinedClickable(
+                                            onClick = {
+                                                search.hideIfEmpty()
+                                                onPlaylistClick(preview.playlist)
+                                            },
+                                            onLongClick = {
+                                                menuState.display {
+                                                    LocalPlaylistItemMenu(
+                                                        navController = navController,
+                                                        playlistPreview = preview
+                                                    ).MenuComponent()
+                                                }
+                                            }
+                                        ),
                                     disableScrollingText = disableScrollingText,
                                     isYoutubePlaylist = preview.playlist.isYoutubePlaylist,
                                     isEditable = preview.playlist.isEditable
