@@ -263,74 +263,16 @@ fun Lyrics(
             mutableStateOf(false)
         }
 
-        var showLanguagesList by remember {
+        val translateEnabledState = remember {
             mutableStateOf(false)
         }
-
-        var translateEnabled by remember {
-            mutableStateOf(false)
-        }
+        var translateEnabled by translateEnabledState
 
         var romanization by rememberPreference(romanizationKey, Romanization.Off)
         var showSecondLine by rememberPreference(showSecondLineKey, false)
 
         var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
         var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
-
-        if (showLanguagesList) {
-            translateEnabled = false
-            menuState.display {
-                Menu {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        TitleSection(title = stringResource(R.string.languages))
-                    }
-
-                    MenuEntry(
-                        icon = R.drawable.translate,
-                        text = stringResource(R.string.do_not_translate),
-                        secondaryText = "",
-                        onClick = {
-                            menuState.hide()
-                            showLanguagesList = false
-                            translateEnabled = false
-
-                        }
-                    )
-                    MenuEntry(
-                        icon = R.drawable.translate,
-                        text = stringResource(R.string._default),
-                        secondaryText = languageDestinationName(otherLanguageApp),
-                        onClick = {
-                            menuState.hide()
-                            showLanguagesList = false
-                            translateEnabled = true
-
-                        }
-                    )
-
-                    Languages.entries.forEach {
-                        if (it != Languages.System)
-                            MenuEntry(
-                                icon = R.drawable.translate,
-                                text = languageDestinationName(it),
-                                secondaryText = "",
-                                onClick = {
-                                    menuState.hide()
-                                    otherLanguageApp = it
-                                    showLanguagesList = false
-                                    translateEnabled = true
-
-                                }
-                            )
-                    }
-                }
-            }
-        }
 
         var languageDestination = languageDestination(otherLanguageApp)
 
@@ -1883,7 +1825,13 @@ fun Lyrics(
                         enabled = true,
                         onClick = {
                             translateEnabled = !translateEnabled
-                            if (translateEnabled) showLanguagesList = true
+                            if (translateEnabled) {
+                                menuState.display {
+                                    app.n_zik.android.components.menu.lyrics.LanguagesListMenu(
+                                        translateEnabled = translateEnabledState
+                                    ).MenuComponent()
+                                }
+                            }
                         },
                         modifier = Modifier
                             .padding(bottom = 10.dp, start = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 8.dp else 0.dp)
@@ -1905,527 +1853,41 @@ fun Lyrics(
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
                                 menuState.display {
-                                    Menu {
-                                        if (isLandscape && !showlyricsthumbnail){
-                                            MenuEntry(
-                                                icon = if (landscapeControls) R.drawable.checkmark else R.drawable.play,
-                                                text = stringResource(R.string.toggle_controls_landscape),
-                                                enabled = true,
-                                                onClick = {
-                                                    menuState.hide()
-                                                    landscapeControls = !landscapeControls
-                                                }
-                                            )
-                                        }
-                                        MenuEntry(
-                                            icon = R.drawable.text,
-                                            enabled = true,
-                                            text = stringResource(R.string.lyricsalignment),
-                                            onClick = {
-                                                menuState.display {
-                                                    Menu {
-                                                        MenuEntry(
-                                                            icon = R.drawable.arrow_left,
-                                                            text = stringResource(R.string.direction_left),
-                                                            secondaryText = "",
-                                                            onClick = {
-                                                                menuState.hide()
-                                                                lyricsAlignment = LyricsAlignment.Left
-                                                            }
-                                                        )
-                                                        MenuEntry(
-                                                            icon = R.drawable.arrow_down,
-                                                            text = stringResource(R.string.center),
-                                                            secondaryText = "",
-                                                            onClick = {
-                                                                menuState.hide()
-                                                                lyricsAlignment = LyricsAlignment.Center
-                                                            }
-                                                        )
-                                                        MenuEntry(
-                                                            icon = R.drawable.arrow_right,
-                                                            text = stringResource(R.string.direction_right),
-                                                            secondaryText = "",
-                                                            onClick = {
-                                                                menuState.hide()
-                                                                lyricsAlignment = LyricsAlignment.Right
-                                                            }
+                                    app.n_zik.android.components.menu.lyrics.LyricsSettingsMenu(
+                                        isLandscape = isLandscape,
+                                        translateEnabled = translateEnabledState,
+                                        isLyricsNotNull = lyrics != null,
+                                        onShowLyricsSizeDialog = { showLyricsSizeDialog = !showLyricsSizeDialog },
+                                        onEditLyrics = { editLyricsDialog.onShortClick() },
+                                        onCopyLyrics = { copyToClipboard = true },
+                                        onSearchLyricsOnline = {
+                                            val mediaMetadata = mediaMetadataProvider()
+                                            try {
+                                                context.startActivity(
+                                                    Intent(Intent.ACTION_WEB_SEARCH).apply {
+                                                        putExtra(
+                                                            SearchManager.QUERY,
+                                                            "${cleanPrefix(mediaMetadata.title.toString())} ${mediaMetadata.artist} lyrics"
                                                         )
                                                     }
-                                                }
+                                                )
+                                            } catch (e: ActivityNotFoundException) {
+                                                Toaster.e( R.string.info_not_find_app_browse_internet )
                                             }
-                                        )
-
-                                        if (!showlyricsthumbnail)
-                                            MenuEntry(
-                                                icon = R.drawable.text,
-                                                enabled = true,
-                                                text = stringResource(R.string.lyrics_size),
-                                                onClick = {
-                                                    menuState.display {
-                                                        Menu {
-                                                            MenuEntry(
-                                                                icon = R.drawable.text,
-                                                                text = stringResource(R.string.light),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    fontSize = LyricsFontSize.Light
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.text,
-                                                                text = stringResource(R.string.medium),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    fontSize = LyricsFontSize.Medium
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.text,
-                                                                text = stringResource(R.string.heavy),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    fontSize = LyricsFontSize.Heavy
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.text,
-                                                                text = stringResource(R.string.large),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    fontSize = LyricsFontSize.Large
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.text,
-                                                                text = stringResource(R.string.custom),
-                                                                secondaryText = stringResource(R.string.lyricsSizeSecondary),
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    fontSize = LyricsFontSize.Custom
-                                                                },
-                                                                onLongClick = {showLyricsSizeDialog = !showLyricsSizeDialog},
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            )
-                                        if (!showlyricsthumbnail)
-                                            MenuEntry(
-                                                icon = R.drawable.droplet,
-                                                enabled = true,
-                                                text = stringResource(R.string.lyricscolor),
-                                                onClick = {
-                                                    menuState.display {
-                                                        Menu {
-                                                            MenuEntry(
-                                                                icon = R.drawable.droplet,
-                                                                text = stringResource(R.string.theme),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsColor =
-                                                                        LyricsColor.Thememode
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.droplet,
-                                                                text = stringResource(R.string.white),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsColor =
-                                                                        LyricsColor.White
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.droplet,
-                                                                text = stringResource(R.string.black),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsColor =
-                                                                        LyricsColor.Black
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.droplet,
-                                                                text = stringResource(R.string.accent),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsColor = LyricsColor.Accent
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.droplet,
-                                                                text = stringResource(R.string.fluidrainbow),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsColor =
-                                                                        LyricsColor.FluidRainbow
-                                                                }
-                                                            )
-                                                            /*MenuEntry(
-                                                                icon = R.drawable.droplet,
-                                                                text = stringResource(R.string.fluidtheme),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsColor = LyricsColor.FluidTheme
-                                                                }
-                                                            )*/
-                                                        }
-                                                    }
-                                                }
-                                            )
-                                        if (!showlyricsthumbnail)
-                                            MenuEntry(
-                                                icon = R.drawable.horizontal_bold_line,
-                                                enabled = true,
-                                                text = stringResource(R.string.lyricsoutline),
-                                                onClick = {
-                                                    menuState.display {
-                                                        Menu {
-                                                            MenuEntry(
-                                                                icon = R.drawable.close,
-                                                                text = stringResource(R.string.none),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsOutline =
-                                                                        LyricsOutline.None
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.horizontal_bold_line,
-                                                                text = stringResource(R.string.theme),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsOutline =
-                                                                        LyricsOutline.Thememode
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.horizontal_bold_line,
-                                                                text = stringResource(R.string.white),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsOutline =
-                                                                        LyricsOutline.White
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.horizontal_bold_line,
-                                                                text = stringResource(R.string.black),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsOutline =
-                                                                        LyricsOutline.Black
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.droplet,
-                                                                text = stringResource(R.string.fluidrainbow),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsOutline =
-                                                                        LyricsOutline.Rainbow
-                                                                }
-                                                            )
-                                                            if (isShowingSynchronizedLyrics) {
-                                                                MenuEntry(
-                                                                    icon = R.drawable.droplet,
-                                                                    text = stringResource(R.string.glow),
-                                                                    secondaryText = "",
-                                                                    onClick = {
-                                                                        menuState.hide()
-                                                                        lyricsOutline =
-                                                                            LyricsOutline.Glow
-                                                                    }
-                                                                )
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            )
-
-                                        //if (!showlyricsthumbnail)
-                                            MenuEntry(
-                                                icon = R.drawable.translate,
-                                                text = stringResource(R.string.translate_to, otherLanguageApp),
-                                                enabled = true,
-                                                onClick = {
-                                                    menuState.hide()
-                                                    translateEnabled = true
-                                                }
-                                            )
-                                        MenuEntry(
-                                            icon = R.drawable.translate,
-                                            text = stringResource(R.string.translate_to_other_language),
-                                            enabled = true,
-                                            onClick = {
-                                                menuState.hide()
-                                                showLanguagesList = true
-                                            }
-                                        )
-
-                                        MenuEntry(
-                                            icon = if (romanization == Romanization.Original || romanization == Romanization.Translated || romanization == Romanization.Both) R.drawable.checkmark else R.drawable.text,
-                                            enabled = true,
-                                            text = stringResource(R.string.toggle_romanization),
-                                            onClick = {
-                                                menuState.display {
-                                                    Menu {
-                                                        MenuEntry(
-                                                            icon = if (romanization == Romanization.Off) R.drawable.checkmark else R.drawable.text,
-                                                            text = stringResource(R.string.turn_off),
-                                                            secondaryText = "",
-                                                            onClick = {
-                                                                menuState.hide()
-                                                                romanization =
-                                                                    Romanization.Off
-                                                            }
-                                                        )
-                                                        MenuEntry(
-                                                            icon = if (romanization == Romanization.Original || (romanization == Romanization.Both && !showSecondLine)) R.drawable.checkmark else R.drawable.text,
-                                                            text = stringResource(R.string.original_lyrics),
-                                                            secondaryText = "",
-                                                            onClick = {
-                                                                menuState.hide()
-                                                                romanization =
-                                                                    Romanization.Original
-                                                            }
-                                                        )
-                                                        MenuEntry(
-                                                            icon = if (romanization == Romanization.Translated) R.drawable.checkmark else R.drawable.text,
-                                                            text = stringResource(R.string.translated_lyrics),
-                                                            secondaryText = "",
-                                                            onClick = {
-                                                                menuState.hide()
-                                                                romanization =
-                                                                    Romanization.Translated
-                                                            }
-                                                        )
-                                                        if (showSecondLine) {
-                                                            MenuEntry(
-                                                                icon = if (romanization == Romanization.Both) R.drawable.checkmark else R.drawable.text,
-                                                                text = stringResource(R.string.both),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    romanization =
-                                                                        Romanization.Both
-                                                                }
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        )
-                                        MenuEntry(
-                                            icon = if (showSecondLine) R.drawable.checkmark else R.drawable.close,
-                                            text = stringResource(R.string.showsecondline),
-                                            enabled = true,
-                                            onClick = {
-                                                menuState.hide()
-                                                showSecondLine = !showSecondLine
-                                            }
-                                        )
-
-                                        if (!showlyricsthumbnail && isShowingSynchronizedLyrics) {
-                                            MenuEntry(
-                                                icon = if (lyricsSizeAnimate) R.drawable.checkmark else R.drawable.close,
-                                                text = stringResource(R.string.lyricsanimate),
-                                                enabled = true,
-                                                onClick = {
-                                                    menuState.hide()
-                                                    lyricsSizeAnimate = !lyricsSizeAnimate
-                                                }
-                                            )
-                                        }
-
-                                        if (!showlyricsthumbnail)
-                                            MenuEntry(
-                                                icon = R.drawable.horizontal_bold_line_rounded,
-                                                enabled = true,
-                                                text = stringResource(R.string.highlight),
-                                                onClick = {
-                                                    menuState.display {
-                                                        Menu {
-                                                            MenuEntry(
-                                                                icon = R.drawable.horizontal_straight_line,
-                                                                text = stringResource(R.string.none),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsHighlight =
-                                                                        LyricsHighlight.None
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.horizontal_straight_line,
-                                                                text = stringResource(R.string.white),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsHighlight =
-                                                                        LyricsHighlight.White
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.horizontal_straight_line,
-                                                                text = stringResource(R.string.black),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsHighlight =
-                                                                        LyricsHighlight.Black
-                                                                }
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            )
-
-                                        if (!showlyricsthumbnail)
-                                            MenuEntry(
-                                                icon = R.drawable.droplet,
-                                                enabled = true,
-                                                text = stringResource(R.string.lyricsbackground),
-                                                onClick = {
-                                                    menuState.display {
-                                                        Menu {
-                                                            MenuEntry(
-                                                                icon = R.drawable.droplet,
-                                                                text = stringResource(R.string.none),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsBackground =
-                                                                        LyricsBackground.None
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.droplet,
-                                                                text = stringResource(R.string.white),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsBackground =
-                                                                        LyricsBackground.White
-                                                                }
-                                                            )
-                                                            MenuEntry(
-                                                                icon = R.drawable.droplet,
-                                                                text = stringResource(R.string.black),
-                                                                secondaryText = "",
-                                                                onClick = {
-                                                                    menuState.hide()
-                                                                    lyricsBackground =
-                                                                        LyricsBackground.Black
-                                                                }
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            )
-
-                                        MenuEntry(
-                                            icon = R.drawable.time,
-                                            text = stringResource(R.string.show) + " ${
-                                                if (isShowingSynchronizedLyrics) stringResource(
-                                                    R.string.unsynchronized_lyrics
-                                                ) else stringResource(R.string.synchronized_lyrics)
-                                            }",
-                                            secondaryText = if (isShowingSynchronizedLyrics) null else stringResource(
-                                                R.string.provided_by
-                                            ) + " kugou.com and LrcLib.net",
-                                            onClick = {
-                                                menuState.hide()
-                                                isShowingSynchronizedLyrics =
-                                                    !isShowingSynchronizedLyrics
-                                            }
-                                        )
-
-                                        MenuEntry(
-                                            icon = R.drawable.title_edit,
-                                            text = stringResource(R.string.edit_lyrics),
-                                            onClick = {
-                                                menuState.hide()
-                                                editLyricsDialog.onShortClick()
-                                            }
-                                        )
-
-                                        MenuEntry(
-                                            icon = R.drawable.copy,
-                                            text = stringResource(R.string.copy_lyrics),
-                                            onClick = {
-                                                menuState.hide()
-                                                copyToClipboard = true
-                                            }
-                                        )
-
-                                        MenuEntry(
-                                            icon = R.drawable.search,
-                                            text = stringResource(R.string.search_lyrics_online),
-                                            onClick = {
-                                                menuState.hide()
-                                                val mediaMetadata = mediaMetadataProvider()
-
-                                                try {
-                                                    context.startActivity(
-                                                        Intent(Intent.ACTION_WEB_SEARCH).apply {
-                                                            putExtra(
-                                                                SearchManager.QUERY,
-                                                                "${cleanPrefix(mediaMetadata.title.toString())} ${mediaMetadata.artist} lyrics"
-                                                            )
-                                                        }
+                                        },
+                                        onFetchLyricsAgain = {
+                                            Database.asyncTransaction {
+                                                lyricsTable.upsert(
+                                                    Lyrics(
+                                                        songId = mediaId,
+                                                        fixed = if (isShowingSynchronizedLyrics) lyrics?.fixed else null,
+                                                        synced = if (isShowingSynchronizedLyrics) null else lyrics?.synced,
                                                     )
-                                                } catch (e: ActivityNotFoundException) {
-                                                    Toaster.e( R.string.info_not_find_app_browse_internet )
-                                                }
+                                                )
                                             }
-                                        )
-
-                                        MenuEntry(
-                                            icon = R.drawable.sync,
-                                            text = stringResource(R.string.fetch_lyrics_again),
-                                            enabled = lyrics != null,
-                                            onClick = {
-                                                menuState.hide()
-                                                Database.asyncTransaction {
-                                                    lyricsTable.upsert(
-                                                        Lyrics(
-                                                            songId = mediaId,
-                                                            fixed = if (isShowingSynchronizedLyrics) lyrics?.fixed else null,
-                                                            synced = if (isShowingSynchronizedLyrics) null else lyrics?.synced,
-                                                        )
-                                                    )
-                                                }
-                                            }
-                                        )
-
-                                        if (isShowingSynchronizedLyrics) {
-                                            MenuEntry(
-                                                icon = R.drawable.sync,
-                                                text = stringResource(R.string.pick_from) + " LrcLib.net",
-                                                onClick = {
-                                                    menuState.hide()
-                                                    isPicking = true
-                                                }
-                                            )
-                                        }
-                                    }
+                                        },
+                                        onPickFromLrcLib = { isPicking = true }
+                                    ).MenuComponent()
                                 }
                             }
                         )
