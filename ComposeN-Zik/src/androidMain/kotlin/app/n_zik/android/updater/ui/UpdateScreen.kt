@@ -85,6 +85,7 @@ import app.n_zik.android.R
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import app.n_zik.android.uiRoundnessShape
+import app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 
 @Composable
 fun UpdateScreen(navController: NavController) {
@@ -99,6 +100,9 @@ fun UpdateScreen(navController: NavController) {
         Updater.extractVersionSuffix(it)
     } ?: Updater.extractVersionSuffix(BuildConfig.VERSION_NAME)
     var checkBetaUpdates by rememberPreference(checkBetaUpdatesKey, currentSuffix == UpdaterConstants.SUFFIX_CHAR_BETA)
+
+    var showInstallWarningDialog by remember { mutableStateOf(false) }
+    var apkPathToInstall by remember { mutableStateOf<String?>(null) }
 
     // Handle back press during download - let download continue in background
     BackHandler(enabled = downloadState is UpdateDownloadManager.DownloadState.Downloading ||
@@ -231,7 +235,8 @@ fun UpdateScreen(navController: NavController) {
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .clip(uiRoundnessShape()).clickable {
-                                                UpdateDownloadManager.installApk(context, state.filePath)
+                                                apkPathToInstall = state.filePath
+                                                showInstallWarningDialog = true
                                             },
                                         colors = CardDefaults.cardColors(containerColor = colorPalette().accent),
                                         shape = uiRoundnessShape()

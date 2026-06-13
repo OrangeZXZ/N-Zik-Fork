@@ -176,7 +176,7 @@ class PlaylistsMenu private constructor(
                     .fillMaxWidth()
             ) {
                 IconButton(
-                    onClick = ::onShortClick,
+                    onClick = { menuState.hide() },
                     icon = R.drawable.chevron_back,
                     color = colorPalette().textSecondary,
                     modifier = Modifier
