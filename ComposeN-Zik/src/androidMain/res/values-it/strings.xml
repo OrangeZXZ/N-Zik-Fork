@@ -1199,4 +1199,7 @@
   <string name="visualizer_bar">Barra visualizzatore</string>
   <string name="static_audio_waves">Barra audio</string>
   <string name="play_all_local_songs">Riproduce tutti i brani locali</string>
+  <string name="install_warning">Ricordati di eseguire il backup delle impostazioni e del database musicale. Un aggiornamento potrebbe essere danneggiato o rompere se lo schema del database viene modificato, quindi questo è altamente raccomandato.</string>
+  <string name="install_yes">Sì, installa</string>
+  <string name="install_no_backup">No, farò il primo backup</string>
 </resources>

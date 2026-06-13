@@ -1199,4 +1199,7 @@
   <string name="visualizer_bar">Vizualizátor</string>
   <string name="static_audio_waves">Zvuková lišta</string>
   <string name="play_all_local_songs">Přehrát všechny lokální skladby</string>
+  <string name="install_warning">Nezapomeňte si prosím zálohovat svá nastavení a databázi hudby. Aktualizace může být poškozena nebo porušena, pokud je databázové schéma upraveno, takže je to důrazně doporučeno.</string>
+  <string name="install_yes">Ano, nainstalovat</string>
+  <string name="install_no_backup">Ne, nejdříve si zálohuji</string>
 </resources>

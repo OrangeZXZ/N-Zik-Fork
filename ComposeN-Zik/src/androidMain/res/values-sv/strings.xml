@@ -1199,4 +1199,7 @@
   <string name="visualizer_bar">Visualizer bar</string>
   <string name="static_audio_waves">Ljudfält</string>
   <string name="play_all_local_songs">Spela alla lokala låtar</string>
+  <string name="install_warning">Kom ihåg att säkerhetskopiera dina inställningar och musikdatabas. En uppdatering kan möjligen vara korrupt eller bryta den om databasschemat är redigerat, så detta rekommenderas starkt.</string>
+  <string name="install_yes">Ja, installera</string>
+  <string name="install_no_backup">Nej, jag kommer att säkerhetskopiera först</string>
 </resources>

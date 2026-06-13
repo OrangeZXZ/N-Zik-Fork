@@ -1199,4 +1199,7 @@
   <string name="visualizer_bar">ビジュアライザーバー</string>
   <string name="static_audio_waves">オーディオ バー</string>
   <string name="play_all_local_songs">すべてのローカル曲を再生</string>
+  <string name="install_warning">設定と音楽データベースをバックアップすることを忘れないでください。 データベーススキーマが編集されている場合、更新が破損したり壊れたりする可能性がありますので、これは強くお勧めします。</string>
+  <string name="install_yes">はい、インストールします</string>
+  <string name="install_no_backup">いいえ、最初にバックアップします</string>
 </resources>
