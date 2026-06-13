@@ -239,8 +239,7 @@ fun HomeLibrary(
                     HeaderInfo( items.size.toString(), R.drawable.playlist )
                 }
 
-                // Sticky tab's tool bar
-                val buttonsList = remember(sort.sortBy) {
+                val toolbarButtons = remember(sort.sortBy) {
                     mutableListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>().apply {
                         add(sort)
                         if (sort.sortBy == app.it.fast4x.rimusic.enums.PlaylistSortBy.Custom)
@@ -254,7 +253,7 @@ fun HomeLibrary(
                     }
                 }
 
-                TabToolBar.Buttons( buttonsList )
+                TabToolBar.Buttons( toolbarButtons )
 
                 search.SearchBar( this )
 

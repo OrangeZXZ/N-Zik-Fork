@@ -735,7 +735,7 @@ fun LocalPlaylistSongs(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                val buttonsList = remember(
+                val toolbarButtons = remember(
                     playlistNotMonthlyType,
                     sort.sortBy,
                     playlist?.browseId
@@ -768,7 +768,7 @@ fun LocalPlaylistSongs(
                     }
                 }
 
-                TabToolBar.Buttons( buttonsList )
+                TabToolBar.Buttons( toolbarButtons )
 
                 if ( autosync && playlist?.browseId.isNullOrBlank() ) {
                     sync()
