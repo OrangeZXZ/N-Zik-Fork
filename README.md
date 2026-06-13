@@ -23,6 +23,7 @@
     there are plenty of great alternatives.
   </p>
 
+  
   <br>
   
 [![Latest Version](https://img.shields.io/github/v/release/N-Zik-Group/N-Zik?label=Latest%20Version)](https://github.com/N-Zik-Group/N-Zik/releases/latest)
@@ -35,6 +36,15 @@
 <br>
 <br>
 </div>
+
+---
+
+<div align="center">
+  <img src="download-card.svg" alt="N-Zik Stats" />
+  <img src="chart.svg" alt="Download Growth" />
+</div>
+
+---
 
 <div align="center">
 
