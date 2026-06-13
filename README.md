@@ -67,7 +67,7 @@ As a **Free and Open Source Software (FOSS)** project, **N‑Zik** and his **dev
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/N-Zik-Group/N-Zik)
 
-<br><br>
+<br>
 
 ## 🌍 Community
 
@@ -75,7 +75,7 @@ Join the N-Zik Discord:
 
 [![Discord](https://discord.com/api/guilds/1345079801324634193/widget.png?style=banner3)](https://discord.gg/bneHC7QRje)
 
-<br><br>
+<br>
 
 </div>
 
