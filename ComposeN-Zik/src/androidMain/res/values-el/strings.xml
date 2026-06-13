@@ -1198,4 +1198,5 @@
   <string name="ps_very_high">Πολύ Υψηλή</string>
   <string name="visualizer_bar">Γραμμή απεικόνισης</string>
   <string name="static_audio_waves">Μπάρα ήχου</string>
+  <string name="play_all_local_songs">Αναπαραγωγή όλων των τοπικών τραγουδιών</string>
 </resources>
