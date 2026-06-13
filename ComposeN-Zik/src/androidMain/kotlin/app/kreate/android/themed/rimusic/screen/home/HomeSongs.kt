@@ -351,7 +351,7 @@ fun HomeSongs(
         }
     }
 
-    LaunchedEffect( builtInPlaylist, songSort.sortBy ) {
+    LaunchedEffect( builtInPlaylist, songSort.sortBy, songSort.sortOrder ) {
         buttons.removeAll { it is Sort<*> || it is PeriodSelector || it is PositionLock || it is DownloadAllSongsDialog || it is DeleteAllDownloadedSongsDialog || it is ExportSongsToCSVDialog }
         
         val firstButton = if( builtInPlaylist == BuiltInPlaylist.Top ) topPlaylists else songSort

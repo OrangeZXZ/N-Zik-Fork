@@ -512,14 +512,12 @@ fun Queue(
                         )
                     }
 
-                    TabToolBar.Buttons(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.weight( 1f ),
-                        buttons = mutableListOf<Button>().apply {
+                    val showDiscover = rememberPreference( showButtonPlayerDiscoverKey, false ).value
+                    val buttonsList = remember(showDiscover) {
+                        mutableListOf<Button>().apply {
                             add( locator )
                             add( search )
-                            if( rememberPreference( showButtonPlayerDiscoverKey, false ).value )
+                            if( showDiscover )
                                 add( discover )
                             add( positionLock )
                             add( repeat )
@@ -529,6 +527,13 @@ fun Queue(
                             add( addToPlaylist )
                             add( exportDialog )
                         }
+                    }
+
+                    TabToolBar.Buttons(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier.weight( 1f ),
+                        buttons = buttonsList
                     )
 
                     if( queueArrow.isEnabled )

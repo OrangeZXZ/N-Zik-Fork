@@ -232,7 +232,7 @@ fun HomeArtists(
                 }
 
                 // Sticky tab's tool bar
-                TabToolBar.Buttons(
+                val buttonsList = remember(sort.sortBy) {
                     mutableListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>().apply {
                         add(sort)
                         if (sort.sortBy == app.it.fast4x.rimusic.enums.ArtistSortBy.Custom)
@@ -243,7 +243,9 @@ fun HomeArtists(
                         add(shuffle)
                         add(itemSize)
                     }
-                )
+                }
+
+                TabToolBar.Buttons( buttonsList )
 
                 val hapticFeedback = LocalHapticFeedback.current
                 val reorderableLazyGridState = rememberReorderableLazyGridState(
