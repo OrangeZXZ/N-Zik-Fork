@@ -47,3 +47,6 @@ Fixed: Thumbnail disappearing bug in Online Artist/Album/Playlist menus caused b
 Refactored: Moved menu directory from temporary kreate namespace to the permanent app.n_zik.android.components.menu package across the entire application
 Refactored: Migrated the remaining screens (`HistoryList`, `LocalSongSearch`, `Podcast`, `StatisticsPage`) to use the new `app.n_zik` item menus.
 Removed: Entirely eliminated legacy item menu imports outside of their definition file (`MediaItemMenu.kt`).
+Refactored: Migrated PlayerMenu and PlayerItemMenu to the new app.n_zik namespace, finalizing the menu architecture transition.
+Removed: Completely deleted the legacy MediaItemMenu.kt and MediaItemGridMenu.kt files.
+Added: Inline cover editing capability for songs and videos using the generic InputTextDialog directly within SongItemMenu, VideoItemMenu, and PlayerItemMenu.

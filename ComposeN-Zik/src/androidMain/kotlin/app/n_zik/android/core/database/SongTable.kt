@@ -319,6 +319,9 @@ interface SongTable {
     @Query("UPDATE Song SET title = :title WHERE id = :songId")
     fun updateTitle( songId: String, title: String ): Int
 
+    @Query("UPDATE Song SET thumbnailUrl = :thumbnailUrl WHERE id = :songId")
+    fun updateCover( songId: String, thumbnailUrl: String ): Int
+
     @Query("UPDATE Song SET position = :position WHERE id = :songId")
     fun updatePosition( songId: String, position: Int ): Int
 

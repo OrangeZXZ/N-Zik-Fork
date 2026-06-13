@@ -70,6 +70,9 @@ import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.component.SongItem
 import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import app.it.fast4x.rimusic.cleanPrefix
+import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import app.kreate.android.me.knighthat.component.song.ChangeAuthorDialog
 import app.kreate.android.me.knighthat.component.song.GoToAlbum
 import app.kreate.android.me.knighthat.component.song.GoToArtist
@@ -158,6 +161,15 @@ class PlayerItemMenu private constructor(
         //<editor-fold defaultstate="collapsed" desc="Buttons">
         val renameSong = RenameSongDialog { song }
         val changeAuthor = ChangeAuthorDialog { song }
+        var showChangeCoverDialog by remember { mutableStateOf(false) }
+        val changeCover = object : MenuIcon, Descriptive, Clickable {
+            override val iconId: Int = R.drawable.cover_edit
+            override val messageId: Int = R.string.update_cover
+            @get:Composable
+            override val menuIconTitle: String get() = stringResource(messageId)
+            override fun onShortClick() { showChangeCoverDialog = true }
+            override fun onLongClick() {}
+        }
         val startRadio = Radio { listOf(song) }
         val addToFavorite = LikeComponent { listOf(song) }
         
@@ -263,11 +275,12 @@ class PlayerItemMenu private constructor(
             mutableListOf<Button>().apply {
                 add(renameSong)           // 1
                 add(changeAuthor)         // 2
-                add(startRadio)           // 3
-                add(equalizerButton)      // 4
-                add(sleepTimerButton)     // 5
-                add(addToFavorite)        // 6
-                add(addToPlaylist)        // 7
+                add(changeCover)          // 3
+                add(startRadio)           // 4
+                add(equalizerButton)      // 5
+                add(sleepTimerButton)     // 6
+                add(addToFavorite)        // 7
+                add(addToPlaylist)        // 8
                 
                 // Go to Album (Always visible, priority to direct navigation)
                 add(object : MenuIcon, Descriptive, Clickable {
@@ -371,6 +384,22 @@ class PlayerItemMenu private constructor(
         //<editor-fold desc="Dialog renders">
         renameSong.Render()
         changeAuthor.Render()
+        if (showChangeCoverDialog) {
+            InputTextDialog(
+                onDismiss = { showChangeCoverDialog = false },
+                title = stringResource(R.string.update_cover),
+                value = cleanPrefix(song.thumbnailUrl ?: ""),
+                placeholder = stringResource(R.string.cover),
+                setValue = { newValue ->
+                    Database.asyncTransaction {
+                        Database.songTable.updateCover(song.id, "$MODIFIED_PREFIX$newValue")
+                        Toaster.done()
+                    }
+                    showChangeCoverDialog = false
+                    menuState.hide()
+                }
+            )
+        }
         
         if (showRefetchDialog) {
             ConfirmationDialog(
