@@ -133,7 +133,7 @@ class LocalArtistItemMenu private constructor(
                         thumbnailUrl = thumbnailUrl,
                         modifier = Modifier
                             .size(Dimensions.thumbnails.album / 2)
-                            .clip(uiRoundnessShape())
+                            .clip(thumbnailShape())
                     )
                 }
 
