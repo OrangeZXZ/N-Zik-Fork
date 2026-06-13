@@ -39,7 +39,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -735,37 +737,39 @@ fun LocalPlaylistSongs(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                val toolbarButtons = remember(
+                val toolbarButtons = remember { mutableStateListOf<Button>() }
+
+                LaunchedEffect(
                     playlistNotMonthlyType,
                     sort.sortBy,
+                    sort.sortOrder,
                     playlist?.browseId
                 ) {
-                    mutableListOf<Button>().apply {
-                        if (playlistNotMonthlyType)
-                            this.add( pin )
-                        if ( sort.sortBy == PlaylistSongSortBy.Custom ) {
-                            this.add( positionLock )
-                            this.add( renumberDialog )
-                        }
-
-                        this.add( downloadAllDialog )
-                        this.add( deleteDownloadsDialog )
-                        this.add( itemSelector )
-                        this.add( playNext )
-                        this.add( enqueue )
-                        this.add( addToFavorite )
-                        this.add( addToPlaylist )
-                        if( !playlist?.browseId.isNullOrBlank() ) {
-                            this.add( syncComponent )
-                            this.add( listenOnYT )
-                        }
-                        this.add( renameDialog )
-                        this.add( deleteDialog )
-                        this.add( exportDialog )
-                        this.add( thumbnailPicker )
-                        this.add( resetThumbnail )
-                        this.add( resetCache )
+                    toolbarButtons.clear()
+                    if (playlistNotMonthlyType)
+                        toolbarButtons.add( pin )
+                    if ( sort.sortBy == PlaylistSongSortBy.Custom ) {
+                        toolbarButtons.add( positionLock )
+                        toolbarButtons.add( renumberDialog )
                     }
+
+                    toolbarButtons.add( downloadAllDialog )
+                    toolbarButtons.add( deleteDownloadsDialog )
+                    toolbarButtons.add( itemSelector )
+                    toolbarButtons.add( playNext )
+                    toolbarButtons.add( enqueue )
+                    toolbarButtons.add( addToFavorite )
+                    toolbarButtons.add( addToPlaylist )
+                    if( !playlist?.browseId.isNullOrBlank() ) {
+                        toolbarButtons.add( syncComponent )
+                        toolbarButtons.add( listenOnYT )
+                    }
+                    toolbarButtons.add( renameDialog )
+                    toolbarButtons.add( deleteDialog )
+                    toolbarButtons.add( exportDialog )
+                    toolbarButtons.add( thumbnailPicker )
+                    toolbarButtons.add( resetThumbnail )
+                    toolbarButtons.add( resetCache )
                 }
 
                 TabToolBar.Buttons( toolbarButtons )

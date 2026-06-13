@@ -32,7 +32,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -239,18 +241,19 @@ fun HomeLibrary(
                     HeaderInfo( items.size.toString(), R.drawable.playlist )
                 }
 
-                val toolbarButtons = remember(sort.sortBy) {
-                    mutableListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>().apply {
-                        add(sort)
-                        if (sort.sortBy == app.it.fast4x.rimusic.enums.PlaylistSortBy.Custom)
-                            add(positionLock)
-                        add(sync)
-                        add(search)
-                        add(shuffle)
-                        add(newPlaylistDialog)
-                        add(importPlaylistDialog)
-                        add(itemSize)
-                    }
+                val toolbarButtons = remember { mutableStateListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>() }
+
+                LaunchedEffect(sort.sortBy, sort.sortOrder) {
+                    toolbarButtons.clear()
+                    toolbarButtons.add(sort)
+                    if (sort.sortBy == app.it.fast4x.rimusic.enums.PlaylistSortBy.Custom)
+                        toolbarButtons.add(positionLock)
+                    toolbarButtons.add(sync)
+                    toolbarButtons.add(search)
+                    toolbarButtons.add(shuffle)
+                    toolbarButtons.add(newPlaylistDialog)
+                    toolbarButtons.add(importPlaylistDialog)
+                    toolbarButtons.add(itemSize)
                 }
 
                 TabToolBar.Buttons( toolbarButtons )

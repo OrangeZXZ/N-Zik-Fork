@@ -45,7 +45,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -267,17 +269,18 @@ fun HomeAlbums(
                     HeaderInfo(items.size.toString(), R.drawable.album)
                 }
 
-                val toolbarButtons = remember(sort.sortBy) {
-                    mutableListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>().apply {
-                        add(sort)
-                        if (sort.sortBy == app.it.fast4x.rimusic.enums.AlbumSortBy.Custom)
-                            add(positionLock)
-                        add(sync)
-                        add(search)
-                        add(randomizer)
-                        add(shuffle)
-                        add(itemSize)
-                    }
+                val toolbarButtons = remember { mutableStateListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>() }
+
+                LaunchedEffect(sort.sortBy, sort.sortOrder) {
+                    toolbarButtons.clear()
+                    toolbarButtons.add(sort)
+                    if (sort.sortBy == app.it.fast4x.rimusic.enums.AlbumSortBy.Custom)
+                        toolbarButtons.add(positionLock)
+                    toolbarButtons.add(sync)
+                    toolbarButtons.add(search)
+                    toolbarButtons.add(randomizer)
+                    toolbarButtons.add(shuffle)
+                    toolbarButtons.add(itemSize)
                 }
 
                 TabToolBar.Buttons( toolbarButtons )
