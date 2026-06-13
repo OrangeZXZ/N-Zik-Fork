@@ -53,8 +53,19 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                             Database.playlistTable
                                     .update( playlist.copy(isEditable = true) )
 
-                        remotePlaylist.songs
-                                      .map( Innertube.SongItem::asMediaItem )
+                        val allSongs = remotePlaylist.songs.toMutableList()
+                        var continuation = remotePlaylist.songsContinuation
+                        while (continuation != null) {
+                            val contPage = YtMusic.getPlaylistContinuation(continuation).getOrNull()
+                            if (contPage != null) {
+                                allSongs.addAll(contPage.songs)
+                                continuation = contPage.continuation
+                            } else {
+                                break
+                            }
+                        }
+
+                        allSongs.map( Innertube.SongItem::asMediaItem )
                                       .let {
                                           mapIgnore( playlist, *it.toTypedArray() )
                                       }
