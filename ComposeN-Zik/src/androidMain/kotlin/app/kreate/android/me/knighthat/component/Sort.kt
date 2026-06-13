@@ -36,8 +36,8 @@ import app.it.fast4x.rimusic.utils.Preference
 import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
-import app.kreate.android.me.knighthat.component.menu.GridMenu
-import app.kreate.android.me.knighthat.component.menu.ListMenu
+import app.n_zik.android.components.menu.GridMenu
+import app.n_zik.android.components.menu.ListMenu
 import app.kreate.android.me.knighthat.enums.TextView
 
 open class Sort<T: Enum<T>> (
@@ -175,5 +175,6 @@ open class Sort<T: Enum<T>> (
         )
     }
 }
+
 
 

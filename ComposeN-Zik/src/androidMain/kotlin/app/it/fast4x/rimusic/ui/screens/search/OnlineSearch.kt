@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.search
+package app.it.fast4x.rimusic.ui.screens.search
 
 import androidx.compose.ui.draw.clip
 
@@ -75,7 +75,7 @@ import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.it.fast4x.rimusic.ui.components.themed.Header
-import app.kreate.android.me.knighthat.component.menu.search.SearchItemMenu
+import app.n_zik.android.components.menu.search.SearchItemMenu
 import app.it.fast4x.rimusic.utils.asSong
 import app.it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import app.it.fast4x.rimusic.ui.components.themed.TitleMiniSection
@@ -852,6 +852,7 @@ fun OnlineSearch(
     }
 
 }
+
 
 
 

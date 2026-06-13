@@ -101,7 +101,7 @@ import kotlinx.coroutines.withContext
 import app.kreate.android.me.knighthat.component.Sort
 import app.kreate.android.me.knighthat.component.tab.Search
 import app.kreate.android.me.knighthat.component.tab.SongShuffler
-import app.kreate.android.me.knighthat.component.menu.artist.LocalArtistItemMenu
+import app.n_zik.android.components.menu.artist.LocalArtistItemMenu
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -429,6 +429,7 @@ fun HomeArtists(
         }
     }
 }
+
 
 
 

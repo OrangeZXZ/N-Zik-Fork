@@ -42,3 +42,6 @@ Fixed: OnlineAlbumItemMenu state variables to preserve album metadata edits and 
 Added: LocalArtistItemMenu and OnlineArtistItemMenu support for ArtistItem across HomeQuickPicks, HomePage, MoodList, OnlineSearchGrid, and OnlineSearchList
 Added: Bookmark toggle support for Local and Online Artist menus
 Fixed: Missing long-click context menus for Artist items across Home screens by migrating to combinedClickable
+Refactored: Centralized and migrated context menus and SongItem components to the new kreate architecture in Statistics, Quick Picks, and Artist Details pages
+Fixed: Thumbnail disappearing bug in Online Artist/Album/Playlist menus caused by empty API strings overriding valid image URLs
+Refactored: Moved menu directory from temporary kreate namespace to the permanent app.n_zik.android.components.menu package across the entire application

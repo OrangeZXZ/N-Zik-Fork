@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.menu.playlist
+package app.n_zik.android.components.menu.playlist
 
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -35,8 +35,8 @@ import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.*
-import app.kreate.android.me.knighthat.component.menu.GridMenu
-import app.kreate.android.me.knighthat.component.menu.ListMenu
+import app.n_zik.android.components.menu.GridMenu
+import app.n_zik.android.components.menu.ListMenu
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.R
@@ -202,9 +202,9 @@ class OnlinePlaylistItemMenu private constructor(
             withContext(Dispatchers.IO) {
                 val result = YtMusic.getPlaylist(playlist.key).getOrNull()
                 if (result != null) {
-                    displayTitle = result.playlist.title ?: displayTitle
-                    displayAuthor = result.playlist.channel?.name ?: displayAuthor
-                    displayThumbnailUrl = result.playlist.thumbnail?.url ?: displayThumbnailUrl
+                    displayTitle = result.playlist.title.takeIf { !it.isNullOrBlank() } ?: displayTitle
+                    displayAuthor = result.playlist.channel?.name.takeIf { !it.isNullOrBlank() } ?: displayAuthor
+                    displayThumbnailUrl = result.playlist.thumbnail?.url.takeIf { !it.isNullOrBlank() } ?: displayThumbnailUrl
                     songs = result.songs.mapNotNull { it.asSong }
                 } else {
                     songs = emptyList() // Failed to fetch or no songs
@@ -384,3 +384,4 @@ class OnlinePlaylistItemMenu private constructor(
         }
     }
 }
+

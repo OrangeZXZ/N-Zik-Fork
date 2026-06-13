@@ -50,7 +50,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
-import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
+import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 
 @ExperimentalMaterial3Api
@@ -166,6 +166,7 @@ fun ArtistAlbums(
     }
 
 }
+
 
 
 

@@ -88,7 +88,7 @@ import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import app.n_zik.android.core.coil.ImageCacheFactory
-import app.kreate.android.me.knighthat.component.menu.song.SongItemMenu
+import app.n_zik.android.components.menu.song.SongItemMenu
 import app.kreate.android.me.knighthat.component.tab.ItemSelector
 import app.n_zik.android.uiRoundnessShape
 
@@ -428,6 +428,7 @@ fun SongItem(
         trailingContent?.invoke( this )
     }
 }
+
 
 
 

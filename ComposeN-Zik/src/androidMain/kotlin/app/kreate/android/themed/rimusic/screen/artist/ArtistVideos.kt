@@ -1,4 +1,4 @@
-﻿package app.kreate.android.themed.rimusic.screen.artist
+package app.kreate.android.themed.rimusic.screen.artist
 
 import androidx.compose.ui.draw.clip
 
@@ -35,7 +35,7 @@ import app.it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import app.it.fast4x.rimusic.ui.components.themed.Title
 import app.it.fast4x.rimusic.ui.items.VideoItem
 import app.it.fast4x.rimusic.ui.items.VideoItemPlaceholder
-import app.kreate.android.me.knighthat.component.menu.video.VideoItemMenu
+import app.n_zik.android.components.menu.video.VideoItemMenu
 import app.it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
 
 import app.it.fast4x.rimusic.utils.addNext
@@ -163,6 +163,7 @@ fun ArtistVideos(
         )
     }
 }
+
 
 
 

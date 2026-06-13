@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.menu.album
+package app.n_zik.android.components.menu.album
 
 import app.n_zik.android.core.database.*
 
@@ -74,8 +74,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import app.n_zik.android.core.coil.ImageCacheFactory
-import app.kreate.android.me.knighthat.component.menu.GridMenu
-import app.kreate.android.me.knighthat.component.menu.ListMenu
+import app.n_zik.android.components.menu.GridMenu
+import app.n_zik.android.components.menu.ListMenu
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -459,6 +459,7 @@ class AlbumItemMenu private constructor(
         }
     }
 }
+
 
 
 

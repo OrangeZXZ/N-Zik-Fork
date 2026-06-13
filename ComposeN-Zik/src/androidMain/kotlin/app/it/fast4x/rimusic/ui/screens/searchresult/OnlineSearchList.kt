@@ -61,10 +61,10 @@ import app.it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import app.it.fast4x.rimusic.ui.items.VideoItem
 import app.it.fast4x.rimusic.ui.items.VideoItemPlaceholder
 import app.kreate.android.me.knighthat.component.SongItem
-import app.kreate.android.me.knighthat.component.menu.video.VideoItemMenu
-import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
-import app.kreate.android.me.knighthat.component.menu.artist.OnlineArtistItemMenu
-import app.kreate.android.me.knighthat.component.menu.playlist.OnlinePlaylistItemMenu
+import app.n_zik.android.components.menu.video.VideoItemMenu
+import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
+import app.n_zik.android.components.menu.artist.OnlineArtistItemMenu
+import app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu
 import app.kreate.android.me.knighthat.utils.Toaster
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -180,7 +180,7 @@ fun OnlineSearchList(
                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 } else if (item is Innertube.PlaylistItem) {
                                     menuState.display {
-                                        app.kreate.android.me.knighthat.component.menu.playlist.OnlinePlaylistItemMenu(
+                                        app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu(
                                             navController = navController,
                                             playlist = item
                                         ).MenuComponent()
@@ -384,6 +384,7 @@ private fun getItemFrom(tabIndex: Int): (it.fast4x.innertube.models.MusicShelfRe
     3 -> Innertube.VideoItem.Companion::from
     else -> Innertube.PlaylistItem.Companion::from
 }
+
 
 
 

@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.menu.artist
+package app.n_zik.android.components.menu.artist
 
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -23,6 +23,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.it.fast4x.rimusic.cleanPrefix
 import app.it.fast4x.rimusic.enums.MenuStyle
+import app.it.fast4x.rimusic.models.Artist
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.MenuState
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
@@ -31,6 +32,7 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
+import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.conditional
@@ -38,8 +40,8 @@ import app.it.fast4x.rimusic.utils.disableScrollingTextKey
 import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
-import app.kreate.android.me.knighthat.component.menu.GridMenu
-import app.kreate.android.me.knighthat.component.menu.ListMenu
+import app.n_zik.android.components.menu.GridMenu
+import app.n_zik.android.components.menu.ListMenu
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.n_zik.android.core.coil.ImageCacheFactory
@@ -48,30 +50,25 @@ import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.thumbnailShape
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.secondary
-import it.fast4x.innertube.Innertube
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import app.it.fast4x.rimusic.utils.asSong
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.forcePlayAtIndex
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
-class OnlineArtistItemMenu private constructor(
-    private val navController: NavController,
-    private val artist: Innertube.ArtistItem,
+class LocalArtistItemMenu private constructor(
+    private val artist: Artist,
     override val menuState: MenuState,
     styleState: MutableState<MenuStyle>
 ) : Menu {
 
     companion object {
         @Composable
-        operator fun invoke(navController: NavController, artist: Innertube.ArtistItem): OnlineArtistItemMenu =
-            OnlineArtistItemMenu(
-                navController = navController,
+        operator fun invoke(artist: Artist): LocalArtistItemMenu =
+            LocalArtistItemMenu(
                 artist = artist,
                 menuState = LocalMenuState.current,
                 styleState = rememberPreference(menuStyleKey, MenuStyle.List)
@@ -173,9 +170,9 @@ class OnlineArtistItemMenu private constructor(
                 }
 
                 // Trailing content (Bookmark & Share)
-                val isFollowing by remember(artist.key) {
+                val isFollowing by remember(artist.id) {
                     Database.artistTable
-                        .isFollowing(artist.key)
+                        .isFollowing(artist.id)
                         .distinctUntilChanged()
                 }.collectAsState(false, Dispatchers.IO)
 
@@ -188,7 +185,7 @@ class OnlineArtistItemMenu private constructor(
                         color = colorPalette().favoritesIcon,
                         onClick = {
                             CoroutineScope(Dispatchers.IO).launch {
-                                Database.artistTable.toggleFollow(artist.key)
+                                Database.artistTable.toggleFollow(artist.id)
                             }
                         },
                         modifier = Modifier
@@ -202,7 +199,7 @@ class OnlineArtistItemMenu private constructor(
                         onClick = {
                             val intent = Intent(Intent.ACTION_SEND).apply {
                                 type = "text/plain"
-                                putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/channel/${artist.key}")
+                                putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/channel/${artist.id}")
                             }
                             context.startActivity(Intent.createChooser(intent, null))
                         },
@@ -222,10 +219,10 @@ class OnlineArtistItemMenu private constructor(
         var showChangeTitleDialog by remember { mutableStateOf(false) }
         var showChangeCoverDialog by remember { mutableStateOf(false) }
 
-        val dbArtist by app.n_zik.android.core.database.Database.artistTable.findById(artist.key).collectAsState(initial = null, context = kotlinx.coroutines.Dispatchers.IO)
+        var displayTitle by remember { mutableStateOf(artist.name) }
+        var displayThumbnailUrl by remember { mutableStateOf(artist.thumbnailUrl) }
 
-        var displayTitle by remember { mutableStateOf(artist.info?.name) }
-        var displayThumbnailUrl by remember { mutableStateOf(artist.thumbnail?.url) }
+        val dbArtist by Database.artistTable.findById(artist.id).collectAsState(initial = artist, context = Dispatchers.IO)
 
         LaunchedEffect(dbArtist) {
             dbArtist?.let {
@@ -235,107 +232,70 @@ class OnlineArtistItemMenu private constructor(
         }
 
         if (showChangeTitleDialog) {
-            app.it.fast4x.rimusic.ui.components.themed.InputTextDialog(
+            InputTextDialog(
                 onDismiss = { showChangeTitleDialog = false },
-                title = stringResource(app.n_zik.android.R.string.update_title),
+                title = stringResource(R.string.update_title),
                 value = displayTitle ?: "",
-                placeholder = stringResource(app.n_zik.android.R.string.title),
+                placeholder = stringResource(R.string.title),
                 setValue = { text ->
-                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-                        val currentArtist = dbArtist ?: app.it.fast4x.rimusic.models.Artist(
-                            id = artist.key,
-                            name = artist.info?.name,
-                            thumbnailUrl = artist.thumbnail?.url,
-                            timestamp = System.currentTimeMillis(),
-                            isYoutubeArtist = true
-                        )
-                        app.n_zik.android.core.database.Database.artistTable.upsert(currentArtist.copy(name = text))
+                    CoroutineScope(Dispatchers.IO).launch {
+                        Database.artistTable.update(artist.copy(name = text))
                     }
                 }
             )
         }
 
         if (showChangeCoverDialog) {
-            app.it.fast4x.rimusic.ui.components.themed.InputTextDialog(
+            InputTextDialog(
                 onDismiss = { showChangeCoverDialog = false },
-                title = stringResource(app.n_zik.android.R.string.update_cover),
+                title = stringResource(R.string.update_cover),
                 value = displayThumbnailUrl ?: "",
-                placeholder = stringResource(app.n_zik.android.R.string.cover),
+                placeholder = stringResource(R.string.cover),
                 setValue = { text ->
-                    kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-                        val currentArtist = dbArtist ?: app.it.fast4x.rimusic.models.Artist(
-                            id = artist.key,
-                            name = artist.info?.name,
-                            thumbnailUrl = artist.thumbnail?.url,
-                            timestamp = System.currentTimeMillis(),
-                            isYoutubeArtist = true
-                        )
-                        app.n_zik.android.core.database.Database.artistTable.upsert(currentArtist.copy(thumbnailUrl = text))
+                    CoroutineScope(Dispatchers.IO).launch {
+                        Database.artistTable.update(artist.copy(thumbnailUrl = text))
                     }
                 }
             )
         }
 
         val binder = app.n_zik.android.LocalPlayerServiceBinder.current
+        val songs by Database.artistSongs(artist.id).collectAsState(initial = emptyList(), context = Dispatchers.IO)
 
-        var artistPage by remember { mutableStateOf<it.fast4x.innertube.requests.ArtistPage?>(null) }
-        var isFetching by remember { mutableStateOf(true) }
-
-        LaunchedEffect(artist.key) {
-            withContext(kotlinx.coroutines.Dispatchers.IO) {
-                artistPage = it.fast4x.innertube.YtMusic.getArtistPage(artist.key).getOrNull()
-            }
-            isFetching = false
-        }
-
-        val playRadio = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
-            override val iconId: Int = app.n_zik.android.R.drawable.radio
-            override val messageId: Int = app.n_zik.android.R.string.start_radio
+        val playAll = object : MenuIcon, Descriptive, Clickable {
+            override val iconId: Int = R.drawable.play
+            override val messageId: Int = R.string.play_all_local_songs
             @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
             override fun onShortClick() {
-                if (isFetching) {
-                    app.kreate.android.me.knighthat.utils.Toaster.w(app.n_zik.android.R.string.opening_url)
+                if (songs.isNotEmpty()) {
+                    binder?.stopRadio()
+                    binder?.player?.forcePlayAtIndex(songs.map { it.asMediaItem }, 0)
+                    menuState.hide()
                 } else {
-                    val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
-                    artistPage?.sections?.forEach { section ->
-                        section.items.forEach { item ->
-                            if (item is Innertube.SongItem) {
-                                item.asSong?.asMediaItem?.let { allMediaItems.add(it) }
-                            } else if (item is Innertube.VideoItem) {
-                                allMediaItems.add(item.asMediaItem)
-                            }
-                        }
-                    }
-                    if (allMediaItems.isNotEmpty()) {
-                        binder?.stopRadio()
-                        binder?.player?.forcePlayAtIndex(allMediaItems, 0)
-                        menuState.hide()
-                    } else {
-                        app.kreate.android.me.knighthat.utils.Toaster.e(app.n_zik.android.R.string.no_song_found)
-                    }
+                    app.kreate.android.me.knighthat.utils.Toaster.e(R.string.no_song_found)
                 }
             }
             override fun onLongClick() {}
         }
 
-        val changeTitle = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
-            override val iconId: Int = app.n_zik.android.R.drawable.title_edit
-            override val messageId: Int = app.n_zik.android.R.string.update_title
+        val changeTitle = object : MenuIcon, Descriptive, Clickable {
+            override val iconId: Int = R.drawable.title_edit
+            override val messageId: Int = R.string.update_title
             @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
             override fun onShortClick() { showChangeTitleDialog = true }
             override fun onLongClick() {}
         }
 
-        val changeCover = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
-            override val iconId: Int = app.n_zik.android.R.drawable.cover_edit
-            override val messageId: Int = app.n_zik.android.R.string.update_cover
+        val changeCover = object : MenuIcon, Descriptive, Clickable {
+            override val iconId: Int = R.drawable.cover_edit
+            override val messageId: Int = R.string.update_cover
             @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
             override fun onShortClick() { showChangeCoverDialog = true }
             override fun onLongClick() {}
         }
 
-        buttons = mutableListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>().apply {
-            add(playRadio)
+        buttons = mutableListOf<Button>().apply {
+            add(playAll)
             add(changeTitle)
             add(changeCover)
         }
@@ -348,7 +308,7 @@ class OnlineArtistItemMenu private constructor(
             ArtistItemDisplay(
                 title = displayTitle,
                 thumbnailUrl = displayThumbnailUrl,
-                subscribersCount = artist.subscribersCountText
+                subscribersCount = "${songs.size} ${stringResource(R.string.songs)}"
             )
 
             if (menuStyle == MenuStyle.List)
@@ -358,3 +318,6 @@ class OnlineArtistItemMenu private constructor(
         }
     }
 }
+
+
+

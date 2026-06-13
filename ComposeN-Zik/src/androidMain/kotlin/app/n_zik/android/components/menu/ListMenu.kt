@@ -1,4 +1,4 @@
-﻿package app.kreate.android.me.knighthat.component.menu
+package app.n_zik.android.components.menu
 
 import androidx.compose.ui.draw.clip
 
@@ -31,8 +31,8 @@ import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.utils.conditional
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey
 import app.it.fast4x.rimusic.utils.rememberPreference
-import app.kreate.android.me.knighthat.component.menu.MenuConstants.CONTENT_HEIGHT_FRACTION
-import app.kreate.android.me.knighthat.component.menu.MenuConstants.CONTENT_TOP_PADDING
+import app.n_zik.android.components.menu.MenuConstants.CONTENT_HEIGHT_FRACTION
+import app.n_zik.android.components.menu.MenuConstants.CONTENT_TOP_PADDING
 
 object ListMenu {
 
@@ -98,6 +98,7 @@ object ListMenu {
         trailingContent()
     }
 }
+
 
 
 

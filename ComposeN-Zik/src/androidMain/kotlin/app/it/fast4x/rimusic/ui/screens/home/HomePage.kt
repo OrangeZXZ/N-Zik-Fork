@@ -57,9 +57,9 @@ import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.UiType
 import app.n_zik.android.typography
-import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
-import app.kreate.android.me.knighthat.component.menu.artist.OnlineArtistItemMenu
-import app.kreate.android.me.knighthat.component.menu.playlist.OnlinePlaylistItemMenu
+import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
+import app.n_zik.android.components.menu.artist.OnlineArtistItemMenu
+import app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
@@ -360,6 +360,7 @@ fun HomePage(
 
     }
 }
+
 
 
 

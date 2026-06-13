@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.menu.album
+package app.n_zik.android.components.menu.album
 
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -38,8 +38,8 @@ import app.it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.*
-import app.kreate.android.me.knighthat.component.menu.GridMenu
-import app.kreate.android.me.knighthat.component.menu.ListMenu
+import app.n_zik.android.components.menu.GridMenu
+import app.n_zik.android.components.menu.ListMenu
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.it.fast4x.rimusic.ui.components.themed.InputTextDialog
 import app.kreate.android.me.knighthat.component.tab.DownloadAllSongsDialog
@@ -329,10 +329,10 @@ class OnlineAlbumItemMenu private constructor(
             withContext(Dispatchers.IO) {
                 val result = it.fast4x.innertube.Innertube.albumPage(it.fast4x.innertube.models.bodies.BrowseBody(browseId = album.key))?.getOrNull()
                 if (result != null) {
-                    displayTitle = result.title ?: displayTitle
-                    displayAuthors = result.authors?.joinToString(", ") { it.name ?: "" } ?: displayAuthors
-                    displayYear = result.year ?: displayYear
-                    displayThumbnailUrl = result.thumbnail?.url ?: displayThumbnailUrl
+                    displayTitle = result.title.takeIf { !it.isNullOrBlank() } ?: displayTitle
+                    displayAuthors = result.authors?.joinToString(", ") { it.name ?: "" }?.takeIf { it.isNotBlank() } ?: displayAuthors
+                    displayYear = result.year.takeIf { !it.isNullOrBlank() } ?: displayYear
+                    displayThumbnailUrl = result.thumbnail?.url.takeIf { !it.isNullOrBlank() } ?: displayThumbnailUrl
                     songs = result.songsPage?.items?.mapNotNull { it.asSong } ?: emptyList()
                     app.n_zik.android.core.database.Database.asyncTransaction {
                         app.n_zik.android.core.database.Database.albumTable.insertIgnore(app.it.fast4x.rimusic.models.Album(
@@ -502,3 +502,4 @@ class OnlineAlbumItemMenu private constructor(
         }
     }
 }
+

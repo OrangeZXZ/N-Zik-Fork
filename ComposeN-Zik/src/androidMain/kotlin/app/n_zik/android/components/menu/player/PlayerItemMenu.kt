@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.menu.player
+package app.n_zik.android.components.menu.player
 
 import app.n_zik.android.core.database.*
 
@@ -68,8 +68,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.component.SongItem
-import app.kreate.android.me.knighthat.component.menu.GridMenu
-import app.kreate.android.me.knighthat.component.menu.ListMenu
+import app.n_zik.android.components.menu.GridMenu
+import app.n_zik.android.components.menu.ListMenu
 import app.kreate.android.me.knighthat.component.song.ChangeAuthorDialog
 import app.kreate.android.me.knighthat.component.song.GoToAlbum
 import app.kreate.android.me.knighthat.component.song.GoToArtist
@@ -471,6 +471,7 @@ class PlayerItemMenu private constructor(
         }
     }
 }
+
 
 
 

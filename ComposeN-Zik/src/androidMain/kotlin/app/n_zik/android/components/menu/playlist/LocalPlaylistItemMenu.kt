@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.menu.playlist
+package app.n_zik.android.components.menu.playlist
 
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -33,8 +33,8 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.*
-import app.kreate.android.me.knighthat.component.menu.GridMenu
-import app.kreate.android.me.knighthat.component.menu.ListMenu
+import app.n_zik.android.components.menu.GridMenu
+import app.n_zik.android.components.menu.ListMenu
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.R
@@ -367,3 +367,4 @@ class LocalPlaylistItemMenu private constructor(
         }
     }
 }
+

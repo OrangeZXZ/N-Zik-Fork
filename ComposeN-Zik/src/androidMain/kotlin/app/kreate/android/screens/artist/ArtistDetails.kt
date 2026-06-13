@@ -86,8 +86,8 @@ import app.it.fast4x.rimusic.ui.items.AlbumItem
 import app.it.fast4x.rimusic.ui.items.ArtistItem
 import app.it.fast4x.rimusic.ui.items.PlaylistItem
 import app.it.fast4x.rimusic.ui.items.VideoItem
-import app.kreate.android.me.knighthat.component.menu.video.VideoItemMenu
-import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
+import app.n_zik.android.components.menu.video.VideoItemMenu
+import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 
 import app.it.fast4x.rimusic.ui.styling.px
@@ -498,9 +498,18 @@ fun ArtistDetails(
                                 thumbnailSizePx = albumThumbnailSizePx,
                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                 disableScrollingText = disableScrollingText,
-                                modifier = Modifier.clip(uiRoundnessShape()).clickable {
-                                    navController.navigate("${NavRoutes.playlist.name}/${playlist.key}")
-                                }
+                                modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                    onClick = { navController.navigate("${NavRoutes.playlist.name}/${playlist.key}") },
+                                    onLongClick = {
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        menuState.display {
+                                            app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu(
+                                                navController = navController,
+                                                playlist = playlist
+                                            ).MenuComponent()
+                                        }
+                                    }
+                                )
                             )
                         }
                     }
@@ -550,9 +559,18 @@ fun ArtistDetails(
                                 thumbnailSizePx = albumThumbnailSizePx,
                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                 disableScrollingText = disableScrollingText,
-                                modifier = Modifier.clip(uiRoundnessShape()).clickable {
-                                    navController.navigate("${NavRoutes.artist.name}/${artist.key}")
-                                }
+                                modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                    onClick = { navController.navigate("${NavRoutes.artist.name}/${artist.key}") },
+                                    onLongClick = {
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        menuState.display {
+                                            app.n_zik.android.components.menu.artist.OnlineArtistItemMenu(
+                                                navController = navController,
+                                                artist = artist
+                                            ).MenuComponent()
+                                        }
+                                    }
+                                )
                             )
                         }
                     }
@@ -643,6 +661,7 @@ fun ArtistDetails(
         }
     }
 }
+
 
 
 

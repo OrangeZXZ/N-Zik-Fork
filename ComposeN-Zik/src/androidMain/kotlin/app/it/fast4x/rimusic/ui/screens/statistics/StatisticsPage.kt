@@ -72,9 +72,9 @@ import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.components.themed.NonQueuedMediaItemMenu
 import app.it.fast4x.rimusic.ui.items.AlbumItem
 import app.it.fast4x.rimusic.ui.items.ArtistItem
-import app.kreate.android.me.knighthat.component.menu.artist.LocalArtistItemMenu
+import app.n_zik.android.components.menu.artist.LocalArtistItemMenu
 import app.it.fast4x.rimusic.ui.items.PlaylistItem
-import app.it.fast4x.rimusic.ui.items.SongItem
+import app.kreate.android.me.knighthat.component.SongItem
 import app.it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.px
@@ -322,23 +322,17 @@ fun StatisticsPage(
                                 binder?.player?.enqueue(songs.get(it).asMediaItem)
                             }
                         ) {
-                            SongItem(
-                                song = songs.get(it).asMediaItem,
-                                onDownloadClick = {
-                                    binder?.cache?.removeResource(songs.get(it).asMediaItem.mediaId)
-                                    Database.asyncTransaction {
-                                        formatTable.deleteBySongId( songs[it].id )
-                                    }
-                                    manageDownload(
-                                        context = context,
-                                        mediaItem = songs.get(it).asMediaItem,
-                                        downloadState = isDownloaded
+                            app.kreate.android.me.knighthat.component.SongItem(
+                                song = songs[it],
+                                navController = navController,
+                                onClick = {
+                                    binder?.stopRadio()
+                                    binder?.player?.forcePlayAtIndex(
+                                        songs.map(app.it.fast4x.rimusic.models.Song::asMediaItem),
+                                        it
                                     )
                                 },
-                                downloadState = currentDownloadState,
-                                thumbnailSizeDp = thumbnailSizeDp,
-                                thumbnailSizePx = thumbnailSize,
-                                onThumbnailContent = {
+                                thumbnailOverlay = {
                                     BasicText(
                                         text = "${it + 1}",
                                         style = typography().s.semiBold.center.color(colorPalette().text),
@@ -348,35 +342,7 @@ fun StatisticsPage(
                                             .width(thumbnailSizeDp)
                                             .align(Alignment.Center)
                                     )
-                                },
-                                modifier = Modifier
-                                    .background(colorPalette().background0)
-                                    .clip(uiRoundnessShape()).combinedClickable(
-                                        onLongClick = {
-                                            menuState.display {
-                                                NonQueuedMediaItemMenu(
-                                                    navController = navController,
-                                                    mediaItem = songs.get(it).asMediaItem,
-                                                    onDismiss = {
-                                                        menuState.hide()
-                                                        forceRecompose = true
-                                                    },
-                                                    disableScrollingText = disableScrollingText
-                                                )
-                                            }
-                                        },
-                                        onClick = {
-                                            binder?.stopRadio()
-                                            binder?.player?.forcePlayAtIndex(
-                                                songs.map(Song::asMediaItem),
-                                                it
-                                            )
-                                        }
-                                    )
-                                    .fillMaxWidth(),
-                                disableScrollingText = disableScrollingText,
-                                isNowPlaying = binder?.player?.isNowPlaying(songs.get(it).id) ?: false,
-                                forceRecompose = forceRecompose
+                                }
                             )
                         }
                     }
@@ -432,10 +398,21 @@ fun StatisticsPage(
                             thumbnailSizeDp = albumThumbnailSizeDp,
                             alternative = true,
                             modifier = Modifier
-                                .clip(uiRoundnessShape()).clickable(onClick = {
-                                    if (albums[it].id != "")
-                                        navController.navigate("${NavRoutes.album.name}/${albums[it].id}")
-                                }),
+                                .clip(uiRoundnessShape()).combinedClickable(
+                                    onClick = {
+                                        if (albums[it].id != "")
+                                            navController.navigate("${NavRoutes.album.name}/${albums[it].id}")
+                                    },
+                                    onLongClick = {
+                                        menuState.display {
+                                            app.it.fast4x.rimusic.ui.components.themed.AlbumsItemMenu(
+                                                navController = navController,
+                                                album = albums[it],
+                                                disableScrollingText = disableScrollingText
+                                            )
+                                        }
+                                    }
+                                ),
                             disableScrollingText = disableScrollingText
                         )
                     }
@@ -500,19 +477,29 @@ fun StatisticsPage(
                             thumbnailSizeDp = playlistThumbnailSizeDp,
                             alternative = true,
                             modifier = Modifier
-                                .clip(uiRoundnessShape()).clickable(onClick = {
-                                    val playlistId: String = playlists[it].playlist.id.toString()
-                                    if ( playlistId.isEmpty() ) return@clickable    // Fail-safe??
+                                .clip(uiRoundnessShape()).combinedClickable(
+                                    onClick = {
+                                        val playlistId: String = playlists[it].playlist.id.toString()
+                                        if ( playlistId.isEmpty() ) return@combinedClickable    // Fail-safe??
 
-                                    val pBrowseId: String = cleanPrefix(playlists[it].playlist.browseId ?: "")
-                                    val route: String =
-                                        if ( pBrowseId.isNotEmpty() )
-                                            "${NavRoutes.playlist.name}/$pBrowseId"
-                                        else
-                                            "${NavRoutes.localPlaylist.name}/$playlistId"
+                                        val pBrowseId: String = cleanPrefix(playlists[it].playlist.browseId ?: "")
+                                        val route: String =
+                                            if ( pBrowseId.isNotEmpty() )
+                                                "${NavRoutes.playlist.name}/$pBrowseId"
+                                            else
+                                                "${NavRoutes.localPlaylist.name}/$playlistId"
 
-                                    navController.navigate(route = route)
-                                }),
+                                        navController.navigate(route = route)
+                                    },
+                                    onLongClick = {
+                                        menuState.display {
+                                            app.n_zik.android.components.menu.playlist.LocalPlaylistItemMenu(
+                                                navController = navController,
+                                                playlistPreview = playlists[it]
+                                            ).MenuComponent()
+                                        }
+                                    }
+                                ),
                             disableScrollingText = disableScrollingText
                         )
                     }
@@ -541,6 +528,7 @@ fun StatisticsPage(
 
         }
 }
+
 
 
 

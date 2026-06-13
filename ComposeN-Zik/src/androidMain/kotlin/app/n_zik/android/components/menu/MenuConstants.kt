@@ -1,4 +1,4 @@
-package app.kreate.android.me.knighthat.component.menu
+package app.n_zik.android.components.menu
 
 object MenuConstants {
 
@@ -15,3 +15,4 @@ object MenuConstants {
 
     const val CONTENT_TOP_PADDING = 20
 }
+

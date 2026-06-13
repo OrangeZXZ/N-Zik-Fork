@@ -65,14 +65,14 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
-import app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu
-import app.kreate.android.me.knighthat.component.menu.artist.OnlineArtistItemMenu
-import app.kreate.android.me.knighthat.component.menu.playlist.OnlinePlaylistItemMenu
+import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
+import app.n_zik.android.components.menu.artist.OnlineArtistItemMenu
+import app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu
 import app.it.fast4x.rimusic.ui.items.VideoItem
 import app.kreate.android.me.knighthat.component.SongItem
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
-import app.kreate.android.me.knighthat.component.menu.song.SongItemMenu
-import app.kreate.android.me.knighthat.component.menu.video.VideoItemMenu
+import app.n_zik.android.components.menu.song.SongItemMenu
+import app.n_zik.android.components.menu.video.VideoItemMenu
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.LocalPlayerServiceBinder
 import androidx.compose.ui.platform.LocalContext
@@ -346,6 +346,7 @@ fun MoodList(
         )
     }
 }
+
 
 
 

@@ -1,8 +1,8 @@
 package app.it.fast4x.rimusic.ui.components.tab.toolbar
 
 import androidx.compose.runtime.Composable
-import app.kreate.android.me.knighthat.component.menu.GridMenu
-import app.kreate.android.me.knighthat.component.menu.ListMenu
+import app.n_zik.android.components.menu.GridMenu
+import app.n_zik.android.components.menu.ListMenu
 
 interface MenuIcon: Icon {
 
@@ -29,6 +29,7 @@ interface MenuIcon: Icon {
         onLongClick = if (this is Clickable) ::onLongClick else { {} }
     )
 }
+
 
 
 

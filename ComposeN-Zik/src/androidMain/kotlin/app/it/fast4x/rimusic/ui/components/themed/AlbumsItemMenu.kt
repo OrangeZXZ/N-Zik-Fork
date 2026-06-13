@@ -22,7 +22,7 @@ import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.rememberPreference
-import app.kreate.android.me.knighthat.component.menu.album.AlbumItemMenu
+import app.n_zik.android.components.menu.album.AlbumItemMenu
 import app.it.fast4x.rimusic.utils.isNetworkConnected
 import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.playlistSortByKey
@@ -90,6 +90,7 @@ fun AlbumsItemMenu(
         }
     ).MenuComponent()
 }
+
 
 
 

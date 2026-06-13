@@ -203,7 +203,7 @@ fun HomeDiscovery(
                                                 onLongClick = {
                                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.display {
-                                                        app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu(
+                                                        app.n_zik.android.components.menu.album.OnlineAlbumItemMenu(
                                                             navController = navController,
                                                             album = it
                                                         ).MenuComponent()
@@ -238,7 +238,7 @@ fun HomeDiscovery(
                                     onLongClick = {
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                         menuState.display {
-                                            app.kreate.android.me.knighthat.component.menu.album.OnlineAlbumItemMenu(
+                                            app.n_zik.android.components.menu.album.OnlineAlbumItemMenu(
                                                 navController = navController,
                                                 album = it
                                             ).MenuComponent()
@@ -541,6 +541,7 @@ fun MoodItemPlaceholder(
             .size(width, 64.dp)
     )
 }
+
 
 
 
