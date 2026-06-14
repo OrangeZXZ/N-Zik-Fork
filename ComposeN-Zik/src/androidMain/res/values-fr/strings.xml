@@ -351,7 +351,7 @@
   <string name="action_bar_show_sleep_timer_button">Afficher le bouton du minuteur de mise en veille</string>
   <string name="sort_album_year">Année de l\'album</string>
   <string name="sort_position">Position</string>
-  <string name="sort_custom_order">Commande personnalisée</string>
+  <string name="sort_custom_order">Ordre personnalisée</string>
   <string name="sort_title">Titre</string>
   <string name="sort_date_played">Date de lecture</string>
   <string name="sort_artist">Artiste</string>
@@ -1063,7 +1063,7 @@ Volume BAS : titre précédent</string>
   <string name="ai_recommendations">Recommandations AI</string>
   <string name="my_playlist_top1">Mon Top</string>
   <string name="auto_download_settings">Paramètres de téléchargement automatique</string>
-  <string name="auto_download_settings_description">Configurer les préférences de téléchargement automatique pour les chansons et les albums</string>
+  <string name="auto_download_settings_description">Configurer les préférences de téléchargement automatique pour les titres et les albums</string>
   <string name="auto_download_song_description">Télécharger automatiquement les chansons en fonction de vos préférences</string>
   <string name="auto_download_when_liked_description">Télécharger automatiquement les chansons quand vous les aimez</string>
   <string name="auto_download_when_album_bookmarked_description">Télécharger automatiquement les chansons lorsque vous signez un album</string>
