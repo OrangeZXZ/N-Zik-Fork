@@ -97,8 +97,8 @@ Join the N-Zik Discord:
 - 🕹️ **Discord Rich Presence** – Display your currently playing track directly on your Discord profile.
 
 <p align="left">
-  <img src="https://github.com/user-attachments/assets/c656b9e1-f46d-4599-91dc-576eb3ba8657" alt="Discord Rich Presence Preview 1"/><br/>
-  <img src="https://github.com/user-attachments/assets/90658d59-6c80-4f7f-95f1-8b6f9b73f78f" alt="Discord Rich Presence Preview 2"/>
+  <img width="280" height="100" src="https://github.com/user-attachments/assets/aa8a8b94-f451-4f8f-ade0-b86a1e9d8924" alt="Discord Rich Presence Preview 1"/><br/>
+  <img width="280" height="100" src="https://github.com/user-attachments/assets/573e23ea-bd2e-4717-a6be-e830be28e56b" alt="Discord Rich Presence Preview 2"/>
 </p>
 
 - 📰 **News Feed** – Explore moods, genres, releases, and albums from your favorite artists.
