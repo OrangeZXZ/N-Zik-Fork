@@ -147,28 +147,12 @@ class DiscordPresenceManager(
         // Media item exists → always show music status (playing or paused), never browsing
         if (isPlaying) {
             sendPlayingPresence(mediaItem, position, duration)
-            val currentIsPlaying = isPlaying
-            val currentPosition = position
-            startRefreshJob(
-                isPlayingProvider = { currentIsPlaying },
-                mediaItem = mediaItem,
-                getCurrentPosition = { currentPosition },
-                pausedPosition = position,
-                duration = duration
-            )
         } else {
             sendPausedPresence(duration, now, position)
-            val currentIsPlaying = isPlaying
-            val currentPosition = position
-            startRefreshJob(
-                isPlayingProvider = { currentIsPlaying },
-                mediaItem = mediaItem,
-                getCurrentPosition = { currentPosition },
-                pausedPosition = position,
-                duration = duration
-            )
         }
     }
+
+    private var cachedPausedTimestamp: Long = 0L
 
     /**
      * Send the "Paused" presence with the frozen time.
@@ -176,7 +160,18 @@ class DiscordPresenceManager(
     private fun sendPausedPresence(duration: Long, now: Long, pausedPosition: Long) {
         if (isStopped) return
         val mediaItem = lastMediaItem ?: return
-        val frozenTimestamp = now - pausedPosition
+        var frozenTimestamp = now - pausedPosition
+        
+        val mediaId = mediaItem.mediaId
+        if (cachedMediaId == mediaId && wasPaused) {
+            // Keep the previous frozen timestamp to avoid UI resets
+            frozenTimestamp = cachedPausedTimestamp
+        } else {
+            cachedMediaId = mediaId
+            cachedPausedTimestamp = frozenTimestamp
+            wasPaused = true
+        }
+
         val title = mediaItem.mediaMetadata.title?.toString().takeIf { !it.isNullOrBlank() } ?: context.getString(R.string.unknown_title)
         val artist = mediaItem.mediaMetadata.artist?.toString().takeIf { !it.isNullOrBlank() } ?: context.getString(R.string.unknown_artist)
         discordScope.launch {
@@ -313,10 +308,33 @@ class DiscordPresenceManager(
         }
     }
 
+    private var cachedMediaId: String? = null
+    private var cachedStartTime: Long = 0L
+    private var cachedEndTime: Long = 0L
+    private var wasPaused: Boolean = false
+
     private fun sendPlayingPresence(mediaItem: MediaItem, position: Long, duration: Long) {
         val currentTime = System.currentTimeMillis()
-        val calculatedStartTime = currentTime - position
-        val end = if (duration > 0) currentTime + (duration - position) else 0L
+        var calculatedStartTime = currentTime - position
+        var end = if (duration > 0) currentTime + (duration - position) else 0L
+
+        val mediaId = mediaItem.mediaId
+        if (cachedMediaId == mediaId && !wasPaused) {
+            // Allow up to 2.5 seconds of drift to account for execution delays
+            if (kotlin.math.abs(calculatedStartTime - cachedStartTime) < 2500L) {
+                calculatedStartTime = cachedStartTime
+                end = cachedEndTime
+            } else {
+                cachedStartTime = calculatedStartTime
+                cachedEndTime = end
+            }
+        } else {
+            cachedMediaId = mediaId
+            cachedStartTime = calculatedStartTime
+            cachedEndTime = end
+            wasPaused = false
+        }
+
         val title = mediaItem.mediaMetadata.title?.toString().takeIf { !it.isNullOrBlank() } ?: context.getString(R.string.unknown_title)
         val artist = mediaItem.mediaMetadata.artist?.toString().takeIf { !it.isNullOrBlank() } ?: context.getString(R.string.unknown_artist)
         discordScope.launch {
@@ -332,30 +350,5 @@ class DiscordPresenceManager(
         }
     }
 
-    /**
-     * Start the refresh job
-     */
-    private fun startRefreshJob(
-        isPlayingProvider: () -> Boolean,
-        mediaItem: MediaItem,
-        getCurrentPosition: () -> Long,
-        pausedPosition: Long,
-        duration: Long
-    ) {
-        refreshJob = discordScope.launch {
-            while (isActive && !isStopped) {
-                delay(15_000L)
-                if (!context.isNetworkAvailable) {
-                    continue
-                }
-                val isPlaying = isPlayingProvider()
-                if (isPlaying) {
-                    val pos = getCurrentPosition()
-                    sendPlayingPresence(mediaItem, pos, duration)
-                } else {
-                    sendPausedPresence(duration, System.currentTimeMillis(), pausedPosition)
-                }
-            }
-        }
-    }
+
 }

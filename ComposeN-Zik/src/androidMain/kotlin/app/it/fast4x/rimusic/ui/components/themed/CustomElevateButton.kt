@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.components.themed
+package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.compose.foundation.clickable
 
@@ -47,14 +47,12 @@ fun CustomElevatedButton(
             .doubleShadowDrop(shape, shadowOffset, shadowBlur)
             //.background(Color(0xFF010203), shape)
             .background(backgroundColor, shape)
-            .clip(shape),
-            /*
-            .clip(uiRoundnessShape()).clickable(
+            .clip(shape)
+            .clickable(
                 interactionSource = interSource,
-                indication = LocalIndication.current,
+                indication = androidx.compose.material3.ripple(),
                 onClick = onClick
             ),
-             */
         contentAlignment = Alignment.Center,
         content = content
     )
