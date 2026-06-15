@@ -392,7 +392,7 @@
   <string name="song_download_max_size">Şarkı indirme maksimum boyutu</string>
   <string name="save_to_backup">Yedeklemeye kaydet</string>
   <string name="restore_from_backup">Yedeklemeden geri yükle</string>
-  <string name="tab_miscellaneous">Misc</string>
+  <string name="tab_miscellaneous">Çeşitli</string>
   <string name="swipe_to_action">İşlem için kaydır</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Dikey şarkı listesinde bir şarkıyı sola veya sağa kaydırarak işlemleri gerçekleştirin</string>
   <string name="smart_recommendations">Akıllı öneriler</string>
@@ -623,7 +623,7 @@
   <string name="translate">Çevir</string>
   <string name="transparentbar">Şeffaf Zaman Çizelgesi Çubuğu</string>
   <string name="timelinesize">Oynatıcı Zaman Çizelgesi Boyutu</string>
-  <string name="actionspacedevenly">Spaced evenly</string>
+  <string name="actionspacedevenly">Eşit aralıklı</string>
   <string name="expandedplayer">Genişletilmiş Oynatıcı</string>
   <string name="expandedlyrics">Genişletilmiş şarkı sözleri görünümü</string>
   <string name="expandedlyricsinfo">Şarkı sözleri için küçük resim özelliği devre dışı bırakıldığında kullanılabilir</string>
