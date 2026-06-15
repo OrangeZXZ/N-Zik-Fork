@@ -1,0 +1,553 @@
+package app.n_zik.android.components.player.lyrics
+
+import android.app.SearchManager
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.util.UnstableApi
+import app.it.fast4x.rimusic.cleanPrefix
+import app.it.fast4x.rimusic.enums.*
+import app.it.fast4x.rimusic.models.Lyrics
+import app.it.fast4x.rimusic.ui.components.LocalMenuState
+import app.it.fast4x.rimusic.ui.components.themed.IconButton
+import app.it.fast4x.rimusic.ui.components.themed.LyricsSizeDialog
+import app.it.fast4x.rimusic.ui.components.themed.Menu
+import app.it.fast4x.rimusic.ui.components.themed.MenuEntry
+import app.it.fast4x.rimusic.ui.components.themed.TextPlaceholder
+import app.it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
+import app.it.fast4x.rimusic.ui.styling.Dimensions
+import app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette
+import app.it.fast4x.rimusic.ui.styling.onOverlayShimmer
+import app.it.fast4x.rimusic.utils.*
+import app.kreate.android.me.knighthat.utils.Toaster
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.R
+import app.n_zik.android.colorPalette
+import app.n_zik.android.components.player.EditLyricsDialog
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.uiRoundnessShape
+import app.n_zik.android.typography
+import com.valentinilk.shimmer.shimmer
+import kotlinx.coroutines.launch
+import kotlin.Float.Companion.POSITIVE_INFINITY
+
+
+@UnstableApi
+@Composable
+fun LyricsScreen(
+    mediaId: String,
+    isDisplayed: Boolean,
+    onDismiss: () -> Unit,
+    size: Dp,
+    mediaMetadataProvider: () -> MediaMetadata,
+    durationProvider: () -> Long,
+    ensureSongInserted: () -> Unit,
+    modifier: Modifier = Modifier,
+    clickLyricsText: Boolean,
+    trailingContent: (@Composable () -> Unit)? = null,
+    isLandscape: Boolean,
+) {
+    AnimatedVisibility(
+        visible = isDisplayed,
+        enter = fadeIn(),
+        exit = fadeOut(),
+    ) {
+        val coroutineScope = rememberCoroutineScope()
+        val context = LocalContext.current
+        val menuState = LocalMenuState.current
+        val currentView = LocalView.current
+        val binder = LocalPlayerServiceBinder.current
+
+        var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
+        var isShowingSynchronizedLyrics by rememberPreference(isShowingSynchronizedLyricsKey, false)
+        var invalidLrc by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
+        var isPicking by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
+        var lyricsColor by rememberPreference(lyricsColorKey, LyricsColor.Thememode)
+        var lyricsOutline by rememberPreference(lyricsOutlineKey, LyricsOutline.None)
+        val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey, PlayerBackgroundColors.AnimatedGradient)
+        var lyricsFontSize by rememberPreference(lyricsFontSizeKey, LyricsFontSize.Medium)
+
+        val thumbnailSize = Dimensions.thumbnails.player.song
+        val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
+
+        var showPlaceholder by remember { mutableStateOf(false) }
+        var lyrics by remember { mutableStateOf<Lyrics?>(null) }
+
+        val editLyricsDialog = EditLyricsDialog(
+            mediaId = mediaId,
+            isShowingSynchronizedLyrics = isShowingSynchronizedLyrics,
+            getLyrics = { lyrics },
+            ensureSongInserted = { ensureSongInserted() }
+        )
+
+        val text = if (isShowingSynchronizedLyrics) lyrics?.synced else lyrics?.fixed
+
+        var isError by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
+        var isErrorSync by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
+
+        val translateEnabledState = remember { mutableStateOf(false) }
+        var translateEnabled by translateEnabledState
+
+        var romanization by rememberPreference(romanizationKey, Romanization.Off)
+        var showSecondLine by rememberPreference(showSecondLineKey, false)
+        var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
+        var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
+        var languageDestination = languageDestination(otherLanguageApp)
+
+        var copyToClipboard by remember { mutableStateOf(false) }
+        if (copyToClipboard) text?.let { textCopyToClipboard(it, context) }
+
+        var fontSize by rememberPreference(lyricsFontSizeKey, LyricsFontSize.Medium)
+        val showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
+        val playerEnableLyricsPopupMessage by rememberPreference(playerEnableLyricsPopupMessageKey, true)
+        var expandedplayer by rememberPreference(expandedplayerKey, false)
+
+        var checkedLyricsLrc by remember { mutableStateOf(false) }
+        var checkedLyricsKugou by remember { mutableStateOf(false) }
+        var checkedLyricsInnertube by remember { mutableStateOf(false) }
+        var checkLyrics by remember { mutableStateOf(false) }
+
+        var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
+        var lyricsAlignment by rememberPreference(lyricsAlignmentKey, LyricsAlignment.Center)
+        var lyricsSizeAnimate by rememberPreference(lyricsSizeAnimateKey, false)
+        val mediaMetadata = mediaMetadataProvider()
+        var artistName by rememberSaveable { mutableStateOf(cleanPrefix(mediaMetadata.artist?.toString().orEmpty()))}
+        var title by rememberSaveable { mutableStateOf(cleanPrefix(mediaMetadata.title?.toString().orEmpty()))}
+        var lyricsSize by rememberPreference(lyricsSizeKey, 20f)
+        var lyricsSizeL by rememberPreference(lyricsSizeLKey, 20f)
+        var customSize = if (isLandscape) lyricsSizeL else lyricsSize
+        var showLyricsSizeDialog by rememberSaveable { mutableStateOf(false) }
+        val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
+        val translator = remember { dev.rebelonion.translator.Translator() }
+        val effectRotationEnabled by rememberPreference(effectRotationKey, false)
+        var landscapeControls by rememberPreference(landscapeControlsKey, true)
+        var jumpPrevious by rememberPreference(jumpPreviousKey,"3")
+        var isRotated by rememberSaveable { mutableStateOf(false) }
+        val rotationAngle by animateFloatAsState(targetValue = if (isRotated) 360F else 0f, animationSpec = tween(durationMillis = 200), label = "")
+        val colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
+
+        if (showLyricsSizeDialog) {
+            LyricsSizeDialog(
+                onDismiss = { showLyricsSizeDialog = false},
+                sizeValue = { lyricsSize = it },
+                sizeValueL = { lyricsSizeL = it}
+            )
+        }
+
+        LaunchedEffect(mediaMetadata.title, mediaMetadata.artist) {
+            artistName = mediaMetadata.artist?.toString().orEmpty()
+            title = cleanPrefix(mediaMetadata.title?.toString().orEmpty())
+        }
+
+        LyricsFetcher(
+            mediaId = mediaId,
+            isShowingSynchronizedLyrics = isShowingSynchronizedLyrics,
+            checkLyrics = checkLyrics,
+            artistName = artistName,
+            title = title,
+            mediaMetadata = mediaMetadata,
+            durationProvider = durationProvider,
+            coroutineScope = coroutineScope,
+            playerEnableLyricsPopupMessage = playerEnableLyricsPopupMessage,
+            onLyricsUpdated = { lyrics = it },
+            onErrorUpdated = { isError = it },
+            onCheckedLrcUpdated = { checkedLyricsLrc = checkedLyricsLrc || it },
+            onCheckedKugouUpdated = { checkedLyricsKugou = checkedLyricsKugou || it },
+            onCheckedInnertubeUpdated = { checkedLyricsInnertube = checkedLyricsInnertube || it }
+        )
+
+        editLyricsDialog.Render()
+
+        if (isPicking) {
+            LyricsTrackSelector(
+                mediaId = mediaId,
+                lyrics = lyrics,
+                initialTitle = title,
+                initialArtistName = artistName,
+                onTitleChange = { title = it },
+                onArtistNameChange = { artistName = it },
+                playerEnableLyricsPopupMessage = playerEnableLyricsPopupMessage,
+                coroutineScope = coroutineScope,
+                onSearchRetry = {
+                    isPicking = false
+                    menuState.hide()
+                    isPicking = true
+                },
+                onDismiss = { isPicking = false }
+            )
+        }
+
+        if (isShowingSynchronizedLyrics) {
+            DisposableEffect(Unit) {
+                currentView.keepScreenOn = true
+                onDispose {
+                    currentView.keepScreenOn = false
+                }
+            }
+        }
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = modifier
+                .pointerInput(Unit) { detectTapGestures(onTap = { onDismiss() }) }
+                .fillMaxSize()
+                .background(if (!showlyricsthumbnail) Color.Transparent else Color.Black.copy(0.8f))
+                .clip(thumbnailShape())
+        ) {
+            AnimatedVisibility(
+                visible = (isError && text == null) || (invalidLrc && isShowingSynchronizedLyrics),
+                enter = slideInVertically { -it },
+                exit = slideOutVertically { -it },
+                modifier = Modifier.align(Alignment.TopCenter)
+            ) {
+                androidx.compose.foundation.text.BasicText(
+                    text = stringResource(R.string.an_error_has_occurred_while_fetching_the_lyrics),
+                    style = typography().xs.center.medium.color(PureBlackColorPalette.text),
+                    modifier = Modifier
+                        .background(if (!showlyricsthumbnail) Color.Transparent else Color.Black.copy(0.4f))
+                        .padding(all = 8.dp)
+                        .fillMaxWidth()
+                )
+            }
+
+            if (text?.isEmpty() == true && !checkedLyricsLrc && !checkedLyricsKugou && !checkedLyricsInnertube) {
+                checkLyrics = !checkLyrics
+            }
+
+            if (text?.isNotEmpty() == true) {
+                if (isShowingSynchronizedLyrics) {
+                    SyncedLyricsView(
+                        text = text,
+                        currentPositionProvider = { binder?.player?.currentPosition ?: 0L },
+                        onSeekTo = { binder?.player?.seekTo(it) },
+                        showlyricsthumbnail = showlyricsthumbnail,
+                        isLandscape = isLandscape,
+                        trailingContent = trailingContent,
+                        showBackgroundLyrics = showBackgroundLyrics,
+                        lyricsBackground = lyricsBackground,
+                        showSecondLine = showSecondLine,
+                        translateEnabled = translateEnabled,
+                        romanization = romanization,
+                        languageDestination = languageDestination,
+                        translator = translator,
+                        lyricsOutline = lyricsOutline,
+                        colorPaletteMode = colorPaletteMode,
+                        fontSize = lyricsFontSize,
+                        customSize = customSize,
+                        lyricsAlignment = lyricsAlignment,
+                        lyricsSizeAnimate = lyricsSizeAnimate,
+                        lyricsColor = lyricsColor,
+                        lyricsHighlight = lyricsHighlight,
+                        clickLyricsText = clickLyricsText,
+                        thumbnailSize = thumbnailSize,
+                        isDisplayed = isDisplayed,
+                        onDismiss = onDismiss,
+                        onInvalidLrc = { invalidLrc = it }
+                    )
+                } else {
+                    UnsyncedLyricsView(
+                        text = text,
+                        showlyricsthumbnail = showlyricsthumbnail,
+                        isDisplayed = isDisplayed,
+                        showSecondLine = showSecondLine,
+                        translateEnabled = translateEnabled,
+                        romanization = romanization,
+                        languageDestination = languageDestination,
+                        translator = translator,
+                        lyricsBackground = lyricsBackground,
+                        lyricsOutline = lyricsOutline,
+                        colorPaletteMode = colorPaletteMode,
+                        fontSize = lyricsFontSize,
+                        customSize = customSize,
+                        lyricsAlignment = lyricsAlignment,
+                        lyricsColor = lyricsColor,
+                        lyricsHighlight = lyricsHighlight,
+                        thumbnailSize = thumbnailSize,
+                        clickLyricsText = clickLyricsText,
+                        onDismiss = onDismiss
+                    )
+                }
+            }
+
+            if ((text == null && !isError) || showPlaceholder) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.shimmer()
+                ) {
+                    repeat(4) {
+                        TextPlaceholder(
+                            color = colorPalette().onOverlayShimmer,
+                            modifier = Modifier.alpha(1f - it * 0.1f)
+                        )
+                    }
+                }
+            }
+
+            if (trailingContent != null) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 80.dp else 0.dp)
+                        .fillMaxWidth(0.4f)
+                ) {
+                    trailingContent()
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 16.dp else 0.dp)
+                    .fillMaxWidth(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 0.5f else if (trailingContent == null) 0.30f else 0.22f)
+            ) {
+                if (isLandscape && !showlyricsthumbnail)
+                    IconButton(
+                        icon = R.drawable.chevron_back,
+                        color = colorPalette().accent,
+                        enabled = true,
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .padding(all = 8.dp)
+                            .align(Alignment.BottomStart)
+                            .size(30.dp)
+                    )
+
+                if (showlyricsthumbnail)
+                    IconButton(
+                        icon = R.drawable.text,
+                        color = DefaultDarkColorPalette.text,
+                        enabled = true,
+                        onClick = {
+                            menuState.display {
+                                Menu {
+                                    MenuEntry(
+                                        icon = R.drawable.text,
+                                        text = stringResource(R.string.light),
+                                        secondaryText = "",
+                                        onClick = { menuState.hide(); fontSize = LyricsFontSize.Light }
+                                    )
+                                    MenuEntry(
+                                        icon = R.drawable.text,
+                                        text = stringResource(R.string.medium),
+                                        secondaryText = "",
+                                        onClick = { menuState.hide(); fontSize = LyricsFontSize.Medium }
+                                    )
+                                    MenuEntry(
+                                        icon = R.drawable.text,
+                                        text = stringResource(R.string.heavy),
+                                        secondaryText = "",
+                                        onClick = { menuState.hide(); fontSize = LyricsFontSize.Heavy }
+                                    )
+                                    MenuEntry(
+                                        icon = R.drawable.text,
+                                        text = stringResource(R.string.large),
+                                        secondaryText = "",
+                                        onClick = { menuState.hide(); fontSize = LyricsFontSize.Large }
+                                    )
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(all = 8.dp)
+                            .align(Alignment.BottomEnd)
+                            .size(24.dp)
+                    )
+            }
+            if (!showlyricsthumbnail && isDisplayed && isLandscape && landscapeControls) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color.Transparent,if (lightTheme) Color.White.copy(0.5f) else Color.Black.copy(0.5f)),
+                                startY = 0f,
+                                endY = POSITIVE_INFINITY
+                            ),
+                        )
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 10.dp)
+                ){
+                    Image(
+                        painter = painterResource(R.drawable.play_skip_back),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(colorPalette().text),
+                        modifier = Modifier
+                            .clip(uiRoundnessShape()).clickable(
+                                indication = ripple(bounded = false),
+                                interactionSource = remember { MutableInteractionSource() },
+                                onClick = {
+                                    if (jumpPrevious == "") jumpPrevious = "0"
+                                    if(binder?.player?.hasPreviousMediaItem() == false || (jumpPrevious != "0" && (binder?.player?.currentPosition ?: 0) > jumpPrevious.toInt() * 1000)
+                                    ){
+                                        binder?.player?.seekTo(0)
+                                    }
+                                    else binder?.player?.playPrevious()
+                                    if (effectRotationEnabled) isRotated = !isRotated
+                                }
+                            )
+                            .rotate(rotationAngle)
+                            .padding(horizontal = 15.dp)
+                            .size(30.dp)
+
+                    )
+                    Box {
+                        Box(modifier = Modifier
+                            .align(Alignment.Center)
+                            .size(45.dp)
+                            .background(colorPalette().accent, uiRoundnessShape())
+                        ){}
+                        Image(
+                            painter = painterResource(if (binder?.player?.isPlaying == true) R.drawable.pause else R.drawable.play),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(if (colorPaletteName == ColorPaletteName.PureBlack) Color.Black else colorPalette().text),
+                            modifier = Modifier
+                                .clip(uiRoundnessShape()).clickable(
+                                    indication = ripple(bounded = false),
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    onClick = {
+                                        if (binder?.player?.isPlaying == true) {
+                                            binder.gracefulPause()
+                                        } else {
+                                            binder?.player?.play()
+                                        }
+                                    },
+                                )
+                                .align(Alignment.Center)
+                                .rotate(rotationAngle)
+                                .padding(horizontal = 15.dp)
+                                .size(36.dp)
+
+                        )
+                    }
+                    Image(
+                        painter = painterResource(R.drawable.play_skip_forward),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(colorPalette().text),
+                        modifier = Modifier
+                            .clip(uiRoundnessShape()).clickable(
+                                indication = ripple(bounded = false),
+                                interactionSource = remember { MutableInteractionSource() },
+                                onClick = {
+                                    binder?.player?.playNext()
+                                    if (effectRotationEnabled) isRotated = !isRotated
+                                }
+                            )
+                            .rotate(rotationAngle)
+                            .padding(horizontal = 15.dp)
+                            .size(30.dp)
+
+                    )
+                }
+
+            }
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 16.dp else 0.dp)
+                    .fillMaxWidth(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 0.5f else 0.2f)
+            ) {
+
+
+                if (showlyricsthumbnail)
+                    IconButton(
+                        icon = R.drawable.translate,
+                        color = if (translateEnabled == true) colorPalette().text else colorPalette().textDisabled,
+                        enabled = true,
+                        onClick = {
+                            translateEnabled = !translateEnabled
+                            if (translateEnabled) {
+                                menuState.display {
+                                    app.n_zik.android.components.menu.lyrics.LanguagesListMenu(
+                                        translateEnabled = translateEnabledState
+                                    ).MenuComponent()
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .padding(bottom = 10.dp, start = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 8.dp else 0.dp)
+                            .align(Alignment.BottomStart)
+                            .size(24.dp)
+                    )
+
+
+                Image(
+                    painter = painterResource(R.drawable.settings),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(DefaultDarkColorPalette.text),
+                    modifier = Modifier
+                        .align(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) Alignment.BottomStart else Alignment.BottomEnd)
+                        .padding(start = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 48.dp else 0.dp)
+                        .padding(all = 4.dp)
+                        .clip(uiRoundnessShape()).clickable(
+                            indication = ripple(bounded = false),
+                            interactionSource = remember { MutableInteractionSource() },
+                            onClick = {
+                                menuState.display {
+                                    app.n_zik.android.components.menu.lyrics.LyricsSettingsMenu(
+                                        isLandscape = isLandscape,
+                                        translateEnabled = translateEnabledState,
+                                        isLyricsNotNull = lyrics != null,
+                                        onShowLyricsSizeDialog = { showLyricsSizeDialog = !showLyricsSizeDialog },
+                                        onEditLyrics = { editLyricsDialog.onShortClick() },
+                                        onCopyLyrics = { copyToClipboard = true },
+                                        onSearchLyricsOnline = {
+                                            val mediaMetadata = mediaMetadataProvider()
+                                            try {
+                                                context.startActivity(
+                                                    Intent(Intent.ACTION_WEB_SEARCH).apply {
+                                                        putExtra(
+                                                            SearchManager.QUERY,
+                                                            "${cleanPrefix(mediaMetadata.title.toString())} ${mediaMetadata.artist} lyrics"
+                                                        )
+                                                    }
+                                                )
+                                            } catch (e: ActivityNotFoundException) {
+                                                Toaster.e( R.string.info_not_find_app_browse_internet )
+                                            }
+                                        },
+                                        onFetchLyricsAgain = {
+                                            Database.asyncTransaction {
+                                                lyricsTable.upsert(
+                                                    Lyrics(
+                                                        songId = mediaId,
+                                                        fixed = if (isShowingSynchronizedLyrics) lyrics?.fixed else null,
+                                                        synced = if (isShowingSynchronizedLyrics) null else lyrics?.synced,
+                                                    )
+                                                )
+                                            }
+                                        },
+                                        onPickFromLrcLib = { isPicking = true }
+                                    ).MenuComponent()
+                                }
+                            }
+                        )
+                        .padding(all = 8.dp)
+                        .size(20.dp)
+                )
+            }
+        }
+    }
+}

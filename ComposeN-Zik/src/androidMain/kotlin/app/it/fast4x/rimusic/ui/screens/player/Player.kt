@@ -1288,7 +1288,7 @@ fun Player(
                             .navigationBarsPadding()
                     ){
                         if (!showlyricsthumbnail) {
-                            Lyrics(
+                            app.n_zik.android.components.player.lyrics.LyricsScreen(
                                 mediaId = mediaItem.mediaId,
                                 isDisplayed = isShowingLyrics,
                                 onDismiss = {
@@ -2108,7 +2108,7 @@ fun Player(
                             }
                     ) {
                         if (!showlyricsthumbnail)
-                            Lyrics(
+                            app.n_zik.android.components.player.lyrics.LyricsScreen(
                                 mediaId = mediaItem.mediaId,
                                 isDisplayed = isShowingLyrics,
                                 onDismiss = {

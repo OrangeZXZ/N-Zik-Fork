@@ -1,0 +1,107 @@
+package app.n_zik.android.components.player.lyrics
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import app.it.fast4x.rimusic.enums.ColorPaletteMode
+import app.it.fast4x.rimusic.enums.LyricsAlignment
+import app.it.fast4x.rimusic.enums.LyricsBackground
+import app.it.fast4x.rimusic.enums.LyricsColor
+import app.it.fast4x.rimusic.enums.LyricsFontSize
+import app.it.fast4x.rimusic.enums.LyricsHighlight
+import app.it.fast4x.rimusic.enums.LyricsOutline
+import app.it.fast4x.rimusic.enums.Romanization
+import app.it.fast4x.rimusic.utils.verticalFadingEdge
+import dev.rebelonion.translator.Language
+import dev.rebelonion.translator.Translator
+
+@Composable
+fun UnsyncedLyricsView(
+    text: String,
+    showlyricsthumbnail: Boolean,
+    isDisplayed: Boolean,
+    showSecondLine: Boolean,
+    translateEnabled: Boolean,
+    romanization: Romanization,
+    languageDestination: Language,
+    translator: Translator,
+    lyricsBackground: LyricsBackground,
+    lyricsOutline: LyricsOutline,
+    colorPaletteMode: ColorPaletteMode,
+    fontSize: LyricsFontSize,
+    customSize: Float,
+    lyricsAlignment: LyricsAlignment,
+    lyricsColor: LyricsColor,
+    lyricsHighlight: LyricsHighlight,
+    thumbnailSize: Dp,
+    clickLyricsText: Boolean,
+    onDismiss: () -> Unit
+) {
+    var translatedText by remember { mutableStateOf("") }
+    
+    if (showSecondLine || translateEnabled || romanization != Romanization.Off) {
+        val mutState = remember { mutableStateOf("") }
+        TranslateLyricsWithRomanization(
+            output = mutState,
+            textToTranslate = text,
+            isSync = false,
+            showSecondLine = showSecondLine,
+            romanization = romanization,
+            translateEnabled = translateEnabled,
+            translator = translator,
+            onPlaceholderDismissed = {},
+            destinationLanguage = languageDestination
+        )
+        translatedText = mutState.value
+    } else {
+        translatedText = text
+    }
+
+    Column(
+        modifier = Modifier
+            .verticalFadingEdge()
+            .background(
+                if (isDisplayed && !showlyricsthumbnail) if (lyricsBackground == LyricsBackground.Black) Color.Black.copy(
+                    0.4f
+                ) else if (lyricsBackground == LyricsBackground.White) Color.White.copy(
+                    0.4f
+                ) else Color.Transparent else Color.Transparent
+            ),
+    ) {
+        Box(
+            modifier = Modifier
+                .verticalFadingEdge()
+                .verticalScroll(rememberScrollState())
+                .fillMaxWidth()
+                .padding(vertical = thumbnailSize / 4, horizontal = 32.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            LyricsTextPainter(
+                text = translatedText,
+                isSync = false,
+                isCurrentIndex = true, // Treat all text as "current" index for unsynced colors
+                showlyricsthumbnail = showlyricsthumbnail,
+                lyricsOutline = lyricsOutline,
+                colorPaletteMode = colorPaletteMode,
+                fontSize = fontSize,
+                customSize = customSize,
+                lyricsAlignment = lyricsAlignment,
+                lyricsSizeAnimate = false, // Not used for unsynced
+                lyricsColor = lyricsColor,
+                lyricsHighlight = lyricsHighlight,
+                clickLyricsText = clickLyricsText,
+                onClick = onDismiss
+            )
+        }
+    }
+}

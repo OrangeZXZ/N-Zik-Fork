@@ -331,7 +331,7 @@ fun Thumbnail(
 
                 //if (!currentWindow.mediaItem.isLocal)
                 if (showlyricsthumbnail)
-                    Lyrics(
+                    app.n_zik.android.components.player.lyrics.LyricsScreen(
                         mediaId = currentWindow.mediaItem.mediaId,
                         isDisplayed = isShowingLyrics && error == null,
                         onDismiss = {
