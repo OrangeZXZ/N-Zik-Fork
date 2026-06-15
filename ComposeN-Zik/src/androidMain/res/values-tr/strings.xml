@@ -801,7 +801,7 @@
   <string name="no_thumbnail_present">Küçük Resim Yok</string>
   <string name="removed_thumbnail">Küçük Resim Kaldırıldı</string>
   <string name="failed_to_remove_thumbnail">Küçük Resmi Kaldırma Başarısız</string>
-  <string name="settings_enable_pip">Enable Picture-in-picture</string>
+  <string name="settings_enable_pip">Resim İçinde Resim özelliğini etkinleştir</string>
   <string name="settings_enable_pip_auto">Otomatik Resim İçinde Resim (PiP) özelliğini etkinleştir</string>
   <string name="pipmodule_cover">Kapak</string>
   <string name="settings_pip_module">Pip modülü</string>
@@ -839,7 +839,7 @@
   <string name="about_developers_designers">Geliştiriciler / Tasarımcılar</string>
   <string name="set_custom_value">Özel değer</string>
   <string name="title_youtube_music">YOUTUBE MUSIC</string>
-  <string name="enable_youtube_music_login">Enable YouTube Music login</string>
+  <string name="enable_youtube_music_login">YouTube Music girişini etkinleştir</string>
   <string name="show_cover_thumbnail_animation">Kapak küçük resim animasyonunu göster</string>
   <string name="cover_thumbnail_animation_type">Kapak animasyon türü</string>
   <string name="jump_previous">Önceki şarkının toplam süresi</string>
@@ -859,7 +859,7 @@
   <string name="action_bar_show_start_radio_button">Radyo başlat düğmesi</string>
   <string name="tab_accounts">Hesaplar</string>
   <string name="blankspace">Üstte Boş Alan</string>
-  <string name="settings_enable_autodownload_song">Enable automatic song download</string>
+  <string name="settings_enable_autodownload_song">Otomatik şarkı indirmeyi etkinleştir</string>
   <string name="settings_enable_autodownload_song_when_liked">Beğenildiğinde şarkıyı otomatik indir</string>
   <string name="settings_enable_autodownload_song_when_album_bookmarked">Auto-download song when album is bookmarked</string>
   <string name="tab_general">Genel</string>
