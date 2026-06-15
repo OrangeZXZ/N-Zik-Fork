@@ -3,7 +3,7 @@ package app.n_zik.android.components.player.lyrics
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import app.it.fast4x.rimusic.enums.Romanization
+
 import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
 import kotlinx.coroutines.Dispatchers
@@ -16,13 +16,13 @@ fun TranslateLyricsWithRomanization(
     textToTranslate: String,
     isSync: Boolean,
     showSecondLine: Boolean,
-    romanization: Romanization,
+    romanizationEnabled: Boolean,
     translateEnabled: Boolean,
     translator: Translator,
     onPlaceholderDismissed: () -> Unit,
     destinationLanguage: Language = Language.AUTO
 ) {
-    LaunchedEffect(showSecondLine, romanization, textToTranslate, destinationLanguage, translateEnabled){
+    LaunchedEffect(showSecondLine, romanizationEnabled, textToTranslate, destinationLanguage, translateEnabled){
         var destLanguage = destinationLanguage
         val result = withContext(Dispatchers.IO) {
             try {
@@ -48,21 +48,13 @@ fun TranslateLyricsWithRomanization(
                     ""
                }
                 else if (!showSecondLine || (mainTranslation.sourceText == mainTranslation.translatedText)){
-                    if (romanization == Romanization.Off) {
+                    if (!romanizationEnabled) {
                         if (translateEnabled) mainTranslation.translatedText else textToTranslate
                     }
-                    else if (romanization == Romanization.Original) if (helperTranslation.sourceText == helperTranslation.translatedText) helperTranslation.sourcePronunciation else mainTranslation.sourcePronunciation ?: mainTranslation.sourceText
-                    else if (romanization == Romanization.Translated) mainTranslation.translatedPronunciation ?: mainTranslation.translatedText
                     else if (helperTranslation.sourceText == helperTranslation.translatedText) helperTranslation.sourcePronunciation else mainTranslation.sourcePronunciation ?: mainTranslation.sourceText
                 } else {
-                    if (romanization == Romanization.Off) {
+                    if (!romanizationEnabled) {
                         textToTranslate + "\\n[${mainTranslation.translatedText}]"
-                    } else if (romanization == Romanization.Original) {
-                        if (helperTranslation.sourceText == helperTranslation.translatedText){
-                            helperTranslation.sourcePronunciation
-                        } else {mainTranslation.sourcePronunciation ?: mainTranslation.sourceText} + "\\n[${mainTranslation.translatedText}]"
-                    } else if (romanization == Romanization.Translated) {
-                        textToTranslate + "\\n[${mainTranslation.translatedPronunciation ?: mainTranslation.translatedText}]"
                     } else
                         if (helperTranslation.sourceText == helperTranslation.translatedText){
                             helperTranslation.sourcePronunciation

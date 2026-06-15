@@ -110,7 +110,7 @@ fun LyricsScreen(
         val translateEnabledState = remember { mutableStateOf(false) }
         var translateEnabled by translateEnabledState
 
-        var romanization by rememberPreference(romanizationKey, Romanization.Off)
+        var romanizationEnabled by rememberPreference(romanizationEnabledKey, true)
         var showSecondLine by rememberPreference(showSecondLineKey, false)
         var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
         var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
@@ -249,7 +249,7 @@ fun LyricsScreen(
                         lyricsBackground = lyricsBackground,
                         showSecondLine = showSecondLine,
                         translateEnabled = translateEnabled,
-                        romanization = romanization,
+                        romanizationEnabled = romanizationEnabled,
                         languageDestination = languageDestination,
                         translator = translator,
                         lyricsOutline = lyricsOutline,
@@ -273,7 +273,7 @@ fun LyricsScreen(
                         isDisplayed = isDisplayed,
                         showSecondLine = showSecondLine,
                         translateEnabled = translateEnabled,
-                        romanization = romanization,
+                        romanizationEnabled = romanizationEnabled,
                         languageDestination = languageDestination,
                         translator = translator,
                         lyricsBackground = lyricsBackground,

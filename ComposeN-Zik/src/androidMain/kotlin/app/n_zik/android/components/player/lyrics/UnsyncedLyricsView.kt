@@ -20,7 +20,7 @@ import app.n_zik.android.enums.lyrics.LyricsColor
 import app.n_zik.android.enums.lyrics.LyricsFontSize
 import app.n_zik.android.enums.lyrics.LyricsHighlight
 import app.n_zik.android.enums.lyrics.LyricsOutline
-import app.it.fast4x.rimusic.enums.Romanization
+
 import app.it.fast4x.rimusic.utils.verticalFadingEdge
 import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
@@ -32,7 +32,7 @@ fun UnsyncedLyricsView(
     isDisplayed: Boolean,
     showSecondLine: Boolean,
     translateEnabled: Boolean,
-    romanization: Romanization,
+    romanizationEnabled: Boolean,
     languageDestination: Language,
     translator: Translator,
     lyricsBackground: LyricsBackground,
@@ -49,14 +49,14 @@ fun UnsyncedLyricsView(
 ) {
     var translatedText by remember { mutableStateOf("") }
     
-    if (showSecondLine || translateEnabled || romanization != Romanization.Off) {
+    if (showSecondLine || translateEnabled || romanizationEnabled) {
         val mutState = remember { mutableStateOf("") }
         TranslateLyricsWithRomanization(
             output = mutState,
             textToTranslate = text,
             isSync = false,
             showSecondLine = showSecondLine,
-            romanization = romanization,
+            romanizationEnabled = romanizationEnabled,
             translateEnabled = translateEnabled,
             translator = translator,
             onPlaceholderDismissed = {},

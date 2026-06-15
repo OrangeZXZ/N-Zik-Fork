@@ -38,8 +38,7 @@ import app.n_zik.android.enums.lyrics.LyricsOutline
 import app.it.fast4x.rimusic.utils.lyricsOutlineKey
 import app.it.fast4x.rimusic.enums.Languages
 import app.it.fast4x.rimusic.utils.otherLanguageAppKey
-import app.it.fast4x.rimusic.enums.Romanization
-import app.it.fast4x.rimusic.utils.romanizationKey
+import app.it.fast4x.rimusic.utils.romanizationEnabledKey
 import app.it.fast4x.rimusic.utils.showSecondLineKey
 import app.it.fast4x.rimusic.utils.lyricsSizeAnimateKey
 import app.n_zik.android.enums.lyrics.LyricsHighlight
@@ -138,7 +137,7 @@ class LyricsSettingsMenu private constructor(
         var fontSize by rememberPreference(lyricsFontSizeKey, LyricsFontSize.Medium)
         var lyricsColor by rememberPreference(lyricsColorKey, LyricsColor.Thememode)
         var lyricsOutline by rememberPreference(lyricsOutlineKey, LyricsOutline.None)
-        var romanization by rememberPreference(romanizationKey, Romanization.Off)
+        var romanizationEnabled by rememberPreference(romanizationEnabledKey, true)
         var showSecondLine by rememberPreference(showSecondLineKey, false)
         var lyricsSizeAnimate by rememberPreference(lyricsSizeAnimateKey, false)
         var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
@@ -386,48 +385,13 @@ class LyricsSettingsMenu private constructor(
             })
 
             add(object : MenuIcon, Descriptive, Clickable {
-                override val iconId: Int = if (romanization == Romanization.Original || romanization == Romanization.Translated || romanization == Romanization.Both) R.drawable.checkmark else R.drawable.text
+                override val iconId: Int = if (romanizationEnabled) R.drawable.checkmark else R.drawable.text
                 override val messageId: Int = R.string.toggle_romanization
                 @get:Composable
                 override val menuIconTitle: String get() = stringResource(messageId)
                 override fun onShortClick() {
-                    menuState.display {
-                        val romItems = mutableListOf<MenuIcon>(
-                            object : MenuIcon, Descriptive, Clickable {
-                                override val iconId = if (romanization == Romanization.Off) R.drawable.checkmark else R.drawable.text
-                                override val messageId = R.string.turn_off
-                                @get:Composable override val menuIconTitle get() = stringResource(messageId)
-                                override fun onShortClick() { menuState.hide(); romanization = Romanization.Off }
-                                override fun onLongClick() {}
-                            },
-                            object : MenuIcon, Descriptive, Clickable {
-                                override val iconId = if (romanization == Romanization.Original || (romanization == Romanization.Both && !showSecondLine)) R.drawable.checkmark else R.drawable.text
-                                override val messageId = R.string.original_lyrics
-                                @get:Composable override val menuIconTitle get() = stringResource(messageId)
-                                override fun onShortClick() { menuState.hide(); romanization = Romanization.Original }
-                                override fun onLongClick() {}
-                            },
-                            object : MenuIcon, Descriptive, Clickable {
-                                override val iconId = if (romanization == Romanization.Translated) R.drawable.checkmark else R.drawable.text
-                                override val messageId = R.string.translated_lyrics
-                                @get:Composable override val menuIconTitle get() = stringResource(messageId)
-                                override fun onShortClick() { menuState.hide(); romanization = Romanization.Translated }
-                                override fun onLongClick() {}
-                            }
-                        )
-                        if (showSecondLine) {
-                            romItems.add(
-                                object : MenuIcon, Descriptive, Clickable {
-                                    override val iconId = if (romanization == Romanization.Both) R.drawable.checkmark else R.drawable.text
-                                    override val messageId = R.string.both
-                                    @get:Composable override val menuIconTitle get() = stringResource(messageId)
-                                    override fun onShortClick() { menuState.hide(); romanization = Romanization.Both }
-                                    override fun onLongClick() {}
-                                }
-                            )
-                        }
-                        SubMenuComponent(romItems)
-                    }
+                    menuState.hide()
+                    romanizationEnabled = !romanizationEnabled
                 }
                 override fun onLongClick() {}
             })

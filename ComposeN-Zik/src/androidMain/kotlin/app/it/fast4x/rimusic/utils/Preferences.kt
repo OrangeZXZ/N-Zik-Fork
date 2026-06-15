@@ -326,7 +326,7 @@ const val useYtLoginOnlyForBrowseKey = "useYtLoginOnlyForBrowse"
 const val autoLoadSongsInQueueKey = "autoLoadSongsInQueue"
 const val showSecondLineKey = "showSecondLine"
 const val VinylSizeKey = "VinylSize"
-const val romanizationKey = "romanization"
+const val romanizationEnabledKey = "romanization_enabled"
 
 const val quickPicsTrendingSongKey = "quickPicsTrendingSong"
 const val quickPicsRelatedPageKey = "quickPicsRelatedPage"

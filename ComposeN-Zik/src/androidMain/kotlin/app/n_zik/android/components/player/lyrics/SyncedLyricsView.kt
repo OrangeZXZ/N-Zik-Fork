@@ -20,15 +20,18 @@ import app.n_zik.android.enums.lyrics.LyricsColor
 import app.n_zik.android.enums.lyrics.LyricsFontSize
 import app.n_zik.android.enums.lyrics.LyricsHighlight
 import app.n_zik.android.enums.lyrics.LyricsOutline
-import app.it.fast4x.rimusic.enums.Romanization
+
 import app.n_zik.android.components.player.lyrics.utils.SynchronizedLyrics
 import app.it.fast4x.rimusic.utils.verticalFadingEdge
 import app.n_zik.android.colorPalette
 import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
 import it.fast4x.lrclib.LrcLib
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 @Composable
 fun SyncedLyricsView(
@@ -42,7 +45,7 @@ fun SyncedLyricsView(
     lyricsBackground: LyricsBackground,
     showSecondLine: Boolean,
     translateEnabled: Boolean,
-    romanization: Romanization,
+    romanizationEnabled: Boolean,
     languageDestination: Language,
     translator: Translator,
     lyricsOutline: LyricsOutline,
@@ -72,6 +75,68 @@ fun SyncedLyricsView(
         run {
             SynchronizedLyrics(sentences) {
                 currentPositionProvider() + 50L
+            }
+        }
+    }
+
+    // --- Translation cache ---
+    // Keyed on options that affect translation output; survives scroll without re-fetching.
+    val translationCache = remember(text, showSecondLine, translateEnabled, romanizationEnabled, languageDestination) {
+        mutableStateMapOf<Int, String>()
+    }
+
+    // Pre-compute translations for every sentence in the background, once per key change.
+    LaunchedEffect(text, showSecondLine, translateEnabled, romanizationEnabled, languageDestination) {
+        if (!showSecondLine && !translateEnabled && !romanizationEnabled) return@LaunchedEffect
+
+        synchronizedLyrics.sentences.forEachIndexed { index, sentence ->
+            val trimmed = sentence.second.trim()
+            if (trimmed.isEmpty()) {
+                translationCache[index] = trimmed
+                return@forEachIndexed
+            }
+            // Only fetch if not already cached
+            if (translationCache.containsKey(index)) return@forEachIndexed
+
+            withContext(Dispatchers.IO) {
+                try {
+                    val helperTranslation = translator.translate(trimmed, Language.CHINESE_TRADITIONAL, Language.AUTO)
+                    var destLanguage = languageDestination
+                    if (destLanguage == Language.AUTO) {
+                        destLanguage = if (helperTranslation.translatedText == trimmed)
+                            Language.CHINESE_TRADITIONAL
+                        else
+                            helperTranslation.sourceLanguage
+                    }
+                    val mainTranslation = translator.translate(trimmed, destLanguage, Language.AUTO)
+
+                    val outputText = if (!showSecondLine || mainTranslation.sourceText == mainTranslation.translatedText) {
+                        if (!romanizationEnabled) {
+                            if (translateEnabled) mainTranslation.translatedText else trimmed
+                        } else {
+                            if (helperTranslation.sourceText == helperTranslation.translatedText)
+                                helperTranslation.sourcePronunciation
+                            else
+                                mainTranslation.sourcePronunciation ?: mainTranslation.sourceText
+                        }
+                    } else {
+                        if (!romanizationEnabled) {
+                            trimmed + "\\n[${mainTranslation.translatedText}]"
+                        } else {
+                            val romanized = if (helperTranslation.sourceText == helperTranslation.translatedText)
+                                helperTranslation.sourcePronunciation
+                            else
+                                mainTranslation.sourcePronunciation ?: mainTranslation.sourceText
+                            romanized + "\\n[${mainTranslation.translatedPronunciation ?: mainTranslation.translatedText}]"
+                        }
+                    }
+
+                    val finalText = outputText?.replace("\\r", "\r")?.replace("\\n", "\n") ?: trimmed
+                    translationCache[index] = finalText
+                } catch (e: Exception) {
+                    Timber.e("Lyrics sync translation cache error: ${e.message}")
+                    translationCache[index] = trimmed
+                }
             }
         }
     }
@@ -133,29 +198,17 @@ fun SyncedLyricsView(
         itemsIndexed(
             items = synchronizedLyrics.sentences
         ) { index, sentence ->
-            var translatedText by remember { mutableStateOf("") }
             val trimmedSentence = sentence.second.trim()
-            
-            if (showSecondLine || translateEnabled || romanization != Romanization.Off) {
-                val mutState = remember { mutableStateOf("") }
-                TranslateLyricsWithRomanization(
-                    output = mutState,
-                    textToTranslate = trimmedSentence,
-                    isSync = true,
-                    showSecondLine = showSecondLine,
-                    romanization = romanization,
-                    translateEnabled = translateEnabled,
-                    translator = translator,
-                    onPlaceholderDismissed = {},
-                    destinationLanguage = languageDestination
-                )
-                translatedText = mutState.value
+
+            // Read from cache — no network call here, no recompose on scroll
+            val displayText = if (showSecondLine || translateEnabled || romanizationEnabled) {
+                translationCache[index] ?: trimmedSentence
             } else {
-                translatedText = trimmedSentence
+                trimmedSentence
             }
 
             LyricsTextPainter(
-                text = translatedText,
+                text = displayText,
                 isSync = true,
                 isCurrentIndex = index == synchronizedLyrics.index,
                 showlyricsthumbnail = showlyricsthumbnail,
@@ -183,4 +236,3 @@ fun SyncedLyricsView(
         }
     }
 }
-
