@@ -1,85 +1,102 @@
----
-name: 🛠️ Feature Request
+name: 💡 Feature request
 description: Suggest an idea to help us improve N-Zik
 title: "[Feature]: "
-labels:
-  - "enhancement"
-
+labels: ["enhancement"]
 body:
   - type: markdown
     attributes:
       value: |
-        **Thanks :heart: for taking the time to fill out this feature request report!**
-        We kindly ask that you search to see if an issue [already exists](https://github.com/NEVARLeVrai/N-Zik/issues) for your feature.
-
-  - type: textarea
-    attributes:
-      label: Problem Statement
-      description: |
-        What problem does this feature solve? What's your use case?
-        Example: "I want to do X because Y, and currently I can only do Z"
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Description
-      description: |
-        A clear and concise description of the feature you're interested in.
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Suggested Solution
-      description: |
-        Describe the solution you'd like. A clear and concise description of what you want to happen.
-    validations:
-      required: true
-
-  - type: textarea
-    attributes:
-      label: Alternatives
-      description: |
-        Describe alternatives you've considered.
-        A clear and concise description of any alternative solutions or features you've considered.
-    validations:
-      required: false
-
-  - type: textarea
-    attributes:
-      label: Device Information
-      description: |
-        - Device model (e.g., Samsung Galaxy S24)
-        - Android version (e.g., Android 14)
-        - App version
-      placeholder: |
-        Device: 
-        Android version: 
-        App version: 
-    validations:
-      required: false
+        ****
+        ### 💡 READ BEFORE SUBMITTING 💡
+        
+        Thanks for taking the time to suggest an idea for N-Zik!
+        In-depth details will help us understand your vision and implement it better.
+        ****
 
   - type: checkboxes
+    id: prerequisites
     attributes:
-      label: Impact Assessment
+      label: 📝 Before submitting
+      description: Please verify the following step before submitting your request.
+      options:
+        - label: I have checked for already existing feature requests.
+          required: true
+
+  - type: checkboxes
+    id: impact-assessment
+    attributes:
+      label: 📊 Impact Assessment
       description: Would this feature benefit many users or is it a niche use case?
       options:
         - label: "This would benefit many users"
         - label: "This is for a specific/niche use case"
 
-  - type: textarea
+  - type: markdown
     attributes:
-      label: Related Links & References
-      description: |
-        Add links to similar features in other apps, mockups, wireframes, or any other references that help understand this feature request.
+      value: |
+        ****
+
+  - type: textarea
+    id: device-information
+    attributes:
+      label: 📱 Device Information (Optional)
+      description: If this feature is specific to a certain platform (e.g., Android Auto, Android TV) or hardware, please specify it here.
+      placeholder: |
+        App version: 5.0.0-f Full
+        Platform Version: Android X, Android Auto/Automotive X, ...
+        Device: Smartphone Brand & Model, Car Brand & Model Year, ...
     validations:
       required: false
 
   - type: textarea
+    id: problem-statement
     attributes:
-      label: Additional Context
-      description: |
-        Add any other context about the problem here.
+      label: 🎯 Problem Statement
+      description: What problem does this feature solve? What's your use case?
+      placeholder: |
+        I want to do '...' because '...', and currently I can only do '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 💡 Description
+      description: A clear and concise description of the feature you're interested in.
+      placeholder: |
+        A new tab in the '...' called '...' that separates '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-solution
+    attributes:
+      label: ✨ Suggested Solution
+      description: Describe the solution you'd like. A clear and concise description of what you want to happen.
+      placeholder: |
+        Add a '...' button in the '...' menu to allow users to '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 Alternatives
+      description: Describe alternatives you've considered. A clear and concise description of any alternative solutions or features you've considered.
+      placeholder: |
+        Currently, I have to '...' which is '...', or use another app to '...'
     validations:
       required: false
+
+  - type: textarea
+    id: related-links
+    attributes:
+      label: 🔗 Related Links & References (Optional)
+      description: Add links to similar features in other apps, mockups, wireframes, or any other references that help understand this feature request.
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ****
