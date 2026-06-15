@@ -18,7 +18,7 @@ import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Artist
 import app.it.fast4x.rimusic.models.Event
 import app.it.fast4x.rimusic.models.Format
-import app.it.fast4x.rimusic.models.Lyrics
+import app.n_zik.android.models.Lyrics
 import app.it.fast4x.rimusic.models.Playlist
 import app.it.fast4x.rimusic.models.QueuedMediaItem
 import app.it.fast4x.rimusic.models.SearchQuery
@@ -441,6 +441,7 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
         }
     }
 }
+
 
 
 

@@ -21,7 +21,7 @@ import app.n_zik.android.components.dialog.InputDialog
 import app.n_zik.android.components.dialog.TextInputDialog
 import app.n_zik.android.components.dialog.InputDialogConstraints
 import app.n_zik.android.core.database.Database
-import app.it.fast4x.rimusic.models.Lyrics
+import app.n_zik.android.models.Lyrics
 
 class EditLyricsDialog private constructor(
     activeState: MutableState<Boolean>,
@@ -108,3 +108,4 @@ class EditLyricsDialog private constructor(
         hideDialog()
     }
 }
+

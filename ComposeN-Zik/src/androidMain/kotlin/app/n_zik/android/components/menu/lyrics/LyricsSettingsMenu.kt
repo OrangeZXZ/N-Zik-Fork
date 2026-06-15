@@ -28,13 +28,13 @@ import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.ui.components.themed.Menu as ThemedMenu
 import app.it.fast4x.rimusic.ui.components.themed.MenuEntry
 import app.it.fast4x.rimusic.utils.landscapeControlsKey
-import app.it.fast4x.rimusic.enums.LyricsAlignment
+import app.n_zik.android.enums.lyrics.LyricsAlignment
 import app.it.fast4x.rimusic.utils.lyricsAlignmentKey
-import app.it.fast4x.rimusic.enums.LyricsFontSize
+import app.n_zik.android.enums.lyrics.LyricsFontSize
 import app.it.fast4x.rimusic.utils.lyricsFontSizeKey
-import app.it.fast4x.rimusic.enums.LyricsColor
+import app.n_zik.android.enums.lyrics.LyricsColor
 import app.it.fast4x.rimusic.utils.lyricsColorKey
-import app.it.fast4x.rimusic.enums.LyricsOutline
+import app.n_zik.android.enums.lyrics.LyricsOutline
 import app.it.fast4x.rimusic.utils.lyricsOutlineKey
 import app.it.fast4x.rimusic.enums.Languages
 import app.it.fast4x.rimusic.utils.otherLanguageAppKey
@@ -42,9 +42,9 @@ import app.it.fast4x.rimusic.enums.Romanization
 import app.it.fast4x.rimusic.utils.romanizationKey
 import app.it.fast4x.rimusic.utils.showSecondLineKey
 import app.it.fast4x.rimusic.utils.lyricsSizeAnimateKey
-import app.it.fast4x.rimusic.enums.LyricsHighlight
+import app.n_zik.android.enums.lyrics.LyricsHighlight
 import app.it.fast4x.rimusic.utils.lyricsHighlightKey
-import app.it.fast4x.rimusic.enums.LyricsBackground
+import app.n_zik.android.enums.lyrics.LyricsBackground
 import app.it.fast4x.rimusic.utils.lyricsBackgroundKey
 import app.it.fast4x.rimusic.utils.isShowingSynchronizedLyricsKey
 import app.it.fast4x.rimusic.utils.showlyricsthumbnailKey
@@ -620,3 +620,4 @@ class LyricsSettingsMenu private constructor(
         }
     }
 }
+

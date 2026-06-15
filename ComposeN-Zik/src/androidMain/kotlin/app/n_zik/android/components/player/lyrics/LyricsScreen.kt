@@ -27,7 +27,8 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
 import app.it.fast4x.rimusic.cleanPrefix
 import app.it.fast4x.rimusic.enums.*
-import app.it.fast4x.rimusic.models.Lyrics
+import app.n_zik.android.enums.lyrics.*
+import app.n_zik.android.models.Lyrics
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.components.themed.LyricsSizeDialog
@@ -551,3 +552,4 @@ fun LyricsScreen(
         }
     }
 }
+

@@ -14,14 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
-import app.it.fast4x.rimusic.enums.LyricsAlignment
-import app.it.fast4x.rimusic.enums.LyricsBackground
-import app.it.fast4x.rimusic.enums.LyricsColor
-import app.it.fast4x.rimusic.enums.LyricsFontSize
-import app.it.fast4x.rimusic.enums.LyricsHighlight
-import app.it.fast4x.rimusic.enums.LyricsOutline
+import app.n_zik.android.enums.lyrics.LyricsAlignment
+import app.n_zik.android.enums.lyrics.LyricsBackground
+import app.n_zik.android.enums.lyrics.LyricsColor
+import app.n_zik.android.enums.lyrics.LyricsFontSize
+import app.n_zik.android.enums.lyrics.LyricsHighlight
+import app.n_zik.android.enums.lyrics.LyricsOutline
 import app.it.fast4x.rimusic.enums.Romanization
-import app.it.fast4x.rimusic.utils.SynchronizedLyrics
+import app.n_zik.android.components.player.lyrics.utils.SynchronizedLyrics
 import app.it.fast4x.rimusic.utils.verticalFadingEdge
 import app.n_zik.android.colorPalette
 import dev.rebelonion.translator.Language
@@ -183,3 +183,4 @@ fun SyncedLyricsView(
         }
     }
 }
+

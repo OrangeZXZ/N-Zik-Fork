@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import app.it.fast4x.rimusic.models.Lyrics
+import app.n_zik.android.models.Lyrics
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.n_zik.android.core.database.Database
@@ -263,3 +263,4 @@ fun LyricsTrackSelector(
         }
     }
 }
+

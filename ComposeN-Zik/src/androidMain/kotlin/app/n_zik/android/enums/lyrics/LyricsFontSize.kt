@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.enums
+package app.n_zik.android.enums.lyrics
 
 enum class LyricsFontSize {
     Light,
@@ -7,5 +7,6 @@ enum class LyricsFontSize {
     Large,
     Custom
 }
+
 
 

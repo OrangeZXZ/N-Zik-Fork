@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Upsert
-import app.it.fast4x.rimusic.models.Lyrics
+import app.n_zik.android.models.Lyrics
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -31,4 +31,5 @@ interface LyricsTable {
     @Upsert
     fun upsert( lyrics: Lyrics ): Long
 }
+
 

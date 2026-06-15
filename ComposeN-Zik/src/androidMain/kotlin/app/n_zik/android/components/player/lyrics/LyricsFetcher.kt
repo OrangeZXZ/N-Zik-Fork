@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.media3.common.C
 import androidx.media3.common.MediaMetadata
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.models.Lyrics
+import app.n_zik.android.models.Lyrics
 import app.n_zik.android.R
 import app.n_zik.android.core.database.Database
 import it.fast4x.innertube.Innertube
@@ -192,3 +192,4 @@ fun LyricsFetcher(
             }
     }
 }
+

@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.utils
+package app.n_zik.android.components.player.lyrics.utils
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +56,7 @@ class SynchronizedLyrics(val sentences: List<Pair<Long, String>>, private val po
         }
     }
 }
+
 
 
 

@@ -33,11 +33,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
-import app.it.fast4x.rimusic.enums.LyricsAlignment
-import app.it.fast4x.rimusic.enums.LyricsColor
-import app.it.fast4x.rimusic.enums.LyricsFontSize
-import app.it.fast4x.rimusic.enums.LyricsHighlight
-import app.it.fast4x.rimusic.enums.LyricsOutline
+import app.n_zik.android.enums.lyrics.LyricsAlignment
+import app.n_zik.android.enums.lyrics.LyricsColor
+import app.n_zik.android.enums.lyrics.LyricsFontSize
+import app.n_zik.android.enums.lyrics.LyricsHighlight
+import app.n_zik.android.enums.lyrics.LyricsOutline
 import app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import app.it.fast4x.rimusic.utils.conditional
 import app.n_zik.android.colorPalette
@@ -425,3 +425,4 @@ fun LyricsTextPainter(
         }
     }
 }
+

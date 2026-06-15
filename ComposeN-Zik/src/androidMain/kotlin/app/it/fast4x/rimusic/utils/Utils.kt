@@ -46,7 +46,7 @@ import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.context
 import app.it.fast4x.rimusic.models.Album
-import app.it.fast4x.rimusic.models.Lyrics
+import app.n_zik.android.models.Lyrics
 import app.it.fast4x.rimusic.models.Song
 import app.n_zik.android.download.utils.MyDownloadHelper
 import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
@@ -636,3 +636,4 @@ suspend fun addToYtLikedSongs(mediaItems: List<MediaItem>){
             }
     }
 }
+

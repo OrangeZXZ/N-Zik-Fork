@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.enums
+package app.n_zik.android.enums.lyrics
 
 import androidx.compose.ui.text.style.TextAlign
 
@@ -16,5 +16,6 @@ enum class LyricsAlignment {
             Right -> TextAlign.End
         }
 }
+
 
 
