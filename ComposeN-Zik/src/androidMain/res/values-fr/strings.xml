@@ -103,7 +103,7 @@
   <string name="invincible_service">Service protégé</string>
   <string name="turning_off_battery_optimizations_is_not_enough">Quand \"désactiver les optimisations de la batterie\" ne suffit pas</string>
   <string name="player">Lecteur</string>
-  <string name="persistent_queue">Joueur persistant</string>
+  <string name="persistent_queue">Lecteur persistant</string>
   <string name="remember_queue_scroll_position">Se souvenir de la position de défilement de la file d\'attente</string>
   <string name="remember_queue_scroll_position_description">Garder la position de défilement lors de la fermeture et de la réouverture de la file d\'attente du joueur</string>
   <string name="save_and_restore_playing_songs">Enregistrer et restaurer la lecture des titres</string>
@@ -529,8 +529,8 @@
   <string name="vimusic_show_search_button_in_navigation_bar">Afficher le bouton de recherche dans la barre de navigation</string>
   <string name="vismusic_only_in_left_right_navigation_bar">Uniquement pour le mode ViMusic ui dans la barre de navigation gauche/droite</string>
   <string name="enable_monthly_playlists_creation">Activer la création de playlists mensuelles</string>
-  <string name="show_monthly_playlists_in_quick_picks">Afficher les listes de lecture mensuelles dans les sélections rapides</string>
-  <string name="show_monthly_playlists_in_library">Afficher les listes de lecture mensuelles dans la bibliothèque</string>
+  <string name="show_monthly_playlists_in_quick_picks">Afficher les playlists mensuelles dans la sélection rapide</string>
+  <string name="show_monthly_playlists_in_library">Afficher les playlists mensuelles dans la bibliothèque</string>
   <string name="info_no_singles_yet">Pas encore de morceaux</string>
   <string name="info_no_albums_yet">Pas encore d\'albums</string>
   <string name="info_no_songs_yet">Pas encore de titres</string>
@@ -642,7 +642,7 @@
   <string name="set_cache_location">Emplacement du cache</string>
   <string name="info_private_cache_location_can_t_cleaned">L\'emplacement du cache privé, ne peut pas être nettoyé par le système</string>
   <string name="error_file_unsupported_format">Ce fichier semble avoir un format non supporté</string>
-  <string name="charts">Tableau</string>
+  <string name="charts">Classements</string>
   <string name="thumbnailtype">Type de pochette d\'album</string>
   <string name="showvisthumbnail">Afficher la pochette pour le visualiseur</string>
   <string name="black_background_for_visualizer">Fond sombre pour le visualiseur</string>
@@ -686,7 +686,7 @@
   <string name="playlistindicatorinfo2">Le titre est présent dans une des playlists</string>
   <string name="statsfornerdsplayer">Afficher les statistiques pour les nerds dans le lecteur</string>
   <string name="discover">Découvrir</string>
-  <string name="discoverinfo">Supprime les titres aimés et les playlists de la file d\'attente</string>
+  <string name="discoverinfo">Supprimer les titres de la file d\'attente s\'ils figurent dans les favoris ou dans des playlists</string>
   <string name="controls_header_customize">Personnaliser</string>
   <string name="controls_title_blur_effect">Effet de flou</string>
   <string name="controls_title_medley_duration">Durée du Medley</string>
@@ -1080,7 +1080,7 @@ Volume BAS : titre précédent</string>
   <string name="pause_between_songs_description">Ajouter une pause entre les chansons</string>
   <string name="notifications">Notifications</string>
   <string name="playback">Lecture</string>
-  <string name="player_controls">Contrôles du joueur</string>
+  <string name="player_controls">Commandes du lecteur</string>
   <string name="player_controls_colors">Le joueur contrôle les couleurs</string>
   <string name="theme_color">Couleur du thème</string>
   <string name="cover_color">Couleur de couverture</string>
@@ -1186,11 +1186,11 @@ Volume BAS : titre précédent</string>
   <string name="snake_exit">Quitter</string>
   <string name="skip_time_buttons">Ignorer les boutons de temps</string>
   <string name="hide_status_bar">Masquer la barre d\'état</string>
-  <string name="crossfade">Crossfade</string>
+  <string name="crossfade">Fondu enchaîné</string>
   <string name="crossfade_description">Activer la transition en douceur entre les chansons</string>
   <string name="crossfade_duration">Durée du fondu enchaîné</string>
-  <string name="crossfade_gapless">Fondu enchaîné sans faille</string>
-  <string name="crossfade_gapless_description">Ne pas faire de fondus croisés à partir du même album</string>
+  <string name="crossfade_gapless">Fondu enchaîné sans interruption</string>
+  <string name="crossfade_gapless_description">Ne pas effectuer de fondu enchaîné entre des titres d\'un même album</string>
   <string name="disable_navigation_back_stack">Retourner directement à la page d\'accueil</string>
   <string name="disable_navigation_back_stack_description">Lorsque cette option est activée, la pression sur Retour saute les pages intermédiaires et retourne directement à l\'écran d\'accueil</string>
   <string name="player_swipe_sensitivity">Sensibilité du balayage du joueur</string>
