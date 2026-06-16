@@ -12,11 +12,11 @@
   <text x="20" y="24" fill="#2b3137" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="600">📈 Download Growth (Current: 12.8k)</text>
 
   <!-- Area under the line -->
-  <polygon fill="url(#fillGrad)" points="30.0,48.9,120 30.0,48.9 66.0,48.0 102.0,45.5 138.0,41.4 174.0,39.1 210.0,38.8 246.0,36.3 282.0,35.1 318.0,33.8 354.0,33.3 390.0,32.6 426.0,31.5 462.0,30.0 498.0,120.0 534.0,115.5 570.0,113.4 570.0,113.4,120" />
+  <polygon fill="url(#fillGrad)" points="30.0,48.9,120 30.0,48.9 63.8,48.0 97.5,45.5 131.2,41.4 165.0,39.1 198.8,38.8 232.5,36.3 266.2,35.1 300.0,33.8 333.8,33.3 367.5,32.6 401.2,31.5 435.0,30.0 468.8,120.0 502.5,115.5 536.2,113.4 570.0,111.2 570.0,111.2,120" />
 
   <!-- Main line -->
-  <polyline fill="none" stroke="#0366d6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="30.0,48.9 66.0,48.0 102.0,45.5 138.0,41.4 174.0,39.1 210.0,38.8 246.0,36.3 282.0,35.1 318.0,33.8 354.0,33.3 390.0,32.6 426.0,31.5 462.0,30.0 498.0,120.0 534.0,115.5 570.0,113.4" />
+  <polyline fill="none" stroke="#0366d6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="30.0,48.9 63.8,48.0 97.5,45.5 131.2,41.4 165.0,39.1 198.8,38.8 232.5,36.3 266.2,35.1 300.0,33.8 333.8,33.3 367.5,32.6 401.2,31.5 435.0,30.0 468.8,120.0 502.5,115.5 536.2,113.4 570.0,111.2" />
 
   <!-- Bright endpoint dot -->
-  <circle cx="570.0" cy="113.4" r="4" fill="#ffffff" stroke="#0366d6" stroke-width="2.5" />
+  <circle cx="570.0" cy="111.2" r="4" fill="#ffffff" stroke="#0366d6" stroke-width="2.5" />
 </svg>
