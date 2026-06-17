@@ -154,7 +154,7 @@ jobs:
           python3 plot_chart.py
 
       - name: Commit and Push Updates
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "chore: update stats and chart [skip ci]"
           file_pattern: download-card.svg chart.svg history.json
