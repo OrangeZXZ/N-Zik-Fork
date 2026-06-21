@@ -52,6 +52,11 @@ import app.it.fast4x.rimusic.utils.isShowingSynchronizedLyricsKey
 import app.it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import app.it.fast4x.rimusic.utils.languageDestinationName
 import app.it.fast4x.rimusic.utils.lyricsIntervalIndicatorKey
+import app.it.fast4x.rimusic.utils.thumbnailTapEnabledKey
+import app.it.fast4x.rimusic.utils.clickOnLyricsTextKey
+import app.it.fast4x.rimusic.utils.showLyricsStateKey
+import app.it.fast4x.rimusic.utils.showBackgroundLyricsKey
+import app.it.fast4x.rimusic.utils.playerEnableLyricsPopupMessageKey
 
 @UnstableApi
 class LyricsSettingsMenu private constructor(
@@ -149,7 +154,13 @@ class LyricsSettingsMenu private constructor(
         var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
         var isShowingSynchronizedLyrics by rememberPreference(isShowingSynchronizedLyricsKey, false)
         val showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
-        var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
+        var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, true)
+        var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
+        var showLyricsStateKeyPref by rememberPreference(showLyricsStateKey, false)
+        var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
+        var playerEnableLyricsPopupMessage by rememberPreference(playerEnableLyricsPopupMessageKey, true)
+
+        val otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
 
         buttons = mutableListOf<Button>().apply {
             if (isLandscape && !showlyricsthumbnail) {
@@ -402,6 +413,68 @@ class LyricsSettingsMenu private constructor(
                 override fun onShortClick() {
                     menuState.hide()
                     showSecondLine = !showSecondLine
+                }
+                override fun onLongClick() {}
+            })
+
+            add(object : MenuIcon, Descriptive, Clickable {
+                override val iconId: Int = if (thumbnailTapEnabled) R.drawable.checkmark else R.drawable.song_lyrics
+                override val messageId: Int = R.string.toggle_lyrics
+                @get:Composable
+                override val menuIconTitle: String get() = stringResource(messageId)
+                override fun onShortClick() {
+                    menuState.hide()
+                    thumbnailTapEnabled = !thumbnailTapEnabled
+                }
+                override fun onLongClick() {}
+            })
+
+            add(object : MenuIcon, Descriptive, Clickable {
+                override val iconId: Int = if (clickLyricsText) R.drawable.checkmark else R.drawable.arrow_down
+                override val messageId: Int = R.string.click_lyrics_text
+                @get:Composable
+                override val menuIconTitle: String get() = stringResource(messageId)
+                override fun onShortClick() {
+                    menuState.hide()
+                    clickLyricsText = !clickLyricsText
+                }
+                override fun onLongClick() {}
+            })
+
+            add(object : MenuIcon, Descriptive, Clickable {
+                override val iconId: Int = if (showLyricsStateKeyPref) R.drawable.checkmark else R.drawable.bookmark
+                override val messageId: Int = R.string.save_lyrics_state
+                @get:Composable
+                override val menuIconTitle: String get() = stringResource(messageId)
+                override fun onShortClick() {
+                    menuState.hide()
+                    showLyricsStateKeyPref = !showLyricsStateKeyPref
+                }
+                override fun onLongClick() {}
+            })
+
+            if (showlyricsthumbnail) {
+                add(object : MenuIcon, Descriptive, Clickable {
+                    override val iconId: Int = if (showBackgroundLyrics) R.drawable.checkmark else R.drawable.image
+                    override val messageId: Int = R.string.show_background_in_lyrics
+                    @get:Composable
+                    override val menuIconTitle: String get() = stringResource(messageId)
+                    override fun onShortClick() {
+                        menuState.hide()
+                        showBackgroundLyrics = !showBackgroundLyrics
+                    }
+                    override fun onLongClick() {}
+                })
+            }
+
+            add(object : MenuIcon, Descriptive, Clickable {
+                override val iconId: Int = if (playerEnableLyricsPopupMessage) R.drawable.checkmark else R.drawable.alert
+                override val messageId: Int = R.string.player_enable_lyrics_popup_message
+                @get:Composable
+                override val menuIconTitle: String get() = stringResource(messageId)
+                override fun onShortClick() {
+                    menuState.hide()
+                    playerEnableLyricsPopupMessage = !playerEnableLyricsPopupMessage
                 }
                 override fun onLongClick() {}
             })
