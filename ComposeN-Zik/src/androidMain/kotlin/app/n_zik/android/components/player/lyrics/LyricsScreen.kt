@@ -163,7 +163,6 @@ fun LyricsScreen(
         }
 
         var lyricsCustomColor by rememberPreference(lyricsCustomColorKey, android.graphics.Color.WHITE)
-        val context = LocalContext.current
         var bitmapCover by remember { mutableStateOf<android.graphics.Bitmap?>(null) }
         var dominantColor by remember { mutableStateOf(android.graphics.Color.DKGRAY) }
 
@@ -172,8 +171,9 @@ fun LyricsScreen(
                 bitmapCover = app.it.fast4x.rimusic.utils.getBitmapFromUrl(context, mediaMetadata.artworkUri.toString())
             }
         }
-        LaunchedEffect(bitmapCover) {
-            dominantColor = app.it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf(bitmapCover ?: app.kreate.android.drawable.APP_ICON_BITMAP).accent.toArgb()
+        LaunchedEffect(bitmapCover, lightTheme) {
+            val palette = bitmapCover?.let { app.it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf(it, !lightTheme) }
+            dominantColor = palette?.accent?.toArgb() ?: android.graphics.Color.DKGRAY
         }
 
         LyricsFetcher(
@@ -354,46 +354,7 @@ fun LyricsScreen(
                             .size(30.dp)
                     )
 
-                if (showlyricsthumbnail)
-                    IconButton(
-                        icon = R.drawable.text,
-                        color = DefaultDarkColorPalette.text,
-                        enabled = true,
-                        onClick = {
-                            menuState.display {
-                                Menu {
-                                    MenuEntry(
-                                        icon = R.drawable.text,
-                                        text = stringResource(R.string.light),
-                                        secondaryText = "",
-                                        onClick = { menuState.hide(); fontSize = LyricsFontSize.Light }
-                                    )
-                                    MenuEntry(
-                                        icon = R.drawable.text,
-                                        text = stringResource(R.string.medium),
-                                        secondaryText = "",
-                                        onClick = { menuState.hide(); fontSize = LyricsFontSize.Medium }
-                                    )
-                                    MenuEntry(
-                                        icon = R.drawable.text,
-                                        text = stringResource(R.string.heavy),
-                                        secondaryText = "",
-                                        onClick = { menuState.hide(); fontSize = LyricsFontSize.Heavy }
-                                    )
-                                    MenuEntry(
-                                        icon = R.drawable.text,
-                                        text = stringResource(R.string.large),
-                                        secondaryText = "",
-                                        onClick = { menuState.hide(); fontSize = LyricsFontSize.Large }
-                                    )
-                                }
-                            }
-                        },
-                        modifier = Modifier
-                            .padding(all = 8.dp)
-                            .align(Alignment.BottomEnd)
-                            .size(24.dp)
-                    )
+
             }
             if (!showlyricsthumbnail && isDisplayed && isLandscape && landscapeControls) {
                 Row(
@@ -491,27 +452,6 @@ fun LyricsScreen(
                     .fillMaxWidth(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 0.5f else 0.2f)
             ) {
 
-
-                if (showlyricsthumbnail)
-                    IconButton(
-                        icon = R.drawable.translate,
-                        color = if (translateEnabled == true) colorPalette().text else colorPalette().textDisabled,
-                        enabled = true,
-                        onClick = {
-                            translateEnabled = !translateEnabled
-                            if (translateEnabled) {
-                                menuState.display {
-                                    app.n_zik.android.components.menu.lyrics.LanguagesListMenu(
-                                        translateEnabled = translateEnabledState
-                                    ).MenuComponent()
-                                }
-                            }
-                        },
-                        modifier = Modifier
-                            .padding(bottom = 10.dp, start = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 8.dp else 0.dp)
-                            .align(Alignment.BottomStart)
-                            .size(24.dp)
-                    )
 
 
                 Image(

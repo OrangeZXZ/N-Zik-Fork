@@ -1877,81 +1877,7 @@ fun AppearanceSettings(
                 )
             }
 
-        if (search.inputValue.isBlank() || stringResource(R.string.toggle_lyrics).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.toggle_lyrics).contains(search.inputValue, true) || (stringResource(R.string.by_tapping_on_the_thumbnail)).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.song_lyrics,
-                    title = stringResource(R.string.toggle_lyrics),
-                    text = stringResource(R.string.by_tapping_on_the_thumbnail),
-                    isChecked = thumbnailTapEnabled,
-                    onCheckedChange = { thumbnailTapEnabled = it }
-                )
-            }
 
-        if (search.inputValue.isBlank() || stringResource(R.string.click_lyrics_text).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.click_lyrics_text).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.arrow_down,
-                    title = stringResource(R.string.click_lyrics_text),
-                    text = "",
-                    isChecked = clickLyricsText,
-                    onCheckedChange = { clickLyricsText = it }
-                )
-            }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.save_lyrics_state).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.save_lyrics_state).contains(search.inputValue, true) || (stringResource(R.string.save_lyrics_state_description)).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.bookmark,
-                    title = stringResource(R.string.save_lyrics_state),
-                    text = stringResource(R.string.save_lyrics_state_description),
-                    isChecked = showLyricsStateKey,
-                    onCheckedChange = { showLyricsStateKey = it }
-                )
-            }
-
-        if (showlyricsthumbnail)
-            if (search.inputValue.isBlank() || stringResource(R.string.show_background_in_lyrics).contains(
-                    search.inputValue,
-                    true
-                )
-            )
-                if (search.inputValue.isBlank() || stringResource(R.string.show_background_in_lyrics).contains(search.inputValue, true)) {
-                    OtherSwitchSettingEntry(
-                    icon = R.drawable.image,
-                        title = stringResource(R.string.show_background_in_lyrics),
-                        text = "",
-                        isChecked = showBackgroundLyrics,
-                        onCheckedChange = { showBackgroundLyrics = it }
-                    )
-                }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.alert,
-                    title = stringResource(R.string.player_enable_lyrics_popup_message),
-                    text = "",
-                    isChecked = playerEnableLyricsPopupMessage,
-                    onCheckedChange = { playerEnableLyricsPopupMessage = it }
-                )
-            }
 
         if (search.inputValue.isBlank() || stringResource(R.string.background_progress_bar).contains(
                 search.inputValue,
@@ -2093,6 +2019,132 @@ fun AppearanceSettings(
             )
             }
         }
+        /* Removed Spacer */
+        val searchCtx_lyrics = search.inputValue.isBlank() || stringResource(R.string.toggle_lyrics).contains(search.inputValue, true) || stringResource(R.string.click_lyrics_text).contains(search.inputValue, true) || stringResource(R.string.lyricscolor).contains(search.inputValue, true) || stringResource(R.string.save_lyrics_state).contains(search.inputValue, true) || stringResource(R.string.show_background_in_lyrics).contains(search.inputValue, true) || stringResource(R.string.player_enable_lyrics_popup_message).contains(search.inputValue, true)
+        AnimatedVisibility(
+            visible = searchCtx_lyrics,
+            enter = fadeIn(animationSpec = tween(700)) + scaleIn(animationSpec = tween(700), initialScale = 0.9f)
+        ) {
+            SettingsSectionCard(
+                title = "Lyrics",
+                icon = R.drawable.song_lyrics,
+                content = {
+        if (search.inputValue.isBlank() || stringResource(R.string.toggle_lyrics).contains(
+                search.inputValue,
+                true
+            )
+        )
+            if (search.inputValue.isBlank() || stringResource(R.string.toggle_lyrics).contains(search.inputValue, true) || (stringResource(R.string.by_tapping_on_the_thumbnail)).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.song_lyrics,
+                    title = stringResource(R.string.toggle_lyrics),
+                    text = stringResource(R.string.by_tapping_on_the_thumbnail),
+                    isChecked = thumbnailTapEnabled,
+                    onCheckedChange = { thumbnailTapEnabled = it }
+                )
+            }
+
+        if (search.inputValue.isBlank() || stringResource(R.string.click_lyrics_text).contains(
+                search.inputValue,
+                true
+            )
+        )
+            if (search.inputValue.isBlank() || stringResource(R.string.click_lyrics_text).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.arrow_down,
+                    title = stringResource(R.string.click_lyrics_text),
+                    text = "",
+                    isChecked = clickLyricsText,
+                    onCheckedChange = { clickLyricsText = it }
+                )
+            }
+
+            if (search.inputValue.isBlank() || stringResource(R.string.lyricscolor).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    title = stringResource(R.string.lyricscolor),
+                    selectedValue = lyricsColor,
+                    onValueSelected = { lyricsColor = it },
+                    valueText = { stringResource(when(it) { app.n_zik.android.enums.lyrics.LyricsColor.White -> R.string.color_white; app.n_zik.android.enums.lyrics.LyricsColor.Thememode -> R.string.bg_colors_background_from_theme; app.n_zik.android.enums.lyrics.LyricsColor.Cover -> R.string.bg_colors_background_from_cover; app.n_zik.android.enums.lyrics.LyricsColor.Custom -> R.string.color_custom }) },
+                    icon = R.drawable.color_palette
+                )
+            }
+
+            AnimatedVisibility(visible = lyricsColor == app.n_zik.android.enums.lyrics.LyricsColor.Custom) {
+                var showColorPicker by remember { mutableStateOf(false) }
+                val customColorString = stringResource(R.string.color_custom)
+                OtherSettingsEntry(
+                    title = customColorString,
+                    text = "",
+                    icon = R.drawable.color_palette,
+                    onClick = { showColorPicker = true },
+                    modifier = Modifier.padding(start = 25.dp),
+                    trailingContent = {
+                        Box(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .background(androidx.compose.ui.graphics.Color(lyricsCustomColor))
+                                .border(BorderStroke(1.dp, androidx.compose.ui.graphics.Color.LightGray))
+                        )
+                    }
+                )
+                if (showColorPicker) {
+                    app.it.fast4x.rimusic.ui.components.themed.DialogColorPicker(onDismiss = { showColorPicker = false }) {
+                        lyricsCustomColor = it.toArgb()
+                        showColorPicker = false
+                        app.kreate.android.me.knighthat.utils.Toaster.n(R.string.info_color_s_applied, customColorString)
+                    }
+                }
+            }
+
+        if (search.inputValue.isBlank() || stringResource(R.string.save_lyrics_state).contains(
+                search.inputValue,
+                true
+            )
+        )
+            if (search.inputValue.isBlank() || stringResource(R.string.save_lyrics_state).contains(search.inputValue, true) || (stringResource(R.string.save_lyrics_state_description)).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.bookmark,
+                    title = stringResource(R.string.save_lyrics_state),
+                    text = stringResource(R.string.save_lyrics_state_description),
+                    isChecked = showLyricsStateKey,
+                    onCheckedChange = { showLyricsStateKey = it }
+                )
+            }
+
+        if (showlyricsthumbnail)
+            if (search.inputValue.isBlank() || stringResource(R.string.show_background_in_lyrics).contains(
+                    search.inputValue,
+                    true
+                )
+            )
+                if (search.inputValue.isBlank() || stringResource(R.string.show_background_in_lyrics).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.image,
+                        title = stringResource(R.string.show_background_in_lyrics),
+                        text = "",
+                        isChecked = showBackgroundLyrics,
+                        onCheckedChange = { showBackgroundLyrics = it }
+                    )
+                }
+
+        if (search.inputValue.isBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(
+                search.inputValue,
+                true
+            )
+        )
+            if (search.inputValue.isBlank() || stringResource(R.string.player_enable_lyrics_popup_message).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.alert,
+                    title = stringResource(R.string.player_enable_lyrics_popup_message),
+                    text = "",
+                    isChecked = playerEnableLyricsPopupMessage,
+                    onCheckedChange = { playerEnableLyricsPopupMessage = it }
+                )
+            }
+                }
+            )
+        }
+
         /* Removed Spacer */
         val searchCtx_1 = search.inputValue.isBlank() || stringResource(R.string.player_action_bar).contains(search.inputValue, true) || stringResource(R.string.action_bar_transparent_background).contains(search.inputValue, true) || stringResource(R.string.actionspacedevenly).contains(search.inputValue, true) || stringResource(R.string.tapqueue).contains(search.inputValue, true) || stringResource(R.string.swipe_up_to_open_the_queue).contains(search.inputValue, true) || stringResource(R.string.action_bar_show_video_button).contains(search.inputValue, true) || stringResource(R.string.action_bar_show_discover_button).contains(search.inputValue, true) || stringResource(R.string.action_bar_show_download_button).contains(search.inputValue, true) || stringResource(R.string.action_bar_show_add_to_playlist_button).contains(search.inputValue, true) || stringResource(R.string.action_bar_show_loop_button).contains(search.inputValue, true) || stringResource(R.string.action_bar_show_shuffle_button).contains(search.inputValue, true) || stringResource(R.string.action_bar_show_lyrics_button).contains(search.inputValue, true) || stringResource(R.string.expandedplayer).contains(search.inputValue, true) || stringResource(R.string.action_bar_show_sleep_timer_button).contains(search.inputValue, true) || stringResource(R.string.show_equalizer).contains(search.inputValue, true) || stringResource(R.string.action_bar_show_arrow_button_to_open_queue).contains(search.inputValue, true) || stringResource(R.string.action_bar_show_start_radio_button).contains(search.inputValue, true) || stringResource(R.string.action_bar_show_menu_button).contains(search.inputValue, true)
         AnimatedVisibility(
@@ -2446,42 +2498,6 @@ fun AppearanceSettings(
                     )
                 }
 
-            if (search.inputValue.isBlank() || stringResource(R.string.lyrics_color).contains(search.inputValue, true)) {
-                OtherEnumValueSelectorSettingsEntry(
-                    title = stringResource(R.string.lyrics_color),
-                    selectedValue = lyricsColor,
-                    onValueSelected = { lyricsColor = it },
-                    valueText = { stringResource(when(it) { app.n_zik.android.enums.lyrics.LyricsColor.White -> R.string.color_white; app.n_zik.android.enums.lyrics.LyricsColor.Thememode -> R.string.bg_colors_background_from_theme; app.n_zik.android.enums.lyrics.LyricsColor.Cover -> R.string.bg_colors_background_from_cover; app.n_zik.android.enums.lyrics.LyricsColor.Custom -> R.string.color_custom }) },
-                    icon = R.drawable.color_palette
-                )
-            }
-
-            AnimatedVisibility(visible = lyricsColor == app.n_zik.android.enums.lyrics.LyricsColor.Custom) {
-                var showColorPicker by remember { mutableStateOf(false) }
-                val customColorString = stringResource(R.string.color_custom)
-                OtherSettingsEntry(
-                    title = customColorString,
-                    text = "",
-                    icon = R.drawable.color_palette,
-                    onClick = { showColorPicker = true },
-                    modifier = Modifier.padding(start = 25.dp),
-                    trailingContent = {
-                        Box(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .background(androidx.compose.ui.graphics.Color(lyricsCustomColor))
-                                .border(BorderStroke(1.dp, androidx.compose.ui.graphics.Color.LightGray))
-                        )
-                    }
-                )
-                if (showColorPicker) {
-                    app.it.fast4x.rimusic.ui.components.themed.DialogColorPicker(onDismiss = { showColorPicker = false }) {
-                        lyricsCustomColor = it.toArgb()
-                        showColorPicker = false
-                        app.kreate.android.me.knighthat.utils.Toaster.n(R.string.info_color_s_applied, customColorString)
-                    }
-                }
-            }
 
             if (statsfornerds && (!(showthumbnail && playerType == PlayerType.Essential))){
                 if (search.inputValue.isBlank() || stringResource(R.string.statsfornerds).contains(

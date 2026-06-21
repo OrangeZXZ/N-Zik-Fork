@@ -309,7 +309,17 @@ fun LyricsTextPainter(
                 text = text,
                 style = TextStyle(
                     fontWeight = FontWeight.Medium,
-                    color = if (isCurrentIndex) PureBlackColorPalette.text else PureBlackColorPalette.textDisabled,
+                    color = if (isCurrentIndex) {
+                        if (lyricsColor == LyricsColor.White) Color.White
+                        else if (lyricsColor == LyricsColor.Cover) Color(dominantColor)
+                        else if (lyricsColor == LyricsColor.Thememode) PureBlackColorPalette.text
+                        else Color(lyricsCustomColor)
+                    } else {
+                        if (lyricsColor == LyricsColor.White) Color.White.copy(alpha = 0.5f)
+                        else if (lyricsColor == LyricsColor.Cover) Color(dominantColor).copy(alpha = 0.5f)
+                        else if (lyricsColor == LyricsColor.Thememode) PureBlackColorPalette.textDisabled
+                        else Color(lyricsCustomColor).copy(alpha = 0.5f)
+                    },
                     fontSize = when (fontSize) {
                         LyricsFontSize.Light -> typography().m.fontSize
                         LyricsFontSize.Medium -> typography().l.fontSize
@@ -318,6 +328,10 @@ fun LyricsTextPainter(
                         else -> customSize.sp
                     },
                     textAlign = lyricsAlignment.selected,
+                    shadow = Shadow(
+                        color = Color.Black.copy(alpha = 0.5f),
+                        offset = Offset(0f, 0f), blurRadius = 10f
+                    )
                 ),
                 modifier = Modifier
                     .padding(vertical = 4.dp, horizontal = 32.dp)
