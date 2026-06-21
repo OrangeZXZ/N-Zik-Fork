@@ -124,7 +124,7 @@ object Toaster {
         @StringRes messageId: Int,
         vararg formatArgs: Any?,
         @MagicConstant(valuesFromClass = Toast::class) duration: Int = Toast.LENGTH_SHORT
-    ) = this.toast( messageId, Type.NORMAL, duration, formatArgs = formatArgs )
+    ) = this.toast( messageId, Type.NORMAL, duration, Type.NORMAL.icon, *formatArgs )
 
     fun s( message: String, @MagicConstant(valuesFromClass = Toast::class) duration: Int = Toast.LENGTH_SHORT ) =
         this.toast( message, Type.SUCCESS, duration )
@@ -136,7 +136,7 @@ object Toaster {
         @StringRes messageId: Int,
         vararg formatArgs: Any?,
         @MagicConstant(valuesFromClass = Toast::class) duration: Int = Toast.LENGTH_SHORT
-    ) = this.toast( messageId, Type.SUCCESS, duration, formatArgs = formatArgs )
+    ) = this.toast( messageId, Type.SUCCESS, duration, Type.SUCCESS.icon, *formatArgs )
 
     fun i( message: String, @MagicConstant(valuesFromClass = Toast::class) duration: Int = Toast.LENGTH_SHORT ) =
         this.toast( message, Type.INFO, duration )
@@ -148,7 +148,7 @@ object Toaster {
         @StringRes messageId: Int,
         vararg formatArgs: Any?,
         @MagicConstant(valuesFromClass = Toast::class) duration: Int = Toast.LENGTH_SHORT
-    ) = this.toast( messageId, Type.INFO, duration, formatArgs = formatArgs )
+    ) = this.toast( messageId, Type.INFO, duration, Type.INFO.icon, *formatArgs )
 
     fun w( message: String, @MagicConstant(valuesFromClass = Toast::class) duration: Int = Toast.LENGTH_SHORT ) =
         this.toast( message, Type.WARNING, duration )
@@ -160,7 +160,7 @@ object Toaster {
         @StringRes messageId: Int,
         vararg formatArgs: Any?,
         @MagicConstant(valuesFromClass = Toast::class) duration: Int = Toast.LENGTH_SHORT
-    ) = this.toast( messageId, Type.WARNING, duration, formatArgs = formatArgs )
+    ) = this.toast( messageId, Type.WARNING, duration, Type.WARNING.icon, *formatArgs )
 
     fun e( message: String, @MagicConstant(valuesFromClass = Toast::class) duration: Int = Toast.LENGTH_SHORT ) =
         this.toast( message, Type.ERROR, duration )
@@ -172,7 +172,7 @@ object Toaster {
         @StringRes messageId: Int,
         vararg formatArgs: Any?,
         @MagicConstant(valuesFromClass = Toast::class) duration: Int = Toast.LENGTH_SHORT
-    ) = this.toast( messageId, Type.ERROR, duration, formatArgs = formatArgs )
+    ) = this.toast( messageId, Type.ERROR, duration, Type.ERROR.icon, *formatArgs )
 
     /*
 
