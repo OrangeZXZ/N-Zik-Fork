@@ -2,6 +2,7 @@ name: 🧪 Beta Bug report
 description: Report a bug found while testing the N-Zik Beta build
 title: "[BETA BUG]: "
 labels: ["bug", "beta-feedback"]
+
 body:
   - type: markdown
     attributes:
@@ -130,14 +131,11 @@ body:
     attributes:
       label: 📜 Logs (Optional)
       description: You can use the "Debug Mode" feature in app to get them. Leave the HTML tags intact to collapse them and keep the issue clean!
-      value: |
-        ****
+      placeholder: |
         <details>
         <summary>Click to expand logs</summary>
 
-```text
-        [Paste your crash logs or error messages here]
-```
+        Paste your crash logs or error messages here
 
         </details>
     validations:
