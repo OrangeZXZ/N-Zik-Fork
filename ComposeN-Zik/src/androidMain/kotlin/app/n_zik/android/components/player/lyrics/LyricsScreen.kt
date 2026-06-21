@@ -255,7 +255,7 @@ fun LyricsScreen(
             }
 
             if (text?.isNotEmpty() == true) {
-                val hasWordTimings = text.contains("<") && text.contains(">") && text.contains("|") && text.contains(":")
+                val hasWordTimings = text.lines().any { it.trim().startsWith("<") && it.contains(":") && it.contains(">") }
                 when {
                     lyricsType == LyricsType.Karaoke && hasWordTimings -> {
                         KaraokeLyricsView(
@@ -268,6 +268,11 @@ fun LyricsScreen(
                             trailingContent = trailingContent,
                             showBackgroundLyrics = showBackgroundLyrics,
                             lyricsBackground = lyricsBackground,
+                            showSecondLine = showSecondLine,
+                            translateEnabled = translateEnabled,
+                            romanizationEnabled = romanizationEnabled,
+                            languageDestination = languageDestination,
+                            translator = translator,
                             lyricsOutline = lyricsOutline,
                             colorPaletteMode = colorPaletteMode,
                             fontSize = lyricsFontSize,

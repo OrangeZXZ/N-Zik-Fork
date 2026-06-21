@@ -44,6 +44,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.drawscope.clipRect
+import app.n_zik.android.R
+import app.kreate.android.me.knighthat.utils.Toaster
+import dev.rebelonion.translator.Language
+import dev.rebelonion.translator.Translator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 /**
  * A single word with its start and end time in milliseconds.
@@ -66,6 +73,31 @@ data class KaraokeLine(
     val agent: String? = null,     // "v1", "v2", "v1000", etc.
     val isBackground: Boolean = false
 )
+
+/**
+ * Helper to create a fast clipping path using bounding boxes instead of complex text glyph outlines.
+ */
+fun getFastPathForRange(layout: androidx.compose.ui.text.TextLayoutResult, startIdx: Int, endIdx: Int): androidx.compose.ui.graphics.Path {
+    val path = androidx.compose.ui.graphics.Path()
+    if (startIdx > endIdx || startIdx < 0 || endIdx >= layout.layoutInput.text.length) return path
+    
+    val startLine = layout.getLineForOffset(startIdx)
+    val endLine = layout.getLineForOffset(endIdx)
+    
+    for (i in startLine..endLine) {
+        val lineStartIdx = layout.getLineStart(i)
+        val lineEndIdx = layout.getLineEnd(i, visibleEnd = true)
+        val clipStartIdx = maxOf(startIdx, lineStartIdx)
+        val clipEndIdx = minOf(endIdx, lineEndIdx - 1)
+        
+        if (clipStartIdx <= clipEndIdx) {
+            val startBox = layout.getBoundingBox(clipStartIdx)
+            val endBox = layout.getBoundingBox(clipEndIdx)
+            path.addRect(androidx.compose.ui.geometry.Rect(startBox.left, startBox.top, endBox.right, endBox.bottom))
+        }
+    }
+    return path
+}
 
 /**
  * Parse the extended LRC format produced by TTMLParser.toLRC().
@@ -193,6 +225,11 @@ fun KaraokeLyricsView(
     trailingContent: (@Composable () -> Unit)?,
     showBackgroundLyrics: Boolean,
     lyricsBackground: LyricsBackground,
+    showSecondLine: Boolean,
+    translateEnabled: Boolean,
+    romanizationEnabled: Boolean,
+    languageDestination: Language,
+    translator: Translator,
     lyricsOutline: LyricsOutline,
     colorPaletteMode: ColorPaletteMode,
     fontSize: LyricsFontSize,
@@ -238,7 +275,120 @@ fun KaraokeLyricsView(
         }
     }
 
+    // --- Translation cache ---
+    val translationCache = remember(text, showSecondLine, translateEnabled, romanizationEnabled, languageDestination) {
+        mutableStateMapOf<Int, String>()
+    }
+
+    LaunchedEffect(text, showSecondLine, translateEnabled, romanizationEnabled, languageDestination) {
+        if (!showSecondLine && !translateEnabled && !romanizationEnabled) return@LaunchedEffect
+
+        val linesToTranslate = mutableListOf<Pair<Int, String>>()
+        karaokeLines.forEachIndexed { index, line ->
+            val trimmed = line.text.trim()
+            if (trimmed.isEmpty()) {
+                translationCache[index] = trimmed
+            } else if (!translationCache.containsKey(index)) {
+                linesToTranslate.add(index to trimmed)
+            }
+        }
+
+        if (linesToTranslate.isEmpty()) return@LaunchedEffect
+
+        if (translateEnabled) {
+            withContext(Dispatchers.Main) {
+                Toaster.i(R.string.translation_in_progress)
+            }
+        }
+
+        withContext(Dispatchers.IO) {
+            try {
+                val textToTranslate = linesToTranslate.joinToString("\n") { it.second }
+
+                val helperTranslation = translator.translate(textToTranslate, Language.CHINESE_TRADITIONAL, Language.AUTO)
+                var destLanguage = languageDestination
+                if (destLanguage == Language.AUTO) {
+                    destLanguage = if (helperTranslation.translatedText == textToTranslate)
+                        Language.CHINESE_TRADITIONAL
+                    else
+                        helperTranslation.sourceLanguage
+                }
+                val mainTranslation = translator.translate(textToTranslate, destLanguage, Language.AUTO)
+
+                val cleanTranslatedText = mainTranslation.translatedText.replace("\\\"", "\"").trim()
+                val cleanPronunciation = mainTranslation.translatedPronunciation?.replace("\\\"", "\"")?.trim()
+
+                val helpPronLineText = helperTranslation.sourcePronunciation?.trim() ?: ""
+                val mainPronLineText = mainTranslation.sourcePronunciation?.trim() ?: textToTranslate
+
+                val cleanTransLines = cleanTranslatedText.split("\n")
+                val cleanPronLines = cleanPronunciation?.split("\n")
+                val helpPronLines = helpPronLineText.split("\n")
+                val mainPronLines = mainPronLineText.split("\n")
+
+                linesToTranslate.forEachIndexed { i, (sentenceIndex, trimmed) ->
+                    val cleanTransLine = cleanTransLines.getOrNull(i)?.trim() ?: ""
+                    val cleanPronLine = cleanPronLines?.getOrNull(i)?.trim()
+                    
+                    val hPronLine = helpPronLines.getOrNull(i)?.trim() ?: ""
+                    val mPronLine = mainPronLines.getOrNull(i)?.trim() ?: trimmed
+                    val transPronLine = cleanPronLine ?: cleanTransLine
+
+                    val isSameText = mainTranslation.sourceText == mainTranslation.translatedText
+
+                    val outputText = if (!showSecondLine || isSameText) {
+                        if (translateEnabled && romanizationEnabled) {
+                            transPronLine
+                        } else if (translateEnabled) {
+                            cleanTransLine
+                        } else if (romanizationEnabled) {
+                            if (helperTranslation.sourceText == helperTranslation.translatedText)
+                                hPronLine
+                            else
+                                mPronLine.ifEmpty { trimmed }
+                        } else {
+                            trimmed
+                        }
+                    } else {
+                        if (translateEnabled && romanizationEnabled) {
+                            val pron = if (helperTranslation.sourceText == helperTranslation.translatedText) hPronLine else mPronLine.ifEmpty { trimmed }
+                            pron + "\n[$transPronLine]"
+                        } else if (translateEnabled) {
+                            trimmed + "\n[$cleanTransLine]"
+                        } else if (romanizationEnabled) {
+                            val pron = if (helperTranslation.sourceText == helperTranslation.translatedText) hPronLine else mPronLine.ifEmpty { trimmed }
+                            trimmed + "\n[$pron]"
+                        } else {
+                            trimmed
+                        }
+                    }
+
+                    val finalText = outputText.replace("\\r", "\r").replace("\\n", "\n")
+                    translationCache[sentenceIndex] = finalText
+                }
+
+                if (translateEnabled) {
+                    withContext(Dispatchers.Main) {
+                        Toaster.s(R.string.translation_successful)
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e("Lyrics sync translation error: ${e.message}")
+                if (translateEnabled) {
+                    withContext(Dispatchers.Main) {
+                        Toaster.e(R.string.translation_failed)
+                    }
+                }
+            }
+        }
+    }
+
     // Pre-compute gap windows for interval indicator
+    val initialGapWindow = remember(karaokeLines) {
+        val firstStart = karaokeLines.firstOrNull { !it.isBackground }?.timeMs ?: 0L
+        if (firstStart > 3000L) Pair(0L, firstStart - 650L) else null
+    }
+
     val gapWindows = remember(karaokeLines) {
         buildMap {
             karaokeLines.forEachIndexed { index, line ->
@@ -247,12 +397,9 @@ fun KaraokeLyricsView(
                 val nextStartMs = if (index < karaokeLines.size - 1) karaokeLines.drop(index + 1).firstOrNull { !it.isBackground }?.timeMs ?: (startMs + 10000L) else startMs + 10000L
                 val lineEndMs = if (line.words.isNotEmpty()) line.words.maxOf { it.endMs } else line.timeMs + 2000L
 
-                val currentEnd = lineEndMs.coerceAtMost(nextStartMs - 2000L).coerceAtLeast(startMs + 1000L)
-                if (currentEnd < nextStartMs) {
-                    val gap = nextStartMs - currentEnd
-                    if (gap > 2000L) {
-                        put(index, Pair(currentEnd, nextStartMs - 650L))
-                    }
+                val gap = nextStartMs - lineEndMs
+                if (gap > 2500L) {
+                    put(index, Pair(lineEndMs, nextStartMs - 650L))
                 }
             }
         }.toMutableMap().apply {
@@ -362,6 +509,20 @@ fun KaraokeLyricsView(
             Spacer(modifier = Modifier.height(thumbnailSize))
         }
 
+        if (showIntervalIndicator && initialGapWindow != null) {
+            item(key = "initial_loader", contentType = 2) {
+                val isVisible = currentPositionMs in initialGapWindow.first until initialGapWindow.second
+                LyricsIntervalIndicator(
+                    gapStartMs = initialGapWindow.first,
+                    gapEndMs = initialGapWindow.second,
+                    currentPositionMs = currentPositionMs,
+                    visible = isVisible,
+                    color = accentColor,
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
+                )
+            }
+        }
+
         itemsIndexed(karaokeLines) { index, line ->
             val isActiveLine = index in activeLineIndices
 
@@ -437,29 +598,38 @@ fun KaraokeLyricsView(
                 val showLoader = showIntervalIndicator && gapWindow != null &&
                         currentPositionMs >= gapWindow.first && currentPositionMs <= gapWindow.second
 
-                if (showLoader && isActiveLine) {
-                    LyricsIntervalIndicator(
-                        gapStartMs = gapWindow!!.first,
-                        gapEndMs = gapWindow.second,
-                        currentPositionMs = currentPositionMs,
-                        visible = true,
-                        color = accentColor,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                }
-
                 val lineAccent = if (line.isBackground) accentColor.copy(alpha = 0.85f) else accentColor
                 val lineInactive = if (line.isBackground) accentColor.copy(alpha = 0.3f) else inactiveColor
+
+                val displayedText = translationCache[index] ?: line.text
 
                 if (line.words.isNotEmpty() && isActiveLine) {
                     var textLayoutResult by remember { androidx.compose.runtime.mutableStateOf<androidx.compose.ui.text.TextLayoutResult?>(null) }
 
                     Box(contentAlignment = Alignment.Center) {
+                        val isTextReplaced = displayedText != line.text && !showSecondLine
+
+                        val backgroundText = androidx.compose.ui.text.buildAnnotatedString {
+                            if (displayedText != line.text && showSecondLine) {
+                                val originalLen = line.text.trim().length
+                                val safeLen = originalLen.coerceAtMost(displayedText.length)
+                                withStyle(androidx.compose.ui.text.SpanStyle(color = lineInactive)) {
+                                    append(displayedText.substring(0, safeLen))
+                                }
+                                withStyle(androidx.compose.ui.text.SpanStyle(color = lineAccent.copy(alpha = 0.85f))) {
+                                    append(displayedText.substring(safeLen))
+                                }
+                            } else {
+                                withStyle(androidx.compose.ui.text.SpanStyle(color = lineInactive)) {
+                                    append(displayedText)
+                                }
+                            }
+                        }
+
                         // Background (inactive) text
                         androidx.compose.foundation.text.BasicText(
-                            text = line.text,
+                            text = backgroundText,
                             style = androidx.compose.ui.text.TextStyle(
-                                color = lineInactive,
                                 fontSize = textSize,
                                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                                 textAlign = lineTextAlign
@@ -467,168 +637,198 @@ fun KaraokeLyricsView(
                             onTextLayout = { textLayoutResult = it }
                         )
 
-                        // Unclipped Glow Layer (Restored with interpolation)
-                        val glowText = androidx.compose.ui.text.buildAnnotatedString {
-                            line.words.forEachIndexed { wordIndex, word ->
-                                val isWordActive = currentPositionMs >= word.startMs && currentPositionMs < word.endMs
-                                val isWordSung = currentPositionMs >= word.endMs
-                                
-                                if (isWordActive || isWordSung) {
-                                    val dur = word.endMs - word.startMs
-                                    val sungFactor = if (isWordSung) 1f 
-                                                     else if (isWordActive) ((currentPositionMs - word.startMs).toFloat() / dur.coerceAtLeast(1L)).coerceIn(0f, 1f)
-                                                     else 0f
+                        if (!isTextReplaced) {
+                            // Unclipped Glow Layer (Restored with interpolation)
+                            val glowText = androidx.compose.ui.text.buildAnnotatedString {
+                                line.words.forEachIndexed { wordIndex, word ->
+                                    val isWordActive = currentPositionMs >= word.startMs && currentPositionMs < word.endMs
+                                    val isWordSung = currentPositionMs >= word.endMs
                                     
-                                    val wordLenText = word.text.length.coerceAtLeast(1)
-                                    val impactRatio = dur.toFloat() / wordLenText
-                                    val fadeFactor = (sungFactor * 5f).coerceIn(0f, 1f) * ((1f - sungFactor) * 8f).coerceIn(0f, 1f)
-                                    val impactFactor = (((impactRatio - 100f) / 250f).coerceIn(0f, 1f) * 0.6f + ((dur.toFloat() - 300f) / 1500f).coerceIn(0f, 1f) * 0.4f).coerceIn(0f, 1f) * fadeFactor
-                                    
-                                    val glowAlpha = (0.35f * impactFactor).coerceIn(0f, 0.4f)
-                                    val baseGlowRadius = with(density) { 12.dp.toPx() } * impactFactor
-                                    
-                                    if (impactFactor > 0.01f && baseGlowRadius > 0f) {
-                                        withStyle(
-                                            androidx.compose.ui.text.SpanStyle(
-                                                color = androidx.compose.ui.graphics.Color.Transparent,
-                                                shadow = androidx.compose.ui.graphics.Shadow(
-                                                    color = lineAccent.copy(alpha = glowAlpha),
-                                                    blurRadius = baseGlowRadius
+                                    if (isWordActive || isWordSung) {
+                                        val dur = word.endMs - word.startMs
+                                        val sungFactor = if (isWordSung) 1f 
+                                                         else if (isWordActive) ((currentPositionMs - word.startMs).toFloat() / dur.coerceAtLeast(1L)).coerceIn(0f, 1f)
+                                                         else 0f
+                                        
+                                        val wordLenText = word.text.length.coerceAtLeast(1)
+                                        val impactRatio = dur.toFloat() / wordLenText
+                                        val fadeFactor = (sungFactor * 5f).coerceIn(0f, 1f) * ((1f - sungFactor) * 8f).coerceIn(0f, 1f)
+                                        val impactFactor = (((impactRatio - 100f) / 250f).coerceIn(0f, 1f) * 0.6f + ((dur.toFloat() - 300f) / 1500f).coerceIn(0f, 1f) * 0.4f).coerceIn(0f, 1f) * fadeFactor
+                                        
+                                        val glowAlpha = (0.35f * impactFactor).coerceIn(0f, 0.4f)
+                                        val baseGlowRadius = with(density) { 12.dp.toPx() } * impactFactor
+                                        
+                                        if (impactFactor > 0.01f && baseGlowRadius > 0f) {
+                                            withStyle(
+                                                androidx.compose.ui.text.SpanStyle(
+                                                    color = androidx.compose.ui.graphics.Color.Transparent,
+                                                    shadow = androidx.compose.ui.graphics.Shadow(
+                                                        color = lineAccent.copy(alpha = glowAlpha),
+                                                        blurRadius = baseGlowRadius
+                                                    )
                                                 )
-                                            )
-                                        ) {
-                                            append(word.text)
+                                            ) {
+                                                append(word.text)
+                                            }
+                                        } else {
+                                            withStyle(androidx.compose.ui.text.SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) { append(word.text) }
                                         }
                                     } else {
                                         withStyle(androidx.compose.ui.text.SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) { append(word.text) }
                                     }
-                                } else {
-                                    withStyle(androidx.compose.ui.text.SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) { append(word.text) }
-                                }
-                                if (wordIndex < line.words.lastIndex) {
-                                    withStyle(androidx.compose.ui.text.SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) { append(" ") }
+                                    if (wordIndex < line.words.lastIndex) {
+                                        withStyle(androidx.compose.ui.text.SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) { append(" ") }
+                                    }
                                 }
                             }
-                        }
-                        
-                        androidx.compose.foundation.text.BasicText(
-                            text = glowText,
-                            style = androidx.compose.ui.text.TextStyle(
-                                fontSize = textSize,
-                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
-                                textAlign = lineTextAlign
-                            )
-                        )
-
-                        // Foreground (active) text, clipped word by word to prevent multi-line bleed
-                        val layout = textLayoutResult
-                        if (layout != null) {
+                            
                             androidx.compose.foundation.text.BasicText(
-                                text = line.text,
+                                text = glowText,
                                 style = androidx.compose.ui.text.TextStyle(
-                                    color = lineAccent,
                                     fontSize = textSize,
                                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
                                     textAlign = lineTextAlign
-                                ),
-                                modifier = Modifier.drawWithContent {
-                                    line.words.forEach { word ->
-                                        val isWordActive = currentPositionMs >= word.startMs && currentPositionMs < word.endMs
-                                        val isWordSung = currentPositionMs >= word.endMs
-                                        
-                                        if (isWordSung) {
-                                            // Fully sung word
-                                            val startIdx = word.charStartIndex.coerceIn(0, line.text.length - 1)
-                                            val endIdx = (word.charStartIndex + word.text.length - 1).coerceIn(0, line.text.length - 1)
-                                            val startBox = layout.getBoundingBox(startIdx)
-                                            val endBox = layout.getBoundingBox(endIdx)
-                                            clipRect(left = startBox.left, top = startBox.top, right = endBox.right, bottom = endBox.bottom) {
-                                                this@drawWithContent.drawContent()
-                                            }
-                                        } else if (isWordActive) {
-                                            // Partially sung word
-                                            val dur = word.endMs - word.startMs
-                                            val linearProgress = ((currentPositionMs - word.startMs).toFloat() / dur.coerceAtLeast(1L)).coerceIn(0f, 1f)
-                                            val wordLen = word.text.length
-                                            val activeCharIdxInWord = (linearProgress * wordLen).toInt().coerceAtMost(wordLen - 1)
-                                            val charLp = ((linearProgress * wordLen) - activeCharIdxInWord).coerceIn(0f, 1f)
-                                            val globalCharIdx = (word.charStartIndex + activeCharIdxInWord).coerceIn(0, line.text.length - 1)
-                                            val charBox = layout.getBoundingBox(globalCharIdx)
-                                            
-                                            // Draw previous fully sung characters in this active word
-                                            if (activeCharIdxInWord > 0) {
-                                                val startBox = layout.getBoundingBox(word.charStartIndex.coerceIn(0, line.text.length - 1))
-                                                val prevBox = layout.getBoundingBox((word.charStartIndex + activeCharIdxInWord - 1).coerceIn(0, line.text.length - 1))
-                                                clipRect(left = startBox.left, top = startBox.top, right = prevBox.right, bottom = prevBox.bottom) {
-                                                    this@drawWithContent.drawContent()
-                                                }
-                                            }
-                                            
-                                            // Active character transition with 12 slices
-                                            val fXL = charBox.width * charLp
-                                            val eW = (charBox.width * 0.45f).coerceAtLeast(1f)
-                                            val sWL = (fXL - eW).coerceAtLeast(0f)
-                                            
-                                            val opaqueRight = charBox.left + sWL
-                                            val activeRight = charBox.left + fXL
-                                            
-                                            if (opaqueRight > charBox.left) {
-                                                clipRect(left = charBox.left, top = charBox.top, right = opaqueRight, bottom = charBox.bottom) {
-                                                    this@drawWithContent.drawContent()
-                                                }
-                                            }
-                                            
-                                            val transitionWidth = activeRight - opaqueRight
-                                            if (transitionWidth > 0) {
-                                                for (j in 0 until 12) {
-                                                    val startSlice = opaqueRight + (j * transitionWidth / 12f)
-                                                    val endSlice = opaqueRight + ((j + 1) * transitionWidth / 12f)
-                                                    val sliceAlpha = 1f - (j + 0.5f) / 12f
-                                                    
-                                                    clipRect(left = startSlice, top = charBox.top, right = endSlice, bottom = charBox.bottom) {
-                                                        val paint = androidx.compose.ui.graphics.Paint().apply { alpha = sliceAlpha }
-                                                        drawContext.canvas.saveLayer(androidx.compose.ui.geometry.Rect(startSlice, charBox.top, endSlice, charBox.bottom), paint)
-                                                        this@drawWithContent.drawContent()
-                                                        drawContext.canvas.restore()
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                )
                             )
                         }
+
+                        // Foreground (active) text with character-level clipping
+                        androidx.compose.foundation.text.BasicText(
+                            text = displayedText,
+                            style = androidx.compose.ui.text.TextStyle(
+                                color = lineAccent,
+                                fontSize = textSize,
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                textAlign = lineTextAlign
+                            ),
+                            modifier = Modifier.drawWithContent {
+                                val layout = textLayoutResult ?: return@drawWithContent
+                                
+                                if (isTextReplaced) {
+                                    val lineStartMs = line.timeMs
+                                    val lineEndMs = line.words.maxOfOrNull { it.endMs } ?: (lineStartMs + 2000L)
+                                    
+                                    if (currentPositionMs >= lineEndMs) {
+                                        this@drawWithContent.drawContent()
+                                    } else if (currentPositionMs > lineStartMs) {
+                                        val progress = ((currentPositionMs - lineStartMs).toFloat() / (lineEndMs - lineStartMs).coerceAtLeast(1L)).coerceIn(0f, 1f)
+                                        val totalLength = displayedText.length
+                                        val activeCharIdx = (progress * totalLength).toInt().coerceIn(0, totalLength - 1)
+                                        
+                                        if (activeCharIdx > 0) {
+                                            val path = getFastPathForRange(layout, 0, activeCharIdx - 1)
+                                            drawContext.canvas.save()
+                                            drawContext.canvas.clipPath(path)
+                                            this@drawWithContent.drawContent()
+                                            drawContext.canvas.restore()
+                                        }
+                                        
+                                        // Active character pop for translated text
+                                        val charLp = ((progress * totalLength) - activeCharIdx).coerceIn(0f, 1f)
+                                        val ease = { t: Float -> t * t * (3f - 2f * t) }
+                                        val bounceFactor = when {
+                                            charLp < 0.4f -> ease(charLp / 0.4f)
+                                            charLp > 0.6f -> ease((1f - charLp) / 0.4f)
+                                            else -> 1f
+                                        }
+                                        val charBounceY = -bounceFactor * with(density) { 0.8.dp.toPx() }
+                                        val scaleFactor = 1f + (bounceFactor * 0.05f)
+                                        
+                                        val charBox = layout.getBoundingBox(activeCharIdx)
+                                        drawContext.canvas.save()
+                                        val pivotX = charBox.left + charBox.width / 2f
+                                        val pivotY = charBox.bottom
+                                        drawContext.canvas.translate(pivotX, pivotY + charBounceY)
+                                        drawContext.canvas.scale(scaleFactor, scaleFactor)
+                                        drawContext.canvas.translate(-pivotX, -pivotY)
+                                        
+                                        drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
+                                        this@drawWithContent.drawContent()
+                                        drawContext.canvas.restore()
+                                    }
+                                } else {
+                                    line.words.forEach { word ->
+                                    val isWordActive = currentPositionMs >= word.startMs && currentPositionMs < word.endMs
+                                    val isWordSung = currentPositionMs >= word.endMs
+                                    
+                                    val wStartIdx = word.charStartIndex.coerceIn(0, displayedText.length.coerceAtLeast(1) - 1)
+                                    val wEndIdx = (word.charStartIndex + word.text.length - 1).coerceIn(0, displayedText.length.coerceAtLeast(1) - 1)
+                                    
+                                    val startBox = layout.getBoundingBox(wStartIdx)
+                                    val endBox = layout.getBoundingBox(wEndIdx)
+                                    
+                                    if (isWordSung) {
+                                        // Fully sung word: clipRect to full word bounds
+                                        val path = getFastPathForRange(layout, wStartIdx, wEndIdx)
+                                        drawContext.canvas.save()
+                                        drawContext.canvas.clipPath(path)
+                                        this@drawWithContent.drawContent()
+                                        drawContext.canvas.restore()
+                                    } else if (isWordActive) {
+                                        val dur = word.endMs - word.startMs
+                                        val linearProgress = ((currentPositionMs - word.startMs).toFloat() / dur.coerceAtLeast(1L)).coerceIn(0f, 1f)
+                                        val wordLen = word.text.length
+                                        val activeCharIdxInWord = (linearProgress * wordLen).toInt().coerceAtMost(wordLen - 1)
+                                        val charLp = ((linearProgress * wordLen) - activeCharIdxInWord).coerceIn(0f, 1f)
+                                        
+                                        val activeCharGlobalIdx = (word.charStartIndex + activeCharIdxInWord).coerceIn(0, displayedText.length.coerceAtLeast(1) - 1)
+                                        val charBox = layout.getBoundingBox(activeCharGlobalIdx)
+                                        
+                                            val path = getFastPathForRange(layout, wStartIdx, activeCharGlobalIdx - 1)
+                                            drawContext.canvas.save()
+                                            drawContext.canvas.clipPath(path)
+                                            this@drawWithContent.drawContent()
+                                            drawContext.canvas.restore()
+                                        
+                                        // Active character smoothly pops up, holds, and drops
+                                        val ease = { t: Float -> t * t * (3f - 2f * t) }
+                                        val bounceFactor = when {
+                                            charLp < 0.4f -> ease(charLp / 0.4f)
+                                            charLp > 0.6f -> ease((1f - charLp) / 0.4f)
+                                            else -> 1f
+                                        }
+                                        val charBounceY = -bounceFactor * with(density) { 0.8.dp.toPx() }
+                                        val scaleFactor = 1f + (bounceFactor * 0.05f)
+                                        
+                                        drawContext.canvas.save()
+                                        val pivotX = charBox.left + charBox.width / 2f
+                                        val pivotY = charBox.bottom
+                                        drawContext.canvas.translate(pivotX, pivotY + charBounceY)
+                                        drawContext.canvas.scale(scaleFactor, scaleFactor)
+                                        drawContext.canvas.translate(-pivotX, -pivotY)
+                                        
+                                        // The active character is fully highlighted (glowing) instantly while bouncing
+                                        drawContext.canvas.save()
+                                        drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
+                                        this@drawWithContent.drawContent()
+                                        drawContext.canvas.restore()
+                                        
+                                        
+                                        drawContext.canvas.restore()
+                                    }
+                                }
+                                }
+                            }
+                        )
                     }
                 } else if (line.words.isNotEmpty() && !isActiveLine) {
                     // Inactive line with word timings — check if past or future
                     val isPastLine = currentPositionMs > (line.words.maxOfOrNull { it.endMs } ?: line.timeMs)
 
-                    val styledText = buildAnnotatedString {
-                        line.words.forEachIndexed { wordIndex, word ->
-                            withStyle(
-                                SpanStyle(
-                                    color = if (isPastLine) lineAccent.copy(alpha = 0.5f) else lineInactive,
-                                    fontWeight = if (isPastLine) FontWeight.Bold else FontWeight.Medium
-                                )
-                            ) {
-                                append(word.text)
-                            }
-                            if (wordIndex < line.words.lastIndex) append(" ")
-                        }
-                    }
-
                     BasicText(
-                        text = styledText,
+                        text = displayedText,
                         style = TextStyle(
                             fontSize = textSize,
                             textAlign = lineTextAlign,
-                            lineHeight = textSize * 1.4f
+                            lineHeight = textSize * 1.4f,
+                            color = if (isPastLine) lineAccent.copy(alpha = 0.5f) else lineInactive,
+                            fontWeight = if (isPastLine) FontWeight.Bold else FontWeight.Medium
                         )
                     )
                 } else {
                     // Fallback: no word timings (instrumental breaks, etc.)
                     BasicText(
-                        text = line.text,
+                        text = displayedText,
                         style = TextStyle(
                             fontSize = textSize,
                             textAlign = lineTextAlign,

@@ -179,34 +179,41 @@ fun LyricsFetcher(
                                 duration = duration.milliseconds.inWholeSeconds.toInt(),
                                 album = mediaMetadata.albumTitle?.toString()
                             ).onSuccess { ttmlStr ->
-                                if (ttmlStr.isNotEmpty() && playerEnableLyricsPopupMessage) {
-                                    coroutineScope.launch {
-                                        Toaster.s(
-                                            R.string.info_lyrics_found_on_s,
-                                            "BetterLyrics"
+                                val hasWordTimings = ttmlStr.lines().any { it.trim().startsWith("<") && it.contains(":") && it.contains(">") }
+                                if (ttmlStr.isNotEmpty() && hasWordTimings) {
+                                    if (playerEnableLyricsPopupMessage) {
+                                        coroutineScope.launch {
+                                            Toaster.s(
+                                                R.string.info_lyrics_found_on_s,
+                                                "BetterLyrics"
+                                            )
+                                        }
+                                    }
+
+                                    onErrorUpdated(false)
+                                    onCheckedLrcUpdated(true)
+
+                                    Database.asyncTransaction {
+                                        lyricsTable.upsert(
+                                            Lyrics(
+                                                songId = mediaId,
+                                                fixed = currentLyrics?.fixed,
+                                                synced = ttmlStr
+                                            )
                                         )
                                     }
-                                } else if (playerEnableLyricsPopupMessage) {
-                                    coroutineScope.launch {
-                                        Toaster.e(
-                                            R.string.info_lyrics_not_found_on_s_try_on_s,
-                                            "BetterLyrics", "LrcLib.net",
-                                            duration = Toast.LENGTH_LONG
-                                        )
+                                } else {
+                                    // Treat as failure if we want Karaoke but BetterLyrics didn't provide word timings
+                                    if (playerEnableLyricsPopupMessage) {
+                                        coroutineScope.launch {
+                                            Toaster.e(
+                                                R.string.info_lyrics_not_found_on_s_try_on_s,
+                                                "BetterLyrics", "LrcLib.net",
+                                                duration = Toast.LENGTH_LONG
+                                            )
+                                        }
                                     }
-                                }
-
-                                onErrorUpdated(false)
-                                onCheckedLrcUpdated(true)
-
-                                Database.asyncTransaction {
-                                    lyricsTable.upsert(
-                                        Lyrics(
-                                            songId = mediaId,
-                                            fixed = currentLyrics?.fixed,
-                                            synced = ttmlStr
-                                        )
-                                    )
+                                    fetchLrcLibAndKugou()
                                 }
                             }.onFailure {
                                 if (playerEnableLyricsPopupMessage) {
