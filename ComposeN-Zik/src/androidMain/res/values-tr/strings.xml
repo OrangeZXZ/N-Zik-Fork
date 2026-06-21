@@ -122,6 +122,7 @@
   <string name="show">Göster</string>
   <string name="unsynchronized_lyrics">senkronize edilmemiş şarkı sözleri</string>
   <string name="synchronized_lyrics">senkronize edilmiş şarkı sözleri</string>
+  <string name="karaoke_lyrics">karaoke lyrics</string>
   <string name="provided_by">Tarafından sağlanan</string>
   <string name="delete_playback_events">%1$s çalma olayını sil</string>
   <string name="existing_data_will_be_overwritten">Mevcut verilerin üzerine yazılacaktır. Veritabanı geri yüklendikten sonra %1$s otomatik olarak kapanacaktır.</string>
@@ -1206,4 +1207,5 @@
   <string name="translation_in_progress">Translation in progress</string>
   <string name="translation_failed">Translation failed, try again or report error</string>
   <string name="translation_successful">Translation successful</string>
+  <string name="karaoke_respect_agent_position">Respect agent position</string>
 </resources>
