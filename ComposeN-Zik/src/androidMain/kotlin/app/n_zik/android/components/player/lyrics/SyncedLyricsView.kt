@@ -147,37 +147,31 @@ fun SyncedLyricsView(
 
         if (linesToTranslate.isEmpty()) return@LaunchedEffect
 
-        val fullTextToTranslate = linesToTranslate.joinToString("\n") { it.second }
-
         withContext(Dispatchers.IO) {
-            try {
-                val helperTranslation = translator.translate(fullTextToTranslate, Language.CHINESE_TRADITIONAL, Language.AUTO)
-                var destLanguage = languageDestination
-                if (destLanguage == Language.AUTO) {
-                    destLanguage = if (helperTranslation.translatedText == fullTextToTranslate)
-                        Language.CHINESE_TRADITIONAL
-                    else
-                        helperTranslation.sourceLanguage
-                }
-                val mainTranslation = translator.translate(fullTextToTranslate, destLanguage, Language.AUTO)
+            var successCount = 0
+            var errorCount = 0
+            for ((sentenceIndex, trimmed) in linesToTranslate) {
+                try {
+                    val helperTranslation = translator.translate(trimmed, Language.CHINESE_TRADITIONAL, Language.AUTO)
+                    var destLanguage = languageDestination
+                    if (destLanguage == Language.AUTO) {
+                        destLanguage = if (helperTranslation.translatedText == trimmed)
+                            Language.CHINESE_TRADITIONAL
+                        else
+                            helperTranslation.sourceLanguage
+                    }
+                    val mainTranslation = translator.translate(trimmed, destLanguage, Language.AUTO)
 
-                val cleanTranslatedText = mainTranslation.translatedText.replace("\\\"", "\"")
-                val cleanPronunciation = mainTranslation.translatedPronunciation?.replace("\\\"", "\"")
+                    val cleanTranslatedText = mainTranslation.translatedText.replace("\\\"", "\"").trim()
+                    val cleanPronunciation = mainTranslation.translatedPronunciation?.replace("\\\"", "\"")?.trim()
 
-                val translatedLines = cleanTranslatedText.split("\n")
-                val helperPronLines = helperTranslation.sourcePronunciation?.split("\n") ?: emptyList()
-                val mainPronLines = mainTranslation.sourcePronunciation?.split("\n") ?: emptyList()
-                val translatedPronLines = cleanPronunciation?.split("\n") ?: translatedLines
-
-                linesToTranslate.forEachIndexed { listIndex, (sentenceIndex, trimmed) ->
-                    val transLine = translatedLines.getOrNull(listIndex)?.trim() ?: trimmed
-                    val helpPronLine = helperPronLines.getOrNull(listIndex)?.trim() ?: ""
-                    val mainPronLine = mainPronLines.getOrNull(listIndex)?.trim() ?: trimmed
-                    val transPronLine = translatedPronLines.getOrNull(listIndex)?.trim() ?: transLine
+                    val helpPronLine = helperTranslation.sourcePronunciation?.trim() ?: ""
+                    val mainPronLine = mainTranslation.sourcePronunciation?.trim() ?: trimmed
+                    val transPronLine = cleanPronunciation ?: cleanTranslatedText
 
                     val outputText = if (!showSecondLine || mainTranslation.sourceText == mainTranslation.translatedText) {
                         if (!romanizationEnabled) {
-                            if (translateEnabled) transLine else trimmed
+                            if (translateEnabled) cleanTranslatedText else trimmed
                         } else {
                             if (helperTranslation.sourceText == helperTranslation.translatedText)
                                 helpPronLine
@@ -186,7 +180,7 @@ fun SyncedLyricsView(
                         }
                     } else {
                         if (!romanizationEnabled) {
-                            trimmed + "\n[$transLine]"
+                            trimmed + "\n[$cleanTranslatedText]"
                         } else {
                             val pron = if (helperTranslation.sourceText == helperTranslation.translatedText) helpPronLine else mainPronLine.ifEmpty { trimmed }
                             pron + "\n[$transPronLine]"
@@ -195,11 +189,18 @@ fun SyncedLyricsView(
 
                     val finalText = outputText.replace("\\r", "\r").replace("\\n", "\n")
                     translationCache[sentenceIndex] = finalText
+                    successCount++
+                } catch (e: Exception) {
+                    Timber.e("Lyrics sync translation cache error: ${e.message}")
+                    errorCount++
                 }
-            } catch (e: Exception) {
-                Timber.e("Lyrics sync translation cache error: ${e.message}")
-                linesToTranslate.forEach { (index, trimmed) ->
-                    translationCache[index] = trimmed
+                delay(100) // Small delay to prevent API rate limiting
+            }
+            withContext(Dispatchers.Main) {
+                if (successCount > 0 && errorCount == 0) {
+                    Toaster.e(app.n_zik.android.R.string.translation_successful)
+                } else if (errorCount > 0) {
+                    Toaster.e(app.n_zik.android.R.string.translation_failed)
                 }
             }
         }

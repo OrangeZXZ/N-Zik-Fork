@@ -101,9 +101,16 @@ fun TranslateLyricsWithRomanization(
                 }
             }
         }
-        val translatedText =
-            if (result.toString() == "kotlin.Unit") "" else result.toString()
+        val translatedText = if (result.toString() == "kotlin.Unit") "" else result.toString()
         onPlaceholderDismissed()
         output.value = translatedText
+        
+        withContext(Dispatchers.Main) {
+            if (translatedText.isNotEmpty()) {
+                app.kreate.android.me.knighthat.utils.Toaster.e(app.n_zik.android.R.string.translation_successful)
+            } else if (translateEnabled) {
+                app.kreate.android.me.knighthat.utils.Toaster.e(app.n_zik.android.R.string.translation_failed)
+            }
+        }
     }
 }

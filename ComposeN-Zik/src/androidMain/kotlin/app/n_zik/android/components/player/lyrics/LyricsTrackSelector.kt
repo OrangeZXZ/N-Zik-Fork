@@ -178,7 +178,7 @@ fun LyricsTrackSelector(
         }
     }
 
-    LaunchedEffect(tracks, title, artistName) {
+    LaunchedEffect(tracks.size, title, artistName) {
         if (tracks.isNotEmpty()) {
             menuState.display {
                 Menu {

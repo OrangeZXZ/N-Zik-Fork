@@ -150,7 +150,6 @@ class LyricsSettingsMenu private constructor(
         var isShowingSynchronizedLyrics by rememberPreference(isShowingSynchronizedLyricsKey, false)
         val showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
         var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
-        var showTranslationDialog by remember { mutableStateOf(false) }
 
         buttons = mutableListOf<Button>().apply {
             if (isLandscape && !showlyricsthumbnail) {
@@ -369,12 +368,8 @@ class LyricsSettingsMenu private constructor(
                 @get:Composable
                 override val menuIconTitle: String get() = stringResource(messageId, languageDestinationName(otherLanguageApp))
                 override fun onShortClick() {
-                    if (!translateEnabled.value) {
-                        showTranslationDialog = true
-                    } else {
-                        menuState.hide()
-                        translateEnabled.value = false
-                    }
+                    menuState.hide()
+                    translateEnabled.value = !translateEnabled.value
                 }
                 override fun onLongClick() {}
             })
@@ -606,17 +601,5 @@ class LyricsSettingsMenu private constructor(
             else
                 GridMenu()
         }
-
-        if (showTranslationDialog) {
-            app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog(
-                text = "Translate lyrics? This will use an external translation service.",
-                onDismiss = { showTranslationDialog = false },
-                onConfirm = {
-                    menuState.hide()
-                    translateEnabled.value = true
-                }
-            )
-        }
     }
 }
-
