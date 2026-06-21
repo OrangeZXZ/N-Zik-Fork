@@ -48,6 +48,7 @@ import app.it.fast4x.rimusic.utils.lyricsBackgroundKey
 import app.it.fast4x.rimusic.utils.isShowingSynchronizedLyricsKey
 import app.it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import app.it.fast4x.rimusic.utils.languageDestinationName
+import app.it.fast4x.rimusic.utils.lyricsIntervalIndicatorKey
 
 @UnstableApi
 class LyricsSettingsMenu private constructor(
@@ -138,6 +139,7 @@ class LyricsSettingsMenu private constructor(
         var lyricsColor by rememberPreference(lyricsColorKey, LyricsColor.Thememode)
         var lyricsOutline by rememberPreference(lyricsOutlineKey, LyricsOutline.None)
         var romanizationEnabled by rememberPreference(romanizationEnabledKey, true)
+        var showIntervalIndicator by rememberPreference(lyricsIntervalIndicatorKey, true)
         var showSecondLine by rememberPreference(showSecondLineKey, false)
         var lyricsSizeAnimate by rememberPreference(lyricsSizeAnimateKey, false)
         var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
@@ -407,6 +409,20 @@ class LyricsSettingsMenu private constructor(
                 }
                 override fun onLongClick() {}
             })
+
+            if (isShowingSynchronizedLyrics) {
+                add(object : MenuIcon, Descriptive, Clickable {
+                    override val iconId: Int = if (showIntervalIndicator) R.drawable.checkmark else R.drawable.close
+                    override val messageId: Int = R.string.interval_indicator
+                    @get:Composable
+                    override val menuIconTitle: String get() = stringResource(messageId)
+                    override fun onShortClick() {
+                        menuState.hide()
+                        showIntervalIndicator = !showIntervalIndicator
+                    }
+                    override fun onLongClick() {}
+                })
+            }
 
             if (!showlyricsthumbnail && isShowingSynchronizedLyrics) {
                 add(object : MenuIcon, Descriptive, Clickable {

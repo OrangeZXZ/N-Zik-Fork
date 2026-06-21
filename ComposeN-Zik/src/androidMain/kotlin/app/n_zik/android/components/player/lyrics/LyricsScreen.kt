@@ -111,6 +111,7 @@ fun LyricsScreen(
         var translateEnabled by translateEnabledState
 
         var romanizationEnabled by rememberPreference(romanizationEnabledKey, true)
+        var showIntervalIndicator by rememberPreference(lyricsIntervalIndicatorKey, true)
         var showSecondLine by rememberPreference(showSecondLineKey, false)
         var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
         var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
@@ -264,7 +265,8 @@ fun LyricsScreen(
                         thumbnailSize = thumbnailSize,
                         isDisplayed = isDisplayed,
                         onDismiss = onDismiss,
-                        onInvalidLrc = { invalidLrc = it }
+                        onInvalidLrc = { invalidLrc = it },
+                        showIntervalIndicator = showIntervalIndicator
                     )
                 } else {
                     UnsyncedLyricsView(

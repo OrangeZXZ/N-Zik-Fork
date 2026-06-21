@@ -327,6 +327,7 @@ const val autoLoadSongsInQueueKey = "autoLoadSongsInQueue"
 const val showSecondLineKey = "showSecondLine"
 const val VinylSizeKey = "VinylSize"
 const val romanizationEnabledKey = "romanization_enabled"
+const val lyricsIntervalIndicatorKey = "lyrics_interval_indicator"
 
 const val quickPicsTrendingSongKey = "quickPicsTrendingSong"
 const val quickPicsRelatedPageKey = "quickPicsRelatedPage"

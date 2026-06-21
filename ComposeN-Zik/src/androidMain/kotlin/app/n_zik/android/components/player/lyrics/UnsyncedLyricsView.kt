@@ -47,13 +47,14 @@ fun UnsyncedLyricsView(
     clickLyricsText: Boolean,
     onDismiss: () -> Unit
 ) {
+    val decodedText = remember(text) { app.n_zik.android.components.player.lyrics.utils.HtmlDecoder.decodeHtmlEntities(text) }
     var translatedText by remember { mutableStateOf("") }
     
     if (showSecondLine || translateEnabled || romanizationEnabled) {
         val mutState = remember { mutableStateOf("") }
         TranslateLyricsWithRomanization(
             output = mutState,
-            textToTranslate = text,
+            textToTranslate = decodedText,
             isSync = false,
             showSecondLine = showSecondLine,
             romanizationEnabled = romanizationEnabled,
@@ -64,7 +65,7 @@ fun UnsyncedLyricsView(
         )
         translatedText = mutState.value
     } else {
-        translatedText = text
+        translatedText = decodedText
     }
 
     Column(

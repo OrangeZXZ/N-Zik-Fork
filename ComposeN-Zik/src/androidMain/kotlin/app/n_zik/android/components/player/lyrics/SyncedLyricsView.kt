@@ -3,6 +3,7 @@ package app.n_zik.android.components.player.lyrics
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -33,6 +34,9 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
+/** Minimum silence duration (ms) between two lines required to show the interval indicator. */
+private const val GAP_THRESHOLD_MS = 4000L
+
 @Composable
 fun SyncedLyricsView(
     text: String,
@@ -60,22 +64,64 @@ fun SyncedLyricsView(
     thumbnailSize: Dp,
     isDisplayed: Boolean,
     onDismiss: () -> Unit,
-    onInvalidLrc: (Boolean) -> Unit
+    onInvalidLrc: (Boolean) -> Unit,
+    showIntervalIndicator: Boolean = true
 ) {
     val density = LocalDensity.current
     val synchronizedLyrics = remember(text) {
-        val sentences = LrcLib.Lyrics(text).sentences
-        
-        if (sentences.isEmpty()) {
-            onInvalidLrc(true)
-        } else {
-            onInvalidLrc(false)
-        }
+        val decodedText = app.n_zik.android.components.player.lyrics.utils.HtmlDecoder.decodeHtmlEntities(text)
+        val sentences = LrcLib.Lyrics(decodedText).sentences
+        if (sentences.isEmpty()) onInvalidLrc(true) else onInvalidLrc(false)
+        SynchronizedLyrics(sentences) { currentPositionProvider() + 50L }
+    }
 
-        run {
-            SynchronizedLyrics(sentences) {
-                currentPositionProvider() + 50L
+    // Pre-compute gap windows: for each sentence index, the gap to the next sentence (if > threshold)
+    // Structure: Map<lineIndex, Pair<gapStartMs, gapEndMs>>
+    val gapWindows = remember(text) {
+        val sentences = synchronizedLyrics.sentences
+        buildMap {
+            sentences.forEachIndexed { index, sentence ->
+                val startMs = sentence.first
+                val nextStartMs = if (index < sentences.size - 1) sentences[index + 1].first else startMs + 10000L
+                val sentenceText = sentence.second.trim()
+                
+                if (sentenceText.isBlank()) {
+                    var currentEnd = startMs
+                    val prevSentence = if (index > 0) sentences[index - 1] else null
+                    if (prevSentence != null && prevSentence.second.isNotBlank()) {
+                        val prevStartMs = prevSentence.first
+                        val prevText = prevSentence.second.trim()
+                        
+                        // Estimate end of singing: ~120ms per character + 500ms trailing
+                        val estimatedDuration = (prevText.length * 120L) + 500L
+                        // Max end is 2 seconds before the next line starts, so we guarantee a 2s gap if possible
+                        val maxEstimatedEnd = nextStartMs - 2000L
+                        
+                        currentEnd = (prevStartMs + estimatedDuration)
+                            .coerceAtMost(maxEstimatedEnd)
+                            // Minimum 1 second after the previous line started
+                            .coerceAtLeast(prevStartMs + 1000L)
+                            // We can even start the gap before the blank line's official timestamp!
+                            .coerceAtMost(startMs)
+                    }
+
+                    if (currentEnd < nextStartMs) {
+                        val gap = nextStartMs - currentEnd
+                        if (gap > 2000L) {
+                            put(index, Pair(currentEnd, nextStartMs - 650L))
+                        }
+                    }
+                }
             }
+        }
+    }
+
+    // Live playback position for the interval indicator
+    var currentPositionMs by remember { mutableLongStateOf(0L) }
+    LaunchedEffect(Unit) {
+        while (isActive) {
+            currentPositionMs = currentPositionProvider()
+            delay(100)
         }
     }
 
@@ -95,7 +141,6 @@ fun SyncedLyricsView(
                 translationCache[index] = trimmed
                 return@forEachIndexed
             }
-            // Only fetch if not already cached
             if (translationCache.containsKey(index)) return@forEachIndexed
 
             withContext(Dispatchers.IO) {
@@ -121,13 +166,13 @@ fun SyncedLyricsView(
                         }
                     } else {
                         if (!romanizationEnabled) {
-                            trimmed + "\\n[${mainTranslation.translatedText}]"
+                            trimmed + "\n[${mainTranslation.translatedText}]"
                         } else {
                             val romanized = if (helperTranslation.sourceText == helperTranslation.translatedText)
                                 helperTranslation.sourcePronunciation
                             else
                                 mainTranslation.sourcePronunciation ?: mainTranslation.sourceText
-                            romanized + "\\n[${mainTranslation.translatedPronunciation ?: mainTranslation.translatedText}]"
+                            romanized + "\n[${mainTranslation.translatedPronunciation ?: mainTranslation.translatedText}]"
                         }
                     }
 
@@ -163,7 +208,6 @@ fun SyncedLyricsView(
         while (isActive) {
             delay(50)
             if (!synchronizedLyrics.update()) continue
-
             try {
                 lazyListState.animateScrollToItem(
                     index = synchronizedLyrics.index + 1,
@@ -179,6 +223,8 @@ fun SyncedLyricsView(
     if (showBackgroundLyrics && showlyricsthumbnail) modifierBG =
         modifierBG.background(colorPalette().accent)
 
+    val accentColor = colorPalette().accent
+
     LazyColumn(
         state = lazyListState,
         userScrollEnabled = true,
@@ -186,51 +232,68 @@ fun SyncedLyricsView(
         verticalArrangement = Arrangement.Center,
         modifier = modifierBG
             .background(
-                if (isDisplayed && !showlyricsthumbnail) if (lyricsBackground == LyricsBackground.Black) Color.Black.copy(0.6f)
-                else if (lyricsBackground == LyricsBackground.White) Color.White.copy(0.4f)
-                else Color.Transparent else Color.Transparent
+                if (isDisplayed && !showlyricsthumbnail)
+                    if (lyricsBackground == LyricsBackground.Black) Color.Black.copy(0.6f)
+                    else if (lyricsBackground == LyricsBackground.White) Color.White.copy(0.4f)
+                    else Color.Transparent
+                else Color.Transparent
             )
     ) {
         item(key = "header", contentType = 0) {
             Spacer(modifier = Modifier.height(thumbnailSize))
         }
-        
+
         itemsIndexed(
             items = synchronizedLyrics.sentences
         ) { index, sentence ->
             val trimmedSentence = sentence.second.trim()
 
-            // Read from cache — no network call here, no recompose on scroll
+            // Read from cache — no network call here
             val displayText = if (showSecondLine || translateEnabled || romanizationEnabled) {
                 translationCache[index] ?: trimmedSentence
             } else {
                 trimmedSentence
             }
 
-            LyricsTextPainter(
-                text = displayText,
-                isSync = true,
-                isCurrentIndex = index == synchronizedLyrics.index,
-                showlyricsthumbnail = showlyricsthumbnail,
-                lyricsOutline = lyricsOutline,
-                colorPaletteMode = colorPaletteMode,
-                fontSize = fontSize,
-                customSize = customSize,
-                lyricsAlignment = lyricsAlignment,
-                lyricsSizeAnimate = lyricsSizeAnimate,
-                lyricsColor = lyricsColor,
-                lyricsHighlight = lyricsHighlight,
-                clickLyricsText = clickLyricsText,
-                onClick = {
-                    if (clickLyricsText) {
-                        onSeekTo(sentence.first)
-                    } else {
-                        onDismiss()
+            val hasGapIndicator = showIntervalIndicator && gapWindows.containsKey(index)
+
+            if (!hasGapIndicator) {
+                LyricsTextPainter(
+                    text = displayText,
+                    isSync = true,
+                    isCurrentIndex = index == synchronizedLyrics.index,
+                    showlyricsthumbnail = showlyricsthumbnail,
+                    lyricsOutline = lyricsOutline,
+                    colorPaletteMode = colorPaletteMode,
+                    fontSize = fontSize,
+                    customSize = customSize,
+                    lyricsAlignment = lyricsAlignment,
+                    lyricsSizeAnimate = lyricsSizeAnimate,
+                    lyricsColor = lyricsColor,
+                    lyricsHighlight = lyricsHighlight,
+                    clickLyricsText = clickLyricsText,
+                    onClick = {
+                        if (clickLyricsText) onSeekTo(sentence.first) else onDismiss()
                     }
+                )
+            }
+
+            // Interval indicator after this line (if there is a gap and the feature is enabled)
+            if (showIntervalIndicator) {
+                gapWindows[index]?.let { (gapStart, gapEnd) ->
+                    val isVisible = currentPositionMs in gapStart until gapEnd
+                    LyricsIntervalIndicator(
+                        gapStartMs = gapStart,
+                        gapEndMs = gapEnd,
+                        currentPositionMs = currentPositionMs,
+                        visible = isVisible,
+                        color = accentColor,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
-            )
+            }
         }
-        
+
         item(key = "footer", contentType = 0) {
             Spacer(modifier = Modifier.height(thumbnailSize))
         }
