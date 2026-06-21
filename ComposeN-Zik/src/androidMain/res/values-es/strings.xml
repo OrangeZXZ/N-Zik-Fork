@@ -1202,4 +1202,8 @@
   <string name="install_warning">Por favor, recuerde realizar una copia de seguridad de su configuración y base de datos de música. Una actualización podría dañarla o romperla si se edita el esquema de la base de datos, por lo que esto es altamente recomendable.</string>
   <string name="install_yes">Sí, instalar</string>
   <string name="install_no_backup">No, primero copia de seguridad</string>
+  <string name="interval_indicator">Mostrar un cargador de espacios entre letras</string>
+  <string name="translation_in_progress">Traducción en curso</string>
+  <string name="translation_failed">Traducción fallida, inténtelo de nuevo o reporte error</string>
+  <string name="translation_successful">Traducción exitosa</string>
 </resources>

@@ -1202,4 +1202,8 @@
   <string name="install_warning">Παρακαλώ θυμηθείτε να δημιουργήσετε αντίγραφα ασφαλείας των ρυθμίσεων και της μουσικής βάσης δεδομένων σας. Μια ενημέρωση ενδέχεται να καταστρέψει ή να την σπάσει εάν το σχήμα βάσης δεδομένων είναι επεξεργασμένο, γι \'αυτό συνιστάται ιδιαίτερα.</string>
   <string name="install_yes">Ναι, εγκατάσταση</string>
   <string name="install_no_backup">Όχι, θα δημιουργήσω αντίγραφα ασφαλείας πρώτα</string>
+  <string name="interval_indicator">Εμφάνιση φορτωτή για κενά μεταξύ στίχων</string>
+  <string name="translation_in_progress">Μετάφραση σε εξέλιξη</string>
+  <string name="translation_failed">Η μετάφραση απέτυχε, προσπαθήστε ξανά ή αναφέρετε σφάλμα</string>
+  <string name="translation_successful">Επιτυχής μετάφραση</string>
 </resources>
