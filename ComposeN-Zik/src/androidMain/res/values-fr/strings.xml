@@ -122,6 +122,7 @@
   <string name="show">Afficher</string>
   <string name="unsynchronized_lyrics">Paroles non synchronisées</string>
   <string name="synchronized_lyrics">Paroles synchronisées</string>
+  <string name="karaoke_lyrics">paroles de karaoké</string>
   <string name="provided_by">Fournies par</string>
   <string name="delete_playback_events">Supprimer %1$s événements de la lecture</string>
   <string name="existing_data_will_be_overwritten">Les données existantes seront écrasées. %1$s se fermera automatiquement après la restauration de la base de données.</string>
@@ -1207,4 +1208,5 @@ Volume BAS : titre précédent</string>
   <string name="translation_in_progress">Traduction en cours</string>
   <string name="translation_failed">La traduction a échoué, essayez à nouveau ou signalez une erreur</string>
   <string name="translation_successful">Traduction réussie</string>
+  <string name="karaoke_respect_agent_position">Position de l\'agent respectueux</string>
 </resources>
