@@ -1203,4 +1203,8 @@ Volume BAS : titre précédent</string>
   <string name="install_warning">N\'oubliez pas de sauvegarder vos paramètres et votre base de données musicale. Une mise à jour peut corrompre ou la casser, si le schéma de la base de données est modifié, c\'est pourquoi il est fortement recommandé.</string>
   <string name="install_yes">Oui, installer</string>
   <string name="install_no_backup">Non, je vais d\'abord sauvegarder</string>
+  <string name="interval_indicator">Afficher un chargeur pour les lacunes entre les paroles</string>
+  <string name="translation_in_progress">Traduction en cours</string>
+  <string name="translation_failed">La traduction a échoué, essayez à nouveau ou signalez une erreur</string>
+  <string name="translation_successful">Traduction réussie</string>
 </resources>
