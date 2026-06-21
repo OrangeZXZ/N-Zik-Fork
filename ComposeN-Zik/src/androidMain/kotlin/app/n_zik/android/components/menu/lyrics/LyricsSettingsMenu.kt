@@ -261,13 +261,6 @@ class LyricsSettingsMenu private constructor(
                             SubMenuComponent(listOf(
                                 object : MenuIcon, Descriptive, Clickable {
                                     override val iconId = R.drawable.droplet
-                                    override val messageId = R.string.theme
-                                    @get:Composable override val menuIconTitle get() = stringResource(messageId)
-                                    override fun onShortClick() { menuState.hide(); lyricsColor = LyricsColor.Thememode }
-                                    override fun onLongClick() {}
-                                },
-                                object : MenuIcon, Descriptive, Clickable {
-                                    override val iconId = R.drawable.droplet
                                     override val messageId = R.string.white
                                     @get:Composable override val menuIconTitle get() = stringResource(messageId)
                                     override fun onShortClick() { menuState.hide(); lyricsColor = LyricsColor.White }
@@ -275,23 +268,23 @@ class LyricsSettingsMenu private constructor(
                                 },
                                 object : MenuIcon, Descriptive, Clickable {
                                     override val iconId = R.drawable.droplet
-                                    override val messageId = R.string.black
+                                    override val messageId = R.string.theme
                                     @get:Composable override val menuIconTitle get() = stringResource(messageId)
-                                    override fun onShortClick() { menuState.hide(); lyricsColor = LyricsColor.Black }
+                                    override fun onShortClick() { menuState.hide(); lyricsColor = LyricsColor.Thememode }
                                     override fun onLongClick() {}
                                 },
                                 object : MenuIcon, Descriptive, Clickable {
                                     override val iconId = R.drawable.droplet
-                                    override val messageId = R.string.accent
+                                    override val messageId = R.string.bg_colors_background_from_cover
                                     @get:Composable override val menuIconTitle get() = stringResource(messageId)
-                                    override fun onShortClick() { menuState.hide(); lyricsColor = LyricsColor.Accent }
+                                    override fun onShortClick() { menuState.hide(); lyricsColor = LyricsColor.Cover }
                                     override fun onLongClick() {}
                                 },
                                 object : MenuIcon, Descriptive, Clickable {
                                     override val iconId = R.drawable.droplet
-                                    override val messageId = R.string.fluidrainbow
+                                    override val messageId = R.string.color_custom
                                     @get:Composable override val menuIconTitle get() = stringResource(messageId)
-                                    override fun onShortClick() { menuState.hide(); lyricsColor = LyricsColor.FluidRainbow }
+                                    override fun onShortClick() { menuState.hide(); lyricsColor = LyricsColor.Custom }
                                     override fun onLongClick() {}
                                 }
                             ))

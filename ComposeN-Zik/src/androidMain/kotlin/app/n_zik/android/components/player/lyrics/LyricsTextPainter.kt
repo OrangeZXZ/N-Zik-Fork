@@ -57,6 +57,8 @@ fun LyricsTextPainter(
     lyricsAlignment: LyricsAlignment,
     lyricsSizeAnimate: Boolean,
     lyricsColor: LyricsColor,
+    lyricsCustomColor: Int,
+    dominantColor: Int,
     lyricsHighlight: LyricsHighlight,
     clickLyricsText: Boolean,
     onClick: () -> Unit
@@ -269,14 +271,14 @@ fun LyricsTextPainter(
                         },
                         fontWeight = FontWeight.Medium,
                         textAlign = lyricsAlignment.selected,
-                        color = if (lyricsColor == LyricsColor.Thememode || lyricsColor == LyricsColor.White || lyricsColor == LyricsColor.Black || lyricsColor == LyricsColor.Accent)
+                        color = if (lyricsColor == LyricsColor.Thememode || lyricsColor == LyricsColor.White || lyricsColor == LyricsColor.Cover || lyricsColor == LyricsColor.Custom)
                             Color.White.copy(0.3f) else Color.Transparent,
                         shadow = Shadow(
                             color = if (isCurrentIndex)
                                 if (lyricsColor == LyricsColor.Thememode) Color.White.copy(0.3f).compositeOver(colorPalette().text)
                                 else if (lyricsColor == LyricsColor.White) Color.White.copy(0.3f).compositeOver(Color.White)
-                                else if (lyricsColor == LyricsColor.Black) Color.White.copy(0.3f).compositeOver(Color.Black)
-                                else if (lyricsColor == LyricsColor.Accent) Color.White.copy(0.3f).compositeOver(colorPalette().accent)
+                                else if (lyricsColor == LyricsColor.Cover) Color.White.copy(0.3f).compositeOver(Color(dominantColor))
+                                else if (lyricsColor == LyricsColor.Custom) Color.White.copy(0.3f).compositeOver(Color(lyricsCustomColor))
                                 else Color.Transparent
                             else Color.Transparent,
                             offset = Offset(0f, 0f), blurRadius = 25f
@@ -330,15 +332,15 @@ fun LyricsTextPainter(
                         onClick = onClick
                     )
             )
-        } else if (lyricsColor == LyricsColor.White || lyricsColor == LyricsColor.Black || lyricsColor == LyricsColor.Accent || lyricsColor == LyricsColor.Thememode) {
+        } else if (lyricsColor == LyricsColor.White || lyricsColor == LyricsColor.Cover || lyricsColor == LyricsColor.Custom || lyricsColor == LyricsColor.Thememode) {
             BasicText(
                 text = text,
                 style = TextStyle(
                     fontWeight = FontWeight.Medium,
                     color = if (lyricsColor == LyricsColor.White) Color.White
-                    else if (lyricsColor == LyricsColor.Black) Color.Black
+                    else if (lyricsColor == LyricsColor.Cover) Color(dominantColor)
                     else if (lyricsColor == LyricsColor.Thememode) colorPalette().text
-                    else colorPalette().accent,
+                    else Color(lyricsCustomColor),
                     fontSize = when (fontSize) {
                         LyricsFontSize.Light -> typography().m.fontSize
                         LyricsFontSize.Medium -> typography().l.fontSize

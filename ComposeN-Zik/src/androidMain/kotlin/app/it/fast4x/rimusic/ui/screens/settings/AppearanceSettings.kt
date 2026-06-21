@@ -285,6 +285,10 @@ fun DefaultAppearanceSettings() {
     showRemainingSongTime = true
     var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     clickLyricsText = true
+    var lyricsColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsColorKey, app.n_zik.android.enums.lyrics.LyricsColor.Thememode)
+    lyricsColor = app.n_zik.android.enums.lyrics.LyricsColor.Thememode
+    var lyricsCustomColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsCustomColorKey, android.graphics.Color.WHITE)
+    lyricsCustomColor = android.graphics.Color.WHITE
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
     showBackgroundLyrics = false
     var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 12f)
@@ -469,6 +473,8 @@ fun AppearanceSettings(
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
     var showSkipTimeButtons by rememberPreference(showSkipTimeButtonsKey, true)
     var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
+    var lyricsColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsColorKey, app.n_zik.android.enums.lyrics.LyricsColor.Thememode)
+    var lyricsCustomColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsCustomColorKey, android.graphics.Color.WHITE)
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
 
     val search = Search()
@@ -2439,6 +2445,43 @@ fun AppearanceSettings(
                         onCheckedChange = { controlsExpanded = it }
                     )
                 }
+
+            if (search.inputValue.isBlank() || stringResource(R.string.lyrics_color).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    title = stringResource(R.string.lyrics_color),
+                    selectedValue = lyricsColor,
+                    onValueSelected = { lyricsColor = it },
+                    valueText = { stringResource(when(it) { app.n_zik.android.enums.lyrics.LyricsColor.White -> R.string.color_white; app.n_zik.android.enums.lyrics.LyricsColor.Thememode -> R.string.bg_colors_background_from_theme; app.n_zik.android.enums.lyrics.LyricsColor.Cover -> R.string.bg_colors_background_from_cover; app.n_zik.android.enums.lyrics.LyricsColor.Custom -> R.string.color_custom }) },
+                    icon = R.drawable.color_palette
+                )
+            }
+
+            AnimatedVisibility(visible = lyricsColor == app.n_zik.android.enums.lyrics.LyricsColor.Custom) {
+                var showColorPicker by remember { mutableStateOf(false) }
+                val customColorString = stringResource(R.string.color_custom)
+                OtherSettingsEntry(
+                    title = customColorString,
+                    text = "",
+                    icon = R.drawable.color_palette,
+                    onClick = { showColorPicker = true },
+                    modifier = Modifier.padding(start = 25.dp),
+                    trailingContent = {
+                        Box(
+                            modifier = Modifier
+                                .size(20.dp)
+                                .background(androidx.compose.ui.graphics.Color(lyricsCustomColor))
+                                .border(BorderStroke(1.dp, androidx.compose.ui.graphics.Color.LightGray))
+                        )
+                    }
+                )
+                if (showColorPicker) {
+                    app.it.fast4x.rimusic.ui.components.themed.DialogColorPicker(onDismiss = { showColorPicker = false }) {
+                        lyricsCustomColor = it.toArgb()
+                        showColorPicker = false
+                        app.kreate.android.me.knighthat.utils.Toaster.n(R.string.info_color_s_applied, customColorString)
+                    }
+                }
+            }
 
             if (statsfornerds && (!(showthumbnail && playerType == PlayerType.Essential))){
                 if (search.inputValue.isBlank() || stringResource(R.string.statsfornerds).contains(

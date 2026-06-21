@@ -162,6 +162,20 @@ fun LyricsScreen(
             title = cleanPrefix(mediaMetadata.title?.toString().orEmpty())
         }
 
+        var lyricsCustomColor by rememberPreference(lyricsCustomColorKey, android.graphics.Color.WHITE)
+        val context = LocalContext.current
+        var bitmapCover by remember { mutableStateOf<android.graphics.Bitmap?>(null) }
+        var dominantColor by remember { mutableStateOf(android.graphics.Color.DKGRAY) }
+
+        LaunchedEffect(mediaMetadata.artworkUri) {
+            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                bitmapCover = app.it.fast4x.rimusic.utils.getBitmapFromUrl(context, mediaMetadata.artworkUri.toString())
+            }
+        }
+        LaunchedEffect(bitmapCover) {
+            dominantColor = app.it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf(bitmapCover ?: app.kreate.android.drawable.APP_ICON_BITMAP).accent.toArgb()
+        }
+
         LyricsFetcher(
             mediaId = mediaId,
             isShowingSynchronizedLyrics = isShowingSynchronizedLyrics,
@@ -260,6 +274,8 @@ fun LyricsScreen(
                         lyricsAlignment = lyricsAlignment,
                         lyricsSizeAnimate = lyricsSizeAnimate,
                         lyricsColor = lyricsColor,
+                        lyricsCustomColor = lyricsCustomColor,
+                        dominantColor = dominantColor,
                         lyricsHighlight = lyricsHighlight,
                         clickLyricsText = clickLyricsText,
                         thumbnailSize = thumbnailSize,
@@ -285,6 +301,8 @@ fun LyricsScreen(
                         customSize = customSize,
                         lyricsAlignment = lyricsAlignment,
                         lyricsColor = lyricsColor,
+                        lyricsCustomColor = lyricsCustomColor,
+                        dominantColor = dominantColor,
                         lyricsHighlight = lyricsHighlight,
                         thumbnailSize = thumbnailSize,
                         clickLyricsText = clickLyricsText,

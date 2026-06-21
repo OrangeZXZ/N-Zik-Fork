@@ -64,6 +64,8 @@ fun SyncedLyricsView(
     lyricsAlignment: LyricsAlignment,
     lyricsSizeAnimate: Boolean,
     lyricsColor: LyricsColor,
+    lyricsCustomColor: Int,
+    dominantColor: Int,
     lyricsHighlight: LyricsHighlight,
     clickLyricsText: Boolean,
     thumbnailSize: Dp,
@@ -325,6 +327,8 @@ fun SyncedLyricsView(
                     lyricsAlignment = lyricsAlignment,
                     lyricsSizeAnimate = lyricsSizeAnimate,
                     lyricsColor = lyricsColor,
+                    lyricsCustomColor = lyricsCustomColor,
+                    dominantColor = dominantColor,
                     lyricsHighlight = lyricsHighlight,
                     clickLyricsText = clickLyricsText,
                     onClick = {

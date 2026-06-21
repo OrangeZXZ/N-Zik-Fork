@@ -1,14 +1,8 @@
 package app.n_zik.android.enums.lyrics
 
 enum class LyricsColor {
-    Thememode,
     White,
-    Black,
-    Accent,
+    Thememode,
     Cover,
-    FluidRainbow,
-    FluidTheme;
+    Custom
 }
-
-
-

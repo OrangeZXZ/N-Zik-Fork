@@ -42,6 +42,8 @@ fun UnsyncedLyricsView(
     customSize: Float,
     lyricsAlignment: LyricsAlignment,
     lyricsColor: LyricsColor,
+    lyricsCustomColor: Int,
+    dominantColor: Int,
     lyricsHighlight: LyricsHighlight,
     thumbnailSize: Dp,
     clickLyricsText: Boolean,
@@ -99,6 +101,8 @@ fun UnsyncedLyricsView(
                 lyricsAlignment = lyricsAlignment,
                 lyricsSizeAnimate = false, // Not used for unsynced
                 lyricsColor = lyricsColor,
+                lyricsCustomColor = lyricsCustomColor,
+                dominantColor = dominantColor,
                 lyricsHighlight = lyricsHighlight,
                 clickLyricsText = clickLyricsText,
                 onClick = onDismiss
