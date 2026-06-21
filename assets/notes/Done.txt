@@ -21,3 +21,5 @@ fixed: playback crash
 fixed: tiny thumbnail image on player screen
 fixed: modern player control buttons
 fixed: lyrics recenter button eclipsing the settings icon
+fixed: empty playlist on artist page
+fixed: empty live performances on artist page
