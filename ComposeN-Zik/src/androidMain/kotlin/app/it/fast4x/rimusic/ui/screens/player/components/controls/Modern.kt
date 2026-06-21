@@ -516,7 +516,14 @@ fun ControlsModern(
       else {
           CustomElevatedButton(
               backgroundColor = colorPalette().background2.copy(0.95f),
-              onClick = {},
+              onClick = {
+                  if (shouldBePlaying) {
+                      binder.gracefulPause()
+                  } else {
+                      binder.gracefulPlay()
+                  }
+                  if (effectRotationEnabled) isRotated = !isRotated
+              },
               modifier = Modifier
                   .doubleShadowDrop(uiRoundnessShape(), 4.dp, 8.dp)
                   .clip(uiRoundnessShape())
