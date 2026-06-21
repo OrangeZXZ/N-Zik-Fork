@@ -170,6 +170,22 @@ fun LyricsFetcher(
                     kotlin.runCatching {
                         Innertube.lyrics(NextBody(videoId = mediaId))
                             ?.onSuccess { fixedLyrics ->
+                                if (fixedLyrics?.isNotEmpty() == true && playerEnableLyricsPopupMessage) {
+                                    coroutineScope.launch {
+                                        Toaster.s(
+                                            R.string.info_lyrics_found_on_s,
+                                            "YouTube"
+                                        )
+                                    }
+                                } else if (playerEnableLyricsPopupMessage) {
+                                    coroutineScope.launch {
+                                        Toaster.e(
+                                            R.string.info_lyrics_not_found_on_s,
+                                            "YouTube",
+                                            duration = Toast.LENGTH_LONG
+                                        )
+                                    }
+                                }
                                 Database.asyncTransaction {
                                     lyricsTable.upsert(
                                         Lyrics(
@@ -180,6 +196,15 @@ fun LyricsFetcher(
                                     )
                                 }
                             }?.onFailure {
+                                if (playerEnableLyricsPopupMessage) {
+                                    coroutineScope.launch {
+                                        Toaster.e(
+                                            R.string.info_lyrics_not_found_on_s,
+                                            "YouTube",
+                                            duration = Toast.LENGTH_LONG
+                                        )
+                                    }
+                                }
                                 onErrorUpdated(true)
                             }
                     }.onFailure {

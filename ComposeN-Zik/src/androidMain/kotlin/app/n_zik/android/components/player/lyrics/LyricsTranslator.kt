@@ -124,10 +124,12 @@ fun TranslateLyricsWithRomanization(
         output.value = translatedText
         
         withContext(Dispatchers.Main) {
-            if (translatedText.isNotEmpty() && translateEnabled) {
-                Toaster.s(R.string.translation_successful)
-            } else if (translateEnabled) {
-                Toaster.e(R.string.translation_failed)
+            if (textToTranslate.isNotEmpty()) {
+                if (translatedText.isNotEmpty() && translateEnabled) {
+                    Toaster.s(R.string.translation_successful)
+                } else if (translateEnabled) {
+                    Toaster.e(R.string.translation_failed)
+                }
             }
         }
     }
