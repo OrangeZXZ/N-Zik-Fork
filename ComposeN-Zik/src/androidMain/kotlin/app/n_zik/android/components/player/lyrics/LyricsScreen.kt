@@ -505,7 +505,7 @@ fun LyricsScreen(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 16.dp else 0.dp)
-                    .fillMaxWidth(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 0.5f else 0.2f)
+                    .fillMaxWidth(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 0.5f else 0.35f)
             ) {
 
                 Row(
