@@ -1208,5 +1208,5 @@
   <string name="translation_failed">翻译失败，请重试或报告错误</string>
   <string name="translation_successful">翻译成功</string>
   <string name="karaoke_respect_agent_position">尊重代理位置</string>
-  <string name="lyrics_offset">Lyrics Offset</string>
+  <string name="lyrics_offset">歌词偏移</string>
 </resources>
