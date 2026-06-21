@@ -31,6 +31,8 @@ import app.n_zik.android.enums.lyrics.*
 import app.n_zik.android.models.Lyrics
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
+import app.n_zik.android.enums.lyrics.LyricsType
+import app.it.fast4x.rimusic.utils.lyricsTypeKey
 import app.it.fast4x.rimusic.ui.components.themed.LyricsSizeDialog
 import app.it.fast4x.rimusic.ui.components.themed.Menu
 import app.it.fast4x.rimusic.ui.components.themed.MenuEntry
@@ -81,9 +83,9 @@ fun LyricsScreen(
         val binder = LocalPlayerServiceBinder.current
 
         var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
-        var isShowingSynchronizedLyrics by rememberPreference(isShowingSynchronizedLyricsKey, false)
-        var invalidLrc by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
-        var isPicking by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
+        var lyricsType by rememberPreference(lyricsTypeKey, LyricsType.Synced)
+        var invalidLrc by remember(mediaId, lyricsType) { mutableStateOf(false) }
+        var isPicking by remember(mediaId, lyricsType) { mutableStateOf(false) }
         var lyricsColor by rememberPreference(lyricsColorKey, LyricsColor.Thememode)
         var lyricsOutline by rememberPreference(lyricsOutlineKey, LyricsOutline.None)
         val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey, PlayerBackgroundColors.AnimatedGradient)
@@ -97,15 +99,15 @@ fun LyricsScreen(
 
         val editLyricsDialog = EditLyricsDialog(
             mediaId = mediaId,
-            isShowingSynchronizedLyrics = isShowingSynchronizedLyrics,
+            lyricsType = lyricsType,
             getLyrics = { lyrics },
             ensureSongInserted = { ensureSongInserted() }
         )
 
-        val text = if (isShowingSynchronizedLyrics) lyrics?.synced else lyrics?.fixed
+        val text = if (lyricsType != LyricsType.Unsynced) lyrics?.synced else lyrics?.fixed
 
-        var isError by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
-        var isErrorSync by remember(mediaId, isShowingSynchronizedLyrics) { mutableStateOf(false) }
+        var isError by remember(mediaId, lyricsType) { mutableStateOf(false) }
+        var isErrorSync by remember(mediaId, lyricsType) { mutableStateOf(false) }
 
         val translateEnabledState = remember { mutableStateOf(false) }
         var translateEnabled by translateEnabledState
@@ -132,6 +134,7 @@ fun LyricsScreen(
 
         var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
         var lyricsAlignment by rememberPreference(lyricsAlignmentKey, LyricsAlignment.Center)
+        var karaokeRespectAgentPosition by rememberPreference(karaokeRespectAgentPositionKey, true)
         var lyricsSizeAnimate by rememberPreference(lyricsSizeAnimateKey, false)
         val mediaMetadata = mediaMetadataProvider()
         var artistName by rememberSaveable { mutableStateOf(cleanPrefix(mediaMetadata.artist?.toString().orEmpty()))}
@@ -178,7 +181,7 @@ fun LyricsScreen(
 
         LyricsFetcher(
             mediaId = mediaId,
-            isShowingSynchronizedLyrics = isShowingSynchronizedLyrics,
+            lyricsType = lyricsType,
             checkLyrics = checkLyrics,
             artistName = artistName,
             title = title,
@@ -214,7 +217,7 @@ fun LyricsScreen(
             )
         }
 
-        if (isShowingSynchronizedLyrics) {
+        if (lyricsType != LyricsType.Unsynced) {
             DisposableEffect(Unit) {
                 currentView.keepScreenOn = true
                 onDispose {
@@ -232,7 +235,7 @@ fun LyricsScreen(
                 .clip(thumbnailShape())
         ) {
             AnimatedVisibility(
-                visible = (isError && text == null) || (invalidLrc && isShowingSynchronizedLyrics),
+                visible = (isError && text == null) || (invalidLrc && lyricsType != LyricsType.Unsynced),
                 enter = slideInVertically { -it },
                 exit = slideOutVertically { -it },
                 modifier = Modifier.align(Alignment.TopCenter)
@@ -252,62 +255,97 @@ fun LyricsScreen(
             }
 
             if (text?.isNotEmpty() == true) {
-                if (isShowingSynchronizedLyrics) {
-                    SyncedLyricsView(
-                        text = text,
-                        currentPositionProvider = { binder?.player?.currentPosition ?: 0L },
-                        onSeekTo = { binder?.player?.seekTo(it) },
-                        showlyricsthumbnail = showlyricsthumbnail,
-                        isLandscape = isLandscape,
-                        trailingContent = trailingContent,
-                        showBackgroundLyrics = showBackgroundLyrics,
-                        lyricsBackground = lyricsBackground,
-                        showSecondLine = showSecondLine,
-                        translateEnabled = translateEnabled,
-                        romanizationEnabled = romanizationEnabled,
-                        languageDestination = languageDestination,
-                        translator = translator,
-                        lyricsOutline = lyricsOutline,
-                        colorPaletteMode = colorPaletteMode,
-                        fontSize = lyricsFontSize,
-                        customSize = customSize,
-                        lyricsAlignment = lyricsAlignment,
-                        lyricsSizeAnimate = lyricsSizeAnimate,
-                        lyricsColor = lyricsColor,
-                        lyricsCustomColor = lyricsCustomColor,
-                        dominantColor = dominantColor,
-                        lyricsHighlight = lyricsHighlight,
-                        clickLyricsText = clickLyricsText,
-                        thumbnailSize = thumbnailSize,
-                        isDisplayed = isDisplayed,
-                        onDismiss = onDismiss,
-                        onInvalidLrc = { invalidLrc = it },
-                        showIntervalIndicator = showIntervalIndicator
-                    )
-                } else {
-                    UnsyncedLyricsView(
-                        text = text,
-                        showlyricsthumbnail = showlyricsthumbnail,
-                        isDisplayed = isDisplayed,
-                        showSecondLine = showSecondLine,
-                        translateEnabled = translateEnabled,
-                        romanizationEnabled = romanizationEnabled,
-                        languageDestination = languageDestination,
-                        translator = translator,
-                        lyricsBackground = lyricsBackground,
-                        lyricsOutline = lyricsOutline,
-                        colorPaletteMode = colorPaletteMode,
-                        fontSize = lyricsFontSize,
-                        customSize = customSize,
-                        lyricsAlignment = lyricsAlignment,
-                        lyricsColor = lyricsColor,
-                        lyricsCustomColor = lyricsCustomColor,
-                        dominantColor = dominantColor,
-                        lyricsHighlight = lyricsHighlight,
-                        thumbnailSize = thumbnailSize,
-                        clickLyricsText = clickLyricsText,
-                        onDismiss = onDismiss
-                    )
+                val hasWordTimings = text.contains("<") && text.contains(">") && text.contains("|") && text.contains(":")
+                when {
+                    lyricsType == LyricsType.Karaoke && hasWordTimings -> {
+                        KaraokeLyricsView(
+                            text = text,
+                            currentPositionProvider = { binder?.player?.currentPosition ?: 0L },
+                            isPlayingProvider = { binder?.player?.isPlaying == true },
+                            onSeekTo = { binder?.player?.seekTo(it) },
+                            showlyricsthumbnail = showlyricsthumbnail,
+                            isLandscape = isLandscape,
+                            trailingContent = trailingContent,
+                            showBackgroundLyrics = showBackgroundLyrics,
+                            lyricsBackground = lyricsBackground,
+                            lyricsOutline = lyricsOutline,
+                            colorPaletteMode = colorPaletteMode,
+                            fontSize = lyricsFontSize,
+                            customSize = customSize,
+                            lyricsSizeAnimate = lyricsSizeAnimate,
+                            lyricsColor = lyricsColor,
+                            lyricsCustomColor = lyricsCustomColor,
+                            dominantColor = dominantColor,
+                            lyricsHighlight = lyricsHighlight,
+                            lyricsAlignment = lyricsAlignment,
+                            clickLyricsText = clickLyricsText,
+                            karaokeRespectAgentPosition = karaokeRespectAgentPosition,
+                            thumbnailSize = thumbnailSize,
+                            isDisplayed = isDisplayed,
+                            onDismiss = onDismiss,
+                            onInvalidLrc = { invalidLrc = it },
+                            showIntervalIndicator = showIntervalIndicator
+                        )
+                    }
+
+                    lyricsType == LyricsType.Synced || (lyricsType == LyricsType.Karaoke && !hasWordTimings) -> {
+                        SyncedLyricsView(
+                            text = text,
+                            currentPositionProvider = { binder?.player?.currentPosition ?: 0L },
+                            onSeekTo = { binder?.player?.seekTo(it) },
+                            showlyricsthumbnail = showlyricsthumbnail,
+                            isLandscape = isLandscape,
+                            trailingContent = trailingContent,
+                            showBackgroundLyrics = showBackgroundLyrics,
+                            lyricsBackground = lyricsBackground,
+                            showSecondLine = showSecondLine,
+                            translateEnabled = translateEnabled,
+                            romanizationEnabled = romanizationEnabled,
+                            languageDestination = languageDestination,
+                            translator = translator,
+                            lyricsOutline = lyricsOutline,
+                            colorPaletteMode = colorPaletteMode,
+                            fontSize = lyricsFontSize,
+                            customSize = customSize,
+                            lyricsAlignment = lyricsAlignment,
+                            lyricsSizeAnimate = lyricsSizeAnimate,
+                            lyricsColor = lyricsColor,
+                            lyricsCustomColor = lyricsCustomColor,
+                            dominantColor = dominantColor,
+                            lyricsHighlight = lyricsHighlight,
+                            clickLyricsText = clickLyricsText,
+                            thumbnailSize = thumbnailSize,
+                            isDisplayed = isDisplayed,
+                            onDismiss = onDismiss,
+                            onInvalidLrc = { invalidLrc = it },
+                            showIntervalIndicator = showIntervalIndicator
+                        )
+                    }
+                    lyricsType == LyricsType.Unsynced -> {
+                        UnsyncedLyricsView(
+                            text = text,
+                            showlyricsthumbnail = showlyricsthumbnail,
+                            isDisplayed = isDisplayed,
+                            showSecondLine = showSecondLine,
+                            translateEnabled = translateEnabled,
+                            romanizationEnabled = romanizationEnabled,
+                            languageDestination = languageDestination,
+                            translator = translator,
+                            lyricsBackground = lyricsBackground,
+                            lyricsOutline = lyricsOutline,
+                            colorPaletteMode = colorPaletteMode,
+                            fontSize = lyricsFontSize,
+                            customSize = customSize,
+                            lyricsAlignment = lyricsAlignment,
+                            lyricsColor = lyricsColor,
+                            lyricsCustomColor = lyricsCustomColor,
+                            dominantColor = dominantColor,
+                            lyricsHighlight = lyricsHighlight,
+                            thumbnailSize = thumbnailSize,
+                            clickLyricsText = clickLyricsText,
+                            onDismiss = onDismiss
+                        )
+                    }
                 }
             }
 
@@ -494,8 +532,8 @@ fun LyricsScreen(
                                                 lyricsTable.upsert(
                                                     Lyrics(
                                                         songId = mediaId,
-                                                        fixed = if (isShowingSynchronizedLyrics) lyrics?.fixed else null,
-                                                        synced = if (isShowingSynchronizedLyrics) null else lyrics?.synced,
+                                                        fixed = if (lyricsType != LyricsType.Unsynced) lyrics?.fixed else null,
+                                                        synced = if (lyricsType != LyricsType.Unsynced) null else lyrics?.synced,
                                                     )
                                                 )
                                             }

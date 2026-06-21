@@ -339,7 +339,7 @@ fun LyricsTextPainter(
                         if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart
                         else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center
                     )
-                    .clip(uiRoundnessShape())
+                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = if (clickLyricsText) ripple(true) else null,
@@ -383,7 +383,7 @@ fun LyricsTextPainter(
                     .graphicsLayer {
                         alpha = if(isSync) animateOpacity else 1f
                     }
-                    .clip(uiRoundnessShape())
+                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = if (clickLyricsText) ripple(true) else null,
@@ -393,7 +393,7 @@ fun LyricsTextPainter(
                         if (isCurrentIndex) if (lyricsHighlight == LyricsHighlight.White) Color.White.copy(0.5f)
                         else if (lyricsHighlight == LyricsHighlight.Black) Color.Black.copy(0.5f)
                         else Color.Transparent else Color.Transparent,
-                        uiRoundnessShape()
+                        androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
                     )
                     .conditional(lyricsHighlight != LyricsHighlight.None) { fillMaxWidth() }
             )
@@ -431,7 +431,7 @@ fun LyricsTextPainter(
                     .graphicsLayer {
                         alpha = if(isSync) animateOpacity else 1f
                     }
-                    .clip(uiRoundnessShape())
+                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = if (clickLyricsText) ripple(true) else null,

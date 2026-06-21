@@ -22,12 +22,13 @@ import app.n_zik.android.components.dialog.TextInputDialog
 import app.n_zik.android.components.dialog.InputDialogConstraints
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.models.Lyrics
+import app.n_zik.android.enums.lyrics.LyricsType
 
 class EditLyricsDialog private constructor(
     activeState: MutableState<Boolean>,
     valueState: MutableState<TextFieldValue>,
     private val mediaId: String,
-    private val isShowingSynchronizedLyrics: Boolean,
+    private val lyricsType: LyricsType,
     private val getLyrics: () -> Lyrics?,
     private val ensureSongInserted: () -> Unit
 ) : TextInputDialog(InputDialogConstraints.ALL) {
@@ -36,18 +37,18 @@ class EditLyricsDialog private constructor(
         @Composable
         operator fun invoke(
             mediaId: String,
-            isShowingSynchronizedLyrics: Boolean,
+            lyricsType: LyricsType,
             getLyrics: () -> Lyrics?,
             ensureSongInserted: () -> Unit
         ): EditLyricsDialog {
             val lyrics = getLyrics()
-            val initialText = if (isShowingSynchronizedLyrics) lyrics?.synced else lyrics?.fixed
+            val initialText = if (lyricsType != LyricsType.Unsynced) lyrics?.synced else lyrics?.fixed
             
             return EditLyricsDialog(
                 remember { mutableStateOf(false) },
                 remember(initialText) { mutableStateOf(TextFieldValue(initialText ?: "")) },
                 mediaId,
-                isShowingSynchronizedLyrics,
+                lyricsType,
                 getLyrics,
                 ensureSongInserted
             )
@@ -67,7 +68,7 @@ class EditLyricsDialog private constructor(
     override fun hideDialog() {
         super.hideDialog()
         val lyrics = getLyrics()
-        val text = if (isShowingSynchronizedLyrics) lyrics?.synced else lyrics?.fixed
+        val text = if (lyricsType != LyricsType.Unsynced) lyrics?.synced else lyrics?.fixed
         value = TextFieldValue(text ?: "")
     }
 
@@ -100,8 +101,8 @@ class EditLyricsDialog private constructor(
             Database.lyricsTable.upsert(
                 Lyrics(
                     songId = mediaId,
-                    fixed = if (isShowingSynchronizedLyrics) lyrics?.fixed else newValue,
-                    synced = if (isShowingSynchronizedLyrics) newValue else lyrics?.synced,
+                    fixed = if (lyricsType != LyricsType.Unsynced) lyrics?.fixed else newValue,
+                    synced = if (lyricsType != LyricsType.Unsynced) newValue else lyrics?.synced,
                 )
             )
         }

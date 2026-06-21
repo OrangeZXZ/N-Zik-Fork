@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import app.it.fast4x.rimusic.utils.karaokeRespectAgentPositionKey
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.media3.common.util.UnstableApi
@@ -48,7 +49,8 @@ import app.n_zik.android.enums.lyrics.LyricsHighlight
 import app.it.fast4x.rimusic.utils.lyricsHighlightKey
 import app.n_zik.android.enums.lyrics.LyricsBackground
 import app.it.fast4x.rimusic.utils.lyricsBackgroundKey
-import app.it.fast4x.rimusic.utils.isShowingSynchronizedLyricsKey
+import app.it.fast4x.rimusic.utils.lyricsTypeKey
+import app.n_zik.android.enums.lyrics.LyricsType
 import app.it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import app.it.fast4x.rimusic.utils.languageDestinationName
 import app.it.fast4x.rimusic.utils.lyricsIntervalIndicatorKey
@@ -152,13 +154,14 @@ class LyricsSettingsMenu private constructor(
         var lyricsSizeAnimate by rememberPreference(lyricsSizeAnimateKey, false)
         var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
         var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
-        var isShowingSynchronizedLyrics by rememberPreference(isShowingSynchronizedLyricsKey, false)
+        var lyricsType by rememberPreference(lyricsTypeKey, LyricsType.Synced)
         val showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
         var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, true)
         var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
         var showLyricsStateKeyPref by rememberPreference(showLyricsStateKey, false)
         var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
         var playerEnableLyricsPopupMessage by rememberPreference(playerEnableLyricsPopupMessageKey, true)
+        var karaokeRespectAgentPosition by rememberPreference(karaokeRespectAgentPositionKey, true)
 
         val otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
 
@@ -177,40 +180,43 @@ class LyricsSettingsMenu private constructor(
                 })
             }
 
-            add(object : MenuIcon, Descriptive, Clickable {
-                override val iconId: Int = R.drawable.text
-                override val messageId: Int = R.string.lyricsalignment
-                @get:Composable
-                override val menuIconTitle: String get() = stringResource(messageId)
-                override fun onShortClick() {
-                    menuState.display {
-                        SubMenuComponent(listOf(
-                            object : MenuIcon, Descriptive, Clickable {
-                                override val iconId = R.drawable.arrow_left
-                                override val messageId = R.string.direction_left
-                                @get:Composable override val menuIconTitle get() = stringResource(messageId)
-                                override fun onShortClick() { menuState.hide(); lyricsAlignment = LyricsAlignment.Left }
-                                override fun onLongClick() {}
-                            },
-                            object : MenuIcon, Descriptive, Clickable {
-                                override val iconId = R.drawable.arrow_down
-                                override val messageId = R.string.center
-                                @get:Composable override val menuIconTitle get() = stringResource(messageId)
-                                override fun onShortClick() { menuState.hide(); lyricsAlignment = LyricsAlignment.Center }
-                                override fun onLongClick() {}
-                            },
-                            object : MenuIcon, Descriptive, Clickable {
-                                override val iconId = R.drawable.arrow_right
-                                override val messageId = R.string.direction_right
-                                @get:Composable override val menuIconTitle get() = stringResource(messageId)
-                                override fun onShortClick() { menuState.hide(); lyricsAlignment = LyricsAlignment.Right }
-                                override fun onLongClick() {}
-                            }
-                        ))
+            if (!(lyricsType == LyricsType.Karaoke && karaokeRespectAgentPosition)) {
+                add(object : MenuIcon, Descriptive, Clickable {
+                    override val iconId: Int = R.drawable.text
+                    override val messageId: Int = R.string.lyricsalignment
+                    @get:Composable
+                    override val menuIconTitle: String get() = stringResource(messageId)
+                    override fun onShortClick() {
+                        menuState.display {
+                            SubMenuComponent(listOf(
+                                object : MenuIcon, Descriptive, Clickable {
+                                    override val iconId = R.drawable.arrow_left
+                                    override val messageId = R.string.direction_left
+                                    @get:Composable override val menuIconTitle get() = stringResource(messageId)
+                                    override fun onShortClick() { menuState.hide(); lyricsAlignment = LyricsAlignment.Left }
+                                    override fun onLongClick() {}
+                                },
+                                object : MenuIcon, Descriptive, Clickable {
+                                    override val iconId = R.drawable.arrow_down
+                                    override val messageId = R.string.center
+                                    @get:Composable override val menuIconTitle get() = stringResource(messageId)
+                                    override fun onShortClick() { menuState.hide(); lyricsAlignment = LyricsAlignment.Center }
+                                    override fun onLongClick() {}
+                                },
+                                object : MenuIcon, Descriptive, Clickable {
+                                    override val iconId = R.drawable.arrow_right
+                                    override val messageId = R.string.direction_right
+                                    @get:Composable override val menuIconTitle get() = stringResource(messageId)
+                                    override fun onShortClick() { menuState.hide(); lyricsAlignment = LyricsAlignment.Right }
+                                    override fun onLongClick() {}
+                                }
+                            ))
+                        }
                     }
-                }
-                override fun onLongClick() {}
-            })
+                    override fun onLongClick() {}
+                })
+            }
+
 
                 add(object : MenuIcon, Descriptive, Clickable {
                     override val iconId: Int = R.drawable.text
@@ -348,7 +354,7 @@ class LyricsSettingsMenu private constructor(
                                     override fun onLongClick() {}
                                 }
                             )
-                            if (isShowingSynchronizedLyrics) {
+                            if (lyricsType != LyricsType.Unsynced) {
                                 outlineItems.add(
                                     object : MenuIcon, Descriptive, Clickable {
                                         override val iconId = R.drawable.droplet
@@ -430,6 +436,18 @@ class LyricsSettingsMenu private constructor(
             })
 
             add(object : MenuIcon, Descriptive, Clickable {
+                override val iconId: Int = if (karaokeRespectAgentPosition) R.drawable.checkmark else R.drawable.text
+                override val messageId: Int = R.string.karaoke_respect_agent_position
+                @get:Composable
+                override val menuIconTitle: String get() = stringResource(messageId)
+                override fun onShortClick() {
+                    menuState.hide()
+                    karaokeRespectAgentPosition = !karaokeRespectAgentPosition
+                }
+                override fun onLongClick() {}
+            })
+
+            add(object : MenuIcon, Descriptive, Clickable {
                 override val iconId: Int = if (clickLyricsText) R.drawable.checkmark else R.drawable.arrow_down
                 override val messageId: Int = R.string.click_lyrics_text
                 @get:Composable
@@ -479,7 +497,7 @@ class LyricsSettingsMenu private constructor(
                 override fun onLongClick() {}
             })
 
-            if (isShowingSynchronizedLyrics) {
+            if (lyricsType != LyricsType.Unsynced) {
                 add(object : MenuIcon, Descriptive, Clickable {
                     override val iconId: Int = if (showIntervalIndicator) R.drawable.checkmark else R.drawable.close
                     override val messageId: Int = R.string.interval_indicator
@@ -493,7 +511,7 @@ class LyricsSettingsMenu private constructor(
                 })
             }
 
-            if (!showlyricsthumbnail && isShowingSynchronizedLyrics) {
+            if (!showlyricsthumbnail && lyricsType != LyricsType.Unsynced) {
                 add(object : MenuIcon, Descriptive, Clickable {
                     override val iconId: Int = if (lyricsSizeAnimate) R.drawable.checkmark else R.drawable.close
                     override val messageId: Int = R.string.lyricsanimate
@@ -583,10 +601,33 @@ class LyricsSettingsMenu private constructor(
                 override val iconId: Int = R.drawable.time
                 override val messageId: Int = R.string.show
                 @get:Composable
-                override val menuIconTitle: String get() = stringResource(messageId) + " " + if (isShowingSynchronizedLyrics) stringResource(R.string.unsynchronized_lyrics) else stringResource(R.string.synchronized_lyrics)
+                override val menuIconTitle: String get() = stringResource(messageId) + " " + when (lyricsType) { LyricsType.Karaoke -> stringResource(R.string.karaoke_lyrics); LyricsType.Synced -> stringResource(R.string.synchronized_lyrics); LyricsType.Unsynced -> stringResource(R.string.unsynchronized_lyrics) }
                 override fun onShortClick() {
-                    menuState.hide()
-                    isShowingSynchronizedLyrics = !isShowingSynchronizedLyrics
+                    menuState.display {
+                        SubMenuComponent(listOf(
+                            object : MenuIcon, Descriptive, Clickable {
+                                override val iconId = R.drawable.time
+                                override val messageId = R.string.karaoke_lyrics
+                                @get:Composable override val menuIconTitle get() = stringResource(messageId)
+                                override fun onShortClick() { menuState.hide(); lyricsType = LyricsType.Karaoke }
+                                override fun onLongClick() {}
+                            },
+                            object : MenuIcon, Descriptive, Clickable {
+                                override val iconId = R.drawable.time
+                                override val messageId = R.string.synchronized_lyrics
+                                @get:Composable override val menuIconTitle get() = stringResource(messageId)
+                                override fun onShortClick() { menuState.hide(); lyricsType = LyricsType.Synced }
+                                override fun onLongClick() {}
+                            },
+                            object : MenuIcon, Descriptive, Clickable {
+                                override val iconId = R.drawable.time
+                                override val messageId = R.string.unsynchronized_lyrics
+                                @get:Composable override val menuIconTitle get() = stringResource(messageId)
+                                override fun onShortClick() { menuState.hide(); lyricsType = LyricsType.Unsynced }
+                                override fun onLongClick() {}
+                            }
+                        ))
+                    }
                 }
                 override fun onLongClick() {}
             })
@@ -642,7 +683,7 @@ class LyricsSettingsMenu private constructor(
                 override fun onLongClick() {}
             })
 
-            if (isShowingSynchronizedLyrics) {
+            if (lyricsType == LyricsType.Synced) {
                 add(lyricsPickFromLrcLibMenuEntry(
                     onShortClick = {
                         menuState.hide()
