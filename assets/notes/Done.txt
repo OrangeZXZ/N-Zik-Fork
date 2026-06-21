@@ -1,4 +1,4 @@
-﻿added: grid and list for lyrics menu
+added: grid and list for lyrics menu
 added: Karaoke lyrics view with word-level syncing
 fixed: Severe stuttering / performance drops on long karaoke lines and translations by implementing \getFastPathForRange\ logic
 improved: Smooth "pop" animation for sung characters in Karaoke mode, with soft ease-in/out scaling and bouncing
@@ -18,3 +18,6 @@ fixed: Compilation errors in LyricsFetcher and KaraokeLyricsView caused by varia
 fixed: Automatically refetch standard lyrics (LrcLib) when switching from Karaoke mode to Synced mode
 fixed: Restored the ShowOffsetDialog UI to use the app's custom colorPalette() for correct contrast and dark/light mode support
 fixed: playback crash
+fixed: tiny thumbnail image on player screen
+fixed: modern player control buttons
+fixed: lyrics recenter button eclipsing the settings icon

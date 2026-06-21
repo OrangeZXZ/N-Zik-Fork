@@ -34,6 +34,13 @@ class DiscordPresenceManager(
 ) {
     companion object {
         private const val APPLICATION_ID = "1379051016007454760"
+        /**
+         * Debounce delay for presence updates.
+         * When the user skips songs rapidly, each skip resets this timer.
+         * Only after 5 seconds of stability does the update actually fire.
+         * This prevents RPC spam, wrong-song flashes, and false "paused" states.
+         */
+        private const val DEBOUNCE_DELAY_MS = 5000L
     }
 
     private var rpc: DiscordRpcConnection? = null
@@ -43,6 +50,7 @@ class DiscordPresenceManager(
     private var isStopped = false
     private val discordScope = externalScope
     private var refreshJob: Job? = null
+    private var debounceJob: Job? = null
     private val client = app.n_zik.android.core.network.client.NetworkClientFactory.getClientWithTimeout(10L, 10L)
     private val appStartTime = System.currentTimeMillis()
 
@@ -138,17 +146,28 @@ class DiscordPresenceManager(
 
         if (mediaItem == null) {
             // No media item = no music at all → show browsing if we have a route
+            debounceJob?.cancel()
             DiscordUiState.currentRoute.value?.let { route ->
                 sendBrowsingPresence(route)
             }
             return
         }
 
-        // Media item exists → always show music status (playing or paused), never browsing
-        if (isPlaying) {
-            sendPlayingPresence(mediaItem, position, duration)
-        } else {
-            sendPausedPresence(duration, now, position)
+        // Cancel any pending debounced update — a new event supersedes it.
+        debounceJob?.cancel()
+
+        // Debounce: wait DEBOUNCE_DELAY_MS before actually sending the presence update.
+        // If another event arrives before the delay elapses, this job is cancelled
+        // and a new one starts. This prevents RPC spam during rapid skipping.
+        debounceJob = discordScope.launch {
+            delay(DEBOUNCE_DELAY_MS)
+            if (isStopped) return@launch
+            // Media item exists → always show music status (playing or paused), never browsing
+            if (isPlaying) {
+                sendPlayingPresence(mediaItem, position, duration)
+            } else {
+                sendPausedPresence(duration, now, position)
+            }
         }
     }
 
@@ -291,6 +310,7 @@ class DiscordPresenceManager(
      */
     fun onStop() {
         isStopped = true
+        debounceJob?.cancel()
         refreshJob?.cancel()
         rpc?.closeDirect()
         discordScope.cancel()
