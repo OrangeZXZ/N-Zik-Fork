@@ -1208,4 +1208,5 @@
   <string name="translation_failed">Traducere eșuată, încercați din nou sau raportați o eroare</string>
   <string name="translation_successful">Traducere reușită</string>
   <string name="karaoke_respect_agent_position">Respectați poziția agentului</string>
+  <string name="lyrics_offset">Offset versuri</string>
 </resources>
