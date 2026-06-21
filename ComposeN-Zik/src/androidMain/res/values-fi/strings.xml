@@ -1202,4 +1202,8 @@
   <string name="install_warning">Muista varmuuskopioida asetukset ja musiikin tietokanta. Päivitys saattaa mahdollisesti korruptoida tai katkaista sen, jos tietokantajärjestelmää muokataan, joten tämä on erittäin suositeltavaa.</string>
   <string name="install_yes">Kyllä, asenna</string>
   <string name="install_no_backup">Ei, aion ensin varmuuskopioida</string>
+  <string name="interval_indicator">Näytä lataaja sanoitusten välisille aukoille</string>
+  <string name="translation_in_progress">Käännös käynnissä</string>
+  <string name="translation_failed">Käännös epäonnistui, yritä uudelleen tai ilmoita virheestä</string>
+  <string name="translation_successful">Käännös onnistui</string>
 </resources>
