@@ -66,7 +66,7 @@ data class ArtistItemsPage(
 //                    } != null
                 )
                 // Video
-                renderer.isSong -> {
+                renderer.isSong || renderer.isVideo -> {
                     val subtitleParts = renderer.subtitle?.splitBySeparator() ?: emptyList()
                     Innertube.VideoItem(
                         info = Innertube.Info(
@@ -90,17 +90,32 @@ data class ArtistItemsPage(
                         )?.firstOrNull()?.text,
                     )
                 }
+                renderer.isArtist -> Innertube.ArtistItem(
+                    info = Innertube.Info(
+                        renderer.title?.runs?.firstOrNull()?.text,
+                        renderer.navigationEndpoint?.browseEndpoint
+                    ),
+                    subscribersCountText = renderer.subtitle?.runs?.firstOrNull()?.text,
+                    thumbnail = renderer.thumbnailRenderer?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()
+                )
                 renderer.isPlaylist -> Innertube.PlaylistItem(
                     info = Innertube.Info(
                         renderer.title?.runs?.firstOrNull()?.text,
                         renderer.navigationEndpoint?.browseEndpoint
                     ),
-                    songCount = renderer.subtitle?.runs?.getOrNull(4)?.text?.toInt(),
+                    songCount = renderer.subtitle?.runs?.getOrNull(4)?.text?.filter { it.isDigit() }?.toIntOrNull(),
                     thumbnail = renderer.thumbnailRenderer?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull(),
                     channel = null,
                     isEditable = false
                 )
                 else -> null
+            }?.takeIf {
+                try {
+                    it.key // Test if key getter crashes
+                    true
+                } catch (e: Exception) {
+                    false
+                }
             }
         }
 

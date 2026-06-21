@@ -15,6 +15,7 @@ data class Tabs(
             val content: Content?,
             val title: String?,
             val tabIdentifier: String?,
+            val endpoint: NavigationEndpoint? = null,
         ) {
             @Serializable
             data class Content(

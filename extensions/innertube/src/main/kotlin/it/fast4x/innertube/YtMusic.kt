@@ -204,12 +204,48 @@ object YtMusic {
     }
 
     suspend fun getArtistItemsPage(endpoint: BrowseEndpoint): Result<ArtistItemsPage> = runCatching {
-        val response = Innertube.browse(browseId = endpoint.browseId, params = endpoint.params).body<BrowseResponse>()
+        var response = Innertube.browse(browseId = endpoint.browseId, params = endpoint.params).body<BrowseResponse>()
 
-        val contents = (response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+        var contents = (response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
             ?.tabRenderer?.content?.sectionListRenderer?.contents
             ?: response.contents?.sectionListRenderer?.contents
             ?: emptyList())
+
+        if (contents.isEmpty()) {
+            val tabEndpoint = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()?.tabRenderer?.endpoint?.browseEndpoint
+            if (tabEndpoint != null) {
+                response = Innertube.browse(browseId = tabEndpoint.browseId ?: endpoint.browseId, params = tabEndpoint.params).body<BrowseResponse>()
+                contents = (response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+                    ?.tabRenderer?.content?.sectionListRenderer?.contents
+                    ?: response.contents?.sectionListRenderer?.contents
+                    ?: emptyList())
+            }
+        }
+
+        val matchingCarousel = contents.firstNotNullOfOrNull { content ->
+            content.musicCarouselShelfRenderer?.takeIf { carousel ->
+                val moreParams = carousel.header?.musicCarouselShelfBasicHeaderRenderer?.moreContentButton?.buttonRenderer?.navigationEndpoint?.browseEndpoint?.params
+                val requestedParams = endpoint.params
+                moreParams != null && requestedParams != null && (
+                    moreParams == requestedParams ||
+                    (moreParams.length > 50 && requestedParams.length > 50 && moreParams.takeLast(50) == requestedParams.takeLast(50))
+                )
+            }
+        }
+
+        if (matchingCarousel != null) {
+            return@runCatching ArtistItemsPage(
+                title = matchingCarousel.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.firstOrNull()?.text.orEmpty(),
+                items = matchingCarousel.contents.mapNotNull {
+                    it.musicTwoRowItemRenderer?.let { renderer ->
+                        ArtistItemsPage.fromMusicTwoRowItemRenderer(renderer)
+                    } ?: it.musicResponsiveListItemRenderer?.let { renderer ->
+                        ArtistItemsPage.fromMusicResponsiveListItemRenderer(renderer)
+                    }
+                },
+                continuation = null
+            )
+        }
 
         val gridRenderer = contents.firstNotNullOfOrNull { it.gridRenderer }
         val musicShelfRenderer = contents.firstNotNullOfOrNull { it.musicShelfRenderer }

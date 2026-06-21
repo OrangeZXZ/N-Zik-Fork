@@ -416,6 +416,8 @@ fun ArtistDetails(
                                     NavRoutes.artistAlbums
                                 else if( section.items.fastAll { it is Innertube.VideoItem } )
                                     NavRoutes.artistVideos
+                                else if( section.items.fastAll { it is Innertube.PlaylistItem } )
+                                    NavRoutes.artistPlaylists
                                 else
                                     return@clickable
 

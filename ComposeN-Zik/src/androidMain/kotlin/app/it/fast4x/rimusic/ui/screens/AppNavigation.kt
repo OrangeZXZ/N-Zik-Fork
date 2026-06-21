@@ -47,6 +47,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import app.it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import app.kreate.android.themed.rimusic.screen.artist.ArtistAlbums
+import app.kreate.android.themed.rimusic.screen.artist.ArtistPlaylists
 import app.kreate.android.themed.rimusic.screen.artist.ArtistVideos
 import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.enums.NavRoutes
@@ -466,6 +467,28 @@ fun AppNavigation(
             val params = navBackStackEntry.arguments?.getString("params").orEmpty()
 
             ArtistVideos( navController, id, params, miniPlayer )
+        }
+
+        composable(
+            route = "${NavRoutes.artistPlaylists.name}/{id}?params={params}",
+            arguments = listOf(
+                navArgument(
+                    name = "id",
+                    builder = { type = NavType.StringType }
+                ),
+                navArgument(
+                    name = "params",
+                    builder = {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    }
+                )
+            )
+        ) { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString("id").orEmpty()
+            val params = navBackStackEntry.arguments?.getString("params").orEmpty()
+
+            ArtistPlaylists( navController, id, params, miniPlayer )
         }
 
         composable(route = NavRoutes.updater.name) {

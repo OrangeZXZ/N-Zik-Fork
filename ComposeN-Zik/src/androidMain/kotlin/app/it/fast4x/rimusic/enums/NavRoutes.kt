@@ -27,6 +27,7 @@ enum class NavRoutes {
     podcast,
     artistAlbums,
     artistVideos,
+    artistPlaylists,
     updater;
 
     companion object {
