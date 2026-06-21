@@ -1202,4 +1202,8 @@
   <string name="install_warning">Kom ihåg att säkerhetskopiera dina inställningar och musikdatabas. En uppdatering kan möjligen vara korrupt eller bryta den om databasschemat är redigerat, så detta rekommenderas starkt.</string>
   <string name="install_yes">Ja, installera</string>
   <string name="install_no_backup">Nej, jag kommer att säkerhetskopiera först</string>
+  <string name="interval_indicator">Visa en laddare för luckor mellan låttexter</string>
+  <string name="translation_in_progress">Översättning pågår</string>
+  <string name="translation_failed">Översättning misslyckades, försök igen eller rapportera fel</string>
+  <string name="translation_successful">Översättningen lyckades</string>
 </resources>

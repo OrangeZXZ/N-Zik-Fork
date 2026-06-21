@@ -1202,4 +1202,8 @@
   <string name="install_warning">Vennligst husk å sikkerhetskopiere innstillinger og musikk-database. En oppdatering kan muligens ødelegge eller ødelegge det hvis databaseskjemaet blir redigert, så dette anbefales.</string>
   <string name="install_yes">Ja, installér</string>
   <string name="install_no_backup">Nei, jeg vil sikkerhetskopiere først</string>
+  <string name="interval_indicator">Vis en laster for mellomrom mellom sangtekster</string>
+  <string name="translation_in_progress">Oversettelse pågår</string>
+  <string name="translation_failed">Oversettelse feilet, prøv igjen eller rapportere feil</string>
+  <string name="translation_successful">Oversettelse vellykket</string>
 </resources>

@@ -1202,4 +1202,8 @@
   <string name="install_warning">Bitte denken Sie daran, Ihre Einstellungen und Musikdatenbank zu sichern. Eine Aktualisierung könnte beschädigt oder beschädigt werden, wenn das Datenbankschema bearbeitet wird, daher wird dies dringend empfohlen.</string>
   <string name="install_yes">Ja, installieren</string>
   <string name="install_no_backup">Nein, ich werde zuerst ein Backup erstellen</string>
+  <string name="interval_indicator">Zeige einen Loader für Lücken zwischen den Songtexten</string>
+  <string name="translation_in_progress">Übersetzung läuft</string>
+  <string name="translation_failed">Übersetzung fehlgeschlagen, erneut versuchen oder Fehler melden</string>
+  <string name="translation_successful">Übersetzung erfolgreich</string>
 </resources>

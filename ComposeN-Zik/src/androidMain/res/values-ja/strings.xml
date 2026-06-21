@@ -1202,4 +1202,8 @@
   <string name="install_warning">設定と音楽データベースをバックアップすることを忘れないでください。 データベーススキーマが編集されている場合、更新が破損したり壊れたりする可能性がありますので、これは強くお勧めします。</string>
   <string name="install_yes">はい、インストールします</string>
   <string name="install_no_backup">いいえ、最初にバックアップします</string>
+  <string name="interval_indicator">歌詞間のギャップをローダーで表示する</string>
+  <string name="translation_in_progress">翻訳中です</string>
+  <string name="translation_failed">翻訳に失敗しました。再試行するか、エラーを報告してください</string>
+  <string name="translation_successful">翻訳に成功しました</string>
 </resources>

@@ -1202,4 +1202,8 @@
   <string name="install_warning">Nezapomeňte si prosím zálohovat svá nastavení a databázi hudby. Aktualizace může být poškozena nebo porušena, pokud je databázové schéma upraveno, takže je to důrazně doporučeno.</string>
   <string name="install_yes">Ano, nainstalovat</string>
   <string name="install_no_backup">Ne, nejdříve si zálohuji</string>
+  <string name="interval_indicator">Zobrazit loader pro mezery mezi texty</string>
+  <string name="translation_in_progress">Probíhá překlad</string>
+  <string name="translation_failed">Překlad se nezdařil, zkuste to znovu nebo nahlásit chybu</string>
+  <string name="translation_successful">Překlad byl úspěšný</string>
 </resources>

@@ -1202,4 +1202,8 @@
   <string name="install_warning">Пожалуйста, не забудьте создать резервную копию настроек и базы данных музыки. Обновление может повредить или сломать его, если схема базы данных отредактирована, поэтому настоятельно рекомендуется это сделать.</string>
   <string name="install_yes">Да, установить</string>
   <string name="install_no_backup">Нет, я сделаю резервную копию</string>
+  <string name="interval_indicator">Показать погрузчика для пробелов между текстами</string>
+  <string name="translation_in_progress">Перевод в процессе</string>
+  <string name="translation_failed">Перевод не удался, попробуйте еще раз или сообщите об ошибке</string>
+  <string name="translation_successful">Перевод выполнен</string>
 </resources>
