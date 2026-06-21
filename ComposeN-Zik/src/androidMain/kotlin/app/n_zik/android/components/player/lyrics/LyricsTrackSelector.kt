@@ -178,87 +178,89 @@ fun LyricsTrackSelector(
         }
     }
 
-    if (tracks.isNotEmpty()) {
-        menuState.display {
-            Menu {
-                MenuEntry(
-                    icon = R.drawable.chevron_back,
-                    text = stringResource(R.string.cancel),
-                    onClick = { 
-                        menuState.hide()
-                        onDismiss()
-                    }
-                )
-                Row{
-                    TextField(
-                        value = title,
-                        onValueChange = { newTitle ->
-                            title = newTitle
-                        },
-                        singleLine = true,
-                        colors = trackSelectorTextFieldColors,
-                        modifier = Modifier
-                            .padding(horizontal = 6.dp)
-                            .weight(1f)
-                    )
-                    TextField(
-                        value = artistName,
-                        onValueChange = { newArtistName ->
-                            artistName = newArtistName
-                        },
-                        singleLine = true,
-                        colors = trackSelectorTextFieldColors,
-                        modifier = Modifier
-                            .padding(horizontal = 6.dp)
-                            .weight(1f)
-                    )
-                    IconButton(
-                        icon = R.drawable.search,
-                        color = Color.Black,
-                        onClick = {
-                            menuState.hide()
-                            onSearchRetry()
-                        },
-                        modifier = Modifier
-                            .background(shape = uiRoundnessShape(), color = Color.White)
-                            .padding(all = 4.dp)
-                            .size(24.dp)
-                            .align(Alignment.CenterVertically)
-                            .weight(0.2f)
-                    )
-                }
-                tracks.forEach {
+    LaunchedEffect(tracks, title, artistName) {
+        if (tracks.isNotEmpty()) {
+            menuState.display {
+                Menu {
                     MenuEntry(
-                        icon = R.drawable.text,
-                        text = "${it.artistName} - ${it.trackName}",
-                        secondaryText = "(${stringResource(R.string.sort_duration)} ${
-                            it.duration.seconds.toComponents { minutes, seconds, _ ->
-                                "$minutes:${seconds.toString().padStart(2, '0')}"
-                            }
-                        } ${stringResource(R.string.id)} ${it.id}) ",
-                        onClick = {
+                        icon = R.drawable.chevron_back,
+                        text = stringResource(R.string.cancel),
+                        onClick = { 
                             menuState.hide()
                             onDismiss()
-                            Database.asyncTransaction {
-                                lyricsTable.upsert(
-                                    Lyrics(
-                                        songId = mediaId,
-                                        fixed = lyrics?.fixed,
-                                        synced = it.syncedLyrics.orEmpty()
+                        }
+                    )
+                    Row{
+                        TextField(
+                            value = title,
+                            onValueChange = { newTitle ->
+                                title = newTitle
+                            },
+                            singleLine = true,
+                            colors = trackSelectorTextFieldColors,
+                            modifier = Modifier
+                                .padding(horizontal = 6.dp)
+                                .weight(1f)
+                        )
+                        TextField(
+                            value = artistName,
+                            onValueChange = { newArtistName ->
+                                artistName = newArtistName
+                            },
+                            singleLine = true,
+                            colors = trackSelectorTextFieldColors,
+                            modifier = Modifier
+                                .padding(horizontal = 6.dp)
+                                .weight(1f)
+                        )
+                        IconButton(
+                            icon = R.drawable.search,
+                            color = Color.Black,
+                            onClick = {
+                                menuState.hide()
+                                onSearchRetry()
+                            },
+                            modifier = Modifier
+                                .background(shape = uiRoundnessShape(), color = Color.White)
+                                .padding(all = 4.dp)
+                                .size(24.dp)
+                                .align(Alignment.CenterVertically)
+                                .weight(0.2f)
+                        )
+                    }
+                    tracks.forEach {
+                        MenuEntry(
+                            icon = R.drawable.text,
+                            text = "${it.artistName} - ${it.trackName}",
+                            secondaryText = "(${stringResource(R.string.sort_duration)} ${
+                                it.duration.seconds.toComponents { minutes, seconds, _ ->
+                                    "$minutes:${seconds.toString().padStart(2, '0')}"
+                                }
+                            } ${stringResource(R.string.id)} ${it.id}) ",
+                            onClick = {
+                                menuState.hide()
+                                onDismiss()
+                                Database.asyncTransaction {
+                                    lyricsTable.upsert(
+                                        Lyrics(
+                                            songId = mediaId,
+                                            fixed = lyrics?.fixed,
+                                            synced = it.syncedLyrics.orEmpty()
+                                        )
                                     )
-                                )
+                                }
                             }
+                        )
+                    }
+                    MenuEntry(
+                        icon = R.drawable.chevron_back,
+                        text = stringResource(R.string.cancel),
+                        onClick = { 
+                            menuState.hide() 
+                            onDismiss()
                         }
                     )
                 }
-                MenuEntry(
-                    icon = R.drawable.chevron_back,
-                    text = stringResource(R.string.cancel),
-                    onClick = { 
-                        menuState.hide() 
-                        onDismiss()
-                    }
-                )
             }
         }
     }
