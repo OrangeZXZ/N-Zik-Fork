@@ -258,6 +258,7 @@ Join us on Crowdin!
 
 - [**KuGou**](https://www.kugou.com) – Lyrics provider
 - [**LrcLib**](https://lrclib.net) – Lyrics provider
+- [**Better Lyrics**](https://betterlyrics.org/) – Lyrics provider
 
 ### 🧠 Features & Tools:
 
@@ -267,6 +268,7 @@ Join us on Crowdin!
 - [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): Shader effects for Compose.
 - [**Metrolist**](https://github.com/metrolistgroup/metrolist): Discord RPC presets.
 - [**echo-discord**](https://github.com/brahmkshatriya/echo-discord): Fixes for Discord artwork upload/loading.
+- [**Metrolist**](https://github.com/metrolistgroup/metrolist): Has helped a lot with bug fixes and feature expansion!
 
 # 👀 Status
 
