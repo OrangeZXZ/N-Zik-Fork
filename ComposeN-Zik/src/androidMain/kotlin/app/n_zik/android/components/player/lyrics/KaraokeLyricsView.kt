@@ -655,7 +655,8 @@ fun KaraokeLyricsView(
                                         val fadeFactor = (sungFactor * 5f).coerceIn(0f, 1f) * ((1f - sungFactor) * 8f).coerceIn(0f, 1f)
                                         val impactFactor = (((impactRatio - 100f) / 250f).coerceIn(0f, 1f) * 0.6f + ((dur.toFloat() - 300f) / 1500f).coerceIn(0f, 1f) * 0.4f).coerceIn(0f, 1f) * fadeFactor
                                         
-                                        val glowAlpha = (0.35f * impactFactor).coerceIn(0f, 0.4f)
+                                        // Make the glow completely opaque/solid to combat the transparency
+                                        val glowAlpha = (2f * impactFactor).coerceIn(0f, 1f)
                                         val baseGlowRadius = with(density) { 12.dp.toPx() } * impactFactor
                                         
                                         if (impactFactor > 0.01f && baseGlowRadius > 0f) {
@@ -678,6 +679,14 @@ fun KaraokeLyricsView(
                                     }
                                     if (wordIndex < line.words.lastIndex) {
                                         withStyle(androidx.compose.ui.text.SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) { append(" ") }
+                                    }
+                                }
+                                
+                                // Preserve layout identical to displayedText by appending the translation part transparently
+                                val builtLen = this.length
+                                if (builtLen < displayedText.length) {
+                                    withStyle(androidx.compose.ui.text.SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) {
+                                        append(displayedText.substring(builtLen))
                                     }
                                 }
                             }

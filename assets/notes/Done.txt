@@ -1,1 +1,9 @@
 added: grid and list for lyrics menu
+added: Karaoke lyrics view with word-level syncing
+fixed: Severe stuttering / performance drops on long karaoke lines and translations by implementing `getFastPathForRange` logic
+improved: Smooth "pop" animation for sung characters in Karaoke mode, with soft ease-in/out scaling and bouncing
+fixed: Character bounce bleeding and overlapping lines/words through precise geometric Rect clipping
+improved: Added the smooth "pop" animation to translated lyrics via linear interpolation
+improved: Karaoke glow effect is now much denser and tighter around the text (reduced blur radius, doubled opacity) for better visibility on dark backgrounds
+fixed: Seamless fallback to synced lyrics (LrcLib) when BetterLyrics returns unsynced/basic LRCs without word tags
+fixed: Intelligent rendering of dual-opacity background text when displaying translations under original lyrics
