@@ -264,7 +264,8 @@ object YtMusic {
                 )
             }
             musicShelfRenderer != null -> {
-                ArtistItemsPage.fromMusicShelfRenderer(musicShelfRenderer)!!
+                val headerTitle = response.header?.musicHeaderRenderer?.title?.runs?.firstOrNull()?.text
+                ArtistItemsPage.fromMusicShelfRenderer(musicShelfRenderer, headerTitle)!!
             }
             musicPlaylistShelfRenderer != null -> {
                 ArtistItemsPage(

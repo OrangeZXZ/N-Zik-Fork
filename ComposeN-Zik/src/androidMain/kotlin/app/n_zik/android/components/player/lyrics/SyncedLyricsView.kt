@@ -34,6 +34,7 @@ import app.n_zik.android.components.player.lyrics.utils.SynchronizedLyrics
 import app.it.fast4x.rimusic.utils.verticalFadingEdge
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.colorPalette
+import app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
 import it.fast4x.lrclib.LrcLib
@@ -301,7 +302,12 @@ fun SyncedLyricsView(
 if (showBackgroundLyrics && showlyricsthumbnail) modifierBG =
         modifierBG.background(colorPalette().accent)
 
-    val accentColor = colorPalette().accent
+    val accentColor = when (lyricsColor) {
+        LyricsColor.White -> Color.White
+        LyricsColor.Cover -> Color(dominantColor)
+        LyricsColor.Custom -> Color(lyricsCustomColor)
+        LyricsColor.Thememode -> if (showlyricsthumbnail) app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette.text else colorPalette().text
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(

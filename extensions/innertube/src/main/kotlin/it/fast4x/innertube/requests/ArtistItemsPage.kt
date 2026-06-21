@@ -147,9 +147,9 @@ data class ArtistItemsPage(
             }
         }
 
-        fun fromMusicShelfRenderer(renderer: it.fast4x.innertube.models.MusicShelfRenderer): ArtistItemsPage? {
+        fun fromMusicShelfRenderer(renderer: it.fast4x.innertube.models.MusicShelfRenderer, headerTitle: String? = null): ArtistItemsPage? {
             return ArtistItemsPage(
-                title = renderer.title?.runs?.firstOrNull()?.text.orEmpty(),
+                title = renderer.title?.runs?.firstOrNull()?.text ?: headerTitle.orEmpty(),
                 items = renderer.contents?.mapNotNull { content ->
                     val songItem = content.musicResponsiveListItemRenderer?.let { fromMusicResponsiveListItemRenderer(it) }
                     if (songItem != null && songItem.album == null) {

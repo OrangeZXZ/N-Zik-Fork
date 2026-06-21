@@ -15,6 +15,7 @@ import io.ktor.client.request.header
 import io.ktor.client.request.headers
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
+import io.ktor.client.request.get
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
@@ -55,6 +56,10 @@ import it.fast4x.innertube.utils.sha1
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonPrimitive
 import nl.adaptivity.xmlutil.XmlDeclMode
 import nl.adaptivity.xmlutil.serialization.XML
 import java.net.Proxy
@@ -156,6 +161,23 @@ object Innertube {
     internal fun HttpRequestBuilder.mask(value: String = "*") =
         header("X-Goog-FieldMask", value)
 
+    suspend fun ensureVisitorData() {
+        if (visitorData == DEFAULT_VISITOR_DATA || visitorData.isBlank()) {
+            runCatching {
+                val response = io.ktor.client.HttpClient(io.ktor.client.engine.okhttp.OkHttp).get("https://music.youtube.com/sw.js_data")
+                val content = response.bodyAsText().substring(5)
+                val json = Json.parseToJsonElement(content)
+                val newVisitorData = json.jsonArray[0].jsonArray[2].jsonArray.first {
+                    (it as? JsonPrimitive)?.contentOrNull?.let { candidate ->
+                        candidate.startsWith("Cg")
+                    } ?: false
+                }.jsonPrimitive.content
+                visitorData = newVisitorData
+            }.onFailure {
+                it.printStackTrace()
+            }
+        }
+    }
 
     @Serializable
     data class Info<T : NavigationEndpoint.Endpoint>(
@@ -730,19 +752,22 @@ object Innertube {
         params: String? = null,
         continuation: String? = null,
         setLogin: Boolean = false,
-    ) = client.post(browse) {
-        setLogin(ytClient, true)
-        setBody(
-            BrowseBody(
-                context = Context.DefaultWebWithLocale,
-                browseId = browseId,
-                params = params,
+    ): HttpResponse {
+        ensureVisitorData()
+        return client.post(browse) {
+            setLogin(ytClient, true)
+            setBody(
+                BrowseBody(
+                    context = Context.DefaultWebWithLocale,
+                    browseId = browseId,
+                    params = params,
+                )
             )
-        )
-        parameter("continuation", continuation)
-        parameter("ctoken", continuation)
-        if (continuation != null) {
-            parameter("type", "next")
+            parameter("continuation", continuation)
+            parameter("ctoken", continuation)
+            if (continuation != null) {
+                parameter("type", "next")
+            }
         }
     }
 
