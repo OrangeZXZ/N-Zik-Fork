@@ -122,6 +122,7 @@
   <string name="show">Pokaż</string>
   <string name="unsynchronized_lyrics">niezsynchronizowany tekst</string>
   <string name="synchronized_lyrics">zsynchronizowany tekst</string>
+  <string name="karaoke_lyrics">karaoke tekst piosenki</string>
   <string name="provided_by">Dostarczono przez</string>
   <string name="delete_playback_events">Usuń %1$s akcje odtarzania</string>
   <string name="existing_data_will_be_overwritten">Istniejące dane zostaną nadpisane. %1$s automatycznie zamknie się po przywróceniu bazy danych.</string>
@@ -1206,4 +1207,5 @@
   <string name="translation_in_progress">Tłumaczenie w toku</string>
   <string name="translation_failed">Tłumaczenie nie powiodło się, spróbuj ponownie lub zgłoś błąd</string>
   <string name="translation_successful">Tłumaczenie udane</string>
+  <string name="karaoke_respect_agent_position">Poszanuj pozycję agenta</string>
 </resources>

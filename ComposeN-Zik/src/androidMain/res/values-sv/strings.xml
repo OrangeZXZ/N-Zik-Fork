@@ -122,6 +122,7 @@
   <string name="show">Visa</string>
   <string name="unsynchronized_lyrics">osynkroniserade låttexter</string>
   <string name="synchronized_lyrics">synkroniserade låttexter</string>
+  <string name="karaoke_lyrics">karaoke-låttext</string>
   <string name="provided_by">Tillhandahålls av</string>
   <string name="delete_playback_events">Ta bort %1$s uppspelningshändelser</string>
   <string name="existing_data_will_be_overwritten">Befintliga data kommer att skrivas över. %1$s kommer automatiskt att stänga sig själv efter att ha återställt databasen.</string>
@@ -1206,4 +1207,5 @@
   <string name="translation_in_progress">Översättning pågår</string>
   <string name="translation_failed">Översättning misslyckades, försök igen eller rapportera fel</string>
   <string name="translation_successful">Översättningen lyckades</string>
+  <string name="karaoke_respect_agent_position">Respektera agentposition</string>
 </resources>

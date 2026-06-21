@@ -122,6 +122,7 @@
   <string name="show">显示</string>
   <string name="unsynchronized_lyrics">未同步歌词</string>
   <string name="synchronized_lyrics">同步歌词</string>
+  <string name="karaoke_lyrics">karaoke lyrics</string>
   <string name="provided_by">提供者：</string>
   <string name="delete_playback_events">删除 %1$s 播放事件</string>
   <string name="existing_data_will_be_overwritten">现有数据将被覆盖。 %1$s 恢复数据库后将自动关闭。</string>
@@ -1202,8 +1203,9 @@
   <string name="install_warning">请记住备份您的设置和音乐数据库。 如果数据库架构被编辑，更新可能会损坏或中断，所以强烈建议这样做。</string>
   <string name="install_yes">是的，安装</string>
   <string name="install_no_backup">不，我会先备份</string>
-  <string name="interval_indicator">Show a loader for gaps between lyrics</string>
-  <string name="translation_in_progress">Translation in progress</string>
-  <string name="translation_failed">Translation failed, try again or report error</string>
-  <string name="translation_successful">Translation successful</string>
+  <string name="interval_indicator">显示歌词间空白的加载器</string>
+  <string name="translation_in_progress">正在翻译</string>
+  <string name="translation_failed">翻译失败，请重试或报告错误</string>
+  <string name="translation_successful">翻译成功</string>
+  <string name="karaoke_respect_agent_position">Respect agent position</string>
 </resources>

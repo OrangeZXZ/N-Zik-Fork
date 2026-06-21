@@ -122,6 +122,7 @@
   <string name="show">Εμφάνιση</string>
   <string name="unsynchronized_lyrics">μη συγχρονισμένων στίχων</string>
   <string name="synchronized_lyrics">συγχρονισμένων στίχων</string>
+  <string name="karaoke_lyrics">καραόκε στίχους</string>
   <string name="provided_by">Παρέχονται από</string>
   <string name="delete_playback_events">Διαγραφή %1$s συμβάντων αναπαραγωγής</string>
   <string name="existing_data_will_be_overwritten">Τα υπάρχοντα δεδομένα θα αντικατασταθούν.\nΤο %1$s θα κλείσει αυτόματα μετά την επαναφορά της βάσης δεδομένων.</string>
@@ -1206,4 +1207,5 @@
   <string name="translation_in_progress">Μετάφραση σε εξέλιξη</string>
   <string name="translation_failed">Η μετάφραση απέτυχε, προσπαθήστε ξανά ή αναφέρετε σφάλμα</string>
   <string name="translation_successful">Επιτυχής μετάφραση</string>
+  <string name="karaoke_respect_agent_position">Τήρηση θέσης πράκτορα</string>
 </resources>
