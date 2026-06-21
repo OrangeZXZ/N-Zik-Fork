@@ -1,93 +1,49 @@
-name: 🐛 Bug report
-description: Short description of how to trigger this bug
+name: 👾 Bug report
+description: Make a bug report to help us improve N-Zik
 title: "[BUG]: "
-labels:
-  - bug
+labels: ["bug"]
 body:
   - type: markdown
     attributes:
-      value: >-
-        <h1 align="center">❗❗ IMPORTANT ❗❗</h1>
+      value: |
+        ****
+        ### ❗ READ BEFORE SUBMITTING ❗
+        
+        * **Media cannot be played / Unknown Error / Login required:**
+        YouTube is likely blocking you. Please **do not** open a ticket for this.
+        * **Download unsuccessful:**
+        If *some* songs download but others fail, YouTube may be blocking you (try again later).
+        * **Playback issues?**
+        Try re-downloading the song, clearing the app cache, or playing a song physically stored before opening a ticket.
+        ****
 
-        <h2 align="center">PLEASE READ</h2>
-
-
-        ---
-
-
-        # Media cannot be played / Unknown Error / Login required
-
-
-        If you received one of these messages, chances are, YouTube is blocking
-        you and it is not our fault. Please don't open a ticket for this. We
-        already know!
-
-
-        # Download unsuccessful
-
-
-        If you click download (all or individually), and the download icons
-        aren't changed.
-
-        Only open ticket if none of your songs downloaded.
-
-
-        If some are and some aren't, you are blocked by YouTube, please manually
-        download them with some break time in between.
-
-
-        # Don't think that's YT?
-
-
-        If you can't play songs even on those you've downloaded, please try
-        these steps:
-
-
-        1. Re-download the song
-
-        2. Clear cache
-
-        3. Play songs that are physically on your device
-
-
-        Then, if the problem persists, please follow the steps below to open a
-        ticket.
-
-
-        ---
-
-  - type: markdown
+  - type: checkboxes
+    id: prerequisites
     attributes:
-      value: >-
-        # Please complete the form to the best of your ability
-
-
-        > In-depth details will reduce bug finding process significantly, it
-        gives us more reference to pinpoint the problem.
-
-
-        ---
-
-
-        Required fields are marked with *
+      label: 📝 Before submitting
+      description: Please verify the following steps before submitting your issue. Completing these steps may fix problems!
+      options:
+        - label: I have tested the latest stable/beta version.
+          required: true
+        - label: I have checked for already existing issues.
+          required: true
+        - label: I have tried reinstalling/resetting the app. (Optional)
+          required: false
 
   - type: input
-    id: app-version
+    id: version-number
     attributes:
-      label: Version of N-Zik *
-      description: >-
-        Please specify what version of N-Zik you are on. Note: Don't use
-        "latest" or similar terms, we have apps on multiple stores with some
-        lagged behind.
-      placeholder: "v1.0.0, v1.1.0, etc."
+      label: 🏷️ App Version
+      description: Please specify the exact version of N-Zik.
+      placeholder: 5.0.0-f
     validations:
       required: true
 
   - type: dropdown
-    id: nzik-type
+    id: build-type
     attributes:
-      label: N-Zik Build variant *
-      description: What build variant of N-Zik are you using?
+      label: 🏗️ Build Type
+      description: Select the build type you are currently using.
       options:
         - Full
         - Minified
@@ -98,21 +54,10 @@ body:
   - type: dropdown
     id: android-version
     attributes:
-      label: Android version / Platform *
-      description: >-
-        What version of Android is your phone, Android TV, Android Auto,
-        or Android Automotive?
+      label: 🤖 Platform
+      description: On which Android platform does the issue occur?
       options:
-        - 7 - 7.1.x [N]
-        - 8 - 8.1 [O]
-        - 9 [P]
-        - 10 [Q]
-        - 11 [R]
-        - 12 - 12L [S]
-        - 13 [TIRAMISU]
-        - 14 [UPSIDE_DOWN_CAKE]
-        - 15 [VANILLA_ICE_CREAM]
-        - 16 [BAKLAVA]
+        - Android
         - Android Auto
         - Android Automotive
         - Android TV
@@ -121,106 +66,93 @@ body:
       required: true
 
   - type: input
-    id: other-android-version
+    id: platform-version
     attributes:
-      label: Other Android version
-      description: Only fill this in if you selected "Other" above.
-      placeholder: "e.g. 17"
+      label: 🔢 Platform Version
+      description: Please specify the exact version of the platform selected above.
+      placeholder: Android X, Android Auto/Automotive X, ...
+    validations:
+      required: true
 
   - type: input
     id: device-model
     attributes:
-      label: Device Model *
-      description: "e.g. Pixel 9, Samsung Galaxy S25, Xiaomi 17 Ultra, etc."
-      placeholder: Your device model
+      label: 📱 Device
+      description: Specify the phone/tablet, car model, or TV model. Specify multiple if needed.
+      placeholder: Smartphone Brand & Model, Car Brand & Model Year, ...
     validations:
       required: true
 
-  - type: checkboxes
-    id: required-actions
-    attributes:
-      label: TODOs before submitting a ticket *
-      description: >-
-        Completing these steps fixes most problems, most of the time. Shocker!
-        Please actually complete them — don't just tick them because they're required.
-      options:
-        - label: I have updated my app to the latest version (see link below)
-          required: true
-        - label: "(If already on latest) I have re-installed the app"
-          required: true
-        - label: I have checked the issue page and there is no existing report like mine
-          required: true
-
   - type: markdown
     attributes:
-      value: |-
-        **To update N-Zik:**
-
-        1. Check your current version in **Settings > About**
-        2. Go to [GitHub Releases](https://github.com/NEVARLeVrai/N-Zik/releases) and download the latest APK
-        3. Or enable OTA updates in the app (**Settings > About > Updater**) to get updates automatically
-
-        > ⚠️ Please make sure you're on the **latest version** before reporting a bug!
-
-        ---
-
-        # Real questions
-
-        Alright, now we've already applied some of the most common
-        troubleshooting steps. Next step is to fill out the description of the bug.
-
-        > Remember! More information helps us resolve the problem faster.
+      value: |
+        ****
 
   - type: textarea
-    id: bug-trigger
+    id: description
     attributes:
-      label: How to trigger this bug *
-      description: "Each step should be on its own line. Use simple sentences like:"
-      value: |-
+      label: 👾 Bug description
+      description: Clearly describe the bug you are experiencing.
+      placeholder: |
+        I want to use the '...' feature but '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 🔄 How to reproduce
+      description: Provide step-by-step instructions on how to trigger the bug.
+      placeholder: |
         1. Open N-Zik
-        2. Click on A
-        3. Click on B
-        4. Boom! Crash happens
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. Boom! Error happens
     validations:
       required: true
 
   - type: textarea
-    id: video
+    id: expected-behavior
     attributes:
-      label: Submit a video (optional)
-      description: >-
-        Please record a short clip of the bug — it helps tremendously.
-        Since Android 12, a screen recorder is built into the OS.
-        Older versions require additional software.
-        Here's an [instruction video](https://www.youtube.com/watch?v=h6fOErvWIGI).
-
-  - type: textarea
-    id: expectation
-    attributes:
-      label: What did you expect to happen? *
-      description: What did you expect after completing those steps?
-      placeholder: "I clicked Next so obviously it should play the next track. DUH!!"
+      label: ✨ Expected Behavior
+      description: What do you expect to happen instead?
+      placeholder: |
+        I expected that the '...' feature would '...'
     validations:
       required: true
 
   - type: textarea
-    id: log
+    id: media
     attributes:
-      label: Logs (optional)
-      description: >-
-        Logs can be enabled in **Settings > Misc > "Enable debug logs"**,
-        then **"Copy crash log"** (only available after re-triggering the bug).
-      value: |-
-        <details>
-          <summary>Logs</summary>
-
-          [If you have multiple logs, copy the "details" block for each one, name them appropriately, and make sure they differ from each other.]
-
-          <Paste your log here>
-        </details>
+      label: 📸 Media (Optional)
+      description: Add screenshots or screen recordings to help us see the bug in action.
+    validations:
+      required: false
 
   - type: markdown
     attributes:
-      value: >-
-        This template was generated with [Issue Forms
-        Creator](https://issue-forms-creator.netlify.app)
+      value: |
+        ****
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📜 Logs (Optional)
+      description: You can use the "Debug Mode" feature in app to get them. Leave the HTML tags intact to collapse them and keep the issue clean!
+      value: |
+        ****
+        <details>
+        <summary>Click to expand logs</summary>
+        
+        ```text
+        [Paste your crash logs or error messages here]
+        ```
+        
+        </details>
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ****
