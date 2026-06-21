@@ -66,7 +66,7 @@ data class ArtistItemsPage(
 //                    } != null
                 )
                 // Video
-                renderer.isSong || renderer.isVideo -> {
+                renderer.isSong -> {
                     val subtitleParts = renderer.subtitle?.splitBySeparator() ?: emptyList()
                     Innertube.VideoItem(
                         info = Innertube.Info(
@@ -90,6 +90,23 @@ data class ArtistItemsPage(
                         )?.firstOrNull()?.text,
                     )
                 }
+                renderer.isVideo -> {
+                    val subtitleParts = renderer.subtitle?.splitBySeparator() ?: emptyList()
+                    Innertube.VideoItem(
+                        info = Innertube.Info(
+                            renderer.title?.runs?.firstOrNull()?.text,
+                            renderer.navigationEndpoint?.watchEndpoint
+                        ),
+                        authors = listOfNotNull(
+                            subtitleParts.getOrNull(0)?.firstOrNull()?.let {
+                                Innertube.Info(it.text, it.navigationEndpoint?.browseEndpoint)
+                            }
+                        ),
+                        viewsText = subtitleParts.getOrNull(1)?.firstOrNull()?.text,
+                        thumbnail = renderer.thumbnailRenderer?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull(),
+                        durationText = null // duration is not typically in TwoRowItemRenderer subtitle for videos
+                    )
+                }
                 renderer.isArtist -> Innertube.ArtistItem(
                     info = Innertube.Info(
                         renderer.title?.runs?.firstOrNull()?.text,
@@ -98,16 +115,27 @@ data class ArtistItemsPage(
                     subscribersCountText = renderer.subtitle?.runs?.firstOrNull()?.text,
                     thumbnail = renderer.thumbnailRenderer?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull()
                 )
-                renderer.isPlaylist -> Innertube.PlaylistItem(
-                    info = Innertube.Info(
-                        renderer.title?.runs?.firstOrNull()?.text,
-                        renderer.navigationEndpoint?.browseEndpoint
-                    ),
-                    songCount = renderer.subtitle?.runs?.getOrNull(4)?.text?.filter { it.isDigit() }?.toIntOrNull(),
-                    thumbnail = renderer.thumbnailRenderer?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull(),
-                    channel = null,
-                    isEditable = false
-                )
+                renderer.isPlaylist -> {
+                    val subtitleParts = renderer.subtitle?.splitBySeparator() ?: emptyList()
+                    val authorName = subtitleParts.getOrNull(1)?.firstOrNull()?.text
+                    val viewsText = subtitleParts.getOrNull(2)?.firstOrNull()?.text
+                    val isSongCount = viewsText?.contains("song", ignoreCase = true) == true
+                    val channelName = if (!isSongCount) {
+                        listOfNotNull(authorName, viewsText).joinToString(" • ").takeIf { it.isNotBlank() }
+                    } else {
+                        authorName
+                    }
+                    Innertube.PlaylistItem(
+                        info = Innertube.Info(
+                            renderer.title?.runs?.firstOrNull()?.text,
+                            renderer.navigationEndpoint?.browseEndpoint
+                        ),
+                        songCount = if (isSongCount) viewsText?.filter { it.isDigit() }?.toIntOrNull() else null,
+                        thumbnail = renderer.thumbnailRenderer?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull(),
+                        channel = channelName?.let { Innertube.Info(it, null) },
+                        isEditable = false
+                    )
+                }
                 else -> null
             }?.takeIf {
                 try {
