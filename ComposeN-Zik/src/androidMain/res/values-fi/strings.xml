@@ -1208,4 +1208,5 @@
   <string name="translation_failed">Käännös epäonnistui, yritä uudelleen tai ilmoita virheestä</string>
   <string name="translation_successful">Käännös onnistui</string>
   <string name="karaoke_respect_agent_position">Noudatetaan agentin sijaintia</string>
+  <string name="lyrics_offset">Sanoitusten Siirtymä</string>
 </resources>
