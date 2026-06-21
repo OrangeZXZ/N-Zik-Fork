@@ -1209,4 +1209,5 @@ Volume BAS : titre précédent</string>
   <string name="translation_failed">La traduction a échoué, essayez à nouveau ou signalez une erreur</string>
   <string name="translation_successful">Traduction réussie</string>
   <string name="karaoke_respect_agent_position">Position de l\'agent respectueux</string>
+  <string name="lyrics_offset">Décalage des paroles</string>
 </resources>
