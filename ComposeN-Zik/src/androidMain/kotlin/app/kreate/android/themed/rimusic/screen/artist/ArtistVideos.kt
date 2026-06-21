@@ -70,6 +70,8 @@ fun ArtistVideos(
     val thumbnailHeightDp = 72.dp
     val thumbnailWidthDp = 128.dp
 
+    val itemsPage by app.it.fast4x.compose.persist.persist<it.fast4x.innertube.Innertube.ItemsPage<it.fast4x.innertube.Innertube.Item>?>("artist/$browseId/videos")
+
     Skeleton(
         navController = navController,
         miniPlayer = miniPlayer,
@@ -79,7 +81,7 @@ fun ArtistVideos(
             tag = "artist/$browseId/videos",
             headerContent = {
                 Title(
-                    title = stringResource(R.string.videos),
+                    title = itemsPage?.title?.takeIf { it.isNotBlank() } ?: stringResource(R.string.videos),
                     verticalPadding = 4.dp,
                     modifier = Modifier.statusBarsPadding()
                 )
@@ -147,7 +149,7 @@ fun ArtistVideos(
             itemsPageProvider = { continuation ->
                 if (continuation == null) {
                     YtMusic.getArtistItemsPage(BrowseEndpoint(browseId, params)).map {
-                        Innertube.ItemsPage(it.items, it.continuation)
+                        Innertube.ItemsPage(it.items, it.continuation, it.title)
                     }
                 } else {
                     YtMusic.getArtistItemsContinuation(continuation).map { continuationPage ->

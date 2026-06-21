@@ -413,7 +413,8 @@ object Innertube {
 
     data class ItemsPage<T : Item>(
         var items: List<T>?,
-        val continuation: String?
+        val continuation: String?,
+        var title: String? = null
     )
 
     @Serializable
