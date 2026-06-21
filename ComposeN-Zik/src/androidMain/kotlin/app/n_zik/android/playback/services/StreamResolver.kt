@@ -537,7 +537,7 @@ fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory {
                 throw app.n_zik.android.playback.exceptions.ExplicitContentException()
             }
         }
-        dataSpec
+        dataSpec.buildUpon().setKey(videoId).build()
     }
 }
 
