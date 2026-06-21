@@ -1202,4 +1202,8 @@
   <string name="install_warning">Vergeet niet om een back-up te maken van uw instellingen en muziek database. Een update kan mogelijk corrupt raken of kapot gaan als het databaseschema wordt aangepast, dus dit wordt ten zeerste aanbevolen.</string>
   <string name="install_yes">Ja, installeren</string>
   <string name="install_no_backup">Nee, ik zal eerst een back-up maken</string>
+  <string name="interval_indicator">Toon een lader voor gaten tussen songteksten</string>
+  <string name="translation_in_progress">Vertaling in uitvoering</string>
+  <string name="translation_failed">Vertaling mislukt, probeer het opnieuw of meld een fout</string>
+  <string name="translation_successful">Vertaling geslaagd</string>
 </resources>
