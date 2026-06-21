@@ -1,0 +1,149 @@
+name: 🧪 Beta Bug report
+description: Report a bug found while testing the N-Zik Beta build
+title: "[BETA BUG]: "
+labels: ["bug", "beta-feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ****
+        ### ❗ READ BEFORE SUBMITTING ❗
+
+        This form is for bugs found specifically in the **Beta** build of N-Zik.
+        If you're on the **Full** or **Minified** build, please use the regular Bug report template instead.
+
+        * **Media cannot be played / Unknown Error / Login required:**
+        YouTube is likely blocking you. Please **do not** open a ticket for this.
+        * **Download unsuccessful:**
+        If *some* songs download but others fail, YouTube may be blocking you (try again later).
+        * **Playback issues?**
+        Try re-downloading the song, clearing the app cache, or playing a song physically stored before opening a ticket.
+        ****
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: 📝 Before submitting
+      description: Please verify the following steps before submitting your issue. Completing these steps may fix problems!
+      options:
+        - label: I am currently using the **Beta** build of N-Zik.
+          required: true
+        - label: I have checked for already existing issues.
+          required: true
+        - label: I have tried reinstalling/resetting the app. (Optional)
+          required: false
+
+  - type: input
+    id: version-number
+    attributes:
+      label: 🏷️ App Version
+      description: Please specify the exact beta version of N-Zik.
+      placeholder: 5.1.0-b
+    validations:
+      required: true
+
+  - type: dropdown
+    id: android-version
+    attributes:
+      label: 🤖 Platform
+      description: On which Android platform does the issue occur?
+      options:
+        - Android
+        - Android Auto
+        - Android Automotive
+        - Android TV
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: platform-version
+    attributes:
+      label: 🔢 Platform Version
+      description: Please specify the exact version of the platform selected above.
+      placeholder: Android X, Android Auto/Automotive X, ...
+    validations:
+      required: true
+
+  - type: input
+    id: device-model
+    attributes:
+      label: 📱 Device
+      description: Specify the phone/tablet, car model, or TV model. Specify multiple if needed.
+      placeholder: Smartphone Brand & Model, Car Brand & Model Year, ...
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ****
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 👾 Bug description
+      description: Clearly describe the bug you are experiencing.
+      placeholder: |
+        I want to use the '...' feature but '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 🔄 How to reproduce
+      description: Provide step-by-step instructions on how to trigger the bug.
+      placeholder: |
+        1. Open N-Zik
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. Boom! Error happens
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: ✨ Expected Behavior
+      description: What do you expect to happen instead?
+      placeholder: |
+        I expected that the '...' feature would '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: media
+    attributes:
+      label: 📸 Media (Optional)
+      description: Add screenshots or screen recordings to help us see the bug in action.
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ****
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📜 Logs (Optional)
+      description: You can use the "Debug Mode" feature in app to get them. Leave the HTML tags intact to collapse them and keep the issue clean!
+      value: |
+        ****
+        <details>
+        <summary>Click to expand logs</summary>
+
+```text
+        [Paste your crash logs or error messages here]
+```
+
+        </details>
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ****
