@@ -629,6 +629,9 @@ class PlayerServiceModern : MediaLibraryService(),
 
         if ( totalPlayTimeMs > minTimeForEvent.asMillis ) {
             Database.asyncTransaction {
+                // Ensure the song exists in the DB so the foreign key constraint is satisfied
+                insertIgnore(mediaItem)
+                
                 eventTable.insertIgnore(
                     Event(
                         songId = mediaItem.mediaId,
@@ -637,7 +640,6 @@ class PlayerServiceModern : MediaLibraryService(),
                     )
                 )
             }
-
         }
     }
 
