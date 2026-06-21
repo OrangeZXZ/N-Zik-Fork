@@ -122,6 +122,7 @@
   <string name="show">Zobrazit</string>
   <string name="unsynchronized_lyrics">nesynchronizovaný písňový text</string>
   <string name="synchronized_lyrics">synchronizovaný písňový text</string>
+  <string name="karaoke_lyrics">karaoke texty</string>
   <string name="provided_by">Poskytnuto od</string>
   <string name="delete_playback_events">Smazat %1$s přehrávané akce</string>
   <string name="existing_data_will_be_overwritten">Stávající data budou přepsána. %1$s se po obnovení databáze automaticky uzavře.</string>
@@ -1206,4 +1207,5 @@
   <string name="translation_in_progress">Probíhá překlad</string>
   <string name="translation_failed">Překlad se nezdařil, zkuste to znovu nebo nahlásit chybu</string>
   <string name="translation_successful">Překlad byl úspěšný</string>
+  <string name="karaoke_respect_agent_position">Pozice respektujícího činitele</string>
 </resources>

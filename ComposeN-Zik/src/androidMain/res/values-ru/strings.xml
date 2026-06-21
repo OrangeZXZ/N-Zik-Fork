@@ -122,6 +122,7 @@
   <string name="show">Показать</string>
   <string name="unsynchronized_lyrics">несинхронизированные тексты</string>
   <string name="synchronized_lyrics">синхронизированные тексты</string>
+  <string name="karaoke_lyrics">караоке-тексты</string>
   <string name="provided_by">Визуальные материалы из</string>
   <string name="delete_playback_events">Удалить %1$s События воспроизведения</string>
   <string name="existing_data_will_be_overwritten">Existing data will be overwritten. %1$s will automatically close itself after restoring the database.</string>
@@ -1206,4 +1207,5 @@
   <string name="translation_in_progress">Перевод в процессе</string>
   <string name="translation_failed">Перевод не удался, попробуйте еще раз или сообщите об ошибке</string>
   <string name="translation_successful">Перевод выполнен</string>
+  <string name="karaoke_respect_agent_position">Уважение позиции агента</string>
 </resources>

@@ -122,6 +122,7 @@
   <string name="show">Vis</string>
   <string name="unsynchronized_lyrics">usynkroniserede sangtekster</string>
   <string name="synchronized_lyrics">synkroniserede sangtekster</string>
+  <string name="karaoke_lyrics">karaoke sangtekster</string>
   <string name="provided_by">Leveret af</string>
   <string name="delete_playback_events">Slet %1$s afspilningshændelser</string>
   <string name="existing_data_will_be_overwritten">Eksisterende data overskrives. %1$s lukker automatisk efter gendannelse af databasen.</string>
@@ -1206,4 +1207,5 @@
   <string name="translation_in_progress">Oversættelse i gang</string>
   <string name="translation_failed">Oversættelse mislykkedes, prøv igen eller rapportfejl</string>
   <string name="translation_successful">Oversættelse succesfuld</string>
+  <string name="karaoke_respect_agent_position">Respekter agent position</string>
 </resources>
