@@ -71,6 +71,7 @@ class LyricsSettingsMenu private constructor(
     private val onSearchLyricsOnline: () -> Unit,
     private val onFetchLyricsAgain: () -> Unit,
     private val onPickFromLrcLib: () -> Unit,
+    private val onShowOffsetDialog: () -> Unit,
     override val menuState: MenuState,
     styleState: MutableState<MenuStyle>
 ) : Menu {
@@ -86,7 +87,8 @@ class LyricsSettingsMenu private constructor(
             onCopyLyrics: () -> Unit,
             onSearchLyricsOnline: () -> Unit,
             onFetchLyricsAgain: () -> Unit,
-            onPickFromLrcLib: () -> Unit
+            onPickFromLrcLib: () -> Unit,
+            onShowOffsetDialog: () -> Unit
         ): LyricsSettingsMenu =
             LyricsSettingsMenu(
                 isLandscape = isLandscape,
@@ -98,6 +100,7 @@ class LyricsSettingsMenu private constructor(
                 onSearchLyricsOnline = onSearchLyricsOnline,
                 onFetchLyricsAgain = onFetchLyricsAgain,
                 onPickFromLrcLib = onPickFromLrcLib,
+                onShowOffsetDialog = onShowOffsetDialog,
                 menuState = LocalMenuState.current,
                 styleState = rememberPreference(menuStyleKey, MenuStyle.List)
             )
@@ -679,6 +682,18 @@ class LyricsSettingsMenu private constructor(
                         menuState.hide()
                         onFetchLyricsAgain()
                     }
+                }
+                override fun onLongClick() {}
+            })
+
+            add(object : MenuIcon, Descriptive, Clickable {
+                override val iconId: Int = R.drawable.time
+                override val messageId: Int = R.string.lyrics_offset
+                @get:Composable
+                override val menuIconTitle: String get() = stringResource(messageId)
+                override fun onShortClick() {
+                    menuState.hide()
+                    onShowOffsetDialog()
                 }
                 override fun onLongClick() {}
             })

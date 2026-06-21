@@ -143,6 +143,8 @@ fun LyricsScreen(
         var lyricsSizeL by rememberPreference(lyricsSizeLKey, 20f)
         var customSize = if (isLandscape) lyricsSizeL else lyricsSize
         var showLyricsSizeDialog by rememberSaveable { mutableStateOf(false) }
+        var isAutoScrollEnabled by remember { mutableStateOf(true) }
+        val lyricsOffsetState = rememberPreference("lyricsOffset_$mediaId", 0L)
         val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
         val translator = remember { dev.rebelonion.translator.Translator() }
         val effectRotationEnabled by rememberPreference(effectRotationKey, false)
@@ -160,9 +162,16 @@ fun LyricsScreen(
             )
         }
 
+        val showOffsetDialog = app.n_zik.android.components.player.lyrics.utils.ShowOffsetDialog(mediaId = mediaId)
+        showOffsetDialog.Render()
+
         LaunchedEffect(mediaMetadata.title, mediaMetadata.artist) {
             artistName = mediaMetadata.artist?.toString().orEmpty()
             title = cleanPrefix(mediaMetadata.title?.toString().orEmpty())
+            lyrics = null
+            checkedLyricsLrc = false
+            checkedLyricsKugou = false
+            checkedLyricsInnertube = false
         }
 
         var lyricsCustomColor by rememberPreference(lyricsCustomColorKey, android.graphics.Color.WHITE)
@@ -260,7 +269,7 @@ fun LyricsScreen(
                     lyricsType == LyricsType.Karaoke && hasWordTimings -> {
                         KaraokeLyricsView(
                             text = text,
-                            currentPositionProvider = { binder?.player?.currentPosition ?: 0L },
+                            currentPositionProvider = { (binder?.player?.currentPosition ?: 0L) + lyricsOffsetState.value },
                             isPlayingProvider = { binder?.player?.isPlaying == true },
                             onSeekTo = { binder?.player?.seekTo(it) },
                             showlyricsthumbnail = showlyricsthumbnail,
@@ -280,6 +289,8 @@ fun LyricsScreen(
                             lyricsSizeAnimate = lyricsSizeAnimate,
                             lyricsColor = lyricsColor,
                             lyricsCustomColor = lyricsCustomColor,
+                            isAutoScrollEnabled = isAutoScrollEnabled,
+                            onAutoScrollEnabledChange = { isAutoScrollEnabled = it },
                             dominantColor = dominantColor,
                             lyricsHighlight = lyricsHighlight,
                             lyricsAlignment = lyricsAlignment,
@@ -296,7 +307,7 @@ fun LyricsScreen(
                     lyricsType == LyricsType.Synced || (lyricsType == LyricsType.Karaoke && !hasWordTimings) -> {
                         SyncedLyricsView(
                             text = text,
-                            currentPositionProvider = { binder?.player?.currentPosition ?: 0L },
+                            currentPositionProvider = { (binder?.player?.currentPosition ?: 0L) + lyricsOffsetState.value },
                             onSeekTo = { binder?.player?.seekTo(it) },
                             showlyricsthumbnail = showlyricsthumbnail,
                             isLandscape = isLandscape,
@@ -316,6 +327,8 @@ fun LyricsScreen(
                             lyricsSizeAnimate = lyricsSizeAnimate,
                             lyricsColor = lyricsColor,
                             lyricsCustomColor = lyricsCustomColor,
+                            isAutoScrollEnabled = isAutoScrollEnabled,
+                            onAutoScrollEnabledChange = { isAutoScrollEnabled = it },
                             dominantColor = dominantColor,
                             lyricsHighlight = lyricsHighlight,
                             clickLyricsText = clickLyricsText,
@@ -495,17 +508,43 @@ fun LyricsScreen(
                     .fillMaxWidth(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 0.5f else 0.2f)
             ) {
 
-
-
-                Image(
-                    painter = painterResource(R.drawable.settings),
-                    contentDescription = null,
-                    colorFilter = ColorFilter.tint(DefaultDarkColorPalette.text),
+                Row(
                     modifier = Modifier
                         .align(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) Alignment.BottomStart else Alignment.BottomEnd)
-                        .padding(start = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 48.dp else 0.dp)
-                        .padding(all = 4.dp)
-                        .clip(uiRoundnessShape()).clickable(
+                        .padding(start = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 48.dp else 0.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = !isAutoScrollEnabled,
+                        enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.scaleIn(),
+                        exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.scaleOut()
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.locate),
+                            contentDescription = "Recenter",
+                            colorFilter = ColorFilter.tint(DefaultDarkColorPalette.text),
+                            modifier = Modifier
+                                .padding(all = 4.dp)
+                                .clip(uiRoundnessShape()).clickable(
+                                    indication = ripple(bounded = false),
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    onClick = {
+                                        isAutoScrollEnabled = true
+                                    }
+                                )
+                                .padding(all = 8.dp)
+                                .size(20.dp)
+                        )
+                    }
+
+                    Image(
+                        painter = painterResource(R.drawable.settings),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(DefaultDarkColorPalette.text),
+                        modifier = Modifier
+                            .padding(all = 4.dp)
+                            .clip(uiRoundnessShape()).clickable(
                             indication = ripple(bounded = false),
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
@@ -543,14 +582,16 @@ fun LyricsScreen(
                                                 )
                                             }
                                         },
-                                        onPickFromLrcLib = { isPicking = true }
+                                        onPickFromLrcLib = { isPicking = true },
+                                        onShowOffsetDialog = { showOffsetDialog.onShortClick() }
                                     ).MenuComponent()
                                 }
                             }
                         )
                         .padding(all = 8.dp)
                         .size(20.dp)
-                )
+                    )
+                }
             }
         }
     }

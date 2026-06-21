@@ -1106,21 +1106,7 @@ fun AppearanceSettings(
                             )
                         }
 
-                    if (search.inputValue.isBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
-                            search.inputValue,
-                            true
-                        )
-                    )
-                        if (search.inputValue.isBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(search.inputValue, true)) {
-                            OtherSwitchSettingEntry(
-                    icon = R.drawable.image,
-                                title = stringResource(R.string.show_lyrics_thumbnail),
-                                text = "",
-                                isChecked = showlyricsthumbnail,
-                                onCheckedChange = { showlyricsthumbnail = it },
-                                modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                            )
-                        }
+
                 }
 
                 if (search.inputValue.isBlank() || stringResource(R.string.show_cover_thumbnail_animation).contains(
@@ -2029,6 +2015,21 @@ fun AppearanceSettings(
                 title = "Lyrics",
                 icon = R.drawable.song_lyrics,
                 content = {
+        if (search.inputValue.isBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(
+                search.inputValue,
+                true
+            )
+        )
+            if (search.inputValue.isBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(search.inputValue, true)) {
+                OtherSwitchSettingEntry(
+                    icon = R.drawable.image,
+                    title = stringResource(R.string.show_lyrics_thumbnail),
+                    text = "",
+                    isChecked = showlyricsthumbnail,
+                    onCheckedChange = { showlyricsthumbnail = it }
+                )
+            }
+
         if (search.inputValue.isBlank() || stringResource(R.string.toggle_lyrics).contains(
                 search.inputValue,
                 true

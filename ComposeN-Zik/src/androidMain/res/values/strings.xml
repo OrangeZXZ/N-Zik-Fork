@@ -1208,4 +1208,5 @@
 <string name="translation_failed">Translation failed, try again or report error</string>
 <string name="translation_successful">Translation successful</string>
 <string name="karaoke_respect_agent_position">Respect agent position</string>
+<string name="lyrics_offset">Lyrics Offset</string>
 </resources>

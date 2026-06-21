@@ -1,10 +1,16 @@
 package app.n_zik.android.components.player.lyrics
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -14,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.n_zik.android.enums.lyrics.LyricsAlignment
 import app.n_zik.android.enums.lyrics.LyricsBackground
@@ -66,7 +73,9 @@ fun SyncedLyricsView(
     lyricsColor: LyricsColor,
     lyricsCustomColor: Int,
     dominantColor: Int,
-    lyricsHighlight: LyricsHighlight,
+    lyricsHighlight: LyricsHighlight = LyricsHighlight.None,
+    isAutoScrollEnabled: Boolean = true,
+    onAutoScrollEnabledChange: (Boolean) -> Unit = {},
     clickLyricsText: Boolean,
     thumbnailSize: Dp,
     isDisplayed: Boolean,
@@ -245,7 +254,15 @@ fun SyncedLyricsView(
 
     val lazyListState = rememberLazyListState()
 
-    LaunchedEffect(synchronizedLyrics, density) {
+    val isDragged by lazyListState.interactionSource.collectIsDraggedAsState()
+
+    LaunchedEffect(isDragged) {
+        if (isDragged) {
+            onAutoScrollEnabledChange(false)
+        }
+    }
+
+    LaunchedEffect(synchronizedLyrics, density, isAutoScrollEnabled) {
         val centerOffset = with(density) {
             (-thumbnailSize.div(
                 if (!showlyricsthumbnail && !isLandscape) if (trailingContent == null) 2 else 1
@@ -253,18 +270,7 @@ fun SyncedLyricsView(
             )).roundToPx()
         }
 
-        try {
-            lazyListState.animateScrollToItem(
-                index = synchronizedLyrics.index + 1,
-                scrollOffset = centerOffset
-            )
-        } catch (e: kotlinx.coroutines.CancellationException) {
-            if (!isActive) throw e
-        }
-
-        while (isActive) {
-            delay(50)
-            if (!synchronizedLyrics.update()) continue
+        if (isAutoScrollEnabled) {
             try {
                 lazyListState.animateScrollToItem(
                     index = synchronizedLyrics.index + 1,
@@ -274,87 +280,107 @@ fun SyncedLyricsView(
                 if (!isActive) throw e
             }
         }
+
+        while (isActive) {
+            delay(50)
+            if (!synchronizedLyrics.update()) continue
+            if (isAutoScrollEnabled) {
+                try {
+                    lazyListState.animateScrollToItem(
+                        index = synchronizedLyrics.index + 1,
+                        scrollOffset = centerOffset
+                    )
+                } catch (e: kotlinx.coroutines.CancellationException) {
+                    if (!isActive) throw e
+                }
+            }
+        }
     }
 
     var modifierBG = Modifier.verticalFadingEdge()
-    if (showBackgroundLyrics && showlyricsthumbnail) modifierBG =
+if (showBackgroundLyrics && showlyricsthumbnail) modifierBG =
         modifierBG.background(colorPalette().accent)
 
     val accentColor = colorPalette().accent
 
-    LazyColumn(
-        state = lazyListState,
-        userScrollEnabled = true,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = modifierBG
-            .background(
-                if (isDisplayed && !showlyricsthumbnail)
-                    if (lyricsBackground == LyricsBackground.Black) Color.Black.copy(0.6f)
-                    else if (lyricsBackground == LyricsBackground.White) Color.White.copy(0.4f)
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            state = lazyListState,
+            userScrollEnabled = true,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = modifierBG
+                .fillMaxSize()
+                .background(
+                    if (isDisplayed && !showlyricsthumbnail)
+                        when (lyricsBackground) {
+                            LyricsBackground.Black -> Color.Black.copy(0.6f)
+                            LyricsBackground.White -> Color.White.copy(0.4f)
+                            else -> Color.Transparent
+                        }
                     else Color.Transparent
-                else Color.Transparent
-            )
-    ) {
-        item(key = "header", contentType = 0) {
-            Spacer(modifier = Modifier.height(thumbnailSize))
-        }
-
-        itemsIndexed(
-            items = synchronizedLyrics.sentences
-        ) { index, sentence ->
-            val trimmedSentence = sentence.second.trim()
-
-            // Read from cache — no network call here
-            val displayText = if (showSecondLine || translateEnabled || romanizationEnabled) {
-                translationCache[index] ?: trimmedSentence
-            } else {
-                trimmedSentence
-            }
-
-            val hasGapIndicator = showIntervalIndicator && gapWindows.containsKey(index)
-
-            if (!hasGapIndicator) {
-                LyricsTextPainter(
-                    text = displayText,
-                    isSync = true,
-                    isCurrentIndex = index == synchronizedLyrics.index,
-                    showlyricsthumbnail = showlyricsthumbnail,
-                    lyricsOutline = lyricsOutline,
-                    colorPaletteMode = colorPaletteMode,
-                    fontSize = fontSize,
-                    customSize = customSize,
-                    lyricsAlignment = lyricsAlignment,
-                    lyricsSizeAnimate = lyricsSizeAnimate,
-                    lyricsColor = lyricsColor,
-                    lyricsCustomColor = lyricsCustomColor,
-                    dominantColor = dominantColor,
-                    lyricsHighlight = lyricsHighlight,
-                    clickLyricsText = clickLyricsText,
-                    onClick = {
-                        if (clickLyricsText) onSeekTo(sentence.first) else onDismiss()
-                    }
                 )
+        ) {
+            item(key = "header", contentType = 0) {
+                Spacer(modifier = Modifier.height(thumbnailSize))
             }
 
-            // Interval indicator after this line (if there is a gap and the feature is enabled)
-            if (showIntervalIndicator) {
-                gapWindows[index]?.let { (gapStart, gapEnd) ->
-                    val isVisible = currentPositionMs in gapStart until gapEnd
-                    LyricsIntervalIndicator(
-                        gapStartMs = gapStart,
-                        gapEndMs = gapEnd,
-                        currentPositionMs = currentPositionMs,
-                        visible = isVisible,
-                        color = accentColor,
-                        modifier = Modifier.fillMaxWidth()
+            itemsIndexed(
+                items = synchronizedLyrics.sentences
+            ) { index, sentence ->
+                val trimmedSentence = sentence.second.trim()
+
+                // Read from cache — no network call here
+                val displayText = if (showSecondLine || translateEnabled || romanizationEnabled) {
+                    translationCache[index] ?: trimmedSentence
+                } else {
+                    trimmedSentence
+                }
+
+                val hasGapIndicator = showIntervalIndicator && gapWindows.containsKey(index)
+
+                if (!hasGapIndicator) {
+                    LyricsTextPainter(
+                        text = displayText,
+                        isSync = true,
+                        isCurrentIndex = index == synchronizedLyrics.index,
+                        showlyricsthumbnail = showlyricsthumbnail,
+                        lyricsOutline = lyricsOutline,
+                        colorPaletteMode = colorPaletteMode,
+                        fontSize = fontSize,
+                        customSize = customSize,
+                        lyricsAlignment = lyricsAlignment,
+                        lyricsSizeAnimate = lyricsSizeAnimate,
+                        lyricsColor = lyricsColor,
+                        lyricsCustomColor = lyricsCustomColor,
+                        dominantColor = dominantColor,
+                        lyricsHighlight = lyricsHighlight,
+                        clickLyricsText = clickLyricsText,
+                        onClick = {
+                            if (clickLyricsText) onSeekTo(sentence.first) else onDismiss()
+                        }
                     )
                 }
-            }
-        }
 
-        item(key = "footer", contentType = 0) {
-            Spacer(modifier = Modifier.height(thumbnailSize))
+                // Interval indicator after this line (if there is a gap and the feature is enabled)
+                if (showIntervalIndicator) {
+                    gapWindows[index]?.let { (gapStart, gapEnd) ->
+                        val isVisible = currentPositionMs in gapStart until gapEnd
+                        LyricsIntervalIndicator(
+                            gapStartMs = gapStart,
+                            gapEndMs = gapEnd,
+                            currentPositionMs = currentPositionMs,
+                            visible = isVisible,
+                            color = accentColor,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            }
+
+            item(key = "footer", contentType = 2) {
+                Spacer(modifier = Modifier.height(thumbnailSize))
+            }
         }
     }
 }

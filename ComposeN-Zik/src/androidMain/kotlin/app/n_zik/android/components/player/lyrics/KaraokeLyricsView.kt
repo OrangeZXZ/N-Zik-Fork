@@ -4,6 +4,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -223,7 +224,9 @@ fun KaraokeLyricsView(
     showlyricsthumbnail: Boolean,
     isLandscape: Boolean,
     trailingContent: (@Composable () -> Unit)?,
-    showBackgroundLyrics: Boolean,
+    isAutoScrollEnabled: Boolean = true,
+    onAutoScrollEnabledChange: (Boolean) -> Unit = {},
+    showBackgroundLyrics: Boolean = true,
     lyricsBackground: LyricsBackground,
     showSecondLine: Boolean,
     translateEnabled: Boolean,
@@ -452,7 +455,16 @@ fun KaraokeLyricsView(
 
     val lazyListState = rememberLazyListState()
 
-    LaunchedEffect(primaryActiveIndex, density) {
+    val isDragged by lazyListState.interactionSource.collectIsDraggedAsState()
+
+    LaunchedEffect(isDragged) {
+        if (isDragged) {
+            onAutoScrollEnabledChange(false)
+        }
+    }
+
+    LaunchedEffect(primaryActiveIndex, density, isAutoScrollEnabled) {
+        if (!isAutoScrollEnabled) return@LaunchedEffect
         val centerOffset = with(density) {
             (-thumbnailSize.div(
                 if (!showlyricsthumbnail && !isLandscape) if (trailingContent == null) 2 else 1
@@ -489,22 +501,24 @@ fun KaraokeLyricsView(
     var modifierBG = Modifier.verticalFadingEdge()
     if (showBackgroundLyrics && showlyricsthumbnail) modifierBG = modifierBG.background(colorPalette().accent)
 
-    LazyColumn(
-        state = lazyListState,
-        userScrollEnabled = true,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = modifierBG
-            .background(
-                if (isDisplayed && !showlyricsthumbnail)
-                    when (lyricsBackground) {
-                        LyricsBackground.Black -> Color.Black.copy(0.6f)
-                        LyricsBackground.White -> Color.White.copy(0.4f)
-                        else -> Color.Transparent
-                    }
-                else Color.Transparent
-            )
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            state = lazyListState,
+            userScrollEnabled = true,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = modifierBG
+                .fillMaxSize()
+                .background(
+                    if (isDisplayed && !showlyricsthumbnail)
+                        when (lyricsBackground) {
+                            LyricsBackground.Black -> Color.Black.copy(0.6f)
+                            LyricsBackground.White -> Color.White.copy(0.4f)
+                            else -> Color.Transparent
+                        }
+                    else Color.Transparent
+                )
+        ) {
         item(key = "header", contentType = 0) {
             Spacer(modifier = Modifier.height(thumbnailSize))
         }
@@ -871,4 +885,5 @@ fun KaraokeLyricsView(
             Spacer(modifier = Modifier.height(thumbnailSize))
         }
     }
+}
 }

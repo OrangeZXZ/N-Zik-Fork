@@ -1,9 +1,19 @@
-added: grid and list for lyrics menu
+﻿added: grid and list for lyrics menu
 added: Karaoke lyrics view with word-level syncing
-fixed: Severe stuttering / performance drops on long karaoke lines and translations by implementing `getFastPathForRange` logic
+fixed: Severe stuttering / performance drops on long karaoke lines and translations by implementing \getFastPathForRange\ logic
 improved: Smooth "pop" animation for sung characters in Karaoke mode, with soft ease-in/out scaling and bouncing
 fixed: Character bounce bleeding and overlapping lines/words through precise geometric Rect clipping
 improved: Added the smooth "pop" animation to translated lyrics via linear interpolation
 improved: Karaoke glow effect is now much denser and tighter around the text (reduced blur radius, doubled opacity) for better visibility on dark backgrounds
 fixed: Seamless fallback to synced lyrics (LrcLib) when BetterLyrics returns unsynced/basic LRCs without word tags
 fixed: Intelligent rendering of dual-opacity background text when displaying translations under original lyrics
+added: Global offset dialog accessible from Lyrics settings menu to correct lyrics synchronization.
+moved: Moved "Show thumbnail for lyrics" switch to the Lyrics section in Appearance Settings.
+added: Recenter button when user manually scrolls lyrics (disables auto-scroll temporarily)
+improved: Use 'locate' icon for recenter button and move it to LyricsScreen next to settings
+improved: Refactored ShowOffsetDialog to use InteractiveDialog
+fixed: Reset lyrics on track change to prevent old lyrics from showing
+improved: Automatically try fetching Karaoke lyrics when switching lyrics mode if they are missing word timings
+fixed: Compilation errors in LyricsFetcher and KaraokeLyricsView caused by variable duplication and missing imports
+fixed: Automatically refetch standard lyrics (LrcLib) when switching from Karaoke mode to Synced mode
+fixed: Restored the ShowOffsetDialog UI to use the app's custom colorPalette() for correct contrast and dark/light mode support
