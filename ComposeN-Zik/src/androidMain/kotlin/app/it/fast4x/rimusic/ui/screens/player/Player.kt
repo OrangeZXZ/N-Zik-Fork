@@ -1024,7 +1024,7 @@ fun Player(
 
                         )
                     }
-                    .padding(all = if (isLandscape) ((100f - thumbnailSizeLDp) * 1.5f).dp else ((100f - thumbnailSizeDp) * 1.5f).dp)
+                    .padding(all = if (isLandscape) ((100f - thumbnailSizeLDp) * 0.5f).dp else ((100f - thumbnailSizeDp) * 1.5f).dp)
                     .thumbnailpause(
                         shouldBePlaying = shouldBePlaying
                     )
@@ -1214,7 +1214,6 @@ fun Player(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = containerModifier
-                    .padding(top = if (playerType == PlayerType.Essential) 40.dp else 20.dp)
                     .padding(top = if (extraspace) 10.dp else 0.dp)
                     .drawBehind {
                         if (backgroundProgress == BackgroundProgress.Both || backgroundProgress == BackgroundProgress.Player) {
@@ -1240,9 +1239,7 @@ fun Player(
                     if (showthumbnail && (playerType == PlayerType.Essential)) {
                         Box(
                             contentAlignment = Alignment.Center,
-                            /*modifier = Modifier
-                            .weight(1f)*/
-                            //.padding(vertical = 10.dp)
+                            modifier = Modifier.fillMaxWidth(0.5f)
                         ) {
                             if ((!isShowingLyrics && !isShowingVisualizer) || (isShowingVisualizer && showvisthumbnail) || (isShowingLyrics && showlyricsthumbnail))
                                 thumbnailContent()
@@ -1284,7 +1281,7 @@ fun Player(
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .weight(1f)
+                            .conditional(isShowingLyrics) { weight(1f) }
                             .navigationBarsPadding()
                     ){
                         if (!showlyricsthumbnail) {
@@ -1330,6 +1327,7 @@ fun Player(
                 Column (
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(top = if (playerType == PlayerType.Essential) 40.dp else 20.dp)
                 ) {
                     if (playerType == PlayerType.Modern) {
                         BoxWithConstraints(
@@ -1342,7 +1340,7 @@ fun Player(
                          ) {
                              if ( showthumbnail && !isShowingVisualizer ) {
                                  val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
-                                 val pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*((100f - thumbnailSizeLDp) * 1.5f).dp)
+                                 val pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*((100f - thumbnailSizeLDp) * 0.5f).dp)
 
                                  val context = androidx.compose.ui.platform.LocalContext.current
                                  LaunchedEffect(playerUpdateTrigger) {
@@ -1368,7 +1366,7 @@ fun Player(
                                  HorizontalPager(
                                      state = pagerState,
                                      pageSize = PageSize.Fixed( Dimensions.thumbnails.player.song ),
-                                     pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*((100f - thumbnailSizeLDp) * 1.5f).dp),
+                                     pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*((100f - thumbnailSizeLDp) * 0.5f).dp),
                                      contentPadding = PaddingValues(start = ((maxWidth - maxHeight)/2).coerceAtLeast(0.dp), end = ((maxWidth - maxHeight)/2 + if (pageSpacing < 0.dp) (-(pageSpacing)) else 0.dp).coerceAtLeast(0.dp)),
                                      beyondViewportPageCount = 3,
                                      flingBehavior = fling,
@@ -1388,7 +1386,7 @@ fun Player(
 
                                      val coverModifier = Modifier
                                          .aspectRatio(1f)
-                                         .padding(all = ((100f - thumbnailSizeLDp) * 1.5f).dp)
+                                         .padding(all = ((100f - thumbnailSizeLDp) * 0.5f).dp)
                                          .graphicsLayer {
                                              val pageOffSet =
                                                  ((pagerState.currentPage - it) + pagerState.currentPageOffsetFraction).absoluteValue
