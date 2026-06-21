@@ -75,7 +75,7 @@ fun LyricsTrackSelector(
             )?.onSuccess {
                 if (it.isNotEmpty() && playerEnableLyricsPopupMessage)
                     coroutineScope.launch {
-                        Toaster.e(
+                        Toaster.s(
                             R.string.info_lyrics_tracks_found_on_s,
                             "LrcLib.net",
                             duration = Toast.LENGTH_LONG

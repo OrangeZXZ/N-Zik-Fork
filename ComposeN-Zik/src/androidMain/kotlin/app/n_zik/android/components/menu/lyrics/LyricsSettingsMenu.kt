@@ -577,17 +577,12 @@ class LyricsSettingsMenu private constructor(
             })
 
             if (isShowingSynchronizedLyrics) {
-                add(object : MenuIcon, Descriptive, Clickable {
-                    override val iconId: Int = R.drawable.sync
-                    override val messageId: Int = R.string.pick_from
-                    @get:Composable
-                    override val menuIconTitle: String get() = stringResource(messageId) + " LrcLib.net"
-                    override fun onShortClick() {
+                add(lyricsPickFromLrcLibMenuEntry(
+                    onShortClick = {
                         menuState.hide()
                         onPickFromLrcLib()
                     }
-                    override fun onLongClick() {}
-                })
+                ))
             }
         }
 
