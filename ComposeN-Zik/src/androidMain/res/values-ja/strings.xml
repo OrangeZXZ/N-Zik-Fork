@@ -1208,4 +1208,5 @@
   <string name="translation_failed">翻訳に失敗しました。再試行するか、エラーを報告してください</string>
   <string name="translation_successful">翻訳に成功しました</string>
   <string name="karaoke_respect_agent_position">尊重エージェントの位置</string>
+  <string name="lyrics_offset">歌詞のオフセット</string>
 </resources>
