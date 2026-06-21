@@ -122,6 +122,7 @@
   <string name="show">表示</string>
   <string name="unsynchronized_lyrics">歌詞を同期しない</string>
   <string name="synchronized_lyrics">同期している歌詞</string>
+  <string name="karaoke_lyrics">カラオケの歌詞</string>
   <string name="provided_by">提供</string>
   <string name="delete_playback_events">%1$s 再生イベントを削除</string>
   <string name="existing_data_will_be_overwritten">既存のデータは上書きされます。 %1$s はデータベースを復元すると自動的に閉じられます。</string>
@@ -1206,4 +1207,5 @@
   <string name="translation_in_progress">翻訳中です</string>
   <string name="translation_failed">翻訳に失敗しました。再試行するか、エラーを報告してください</string>
   <string name="translation_successful">翻訳に成功しました</string>
+  <string name="karaoke_respect_agent_position">尊重エージェントの位置</string>
 </resources>
