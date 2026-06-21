@@ -1202,4 +1202,8 @@
   <string name="install_warning">Por favor, lembre-se de fazer o backup de suas configurações e banco de dados de música. Uma atualização pode corromper ou quebrá-la se o esquema da base de dados for editado, então isso é altamente recomendado.</string>
   <string name="install_yes">Sim, instalar</string>
   <string name="install_no_backup">Não, eu vou fazer o backup primeiro</string>
+  <string name="interval_indicator">Mostrar um carregador de lacunas entre as letras</string>
+  <string name="translation_in_progress">Tradução em progresso</string>
+  <string name="translation_failed">Falha na tradução, tente novamente ou reporte um erro</string>
+  <string name="translation_successful">Tradução bem sucedida</string>
 </resources>
