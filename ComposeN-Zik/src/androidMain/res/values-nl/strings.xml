@@ -122,6 +122,7 @@
   <string name="show">Weergeven</string>
   <string name="unsynchronized_lyrics">niet-gesynchroniseerde songtekst</string>
   <string name="synchronized_lyrics">gesynchroniseerde songtekst</string>
+  <string name="karaoke_lyrics">karaoke songteksten</string>
   <string name="provided_by">Geleverd door</string>
   <string name="delete_playback_events">Verwijder %1$s afspeelgebeurtenissen</string>
   <string name="existing_data_will_be_overwritten">Bestaande gegevens worden overschreven. %1$s zal zichzelf automatisch sluiten na het herstellen van de database.</string>
@@ -1206,4 +1207,5 @@
   <string name="translation_in_progress">Vertaling in uitvoering</string>
   <string name="translation_failed">Vertaling mislukt, probeer het opnieuw of meld een fout</string>
   <string name="translation_successful">Vertaling geslaagd</string>
+  <string name="karaoke_respect_agent_position">Respecteer agent positie</string>
 </resources>
