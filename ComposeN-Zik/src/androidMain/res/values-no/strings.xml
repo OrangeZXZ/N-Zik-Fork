@@ -1208,4 +1208,5 @@
   <string name="translation_failed">Oversettelse feilet, prøv igjen eller rapportere feil</string>
   <string name="translation_successful">Oversettelse vellykket</string>
   <string name="karaoke_respect_agent_position">Respekter agent posisjon</string>
+  <string name="lyrics_offset">Offset sangtekster</string>
 </resources>

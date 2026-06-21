@@ -1208,4 +1208,5 @@
   <string name="translation_failed">Tłumaczenie nie powiodło się, spróbuj ponownie lub zgłoś błąd</string>
   <string name="translation_successful">Tłumaczenie udane</string>
   <string name="karaoke_respect_agent_position">Poszanuj pozycję agenta</string>
+  <string name="lyrics_offset">Przesunięcie tekstu</string>
 </resources>
