@@ -2,6 +2,7 @@ name: 👾 Bug report
 description: Make a bug report to help us improve N-Zik
 title: "[BUG]: "
 labels: ["bug"]
+
 body:
   - type: markdown
     attributes:
@@ -139,17 +140,9 @@ body:
     id: logs
     attributes:
       label: 📜 Logs (Optional)
-      description: You can use the "Debug Mode" feature in app to get them. Leave the HTML tags intact to collapse them and keep the issue clean!
-      value: |
-        ****
-        <details>
-        <summary>Click to expand logs</summary>
-
-```text
-        [Paste your crash logs or error messages here]
-```
-
-        </details>
+      description: You can use the "Debug Mode" feature in app to get them. Keep it simple and paste raw logs.
+      placeholder: |
+        Paste your crash logs or error messages here
     validations:
       required: false
 
