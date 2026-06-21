@@ -21,14 +21,19 @@ import app.n_zik.android.enums.lyrics.LyricsColor
 import app.n_zik.android.enums.lyrics.LyricsFontSize
 import app.n_zik.android.enums.lyrics.LyricsHighlight
 import app.n_zik.android.enums.lyrics.LyricsOutline
+import app.n_zik.android.R
 
 import app.n_zik.android.components.player.lyrics.utils.SynchronizedLyrics
 import app.it.fast4x.rimusic.utils.verticalFadingEdge
+import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.colorPalette
 import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
 import it.fast4x.lrclib.LrcLib
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
@@ -147,60 +152,90 @@ fun SyncedLyricsView(
 
         if (linesToTranslate.isEmpty()) return@LaunchedEffect
 
+        if (translateEnabled) {
+            withContext(Dispatchers.Main) {
+                Toaster.i(R.string.translation_in_progress)
+            }
+        }
+
         withContext(Dispatchers.IO) {
-            var successCount = 0
-            var errorCount = 0
-            for ((sentenceIndex, trimmed) in linesToTranslate) {
-                try {
-                    val helperTranslation = translator.translate(trimmed, Language.CHINESE_TRADITIONAL, Language.AUTO)
-                    var destLanguage = languageDestination
-                    if (destLanguage == Language.AUTO) {
-                        destLanguage = if (helperTranslation.translatedText == trimmed)
-                            Language.CHINESE_TRADITIONAL
-                        else
-                            helperTranslation.sourceLanguage
-                    }
-                    val mainTranslation = translator.translate(trimmed, destLanguage, Language.AUTO)
+            try {
+                // Join all lines to translate in one go
+                val textToTranslate = linesToTranslate.joinToString("\n") { it.second }
 
-                    val cleanTranslatedText = mainTranslation.translatedText.replace("\\\"", "\"").trim()
-                    val cleanPronunciation = mainTranslation.translatedPronunciation?.replace("\\\"", "\"")?.trim()
+                val helperTranslation = translator.translate(textToTranslate, Language.CHINESE_TRADITIONAL, Language.AUTO)
+                var destLanguage = languageDestination
+                if (destLanguage == Language.AUTO) {
+                    destLanguage = if (helperTranslation.translatedText == textToTranslate)
+                        Language.CHINESE_TRADITIONAL
+                    else
+                        helperTranslation.sourceLanguage
+                }
+                val mainTranslation = translator.translate(textToTranslate, destLanguage, Language.AUTO)
 
-                    val helpPronLine = helperTranslation.sourcePronunciation?.trim() ?: ""
-                    val mainPronLine = mainTranslation.sourcePronunciation?.trim() ?: trimmed
-                    val transPronLine = cleanPronunciation ?: cleanTranslatedText
+                val cleanTranslatedText = mainTranslation.translatedText.replace("\\\"", "\"").trim()
+                val cleanPronunciation = mainTranslation.translatedPronunciation?.replace("\\\"", "\"")?.trim()
 
-                    val outputText = if (!showSecondLine || mainTranslation.sourceText == mainTranslation.translatedText) {
-                        if (!romanizationEnabled) {
-                            if (translateEnabled) cleanTranslatedText else trimmed
-                        } else {
+                val helpPronLineText = helperTranslation.sourcePronunciation?.trim() ?: ""
+                val mainPronLineText = mainTranslation.sourcePronunciation?.trim() ?: textToTranslate
+
+                val cleanTransLines = cleanTranslatedText.split("\n")
+                val cleanPronLines = cleanPronunciation?.split("\n")
+                val helpPronLines = helpPronLineText.split("\n")
+                val mainPronLines = mainPronLineText.split("\n")
+
+                linesToTranslate.forEachIndexed { i, (sentenceIndex, trimmed) ->
+                    val cleanTransLine = cleanTransLines.getOrNull(i)?.trim() ?: ""
+                    val cleanPronLine = cleanPronLines?.getOrNull(i)?.trim()
+                    
+                    val hPronLine = helpPronLines.getOrNull(i)?.trim() ?: ""
+                    val mPronLine = mainPronLines.getOrNull(i)?.trim() ?: trimmed
+                    val transPronLine = cleanPronLine ?: cleanTransLine
+
+                    val isSameText = mainTranslation.sourceText == mainTranslation.translatedText
+
+                    val outputText = if (!showSecondLine || isSameText) {
+                        if (translateEnabled && romanizationEnabled) {
+                            transPronLine
+                        } else if (translateEnabled) {
+                            cleanTransLine
+                        } else if (romanizationEnabled) {
                             if (helperTranslation.sourceText == helperTranslation.translatedText)
-                                helpPronLine
+                                hPronLine
                             else
-                                mainPronLine.ifEmpty { trimmed }
+                                mPronLine.ifEmpty { trimmed }
+                        } else {
+                            trimmed
                         }
                     } else {
-                        if (!romanizationEnabled) {
-                            trimmed + "\n[$cleanTranslatedText]"
-                        } else {
-                            val pron = if (helperTranslation.sourceText == helperTranslation.translatedText) helpPronLine else mainPronLine.ifEmpty { trimmed }
+                        if (translateEnabled && romanizationEnabled) {
+                            val pron = if (helperTranslation.sourceText == helperTranslation.translatedText) hPronLine else mPronLine.ifEmpty { trimmed }
                             pron + "\n[$transPronLine]"
+                        } else if (translateEnabled) {
+                            trimmed + "\n[$cleanTransLine]"
+                        } else if (romanizationEnabled) {
+                            val pron = if (helperTranslation.sourceText == helperTranslation.translatedText) hPronLine else mPronLine.ifEmpty { trimmed }
+                            trimmed + "\n[$pron]"
+                        } else {
+                            trimmed
                         }
                     }
 
                     val finalText = outputText.replace("\\r", "\r").replace("\\n", "\n")
                     translationCache[sentenceIndex] = finalText
-                    successCount++
-                } catch (e: Exception) {
-                    Timber.e("Lyrics sync translation cache error: ${e.message}")
-                    errorCount++
                 }
-                delay(100) // Small delay to prevent API rate limiting
-            }
-            withContext(Dispatchers.Main) {
-                if (successCount > 0 && errorCount == 0) {
-                    Toaster.e(app.n_zik.android.R.string.translation_successful)
-                } else if (errorCount > 0) {
-                    Toaster.e(app.n_zik.android.R.string.translation_failed)
+
+                if (translateEnabled) {
+                    withContext(Dispatchers.Main) {
+                        Toaster.s(R.string.translation_successful)
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e("Lyrics sync translation error: ${e.message}")
+                if (translateEnabled) {
+                    withContext(Dispatchers.Main) {
+                        Toaster.e(R.string.translation_failed)
+                    }
                 }
             }
         }
