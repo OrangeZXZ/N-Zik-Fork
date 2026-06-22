@@ -499,10 +499,10 @@
   <string name="album_and_alternative_versions">Album and alternative versions</string>
   <string name="album_alternative_versions">Alternative versions</string>
   <string name="monthly_playlists">Monthly playlists</string>
-  <string name="month_january_s">يناير %1$s</string>
-  <string name="month_february_s">شباط %1$s</string>
-  <string name="month_march_s">زحف %1$s</string>
-  <string name="month_april_s">إبريل %1$s</string>
+  <string name="month_january_s">January %2$s</string>
+  <string name="month_february_s">February %3$s</string>
+  <string name="month_march_s">March %4$s</string>
+  <string name="month_april_s">April %5$s</string>
   <string name="month_may_s">مايو %1$s</string>
   <string name="month_june_s">حزيران/يونيه %1$s</string>
   <string name="month_july_s">يوليو %1$s</string>
