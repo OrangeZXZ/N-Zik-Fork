@@ -82,9 +82,15 @@ fun LyricsFetcher(
                         }
                     }
 
-                    val fetchLrcLibAndKugou: suspend () -> Unit = {
+                    val fetchLrcLibAndKugou: suspend (betterLyricsFallback: String?) -> Unit = { fallbackSynced ->
                         if (currentLyrics?.synced == null || needSyncedFetch) {
-                            kotlin.runCatching {
+                            if (fallbackSynced != null) {
+                                if (playerEnableLyricsPopupMessage) coroutineScope.launch { Toaster.s(R.string.info_lyrics_found_on_s, "BetterLyrics (Synced)") }
+                                onErrorUpdated(false)
+                                onCheckedLrcUpdated(true)
+                                Database.asyncTransaction { lyricsTable.upsert(Lyrics(songId = mediaId, fixed = currentLyrics?.fixed, synced = fallbackSynced)) }
+                            } else {
+                                kotlin.runCatching {
                                 LrcLib.lyrics(
                                     artist = artistName ?: "",
                                     title = title ?: "",
@@ -201,6 +207,7 @@ fun LyricsFetcher(
                             }
                         }
                     }
+                }
 
                     if (wantKaraoke) {
                         kotlin.runCatching {
@@ -211,59 +218,45 @@ fun LyricsFetcher(
                                 album = mediaMetadata.albumTitle?.toString() ?: Database.albumTable.findBySongId(mediaId).firstOrNull()?.title
                             ).onSuccess { ttmlStr ->
                                 val hasWordTimings = ttmlStr.lines().any { it.trim().startsWith("<") && it.contains(":") && it.contains(">") }
-                                if (ttmlStr.isNotEmpty() && hasWordTimings) {
-                                    if (playerEnableLyricsPopupMessage) {
-                                        coroutineScope.launch {
-                                            Toaster.s(
-                                                R.string.info_lyrics_found_on_s,
-                                                "BetterLyrics"
+                                if (ttmlStr.isNotEmpty()) {
+                                    if (hasWordTimings) {
+                                        if (playerEnableLyricsPopupMessage) {
+                                            coroutineScope.launch {
+                                                Toaster.s(
+                                                    R.string.info_lyrics_found_on_s,
+                                                    "BetterLyrics (Karaoke)"
+                                                )
+                                            }
+                                        }
+
+                                        onErrorUpdated(false)
+                                        onCheckedLrcUpdated(true)
+
+                                        Database.asyncTransaction {
+                                            lyricsTable.upsert(
+                                                Lyrics(
+                                                    songId = mediaId,
+                                                    fixed = currentLyrics?.fixed,
+                                                    synced = ttmlStr
+                                                )
                                             )
                                         }
-                                    }
-
-                                    onErrorUpdated(false)
-                                    onCheckedLrcUpdated(true)
-
-                                    Database.asyncTransaction {
-                                        lyricsTable.upsert(
-                                            Lyrics(
-                                                songId = mediaId,
-                                                fixed = currentLyrics?.fixed,
-                                                synced = ttmlStr
-                                            )
-                                        )
+                                    } else {
+                                        // Pass BetterLyrics Synced as fallback, check LrcLib/KuGou for Karaoke
+                                        fetchLrcLibAndKugou(ttmlStr)
                                     }
                                 } else {
-                                    // Treat as failure if we want Karaoke but BetterLyrics didn't provide word timings
-                                    if (playerEnableLyricsPopupMessage) {
-                                        coroutineScope.launch {
-                                            Toaster.e(
-                                                R.string.info_lyrics_not_found_on_s_try_on_s,
-                                                "BetterLyrics", "LrcLib.net",
-                                                duration = Toast.LENGTH_LONG
-                                            )
-                                        }
-                                    }
-                                    fetchLrcLibAndKugou()
+                                    fetchLrcLibAndKugou(null)
                                 }
                             }.onFailure {
-                                if (playerEnableLyricsPopupMessage) {
-                                    coroutineScope.launch {
-                                        Toaster.e(
-                                            R.string.info_lyrics_not_found_on_s_try_on_s,
-                                            "BetterLyrics", "LrcLib.net",
-                                            duration = Toast.LENGTH_LONG
-                                        )
-                                    }
-                                }
-                                fetchLrcLibAndKugou()
+                                fetchLrcLibAndKugou(null)
                             }
                         }.onFailure {
                             Timber.e("Lyrics BetterLyrics get error ${it.stackTraceToString()}")
-                            fetchLrcLibAndKugou()
+                            fetchLrcLibAndKugou(null)
                         }
                     } else {
-                        fetchLrcLibAndKugou()
+                        fetchLrcLibAndKugou(null)
                     }
 
                 } else if (!wantSynced && currentLyrics?.fixed == null) {
