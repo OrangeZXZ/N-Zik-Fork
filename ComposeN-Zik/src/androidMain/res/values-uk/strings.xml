@@ -1209,4 +1209,6 @@
   <string name="translation_successful">Переклад успішний</string>
   <string name="karaoke_respect_agent_position">Повага отримати позицію агента</string>
   <string name="lyrics_offset">Зміщення текстів</string>
+  <string name="show_more">Показати більше</string>
+  <string name="show_less">Показати менше</string>
 </resources>
