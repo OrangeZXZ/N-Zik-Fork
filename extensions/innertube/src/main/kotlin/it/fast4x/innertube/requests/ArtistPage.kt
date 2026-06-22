@@ -20,6 +20,7 @@ data class ArtistPage(
     val sections: List<ArtistSection>,
     val description: String?,
     val subscribers: String?,
+    val listeners: String?,
     val shuffleEndpoint: NavigationEndpoint.Endpoint.Watch?,
     val radioEndpoint: NavigationEndpoint.Endpoint.Watch?,
 ) {

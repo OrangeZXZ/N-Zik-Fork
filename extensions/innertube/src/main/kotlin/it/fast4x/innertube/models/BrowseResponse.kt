@@ -74,6 +74,7 @@ data class BrowseResponse(
             val title: Runs?,
             val foregroundThumbnail: ThumbnailRenderer?,
             val thumbnail: ThumbnailRenderer?,
+            val monthlyListenerCount: Runs?,
         )
 
         @Serializable
@@ -84,7 +85,8 @@ data class BrowseResponse(
             val thumbnail: ThumbnailRenderer?,
             val foregroundThumbnail: ThumbnailRenderer?,
             val title: Runs?,
-            val subscriptionButton: SubscriptionButton?
+            val subscriptionButton: SubscriptionButton?,
+            val monthlyListenerCount: Runs?,
         ) {
             @Serializable
             data class PlayButton(

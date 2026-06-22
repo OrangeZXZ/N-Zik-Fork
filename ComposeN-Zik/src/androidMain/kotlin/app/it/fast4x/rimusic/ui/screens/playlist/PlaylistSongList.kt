@@ -13,9 +13,11 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -856,60 +858,20 @@ fun PlaylistSongList(
                 }
 
                 playlistPage?.description?.let { description ->
-                    item(
-                        key = "playlistInfo"
-                    ) {
-
-                        val attributionsIndex = description.lastIndexOf("\n\nFrom Wikipedia")
-
-                        BasicText(
-                            text = stringResource(R.string.information),
-                            style = typography().m.semiBold.align(TextAlign.Start),
-                            modifier = sectionTextModifier
-                                .fillMaxWidth()
-                        )
-
-                        Row(
-                            modifier = Modifier
-                                //.padding(top = 16.dp)
-                                .padding(vertical = 16.dp, horizontal = 8.dp)
-                            //.padding(endPaddingValues)
-                            //.padding(end = Dimensions.bottomSpacer)
+                    if( description.isNotBlank() ) {
+                        item(
+                            key = "playlistInfo"
                         ) {
-                            IconButton(
-                                icon = R.drawable.translate,
-                                color = if (translateEnabled == true) colorPalette()
-                                    .text else colorPalette()
-                                    .textDisabled,
-                                enabled = true,
-                                modifier = Modifier.padding(all = 8.dp).size(18.dp).clip(uiRoundnessShape()),
-                                        onClick = {
-                                            translateEnabled = !translateEnabled
-                                        },
-                                        onLongClick = {
-                                            Toaster.i( R.string.info_translation )
-                                        }
-                            )
-                            BasicText(
-                                text = "“",
-                                style = typography().xxl.semiBold,
-                                modifier = Modifier
-                                    .offset(y = (-8).dp)
-                                    .align(Alignment.Top)
-                            )
-
-                            var translatedText by remember { mutableStateOf("") }
+                            var isDescriptionExpanded by remember { mutableStateOf(false) }
+                            val attributionsIndex = description.lastIndexOf("\n\nFrom Wikipedia")
                             val nonTranslatedText by remember {
                                 mutableStateOf(
-                                    if (attributionsIndex == -1) {
-                                        description
-                                    } else {
-                                        description.substring(0, attributionsIndex)
-                                    }
+                                    if (attributionsIndex == -1) description
+                                    else description.substring(0, attributionsIndex)
                                 )
                             }
 
-
+                            var translatedText by remember { mutableStateOf("") }
                             if (translateEnabled == true) {
                                 LaunchedEffect(Unit) {
                                     val result = withContext(Dispatchers.IO) {
@@ -923,43 +885,67 @@ fun PlaylistSongList(
                                             e.printStackTrace()
                                         }
                                     }
-                                    translatedText =
-                                        if (result.toString() == "kotlin.Unit") "" else result.toString()
+                                    translatedText = if (result.toString() == "kotlin.Unit") "" else result.toString()
                                 }
                             } else translatedText = nonTranslatedText
 
-                            BasicText(
-                                text = translatedText,
-                                style = typography().xxs.secondary.align(TextAlign.Justify),
+                            androidx.compose.foundation.layout.Column(
                                 modifier = Modifier
-                                    .padding(horizontal = 8.dp)
-                                    .weight(1f)
-                            )
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                                    .animateContentSize()
+                                    .clip(uiRoundnessShape())
+                                    .clickable { isDescriptionExpanded = !isDescriptionExpanded }
+                                    .padding(8.dp)
+                            ) {
+                                Row(verticalAlignment = Alignment.Top) {
+                                    IconButton(
+                                        icon = R.drawable.translate,
+                                        color = if (translateEnabled == true) colorPalette().text else colorPalette().textDisabled,
+                                        enabled = true,
+                                        modifier = Modifier.padding(all = 8.dp).size(18.dp).clip(uiRoundnessShape()),
+                                        onClick = { translateEnabled = !translateEnabled },
+                                        onLongClick = { Toaster.i( R.string.info_translation ) }
+                                    )
+                                    
+                                    BasicText(
+                                        text = "“",
+                                        style = typography().xxl.semiBold,
+                                        modifier = Modifier.offset(y = (-8).dp)
+                                    )
+                                    
+                                    BasicText(
+                                        text = translatedText,
+                                        style = typography().xs.secondary.align(TextAlign.Justify),
+                                        maxLines = if (isDescriptionExpanded) Int.MAX_VALUE else 3,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier.padding(horizontal = 8.dp).weight(1f)
+                                    )
 
-                            BasicText(
-                                text = "”",
-                                style = typography().xxl.semiBold,
-                                modifier = Modifier
-                                    .offset(y = 4.dp)
-                                    .align(Alignment.Bottom)
-                            )
+                                    BasicText(
+                                        text = "”",
+                                        style = typography().xxl.semiBold,
+                                        modifier = Modifier.offset(y = 4.dp).align(Alignment.Bottom)
+                                    )
+                                }
+
+                                BasicText(
+                                    text = if (isDescriptionExpanded) stringResource(R.string.show_less) else stringResource(R.string.show_more),
+                                    style = typography().xs.semiBold.copy(colorPalette().text),
+                                    modifier = Modifier.padding(top = 8.dp).align(Alignment.CenterHorizontally)
+                                )
+
+                                if (isDescriptionExpanded && attributionsIndex != -1) {
+                                    BasicText(
+                                        text = stringResource(R.string.from_wikipedia_cca),
+                                        style = typography().xxs
+                                            .color(colorPalette().textDisabled)
+                                            .align(TextAlign.Start),
+                                        modifier = Modifier.padding(top = 8.dp, start = 8.dp)
+                                    )
+                                }
+                            }
                         }
-
-                        if (attributionsIndex != -1) {
-                            BasicText(
-                                text = stringResource(R.string.from_wikipedia_cca),
-                                style = typography().xxs.color(
-                                    colorPalette()
-                                        .textDisabled).align(
-                                    TextAlign.Start
-                                ),
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .padding(bottom = 16.dp)
-                                //.padding(endPaddingValues)
-                            )
-                        }
-
                     }
                 }
 

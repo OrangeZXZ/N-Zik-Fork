@@ -5,6 +5,7 @@ import androidx.compose.ui.draw.clip
 import app.n_zik.android.uiRoundnessShape
 
 import android.content.Intent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -251,11 +252,20 @@ fun ArtistDetails(
                         )
 
 
-                        BasicText(
-                            text = artistPage.subscribers.orEmpty(),
-                            style = typography().s.copy( colorPalette().textSecondary ),
-                            modifier = Modifier.align( Alignment.CenterHorizontally )
-                        )
+                        val statsText = buildString {
+                            val subs = artistPage.subscribers
+                            val listeners = artistPage.listeners
+                            if (!subs.isNullOrBlank()) append(subs)
+                            if (!subs.isNullOrBlank() && !listeners.isNullOrBlank()) append(" • ")
+                            if (!listeners.isNullOrBlank()) append(listeners)
+                        }
+                        if (statsText.isNotBlank()) {
+                            BasicText(
+                                text = statsText,
+                                style = typography().s.copy( colorPalette().textSecondary ),
+                                modifier = Modifier.align( Alignment.CenterHorizontally )
+                            )
+                        }
                     }
 
 
@@ -303,6 +313,87 @@ fun ArtistDetails(
                         deleteAllDownloadsDialog,
                         modifier = Modifier.fillMaxWidth( .8f )
                     )
+                }
+            }
+            if (!artistPage.description.isNullOrBlank()) {
+                item("description") {
+                    var isDescriptionExpanded by remember { mutableStateOf(false) }
+                    val description = artistPage.description.orEmpty()
+                    val attributionsIndex = description.lastIndexOf("\n\nFrom Wikipedia")
+                    val nonTranslatedText by remember {
+                        mutableStateOf(
+                            if (attributionsIndex == -1) description
+                            else description.substring(0, attributionsIndex)
+                        )
+                    }
+
+                    var translatedText by remember { mutableStateOf("") }
+                    if (translate.isActive) {
+                        LaunchedEffect(Unit) {
+                            val result = withContext(Dispatchers.IO) {
+                                try {
+                                    translator.translate(
+                                        nonTranslatedText,
+                                        languageDestination,
+                                        Language.AUTO
+                                    ).translatedText
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
+                            translatedText = if (result.toString() == "kotlin.Unit") "" else result.toString()
+                        }
+                    } else translatedText = nonTranslatedText
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .animateContentSize()
+                            .clip(uiRoundnessShape())
+                            .clickable { isDescriptionExpanded = !isDescriptionExpanded }
+                            .padding(8.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.Top) {
+                            translate.ToolBarButton()
+                            
+                            BasicText(
+                                text = "“",
+                                style = typography().xxl.semiBold,
+                                modifier = Modifier.offset(y = (-8).dp)
+                            )
+                            
+                            BasicText(
+                                text = translatedText,
+                                style = typography().xs.secondary.align(TextAlign.Justify),
+                                maxLines = if (isDescriptionExpanded) Int.MAX_VALUE else 3,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.padding(horizontal = 8.dp).weight(1f)
+                            )
+
+                            BasicText(
+                                text = "”",
+                                style = typography().xxl.semiBold,
+                                modifier = Modifier.offset(y = 4.dp).align(Alignment.Bottom)
+                            )
+                        }
+
+                        Text(
+                            text = if (isDescriptionExpanded) stringResource(R.string.show_less) else stringResource(R.string.show_more),
+                            style = typography().xs.semiBold.copy(colorPalette().text),
+                            modifier = Modifier.padding(top = 8.dp).align(Alignment.CenterHorizontally)
+                        )
+
+                        if (isDescriptionExpanded && attributionsIndex != -1) {
+                            BasicText(
+                                text = stringResource(R.string.from_wikipedia_cca),
+                                style = typography().xxs
+                                    .color(colorPalette().textDisabled)
+                                    .align(TextAlign.Start),
+                                modifier = Modifier.padding(top = 8.dp, start = 8.dp)
+                            )
+                        }
+                    }
                 }
             }
 
@@ -577,89 +668,6 @@ fun ArtistDetails(
                         }
                     }
             }
-
-            if( !artistPage.description.isNullOrBlank() )
-                item( "description" ) {
-                    val description = artistPage.description.orEmpty()      // orEmpty should not be possible
-                    // For some reason adding 2 "\n" makes double quotes appear
-                    // on the same level as the last line of text
-                    val attributionsIndex = description.lastIndexOf("\n\nFrom Wikipedia")
-
-                    BasicText(
-                        text = stringResource(R.string.information),
-                        style = typography().m.semiBold.align(TextAlign.Start),
-                        modifier = sectionTextModifier
-                    )
-
-                    Row(
-                        modifier = Modifier.padding(
-                            vertical = 16.dp,
-                            horizontal = 8.dp
-                        )
-                    ) {
-                        translate.ToolBarButton()
-
-                        BasicText(
-                            text = "“",
-                            style = typography().xxl.semiBold,
-                            modifier = Modifier.offset( y = (-8).dp )
-                                               .align( Alignment.Top )
-                        )
-
-                        var translatedText by remember { mutableStateOf("") }
-                        val nonTranslatedText by remember {
-                            mutableStateOf(
-                                if ( attributionsIndex == -1 ) {
-                                    description
-                                } else {
-                                    description.substring( 0, attributionsIndex )
-                                }
-                            )
-                        }
-
-                        if ( translate.isActive ) {
-                            LaunchedEffect( Unit ) {
-                                val result = withContext( Dispatchers.IO ) {
-                                    try {
-                                        translator.translate(
-                                            nonTranslatedText,
-                                            languageDestination,
-                                            Language.AUTO
-                                        ).translatedText
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
-                                    }
-                                }
-                                translatedText =
-                                    if (result.toString() == "kotlin.Unit") "" else result.toString()
-                            }
-                        } else translatedText = nonTranslatedText
-
-                        BasicText(
-                            text = translatedText,
-                            style = typography().xxs.secondary.align(TextAlign.Justify),
-                            modifier = Modifier.padding( horizontal = 8.dp )
-                                               .weight( 1f )
-                        )
-
-                        BasicText(
-                            text = "”",
-                            style = typography().xxl.semiBold,
-                            modifier = Modifier.offset( y = 4.dp )
-                                               .align( Alignment.Bottom )
-                        )
-                    }
-
-                    if (attributionsIndex != -1) {
-                        BasicText(
-                            text = stringResource(R.string.from_wikipedia_cca),
-                            style = typography().xxs
-                                                .color( colorPalette().textDisabled )
-                                                .align( TextAlign.Start ),
-                            modifier = Modifier.padding( horizontal = 16.dp )
-                        )
-                    }
-                }
         }
     }
 }
