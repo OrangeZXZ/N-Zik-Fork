@@ -164,14 +164,21 @@ jobs:
           chart_w = width - 2 * padding
           chart_h = height - 2 * padding
 
+          from datetime import datetime
+
           values = [d['downloads'] for d in data]
           min_v, max_v = min(values), max(values)
           if min_v == max_v: max_v += 1
           range_v = max_v - min_v
 
+          times = [datetime.strptime(d['time'], '%Y-%m-%d %H:%M').timestamp() for d in data]
+          min_t, max_t = min(times), max(times)
+          range_t = max_t - min_t if max_t > min_t else 1
+
           points = []
           for i, d in enumerate(data):
-              x = padding + (i / (len(data) - 1)) * chart_w if len(data) > 1 else padding
+              t = datetime.strptime(d['time'], '%Y-%m-%d %H:%M').timestamp()
+              x = padding + ((t - min_t) / range_t) * chart_w
               y = padding + chart_h - ((d['downloads'] - min_v) / range_v) * chart_h
               points.append((x, y))
 
