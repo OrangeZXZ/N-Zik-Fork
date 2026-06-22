@@ -1209,4 +1209,6 @@
   <string name="translation_successful">Překlad byl úspěšný</string>
   <string name="karaoke_respect_agent_position">Pozice respektujícího činitele</string>
   <string name="lyrics_offset">Odsazení textů</string>
+  <string name="show_more">Zobrazit více</string>
+  <string name="show_less">Zobrazit méně</string>
 </resources>
