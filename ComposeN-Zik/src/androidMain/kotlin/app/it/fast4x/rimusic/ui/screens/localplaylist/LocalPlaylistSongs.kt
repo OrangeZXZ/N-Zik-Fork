@@ -352,7 +352,9 @@ fun LocalPlaylistSongs(
     )
     val importMenu = remember { app.n_zik.android.components.tab.ImportPlaylistsMenu(
         onImportNzik = { importNzikDialog.onShortClick() },
-        onImportSpotify = { importSpotifyDialog.onShortClick() }
+        onImportSpotify = { importSpotifyDialog.onShortClick() },
+        onImportRiplay = {},
+        onImportYoutubeLink = {}
     ) }
     val matchAlbumButton = remember {
         object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive {

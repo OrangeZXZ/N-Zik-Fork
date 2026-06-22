@@ -277,11 +277,20 @@ fun PlaylistItem(
                 name.startsWith( MONTHLY_PREFIX, true ) ->
                     painterResource( R.drawable.stat_month ) to colorPalette().accent
 
+                browseId == "SPOTIFY_IMPORT" ->
+                    painterResource( R.drawable.spotify ) to Color.Unspecified
+
+                browseId == "RIPLAY_IMPORT" ->
+                    painterResource( R.drawable.riplay ) to Color.Unspecified
+
                 isYoutubePlaylist ->
                     painterResource( R.drawable.ytmusic ) to Color.Red.copy( .75f ).compositeOver( Color.White )
 
                 browseId?.isNotEmpty() == true ->
                     painterResource( R.drawable.ytmusic ) to colorPalette().text
+
+                browseId.isNullOrEmpty() ->
+                    painterResource( R.drawable.ic_launcher ) to Color.Unspecified
 
                 else ->
                     ColorPainter(Color.Transparent) to Color.Transparent

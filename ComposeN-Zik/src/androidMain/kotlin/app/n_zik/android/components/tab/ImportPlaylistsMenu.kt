@@ -26,7 +26,9 @@ import app.n_zik.android.colorPalette
 
 class ImportPlaylistsMenu(
     private val onImportNzik: () -> Unit,
-    private val onImportSpotify: () -> Unit
+    private val onImportSpotify: () -> Unit,
+    private val onImportRiplay: () -> Unit,
+    private val onImportYoutubeLink: () -> Unit
 ) : Descriptive, MenuIcon {
     override val messageId: Int = R.string.import_playlist
     override val iconId: Int = R.drawable.import_outline
@@ -87,7 +89,15 @@ class ImportPlaylistsMenu(
                         override val messageId: Int = R.string.import_playlist_riplay
                         @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
                         @get:Composable override val color: androidx.compose.ui.graphics.Color get() = androidx.compose.ui.graphics.Color.Unspecified
-                        override fun onShortClick() { menuState.hide(); onImportSpotify() }
+                        override fun onShortClick() { menuState.hide(); onImportRiplay() }
+                        override fun onLongClick() {}
+                    },
+                    object : MenuIcon, Descriptive, Clickable {
+                        override val iconId: Int = R.drawable.ytmusic
+                        override val messageId: Int = R.string.youtube_music
+                        @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
+                        @get:Composable override val color: androidx.compose.ui.graphics.Color get() = androidx.compose.ui.graphics.Color.Unspecified
+                        override fun onShortClick() { menuState.hide(); onImportYoutubeLink() }
                         override fun onLongClick() {}
                     }
                 )

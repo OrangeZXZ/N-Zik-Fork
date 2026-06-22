@@ -34,6 +34,7 @@ class ImportSongsFromSpotifyCSV private constructor(
         private fun openFile(
             uri: Uri,
             targetPlaylistId: Long = 0L,
+            source: String? = null,
             beforeTransaction: (Int, Map<String, String>, String?) -> Unit = { _,_,_ -> },
             afterTransaction: ( Int, Song, Album, List<Artist> ) -> Unit = { _,_,_,_ -> }
         ): Long {
@@ -62,7 +63,7 @@ class ImportSongsFromSpotifyCSV private constructor(
                             if (activePlaylistId == 0L && isSpotifyFormat && !playlistCreated) {
                                 playlistCreated = true
                                 val cleanName = fileName.substringBeforeLast(".")
-                                val newPlaylist = Playlist(name = cleanName)
+                                val newPlaylist = Playlist(name = cleanName, browseId = source)
                                 // Insert playlist directly to get ID, we are already in an IO thread
                                 activePlaylistId = Database.playlistTable.insert(newPlaylist)
                             }
@@ -180,7 +181,8 @@ class ImportSongsFromSpotifyCSV private constructor(
             beforeTransaction: (Int, Map<String, String>, String?) -> Unit = { _,_,_ ->},
             afterTransaction: ( Int, Song, Album, List<Artist> ) -> Unit = { _,_,_,_ -> },
             playlistIdForMatch: Long = 0L,
-            playlistName: String = ""
+            playlistName: String = "",
+            source: String? = null
         ) = ImportSongsFromSpotifyCSV(
             rememberLauncherForActivityResult(
                 ActivityResultContracts.OpenDocument()
@@ -189,7 +191,7 @@ class ImportSongsFromSpotifyCSV private constructor(
                 
                 CoroutineScope(Dispatchers.IO).launch {
                     val importedSongs = mutableListOf<Song>()
-                    val finalPlaylistId = openFile( uri, playlistIdForMatch, beforeTransaction ) { index, song, album, artists ->
+                    val finalPlaylistId = openFile( uri, playlistIdForMatch, source, beforeTransaction ) { index, song, album, artists ->
                         afterTransaction(index, song, album, artists)
                         importedSongs.add(song)
                     }

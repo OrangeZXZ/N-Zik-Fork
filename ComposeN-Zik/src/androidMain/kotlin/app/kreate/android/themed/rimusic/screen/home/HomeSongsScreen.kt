@@ -108,7 +108,9 @@ fun HomeSongsScreen(navController: NavController ) {
     val importSpotify = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init()
     val importMenu = remember { app.n_zik.android.components.tab.ImportPlaylistsMenu(
         onImportNzik = { import.onShortClick() },
-        onImportSpotify = { importSpotify.onShortClick() }
+        onImportSpotify = { importSpotify.onShortClick() },
+        onImportRiplay = {},
+        onImportYoutubeLink = {}
     ) }
     val shuffle = SongShuffler(::getSongs)
     val smartShuffle = SmartShuffle(

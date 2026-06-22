@@ -103,7 +103,13 @@ import app.n_zik.android.components.playlist.NewPlaylistDialog
 import app.n_zik.android.components.tab.ImportSongsFromCSV
 import app.n_zik.android.components.tab.Search
 import app.n_zik.android.components.tab.SongShuffler
-
+import it.fast4x.innertube.requests.playlistPage
+import app.kreate.android.me.knighthat.utils.Toaster
+import app.it.fast4x.rimusic.ui.components.themed.TextFieldDialog
+import it.fast4x.innertube.models.bodies.BrowseBody
+import androidx.core.net.toUri
+import it.fast4x.innertube.Innertube
+import app.it.fast4x.rimusic.utils.asSong
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -161,10 +167,53 @@ fun HomeLibrary(
     val newPlaylistDialog = NewPlaylistDialog()
     //</editor-fold>
     val importPlaylistDialog = ImportSongsFromCSV()
-    val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init()
+    val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init(source = "SPOTIFY_IMPORT")
+    val importRiPlayDialog = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init(source = "RIPLAY_IMPORT")
+    
+    var showYouTubeLinkDialog by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    
+    if (showYouTubeLinkDialog) {
+        TextFieldDialog(
+            hintText = stringResource(R.string.youtube_music),
+            onDismiss = { showYouTubeLinkDialog = false },
+            onDone = { url ->
+                coroutineScope.launch(Dispatchers.IO) {
+                    val playlistId = listOf(
+                        "https://www.youtube.com/playlist?",
+                        "https://youtube.com/playlist?",
+                        "https://music.youtube.com/playlist?",
+                        "https://m.youtube.com/playlist?"
+                    ).find { url.startsWith(it) }?.let { url.toUri().getQueryParameter("list") }
+                    
+                    if (playlistId != null) {
+                        Innertube.playlistPage(BrowseBody(browseId = playlistId))?.getOrNull()?.let { playlistPage ->
+                            val playlistName = playlistPage.title ?: "YouTube Playlist"
+                            val playlist = Playlist(name = playlistName, browseId = playlistId)
+                            val playlistRowId = Database.playlistTable.insert(playlist)
+                            
+                            val songs = playlistPage.songsPage?.items?.mapNotNull { it.asSong }
+                            if (songs != null) {
+                                Database.asyncTransaction {
+                                    songTable.upsert(songs)
+                                    songs.forEach { song ->
+                                        songPlaylistMapTable.map(song.id, playlistRowId)
+                                    }
+                                }
+                                Toaster.done()
+                            }
+                        }
+                    }
+                }
+            }
+        )
+    }
+
     val importMenu = remember { app.n_zik.android.components.tab.ImportPlaylistsMenu(
         onImportNzik = { importPlaylistDialog.onShortClick() },
-        onImportSpotify = { importSpotifyDialog.onShortClick() }
+        onImportSpotify = { importSpotifyDialog.onShortClick() },
+        onImportRiplay = { importRiPlayDialog.onShortClick() },
+        onImportYoutubeLink = { showYouTubeLinkDialog = true }
     ) }
     val sync = autoSyncToolbutton(R.string.autosync)
 
