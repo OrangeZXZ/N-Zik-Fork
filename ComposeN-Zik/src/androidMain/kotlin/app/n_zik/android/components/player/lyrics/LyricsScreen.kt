@@ -86,7 +86,7 @@ fun LyricsScreen(
         var lyricsType by rememberPreference(lyricsTypeKey, LyricsType.Synced)
         var invalidLrc by remember(mediaId, lyricsType) { mutableStateOf(false) }
         var isPicking by remember(mediaId, lyricsType) { mutableStateOf(false) }
-        var lyricsColor by rememberPreference(lyricsColorKey, LyricsColor.Thememode)
+        var lyricsColor by rememberPreference(lyricsColorKey, LyricsColor.White)
         var lyricsOutline by rememberPreference(lyricsOutlineKey, LyricsOutline.None)
         val playerBackgroundColors by rememberPreference(playerBackgroundColorsKey, PlayerBackgroundColors.AnimatedGradient)
         var lyricsFontSize by rememberPreference(lyricsFontSizeKey, LyricsFontSize.Medium)

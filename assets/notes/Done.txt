@@ -1,0 +1,4 @@
+- Fix missing queue button on UI presets (#520)
+- Fix carousel view background not changing when swiping to new music
+- Fix color system palette not updating when swiping to new music in carousel view
+- Set default lyrics color to White

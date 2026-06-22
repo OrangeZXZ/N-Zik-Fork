@@ -471,7 +471,7 @@ fun DefaultUiSettings() {
     var showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
     showButtonPlayerAddToPlaylist = true
     var showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, true)
-    showButtonPlayerArrow = false
+    showButtonPlayerArrow = true
     var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
     showButtonPlayerDownload = true
     var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
@@ -859,7 +859,7 @@ fun UiSettings(
                                     expandedplayertoggle = false
                                     showButtonPlayerSleepTimer = false
                                     showButtonPlayerSystemEqualizer = false
-                                    showButtonPlayerArrow = false
+                                    showButtonPlayerArrow = true
                                     showButtonPlayerShuffle = false
                                     showButtonPlayerMenu = true
                                     showthumbnail = true

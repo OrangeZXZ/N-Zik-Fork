@@ -630,14 +630,15 @@ fun Player(
                 playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
                 playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient
 
-    LaunchedEffect(mediaItem.mediaId, updateBrush) {
+    val currentSwipedMediaItem = mediaItems.getOrNull(if (!showthumbnail || albumCoverRotation) pagerStateFS.currentPage else if (playerType == PlayerType.Modern) pagerState.currentPage else binder.player.currentMediaItemIndex) ?: mediaItem
+    LaunchedEffect(currentSwipedMediaItem.mediaId, updateBrush) {
         if (playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient ||
             playerBackgroundColors == PlayerBackgroundColors.CoverColor ||
             playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient ||
             playerBackgroundColors == PlayerBackgroundColors.AnimatedGradient || updateBrush
         ) {
             try {
-                val imageUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(1000).toString()
+                val imageUrl = currentSwipedMediaItem.mediaMetadata.artworkUri.thumbnail(1000).toString()
                 val bitmap = getBitmapFromUrl(
                     context,
                     imageUrl
@@ -1203,7 +1204,7 @@ fun Player(
              }
 
              BlurredCover(
-                 thumbnailUrl = binder.player.mediaMetadata.artworkUri.toString(),
+                 thumbnailUrl = mediaItems.getOrNull(if (!showthumbnail || albumCoverRotation) pagerStateFS.currentPage else if (playerType == PlayerType.Modern) pagerState.currentPage else binder.player.currentMediaItemIndex)?.mediaMetadata?.artworkUri?.toString() ?: "",
                  blurAdjuster = blurAdjuster,
                  showThumbnail = showthumbnail,
                  noBlur = noblur,
@@ -1790,7 +1791,7 @@ fun Player(
                 }
 
                BlurredCover(
-                   thumbnailUrl = mediaItems.getOrNull(pagerStateFS.currentPage)?.mediaMetadata?.artworkUri?.toString() ?: "",
+                   thumbnailUrl = mediaItems.getOrNull(if (!showthumbnail || albumCoverRotation) pagerStateFS.currentPage else if (playerType == PlayerType.Modern) pagerState.currentPage else binder.player.currentMediaItemIndex)?.mediaMetadata?.artworkUri?.toString() ?: "",
                    blurAdjuster = blurAdjuster,
                    showThumbnail = showthumbnail,
                    noBlur = noblur,

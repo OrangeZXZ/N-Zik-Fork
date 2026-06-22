@@ -149,7 +149,7 @@ class LyricsSettingsMenu private constructor(
         var landscapeControls by rememberPreference(landscapeControlsKey, true)
         var lyricsAlignment by rememberPreference(lyricsAlignmentKey, LyricsAlignment.Center)
         var fontSize by rememberPreference(lyricsFontSizeKey, LyricsFontSize.Medium)
-        var lyricsColor by rememberPreference(lyricsColorKey, LyricsColor.Thememode)
+        var lyricsColor by rememberPreference(lyricsColorKey, LyricsColor.White)
         var lyricsOutline by rememberPreference(lyricsOutlineKey, LyricsOutline.None)
         var romanizationEnabled by rememberPreference(romanizationEnabledKey, true)
         var showIntervalIndicator by rememberPreference(lyricsIntervalIndicatorKey, true)

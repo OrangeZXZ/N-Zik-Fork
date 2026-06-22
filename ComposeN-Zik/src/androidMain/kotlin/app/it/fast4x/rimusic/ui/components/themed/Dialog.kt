@@ -4,6 +4,7 @@ import app.n_zik.android.core.database.*
 import app.n_zik.android.uiRoundnessShape
 
 import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -1665,12 +1666,16 @@ fun AppearancePresetDialog(
                         icon = R.drawable.checkmark,
                         color = colorPalette().background0,
                         indication = ripple(false),
-                        onClick = if (pagerStateAppearance.settledPage == 0) onClick0
-                        else if (pagerStateAppearance.settledPage == 1) onClick1
-                        else if (pagerStateAppearance.settledPage == 2) onClick2
-                        else if (pagerStateAppearance.settledPage == 3) onClick3
-                        else if (pagerStateAppearance.settledPage == 4) onClick4
-                        else onClick5,
+                        onClick = {
+                            when (pagerStateAppearance.currentPage) {
+                                0 -> onClick0()
+                                1 -> onClick1()
+                                2 -> onClick2()
+                                3 -> onClick3()
+                                4 -> onClick4()
+                                else -> onClick5()
+                            }
+                        },
                         modifier = Modifier
                             .align(Alignment.Center)
                             .size(30.dp)
@@ -1679,24 +1684,22 @@ fun AppearancePresetDialog(
                 Row(
                     Modifier
                         .height(20.dp)
-                        .fillMaxWidth()
                         .align(Alignment.BottomCenter),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     repeat(images.size) { iteration ->
-                        val lineWeight = animateFloatAsState(
-                            targetValue = if (pagerStateAppearance.currentPage == iteration) {1.5f} else {
-                                if (iteration < pagerStateAppearance.currentPage) {0.5f} else {1f}
-                            }, label = "weight", animationSpec = tween(300, easing = EaseInOut)
+                        val lineWidth = animateDpAsState(
+                            targetValue = if (pagerStateAppearance.currentPage == iteration) {15.dp} else {
+                                if (iteration < pagerStateAppearance.currentPage) {5.dp} else {10.dp}
+                            }, label = "width", animationSpec = tween(300, easing = EaseInOut)
                         )
                         val color = if (pagerStateAppearance.currentPage == iteration) Color.White else Color.White.copy(alpha = 0.5f)
                         Box(
                             modifier = Modifier
                                 .padding(4.dp)
+                                .size(width = lineWidth.value, height = 5.dp)
                                 .clip(uiRoundnessShape())
                                 .background(color)
-                                .weight(lineWeight.value)
-                                .size(5.dp)
                         )
                     }
                 }

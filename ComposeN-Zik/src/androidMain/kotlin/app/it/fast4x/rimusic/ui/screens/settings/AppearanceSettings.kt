@@ -242,7 +242,7 @@ fun DefaultAppearanceSettings() {
     var showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
     showButtonPlayerAddToPlaylist = true
     var showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, true)
-    showButtonPlayerArrow = false
+    showButtonPlayerArrow = true
     var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
     showButtonPlayerDownload = true
     var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
@@ -285,8 +285,8 @@ fun DefaultAppearanceSettings() {
     showRemainingSongTime = true
     var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     clickLyricsText = true
-    var lyricsColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsColorKey, app.n_zik.android.enums.lyrics.LyricsColor.Thememode)
-    lyricsColor = app.n_zik.android.enums.lyrics.LyricsColor.Thememode
+    var lyricsColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsColorKey, app.n_zik.android.enums.lyrics.LyricsColor.White)
+    lyricsColor = app.n_zik.android.enums.lyrics.LyricsColor.White
     var lyricsCustomColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsCustomColorKey, android.graphics.Color.WHITE)
     lyricsCustomColor = android.graphics.Color.WHITE
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
@@ -473,7 +473,7 @@ fun AppearanceSettings(
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
     var showSkipTimeButtons by rememberPreference(showSkipTimeButtonsKey, true)
     var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
-    var lyricsColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsColorKey, app.n_zik.android.enums.lyrics.LyricsColor.Thememode)
+    var lyricsColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsColorKey, app.n_zik.android.enums.lyrics.LyricsColor.White)
     var lyricsCustomColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsCustomColorKey, android.graphics.Color.WHITE)
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
 
@@ -671,7 +671,7 @@ fun AppearanceSettings(
                 showButtonPlayerSleepTimer = false
                 visualizerEnabled = false
                 appearanceChooser = false
-                showButtonPlayerArrow = false
+                showButtonPlayerArrow = true
                 showButtonPlayerStartradio = false
                 showButtonPlayerMenu = true
                 ///////////////////////////
@@ -718,7 +718,7 @@ fun AppearanceSettings(
                 showButtonPlayerSleepTimer = false
                 visualizerEnabled = false
                 appearanceChooser = false
-                showButtonPlayerArrow = false
+                showButtonPlayerArrow = true
                 showButtonPlayerStartradio = false
                 showButtonPlayerMenu = true
                 ///////////////////////////
@@ -761,7 +761,7 @@ fun AppearanceSettings(
                 showButtonPlayerSleepTimer = false
                 visualizerEnabled = false
                 appearanceChooser = false
-                showButtonPlayerArrow = false
+                showButtonPlayerArrow = true
                 showButtonPlayerStartradio = false
                 showButtonPlayerMenu = true
                 ///////////////////////////
@@ -856,7 +856,7 @@ fun AppearanceSettings(
                 showButtonPlayerSleepTimer = false
                 visualizerEnabled = false
                 appearanceChooser = false
-                showButtonPlayerArrow =false
+                showButtonPlayerArrow = true
                 showButtonPlayerStartradio = false
                 showButtonPlayerMenu = true
                 ///////////////////////////
@@ -898,7 +898,7 @@ fun AppearanceSettings(
                 showButtonPlayerSleepTimer = false
                 visualizerEnabled = false
                 appearanceChooser = false
-                showButtonPlayerArrow =false
+                showButtonPlayerArrow = true
                 showButtonPlayerStartradio = false
                 showButtonPlayerMenu = true
                 ///////////////////////////
