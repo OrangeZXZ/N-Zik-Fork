@@ -28,3 +28,6 @@ improved: SyncedLyricsView accent color correctly follows user LyricsColor setti
 Fixed: disorganized online album tracks
 improved: Refactored Artist, Album, and Playlist headers to move descriptions to the top with a "Show more/less" expandable toggle
 added: Display monthly listener count alongside subscriber count in Artist headers
+improved: Refactored VideoOrSongInfoScreen to display as an inline bottom sheet instead of a new screen overlay
+added: 'Information' action button on video menus
+improved: SongItem pill background removed in menus to seamlessly blend with the menu header color

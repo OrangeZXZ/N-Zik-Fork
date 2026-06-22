@@ -823,6 +823,11 @@
 <string name="notificationPlayerSecondIcon">Second button</string>
 <string name="notification_player">Notification Player</string>
 <string name="repeat">Repeat</string>
+<string name="views">Views</string>
+<string name="subscribers">Subscribers</string>
+<string name="likes">Likes</string>
+<string name="dislikes">Dislikes</string>
+<string name="description">Description</string>
 <string name="original_lyrics">Original lyrics</string>
 <string name="translated_lyrics">Translated lyrics</string>
 <string name="press_once_again_to_exit">Press once again to exit</string>
@@ -1211,4 +1216,5 @@
 <string name="lyrics_offset">Lyrics Offset</string>
 <string name="show_more">Show more</string>
 <string name="show_less">Show less</string>
+<string name="no_description_available">No description available</string>
 </resources>

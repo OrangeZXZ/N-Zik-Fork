@@ -38,7 +38,9 @@ import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.appContext
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.MenuStyle
+import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.Song
+import kotlinx.coroutines.Dispatchers
 import app.n_zik.android.playback.services.isLocal
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.MenuState
@@ -48,7 +50,6 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
-import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.ui.components.themed.Enqueue
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.components.themed.PlayNext
@@ -60,7 +61,6 @@ import app.it.fast4x.rimusic.utils.enqueue
 import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import app.n_zik.android.components.SongItem
@@ -68,7 +68,7 @@ import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
 import androidx.compose.runtime.mutableStateOf
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
-
+import app.it.fast4x.rimusic.utils.forcePlay
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.components.song.ChangeAuthorDialog
 import app.n_zik.android.components.song.ChangeCoverDialog
@@ -147,6 +147,38 @@ class SongItemMenu private constructor(
         val enqueue = Enqueue {
             binder?.player?.enqueue( listOf(song.asMediaItem), appContext() )
         }
+
+        // Information
+        val albumForInfo by remember(song.id) {
+            Database.albumTable.findBySongId(song.id)
+        }.collectAsState(null, Dispatchers.IO)
+
+        val infoButton = remember {
+            object : MenuIcon, Descriptive, Clickable {
+                override val iconId: Int = R.drawable.information
+                override val messageId: Int = R.string.information
+                @get:Composable
+                override val menuIconTitle: String get() = stringResource(messageId)
+
+                override fun onShortClick() {
+                    menuState.display {
+                        app.it.fast4x.rimusic.ui.screens.info.VideoOrSongInfoScreen(
+                            videoId = song.id,
+                            songTitle = song.title,
+                            songArtist = song.artistsText ?: "",
+                            songThumbnailUrl = song.thumbnailUrl ?: "",
+                            albumId = albumForInfo?.id ?: "",
+                            albumTitle = albumForInfo?.title ?: "",
+                            navController = navController,
+                            onNavigateUp = { menuState.pop() },
+                            onClose = { menuState.hide() },
+                            onPlay = { binder?.player?.forcePlay(song.asMediaItem) }
+                        )
+                    }
+                }
+                override fun onLongClick() {}
+            }
+        }
         val addToFavorite = LikeComponent { listOf(song) }
         val addToPlaylist = PlaylistsMenu.init(
             navController = navController,
@@ -176,6 +208,7 @@ class SongItemMenu private constructor(
         val exportCacheDialog = ExportCacheDialog( binder ) { song }
 
         buttons = mutableListOf<Button>().apply {
+            add( infoButton )
             add( renameSong )
             add( changeAuthor )
             add( changeCover )
@@ -274,6 +307,7 @@ class SongItemMenu private constructor(
 
                 SongItem(
                     song = song,
+                    backgroundColor = androidx.compose.ui.graphics.Color.Transparent,
                     modifier = Modifier.padding(
                         top = 5.dp,
                         bottom = 10.dp

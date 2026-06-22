@@ -59,6 +59,7 @@ import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.addNext
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.enqueue
+import app.it.fast4x.rimusic.utils.forcePlay
 import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
@@ -143,6 +144,37 @@ class VideoItemMenu private constructor(
             onDismiss = { openMenu() }
         )
 
+        val albumForInfo by remember(song.id) {
+            Database.albumTable.findBySongId(song.id)
+        }.collectAsState(null, Dispatchers.IO)
+
+        val infoButton = remember {
+            object : MenuIcon, Descriptive, Clickable {
+                override val iconId: Int = R.drawable.information
+                override val messageId: Int = R.string.information
+                @get:Composable
+                override val menuIconTitle: String get() = stringResource(messageId)
+
+                override fun onShortClick() {
+                    menuState.display {
+                        app.it.fast4x.rimusic.ui.screens.info.VideoOrSongInfoScreen(
+                            videoId = song.id,
+                            songTitle = song.title,
+                            songArtist = song.artistsText ?: "",
+                            songThumbnailUrl = song.thumbnailUrl ?: "",
+                            albumId = albumForInfo?.id ?: "",
+                            albumTitle = albumForInfo?.title ?: "",
+                            navController = navController,
+                            onNavigateUp = { menuState.pop() },
+                            onClose = { menuState.hide() },
+                            onPlay = { binder?.player?.forcePlay(song.asMediaItem) }
+                        )
+                    }
+                }
+                override fun onLongClick() {}
+            }
+        }
+
         // Listen On
         var showListenOnDialog by remember { mutableStateOf(false) }
         val listenOnButton = remember {
@@ -167,6 +199,7 @@ class VideoItemMenu private constructor(
         }
 
         buttons = mutableListOf<Button>().apply {
+            add( infoButton )
             add( renameVideo )
             add( changeAuthor )
             add( changeCover )
@@ -266,6 +299,7 @@ class VideoItemMenu private constructor(
 
                 SongItem(
                     song = song,
+                    backgroundColor = androidx.compose.ui.graphics.Color.Transparent,
                     modifier = Modifier.padding(
                         top = 5.dp,
                         bottom = 10.dp

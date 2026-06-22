@@ -62,6 +62,7 @@ import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.asSong
 import app.it.fast4x.rimusic.utils.enqueue
+import app.it.fast4x.rimusic.utils.forcePlay
 import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
@@ -261,9 +262,38 @@ class PlayerItemMenu private constructor(
             }
         }
 
+        // Information
+        val infoButton = remember {
+            object : MenuIcon, Descriptive, Clickable {
+                override val iconId: Int = R.drawable.information
+                override val messageId: Int = R.string.information
+                @get:Composable
+                override val menuIconTitle: String get() = stringResource(messageId)
+
+                override fun onShortClick() {
+                    menuState.display {
+                        app.it.fast4x.rimusic.ui.screens.info.VideoOrSongInfoScreen(
+                            videoId = mediaItem.mediaId,
+                            songTitle = song.title,
+                            songArtist = song.artistsText ?: "",
+                            songThumbnailUrl = song.thumbnailUrl ?: "",
+                            albumId = albumData?.id ?: "",
+                            albumTitle = albumData?.title ?: "",
+                            navController = navController,
+                            onNavigateUp = { menuState.pop() },
+                            onClose = { menuState.hide() },
+                            onPlay = { binder?.player?.forcePlay(song.asMediaItem) }
+                        )
+                    }
+                }
+                override fun onLongClick() {}
+            }
+        }
+
         // Re-order to match screenshot exactly
         buttons = remember(song, albumData, artistsData) {
             mutableListOf<Button>().apply {
+                add(infoButton)           // 0
                 add(renameSong)           // 1
                 add(changeAuthor)         // 2
                 add(changeCover)          // 3
@@ -426,6 +456,7 @@ class PlayerItemMenu private constructor(
 
                 SongItem(
                     song = song,
+                    backgroundColor = androidx.compose.ui.graphics.Color.Transparent,
                     modifier = Modifier.padding(
                         top = 5.dp,
                         bottom = 10.dp

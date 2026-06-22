@@ -274,6 +274,7 @@ class SearchItemMenu private constructor(
 
                 SongItem(
                     song = song,
+                    backgroundColor = androidx.compose.ui.graphics.Color.Transparent,
                     modifier = Modifier.padding(
                         top = 5.dp,
                         bottom = 10.dp
