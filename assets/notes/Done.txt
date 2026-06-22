@@ -24,3 +24,4 @@ fixed: lyrics recenter button eclipsing the settings icon
 fixed: empty playlist on artist page
 fixed: empty live performances on artist pagefixed: YouTube API missing items in Artist Live Performances and Videos by dynamically fetching visitorData
 improved: SyncedLyricsView accent color correctly follows user LyricsColor settings
+Fixed: disorganized online album tracks
