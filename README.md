@@ -37,9 +37,11 @@
   
  <br> <br> 
 
+[![Launched on DevGlobe](https://devglobe.app/badges/launched-on-devglobe-dark.svg)](https://devglobe.app/projects/n-zik?utm_source=badge&utm_medium=embed)
+
 [![Localization Progress](https://badges.crowdin.net/N-Zik/localized.svg)](https://crowdin.com/project/N-Zik) [![License: GPL v3](https://img.shields.io/github/license/N-Zik-Group/N-Zik?color=blue)](https://www.gnu.org/licenses/gpl-3.0)
 [![CodeFactor](https://www.codefactor.io/repository/github/N-Zik-Group/n-zik/badge)](https://www.codefactor.io/repository/github/N-Zik-Group/n-zik)
-[![Launched on DevGlobe](https://devglobe.app/badges/launched-on-devglobe-dark.svg)](https://devglobe.app/projects/n-zik?utm_source=badge&utm_medium=embed)
+
 
 </div>
 
