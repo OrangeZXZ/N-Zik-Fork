@@ -1,5 +1,8 @@
 <div align="center">
   <img alt="project's banner" src="./assets/design/ic_banner2.png" width="1080" />    
+  
+  <h3>🌐 <a href="https://n-zik.vercel.app/">Official Website</a></h3>
+
   <p>
     <b>N-Zik</b> is a multilingual fork of <a href="https://github.com/knighthat/Kreate">Kreate</a>, 
     built with performance improvements, UI/UX refinement, bug fixes, and new features in mind with long-term support.
