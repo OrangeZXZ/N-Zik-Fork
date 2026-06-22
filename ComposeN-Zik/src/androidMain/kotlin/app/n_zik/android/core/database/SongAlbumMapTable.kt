@@ -59,7 +59,7 @@ interface SongAlbumMapTable {
      * sorted by song's position in album
      */
     @Query("""
-        SELECT DISTINCT Song.*
+        SELECT Song.*
         FROM SongAlbumMap
         JOIN Song ON id = songId
         WHERE albumId = :albumId
