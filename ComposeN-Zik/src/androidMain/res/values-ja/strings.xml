@@ -1209,4 +1209,6 @@
   <string name="translation_successful">翻訳に成功しました</string>
   <string name="karaoke_respect_agent_position">尊重エージェントの位置</string>
   <string name="lyrics_offset">歌詞のオフセット</string>
+  <string name="show_more">詳細を表示</string>
+  <string name="show_less">表示を減らす</string>
 </resources>
