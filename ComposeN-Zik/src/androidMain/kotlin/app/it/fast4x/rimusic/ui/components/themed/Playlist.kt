@@ -34,6 +34,7 @@ import app.n_zik.android.core.coil.thumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun Playlist(
@@ -107,7 +108,7 @@ fun Playlist(
                     modifier = Modifier
                         .size(40.dp)
                         .padding(all = 5.dp),
-                    contentDescription = "Background Image",
+                    contentDescription = stringResource(R.string.cd_background_image),
                     contentScale = ContentScale.Fit
                 )
             }
@@ -121,7 +122,7 @@ fun Playlist(
                         .padding(all = 5.dp)
                         .size(18.dp)
                         .align(Alignment.BottomStart),
-                    contentDescription = "Background Image",
+                    contentDescription = stringResource(R.string.cd_background_image),
                     contentScale = ContentScale.Fit
                 )
             }

@@ -49,6 +49,7 @@ import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.shimmerEffect
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.uiRoundnessShape
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ArtistItem(
@@ -141,7 +142,7 @@ fun ArtistItem(
                     modifier = Modifier
                         .size(if (smallThumbnail) 30.dp else 40.dp)
                         .padding(all = 5.dp),
-                    contentDescription = "Background Image",
+                    contentDescription = stringResource(R.string.cd_background_image),
                     contentScale = ContentScale.Fit
                 )
             }

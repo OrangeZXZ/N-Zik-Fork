@@ -324,7 +324,7 @@ fun Thumbnail(
                                 }
                                 .fillMaxSize()
                                 .clip(thumbnailShape()),
-                            contentDescription = "Background Image",
+                            contentDescription = stringResource(R.string.cd_background_image),
                             contentScale = ContentScale.Fit
                         )
                     }

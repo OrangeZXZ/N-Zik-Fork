@@ -530,7 +530,7 @@ fun About(navController: androidx.navigation.NavController) {
                     val translatorsRotation by animateFloatAsState(
                         targetValue = if (translatorsExpanded) 90f else 0f,
                         animationSpec = tween(300),
-                        label = "translators_rotation"
+                        label = stringResource(R.string.txt_translators_rotation)
                     )
 
                     Row(
@@ -582,7 +582,7 @@ fun About(navController: androidx.navigation.NavController) {
                     val developersRotation by animateFloatAsState(
                         targetValue = if (developersExpanded) 90f else 0f,
                         animationSpec = tween(300),
-                        label = "developers_rotation"
+                        label = stringResource(R.string.txt_developers_rotation)
                     )
 
                     Row(

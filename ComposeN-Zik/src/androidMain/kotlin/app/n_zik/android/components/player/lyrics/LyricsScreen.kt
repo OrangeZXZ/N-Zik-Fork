@@ -522,7 +522,7 @@ fun LyricsScreen(
                     ) {
                         Image(
                             painter = painterResource(R.drawable.locate),
-                            contentDescription = "Recenter",
+                            contentDescription = stringResource(R.string.cd_recenter),
                             colorFilter = ColorFilter.tint(DefaultDarkColorPalette.text),
                             modifier = Modifier
                                 .padding(all = 4.dp)

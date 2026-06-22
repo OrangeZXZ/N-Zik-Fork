@@ -379,7 +379,7 @@ fun PlaylistSongList(
                                             1000,
                                             1000
                                         ),
-                                        contentDescription = "loading...",
+                                        contentDescription = stringResource(R.string.cd_loading),
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .align(Alignment.Center)

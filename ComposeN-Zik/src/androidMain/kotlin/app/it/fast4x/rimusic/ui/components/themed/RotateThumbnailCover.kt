@@ -41,6 +41,7 @@ import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.ThumbnailCoverType
 import app.it.fast4x.rimusic.utils.VinylSizeKey
 import app.it.fast4x.rimusic.utils.rememberPreference
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun RotateThumbnailCover(
@@ -92,7 +93,7 @@ fun RotateThumbnailCover(
                     ThumbnailCoverType.Vinyl -> R.drawable.vinyl_background
                     ThumbnailCoverType.CD, ThumbnailCoverType.CDwithCover -> R.drawable.cd
                 }),
-                contentDescription = "disc background"
+                contentDescription = stringResource(R.string.cd_disc_background)
             )
 
         if (type in listOf(ThumbnailCoverType.Vinyl, ThumbnailCoverType.CDwithCover))
@@ -111,7 +112,7 @@ fun RotateThumbnailCover(
                     .align(Alignment.Center)
                     .clip(roundedShape),
                 painter = painter,
-                contentDescription = "song album cover"
+                contentDescription = stringResource(R.string.cd_song_album_cover)
             )
 
         if (type == ThumbnailCoverType.CDwithCover) {

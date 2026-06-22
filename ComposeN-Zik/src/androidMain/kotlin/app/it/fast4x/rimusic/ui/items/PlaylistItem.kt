@@ -63,6 +63,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.uiRoundnessShape
+import androidx.compose.ui.res.stringResource
 
 val HTTP_REGEX = Regex("^https?://.*")
 val FOUR_CORNERS = listOf( Alignment.TopStart, Alignment.TopEnd, Alignment.BottomStart, Alignment.BottomEnd )
@@ -288,7 +289,7 @@ fun PlaylistItem(
 
             Icon(
                 painter = icon,
-                contentDescription = "origin_indicator",
+                contentDescription = stringResource(R.string.cd_origin_indicator),
                 tint = color,
                 modifier = Modifier.size( 40.dp ).padding( all = 5.dp )
             )

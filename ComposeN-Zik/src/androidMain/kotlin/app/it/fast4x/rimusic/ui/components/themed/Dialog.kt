@@ -699,7 +699,7 @@ inline fun SelectorArtistsDialog(
                                         .size(40.dp)
                                         .padding(all = 5.dp)
                                         .offset(10.dp,10.dp),
-                                    contentDescription = "Background Image",
+                                    contentDescription = stringResource(R.string.cd_background_image),
                                     contentScale = ContentScale.Fit
                                 )
                             }

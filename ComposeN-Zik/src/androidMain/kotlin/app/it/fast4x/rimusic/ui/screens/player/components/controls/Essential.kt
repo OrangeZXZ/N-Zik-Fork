@@ -406,10 +406,10 @@ fun ControlsEssential(
         targetValue = if (isRotated) 360F else 0f,
         animationSpec = tween(durationMillis = 200), label = ""
     )
-    val shouldBePlayingTransition = updateTransition(shouldBePlaying, label = "shouldBePlaying")
+    val shouldBePlayingTransition = updateTransition(shouldBePlaying, label = stringResource(R.string.txt_shouldbeplaying))
     val playPauseRoundness by shouldBePlayingTransition.animateDp(
         transitionSpec = { tween(durationMillis = 100, easing = LinearEasing) },
-        label = "playPauseRoundness",
+        label = stringResource(R.string.txt_playpauseroundness),
         targetValueByState = { if (it) 32.dp else 16.dp }
     )
 
@@ -528,7 +528,7 @@ fun ControlsEssential(
                     .fillMaxSize()
                     .rotate(rotationAngle)
                     .bounceClick(),
-                contentDescription = "Background Image",
+                contentDescription = stringResource(R.string.cd_background_image),
                 contentScale = ContentScale.Fit
             )
 

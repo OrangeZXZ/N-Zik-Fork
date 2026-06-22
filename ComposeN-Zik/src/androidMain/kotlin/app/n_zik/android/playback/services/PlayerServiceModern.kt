@@ -223,6 +223,7 @@ import android.os.Binder as AndroidBinder
 import androidx.compose.ui.util.fastMap
 import app.it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
 
+
 const val LOCAL_KEY_PREFIX = "local:"
 
 val MediaItem.isLocal get() = mediaId.contains(LOCAL_KEY_PREFIX)
@@ -1696,7 +1697,7 @@ class PlayerServiceModern : MediaLibraryService(),
         //Log.d("mediaItem", "QueuePersistentEnabled Save ${player.currentTimeline.mediaItems.size}")
 
         val persistentQueue = PersistentQueue(
-            title = "title",
+            title = getString(R.string.txt_title),
             songMediaItems = player.currentTimeline.mediaItems.map {
                 PersistentSong(
                     id = it.mediaId,

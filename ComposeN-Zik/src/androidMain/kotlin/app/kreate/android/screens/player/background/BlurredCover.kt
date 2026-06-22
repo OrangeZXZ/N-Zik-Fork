@@ -29,6 +29,8 @@ import app.it.fast4x.rimusic.utils.isAtLeastAndroid12
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.components.player.BlurAdjuster
 import kotlin.math.sqrt
+import androidx.compose.ui.res.stringResource
+import app.n_zik.android.R
 
 @Composable
 private fun BlurFilter(
@@ -92,7 +94,7 @@ private fun BlurFilter(
 
         ImageCacheFactory.Thumbnail(
             thumbnailUrl = thumbnailUrl,
-            contentDescription = "blurred_background",
+            contentDescription = stringResource(R.string.cd_blurred_background),
             contentScale = ContentScale.Fit,
             // [Modifier.blur] will be
             modifier = modifier.fillMaxSize()

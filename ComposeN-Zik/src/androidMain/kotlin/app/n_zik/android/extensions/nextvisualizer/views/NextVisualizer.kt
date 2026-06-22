@@ -136,7 +136,7 @@ fun NextVisualizer(
                 val backgroundColor by animateColorAsState(
                     targetValue = if (!showvisthumbnail || !blackBackgroundForVisThumbnail || !isPlaying) Color.Transparent else Color.Black.copy(0.6f),
                     animationSpec = tween(500),
-                    label = "VisualizerBackground"
+                    label = stringResource(R.string.txt_visualizerbackground)
                 )
                 
                 Box(

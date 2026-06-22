@@ -20,6 +20,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import app.n_zik.android.R
 
 /**
  * Animated circular wavy progress indicator shown during silent gaps between synced lyrics lines.
@@ -63,7 +65,7 @@ fun LyricsIntervalIndicator(
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
         animationSpec = tween(durationMillis = 100, easing = LinearEasing),
-        label = "lyricsIntervalProgress"
+        label = stringResource(R.string.txt_lyricsintervalprogress)
     )
 
     Box(

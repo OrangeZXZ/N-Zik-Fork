@@ -30,6 +30,7 @@ import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.thumbnailSizeDpKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.n_zik.android.core.coil.ImageCacheFactory
+import androidx.compose.ui.res.stringResource
 
 
 @Composable
@@ -99,7 +100,7 @@ fun adaptiveThumbnailContent(
                         .padding(top = 16.dp)
                         .padding(all = 5.dp)
                         .size(40.dp),
-                    contentDescription = "Youtube Playlist",
+                    contentDescription = stringResource(R.string.cd_youtube_playlist),
                     contentScale = androidx.compose.ui.layout.ContentScale.Fit
                 )
             }

@@ -382,7 +382,7 @@ fun PacmanGameScreen(
                 ) {
                     Image(
                         bitmap = pacmanTittle,
-                        contentDescription = "Pacman Logo",
+                        contentDescription = stringResource(R.string.cd_pacman_logo),
                         modifier = Modifier.height(64.dp),
                         contentScale = ContentScale.FillHeight
                     )
@@ -609,7 +609,7 @@ fun PacmanGameScreen(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(
                         bitmap = pacmanTittle,
-                        contentDescription = "Pacman Logo",
+                        contentDescription = stringResource(R.string.cd_pacman_logo),
                         modifier = Modifier.height(100.dp),
                         contentScale = ContentScale.FillHeight
                     )

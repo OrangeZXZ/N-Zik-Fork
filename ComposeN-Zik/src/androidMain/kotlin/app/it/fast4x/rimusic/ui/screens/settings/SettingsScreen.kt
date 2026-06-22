@@ -525,7 +525,7 @@ fun TextDialogSettingEntry(
             onDismiss = { showDialog = false },
             onSetValue = {
                 onTextSave(it)
-                //context.toast("Preference Saved")
+                //context.toast(context.getString(R.string.toast_preference_saved))
             }
         ).apply {
             showDialog()
@@ -536,7 +536,7 @@ fun TextDialogSettingEntry(
             onDismiss = { showDialog = false },
             onDone ={ value ->
                 onTextSave(value)
-                //context.toast("Preference Saved")
+                //context.toast(context.getString(R.string.toast_preference_saved))
             },
             //doneText = "Save",
             initialTextInput = currentText

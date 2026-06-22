@@ -280,7 +280,7 @@ fun SnakeGameScreen(
                     val snakeTittle = ImageBitmap.imageResource(R.drawable.snake_tittle)
                     Image(
                         bitmap = snakeTittle,
-                        contentDescription = "Snake Logo",
+                        contentDescription = stringResource(R.string.cd_snake_logo),
                         modifier = Modifier.height(64.dp),
                         contentScale = ContentScale.FillHeight
                     )
@@ -446,7 +446,7 @@ fun SnakeGameScreen(
                         val snakeTittle = ImageBitmap.imageResource(R.drawable.snake_tittle)
                         Image(
                             bitmap = snakeTittle,
-                            contentDescription = "Snake Logo",
+                            contentDescription = stringResource(R.string.cd_snake_logo),
                             modifier = Modifier.height(100.dp),
                             contentScale = ContentScale.FillHeight
                         )

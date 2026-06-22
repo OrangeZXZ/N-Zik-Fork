@@ -33,6 +33,7 @@ import app.kreate.android.drawable.APP_ICON_BITMAP
 import app.n_zik.android.MainActivity
 import app.it.fast4x.rimusic.cleanPrefix
 import java.io.File
+import androidx.compose.ui.res.stringResource
 
 sealed class Widget: GlanceAppWidget() {
 
@@ -54,7 +55,7 @@ sealed class Widget: GlanceAppWidget() {
         val bitmap = currentState( bitmapPath )?.let( BitmapFactory::decodeFile ) ?: APP_ICON_BITMAP
         Image(
             provider = ImageProvider( bitmap ),
-            contentDescription = "cover",
+            contentDescription = stringResource(R.string.cd_cover),
             modifier = modifier.clickable( actionStartActivity<MainActivity>() )
         )
     }
@@ -66,7 +67,7 @@ sealed class Widget: GlanceAppWidget() {
 
         Image(
             provider = ImageProvider( R.drawable.play_skip_back ),
-            contentDescription = "back",
+            contentDescription = stringResource(R.string.cd_back),
             modifier = GlanceModifier.clickable( onPreviousAction )
         )
 
@@ -74,14 +75,14 @@ sealed class Widget: GlanceAppWidget() {
             provider = ImageProvider(
                 if ( isPlaying ) R.drawable.pause else R.drawable.play
             ),
-            contentDescription = "play/pause",
+            contentDescription = stringResource(R.string.cd_play_pause),
             modifier = GlanceModifier.padding(horizontal = 20.dp)
                                      .clickable( onPlayPauseAction )
         )
 
         Image(
             provider = ImageProvider( R.drawable.play_skip_forward ),
-            contentDescription = "next",
+            contentDescription = stringResource(R.string.cd_next),
             modifier = GlanceModifier.clickable( onNextAction )
         )
     }

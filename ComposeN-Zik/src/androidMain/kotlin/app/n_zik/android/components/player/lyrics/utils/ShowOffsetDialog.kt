@@ -176,7 +176,7 @@ class ShowOffsetDialog private constructor(
                         Icon(
                             painter = painterResource(R.drawable.refresh),
                             tint = colorPalette().accent,
-                            contentDescription = "Reset"
+                            contentDescription = stringResource(R.string.cd_reset)
                         )
                     }
                 }
@@ -229,7 +229,7 @@ class ShowOffsetDialog private constructor(
                     Icon(
                         painter = painterResource(R.drawable.add),
                         tint = colorPalette().text,
-                        contentDescription = "Increase"
+                        contentDescription = stringResource(R.string.cd_increase)
                     )
                 }
             }

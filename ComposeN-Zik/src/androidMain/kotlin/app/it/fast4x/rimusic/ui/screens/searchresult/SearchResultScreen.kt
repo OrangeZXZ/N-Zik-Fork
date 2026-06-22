@@ -110,7 +110,7 @@ fun SearchResultScreen(
                         IconButton(onClick = { showFilterMenu.value = true }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.discover),
-                                contentDescription = "Filter",
+                                contentDescription = stringResource(R.string.cd_filter),
                                 tint = colorPalette().text
                             )
                         }
@@ -141,7 +141,7 @@ fun SearchResultScreen(
                         IconButton(onClick = { setUseGrid(!useGrid) }) {
                             Icon(
                                 painter = painterResource(id = if (useGrid) R.drawable.sort_vertical else R.drawable.sort_grid),
-                                contentDescription = "Switch Mode",
+                                contentDescription = stringResource(R.string.cd_switch_mode),
                                 tint = colorPalette().text
                             )
                         }

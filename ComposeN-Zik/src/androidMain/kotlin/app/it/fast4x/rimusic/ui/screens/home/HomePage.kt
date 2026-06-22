@@ -86,6 +86,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import androidx.compose.ui.res.stringResource
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -232,7 +233,7 @@ fun HomePage(
 
                 if (UiType.ViMusic.isCurrent())
                     HeaderWithIcon(
-                        title = "Home",
+                        title = stringResource(R.string.txt_home),
                         iconId = R.drawable.search,
                         enabled = true,
                         showIcon = !showSearchTab,

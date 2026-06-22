@@ -255,6 +255,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import kotlin.math.absoluteValue
 import kotlin.math.sqrt
+import androidx.compose.ui.res.stringResource
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -1849,7 +1850,7 @@ fun Player(
                         Image(
                             painter = painterResource(R.drawable.ic_launcher_monochrome),
                             colorFilter = ColorFilter.tint(colorPalette().collapsedPlayerProgressBar),
-                            contentDescription = "app icon in player",
+                            contentDescription = stringResource(R.string.cd_app_icon_in_player),
                             modifier = Modifier.size( 24.dp )
                                                .clip(uiRoundnessShape()).clickable {
                                                    onDismiss()
@@ -2144,7 +2145,7 @@ fun Player(
                                 modifier = Modifier
                                     .size(20.dp)
                                     .padding(horizontal = 5.dp),
-                                contentDescription = "Background Image",
+                                contentDescription = stringResource(R.string.cd_background_image),
                                 contentScale = ContentScale.Fit
                             )
 

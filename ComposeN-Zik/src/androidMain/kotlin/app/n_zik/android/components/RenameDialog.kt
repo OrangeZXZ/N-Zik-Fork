@@ -14,6 +14,8 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.n_zik.android.components.dialog.InputDialogConstraints
 import app.n_zik.android.components.dialog.TextInputDialog
+import androidx.compose.ui.res.stringResource
+import app.n_zik.android.R
 
 abstract class RenameDialog(
     activeState: MutableState<Boolean>,
@@ -29,7 +31,7 @@ abstract class RenameDialog(
     override fun LeadingIcon() = Icon(
         painter = icon,
         tint = colorPalette().text,
-        contentDescription = "Rename dialog text box icon",
+        contentDescription = stringResource(R.string.cd_rename_dialog_text_box_icon),
         modifier = Modifier.size( 20.dp )
     )
 }

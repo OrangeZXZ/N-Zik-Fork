@@ -78,7 +78,7 @@ class NewPlaylistDialog private constructor(
     override fun LeadingIcon() = Icon(
         imageVector = Icons.Outlined.Edit,
         tint = colorPalette().accent,
-        contentDescription = "new playlist name"
+        contentDescription = stringResource(R.string.cd_new_playlist_name)
     )
 
     override fun onSet( newValue: String ) {

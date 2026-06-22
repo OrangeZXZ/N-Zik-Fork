@@ -121,6 +121,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -242,10 +243,10 @@ fun MiniPlayer(
     )
     val backgroundProgress by rememberPreference(backgroundProgressKey, BackgroundProgress.MiniPlayer)
     val effectRotationEnabled by rememberPreference(effectRotationKey, false)
-    val shouldBePlayingTransition = updateTransition(shouldBePlaying, label = "shouldBePlaying")
+    val shouldBePlayingTransition = updateTransition(shouldBePlaying, label = stringResource(R.string.txt_shouldbeplaying))
     val playPauseRoundness by shouldBePlayingTransition.animateDp(
         transitionSpec = { tween(durationMillis = 100, easing = LinearEasing) },
-        label = "playPauseRoundness",
+        label = stringResource(R.string.txt_playpauseroundness),
         targetValueByState = { if (it) 24.dp else 12.dp }
     )
 
@@ -277,7 +278,7 @@ fun MiniPlayer(
                     SwipeToDismissBoxValue.EndToStart -> MaterialTheme.colorScheme.primaryContainer
                     SwipeToDismissBoxValue.Settled -> Color.Transparent
                 },
-                label = "background"
+                label = stringResource(R.string.txt_background)
             )
              */
 

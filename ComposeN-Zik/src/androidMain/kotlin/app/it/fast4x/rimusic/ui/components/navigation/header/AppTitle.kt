@@ -79,7 +79,7 @@ private fun AppLogo(
 
     Image(
         bitmap = APP_ICON_IMAGE_BITMAP,
-        contentDescription = "App's icon",
+        contentDescription = stringResource(R.string.cd_app_s_icon),
         modifier = modifier.size(36.dp)
     )
 }

@@ -15,6 +15,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.stringResource
+import app.n_zik.android.R
 
 fun Modifier.pulsatingEffect(
     currentValue: Float,
@@ -36,7 +38,7 @@ fun Modifier.pulsatingEffect(
                 durationMillis = 800,
                 delayMillis = 200,
             )
-        ), label = "width"
+        ), label = stringResource(R.string.txt_width)
     )
 
     this then Modifier

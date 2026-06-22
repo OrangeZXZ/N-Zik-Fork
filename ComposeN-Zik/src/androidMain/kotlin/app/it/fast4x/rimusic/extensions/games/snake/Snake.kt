@@ -109,7 +109,7 @@ fun SnakeGame() {
                 }
             }
         } else {
-            BasicText(text = "Snake Game")
+            BasicText(text = stringResource(R.string.txt_snake_game))
             // Game board
             GameBoard(snake, food, gridSize, direction, { direction = it })
         }
@@ -178,7 +178,7 @@ fun Controls(currentDirection: Direction, onDirectionChange: (Direction) -> Unit
             // Up button
             ControlButton(
                 imageVector = Icons.Default.KeyboardArrowUp,
-                contentDescription = "Up"
+                contentDescription = stringResource(R.string.cd_up)
             ) {
                 if (currentDirection != Direction.DOWN) onDirectionChange(Direction.UP)
             }
@@ -190,7 +190,7 @@ fun Controls(currentDirection: Direction, onDirectionChange: (Direction) -> Unit
             // Left button
             ControlButton(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                contentDescription = "Left"
+                contentDescription = stringResource(R.string.cd_left)
             ) {
                 if (currentDirection != Direction.RIGHT) onDirectionChange(Direction.LEFT)
             }
@@ -200,7 +200,7 @@ fun Controls(currentDirection: Direction, onDirectionChange: (Direction) -> Unit
             // Right button
             ControlButton(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = "Right"
+                contentDescription = stringResource(R.string.cd_right)
             ) {
                 if (currentDirection != Direction.LEFT) onDirectionChange(Direction.RIGHT)
             }
@@ -213,7 +213,7 @@ fun Controls(currentDirection: Direction, onDirectionChange: (Direction) -> Unit
             // Down button
             ControlButton(
                 imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = "Down"
+                contentDescription = stringResource(R.string.cd_down)
             ) {
                 if (currentDirection != Direction.UP) onDirectionChange(Direction.DOWN)
             }

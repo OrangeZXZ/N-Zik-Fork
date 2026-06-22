@@ -88,7 +88,7 @@ fun BoxScope.MultiFloatingActionsContainer(
                 arrayListOf(
                     FabItem(
                         icon = painterResource(R.drawable.settings),
-                        label = "Settings",
+                        label = stringResource(R.string.txt_settings),
                         onFabItemClicked = {
                             if (onClickSettings != null) {
                                 onClickSettings()

@@ -180,7 +180,7 @@ class SleepTimer private constructor(
             val arrowColor = colorPalette().text
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowUp,
-                contentDescription = "arrow_up",
+                contentDescription = stringResource(R.string.cd_arrow_up),
                 tint = arrowColor
             )
 
@@ -218,7 +218,7 @@ class SleepTimer private constructor(
 
             Icon(
                 imageVector = Icons.Filled.ArrowDropDown,
-                contentDescription = "arrow_down",
+                contentDescription = stringResource(R.string.cd_arrow_down),
                 tint = arrowColor
             )
         }

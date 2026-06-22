@@ -2012,7 +2012,7 @@ fun AppearanceSettings(
             enter = fadeIn(animationSpec = tween(700)) + scaleIn(animationSpec = tween(700), initialScale = 0.9f)
         ) {
             SettingsSectionCard(
-                title = "Lyrics",
+                title = stringResource(R.string.txt_lyrics),
                 icon = R.drawable.song_lyrics,
                 content = {
         if (search.inputValue.isBlank() || stringResource(R.string.show_lyrics_thumbnail).contains(

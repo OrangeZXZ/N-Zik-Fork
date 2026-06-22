@@ -486,7 +486,7 @@ fun ControlsModern(
                           0.dp
                       )
                       .size(100.dp),
-                  contentDescription = "Background Image",
+                  contentDescription = stringResource(R.string.cd_background_image),
                   contentScale = ContentScale.Fit
               )
 
@@ -546,7 +546,7 @@ fun ControlsModern(
                 modifier = Modifier
                     .fillMaxSize()
                     .rotate(rotationAngle),
-                contentDescription = "Background Image",
+                contentDescription = stringResource(R.string.cd_background_image),
                 contentScale = ContentScale.Fit
             )
          */

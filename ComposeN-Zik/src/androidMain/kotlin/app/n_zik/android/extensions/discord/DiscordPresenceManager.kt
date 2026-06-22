@@ -21,11 +21,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.Request
 import timber.log.Timber
 
-/**
- * Call this method when the playing state changes.
- * - isPlaying = true : send the "playing" presence and refresh it every 10s
- * - isPlaying = false : launch a timer, then send the "paused" presence (frozen time)
- */
 
 class DiscordPresenceManager(
     private val context: Context,
@@ -275,10 +270,9 @@ class DiscordPresenceManager(
         val largeImageUrl = if (rawUri != null && rawUri.startsWith("http")) rawUri else getLargeImageFallback()
         val smallImageUrl = getSmallImageUrl()
         val largeTextValue = if (state.isNotBlank()) "$details - $state" else details
-        
-        val buttonsList = mutableListOf(Button(label = "Get N-Zik", url = "https://github.com/N-Zik-Group/N-Zik/"))
+        val buttonsList = mutableListOf(Button(label = context.getString(R.string.txt_get_n_zik), url = "https://github.com/N-Zik-Group/N-Zik/"))
         if (mediaItem != null) {
-            buttonsList.add(Button(label = "Listen to YTMusic", url = "https://music.youtube.com/watch?v=${mediaItem.mediaId}"))
+            buttonsList.add(Button(label = context.getString(R.string.txt_listen_to_ytmusic), url = "https://music.youtube.com/watch?v=${mediaItem.mediaId}"))
         }
         
         runCatching {

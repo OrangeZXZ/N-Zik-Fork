@@ -138,6 +138,7 @@ import kotlinx.coroutines.launch
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.uiRoundnessShape
+import androidx.compose.ui.res.stringResource
 
 private class PagerViewPort(
     private val showSongsState: MutableState<SongsNumber>,

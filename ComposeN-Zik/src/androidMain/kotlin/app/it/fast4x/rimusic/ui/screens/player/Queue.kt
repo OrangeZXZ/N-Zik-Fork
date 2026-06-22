@@ -117,6 +117,7 @@ import app.n_zik.android.components.ui.screens.player.ShuffleQueue
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
+import androidx.compose.ui.res.stringResource
 
 
 @ExperimentalTextApi
@@ -497,7 +498,7 @@ fun Queue(
                     ) {
                         Icon(
                             painter = painterResource( R.drawable.musical_notes ),
-                            contentDescription = "Number of songs in queue",
+                            contentDescription = stringResource(R.string.cd_number_of_songs_in_queue),
                             tint = colorPalette().text,
                             modifier = Modifier.padding( end = 2.dp )
                         )

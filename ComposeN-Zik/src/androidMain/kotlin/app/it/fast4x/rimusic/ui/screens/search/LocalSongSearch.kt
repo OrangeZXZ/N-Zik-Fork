@@ -70,6 +70,8 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
+import androidx.compose.ui.res.stringResource
+import app.n_zik.android.R
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")

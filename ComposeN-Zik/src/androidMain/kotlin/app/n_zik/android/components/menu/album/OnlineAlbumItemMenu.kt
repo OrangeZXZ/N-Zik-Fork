@@ -119,7 +119,7 @@ class OnlineAlbumItemMenu private constructor(
         ) {
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = "Arrow Down",
+                contentDescription = stringResource(R.string.cd_arrow_down),
                 tint = colorPalette().textSecondary,
                 modifier = Modifier.size(24.dp)
             )

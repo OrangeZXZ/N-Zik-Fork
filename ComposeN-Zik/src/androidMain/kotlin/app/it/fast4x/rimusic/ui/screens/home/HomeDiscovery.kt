@@ -154,7 +154,7 @@ fun HomeDiscovery(
                         .asPaddingValues()
                 )
         ) {
-            //Header(title = "Discover", modifier = Modifier.padding(endPaddingValues))
+            //Header(title = stringResource(R.string.txt_discover), modifier = Modifier.padding(endPaddingValues))
             HeaderWithIcon(
                 title = stringResource(R.string.discovery),
                 iconId = R.drawable.search,

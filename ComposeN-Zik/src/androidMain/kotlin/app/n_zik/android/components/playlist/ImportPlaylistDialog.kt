@@ -57,7 +57,7 @@ class ImportPlaylistDialog private constructor(
     override fun LeadingIcon() = Icon(
         imageVector = Icons.Outlined.Edit,
         tint = colorPalette().accent,
-        contentDescription = "import playlist name"
+        contentDescription = stringResource(R.string.cd_import_playlist_name)
     )
 
     override fun onSet( newValue: String ) {
