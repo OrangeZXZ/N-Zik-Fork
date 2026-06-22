@@ -409,13 +409,15 @@ fun AlbumDetails(
                             }
                         } else translatedText = nonTranslatedText
 
+                        var showMoreButton by remember { mutableStateOf(false) }
+
                         androidx.compose.foundation.layout.Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp, vertical = 8.dp)
                                 .animateContentSize()
                                 .clip(uiRoundnessShape())
-                                .clickable { isDescriptionExpanded = !isDescriptionExpanded }
+                                .clickable(enabled = showMoreButton || isDescriptionExpanded) { isDescriptionExpanded = !isDescriptionExpanded }
                                 .padding(8.dp)
                         ) {
                             Row(verticalAlignment = Alignment.Top) {
@@ -432,7 +434,14 @@ fun AlbumDetails(
                                     style = typography().xs.secondary.align(TextAlign.Justify),
                                     maxLines = if (isDescriptionExpanded) Int.MAX_VALUE else 3,
                                     overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier.padding(horizontal = 8.dp).weight(1f)
+                                    modifier = Modifier.padding(horizontal = 8.dp).weight(1f),
+                                    onTextLayout = { textLayoutResult ->
+                                        if (textLayoutResult.hasVisualOverflow) {
+                                            showMoreButton = true
+                                        } else if (!isDescriptionExpanded) {
+                                            showMoreButton = false
+                                        }
+                                    }
                                 )
 
                                 BasicText(
@@ -442,11 +451,13 @@ fun AlbumDetails(
                                 )
                             }
 
-                            BasicText(
-                                text = if (isDescriptionExpanded) stringResource(R.string.show_less) else stringResource(R.string.show_more),
-                                style = typography().xs.semiBold.copy(colorPalette().text),
-                                modifier = Modifier.padding(top = 8.dp).align(Alignment.CenterHorizontally)
-                            )
+                            if (showMoreButton || isDescriptionExpanded) {
+                                BasicText(
+                                    text = if (isDescriptionExpanded) stringResource(R.string.show_less) else stringResource(R.string.show_more),
+                                    style = typography().xs.semiBold.copy(colorPalette().text),
+                                    modifier = Modifier.padding(top = 8.dp).align(Alignment.CenterHorizontally)
+                                )
+                            }
 
                             if (isDescriptionExpanded && attributionsIndex != -1) {
                                 BasicText(
