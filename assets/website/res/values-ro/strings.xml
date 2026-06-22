@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="opensource_multilingual_application">O aplicație Android open-source și multilingvă pentru streaming de muzică de pe YouTube Music</string>
     <string name="your_library">Biblioteca ta.</string>
@@ -8,9 +8,9 @@
     <string name="many_effects">Numeroase efecte.</string>
     <string name="visualizer_preview_timeline">Vizualizator, previzualizare, cronologie, buton play, aplică efectele preferate..</string>
     <string name="modern">Modern.</string>
-    <string name="rimusic_is_multilingual_modern_powerful">RiMusic este multilingv, modern, puternic, atractiv, frumos și tradus în multe limbi datorită contribuției numeroșilor colaboratori.</string>
+    <string name="rimusic_is_multilingual_modern_powerful">N-Zik este multilingv, modern, puternic, atractiv, frumos și tradus în multe limbi datorită contribuției numeroșilor colaboratori.</string>
     <string name="listen_to_your_favourite_music">Ascultă muzica ta preferată</string>
-    <string name="download_rimusic_now">Descarcă RiMusic acum.</string>
+    <string name="download_rimusic_now">Descarcă N-Zik acum.</string>
     <string name="repository">Depozit de cod</string>
     <string name="releases">Lansări</string>
     <string name="issue_tracker">Urmărirea problemelor</string>

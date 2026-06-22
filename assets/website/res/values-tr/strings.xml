@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="opensource_multilingual_application">YouTube Müzik\'ten müzik akışı için açık kaynaklı ve çok dilli bir Android uygulamasıdır</string>
     <string name="your_library">Kütüphaneniz.</string>
@@ -8,9 +8,9 @@
     <string name="many_effects">Birçok efekt.</string>
     <string name="visualizer_preview_timeline">Görselleştirici, önizleme, zaman çizelgesi, oynat düğmesi, tercih ettiğiniz efektleri uygulayın...</string>
     <string name="modern">Modern.</string>
-    <string name="rimusic_is_multilingual_modern_powerful">RiMusic çok dilli, modern, güçlü, çekici, güzeldir ve proje işbirlikçileri tarafından çeşitli dillere çevrilmiştir.</string>
+    <string name="rimusic_is_multilingual_modern_powerful">N-Zik çok dilli, modern, güçlü, çekici, güzeldir ve proje işbirlikçileri tarafından çeşitli dillere çevrilmiştir.</string>
     <string name="listen_to_your_favourite_music">En sevdiğiniz müzikleri dinleyin</string>
-    <string name="download_rimusic_now">RiMusic\'i şimdi İndirin.</string>
+    <string name="download_rimusic_now">N-Zik\'i şimdi İndirin.</string>
     <string name="repository">Repository</string>
     <string name="releases">Sürümler</string>
     <string name="issue_tracker">Sorun izleyici</string>

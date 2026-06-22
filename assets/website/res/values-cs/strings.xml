@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="opensource_multilingual_application">Open source a vícejazyčná Android aplikace pro streamování hudby z Youtube Music.</string>
     <string name="your_library">Vaše knihovna.</string>
@@ -8,9 +8,9 @@
     <string name="many_effects">Hodně efektů.</string>
     <string name="visualizer_preview_timeline">Vizualizér, náhled, časová osa, tlačítko přehrát, použijte efekty, které preferujete..</string>
     <string name="modern">Moderní.</string>
-    <string name="rimusic_is_multilingual_modern_powerful">RiMusic je vícejazyčný, moderní, výkonný, atraktivní, krásný a je překládán do různých jazyků spolupracovníky projektu.</string>
+    <string name="rimusic_is_multilingual_modern_powerful">N-Zik je vícejazyčný, moderní, výkonný, atraktivní, krásný a je překládán do různých jazyků spolupracovníky projektu.</string>
     <string name="listen_to_your_favourite_music">Poslouchejte svou oblíbenou hudbu</string>
-    <string name="download_rimusic_now">Stáhněte RiMusic nyní.</string>
+    <string name="download_rimusic_now">Stáhněte N-Zik nyní.</string>
     <string name="repository">Repozitář</string>
     <string name="releases">Vydání</string>
     <string name="issue_tracker">Sledování problémů</string>

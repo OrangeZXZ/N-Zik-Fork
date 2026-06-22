@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="opensource_multilingual_application">ইউটিউব মিউজিক থেকে গান স্ট্রিম করার একটা অপেনসোর্স বহুভাষার এন্ড্রোয়েড এপ্লিকেশন</string>
     <string name="your_library">আপনার লাইব্রেরি</string>
@@ -8,9 +8,9 @@
     <string name="many_effects">অনেক ইফেক্ট</string>
     <string name="visualizer_preview_timeline">ভিজুয়ালাইজার, প্রিভিউ, টাইমলাইন, প্লে বাটন, আপনার ইচ্ছামত ইফেক্ট এপ্লাই করুন।</string>
     <string name="modern">আধুনিক</string>
-    <string name="rimusic_is_multilingual_modern_powerful"> RiMusic বহু ভাষায়, আধুনিক, শক্তিশালী, আকর্ষণীয়, সুন্দর গান শোনার এপ্লিকেশন এবং প্রজেক্ট কোলাবরেটরদের মাধ্যমে বহুভাষায় অনুদিত হয়েছে। </string>
+    <string name="rimusic_is_multilingual_modern_powerful"> N-Zik বহু ভাষায়, আধুনিক, শক্তিশালী, আকর্ষণীয়, সুন্দর গান শোনার এপ্লিকেশন এবং প্রজেক্ট কোলাবরেটরদের মাধ্যমে বহুভাষায় অনুদিত হয়েছে। </string>
     <string name="listen_to_your_favourite_music">আপনার প্রিয় গান শুনুন</string>
-    <string name="download_rimusic_now">এখনো RiMusic ডাওনলোড করুন</string>
+    <string name="download_rimusic_now">এখনো N-Zik ডাওনলোড করুন</string>
     <string name="repository">রিপোজিটরি</string>
     <string name="releases">রিলিজ</string>
     <string name="issue_tracker">ইস্যু ট্র‍্যকার</string>

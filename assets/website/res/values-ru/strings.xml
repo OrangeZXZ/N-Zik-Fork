@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="opensource_multilingual_application">Многоязычное Android приложение с открытым исходным кодом для стриминга музыки из YouTube Music</string>
     <string name="your_library">Ваша библиотека.</string>
@@ -8,9 +8,9 @@
     <string name="many_effects">Множество эффектов.</string>
     <string name="visualizer_preview_timeline">Визуализация, превью, таймлайн, кнопка воспроизведения, применяйте эффекты, которые вам нравятся..</string>
     <string name="modern">Современный.</string>
-    <string name="rimusic_is_multilingual_modern_powerful">RiMusic это мультиязычный, современный, мощный, красивый плеер, переведенный на множество языков участниками проекта.</string>
+    <string name="rimusic_is_multilingual_modern_powerful">N-Zik это мультиязычный, современный, мощный, красивый плеер, переведенный на множество языков участниками проекта.</string>
     <string name="listen_to_your_favourite_music">Слушайте вашу любимую музыку</string>
-    <string name="download_rimusic_now">Загрузить RiMusic прямо сейчас.</string>
+    <string name="download_rimusic_now">Загрузить N-Zik прямо сейчас.</string>
     <string name="repository">Репозиторий</string>
     <string name="releases">Релизы</string>
     <string name="issue_tracker">Баг-трекер</string>

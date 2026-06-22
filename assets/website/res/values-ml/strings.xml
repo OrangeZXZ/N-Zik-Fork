@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="opensource_multilingual_application">YouTube Music-ൽ നിന്ന് സംഗീതം സ്ട്രീം ചെയ്യുന്നതിനുള്ള തുറന്ന ഉറവിടവും ബഹുഭാഷാ ആൻഡ്രോയിഡ് ആപ്ലിക്കേഷനും</string>
     <string name="your_library">നിങ്ങളുടെ ലൈബ്രറി.</string>
@@ -8,9 +8,9 @@
     <string name="many_effects">നിരവധി പ്രഭാവങ്ങൾ.</string>
     <string name="visualizer_preview_timeline">വിഷ്വലൈസർ, പ്രിവ്യൂ, ടൈംലൈൻ, പ്ലേ ബട്ടൺ, നിങ്ങൾക്ക് ഇഷ്ടമുള്ള പ്രഭാവങ്ങൾ പ്രയോഗിക്കുക..</string>
     <string name="modern">ആധുനികം.</string>
-    <string name="rimusic_is_multilingual_modern_powerful">RiMusic ബഹുഭാഷാ, ആധുനികം, ശക്തമായ, ആകർഷകമായ, മനോഹരമായതും, വിവിധ ഭാഷകളിലേക്ക് പ്രോജക്റ്റ് സഹപ്രവർത്തകരാൽ പരിഭാഷപ്പെടുത്തപ്പെട്ടതുമാണ്.</string>
+    <string name="rimusic_is_multilingual_modern_powerful">N-Zik ബഹുഭാഷാ, ആധുനികം, ശക്തമായ, ആകർഷകമായ, മനോഹരമായതും, വിവിധ ഭാഷകളിലേക്ക് പ്രോജക്റ്റ് സഹപ്രവർത്തകരാൽ പരിഭാഷപ്പെടുത്തപ്പെട്ടതുമാണ്.</string>
     <string name="listen_to_your_favourite_music">നിങ്ങളുടെ ഇഷ്ടപ്പെട്ട സംഗീതം കേൾക്കൂ</string>
-    <string name="download_rimusic_now">RiMusic ഇപ്പോൾ ഡൗൺലോഡ് ചെയ്യൂ.</string>
+    <string name="download_rimusic_now">N-Zik ഇപ്പോൾ ഡൗൺലോഡ് ചെയ്യൂ.</string>
     <string name="repository">റിപോസിറ്ററി</string>
     <string name="releases">റിലീസുകൾ</string>
     <string name="issue_tracker">ഇഷ്യു ട്രാക്കർ</string>
