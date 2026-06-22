@@ -21,6 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import kotlinx.coroutines.flow.firstOrNull
 import kotlin.time.Duration.Companion.milliseconds
 
 import app.n_zik.android.enums.lyrics.LyricsType
@@ -88,7 +89,7 @@ fun LyricsFetcher(
                                     artist = artistName ?: "",
                                     title = title ?: "",
                                     duration = duration.milliseconds,
-                                    album = mediaMetadata.albumTitle?.toString()
+                                    album = mediaMetadata.albumTitle?.toString() ?: Database.albumTable.findBySongId(mediaId).firstOrNull()?.title
                                 )?.onSuccess {
                                     if ((it?.text?.isNotEmpty() == true || it?.sentences?.isNotEmpty() == true)
                                         && playerEnableLyricsPopupMessage
@@ -207,7 +208,7 @@ fun LyricsFetcher(
                                 title = cleanPrefix(title ?: ""),
                                 artist = artistName ?: "",
                                 duration = duration.milliseconds.inWholeSeconds.toInt(),
-                                album = mediaMetadata.albumTitle?.toString()
+                                album = mediaMetadata.albumTitle?.toString() ?: Database.albumTable.findBySongId(mediaId).firstOrNull()?.title
                             ).onSuccess { ttmlStr ->
                                 val hasWordTimings = ttmlStr.lines().any { it.trim().startsWith("<") && it.contains(":") && it.contains(">") }
                                 if (ttmlStr.isNotEmpty() && hasWordTimings) {
