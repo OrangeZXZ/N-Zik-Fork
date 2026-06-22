@@ -1788,6 +1788,7 @@ fun InProgressDialog(
     text : String,
     onDismiss: (() -> Unit)? = null,
 ) {
+    val colorPalette = colorPalette()
     DefaultDialog(
         onDismiss = {if (onDismiss != null) {onDismiss()}},
         modifier = Modifier
@@ -1799,7 +1800,7 @@ fun InProgressDialog(
                 textAlign = TextAlign.Center,
                 fontSize = typography().l.bold.fontSize,
                 fontWeight = typography().l.bold.fontWeight,
-                color = colorPalette().text
+                color = colorPalette.text
             ),
             overflow = TextOverflow.Ellipsis,
         )
@@ -1811,10 +1812,31 @@ fun InProgressDialog(
             style = TextStyle(
                 textAlign = TextAlign.Center,
                 fontStyle = typography().xs.semiBold.fontStyle,
-                color = colorPalette().text
+                color = colorPalette.text
             ),
             overflow = TextOverflow.Ellipsis,
         )
+        if (onDismiss != null) {
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(
+                onClick = onDismiss,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorPalette.background2,
+                    contentColor = colorPalette.text
+                ),
+                shape = uiRoundnessShape(),
+                modifier = Modifier.fillMaxWidth(0.8f).align(Alignment.CenterHorizontally)
+            ) {
+                BasicText(
+                    text = androidx.compose.ui.res.stringResource(R.string.cancel),
+                    style = TextStyle(
+                        textAlign = TextAlign.Center,
+                        fontStyle = typography().s.semiBold.fontStyle,
+                        color = colorPalette.text
+                    )
+                )
+            }
+        }
     }
 }
 

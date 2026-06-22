@@ -108,7 +108,7 @@ class ImportSongsFromCSV(
                  }
 
         @Composable
-        operator fun invoke() = ImportSongsFromCSV(
+        operator fun invoke(targetPlaylistId: Long = 0L) = ImportSongsFromCSV(
             rememberLauncherForActivityResult(
                 ActivityResultContracts.OpenDocument()
             ) { uri ->
@@ -137,10 +137,21 @@ class ImportSongsFromCSV(
 
                         Database.asyncTransaction {
                             songTable.upsert( straySongs )
+                            if (targetPlaylistId > 0L) {
+                                straySongs.forEach { song ->
+                                    songPlaylistMapTable.map(song.id, targetPlaylistId)
+                                }
+                            }
 
                             combos.forEach { (playlist, songs) ->
                                 songTable.upsert( songs )       // Upsert first to override existing songs
-                                mapIgnore( playlist, *songs.toTypedArray() )
+                                if (targetPlaylistId > 0L) {
+                                    songs.forEach { song ->
+                                        songPlaylistMapTable.map(song.id, targetPlaylistId)
+                                    }
+                                } else {
+                                    mapIgnore( playlist, *songs.toTypedArray() )
+                                }
                             }
 
                             // Show message when it's done

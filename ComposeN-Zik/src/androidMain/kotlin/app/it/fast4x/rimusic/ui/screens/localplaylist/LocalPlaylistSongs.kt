@@ -53,11 +53,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.lifecycle.Lifecycle
+import kotlinx.coroutines.launch
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
@@ -193,6 +195,12 @@ fun LocalPlaylistSongs(
     val isPipedEnabled by rememberPreference( isPipedEnabledKey, false )
     val disableScrollingText by rememberPreference( disableScrollingTextKey, false )
     var isRecommendationEnabled by remember { mutableStateOf(false) }
+    var getAlbumVersion by remember { mutableStateOf(false) }
+    var showGetAlbumVersionDialogue by remember { mutableStateOf(false) }
+    var showGetAlbumVersionDialogueExt by remember { mutableStateOf(false) }
+    var showConfirmMatchAllDialog by remember { mutableStateOf(false) }
+    var totalSongsToMatch by remember { mutableStateOf(0) }
+    var songsMatched by remember { mutableStateOf(0) }
 
     // Non-vital
     val pipedSession = getPipedSession()
@@ -218,6 +226,109 @@ fun LocalPlaylistSongs(
     fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
     val search = Search(lazyListState)
+
+    if (showGetAlbumVersionDialogue){
+        app.it.fast4x.rimusic.ui.components.themed.InProgressDialog(
+            total = totalSongsToMatch,
+            done = songsMatched,
+            text = stringResource(R.string.matching_songs),
+            onDismiss = {
+                getAlbumVersion = false
+                showGetAlbumVersionDialogue = false
+            }
+        )
+    }
+
+    if (showGetAlbumVersionDialogueExt){
+        app.it.fast4x.rimusic.ui.components.themed.InProgressDialog(
+            total = totalSongsToMatch,
+            done = songsMatched,
+            text = stringResource(R.string.matching_songs),
+            onDismiss = {
+                // Cannot cancel this easily if unmatchedExt doesn't change, 
+                // but setting showGetAlbumVersionDialogueExt to false hides it.
+                showGetAlbumVersionDialogueExt = false
+            }
+        )
+    }
+
+    if (showConfirmMatchAllDialog) {
+        app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog(
+            text = stringResource(R.string.match_all_songs_confirmation),
+            onDismiss = {
+                showConfirmMatchAllDialog = false
+            },onConfirm = {
+                getAlbumVersion = true
+                showGetAlbumVersionDialogue = true
+                showConfirmMatchAllDialog = false
+            }
+        )
+    }
+
+    val unmatchedExt = remember(items) { items.any { song -> song.id == (app.it.fast4x.rimusic.cleanPrefix(song.title ?: "")+(song.artistsText ?: "")).filter{it.isLetterOrDigit()} } }
+    if (unmatchedExt){
+        showGetAlbumVersionDialogueExt = true
+        LaunchedEffect(unmatchedExt) {
+            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                val matchedItems = items.filter{song -> song.id == (app.it.fast4x.rimusic.cleanPrefix(song.title ?: "")+(song.artistsText ?: "")).filter{it.isLetterOrDigit()}}
+                totalSongsToMatch = matchedItems.size
+                songsMatched = 0
+
+                val jobs = mutableListOf<kotlinx.coroutines.Job>()
+                matchedItems.forEachIndexed { index, song ->
+                    jobs.add(launch(Dispatchers.IO) {
+                        try {
+                            app.n_zik.android.utils.getAlbumVersionFromVideo(
+                                song = song,
+                                playlistId = playlistId,
+                                position = index,
+                                playlist = playlist
+                            )
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        } finally {
+                            songsMatched++
+                        }
+                    })
+                    kotlinx.coroutines.delay(800) // Space out requests to avoid YouTube rate limiting (403 Error)
+                }
+                jobs.forEach { it.join() }
+                showGetAlbumVersionDialogueExt = false
+                getAlbumVersion = false
+            }
+        }
+    }
+
+    LaunchedEffect(getAlbumVersion) {
+        if (!getAlbumVersion) return@LaunchedEffect
+        kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            val matchedItems = items.filter { it.id.length != 11 && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) }
+            totalSongsToMatch = matchedItems.size
+            songsMatched = 0
+
+            val jobs = mutableListOf<kotlinx.coroutines.Job>()
+            matchedItems.forEachIndexed { index, song ->
+                jobs.add(launch(kotlinx.coroutines.Dispatchers.IO) {
+                    try {
+                        app.n_zik.android.utils.getAlbumVersionFromVideo(
+                            song = song,
+                            playlistId = playlistId,
+                            position = index,
+                            playlist = playlist
+                        )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    } finally {
+                        songsMatched++
+                    }
+                })
+                kotlinx.coroutines.delay(800) // Space out requests to avoid YouTube rate limiting (403 Error)
+            }
+            jobs.forEach { it.join() }
+            showGetAlbumVersionDialogue = false
+            getAlbumVersion = false
+        }
+    }
     val shuffle = SongShuffler ( ::getSongs )
     val renameDialog = RenamePlaylistDialog { playlist }
     val exportDialog = ExportSongsToCSVDialog(
@@ -225,6 +336,31 @@ fun LocalPlaylistSongs(
         playlistName = playlist?.name ?: "",
         songs = ::getSongs
     )
+    val importNzikDialog = app.n_zik.android.components.tab.ImportSongsFromCSV(targetPlaylistId = playlistId)
+    val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init(
+        afterTransaction = { _, song, _, _ ->
+            Database.asyncTransaction {
+                songTable.insertIgnore( song )
+                songPlaylistMapTable.map( song.id, playlistId )
+            }
+        },
+        playlistIdForMatch = playlistId,
+        playlistName = playlist?.name ?: ""
+    )
+    val importMenu = remember { app.n_zik.android.components.tab.ImportPlaylistsMenu(
+        onImportNzik = { importNzikDialog.onShortClick() },
+        onImportSpotify = { importSpotifyDialog.onShortClick() }
+    ) }
+    val matchAlbumButton = remember {
+        object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive {
+            override val iconId: Int = R.drawable.alert
+            override val messageId: Int = R.string.match_album_audio_version
+            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
+            @get:Composable override val color: androidx.compose.ui.graphics.Color get() = androidx.compose.ui.graphics.Color.Unspecified
+            override fun onShortClick() { showConfirmMatchAllDialog = true }
+            override fun onLongClick() {}
+        }
+    }
     val deleteDialog = DeletePlaylist {
         Database.asyncTransaction {
             playlist?.let( playlistTable::delete )
@@ -562,6 +698,7 @@ fun LocalPlaylistSongs(
     (renumberDialog as Dialog).Render()
     downloadAllDialog.Render()
     deleteDownloadsDialog.Render()
+    importMenu.Render()
 
     val playlistThumbnailSizeDp = Dimensions.thumbnails.playlist
     val playlistThumbnailSizePx = playlistThumbnailSizeDp.px
@@ -708,6 +845,22 @@ fun LocalPlaylistSongs(
                             modifier = Modifier.size(48.dp), // Standard IconButton size
                             contentAlignment = Alignment.Center
                         ) {
+                            val unmatchedSongsCount = items.filter { it.id.length != 11 && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) }.size
+                            if (unmatchedSongsCount > 0) {
+                                HeaderIconButton(
+                                    icon = app.n_zik.android.R.drawable.alert,
+                                    enabled = true,
+                                    color = colorPalette().text,
+                                    modifier = Modifier.clip(uiRoundnessShape()),
+                                    onClick = {
+                                        showConfirmMatchAllDialog = true
+                                    },
+                                    onLongClick = {
+                                        Toaster.i("Match songs to album versions")
+                                    }
+                                )
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
                             if (isRecommendationsLoading) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(24.dp),
@@ -765,6 +918,8 @@ fun LocalPlaylistSongs(
                         toolbarButtons.add( syncComponent )
                         toolbarButtons.add( listenOnYT )
                     }
+                    toolbarButtons.add( matchAlbumButton )
+                    toolbarButtons.add( importMenu )
                     toolbarButtons.add( renameDialog )
                     toolbarButtons.add( deleteDialog )
                     toolbarButtons.add( exportDialog )
@@ -900,6 +1055,14 @@ fun LocalPlaylistSongs(
                             modifier = Modifier,
 
                             trailingContent = {
+                                if (song.id.length != 11 && !song.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)) {
+                                    androidx.compose.material3.Icon(
+                                        painter = androidx.compose.ui.res.painterResource(R.drawable.alert),
+                                        contentDescription = stringResource(R.string.unmatched_song),
+                                        tint = app.n_zik.android.colorPalette().accent,
+                                        modifier = Modifier.padding(start = 8.dp).size(18.dp)
+                                    )
+                                }
                                 if( !positionLock.isLocked() && sort.sortBy == PlaylistSongSortBy.Custom && sort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending )
                                     // Create a fake box to store drag anchor and checkbox
                                     Box( Modifier.width( 24.dp ) )
