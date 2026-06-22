@@ -108,7 +108,7 @@ private fun upsertSongInfo(videoId: String) = runBlocking {
         onFailure = {
             when (it) {
                 is UnknownHostException -> justInserted = videoId
-                else -> Toaster.e(R.string.failed_to_fetch_original_property)
+                else -> timber.log.Timber.tag(TAG).w(it, "Failed to upsert song info for $videoId")
             }
         }
     )

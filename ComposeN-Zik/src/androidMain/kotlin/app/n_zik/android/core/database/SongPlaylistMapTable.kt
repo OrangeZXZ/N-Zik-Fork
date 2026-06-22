@@ -208,6 +208,12 @@ interface SongPlaylistMapTable {
     """)
     fun map( songId: String, playlistId: Long )
 
+    @Query("INSERT OR IGNORE INTO SongPlaylistMap ( songId, playlistId, position ) VALUES (:songId, :playlistId, :position)")
+    fun mapAtPosition( songId: String, playlistId: Long, position: Int )
+
+    @Query("SELECT IFNULL(MAX(position), -1) FROM SongPlaylistMap WHERE playlistId = :playlistId")
+    fun getMaxPosition(playlistId: Long): Int
+
     //<editor-fold defaultstate="collapsed" desc="Sort songs of playlist">
     @Query("""
         SELECT DISTINCT S.*

@@ -198,6 +198,7 @@ fun LocalPlaylistSongs(
     var getAlbumVersion by remember { mutableStateOf(false) }
     var showGetAlbumVersionDialogue by remember { mutableStateOf(false) }
     var showGetAlbumVersionDialogueExt by remember { mutableStateOf(false) }
+    var cancelMatchExt by remember { mutableStateOf(false) }
     var showConfirmMatchAllDialog by remember { mutableStateOf(false) }
     var totalSongsToMatch by remember { mutableStateOf(0) }
     var songsMatched by remember { mutableStateOf(0) }
@@ -245,9 +246,8 @@ fun LocalPlaylistSongs(
             done = songsMatched,
             text = stringResource(R.string.matching_songs),
             onDismiss = {
-                // Cannot cancel this easily if unmatchedExt doesn't change, 
-                // but setting showGetAlbumVersionDialogueExt to false hides it.
                 showGetAlbumVersionDialogueExt = false
+                cancelMatchExt = true
             }
         )
     }
@@ -266,9 +266,10 @@ fun LocalPlaylistSongs(
     }
 
     val unmatchedExt = remember(items) { items.any { song -> song.id == (app.it.fast4x.rimusic.cleanPrefix(song.title ?: "")+(song.artistsText ?: "")).filter{it.isLetterOrDigit()} } }
-    if (unmatchedExt){
+    if (unmatchedExt && !cancelMatchExt){
         showGetAlbumVersionDialogueExt = true
-        LaunchedEffect(unmatchedExt) {
+        LaunchedEffect(unmatchedExt, cancelMatchExt) {
+            if (cancelMatchExt) return@LaunchedEffect
             kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
                 val matchedItems = items.filter{song -> song.id == (app.it.fast4x.rimusic.cleanPrefix(song.title ?: "")+(song.artistsText ?: "")).filter{it.isLetterOrDigit()}}
                 totalSongsToMatch = matchedItems.size
@@ -284,6 +285,8 @@ fun LocalPlaylistSongs(
                                 position = index,
                                 playlist = playlist
                             )
+                        } catch (e: kotlinx.coroutines.CancellationException) {
+                            throw e
                         } catch (e: Exception) {
                             e.printStackTrace()
                         } finally {
@@ -295,6 +298,7 @@ fun LocalPlaylistSongs(
                 jobs.forEach { it.join() }
                 showGetAlbumVersionDialogueExt = false
                 getAlbumVersion = false
+                cancelMatchExt = false
             }
         }
     }
@@ -316,6 +320,8 @@ fun LocalPlaylistSongs(
                             position = index,
                             playlist = playlist
                         )
+                    } catch (e: kotlinx.coroutines.CancellationException) {
+                        throw e
                     } catch (e: Exception) {
                         e.printStackTrace()
                     } finally {
@@ -338,11 +344,8 @@ fun LocalPlaylistSongs(
     )
     val importNzikDialog = app.n_zik.android.components.tab.ImportSongsFromCSV(targetPlaylistId = playlistId)
     val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init(
-        afterTransaction = { _, song, _, _ ->
-            Database.asyncTransaction {
-                songTable.insertIgnore( song )
-                songPlaylistMapTable.map( song.id, playlistId )
-            }
+        afterTransaction = { finalPosition, song, _, _ ->
+            // Already handled by ImportSongsFromSpotifyCSV internally
         },
         playlistIdForMatch = playlistId,
         playlistName = playlist?.name ?: ""
@@ -356,7 +359,6 @@ fun LocalPlaylistSongs(
             override val iconId: Int = R.drawable.alert
             override val messageId: Int = R.string.match_album_audio_version
             @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
-            @get:Composable override val color: androidx.compose.ui.graphics.Color get() = androidx.compose.ui.graphics.Color.Unspecified
             override fun onShortClick() { showConfirmMatchAllDialog = true }
             override fun onLongClick() {}
         }
@@ -893,15 +895,20 @@ fun LocalPlaylistSongs(
 
                 val toolbarButtons = remember { mutableStateListOf<Button>() }
 
+                val hasUnmatchedSongs = remember(items) { items.any { it.id.length != 11 && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) } }
+
                 LaunchedEffect(
                     playlistNotMonthlyType,
                     sort.sortBy,
                     sort.sortOrder,
-                    playlist?.browseId
+                    playlist?.browseId,
+                    hasUnmatchedSongs
                 ) {
                     toolbarButtons.clear()
                     if (playlistNotMonthlyType)
                         toolbarButtons.add( pin )
+                    if (hasUnmatchedSongs)
+                        toolbarButtons.add( matchAlbumButton )
                     if ( sort.sortBy == PlaylistSongSortBy.Custom ) {
                         toolbarButtons.add( positionLock )
                         toolbarButtons.add( renumberDialog )
@@ -918,7 +925,6 @@ fun LocalPlaylistSongs(
                         toolbarButtons.add( syncComponent )
                         toolbarButtons.add( listenOnYT )
                     }
-                    toolbarButtons.add( matchAlbumButton )
                     toolbarButtons.add( importMenu )
                     toolbarButtons.add( renameDialog )
                     toolbarButtons.add( deleteDialog )

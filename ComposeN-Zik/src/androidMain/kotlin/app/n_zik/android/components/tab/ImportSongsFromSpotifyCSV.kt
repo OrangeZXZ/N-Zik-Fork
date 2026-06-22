@@ -53,6 +53,8 @@ class ImportSongsFromSpotifyCSV private constructor(
                 .openInputStream(uri)
                 ?.use { inputStream ->
 
+                    var basePosition = -1
+
                     csvReader().open(inputStream) {
                         readAllWithHeaderAsSequence().forEachIndexed { index, row: Map<String, String> ->
                             
@@ -67,7 +69,13 @@ class ImportSongsFromSpotifyCSV private constructor(
                             
                             val currentPlaylistId = activePlaylistId
 
-                            Database.asyncTransaction {
+                            if (index == 0 && currentPlaylistId != 0L) {
+                                basePosition = app.n_zik.android.core.database.Database.songPlaylistMapTable.getMaxPosition(currentPlaylistId)
+                            }
+                            
+                            val finalPosition = basePosition + 1 + index
+
+                            app.n_zik.android.core.database.Database.asyncTransaction {
                                 beforeTransaction( index, row, fileName )
 
                                 val song: Song
@@ -153,10 +161,12 @@ class ImportSongsFromSpotifyCSV private constructor(
 
                                 // If a target playlist is set, map immediately
                                 if (currentPlaylistId > 0L) {
-                                    songPlaylistMapTable.map( song.id, currentPlaylistId )
+                                    songPlaylistMapTable.mapAtPosition( song.id, currentPlaylistId, finalPosition )
                                 }
 
-                                afterTransaction( index, song, album, artists )
+                                if (afterTransaction != null) {
+                                    afterTransaction( finalPosition, song, album, artists )
+                                }
                             }
                         }
                     }

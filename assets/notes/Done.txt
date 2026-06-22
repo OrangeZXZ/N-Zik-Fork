@@ -4,3 +4,8 @@
 - Set default lyrics color to White
 - Port Match Album logic from RiPlay to LocalPlaylist (replaces video version with audio/album version)
 - Add RiPlay & Exportify CSV Import option with automatic Match Album
+- Improve match system reliability (duration tolerance, robust ID length checks instead of thumbnail links)
+- Preserve custom sorting order when importing playlists via Spotify CSV
+- Add functional Cancel button to stop background matching jobs from the progress dialog
+- Suppress unnecessary 'Failed to fetch original property' error toast on background syncs during playback
+- Hide 'Match Album' menu button when all songs are fully matched, and reposition it after the Pin button
