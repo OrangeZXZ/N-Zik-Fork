@@ -195,7 +195,19 @@ Here are the languages currently supported:
 - 🇺🇦 **Ukrainian** — [Avin](https://crowdin.com/profile/avinateachip), [Crayz310](https://github.com/Crayz310), and more...
 - 🇻🇳 **Vietnamese** — [teaminh](https://crowdin.com/profile/teaminh)
 
-> ❓ Don't see your language? [Request it here](https://crowdin.com/project/N-Zik) or contribute below!
+  
+## 🌍 Help Translate
+
+Want to:
+
+- Translate into a new language?
+- Improve an existing translation?
+- Fix typos or inconsistencies?
+
+Join us on Crowdin!
+
+> ❓ Don't see your language?
+[![Translated with Crowdin](https://badges.crowdin.net/badge/light/crowdin-on-dark.png)](https://crowdin.com/project/N-Zik)
 
 ---
 
@@ -229,18 +241,6 @@ Add in the file
 New:
 - Initial release
 ```
-
-## 🌍 Help Translate
-
-Want to:
-
-- Translate into a new language?
-- Improve an existing translation?
-- Fix typos or inconsistencies?
-
-Join us on Crowdin!
-
-[![Translated with Crowdin](https://badges.crowdin.net/badge/light/crowdin-on-dark.png)](https://crowdin.com/project/N-Zik)
 
 # 🫂 Acknowledgements
 
