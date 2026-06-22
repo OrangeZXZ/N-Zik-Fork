@@ -1209,4 +1209,6 @@
   <string name="translation_successful">Traducere reușită</string>
   <string name="karaoke_respect_agent_position">Respectați poziția agentului</string>
   <string name="lyrics_offset">Offset versuri</string>
+  <string name="show_more">Arată mai mult</string>
+  <string name="show_less">Arată mai puțin</string>
 </resources>

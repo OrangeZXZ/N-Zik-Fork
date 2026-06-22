@@ -1209,4 +1209,6 @@
   <string name="translation_successful">Käännös onnistui</string>
   <string name="karaoke_respect_agent_position">Noudatetaan agentin sijaintia</string>
   <string name="lyrics_offset">Sanoitusten Siirtymä</string>
+  <string name="show_more">Näytä lisää</string>
+  <string name="show_less">Näytä vähemmän</string>
 </resources>

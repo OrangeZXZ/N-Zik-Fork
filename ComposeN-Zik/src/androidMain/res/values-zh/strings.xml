@@ -1209,4 +1209,6 @@
   <string name="translation_successful">翻译成功</string>
   <string name="karaoke_respect_agent_position">尊重代理位置</string>
   <string name="lyrics_offset">歌词偏移</string>
+  <string name="show_more">Show more</string>
+  <string name="show_less">Show less</string>
 </resources>

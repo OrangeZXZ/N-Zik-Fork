@@ -1210,4 +1210,6 @@ Volume BAS : titre précédent</string>
   <string name="translation_successful">Traduction réussie</string>
   <string name="karaoke_respect_agent_position">Respecter la position des chanteurs dans les paroles</string>
   <string name="lyrics_offset">Décalage des paroles</string>
+  <string name="show_more">Afficher plus</string>
+  <string name="show_less">Afficher moins</string>
 </resources>

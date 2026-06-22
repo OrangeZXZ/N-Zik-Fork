@@ -1209,4 +1209,6 @@
   <string name="translation_successful">تمت الترجمة بنجاح</string>
   <string name="karaoke_respect_agent_position">احترام وضع الوكيل</string>
   <string name="lyrics_offset">إزاحة الكلمات</string>
+  <string name="show_more">إظهار المزيد</string>
+  <string name="show_less">إظهار أقل</string>
 </resources>

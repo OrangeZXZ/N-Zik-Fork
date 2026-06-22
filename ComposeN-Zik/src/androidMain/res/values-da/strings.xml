@@ -1209,4 +1209,6 @@
   <string name="translation_successful">Oversættelse succesfuld</string>
   <string name="karaoke_respect_agent_position">Respekter agent position</string>
   <string name="lyrics_offset">Sangtekst Offset</string>
+  <string name="show_more">Vis mere</string>
+  <string name="show_less">Vis mindre</string>
 </resources>
