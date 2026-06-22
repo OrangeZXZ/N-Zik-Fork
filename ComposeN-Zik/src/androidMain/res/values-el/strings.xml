@@ -1209,4 +1209,6 @@
   <string name="translation_successful">Επιτυχής μετάφραση</string>
   <string name="karaoke_respect_agent_position">Τήρηση θέσης πράκτορα</string>
   <string name="lyrics_offset">Μετατόπιση Στίχων</string>
+  <string name="show_more">Εμφάνιση περισσότερων</string>
+  <string name="show_less">Εμφάνιση λιγότερων</string>
 </resources>
