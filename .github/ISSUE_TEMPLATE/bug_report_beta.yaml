@@ -1,7 +1,7 @@
-name: 👾 Bug report
-description: Make a bug report to help us improve N-Zik
-title: "[BUG]: "
-labels: ["bug"]
+name: 🧪 Beta Bug report
+description: Report a bug found while testing the N-Zik Beta build
+title: "[BETA BUG]: "
+labels: ["bug", "beta-feedback"]
 
 body:
   - type: markdown
@@ -10,7 +10,8 @@ body:
         ****
         ### ❗ READ BEFORE SUBMITTING ❗
 
-        Using the **Beta** build? Please use the Beta Bug report template instead.
+        This form is for bugs found specifically in the **Beta** build of N-Zik.
+        If you're on the **Full** or **Minified** build, please use the regular Bug report template instead.
 
         * **Media cannot be played / Unknown Error / Login required:**
         YouTube is likely blocking you. Please **do not** open a ticket for this.
@@ -26,7 +27,7 @@ body:
       label: 📝 Before submitting
       description: Please verify the following steps before submitting your issue. Completing these steps may fix problems!
       options:
-        - label: I have tested the latest stable version.
+        - label: I am currently using the **Beta** build of N-Zik.
           required: true
         - label: I have checked for already existing issues.
           required: true
@@ -37,19 +38,8 @@ body:
     id: version-number
     attributes:
       label: 🏷️ App Version
-      description: Please specify the exact version of N-Zik.
-      placeholder: 5.0.0-f
-    validations:
-      required: true
-
-  - type: dropdown
-    id: build-type
-    attributes:
-      label: 🏗️ Build Type
-      description: Select the build type you are currently using.
-      options:
-        - Full
-        - Minified
+      description: Please specify the exact beta version of N-Zik.
+      placeholder: 5.1.0-b
     validations:
       required: true
 
@@ -140,9 +130,14 @@ body:
     id: logs
     attributes:
       label: 📜 Logs (Optional)
-      description: You can use the "Debug Mode" feature in app to get them. Keep it simple and paste raw logs.
+      description: You can use the "Debug Mode" feature in app to get them. Leave the HTML tags intact to collapse them and keep the issue clean!
       placeholder: |
+        <details>
+        <summary>Click to expand logs</summary>
+
         Paste your crash logs or error messages here
+
+        </details>
     validations:
       required: false
 
