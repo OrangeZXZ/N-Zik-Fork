@@ -1,22 +1,57 @@
-<svg width="600" height="150" viewBox="0 0 600 150" xmlns="http://www.w3.org/2000/svg">
+<svg width="600" height="160" viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .bg { fill: #ffffff; stroke: #e1e4e8; }
+    .text-title { fill: #2b3137; font-weight: 600; font-size: 15px; }
+    .chart-line { stroke: #0366d6; fill: none; }
+    .chart-dot { fill: #ffffff; stroke: #0366d6; }
+    .grad-start { stop-color: #0366d6; stop-opacity: 0.4; }
+    .grad-end { stop-color: #0366d6; stop-opacity: 0.0; }
+    
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0d1117; stroke: #30363d; }
+      .text-title { fill: #c9d1d9; }
+      .chart-line { stroke: #58a6ff; }
+      .chart-dot { fill: #0d1117; stroke: #58a6ff; }
+      .grad-start { stop-color: #58a6ff; stop-opacity: 0.3; }
+      .grad-end { stop-color: #58a6ff; stop-opacity: 0.0; }
+    }
+    
+    @keyframes pulse {
+      0% { r: 4; stroke-width: 2.5; }
+      50% { r: 5.5; stroke-width: 4; stroke-opacity: 0.6; }
+      100% { r: 4; stroke-width: 2.5; }
+    }
+    .dot-pulse { animation: pulse 2s infinite; }
+    @keyframes draw {
+      from { stroke-dashoffset: 1000; }
+      to { stroke-dashoffset: 0; }
+    }
+    .animated-line {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: draw 1.5s ease-out forwards;
+    }
+  </style>
   <defs>
-    <filter id="shadow2" x="-2%" y="-2%" width="104%" height="108%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.1" />
+    <filter id="shadow2" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity="0.05" />
     </filter>
     <linearGradient id="fillGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#0366d6" stop-opacity="0.3"/>
-      <stop offset="100%" stop-color="#0366d6" stop-opacity="0.02"/>
+      <stop offset="0%" class="grad-start"/>
+      <stop offset="100%" class="grad-end"/>
     </linearGradient>
   </defs>
-  <rect width="600" height="150" rx="12" fill="#ffffff" filter="url(#shadow2)" stroke="#e1e4e8" stroke-width="1"/>
-  <text x="20" y="24" fill="#2b3137" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="14" font-weight="600">📈 Download Growth (Current: 12.8k)</text>
+  <rect class="bg" width="600" height="160" rx="10" filter="url(#shadow2)" stroke-width="1"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">
+    <text x="25" y="30" class="text-title">📈 Download Growth (Current: 12.8k)</text>
+  </g>
 
   <!-- Area under the line -->
-  <polygon fill="url(#fillGrad)" points="30.0,37.5,120 30.0,37.5 39.2,37.2 48.3,36.2 57.5,34.5 66.6,33.6 75.8,33.5 84.9,32.5 94.1,32.0 103.2,31.5 112.4,31.3 121.5,31.0 130.7,30.6 139.8,30.0 149.0,65.8 158.1,64.0 167.3,63.2 176.4,62.3 185.6,61.4 194.7,61.0 203.9,60.5 213.1,60.3 222.2,60.1 231.4,59.2 240.5,58.4 249.7,58.0 258.8,57.7 268.0,57.6 277.1,57.5 286.3,57.2 295.4,56.5 304.6,56.3 313.7,55.8 322.9,55.5 332.0,55.4 341.2,55.2 350.3,54.8 359.5,54.5 368.6,54.3 377.8,54.1 386.9,53.9 396.1,53.9 405.3,53.7 414.4,53.5 423.6,52.9 432.7,52.6 441.9,52.5 451.0,52.2 460.2,52.1 469.3,51.9 478.5,51.9 487.6,51.7 496.8,51.4 505.9,51.3 515.1,51.0 524.2,50.9 533.4,50.8 542.5,50.7 551.7,50.4 560.8,120.0 570.0,119.6 570.0,119.6,120" />
+  <path fill="url(#fillGrad)" d="M 35.0,125.0 C 57.08333333333333,125.0 57.08333333333333,120.625 79.16666666666666,120.625 C 101.25,120.625 101.25,108.4375 123.33333333333333,108.4375 C 145.41666666666666,108.4375 145.41666666666666,89.0625 167.5,89.0625 C 189.58333333333331,89.0625 189.58333333333331,78.4375 211.66666666666666,78.4375 C 233.75,78.4375 233.75,76.875 255.83333333333334,76.875 C 277.9166666666667,76.875 277.9166666666667,65.0 300.0,65.0 C 322.08333333333337,65.0 322.08333333333337,59.375 344.1666666666667,59.375 C 366.25,59.375 366.25,52.8125 388.3333333333333,52.8125 C 410.41666666666663,52.8125 410.41666666666663,50.625 432.5,50.625 C 454.58333333333337,50.625 454.58333333333337,47.5 476.6666666666667,47.5 C 498.75,47.5 498.75,42.1875 520.8333333333333,42.1875 C 542.9166666666666,42.1875 542.9166666666666,35.0 565.0,35.0 L 565.0,125 L 35.0,125 Z" />
 
-  <!-- Main line -->
-  <polyline fill="none" stroke="#0366d6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="30.0,37.5 39.2,37.2 48.3,36.2 57.5,34.5 66.6,33.6 75.8,33.5 84.9,32.5 94.1,32.0 103.2,31.5 112.4,31.3 121.5,31.0 130.7,30.6 139.8,30.0 149.0,65.8 158.1,64.0 167.3,63.2 176.4,62.3 185.6,61.4 194.7,61.0 203.9,60.5 213.1,60.3 222.2,60.1 231.4,59.2 240.5,58.4 249.7,58.0 258.8,57.7 268.0,57.6 277.1,57.5 286.3,57.2 295.4,56.5 304.6,56.3 313.7,55.8 322.9,55.5 332.0,55.4 341.2,55.2 350.3,54.8 359.5,54.5 368.6,54.3 377.8,54.1 386.9,53.9 396.1,53.9 405.3,53.7 414.4,53.5 423.6,52.9 432.7,52.6 441.9,52.5 451.0,52.2 460.2,52.1 469.3,51.9 478.5,51.9 487.6,51.7 496.8,51.4 505.9,51.3 515.1,51.0 524.2,50.9 533.4,50.8 542.5,50.7 551.7,50.4 560.8,120.0 570.0,119.6" />
+  <!-- Main curve -->
+  <path d="M 35.0,125.0 C 57.08333333333333,125.0 57.08333333333333,120.625 79.16666666666666,120.625 C 101.25,120.625 101.25,108.4375 123.33333333333333,108.4375 C 145.41666666666666,108.4375 145.41666666666666,89.0625 167.5,89.0625 C 189.58333333333331,89.0625 189.58333333333331,78.4375 211.66666666666666,78.4375 C 233.75,78.4375 233.75,76.875 255.83333333333334,76.875 C 277.9166666666667,76.875 277.9166666666667,65.0 300.0,65.0 C 322.08333333333337,65.0 322.08333333333337,59.375 344.1666666666667,59.375 C 366.25,59.375 366.25,52.8125 388.3333333333333,52.8125 C 410.41666666666663,52.8125 410.41666666666663,50.625 432.5,50.625 C 454.58333333333337,50.625 454.58333333333337,47.5 476.6666666666667,47.5 C 498.75,47.5 498.75,42.1875 520.8333333333333,42.1875 C 542.9166666666666,42.1875 542.9166666666666,35.0 565.0,35.0" class="chart-line animated-line" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
 
   <!-- Bright endpoint dot -->
-  <circle cx="570.0" cy="119.6" r="4" fill="#ffffff" stroke="#0366d6" stroke-width="2.5" />
+  <circle cx="565.0" cy="35.0" r="4" class="chart-dot dot-pulse" stroke-width="2.5" />
 </svg>

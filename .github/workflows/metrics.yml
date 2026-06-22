@@ -26,13 +26,24 @@ jobs:
           STARS=$(echo "$REPO_DATA" | jq '.stargazers_count')
           FORKS=$(echo "$REPO_DATA" | jq '.forks_count')
 
-          # 2. Fetch latest release data
-          LATEST_DATA=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/N-Zik-Group/N-Zik/releases/latest")
+          # 2. Fetch latest release data (including pre-releases)
+          LATEST_DATA=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/N-Zik-Group/N-Zik/releases?per_page=1" | jq '.[0]')
           LATEST_VERSION=$(echo "$LATEST_DATA" | jq -r '.tag_name')
           LATEST_DOWNLOADS=$(echo "$LATEST_DATA" | jq '[.assets[].download_count] | add // 0')
 
-          # 3. Fetch total downloads across all releases
-          TOTAL_DOWNLOADS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/N-Zik-Group/N-Zik/releases" | jq '[.[].assets[].download_count] | add // 0')
+          # 3. Fetch total downloads across all releases (handling pagination)
+          TOTAL_DOWNLOADS=0
+          PAGE=1
+          while true; do
+            PAGE_DATA=$(curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/N-Zik-Group/N-Zik/releases?per_page=100&page=$PAGE")
+            COUNT=$(echo "$PAGE_DATA" | jq 'length')
+            if [ "$COUNT" = "0" ] || [ "$COUNT" = "null" ]; then
+              break
+            fi
+            DL=$(echo "$PAGE_DATA" | jq '[.[].assets[].download_count] | add // 0')
+            TOTAL_DOWNLOADS=$((TOTAL_DOWNLOADS + DL))
+            PAGE=$((PAGE + 1))
+          done
 
           # Format numbers for the card
           format_number() {
