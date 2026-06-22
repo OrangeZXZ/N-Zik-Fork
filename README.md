@@ -207,6 +207,7 @@ Want to:
 Join us on Crowdin!
 
 > ❓ Don't see your language?
+
 [![Translated with Crowdin](https://badges.crowdin.net/badge/light/crowdin-on-dark.png)](https://crowdin.com/project/N-Zik)
 
 ---
