@@ -1209,4 +1209,6 @@
   <string name="translation_successful">Traduzione riuscita</string>
   <string name="karaoke_respect_agent_position">Rispetto della posizione dell\'agente</string>
   <string name="lyrics_offset">Scostamento Testi</string>
+  <string name="show_more">Mostra di più</string>
+  <string name="show_less">Mostra meno</string>
 </resources>
