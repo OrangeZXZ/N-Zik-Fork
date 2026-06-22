@@ -26,6 +26,10 @@ import kotlin.time.Duration.Companion.milliseconds
 
 import app.n_zik.android.enums.lyrics.LyricsType
 
+private var globalLastKaraokeAttemptMediaId: String? = null
+private var globalLastSyncedAttemptMediaId: String? = null
+private var globalLastUnSyncedAttemptMediaId: String? = null
+
 @Composable
 fun LyricsFetcher(
     mediaId: String,
@@ -43,9 +47,6 @@ fun LyricsFetcher(
     onCheckedKugouUpdated: (Boolean) -> Unit,
     onCheckedInnertubeUpdated: (Boolean) -> Unit
 ) {
-    val lastKaraokeAttemptMediaId = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
-    val lastSyncedAttemptMediaId = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
-
     LaunchedEffect(mediaId, lyricsType, checkLyrics) {
         Database.lyricsTable
             .findBySongId(mediaId)
@@ -54,15 +55,15 @@ fun LyricsFetcher(
                 val wantKaraoke = lyricsType == LyricsType.Karaoke
                 val hasWordTimings = currentLyrics?.synced?.lines()?.any { it.trim().startsWith("<") && it.contains(":") && it.contains(">") } == true
 
-                val needKaraokeFetch = wantKaraoke && !hasWordTimings && lastKaraokeAttemptMediaId.value != mediaId
-                val needSyncedFetch = lyricsType == LyricsType.Synced && hasWordTimings && lastSyncedAttemptMediaId.value != mediaId
+                val needKaraokeFetch = wantKaraoke && !hasWordTimings && globalLastKaraokeAttemptMediaId != mediaId
+                val needSyncedFetch = lyricsType == LyricsType.Synced && hasWordTimings && globalLastSyncedAttemptMediaId != mediaId
 
                 if ((wantSynced && currentLyrics?.synced == null) || needKaraokeFetch || needSyncedFetch) {
                     if (needKaraokeFetch) {
-                        lastKaraokeAttemptMediaId.value = mediaId
+                        globalLastKaraokeAttemptMediaId = mediaId
                     }
                     if (needSyncedFetch) {
-                        lastSyncedAttemptMediaId.value = mediaId
+                        globalLastSyncedAttemptMediaId = mediaId
                     }
 
                     if (currentLyrics?.synced == null || needSyncedFetch) {
@@ -259,7 +260,8 @@ fun LyricsFetcher(
                         fetchLrcLibAndKugou(null)
                     }
 
-                } else if (!wantSynced && currentLyrics?.fixed == null) {
+                } else if (!wantSynced && currentLyrics?.fixed == null && globalLastUnSyncedAttemptMediaId != mediaId) {
+                    globalLastUnSyncedAttemptMediaId = mediaId
                     onErrorUpdated(false)
                     onLyricsUpdated(null)
                     kotlin.runCatching {

@@ -31,3 +31,5 @@ added: Display monthly listener count alongside subscriber count in Artist heade
 improved: Refactored VideoOrSongInfoScreen to display as an inline bottom sheet instead of a new screen overlay
 added: 'Information' action button on video menus
 improved: SongItem pill background removed in menus to seamlessly blend with the menu header color
+Updated Git Submodules (DiscordRPC, Next-Visualizer, Better-Lyrics)
+Fixed BetterLyrics API fetching logic (prevented API spam, added local DB fallback for album title, allowed Synced lyrics fallback)
