@@ -1,0 +1,2 @@
+Fixed:
+- App crash on language selection due to string format corruption
