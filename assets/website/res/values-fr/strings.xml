@@ -4,9 +4,9 @@
     <string name="your_library">Mise en cache intelligente.</string>
     <string name="organized_in_one_place">Mise en cache automatique des titres pour une écoute hors ligne, avec limites ajustables. Téléchargez vos morceaux pour un accès permanent.</string>
     <string name="beautiful_player">Interface intuitive et moderne.</string>
-    <string name="listen_songs_sing_lyrics">Profitez d\'une expérience raffinée, avec une magnifique interface, des animations fluides et des thèmes personnalisables.</string>
+    <string name="listen_songs_sing_lyrics">Profitez d\'une expérience raffinée avec une magnifique interface, des thèmes personnalisables, et des paroles synchronisées mot à mot.</string>
     <string name="many_effects">Fonctionnalités avancées.</string>
-    <string name="visualizer_preview_timeline">Paroles synchronisées mot à mot, visualiseur audio, minuterie de mise en veille et contrôles audio complets.</string>
+    <string name="visualizer_preview_timeline">Visualiseur audio, minuterie de mise en veille, contrôles audio complets, et bien plus encore.</string>
     <string name="artist_page_title">Pages Artiste Détaillées.</string>
     <string name="artist_page_desc">Explorez des profils d\'artistes complets avec leurs meilleurs titres, albums et artistes similaires.</string>
     <string name="discord_rpc_title">Discord Rich Presence.</string>

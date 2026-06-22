@@ -4,9 +4,9 @@
     <string name="your_library">Smart Offline Caching.</string>
     <string name="organized_in_one_place">Automatically cache songs for offline playback with customizable cache limits. Download tracks for permanent access.</string>
     <string name="beautiful_player">Modern and Intuitive UI.</string>
-    <string name="listen_songs_sing_lyrics">Enjoy a refined user experience with a beautiful interface, smooth animations, and custom themes.</string>
+    <string name="listen_songs_sing_lyrics">Enjoy a refined user experience with a beautiful interface, custom themes, and word-by-word synced lyrics.</string>
     <string name="many_effects">Advanced Features.</string>
-    <string name="visualizer_preview_timeline">Word-by-word synced lyrics, audio visualizer, sleep timer, and advanced audio controls.</string>
+    <string name="visualizer_preview_timeline">Audio visualizer, sleep timer, advanced audio controls, and many more features.</string>
     <string name="artist_page_title">Detailed Artist Pages.</string>
     <string name="artist_page_desc">Explore comprehensive artist profiles with top tracks, albums, and similar artists.</string>
     <string name="discord_rpc_title">Discord Rich Presence.</string>
