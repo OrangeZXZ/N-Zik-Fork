@@ -29,8 +29,8 @@
 </div>
 
 <div align="center">
-  <img src="download-card.svg" alt="N-Zik Stats" />
-  <img src="chart.svg" alt="Download Growth" />
+  <img src="assets/stats/download-card.svg" alt="N-Zik Stats" />
+  <img src="assets/stats/chart.svg" alt="Download Growth" />
   
  <br> <br> 
 
