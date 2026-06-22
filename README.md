@@ -281,6 +281,7 @@ Join us on Crowdin!
 [![Build Full and Minified](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-all-flavors-weekly.yml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-all-flavors-weekly.yml)  
 [![Build Beta](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-beta-flavor.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-beta-flavor.yaml)  
 [![Automatic Cache Builder](https://github.com/N-Zik-Group/N-Zik/actions/workflows/cache-builder.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/cache-builder.yaml)
+
 ## 🔄 Automation & Maintenance
 
 [![Automatic Dependency Submission](https://github.com/N-Zik-Group/N-Zik/actions/workflows/dependency-graph/auto-submission/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/dependency-graph/auto-submission)  
@@ -288,7 +289,9 @@ Join us on Crowdin!
 [![Chores](https://github.com/N-Zik-Group/N-Zik/actions/workflows/house-keeper.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/house-keeper.yaml)  
 [![Close stale tickets weekly](https://github.com/N-Zik-Group/N-Zik/actions/workflows/close-stale-tickets.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/close-stale-tickets.yaml)  
 [![Comment or close on label](https://github.com/N-Zik-Group/N-Zik/actions/workflows/comment-on-label.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/comment-on-label.yaml)  
-[![CodeQL](https://github.com/N-Zik-Group/N-Zik/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/github-code-scanning/codeql)  
+[![CodeQL](https://github.com/N-Zik-Group/N-Zik/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/github-code-scanning/codeql)
+[![Update Project Stats and Chart](https://github.com/N-Zik-Group/N-Zik/actions/workflows/metrics.yml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/metrics.yml)
+[![Update Android Lockdown Countdown](https://github.com/N-Zik-Group/N-Zik/actions/workflows/update-android-lockdown-countdown.yml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/update-android-lockdown-countdown.yml)
 
 ## 🌐 Localization
 
