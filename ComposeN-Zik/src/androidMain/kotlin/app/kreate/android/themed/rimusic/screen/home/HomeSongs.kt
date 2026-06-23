@@ -130,6 +130,8 @@ fun HomeSongs(
     onRecommendationCountChange: (Int) -> Unit = {},
     onRecommendationsLoadingChange: (Boolean) -> Unit = {},
     isRecommendationEnabled: Boolean = false,
+    refreshKey: Int = 0,
+    onMatchClick: () -> Unit = {},
 ) {
     // Essentials
     val binder = LocalPlayerServiceBinder.current
@@ -192,7 +194,7 @@ fun HomeSongs(
 
     // This phrase loads all songs across types into [items]
     // No filtration applied to this stage, only sort
-    LaunchedEffect( builtInPlaylist, topPlaylists.period, songSort.sortBy, songSort.sortOrder, hiddenSongs.isFirstIcon ) {
+    LaunchedEffect( builtInPlaylist, topPlaylists.period, songSort.sortBy, songSort.sortOrder, hiddenSongs.isFirstIcon, refreshKey ) {
         isLoading = true
 
         val retrievedSongs = when( builtInPlaylist ) {
@@ -372,6 +374,19 @@ fun HomeSongs(
         }
     }
 
+    val localMatchButton = remember(hasUnmatchedSongs) {
+        if (hasUnmatchedSongs) {
+            object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon,
+                     app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive {
+                override val iconId: Int = R.drawable.alert
+                override val messageId: Int = R.string.match_album_audio_version
+                @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
+                override fun onShortClick() { onMatchClick() }
+                override fun onLongClick() {}
+            }
+        } else null
+    }
+
     LaunchedEffect( builtInPlaylist, songSort.sortBy, songSort.sortOrder, hasUnmatchedSongs ) {
         buttons.removeAll { it is Sort<*> || it is PeriodSelector || it is PositionLock || it is DownloadAllSongsDialog || it is DeleteAllDownloadedSongsDialog || it is ExportSongsToCSVDialog }
         
@@ -379,8 +394,8 @@ fun HomeSongs(
         buttons.add( 0, firstButton )
         if ( builtInPlaylist != BuiltInPlaylist.Top && songSort.sortBy == SongSortBy.Custom )
             buttons.add( 1, positionLock )
-        if ( matchButton != null && builtInPlaylist != BuiltInPlaylist.OnDevice && hasUnmatchedSongs )
-            buttons.add( 2, matchButton )
+        if ( localMatchButton != null && builtInPlaylist != BuiltInPlaylist.OnDevice )
+            buttons.add( 2, localMatchButton )
         buttons.add( 3, downloadAllDialog )
         buttons.add( 4, deleteDownloadsDialog )
         buttons.add( exportDialog )

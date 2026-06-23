@@ -104,6 +104,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
 import app.it.fast4x.rimusic.models.Playlist
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.components.tab.ExportSongsToCSVDialog
@@ -142,6 +143,7 @@ fun HomeSongsScreen(navController: NavController ) {
     var matchResultsMatched by remember { mutableStateOf(0) }
     var matchResultsFailed by remember { mutableStateOf(0) }
     var matchResultsFailedSongs by remember { mutableStateOf<List<Song>>(emptyList()) }
+    var matchRefreshKey by remember { mutableIntStateOf(0) }
 
     // Delete dialog state
     var showDeleteConfirmDialog by remember { mutableStateOf(false) }
@@ -315,6 +317,7 @@ fun HomeSongsScreen(navController: NavController ) {
                 showMatchingProgressDialog = false
                 retryMatchMode = false
                 retryMatchSongs = emptyList()
+                matchRefreshKey++
 
                 // Show results dialog if there were unmatched songs
                 if (unmatched.isNotEmpty()) {
@@ -514,7 +517,7 @@ fun HomeSongsScreen(navController: NavController ) {
 
             when( builtInPlaylist ) {
                 BuiltInPlaylist.OnDevice -> OnDeviceSong( navController, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs )
-                else                     -> HomeSongs( navController, builtInPlaylist, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs, matchButton = if (itemsOnDisplayState.any { (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX) }) matchAlbumButton else null, onRecommendationCountChange = { count -> recommendationCount = count }, onRecommendationsLoadingChange = { loading -> isRecommendationsLoading = loading }, isRecommendationEnabled = isRecommendationEnabled )
+                else                     -> HomeSongs( navController, builtInPlaylist, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs, matchButton = null, onRecommendationCountChange = { count -> recommendationCount = count }, onRecommendationsLoadingChange = { loading -> isRecommendationsLoading = loading }, isRecommendationEnabled = isRecommendationEnabled, refreshKey = matchRefreshKey, onMatchClick = { showConfirmMatchAllDialog = true } )
             }
         }
 

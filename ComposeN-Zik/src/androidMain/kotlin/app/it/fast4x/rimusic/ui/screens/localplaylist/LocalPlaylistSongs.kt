@@ -239,16 +239,17 @@ fun LocalPlaylistSongs(
         listOf("SPOTIFY_IMPORT", "RIPLAY_IMPORT") +
         listOf("SPOTIFY_IMPORT_HOMESONGS", "RIPLAY_IMPORT_HOMESONGS")
     }
-    var initialSortApplied by remember { mutableStateOf(false) }
     LaunchedEffect( playlist?.browseId, items ) {
-        if (initialSortApplied) return@LaunchedEffect
+        if (items.isEmpty()) return@LaunchedEffect
         val browseId = playlist?.browseId.orEmpty()
         val isSpotifyRiplay = importedBrowseIds.any { browseId == it || browseId.startsWith("${it}_") }
         val hasImportedSongs = items.any { it.totalPlayTimeMs == 1L }
-        if ((isSpotifyRiplay || hasImportedSongs) && sort.sortBy != PlaylistSongSortBy.Custom) {
+        val prefs = appContext().preferences
+        val currentSort = prefs.getString("PlaylistSongsSortBy_$playlistId", null)
+        // Only force Custom if no saved preference exists AND playlist has imports
+        if ((isSpotifyRiplay || hasImportedSongs) && currentSort == null) {
             sort.sortBy = PlaylistSongSortBy.Custom
         }
-        if (items.isNotEmpty()) initialSortApplied = true
     }
 
     val itemSelector = ItemSelector<Song>()
