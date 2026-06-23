@@ -94,7 +94,7 @@ interface SongPlaylistMapTable {
     @Query("""
         SELECT COALESCE(
             (
-                SELECT 'position'
+                SELECT position
                 FROM SongPlaylistMap 
                 WHERE songId = :songId 
                 AND playlistId = :playlistId

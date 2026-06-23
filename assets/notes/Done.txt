@@ -21,4 +21,6 @@
 - Rename BuiltInPlaylist "Songs" to "All"
 - Fix YouTube import in HomeSongsScreen, HomeLibrary, and LocalPlaylistSongs (VL prefix + totalPlayTimeMs)
 - Fix thumbnails in HomeSongs after match from playlist (songTable updated correctly)
-- Import from Favorites tab: auto-add imported songs to favorites
+- Import from Favorites tab: auto-add imported songs to favorites (YouTube, CSV, Spotify CSV, RiPlay CSV)
+- Spotify/RiPlay CSV import: add likeImported parameter for Favorites tab auto-like
+- Fix position loss after match in LocalPlaylist (findPositionOf SQL was selecting string literal 'position' instead of column)

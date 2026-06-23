@@ -35,6 +35,7 @@ class ImportSongsFromSpotifyCSV private constructor(
             uri: Uri,
             targetPlaylistId: Long = 0L,
             source: String? = null,
+            likeImported: Boolean = false,
             beforeTransaction: (Int, Map<String, String>, String?) -> Unit = { _,_,_ -> },
             afterTransaction: ( Int, Song, Album, List<Artist> ) -> Unit = { _,_,_,_ -> }
         ): Long {
@@ -98,7 +99,8 @@ class ImportSongsFromSpotifyCSV private constructor(
                                         artistsText = artistsText,
                                         durationText = durationText,
                                         thumbnailUrl = thumbnailUrl,
-                                        totalPlayTimeMs = 1L
+                                        totalPlayTimeMs = 1L,
+                                        likedAt = if (likeImported) System.currentTimeMillis() else null
                                     )
 
                                     val albumTitle = row["Album Name"]
@@ -132,7 +134,8 @@ class ImportSongsFromSpotifyCSV private constructor(
                                         artistsText = artistsText,
                                         durationText = durationText,
                                         thumbnailUrl = row["ThumbnailUrl"] ?: "",
-                                        totalPlayTimeMs = 1L
+                                        totalPlayTimeMs = 1L,
+                                        likedAt = if (likeImported) System.currentTimeMillis() else null
                                     )
 
                                     val albumId = row["AlbumId"] ?: ""
@@ -182,7 +185,8 @@ class ImportSongsFromSpotifyCSV private constructor(
             afterTransaction: ( Int, Song, Album, List<Artist> ) -> Unit = { _,_,_,_ -> },
             playlistIdForMatch: Long = 0L,
             playlistName: String = "",
-            source: String? = null
+            source: String? = null,
+            likeImported: Boolean = false
         ) = ImportSongsFromSpotifyCSV(
             rememberLauncherForActivityResult(
                 ActivityResultContracts.OpenDocument()
@@ -191,7 +195,7 @@ class ImportSongsFromSpotifyCSV private constructor(
                 
                 CoroutineScope(Dispatchers.IO).launch {
                     val importedSongs = mutableListOf<Song>()
-                    val finalPlaylistId = openFile( uri, playlistIdForMatch, source, beforeTransaction ) { index, song, album, artists ->
+                    val finalPlaylistId = openFile( uri, playlistIdForMatch, source, likeImported, beforeTransaction ) { index, song, album, artists ->
                         afterTransaction(index, song, album, artists)
                         importedSongs.add(song)
                     }
