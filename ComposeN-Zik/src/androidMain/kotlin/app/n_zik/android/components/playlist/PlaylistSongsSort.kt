@@ -16,9 +16,8 @@ import app.it.fast4x.rimusic.enums.SortOrder
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.MenuState
-import app.it.fast4x.rimusic.utils.Preference
-import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.components.Sort
 
@@ -31,10 +30,10 @@ class PlaylistSongsSort private constructor(
 
     companion object {
         @Composable
-        operator fun invoke() = PlaylistSongsSort(
+        operator fun invoke(playlistId: Long) = PlaylistSongsSort(
             LocalMenuState.current,
-            Preference.remember( Preference.PLAYLIST_SONGS_SORT_BY ),
-            Preference.remember( Preference.PLAYLIST_SONGS_SORT_ORDER ),
+            rememberPreference("PlaylistSongsSortBy_$playlistId", PlaylistSongSortBy.Title),
+            rememberPreference("PlaylistSongsSortOrder_$playlistId", SortOrder.Ascending),
             rememberPreference( menuStyleKey, MenuStyle.List )
         )
     }

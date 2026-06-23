@@ -225,7 +225,7 @@ fun LocalPlaylistSongs(
                 .findById( playlistId )
     }.collectAsState( null, Dispatchers.IO )
 
-    val sort = PlaylistSongsSort()
+    val sort = PlaylistSongsSort(playlistId)
 
     val items by remember( sort.sortBy, sort.sortOrder ) {
         Database.songPlaylistMapTable
@@ -408,7 +408,7 @@ fun LocalPlaylistSongs(
         songs = ::getSongs
     )
     val importNzikDialog = app.n_zik.android.components.tab.ImportSongsFromCSV(targetPlaylistId = playlistId, onImportComplete = {
-        appContext().preferences.edit().putString(Preference.PLAYLIST_SONGS_SORT_BY.key, PlaylistSongSortBy.Custom.name).apply()
+        appContext().preferences.edit().putString("PlaylistSongsSortBy_$playlistId", PlaylistSongSortBy.Custom.name).apply()
     })
     val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(
         afterTransaction = { finalPosition, song, _, _ ->
@@ -418,7 +418,7 @@ fun LocalPlaylistSongs(
         playlistName = playlist?.name ?: "",
         source = "SPOTIFY_IMPORT",
         onImportComplete = {
-            appContext().preferences.edit().putString(Preference.PLAYLIST_SONGS_SORT_BY.key, PlaylistSongSortBy.Custom.name).apply()
+            appContext().preferences.edit().putString("PlaylistSongsSortBy_$playlistId", PlaylistSongSortBy.Custom.name).apply()
         }
     )
     val importRiplayDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(
@@ -428,7 +428,7 @@ fun LocalPlaylistSongs(
         playlistName = playlist?.name ?: "",
         source = "RIPLAY_IMPORT",
         onImportComplete = {
-            appContext().preferences.edit().putString(Preference.PLAYLIST_SONGS_SORT_BY.key, PlaylistSongSortBy.Custom.name).apply()
+            appContext().preferences.edit().putString("PlaylistSongsSortBy_$playlistId", PlaylistSongSortBy.Custom.name).apply()
         }
     )
 
@@ -464,7 +464,7 @@ fun LocalPlaylistSongs(
                                             songPlaylistMapTable.map(song.id, playlistId)
                                         }
                                     }
-                                    appContext().preferences.edit().putString(Preference.PLAYLIST_SONGS_SORT_BY.key, PlaylistSongSortBy.Custom.name).apply()
+                                    appContext().preferences.edit().putString("PlaylistSongsSortBy_$playlistId", PlaylistSongSortBy.Custom.name).apply()
                                     Toaster.done()
                                 }
                             }
