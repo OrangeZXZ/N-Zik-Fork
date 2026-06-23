@@ -1347,4 +1347,11 @@ Volume BAS : titre précédent</string>
   <string name="wallpaper_lockscreen">Écran de verrouillage</string>
   <string name="wallpaper_both">Les deux</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">Aucune parole disponible. Réessayez ou saisissez-les manuellement.</string>
+  <string name="source_betterlyrics_synced">Meilleures paroles (synchronisées)</string>
+  <string name="source_betterlyrics_karaoke">Meilleures paroles (karaoke)</string>
+  <string name="source_lrclib_synced">LrcLib.net (synchronisé)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (non synchronisé)</string>
+  <string name="source_kugou_synced">KuGou.com (synchronisé)</string>
+  <string name="source_youtube_unsynced">YouTube (non synchronisé)</string>
 </resources>
