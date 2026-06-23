@@ -26,12 +26,14 @@ class VoiceSearchUtils(
     private var speechRecognizer: SpeechRecognizer? = null
     private var isListening = false
     private var hasReceivedResults = false
+    private var isCancelled = false
     private val mainHandler = Handler(Looper.getMainLooper())
 
     private val recognitionListener = object : RecognitionListener {
         override fun onReadyForSpeech(params: Bundle?) {
             Log.d("VoiceSearch", "Ready")
             hasReceivedResults = false
+            isCancelled = false
             isListening = true
             mainHandler.post { onListeningStateChanged(true) }
         }
@@ -47,13 +49,15 @@ class VoiceSearchUtils(
 
         override fun onEndOfSpeech() {
             Log.d("VoiceSearch", "End of speech")
-            mainHandler.post { onListeningStateChanged(false) }
+            if (!isCancelled) {
+                mainHandler.post { onListeningStateChanged(false) }
+            }
             speechRecognizer?.stopListening()
         }
 
         override fun onError(error: Int) {
-            if (hasReceivedResults) {
-                Log.d("VoiceSearch", "Ignoring error $error after results")
+            if (hasReceivedResults || isCancelled) {
+                Log.d("VoiceSearch", "Ignoring error $error after results/cancel")
                 return
             }
             Log.e("VoiceSearch", "Error: $error")
@@ -121,9 +125,16 @@ class VoiceSearchUtils(
     }
 
     fun stopListening() {
-        speechRecognizer?.stopListening()
+        isCancelled = true
         isListening = false
         mainHandler.post { onListeningStateChanged(false) }
+        try {
+            speechRecognizer?.cancel()
+            speechRecognizer?.destroy()
+        } catch (e: Exception) {
+            Log.e("VoiceSearch", "Error stopping", e)
+        }
+        speechRecognizer = null
     }
 
     fun destroy() {

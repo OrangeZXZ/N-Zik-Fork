@@ -1,6 +1,7 @@
 package app.it.fast4x.rimusic.ui.components.navigation.header
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -27,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -38,6 +40,7 @@ import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.n_zik.android.uiRoundnessShape
+import app.it.fast4x.rimusic.utils.VoiceSearchState
 import app.it.fast4x.rimusic.utils.preferences
 
 class AppHeader(
@@ -62,6 +65,13 @@ class AppHeader(
         val context = LocalContext.current
         val currentEntry by navController.currentBackStackEntryAsState()
         val isHome = currentEntry?.destination?.route?.startsWith(NavRoutes.home.name) ?: true
+        val isVoiceSearchActive = VoiceSearchState.isActive
+
+        val backgroundColor by animateColorAsState(
+            targetValue = if (isVoiceSearchActive) Color.Black.copy(alpha = 0.85f) else colorPalette().background0,
+            animationSpec = tween(200),
+            label = "headerBg"
+        )
         
         // Animate the start padding smoothly so the logo has nice spacing when home, 
         // and the back button aligns correctly when present.
@@ -74,7 +84,7 @@ class AppHeader(
         // so the logo+title smoothly shifts as the back button slides in/out.
         Row(
             modifier = Modifier
-                .background(colorPalette().background0)
+                .background(backgroundColor)
                 .windowInsetsPadding(WindowInsets.statusBars)
                 .fillMaxWidth()
                 .height(64.dp)

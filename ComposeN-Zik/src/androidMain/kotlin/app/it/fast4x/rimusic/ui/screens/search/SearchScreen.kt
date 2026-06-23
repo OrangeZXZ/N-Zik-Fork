@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextRange
@@ -50,6 +51,7 @@ import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.n_zik.android.components.VoiceSearchUtils
+import app.it.fast4x.rimusic.utils.VoiceSearchState
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.ui.components.Skeleton
 import app.n_zik.android.components.VoiceSearchOverlay
@@ -92,7 +94,9 @@ fun SearchScreen(
     val (isListening, setIsListening) = rememberSaveable { mutableStateOf(false) }
     var isSpeaking by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isCancelling by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val voiceSearchUtils = remember {
         VoiceSearchUtils(
@@ -149,6 +153,8 @@ fun SearchScreen(
 
     PersistMapCleanup(tagPrefix = "search/")
 
+    VoiceSearchState.isActive = !isCancelling && (isListening || errorMessage != null)
+
     Box(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxSize()) {
             val decorationBox: @Composable (@Composable () -> Unit) -> Unit = { innerTextField ->
@@ -198,7 +204,9 @@ fun SearchScreen(
                                 if (isListening) {
                                     voiceSearchUtils.stopListening()
                                 } else {
+                                    isCancelling = false
                                     errorMessage = null
+                                    keyboardController?.hide()
                                     if (androidx.core.content.ContextCompat.checkSelfPermission(
                                             context, Manifest.permission.RECORD_AUDIO
                                         ) == PackageManager.PERMISSION_GRANTED
@@ -287,23 +295,27 @@ fun SearchScreen(
         }
 
         VoiceSearchOverlay(
-            isVisible = isListening || errorMessage != null,
+            isVisible = !isCancelling && (isListening || errorMessage != null),
             recognizedText = textFieldValue.text,
             isSpeaking = isSpeaking,
             errorMessage = errorMessage,
             onRetry = {
+                isCancelling = false
                 errorMessage = null
                 voiceSearchUtils.startListening()
             },
-                onCancel = {
-                    isSpeaking = false
-                    errorMessage = null
-                    voiceSearchUtils.stopListening()
-                },
+            onCancel = {
+                isCancelling = true
+                isSpeaking = false
+                setIsListening(false)
+                errorMessage = null
+                voiceSearchUtils.stopListening()
+                VoiceSearchState.isActive = false
+            },
             modifier = Modifier.zIndex(1000f)
         )
     }
-}
+    }
 
 
 
