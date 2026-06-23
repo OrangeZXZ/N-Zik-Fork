@@ -4,9 +4,11 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
@@ -22,14 +24,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import app.n_zik.android.BuildConfig
 import app.n_zik.android.R
 import app.kreate.android.drawable.APP_ICON_IMAGE_BITMAP
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.Button
+import app.it.fast4x.rimusic.utils.bold
 import app.it.fast4x.rimusic.utils.semiBold
 import app.kreate.android.me.knighthat.utils.Toaster
+import app.n_zik.android.uiRoundnessShape
+import app.n_zik.android.updater.services.Updater
 
 private fun appIconClickAction(
     navController: NavController,
@@ -118,6 +124,33 @@ fun AppTitle(
     ) {
         AppLogo(navController, context)
         AppLogoText(navController)
+
+        // Version badge (beta/minified only)
+        val versionSuffix = Updater.extractVersionSuffix(BuildConfig.VERSION_NAME)
+        if (versionSuffix == "b" || versionSuffix == "m") {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = colorPalette().accent.copy(alpha = 0.2f),
+                        shape = uiRoundnessShape()
+                    )
+                    .padding(horizontal = 4.dp, vertical = 1.dp)
+            ) {
+                val badgeText = when (versionSuffix) {
+                    "b" -> stringResource(R.string.beta_title)
+                    "m" -> stringResource(R.string.minified_title)
+                    else -> ""
+                }
+                BasicText(
+                    text = badgeText,
+                    style = TextStyle(
+                        fontSize = typography().xxs.bold.fontSize,
+                        fontWeight = typography().xxs.bold.fontWeight,
+                        color = colorPalette().accent
+                    )
+                )
+            }
+        }
 
         if (Preference.parentalControl())
             Button(
