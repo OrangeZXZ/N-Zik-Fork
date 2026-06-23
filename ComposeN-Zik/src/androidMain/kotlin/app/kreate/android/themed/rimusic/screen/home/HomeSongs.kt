@@ -368,7 +368,7 @@ fun HomeSongs(
 
     val hasUnmatchedSongs by remember {
         derivedStateOf {
-            itemsOnDisplay.any { (it.id.length != 11 || it.durationText == "00:00") && !it.id.startsWith( LOCAL_KEY_PREFIX ) }
+            itemsOnDisplay.any { (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith( LOCAL_KEY_PREFIX ) }
         }
     }
 
@@ -491,7 +491,7 @@ fun HomeSongs(
                     isRecommended = isRecommended,
                     modifier = Modifier.animateItem(),
                     trailingContent = {
-                        if (song.id.length != 11 && !song.id.startsWith(LOCAL_KEY_PREFIX)) {
+                        if ((song.id.length != 11 || (song.durationText == "00:00" && song.totalPlayTimeMs == 1L)) && !song.id.startsWith(LOCAL_KEY_PREFIX)) {
                             androidx.compose.material3.Icon(
                                 painter = androidx.compose.ui.res.painterResource(R.drawable.alert),
                                 contentDescription = stringResource(R.string.unmatched_song),

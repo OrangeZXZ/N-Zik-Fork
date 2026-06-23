@@ -281,7 +281,7 @@ fun LocalPlaylistSongs(
 
     if (showConfirmMatchAllDialog) {
         app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog(
-            text = stringResource(R.string.match_all_confirmation, items.count { it.id.length != 11 || it.durationText == "00:00" }),
+            text = stringResource(R.string.match_all_confirmation, items.count { it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L) }),
             onDismiss = {
                 showConfirmMatchAllDialog = false
             },onConfirm = {
@@ -1188,7 +1188,7 @@ fun LocalPlaylistSongs(
                             modifier = Modifier,
 
                             trailingContent = {
-                                if (song.id.length != 11 && !song.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)) {
+                                if ((song.id.length != 11 || (song.durationText == "00:00" && song.totalPlayTimeMs == 1L)) && !song.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)) {
                                     androidx.compose.material3.Icon(
                                         painter = androidx.compose.ui.res.painterResource(R.drawable.alert),
                                         contentDescription = stringResource(R.string.unmatched_song),
