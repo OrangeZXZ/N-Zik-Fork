@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Låseskjerm</string>
   <string name="wallpaper_both">Begge</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">Ingen sangtekster er tilgjengelige. Prøv igjen eller skriv dem manuelt.</string>
+  <string name="source_betterlyrics_synced">BetterLyrics (synkronisert)</string>
+  <string name="source_betterlyrics_karaoke">BetterLyrics (karaoke)</string>
+  <string name="source_lrclib_synced">LrcLib.net (synkronisert)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (usynkronisert)</string>
+  <string name="source_kugou_synced">KuGou.com (synkronisert)</string>
+  <string name="source_youtube_unsynced">YouTube (usynkronisert)</string>
 </resources>
