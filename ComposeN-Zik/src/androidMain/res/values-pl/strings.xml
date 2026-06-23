@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Ekran blokady</string>
   <string name="wallpaper_both">Oba</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">Brak dostępnych tekstów. Spróbuj ponownie lub wprowadź je ręcznie.</string>
+  <string name="source_betterlyrics_synced">Lepsze teksty piosenek (zsynchronizowane)</string>
+  <string name="source_betterlyrics_karaoke">Lepsze teksty piosenek (karaoke)</string>
+  <string name="source_lrclib_synced">LrcLib.net (zsynchronizowany)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (niezsynchronizowany)</string>
+  <string name="source_kugou_synced">KuGou.com (zsynchronizowany)</string>
+  <string name="source_youtube_unsynced">YouTube (niezsynchronizowany)</string>
 </resources>
