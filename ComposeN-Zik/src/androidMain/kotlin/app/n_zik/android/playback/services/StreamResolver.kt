@@ -254,7 +254,7 @@ private suspend fun resolveStreamUri(
 
     // All retries exhausted - show toast with the real reason
     Timber.tag(TAG).e("All $MAX_RESOLVE_RETRIES resolve attempts failed for $videoId")
-    val errorDetail = lastException?.message ?: "Unknown error"
+    val errorDetail = lastException?.message ?: appContext().resources.getString(R.string.unknown_error)
     Toaster.e(R.string.error_all_stream_attempts_failed, formatArgs = arrayOf(errorDetail.take(100)))
     throw lastException ?: UnplayableException("All retries exhausted for $videoId")
 }
@@ -408,7 +408,7 @@ private suspend fun resolveStreamUriInternal(
                 .build()
 
         } catch (e: LoginRequiredException) {
-            lastFailureReason = "${ytClient.clientName}: ${e.message ?: "Login required"}"
+            lastFailureReason = "${ytClient.clientName}: ${e.message ?: appContext().resources.getString(R.string.login_required)}"
             Timber.tag(TAG).w(lastFailureReason)
             continue
         } catch (e: io.ktor.client.plugins.ResponseException) {

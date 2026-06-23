@@ -598,7 +598,7 @@ inline fun SelectorDialog(
                             )
 
                         BasicText(
-                            text = value.name ?: "Not selectable",
+                            text = value.name ?: stringResource(R.string.not_selectable),
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis,
                             style = typography().xs.medium

@@ -1364,13 +1364,13 @@ class PlayerServiceModern : MediaLibraryService(),
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
             .setStyle(MediaStyleNotificationHelper.MediaStyle(session))
-            .addAction(R.drawable.play_skip_back, "Skip back", prevIntent)
+            .addAction(R.drawable.play_skip_back, getString(R.string.notification_skip_back), prevIntent)
             .addAction(
                 if (player.isPlaying) R.drawable.pause else R.drawable.play,
-                if (player.isPlaying) "Pause" else "Play",
+                if (player.isPlaying) getString(R.string.notification_pause) else getString(R.string.notification_play),
                 if (player.isPlaying) pauseIntent else playIntent
             )
-            .addAction(R.drawable.play_skip_forward, "Skip forward", nextIntent)
+            .addAction(R.drawable.play_skip_forward, getString(R.string.notification_skip_forward), nextIntent)
 
         //***********************
         val notificationPlayerFirstIcon = preferences.getEnum(notificationPlayerFirstIconKey, NotificationButtons.Download)

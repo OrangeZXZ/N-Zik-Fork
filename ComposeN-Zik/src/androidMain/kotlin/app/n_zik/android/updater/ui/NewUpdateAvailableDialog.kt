@@ -171,7 +171,7 @@ object NewUpdateAvailableDialog {
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 BasicText(
-                                    text = stringResource(R.string.app_update_dialog_version, Updater.githubRelease?.tagName?.let { "$it${Updater.getBuildSuffix()}" } ?: BuildConfig.VERSION_NAME),
+                                    text = stringResource(R.string.app_update_dialog_version, Updater.getDisplayVersion()),
                                     style = typography().xs.copy(color = colorPalette().textSecondary)
                                 )
                                 BasicText(

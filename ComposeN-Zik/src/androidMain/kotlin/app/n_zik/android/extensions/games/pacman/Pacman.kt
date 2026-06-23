@@ -621,7 +621,7 @@ fun PacmanGameScreen(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Score: ${state.score}",
+                        text = stringResource(R.string.game_score, state.score),
                         style = typography().l.bold,
                         color = Color.White
                     )

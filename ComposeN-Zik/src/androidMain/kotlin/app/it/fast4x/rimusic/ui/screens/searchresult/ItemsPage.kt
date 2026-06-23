@@ -53,6 +53,8 @@ import app.it.fast4x.rimusic.ui.items.AlbumPlaceholder
 import app.it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import app.it.fast4x.rimusic.ui.components.themed.Loader
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.ui.res.stringResource
+import app.n_zik.android.R
 import kotlinx.coroutines.delay
 
 
@@ -66,7 +68,7 @@ inline fun <T : Innertube.Item> ItemsPage(
     modifier: Modifier = Modifier,
     initialPlaceholderCount: Int = 8,
     continuationPlaceholderCount: Int = 3,
-    emptyItemsText: String = "No items found",
+    emptyItemsText: String = "",
     filterContentType: ContentType = ContentType.All,
     noinline itemsPageProvider: (suspend (String?) -> Result<Innertube.ItemsPage<T>?>?)? = null,
 ) {
@@ -203,7 +205,7 @@ inline fun <T : Innertube.Item> ItemsPage(
                 if (itemsPage != null && itemsPage?.items.isNullOrEmpty()) {
                     item {
                         BasicText(
-                            text = emptyItemsText,
+                            text = emptyItemsText.ifEmpty { stringResource(R.string.no_items_found) },
                             style = typography().xs.secondary.center,
                             modifier = Modifier
                                 .padding(horizontal = 16.dp, vertical = 32.dp)
@@ -246,7 +248,7 @@ inline fun <T : Innertube.Item> ItemsGridPage(
     modifier: Modifier = Modifier,
     initialPlaceholderCount: Int = 8,
     continuationPlaceholderCount: Int = 6,
-    emptyItemsText: String = "No items found",
+    emptyItemsText: String = "",
     filterContentType: ContentType = ContentType.All,
     noinline itemsPageProvider: (suspend (String?) -> Result<Innertube.ItemsPage<T>?>?)? = null,
     thumbnailSizeDp: androidx.compose.ui.unit.Dp
@@ -387,7 +389,7 @@ inline fun <T : Innertube.Item> ItemsGridPage(
                         span = { GridItemSpan(maxLineSpan) }
                     ) {
                         BasicText(
-                            text = emptyItemsText,
+                            text = emptyItemsText.ifEmpty { stringResource(R.string.no_items_found) },
                             style = typography().xs.secondary.center,
                             modifier = Modifier
                                 .padding(horizontal = 16.dp, vertical = 32.dp)

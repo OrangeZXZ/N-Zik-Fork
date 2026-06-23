@@ -16,6 +16,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.it.fast4x.compose.persist.persist
 import it.fast4x.innertube.Innertube
@@ -23,6 +24,7 @@ import it.fast4x.innertube.utils.plus
 import app.it.fast4x.rimusic.ui.components.ShimmerHost
 import app.it.fast4x.rimusic.utils.center
 import app.it.fast4x.rimusic.utils.secondary
+import app.n_zik.android.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import app.n_zik.android.typography
@@ -37,7 +39,7 @@ inline fun <T : Innertube.Item> ItemsList(
     modifier: Modifier = Modifier,
     initialPlaceholderCount: Int = 8,
     continuationPlaceholderCount: Int = 3,
-    emptyItemsText: String = "No items found",
+    emptyItemsText: String = "",
     noinline itemsPageProvider: (suspend (String?) -> Result<Innertube.ItemsPage<T>?>?)? = null,
 ) {
     val updatedItemsPageProvider by rememberUpdatedState(itemsPageProvider)
@@ -93,7 +95,7 @@ inline fun <T : Innertube.Item> ItemsList(
             if (itemsPage != null && itemsPage?.items.isNullOrEmpty()) {
                 item(key = "empty") {
                     BasicText(
-                        text = emptyItemsText,
+                        text = emptyItemsText.ifEmpty { stringResource(R.string.no_items_found) },
                         style = typography().xs.secondary.center,
                         modifier = Modifier
                             .padding(horizontal = 16.dp, vertical = 32.dp)

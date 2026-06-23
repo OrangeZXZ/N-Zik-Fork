@@ -106,6 +106,18 @@ object Updater {
         }
     }
 
+    /**
+     * Returns the display version with suffix, avoiding duplication.
+     * e.g., tagName="v4.1.3-b" returns "v4.1.3-b" (not "v4.1.3-b-b")
+     * e.g., tagName="v4.1.3" returns "v4.1.3-b" (suffix added)
+     */
+    fun getDisplayVersion(): String {
+        val tag = githubRelease?.tagName ?: return BuildConfig.VERSION_NAME
+        val suffix = getBuildSuffix()
+        // Avoid duplicating the suffix if tagName already contains it
+        return if (tag.endsWith(suffix)) tag else "$tag$suffix"
+    }
+
     private fun extractBuild(assets: List<GithubRelease.Build>, checkBetaUpdates: Boolean = false): GithubRelease.Build {
         val appName = BuildConfig.APP_NAME
         val currentBuildType = extractBuildType(BuildConfig.VERSION_NAME)
@@ -249,6 +261,9 @@ object Updater {
         }
     }
 
+    private const val CHANGELOG_CACHE_KEY = "cached_changelog"
+    private const val CHANGELOG_VERSION_KEY = "cached_changelog_version"
+
     fun fetchCurrentFastlaneChangelog() = CoroutineScope(Dispatchers.IO).launch {
         try {
             isFetchingFastlane = true
@@ -258,12 +273,37 @@ object Updater {
             val txtReq = Request.Builder().url(downloadUrl).build()
             val txtRes = NetworkClientFactory.getClient().newCall(txtReq).execute()
             if (txtRes.isSuccessful) {
-                currentFastlaneChangelog = txtRes.body?.string()
+                val fetchedChangelog = txtRes.body?.string()
+                if (!fetchedChangelog.isNullOrBlank()) {
+                    currentFastlaneChangelog = fetchedChangelog
+                    // Cache the changelog locally
+                    appContext().preferences.edit()
+                        .putString(CHANGELOG_CACHE_KEY, fetchedChangelog)
+                        .putInt(CHANGELOG_VERSION_KEY, versionCode)
+                        .apply()
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            // If network fails, try to load from cache
+            if (currentFastlaneChangelog.isNullOrBlank()) {
+                loadCachedChangelog()
+            }
         } finally {
             isFetchingFastlane = false
+        }
+    }
+
+    /**
+     * Loads changelog from local cache if available
+     */
+    fun loadCachedChangelog() {
+        val prefs = appContext().preferences
+        val cachedVersion = prefs.getInt(CHANGELOG_VERSION_KEY, -1)
+        val cachedChangelog = prefs.getString(CHANGELOG_CACHE_KEY, null)
+        
+        if (cachedVersion == BuildConfig.VERSION_CODE && !cachedChangelog.isNullOrBlank()) {
+            currentFastlaneChangelog = cachedChangelog
         }
     }
 

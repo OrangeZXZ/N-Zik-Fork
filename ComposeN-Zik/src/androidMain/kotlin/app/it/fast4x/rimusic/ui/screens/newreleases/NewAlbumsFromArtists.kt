@@ -158,7 +158,7 @@ fun NewAlbumsFromArtists(
                         contentType = 0,
                     ) {
                         BasicText(
-                            text = "There are no new releases for your favorite artists",
+                            text = stringResource(R.string.no_new_releases),
                             style = typography().s.secondary.center,
                             modifier = Modifier
                                 .padding(all = 16.dp)

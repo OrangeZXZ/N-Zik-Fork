@@ -410,7 +410,7 @@ fun SnakeGameScreen(
                         )
                     ) {
                         Text(
-                            text = "Reset",
+                            text = stringResource(R.string.game_reset),
                             style = typography().m.bold
                         )
                     }
@@ -427,7 +427,7 @@ fun SnakeGameScreen(
                         )
                     ) {
                         Text(
-                            text = if (state.gameState == GameState.STARTED) "Pause" else "Start",
+                            text = if (state.gameState == GameState.STARTED) stringResource(R.string.game_pause) else stringResource(R.string.game_start),
                             style = typography().m.bold
                         )
                     }

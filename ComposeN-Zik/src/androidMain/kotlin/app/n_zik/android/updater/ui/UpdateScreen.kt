@@ -123,7 +123,7 @@ fun UpdateScreen(navController: NavController) {
         }
     }
 
-    val newVersion = Updater.githubRelease?.tagName?.let { "$it${Updater.getBuildSuffix()}" } ?: ""
+    val newVersion = Updater.getDisplayVersion()
     val hasUpdate = Updater.githubRelease != null && Updater.isVersionNewer(Updater.githubRelease?.tagName ?: "", BuildConfig.VERSION_NAME)
     val currentVersion = BuildConfig.VERSION_NAME
     val currentBuildTypeLabel = stringResource(
@@ -383,7 +383,7 @@ fun UpdateScreen(navController: NavController) {
                                             )
                                             Spacer(modifier = Modifier.width(8.dp))
                                             BasicText(
-                                                text = "GitHub",
+                                                text = stringResource(R.string.github),
                                                 style = typography().s.semiBold.copy(color = colorPalette().text)
                                             )
                                         }
@@ -449,17 +449,16 @@ fun UpdateScreen(navController: NavController) {
                                         onDismissRequest = { showMenu = false }
                                     )
                                     val isMinified = Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == UpdaterConstants.SUFFIX_CHAR_MINIFIED
-                                    menu.add(
-                                        app.it.fast4x.rimusic.ui.components.themed.DropdownMenu.Item(
-                                            iconId = R.drawable.shield_checkmark,
-                                            customText = "${stringResource(R.string.beta_updates)}: ${if (isMinified) stringResource(R.string.off) else if (checkBetaUpdates) stringResource(R.string.on) else stringResource(R.string.off)}",
-                                            enabled = !isMinified
-                                        ) {
-                                            if (!isMinified) {
+                                    if (!isMinified) {
+                                        menu.add(
+                                            app.it.fast4x.rimusic.ui.components.themed.DropdownMenu.Item(
+                                                iconId = R.drawable.shield_checkmark,
+                                                customText = "${stringResource(R.string.beta_updates)}: ${if (checkBetaUpdates) stringResource(R.string.on) else stringResource(R.string.off)}"
+                                            ) {
                                                 checkBetaUpdates = !checkBetaUpdates
                                             }
-                                        }
-                                    )
+                                        )
+                                    }
                                     val stateStr = when(checkUpdateState) {
                                         CheckUpdateState.Enabled -> stringResource(R.string.on)
                                         CheckUpdateState.Ask -> stringResource(R.string.ask)
@@ -631,6 +630,16 @@ fun UpdateScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Changelog Section
+                // Load cached changelog first, then fetch from network
+                val isReinstalling = downloadState !is UpdateDownloadManager.DownloadState.Idle && UpdateDownloadManager.downloadingVersion == currentVersion
+                LaunchedEffect(isReinstalling, hasUpdate) {
+                    if (isReinstalling || !hasUpdate) {
+                        // Load from cache first for instant display
+                        Updater.loadCachedChangelog()
+                        // Then fetch from network to get latest
+                        Updater.fetchCurrentFastlaneChangelog()
+                    }
+                }
                 val currentChangelog = remember {
                     try {
                         appContext().resources
@@ -639,7 +648,6 @@ fun UpdateScreen(navController: NavController) {
                             .readText()
                     } catch (e: Exception) { "" }
                 }
-                val isReinstalling = downloadState !is UpdateDownloadManager.DownloadState.Idle && UpdateDownloadManager.downloadingVersion == currentVersion
                 val changelogTextToDisplay = if (isReinstalling || !hasUpdate) {
                     if (!Updater.currentFastlaneChangelog.isNullOrBlank()) {
                         Updater.currentFastlaneChangelog!!

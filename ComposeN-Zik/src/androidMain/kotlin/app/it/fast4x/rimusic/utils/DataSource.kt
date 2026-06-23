@@ -12,6 +12,8 @@ import androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException
 import androidx.media3.datasource.TransferListener
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.okhttp.OkHttpDataSource
+import app.n_zik.android.R
+import app.n_zik.android.appContext
 import it.fast4x.innertube.utils.ProxyPreferences
 import it.fast4x.innertube.utils.getProxy
 import okhttp3.OkHttpClient
@@ -61,7 +63,7 @@ class CatchingDataSourceFactory(private val parent: DataSource.Factory) : DataSo
             
             if (it is PlaybackException) throw it
             else throw PlaybackException(
-                "Unknown playback error",
+                appContext().resources.getString(R.string.unknown_playback_error),
                 it,
                 PlaybackException.ERROR_CODE_UNSPECIFIED
             )

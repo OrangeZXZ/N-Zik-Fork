@@ -112,7 +112,7 @@ fun DeleteFromQueue(
         get() = stringResource( messageId )
     override val dialogTitle: String
         @Composable
-        get() = "Do you really want to clean queue?"
+        get() = stringResource(R.string.clean_queue_confirm)
 
     override var isActive: Boolean by rememberSaveable { mutableStateOf(false) }
 

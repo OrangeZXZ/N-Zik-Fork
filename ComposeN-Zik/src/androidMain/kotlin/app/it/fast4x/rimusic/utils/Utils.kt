@@ -552,7 +552,7 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
                                     ?.let { playlist ->
                                         Database.mapIgnore( playlist, *items.toTypedArray() )
                                     }
-                            Toaster.n( "${items.size - (index + 1)} Songs Remaining" )
+                            Toaster.n( appContext().resources.getString(R.string.songs_remaining, items.size - (index + 1)) )
                         }
                     }
                 }

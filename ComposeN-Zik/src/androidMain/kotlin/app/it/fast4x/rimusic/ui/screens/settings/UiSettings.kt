@@ -937,61 +937,61 @@ fun UiSettings(
 
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_background_1),
-                                text = "Light",
+                                text = stringResource(R.string._light),
                                 color = Color(customThemeLight_Background0),
                                 onColorSelected = { customThemeLight_Background0 = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_background_2),
-                                text = "Light",
+                                text = stringResource(R.string._light),
                                 color = Color(customThemeLight_Background1),
                                 onColorSelected = { customThemeLight_Background1 = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_background_3),
-                                text = "Light",
+                                text = stringResource(R.string._light),
                                 color = Color(customThemeLight_Background2),
                                 onColorSelected = { customThemeLight_Background2 = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_background_4),
-                                text = "Light",
+                                text = stringResource(R.string._light),
                                 color = Color(customThemeLight_Background3),
                                 onColorSelected = { customThemeLight_Background3 = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_background_5),
-                                text = "Light",
+                                text = stringResource(R.string._light),
                                 color = Color(customThemeLight_Background4),
                                 onColorSelected = { customThemeLight_Background4 = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_text),
-                                text = "Light",
+                                text = stringResource(R.string._light),
                                 color = Color(customThemeLight_Text),
                                 onColorSelected = { customThemeLight_Text= it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_text_secondary),
-                                text = "Light",
+                                text = stringResource(R.string._light),
                                 color = Color(customThemeLight_TextSecondary),
                                 onColorSelected = { customThemeLight_TextSecondary = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_text_disabled),
-                                text = "Light",
+                                text = stringResource(R.string._light),
                                 color = Color(customThemeLight_TextDisabled),
                                 onColorSelected = { customThemeLight_TextDisabled = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_icon_button_player),
-                                text = "Light",
+                                text = stringResource(R.string._light),
                                 color = Color(customThemeLight_IconButtonPlayer),
                                 onColorSelected = { customThemeLight_IconButtonPlayer = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_accent),
-                                text = "Light",
+                                text = stringResource(R.string._light),
                                 color = Color(customThemeLight_Accent),
                                 onColorSelected = { customThemeLight_Accent = it.hashCode() }
                             )
@@ -1006,61 +1006,61 @@ fun UiSettings(
 
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_background_1),
-                                text = "Dark",
+                                text = stringResource(R.string.dark),
                                 color = Color(customThemeDark_Background0),
                                 onColorSelected = { customThemeDark_Background0 = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_background_2),
-                                text = "Dark",
+                                text = stringResource(R.string.dark),
                                 color = Color(customThemeDark_Background1),
                                 onColorSelected = { customThemeDark_Background1 = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_background_3),
-                                text = "Dark",
+                                text = stringResource(R.string.dark),
                                 color = Color(customThemeDark_Background2),
                                 onColorSelected = { customThemeDark_Background2 = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_background_4),
-                                text = "Dark",
+                                text = stringResource(R.string.dark),
                                 color = Color(customThemeDark_Background3),
                                 onColorSelected = { customThemeDark_Background3 = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_background_5),
-                                text = "Dark",
+                                text = stringResource(R.string.dark),
                                 color = Color(customThemeDark_Background4),
                                 onColorSelected = { customThemeDark_Background4 = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_text),
-                                text = "Dark",
+                                text = stringResource(R.string.dark),
                                 color = Color(customThemeDark_Text),
                                 onColorSelected = { customThemeDark_Text= it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_text_secondary),
-                                text = "Dark",
+                                text = stringResource(R.string.dark),
                                 color = Color(customThemeDark_TextSecondary),
                                 onColorSelected = { customThemeDark_TextSecondary = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_text_disabled),
-                                text = "Dark",
+                                text = stringResource(R.string.dark),
                                 color = Color(customThemeDark_TextDisabled),
                                 onColorSelected = { customThemeDark_TextDisabled = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_icon_button_player),
-                                text = "Dark",
+                                text = stringResource(R.string.dark),
                                 color = Color(customThemeDark_IconButtonPlayer),
                                 onColorSelected = { customThemeDark_IconButtonPlayer = it.hashCode() }
                             )
                             ColorSettingEntry(
                                 title = stringResource(R.string.color_accent),
-                                text = "Dark",
+                                text = stringResource(R.string.dark),
                                 color = Color(customThemeDark_Accent),
                                 onColorSelected = { customThemeDark_Accent = it.hashCode() }
                             )
