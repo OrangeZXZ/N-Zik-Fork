@@ -33,13 +33,22 @@ fun textCopyFromClipboard(context: Context): String {
     var textCopied by remember { mutableStateOf("") }
     val clipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
     runCatching {
-        textCopied = clipboardManager.primaryClip?.getItemAt(0)?.coerceToText(context).toString()
+        val clip = clipboardManager.primaryClip
+        if (clip != null && clip.itemCount > 0) {
+            val item = clip.getItemAt(0)
+            if (item.text != null) {
+                textCopied = item.text.toString()
+            } else {
+                Timber.w(R.string.clipboard_contains_non_text_content)
+                Toaster.e(R.string.failed_to_copy_clipboard)
+            }
+        }
     }.onFailure {
         Timber.e(it.stackTraceToString())
         Toaster.e( R.string.failed_to_copy_clipboard )
     }
     // Only show a toast for Android 12 and lower.
-    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
+    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 && textCopied.isNotEmpty())
         Toaster.i( R.string.value_copied )
 
     return textCopied
