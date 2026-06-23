@@ -63,4 +63,8 @@
 - Lyrics: all source names use string resources (no hardcoded strings)
 - Lyrics: fix bootloop when YouTube/Innertube returns empty lyrics (don't save empty to DB)
 - Lyrics: center "no lyrics available" message and buttons
-- Lyrics: translate "lyrics_not_available" to French
+- Lyrics: translate "lyrics_not_available"
+- Lyrics: fix outline inversion between None and Glow (None showed glow, Glow was invisible)
+- Lyrics: set default font size to Large
+- Lyrics: improve centering in synced/karaoke/unsynced views with multi-line detection
+- Lyrics: tune size and opacity animations (1.08x/0.92x scale, 1f/0.35f opacity, 400ms)

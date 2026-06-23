@@ -312,7 +312,7 @@ class LyricsSettingsMenu private constructor(
                     override fun onLongClick() {}
                 })
 
-            if (!showlyricsthumbnail) {
+            if (!showlyricsthumbnail && lyricsType == LyricsType.Synced) {
                 add(object : MenuIcon, Descriptive, Clickable {
                     override val iconId: Int = R.drawable.horizontal_bold_line
                     override val messageId: Int = R.string.lyricsoutline
