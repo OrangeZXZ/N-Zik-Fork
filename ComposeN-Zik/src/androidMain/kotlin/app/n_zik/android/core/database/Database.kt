@@ -149,7 +149,7 @@ object Database {
                         title = PropUtils.retainIfModified( dbAlbum?.title, it.name ),
                         thumbnailUrl = PropUtils.retainIfModified( dbAlbum?.thumbnailUrl, song.thumbnailUrl ),
                         year = dbAlbum?.year,
-                        authorsText = PropUtils.retainIfModified( dbAlbum?.title, it.name ),
+                        authorsText = PropUtils.retainIfModified( dbAlbum?.authorsText, it.name ),
                         shareUrl = dbAlbum?.shareUrl,
                         timestamp = dbAlbum?.timestamp,
                         bookmarkedAt = dbAlbum?.bookmarkedAt,
