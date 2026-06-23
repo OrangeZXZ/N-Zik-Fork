@@ -65,7 +65,7 @@ object UpdateDownloadManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 UPDATE_CHANNEL_ID,
-                "App Updates",
+                context.getString(R.string.update_channel_name),
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

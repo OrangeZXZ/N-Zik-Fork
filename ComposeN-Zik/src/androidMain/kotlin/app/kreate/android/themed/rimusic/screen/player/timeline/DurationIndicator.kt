@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import app.n_zik.android.R
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -167,7 +169,7 @@ fun DurationIndicator(
         val showSkipTimeButtons by app.it.fast4x.rimusic.utils.rememberPreference( app.it.fast4x.rimusic.utils.showSkipTimeButtonsKey, true )
         if (showSkipTimeButtons) {
             SkipTimeButton(
-                binder, position, Long::minus, ::maxOf, 0, "Rewind", "Rewind 5 seconds", "Rewinds 30 seconds", Modifier.rotate( 180f )
+                binder, position, Long::minus, ::maxOf, 0, stringResource(R.string.rewind), stringResource(R.string.rewind_5_seconds), stringResource(R.string.rewind_30_seconds), Modifier.rotate( 180f )
             )
 
             Spacer( Modifier.width( 5.dp ) )
@@ -248,7 +250,7 @@ fun DurationIndicator(
             Spacer( Modifier.width( 5.dp ) )
 
             SkipTimeButton(
-                binder, position, Long::plus, ::minOf, duration, "Forward", "Forward 5 seconds", "Forward 30 seconds"
+                binder, position, Long::plus, ::minOf, duration, stringResource(R.string.forward), stringResource(R.string.forward_5_seconds), stringResource(R.string.forward_30_seconds)
             )
         }
     }

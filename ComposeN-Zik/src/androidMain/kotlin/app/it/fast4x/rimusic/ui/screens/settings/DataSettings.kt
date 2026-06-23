@@ -295,7 +295,7 @@ fun DataSettings() {
                             title = stringResource(R.string.song_cache_max_size),
                             text = when (exoPlayerDiskCacheMaxSize) {
                                 ExoPlayerDiskCacheMaxSize.Custom -> "${stringResource(R.string.custom)}: ${exoPlayerCustomCache}MB"
-                                ExoPlayerDiskCacheMaxSize.Disabled -> "Disabled"
+                                ExoPlayerDiskCacheMaxSize.Disabled -> stringResource(R.string.turn_off)
                                 else -> exoPlayerDiskCacheMaxSize.text
                             },
                             icon = R.drawable.music_file,

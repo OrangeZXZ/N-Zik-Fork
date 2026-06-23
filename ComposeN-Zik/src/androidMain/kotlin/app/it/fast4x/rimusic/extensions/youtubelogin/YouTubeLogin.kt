@@ -73,7 +73,7 @@ fun YouTubeLogin(
         modifier = Modifier.fillMaxSize().windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
     ) {
         //Row(modifier = Modifier.fillMaxWidth()) {
-            Title("Login to YouTube Music",
+            Title(stringResource(R.string.login_to_youtube_music),
                 icon = R.drawable.chevron_down,
                 onClick = { onLogin(cookie) }
             )
