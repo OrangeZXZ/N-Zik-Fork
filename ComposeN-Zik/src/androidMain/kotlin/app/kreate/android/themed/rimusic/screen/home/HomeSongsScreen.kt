@@ -157,13 +157,19 @@ fun HomeSongsScreen(navController: NavController ) {
     val search = Search(lazyListState)
     val locator = Locator( lazyListState, ::getSongs )
     val import = ImportSongsFromCSV(sourceSuffix = "HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites, onImportComplete = {
-        appContext().preferences.edit().putString(Preference.HOME_SONGS_SORT_BY.key, SongSortBy.Custom.name).apply()
+        val prefs = appContext().preferences
+        val key = if (builtInPlaylist == BuiltInPlaylist.Favorites) Preference.HOME_SONGS_FAVORITES_SORT_BY.key else Preference.HOME_SONGS_SORT_BY.key
+        prefs.edit().putString(key, SongSortBy.Custom.name).apply()
     })
     val importSpotify = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "SPOTIFY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites, onImportComplete = {
-        appContext().preferences.edit().putString(Preference.HOME_SONGS_SORT_BY.key, SongSortBy.Custom.name).apply()
+        val prefs = appContext().preferences
+        val key = if (builtInPlaylist == BuiltInPlaylist.Favorites) Preference.HOME_SONGS_FAVORITES_SORT_BY.key else Preference.HOME_SONGS_SORT_BY.key
+        prefs.edit().putString(key, SongSortBy.Custom.name).apply()
     })
     val importRiplay = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "RIPLAY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites, onImportComplete = {
-        appContext().preferences.edit().putString(Preference.HOME_SONGS_SORT_BY.key, SongSortBy.Custom.name).apply()
+        val prefs = appContext().preferences
+        val key = if (builtInPlaylist == BuiltInPlaylist.Favorites) Preference.HOME_SONGS_FAVORITES_SORT_BY.key else Preference.HOME_SONGS_SORT_BY.key
+        prefs.edit().putString(key, SongSortBy.Custom.name).apply()
     })
     val exportDialog = ExportSongsToCSVDialog(
         playlistBrowseId = "",
@@ -177,7 +183,7 @@ fun HomeSongsScreen(navController: NavController ) {
         app.n_zik.android.components.dialog.YouTubeLinkImportDialog(
             onImport = { urlPlaylistId ->
                 coroutineScope.launch(kotlinx.coroutines.Dispatchers.IO) {
-                    val browseId = "VL$urlPlaylistId"
+                    val browseId = if (urlPlaylistId.startsWith("VL")) urlPlaylistId else "VL$urlPlaylistId"
                     Innertube.playlistPage(BrowseBody(browseId = browseId))?.getOrNull()?.let { playlistPage ->
                         val playlistName = playlistPage.title ?: appContext().getString(R.string.youtube_playlist)
                         val playlist = Playlist(name = playlistName, browseId = browseId)
@@ -197,7 +203,9 @@ fun HomeSongsScreen(navController: NavController ) {
                                     songPlaylistMapTable.mapAtPosition(song.id, playlistRowId, basePos + 1 + index)
                                 }
                             }
-                            appContext().preferences.edit().putString(Preference.HOME_SONGS_SORT_BY.key, SongSortBy.Custom.name).apply()
+                            val prefs = appContext().preferences
+                            val key = if (builtInPlaylist == BuiltInPlaylist.Favorites) Preference.HOME_SONGS_FAVORITES_SORT_BY.key else Preference.HOME_SONGS_SORT_BY.key
+                            prefs.edit().putString(key, SongSortBy.Custom.name).apply()
                             Toaster.done()
                         }
                     }

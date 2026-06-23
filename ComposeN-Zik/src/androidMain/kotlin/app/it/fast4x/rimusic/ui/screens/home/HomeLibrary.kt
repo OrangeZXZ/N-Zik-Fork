@@ -201,7 +201,7 @@ fun HomeLibrary(
         app.n_zik.android.components.dialog.YouTubeLinkImportDialog(
             onImport = { playlistId ->
                 coroutineScope.launch(Dispatchers.IO) {
-                    val browseId = "VL$playlistId"
+                    val browseId = if (playlistId.startsWith("VL")) playlistId else "VL$playlistId"
                     Innertube.playlistPage(BrowseBody(browseId = browseId))?.getOrNull()?.let { playlistPage ->
                         val playlistName = playlistPage.title ?: "YouTube Playlist"
                         val playlist = Playlist(name = playlistName, browseId = browseId)

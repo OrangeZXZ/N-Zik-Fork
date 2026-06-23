@@ -284,17 +284,14 @@ fun PlaylistItem(
                 browseId == "RIPLAY_IMPORT" || browseId?.startsWith("RIPLAY_IMPORT") == true ->
                     painterResource( R.drawable.riplay ) to Color.Unspecified
 
-                isYoutubePlaylist ->
-                    painterResource( R.drawable.ytmusic ) to Color.Red.copy( .75f ).compositeOver( Color.White )
-
-                browseId?.isNotEmpty() == true ->
+                isYoutubePlaylist || browseId?.startsWith("VL") == true ->
                     painterResource( R.drawable.ytmusic ) to colorPalette().text
 
                 browseId.isNullOrEmpty() ->
                     painterResource( R.drawable.ic_launcher ) to Color.Unspecified
 
                 else ->
-                    ColorPainter(Color.Transparent) to Color.Transparent
+                    painterResource( R.drawable.ic_launcher ) to Color.Unspecified
             }
 
             Icon(

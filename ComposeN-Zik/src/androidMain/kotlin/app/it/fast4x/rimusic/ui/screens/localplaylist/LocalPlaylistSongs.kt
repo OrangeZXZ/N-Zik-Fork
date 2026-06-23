@@ -227,18 +227,6 @@ fun LocalPlaylistSongs(
 
     val sort = PlaylistSongsSort()
 
-    val importedBrowseIds = remember {
-        listOf("SPOTIFY_IMPORT", "RIPLAY_IMPORT") +
-        listOf("SPOTIFY_IMPORT_HOMESONGS", "RIPLAY_IMPORT_HOMESONGS")
-    }
-    LaunchedEffect( playlist?.browseId ) {
-        val browseId = playlist?.browseId.orEmpty()
-        val isImported = importedBrowseIds.any { browseId == it || browseId.startsWith("${it}_") }
-        if (isImported && sort.sortBy != PlaylistSongSortBy.Custom) {
-            sort.sortBy = PlaylistSongSortBy.Custom
-        }
-    }
-
     val items by remember( sort.sortBy, sort.sortOrder ) {
         Database.songPlaylistMapTable
                 .sortSongs( playlistId, sort.sortBy, sort.sortOrder )
@@ -246,6 +234,19 @@ fun LocalPlaylistSongs(
                 .distinctUntilChanged()
     }.collectAsState( emptyList(), Dispatchers.IO )
     var itemsOnDisplay by persistList<Song>("localPlaylist/$playlistId/songs/on_display")
+
+    val importedBrowseIds = remember {
+        listOf("SPOTIFY_IMPORT", "RIPLAY_IMPORT") +
+        listOf("SPOTIFY_IMPORT_HOMESONGS", "RIPLAY_IMPORT_HOMESONGS")
+    }
+    LaunchedEffect( playlist?.browseId, items ) {
+        val browseId = playlist?.browseId.orEmpty()
+        val isSpotifyRiplay = importedBrowseIds.any { browseId == it || browseId.startsWith("${it}_") }
+        val hasImportedSongs = items.any { it.totalPlayTimeMs == 1L }
+        if ((isSpotifyRiplay || hasImportedSongs) && sort.sortBy != PlaylistSongSortBy.Custom) {
+            sort.sortBy = PlaylistSongSortBy.Custom
+        }
+    }
 
     val itemSelector = ItemSelector<Song>()
 
@@ -453,7 +454,7 @@ fun LocalPlaylistSongs(
                         ).find { url.startsWith(it) }?.let { url.toUri().getQueryParameter("list") }
 
                         if (urlPlaylistId != null) {
-                            val browseId = "VL$urlPlaylistId"
+                            val browseId = if (urlPlaylistId.startsWith("VL")) urlPlaylistId else "VL$urlPlaylistId"
                             Innertube.playlistPage(BrowseBody(browseId = browseId))?.getOrNull()?.let { playlistPage ->
                                 val songs = playlistPage.songsPage?.items?.mapNotNull { it.asSong.copy(totalPlayTimeMs = 1L) }
                                 if (songs != null) {
@@ -600,14 +601,14 @@ fun LocalPlaylistSongs(
                                 ?.completed()
                         }
                     }?.getOrNull()?.let { remotePlaylist ->
-                        songPlaylistMapTable.clear( playlistId )
+                        val mediaItems = remotePlaylist.songsPage
+                            ?.items
+                            ?.map(Innertube.SongItem::asMediaItem)
 
-                        remotePlaylist.songsPage
-                                      ?.items
-                                      ?.map(Innertube.SongItem::asMediaItem)
-                                      ?.let { mediaItems ->
-                                          mapIgnore( it, *mediaItems.toTypedArray() )
-                                      }
+                        if (mediaItems != null && mediaItems.isNotEmpty()) {
+                            songPlaylistMapTable.clear( playlistId )
+                            mapIgnore( it, *mediaItems.toTypedArray() )
+                        }
                     }
                 }
             } else {
