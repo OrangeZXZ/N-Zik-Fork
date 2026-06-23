@@ -63,7 +63,10 @@ import app.it.fast4x.rimusic.utils.addNext
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.builtInPlaylistKey
 import app.it.fast4x.rimusic.utils.enqueue
+import app.it.fast4x.rimusic.utils.Preference
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.preferences
+import app.it.fast4x.rimusic.enums.SongSortBy
 import app.it.fast4x.rimusic.utils.showCachedPlaylistKey
 import app.it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import app.it.fast4x.rimusic.utils.showFavoritesPlaylistKey
@@ -153,9 +156,15 @@ fun HomeSongsScreen(navController: NavController ) {
 
     val search = Search(lazyListState)
     val locator = Locator( lazyListState, ::getSongs )
-    val import = ImportSongsFromCSV(sourceSuffix = "HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites)
-    val importSpotify = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "SPOTIFY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites)
-    val importRiplay = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "RIPLAY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites)
+    val import = ImportSongsFromCSV(sourceSuffix = "HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites, onImportComplete = {
+        appContext().preferences.edit().putString(Preference.HOME_SONGS_SORT_BY.key, SongSortBy.Custom.name).apply()
+    })
+    val importSpotify = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "SPOTIFY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites, onImportComplete = {
+        appContext().preferences.edit().putString(Preference.HOME_SONGS_SORT_BY.key, SongSortBy.Custom.name).apply()
+    })
+    val importRiplay = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "RIPLAY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites, onImportComplete = {
+        appContext().preferences.edit().putString(Preference.HOME_SONGS_SORT_BY.key, SongSortBy.Custom.name).apply()
+    })
     val exportDialog = ExportSongsToCSVDialog(
         playlistBrowseId = "",
         playlistName = builtInPlaylist.name,
@@ -188,6 +197,7 @@ fun HomeSongsScreen(navController: NavController ) {
                                     songPlaylistMapTable.mapAtPosition(song.id, playlistRowId, basePos + 1 + index)
                                 }
                             }
+                            appContext().preferences.edit().putString(Preference.HOME_SONGS_SORT_BY.key, SongSortBy.Custom.name).apply()
                             Toaster.done()
                         }
                     }

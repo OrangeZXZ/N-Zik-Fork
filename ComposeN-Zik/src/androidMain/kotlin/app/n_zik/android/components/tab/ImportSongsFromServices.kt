@@ -186,7 +186,8 @@ class ImportSongsFromServices private constructor(
             playlistIdForMatch: Long = 0L,
             playlistName: String = "",
             source: String? = null,
-            likeImported: Boolean = false
+            likeImported: Boolean = false,
+            onImportComplete: ((Long) -> Unit)? = null
         ) = ImportSongsFromServices(
             rememberLauncherForActivityResult(
                 ActivityResultContracts.OpenDocument()
@@ -200,6 +201,7 @@ class ImportSongsFromServices private constructor(
                         importedSongs.add(song)
                     }
                     
+                    onImportComplete?.invoke(finalPlaylistId)
                     Toaster.done()
                 }
             }

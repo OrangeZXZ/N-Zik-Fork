@@ -144,6 +144,8 @@ import app.it.fast4x.rimusic.ui.components.themed.TextFieldDialog
 import androidx.core.net.toUri
 import app.it.fast4x.rimusic.utils.asSong
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.preferences
+import app.it.fast4x.rimusic.utils.Preference
 import app.it.fast4x.rimusic.utils.removeFromPipedPlaylist
 import app.it.fast4x.rimusic.utils.saveImageToInternalStorage
 import app.it.fast4x.rimusic.utils.semiBold
@@ -224,6 +226,19 @@ fun LocalPlaylistSongs(
     }.collectAsState( null, Dispatchers.IO )
 
     val sort = PlaylistSongsSort()
+
+    val importedBrowseIds = remember {
+        listOf("SPOTIFY_IMPORT", "RIPLAY_IMPORT") +
+        listOf("SPOTIFY_IMPORT_HOMESONGS", "RIPLAY_IMPORT_HOMESONGS")
+    }
+    LaunchedEffect( playlist?.browseId ) {
+        val browseId = playlist?.browseId.orEmpty()
+        val isImported = importedBrowseIds.any { browseId == it || browseId.startsWith("${it}_") }
+        if (isImported && sort.sortBy != PlaylistSongSortBy.Custom) {
+            sort.sortBy = PlaylistSongSortBy.Custom
+        }
+    }
+
     val items by remember( sort.sortBy, sort.sortOrder ) {
         Database.songPlaylistMapTable
                 .sortSongs( playlistId, sort.sortBy, sort.sortOrder )
@@ -391,21 +406,29 @@ fun LocalPlaylistSongs(
         playlistName = playlist?.name ?: "",
         songs = ::getSongs
     )
-    val importNzikDialog = app.n_zik.android.components.tab.ImportSongsFromCSV(targetPlaylistId = playlistId)
+    val importNzikDialog = app.n_zik.android.components.tab.ImportSongsFromCSV(targetPlaylistId = playlistId, onImportComplete = {
+        appContext().preferences.edit().putString(Preference.PLAYLIST_SONGS_SORT_BY.key, PlaylistSongSortBy.Custom.name).apply()
+    })
     val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(
         afterTransaction = { finalPosition, song, _, _ ->
             // Already handled by ImportSongsFromServices internally
         },
         playlistIdForMatch = playlistId,
         playlistName = playlist?.name ?: "",
-        source = "SPOTIFY_IMPORT"
+        source = "SPOTIFY_IMPORT",
+        onImportComplete = {
+            appContext().preferences.edit().putString(Preference.PLAYLIST_SONGS_SORT_BY.key, PlaylistSongSortBy.Custom.name).apply()
+        }
     )
     val importRiplayDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(
         afterTransaction = { finalPosition, song, _, _ ->
         },
         playlistIdForMatch = playlistId,
         playlistName = playlist?.name ?: "",
-        source = "RIPLAY_IMPORT"
+        source = "RIPLAY_IMPORT",
+        onImportComplete = {
+            appContext().preferences.edit().putString(Preference.PLAYLIST_SONGS_SORT_BY.key, PlaylistSongSortBy.Custom.name).apply()
+        }
     )
 
     var showYouTubeLinkDialog by remember { mutableStateOf(false) }
@@ -440,6 +463,7 @@ fun LocalPlaylistSongs(
                                             songPlaylistMapTable.map(song.id, playlistId)
                                         }
                                     }
+                                    appContext().preferences.edit().putString(Preference.PLAYLIST_SONGS_SORT_BY.key, PlaylistSongSortBy.Custom.name).apply()
                                     Toaster.done()
                                 }
                             }

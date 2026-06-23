@@ -120,6 +120,8 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import androidx.core.net.toUri
 import it.fast4x.innertube.Innertube
 import app.it.fast4x.rimusic.utils.asSong
+import app.n_zik.android.appContext
+import app.it.fast4x.rimusic.utils.preferences
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -182,9 +184,15 @@ fun HomeLibrary(
     //<editor-fold desc="New playlist dialog">
     val newPlaylistDialog = NewPlaylistDialog()
     //</editor-fold>
-    val importPlaylistDialog = ImportSongsFromCSV()
-    val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "SPOTIFY_IMPORT")
-    val importRiPlayDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "RIPLAY_IMPORT")
+    val importPlaylistDialog = ImportSongsFromCSV(onImportComplete = {
+        appContext().preferences.edit().putString(HOME_LIBRARY_PLAYLIST_SORT_BY.key, PlaylistSortBy.Custom.name).apply()
+    })
+    val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "SPOTIFY_IMPORT", onImportComplete = {
+        appContext().preferences.edit().putString(HOME_LIBRARY_PLAYLIST_SORT_BY.key, PlaylistSortBy.Custom.name).apply()
+    })
+    val importRiPlayDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "RIPLAY_IMPORT", onImportComplete = {
+        appContext().preferences.edit().putString(HOME_LIBRARY_PLAYLIST_SORT_BY.key, PlaylistSortBy.Custom.name).apply()
+    })
     
     var showYouTubeLinkDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
@@ -207,6 +215,7 @@ fun HomeLibrary(
                                     songPlaylistMapTable.map(song.id, playlistRowId)
                                 }
                             }
+                            appContext().preferences.edit().putString(HOME_LIBRARY_PLAYLIST_SORT_BY.key, PlaylistSortBy.Custom.name).apply()
                             Toaster.done()
                         }
                     }

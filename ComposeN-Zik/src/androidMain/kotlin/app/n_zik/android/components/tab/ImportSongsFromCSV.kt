@@ -109,7 +109,7 @@ class ImportSongsFromCSV(
                  }
 
         @Composable
-        operator fun invoke(targetPlaylistId: Long = 0L, sourceSuffix: String = "", likeImported: Boolean = false) = ImportSongsFromCSV(
+        operator fun invoke(targetPlaylistId: Long = 0L, sourceSuffix: String = "", likeImported: Boolean = false, onImportComplete: (() -> Unit)? = null) = ImportSongsFromCSV(
             rememberLauncherForActivityResult(
                 ActivityResultContracts.OpenDocument()
             ) { uri ->
@@ -158,6 +158,7 @@ class ImportSongsFromCSV(
 
                             // Show message when it's done
                             Toaster.done()
+                            onImportComplete?.invoke()
                         }
                     } catch ( e: Exception ) {
                         when( e ) {
