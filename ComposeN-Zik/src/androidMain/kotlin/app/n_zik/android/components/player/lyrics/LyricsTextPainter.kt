@@ -148,13 +148,13 @@ fun LyricsTextPainter(
     }
 
     val animateSizeText by animateFloatAsState(
-        targetValue = if (isCurrentIndex) 1.05f else 0.85f,
-        animationSpec = tween(500, easing = LinearOutSlowInEasing),
+        targetValue = if (isCurrentIndex) 1.08f else 0.92f,
+        animationSpec = tween(400, easing = FastOutSlowInEasing),
         label = ""
     )
     val animateOpacity by animateFloatAsState(
-        targetValue = if (isCurrentIndex) 1f else 0.6f,
-        animationSpec = tween(500, easing = LinearOutSlowInEasing),
+        targetValue = if (isCurrentIndex) 1f else 0.35f,
+        animationSpec = tween(400, easing = FastOutSlowInEasing),
         label = ""
     )
 
@@ -163,7 +163,7 @@ fun LyricsTextPainter(
         contentAlignment = Alignment.Center
     ) {
         if (!showlyricsthumbnail) {
-            if (lyricsOutline != LyricsOutline.None && lyricsOutline != LyricsOutline.Rainbow) {
+            if (lyricsOutline != LyricsOutline.None && lyricsOutline != LyricsOutline.Rainbow && lyricsOutline != LyricsOutline.Glow) {
                 BasicText(
                     text = text,
                     style = TextStyle(
@@ -194,22 +194,18 @@ fun LyricsTextPainter(
                     ),
                     modifier = Modifier
                         .padding(vertical = 4.dp, horizontal = 32.dp)
-                        .conditional(lyricsSizeAnimate && isSync) { padding(vertical = 4.dp) }
+                        .conditional(isSync) { padding(vertical = 4.dp) }
                         .align(
                             if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart
                             else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center
                         )
-                        .conditional(lyricsSizeAnimate && isSync) {
-                            graphicsLayer {
-                                transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f, 0.5f)
-                                else if (lyricsAlignment == LyricsAlignment.Left) TransformOrigin(0f, 0.5f)
-                                else TransformOrigin(1f, 0.5f)
-                                scaleY = animateSizeText
-                                scaleX = animateSizeText
-                            }
-                        }
                         .graphicsLayer {
                             alpha = if(isSync) animateOpacity else 1f
+                            transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f, 0.5f)
+                            else if (lyricsAlignment == LyricsAlignment.Left) TransformOrigin(0f, 0.5f)
+                            else TransformOrigin(1f, 0.5f)
+                            scaleY = animateSizeText
+                            scaleX = animateSizeText
                         }
                 )
             } else if (lyricsOutline == LyricsOutline.Rainbow) {
@@ -239,25 +235,21 @@ fun LyricsTextPainter(
                     ),
                     modifier = Modifier
                         .padding(vertical = 4.dp, horizontal = 32.dp)
-                        .conditional(lyricsSizeAnimate && isSync) { padding(vertical = 4.dp) }
+                        .conditional(isSync) { padding(vertical = 4.dp) }
                         .align(
                             if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart
                             else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center
                         )
-                        .conditional(lyricsSizeAnimate && isSync) {
-                            graphicsLayer {
-                                transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f, 0.5f)
-                                else if (lyricsAlignment == LyricsAlignment.Left) TransformOrigin(0f, 0.5f)
-                                else TransformOrigin(1f, 0.5f)
-                                scaleY = animateSizeText
-                                scaleX = animateSizeText
-                            }
-                        }
                         .graphicsLayer {
                             alpha = if(isSync) animateOpacity else 1f
+                            transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f, 0.5f)
+                            else if (lyricsAlignment == LyricsAlignment.Left) TransformOrigin(0f, 0.5f)
+                            else TransformOrigin(1f, 0.5f)
+                            scaleY = animateSizeText
+                            scaleX = animateSizeText
                         }
                 )
-            } else if (lyricsOutline == LyricsOutline.None && !showlyricsthumbnail) {
+            } else if (lyricsOutline == LyricsOutline.Glow && !showlyricsthumbnail) {
                 // Glow outline logic is inside the text shadow
                 BasicText(
                     text = text,
@@ -281,24 +273,24 @@ fun LyricsTextPainter(
                                 else if (lyricsColor == LyricsColor.Custom) Color.White.copy(0.3f).compositeOver(Color(lyricsCustomColor))
                                 else Color.Transparent
                             else Color.Transparent,
-                            offset = Offset(0f, 0f), blurRadius = 25f
+                            offset = Offset(0f, 0f),
+                            blurRadius = 25f
                         )
                     ),
                     modifier = Modifier
                         .padding(vertical = 4.dp, horizontal = 32.dp)
-                        .conditional(lyricsSizeAnimate && isSync) { padding(vertical = 4.dp) }
+                        .conditional(isSync) { padding(vertical = 4.dp) }
                         .align(
                             if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart
                             else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center
                         )
-                        .conditional(lyricsSizeAnimate && isSync) {
-                            graphicsLayer {
-                                transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f, 0.5f)
-                                else if (lyricsAlignment == LyricsAlignment.Left) TransformOrigin(0f, 0.5f)
-                                else TransformOrigin(1f, 0.5f)
-                                scaleY = animateSizeText
-                                scaleX = animateSizeText
-                            }
+                        .graphicsLayer {
+                            alpha = if(isSync) animateOpacity else 1f
+                            transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f, 0.5f)
+                            else if (lyricsAlignment == LyricsAlignment.Left) TransformOrigin(0f, 0.5f)
+                            else TransformOrigin(1f, 0.5f)
+                            scaleY = animateSizeText
+                            scaleX = animateSizeText
                         }
                 )
             }
@@ -315,10 +307,10 @@ fun LyricsTextPainter(
                         else if (lyricsColor == LyricsColor.Thememode) PureBlackColorPalette.text
                         else Color(lyricsCustomColor)
                     } else {
-                        if (lyricsColor == LyricsColor.White) Color.White.copy(alpha = 0.5f)
-                        else if (lyricsColor == LyricsColor.Cover) Color(dominantColor).copy(alpha = 0.5f)
-                        else if (lyricsColor == LyricsColor.Thememode) PureBlackColorPalette.textDisabled
-                        else Color(lyricsCustomColor).copy(alpha = 0.5f)
+                        if (lyricsColor == LyricsColor.White) Color.White
+                        else if (lyricsColor == LyricsColor.Cover) Color(dominantColor)
+                        else if (lyricsColor == LyricsColor.Thememode) PureBlackColorPalette.text
+                        else Color(lyricsCustomColor)
                     },
                     fontSize = when (fontSize) {
                         LyricsFontSize.Light -> typography().m.fontSize
@@ -339,6 +331,11 @@ fun LyricsTextPainter(
                         if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart
                         else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center
                     )
+                    .graphicsLayer {
+                        alpha = animateOpacity
+                        scaleY = animateSizeText
+                        scaleX = animateSizeText
+                    }
                     .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
@@ -366,22 +363,18 @@ fun LyricsTextPainter(
                 ),
                 modifier = Modifier
                     .padding(vertical = 4.dp, horizontal = 32.dp)
-                    .conditional(lyricsSizeAnimate && isSync) { padding(vertical = 4.dp) }
+                    .conditional(isSync) { padding(vertical = 4.dp) }
                     .align(
                         if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart
                         else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center
                     )
-                    .conditional(lyricsSizeAnimate && isSync) {
-                        graphicsLayer {
-                            transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f, 0.5f)
-                            else if (lyricsAlignment == LyricsAlignment.Left) TransformOrigin(0f, 0.5f)
-                            else TransformOrigin(1f, 0.5f)
-                            scaleY = animateSizeText
-                            scaleX = animateSizeText
-                        }
-                    }
                     .graphicsLayer {
                         alpha = if(isSync) animateOpacity else 1f
+                        transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f, 0.5f)
+                        else if (lyricsAlignment == LyricsAlignment.Left) TransformOrigin(0f, 0.5f)
+                        else TransformOrigin(1f, 0.5f)
+                        scaleY = animateSizeText
+                        scaleX = animateSizeText
                     }
                     .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
                     .clickable(
@@ -414,22 +407,18 @@ fun LyricsTextPainter(
                 ),
                 modifier = Modifier
                     .padding(vertical = 4.dp, horizontal = 32.dp)
-                    .conditional(lyricsSizeAnimate && isSync) { padding(vertical = 4.dp) }
+                    .conditional(isSync) { padding(vertical = 4.dp) }
                     .align(
                         if (lyricsAlignment == LyricsAlignment.Left) Alignment.CenterStart
                         else if (lyricsAlignment == LyricsAlignment.Right) Alignment.CenterEnd else Alignment.Center
                     )
-                    .conditional(lyricsSizeAnimate && isSync) {
-                        graphicsLayer {
-                            transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f, 0.5f)
-                            else if (lyricsAlignment == LyricsAlignment.Left) TransformOrigin(0f, 0.5f)
-                            else TransformOrigin(1f, 0.5f)
-                            scaleY = animateSizeText
-                            scaleX = animateSizeText
-                        }
-                    }
                     .graphicsLayer {
                         alpha = if(isSync) animateOpacity else 1f
+                        transformOrigin = if (lyricsAlignment == LyricsAlignment.Center) TransformOrigin(0.5f, 0.5f)
+                        else if (lyricsAlignment == LyricsAlignment.Left) TransformOrigin(0f, 0.5f)
+                        else TransformOrigin(1f, 0.5f)
+                        scaleY = animateSizeText
+                        scaleX = animateSizeText
                     }
                     .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
                     .clickable(

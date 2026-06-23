@@ -63,4 +63,4 @@
 - Lyrics: all source names use string resources (no hardcoded strings)
 - Lyrics: fix bootloop when YouTube/Innertube returns empty lyrics (don't save empty to DB)
 - Lyrics: center "no lyrics available" message and buttons
-- Lyrics: translate "lyrics_not_available" to French
+- Lyrics: translate "lyrics_not_available"

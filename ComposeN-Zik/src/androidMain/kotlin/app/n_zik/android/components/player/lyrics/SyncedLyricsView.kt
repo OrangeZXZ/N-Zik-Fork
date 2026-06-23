@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +19,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -50,6 +52,9 @@ import timber.log.Timber
 /** Minimum silence duration (ms) between two lines required to show the interval indicator. */
 private const val GAP_THRESHOLD_MS = 4000L
 
+/** Vertical spacing (dp) for header/footer in lyrics views. */
+private val LYRICS_SPACING = 24.dp
+
 @Composable
 fun SyncedLyricsView(
     text: String,
@@ -78,6 +83,7 @@ fun SyncedLyricsView(
     isAutoScrollEnabled: Boolean = true,
     onAutoScrollEnabledChange: (Boolean) -> Unit = {},
     clickLyricsText: Boolean,
+    @Suppress("UNUSED_PARAMETER") // Kept for API compatibility; centering now uses viewportHeight
     thumbnailSize: Dp,
     isDisplayed: Boolean,
     onDismiss: () -> Unit,
@@ -263,19 +269,52 @@ fun SyncedLyricsView(
         }
     }
 
-    LaunchedEffect(synchronizedLyrics, density, isAutoScrollEnabled) {
-        val centerOffset = with(density) {
-            (-thumbnailSize.div(
-                if (!showlyricsthumbnail && !isLandscape) if (trailingContent == null) 2 else 1
-                else if (trailingContent == null) 3 else 2
-            )).roundToPx()
-        }
+    val config = LocalConfiguration.current
+    val screenHeightPx = with(density) { config.screenHeightDp.dp.roundToPx() }
+    val vpH = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
+    val effectiveVpH = if (vpH > 0) vpH else screenHeightPx
 
+    val currentText = synchronizedLyrics.sentences
+        .getOrNull(synchronizedLyrics.index)?.second ?: ""
+    val translationText = translationCache[synchronizedLyrics.index] ?: currentText
+    val trueLineCount = translationText.lines().size.coerceIn(1, 5)
+
+    val fontSizeIndex = when (fontSize) {
+        LyricsFontSize.Light -> 0
+        LyricsFontSize.Medium -> 1
+        LyricsFontSize.Heavy -> 2
+        LyricsFontSize.Large -> 3
+        else -> 4
+    }
+    val charsPerLine = if (fontSize == LyricsFontSize.Custom) {
+        (40f * 16f / customSize).toInt().coerceAtLeast(10)
+    } else {
+        (50 - fontSizeIndex * 10).coerceAtLeast(10)
+    }
+    val wrappedLines = when {
+        translationText.length > charsPerLine * 2 -> 3
+        translationText.length > charsPerLine -> 2
+        else -> 1
+    }
+    val lineCount = maxOf(trueLineCount, wrappedLines)
+    val lineMultiplier = when (lineCount) {
+        1 -> 0.40f
+        2 -> 0.35f
+        else -> 0.30f
+    }
+    val multiplier = if (showlyricsthumbnail) lineMultiplier else 0.35f
+    val fixedCenter = (effectiveVpH * multiplier).toInt()
+
+    LaunchedEffect(synchronizedLyrics, density, isAutoScrollEnabled, vpH) {
         if (isAutoScrollEnabled) {
+            // Short delay for initial scroll to let layout settle
+            if (synchronizedLyrics.index == 0 || vpH == 0) {
+                kotlinx.coroutines.delay(100)
+            }
             try {
                 lazyListState.animateScrollToItem(
                     index = synchronizedLyrics.index + 1,
-                    scrollOffset = centerOffset
+                    scrollOffset = -fixedCenter
                 )
             } catch (e: kotlinx.coroutines.CancellationException) {
                 if (!isActive) throw e
@@ -289,7 +328,7 @@ fun SyncedLyricsView(
                 try {
                     lazyListState.animateScrollToItem(
                         index = synchronizedLyrics.index + 1,
-                        scrollOffset = centerOffset
+                        scrollOffset = -fixedCenter
                     )
                 } catch (e: kotlinx.coroutines.CancellationException) {
                     if (!isActive) throw e
@@ -297,6 +336,8 @@ fun SyncedLyricsView(
             }
         }
     }
+
+    // (vpH-based re-scroll removed - caused double animations)
 
     var modifierBG = Modifier.verticalFadingEdge()
 if (showBackgroundLyrics && showlyricsthumbnail) modifierBG =

@@ -25,6 +25,9 @@ import app.it.fast4x.rimusic.utils.verticalFadingEdge
 import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
 
+/** Vertical spacing (dp) for header/footer in lyrics views. */
+private val LYRICS_SPACING = 24.dp
+
 @Composable
 fun UnsyncedLyricsView(
     text: String,
@@ -45,6 +48,7 @@ fun UnsyncedLyricsView(
     lyricsCustomColor: Int,
     dominantColor: Int,
     lyricsHighlight: LyricsHighlight,
+    @Suppress("UNUSED_PARAMETER") // Kept for API compatibility; centering now uses viewportHeight
     thumbnailSize: Dp,
     clickLyricsText: Boolean,
     onDismiss: () -> Unit
@@ -86,7 +90,7 @@ fun UnsyncedLyricsView(
                 .verticalFadingEdge()
                 .verticalScroll(rememberScrollState())
                 .fillMaxWidth()
-                .padding(vertical = thumbnailSize / 4, horizontal = 32.dp),
+                .padding(vertical = LYRICS_SPACING, horizontal = 32.dp),
             contentAlignment = Alignment.Center
         ) {
             LyricsTextPainter(

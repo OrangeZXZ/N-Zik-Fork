@@ -39,7 +39,7 @@ fun textCopyFromClipboard(context: Context): String {
             if (item.text != null) {
                 textCopied = item.text.toString()
             } else {
-                Timber.w(R.string.clipboard_contains_non_text_content)
+                Timber.w("Failed to copy text to clipboard, try again")
                 Toaster.e(R.string.failed_to_copy_clipboard)
             }
         }
