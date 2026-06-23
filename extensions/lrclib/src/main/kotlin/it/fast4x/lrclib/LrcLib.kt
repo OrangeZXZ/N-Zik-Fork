@@ -72,9 +72,17 @@ object LrcLib {
         album: String? = null
     ) = runCatchingCancellable {
         val tracks = queryLyrics(artist, title, album)
-        //println("mediaItem get queryLyrics tracks ${tracks}")
-        //tracks.bestMatchingFor(title, duration)?.syncedLyrics?.let(LrcLib::Lyrics)
         tracks.first().syncedLyrics?.let(LrcLib::Lyrics)
+    }
+
+    suspend fun lyricsUnsynced(
+        artist: String,
+        title: String,
+        duration: Duration,
+        album: String? = null
+    ) = runCatchingCancellable {
+        val tracks = queryLyrics(artist, title, album)
+        tracks.first().plainLyrics?.let(LrcLib::Lyrics)
     }
 
     suspend fun lyrics(artist: String, title: String) = runCatchingCancellable {
@@ -102,6 +110,9 @@ object LrcLib {
                     }
                 }
             }
+
+        val plainText: String
+            get() = sentences.map { it.second }.filter { it.isNotBlank() }.joinToString("\n")
 
     }
 

@@ -53,3 +53,14 @@
 - Voice search permission handling (RECORD_AUDIO)
 - Search bar UI improvements: larger size, centered text, smooth animations for mic/close buttons
 - Search bar rounded corners matching bottom floating bar (uiRoundnessShape)
+- Lyrics: show "no lyrics available" message with retry/edit buttons when all sources fail
+- Lyrics: full fallback chain for Karaké mode (BetterLyrics K → BetterLyrics S → LrcLib S → KuGou S → LrcLib U → YouTube U)
+- Lyrics: full fallback chain for Syncé mode (BetterLyrics S → LrcLib S → KuGou S → LrcLib U → YouTube U)
+- Lyrics: full fallback chain for Unsynced mode (LrcLib U → YouTube U)
+- Lyrics: add LrcLib unsynced support via plainLyrics field
+- Lyrics: add plainText property to LrcLib and KuGou to strip timestamps
+- Lyrics: logical toast messages showing each step in the chain (e.g. "Paroles introuvables sur X, essayez sur Y")
+- Lyrics: all source names use string resources (no hardcoded strings)
+- Lyrics: fix bootloop when YouTube/Innertube returns empty lyrics (don't save empty to DB)
+- Lyrics: center "no lyrics available" message and buttons
+- Lyrics: translate "lyrics_not_available" to French

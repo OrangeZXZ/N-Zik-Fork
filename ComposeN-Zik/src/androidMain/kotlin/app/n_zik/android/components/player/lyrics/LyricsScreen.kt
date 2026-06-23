@@ -243,8 +243,11 @@ fun LyricsScreen(
                 .background(if (!showlyricsthumbnail) Color.Transparent else Color.Black.copy(0.8f))
                 .clip(thumbnailShape())
         ) {
+            val allSyncedSourcesChecked = checkedLyricsLrc && checkedLyricsKugou && checkedLyricsInnertube
+            val noLyricsFound = text == null && allSyncedSourcesChecked
+
             AnimatedVisibility(
-                visible = (isError && text == null) || (invalidLrc && lyricsType != LyricsType.Unsynced),
+                visible = ((isError && text == null) || (invalidLrc && lyricsType != LyricsType.Unsynced)) && !noLyricsFound,
                 enter = slideInVertically { -it },
                 exit = slideOutVertically { -it },
                 modifier = Modifier.align(Alignment.TopCenter)
@@ -367,7 +370,51 @@ fun LyricsScreen(
                 }
             }
 
-            if ((text == null && !isError) || showPlaceholder) {
+            if (noLyricsFound && !isPicking) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 32.dp)
+                ) {
+                    androidx.compose.foundation.text.BasicText(
+                        text = stringResource(R.string.lyrics_not_available),
+                        style = typography().s.center.medium.color(PureBlackColorPalette.text),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            icon = R.drawable.refresh,
+                            color = colorPalette().accent,
+                            enabled = true,
+                            onClick = {
+                                checkedLyricsLrc = false
+                                checkedLyricsKugou = false
+                                checkedLyricsInnertube = false
+                                checkLyrics = !checkLyrics
+                            },
+                            modifier = Modifier
+                                .padding(all = 8.dp)
+                                .size(24.dp)
+                        )
+                        IconButton(
+                            icon = R.drawable.pencil,
+                            color = colorPalette().accent,
+                            enabled = true,
+                            onClick = { editLyricsDialog.onShortClick() },
+                            modifier = Modifier
+                                .padding(all = 8.dp)
+                                .size(24.dp)
+                        )
+                    }
+                }
+            }
+
+            if ((text == null && !isError && !noLyricsFound) || showPlaceholder) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.shimmer()

@@ -165,6 +165,9 @@ object KuGou {
                 }
             }
 
+        val plainText: String
+            get() = sentences.map { it.second }.filter { it.isNotBlank() }.joinToString("\n")
+
         fun normalize(): Lyrics {
             var toDrop = 0
             var maybeToDrop = 0
