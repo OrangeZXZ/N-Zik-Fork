@@ -154,8 +154,8 @@ fun HomeSongsScreen(navController: NavController ) {
     val search = Search(lazyListState)
     val locator = Locator( lazyListState, ::getSongs )
     val import = ImportSongsFromCSV(sourceSuffix = "HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites)
-    val importSpotify = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init(source = "SPOTIFY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites)
-    val importRiplay = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init(source = "RIPLAY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites)
+    val importSpotify = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "SPOTIFY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites)
+    val importRiplay = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "RIPLAY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites)
     val exportDialog = ExportSongsToCSVDialog(
         playlistBrowseId = "",
         playlistName = builtInPlaylist.name,

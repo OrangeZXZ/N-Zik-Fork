@@ -392,15 +392,15 @@ fun LocalPlaylistSongs(
         songs = ::getSongs
     )
     val importNzikDialog = app.n_zik.android.components.tab.ImportSongsFromCSV(targetPlaylistId = playlistId)
-    val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init(
+    val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(
         afterTransaction = { finalPosition, song, _, _ ->
-            // Already handled by ImportSongsFromSpotifyCSV internally
+            // Already handled by ImportSongsFromServices internally
         },
         playlistIdForMatch = playlistId,
         playlistName = playlist?.name ?: "",
         source = "SPOTIFY_IMPORT"
     )
-    val importRiplayDialog = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init(
+    val importRiplayDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(
         afterTransaction = { finalPosition, song, _, _ ->
         },
         playlistIdForMatch = playlistId,

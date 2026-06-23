@@ -183,8 +183,8 @@ fun HomeLibrary(
     val newPlaylistDialog = NewPlaylistDialog()
     //</editor-fold>
     val importPlaylistDialog = ImportSongsFromCSV()
-    val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init(source = "SPOTIFY_IMPORT")
-    val importRiPlayDialog = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init(source = "RIPLAY_IMPORT")
+    val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "SPOTIFY_IMPORT")
+    val importRiPlayDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "RIPLAY_IMPORT")
     
     var showYouTubeLinkDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()

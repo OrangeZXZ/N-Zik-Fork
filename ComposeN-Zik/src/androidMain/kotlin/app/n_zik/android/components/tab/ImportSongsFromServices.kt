@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import app.n_zik.android.components.ImportFromFile
 
-class ImportSongsFromSpotifyCSV private constructor(
+class ImportSongsFromServices private constructor(
     launcher: ManagedActivityResultLauncher<Array<String>, Uri?>
 ): ImportFromFile(launcher), Descriptive, MenuIcon {
 
@@ -187,7 +187,7 @@ class ImportSongsFromSpotifyCSV private constructor(
             playlistName: String = "",
             source: String? = null,
             likeImported: Boolean = false
-        ) = ImportSongsFromSpotifyCSV(
+        ) = ImportSongsFromServices(
             rememberLauncherForActivityResult(
                 ActivityResultContracts.OpenDocument()
             ) { uri ->
