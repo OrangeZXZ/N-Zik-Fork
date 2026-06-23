@@ -91,7 +91,7 @@ class ImportSongsFromCSV(
                       }
                       .toList()        // Make it immutable
 
-        private fun processSongs( songs: List<SongCSV> ): Map<Pair<String, String>, List<Song>> =
+        private fun processSongs( songs: List<SongCSV>, likeImported: Boolean = false ): Map<Pair<String, String>, List<Song>> =
             songs.fastFilter { it.songId.isNotBlank() }
                  .groupBy { it.playlistName to it.playlistBrowseId }
                  .mapValues { (_, songs) ->
@@ -102,13 +102,14 @@ class ImportSongsFromCSV(
                              artistsText = it.artists,
                              thumbnailUrl = it.thumbnailUrl,
                              durationText = it.duration,
-                             totalPlayTimeMs = 1L       // Bypass hidden song checker
+                             totalPlayTimeMs = 1L,       // Bypass hidden song checker
+                             likedAt = if (likeImported) System.currentTimeMillis() else null
                          )
                      }
                  }
 
         @Composable
-        operator fun invoke(targetPlaylistId: Long = 0L, sourceSuffix: String = "") = ImportSongsFromCSV(
+        operator fun invoke(targetPlaylistId: Long = 0L, sourceSuffix: String = "", likeImported: Boolean = false) = ImportSongsFromCSV(
             rememberLauncherForActivityResult(
                 ActivityResultContracts.OpenDocument()
             ) { uri ->
@@ -126,7 +127,7 @@ class ImportSongsFromCSV(
                         appContext().contentResolver
                                     .openInputStream( uri )
                                     ?.use( ::parseFromCsvFile )       // Use [use] because it closes stream on exit
-                                    ?.let( ::processSongs )
+                                    ?.let { processSongs(it, likeImported) }
                                     ?.forEach { (playlist, songs) ->
                                         if( playlist.first.isNotBlank() ) {
                                             val browseId = if (sourceSuffix.isNotEmpty()) "${playlist.second}_$sourceSuffix" else playlist.second

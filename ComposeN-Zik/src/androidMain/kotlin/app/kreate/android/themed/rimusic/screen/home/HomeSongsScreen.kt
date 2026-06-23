@@ -153,7 +153,7 @@ fun HomeSongsScreen(navController: NavController ) {
 
     val search = Search(lazyListState)
     val locator = Locator( lazyListState, ::getSongs )
-    val import = ImportSongsFromCSV(sourceSuffix = "HOMESONGS")
+    val import = ImportSongsFromCSV(sourceSuffix = "HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites)
     val importSpotify = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init(source = "SPOTIFY_IMPORT_HOMESONGS")
     val importRiplay = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init(source = "RIPLAY_IMPORT_HOMESONGS")
     val exportDialog = ExportSongsToCSVDialog(
@@ -173,7 +173,13 @@ fun HomeSongsScreen(navController: NavController ) {
                         val playlistName = playlistPage.title ?: appContext().getString(R.string.youtube_playlist)
                         val playlist = Playlist(name = playlistName, browseId = browseId)
                         val playlistRowId = Database.playlistTable.insert(playlist)
-                        val songs = playlistPage.songsPage?.items?.mapNotNull { it.asSong.copy(totalPlayTimeMs = 1L) }
+                        val isFavoriteTab = builtInPlaylist == BuiltInPlaylist.Favorites
+                        val songs = playlistPage.songsPage?.items?.mapNotNull {
+                            it.asSong.copy(
+                                totalPlayTimeMs = 1L,
+                                likedAt = if (isFavoriteTab) System.currentTimeMillis() else null
+                            )
+                        }
                         if (songs != null) {
                             val basePos = Database.songPlaylistMapTable.getMaxPosition(playlistRowId)
                             Database.asyncTransaction {
