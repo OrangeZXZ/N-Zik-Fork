@@ -1319,4 +1319,15 @@
 <string name="forward">Forward</string>
 <string name="forward_5_seconds">Forward 5 seconds</string>
 <string name="forward_30_seconds">Forward 30 seconds</string>
+<string name="reverb_none">None</string>
+<string name="reverb_small_room">Small Room</string>
+<string name="reverb_medium_room">Medium Room</string>
+<string name="reverb_large_room">Large Room</string>
+<string name="reverb_medium_hall">Medium Hall</string>
+<string name="reverb_large_hall">Large Hall</string>
+<string name="reverb_plate">Plate</string>
+<string name="wallpaper_home">Home</string>
+<string name="wallpaper_lockscreen">Lockscreen</string>
+<string name="wallpaper_both">Both</string>
+<string name="fluid">FLUID</string>
 </resources>

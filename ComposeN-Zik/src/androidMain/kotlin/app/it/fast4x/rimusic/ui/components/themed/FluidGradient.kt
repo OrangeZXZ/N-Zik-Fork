@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import app.n_zik.android.R
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -94,7 +96,7 @@ fun FluidGradientBox() {
             Text(
                 modifier = Modifier.border(1.dp, Color.White, uiRoundnessShape())
                     .padding(horizontal = 8.dp, vertical = 4.dp),
-                text = "FLUID",
+                text = stringResource(R.string.fluid),
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Light
             )

@@ -1071,7 +1071,7 @@ fun GeneralSettings(
         if (search.inputValue.isBlank() || stringResource(R.string.settings_audio_reverb).contains(search.inputValue,true)) {
                          OtherSettingsEntry(
                 title = stringResource(R.string.settings_audio_reverb),
-                text = audioReverb.textName,
+                text = stringResource(audioReverb.textRes),
                              onClick = { showAudioReverbDialog = true },
                              icon = R.drawable.reverb
                          )
@@ -1086,7 +1086,7 @@ fun GeneralSettings(
                      audioReverb = it
                      restartService = true
                  },
-                              valueText = { it.textName },
+                              valueText = { stringResource(it.textRes) },
                               values = PresetsReverb.values().toList(),
                               onDismiss = { showAudioReverbDialog = false }
                           )
