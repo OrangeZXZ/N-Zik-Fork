@@ -189,7 +189,7 @@ class LocalPlaylistItemMenu private constructor(
                         modifier = Modifier.conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                     )
                     BasicText(
-                        text = "${playlistPreview.songCount} songs",
+                        text = "${playlistPreview.songCount} ${stringResource(R.string.songs)}",
                         style = typography().xs.semiBold.secondary.copy(color = colorPalette().textSecondary),
                         maxLines = 1,
                         overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
