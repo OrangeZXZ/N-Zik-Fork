@@ -295,10 +295,11 @@ fun SearchScreen(
                 errorMessage = null
                 voiceSearchUtils.startListening()
             },
-            onCancel = {
-                errorMessage = null
-                voiceSearchUtils.stopListening()
-            },
+                onCancel = {
+                    isSpeaking = false
+                    errorMessage = null
+                    voiceSearchUtils.stopListening()
+                },
             modifier = Modifier.zIndex(1000f)
         )
     }

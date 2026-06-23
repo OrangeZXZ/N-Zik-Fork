@@ -62,8 +62,7 @@ fun VoiceSearchOverlay(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.75f)),
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Column(
