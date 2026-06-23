@@ -37,3 +37,11 @@
 - refreshKey forces LaunchedEffect to reload after match completes
 - Sort LaunchedEffect only runs once on first open (doesn't force Custom on revisit)
 - Toolbar button ordering: locator stays after search, download after locator
+- Fix '-b-b' suffix duplication in updater notification (#492)
+- Fix beta button visible in minified builds (now hidden)
+- Fix notification errors being silently swallowed (now logged with Timber)
+- Fix completed notification not showing (cancel before notify)
+- Fix changelog not fetched on re-download (cache + network strategy)
+- Remove 44 hardcoded user-facing strings across the app
+- Add 21 new string resources for notifications, games, settings, errors
+- Changelog: load from cache first, fetch network async, update cache on success
