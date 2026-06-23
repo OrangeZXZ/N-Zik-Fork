@@ -61,7 +61,8 @@ class ImportSongsFromServices private constructor(
                         readAllWithHeaderAsSequence().forEachIndexed { index, row: Map<String, String> ->
                             
                             val isSpotifyFormat = row.containsKey("Track URI")
-                            if (activePlaylistId == 0L && isSpotifyFormat && !playlistCreated) {
+                            val isRiplayFormat = row.containsKey("AlbumId") || row.containsKey("ArtistIds")
+                            if (activePlaylistId == 0L && (isSpotifyFormat || isRiplayFormat) && !playlistCreated) {
                                 playlistCreated = true
                                 val cleanName = fileName.substringBeforeLast(".")
                                 val newPlaylist = Playlist(name = cleanName, browseId = source)
@@ -126,7 +127,7 @@ class ImportSongsFromServices private constructor(
                                     val title = row["Title"] ?: row["Track Name"] ?: return@asyncTransaction
                                     val artistsText = row["Artists"] ?: row["Artist Name(s)"] ?: ""
 
-                                    val durationText = row["Duration"] ?: formatAsDuration(row["Track Duration (ms)"]?.toLong() ?: 0L)
+                                    val durationText = row["Duration"]?.takeIf { it.isNotBlank() } ?: "00:00"
 
                                     song = Song(
                                         id = mediaId,

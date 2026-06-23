@@ -281,7 +281,7 @@ fun LocalPlaylistSongs(
 
     if (showConfirmMatchAllDialog) {
         app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog(
-            text = stringResource(R.string.match_all_confirmation, items.count { it.id.length != 11 }),
+            text = stringResource(R.string.match_all_confirmation, items.count { it.id.length != 11 || it.durationText == "00:00" }),
             onDismiss = {
                 showConfirmMatchAllDialog = false
             },onConfirm = {
@@ -354,7 +354,7 @@ fun LocalPlaylistSongs(
             val unmatched = if (retryMatchMode && retryMatchSongs.isNotEmpty()) {
                 retryMatchSongs
             } else {
-                items.filter { it.id.length != 11 && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) }
+                items.filter { (it.id.length != 11 || it.durationText == "00:00") && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) }
             }
             totalSongsToMatch = unmatched.size
             songsMatched = 0
@@ -384,7 +384,7 @@ fun LocalPlaylistSongs(
             kotlinx.coroutines.delay(500)
 
             val stillUnmatched = items.filter {
-                it.id.length != 11 && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)
+                (it.id.length != 11 || it.durationText == "00:00") && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)
             }
 
             showGetAlbumVersionDialogue = false
@@ -974,7 +974,7 @@ fun LocalPlaylistSongs(
                             modifier = Modifier.size(48.dp), // Standard IconButton size
                             contentAlignment = Alignment.Center
                         ) {
-                            val unmatchedSongsCount = items.filter { it.id.length != 11 && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) }.size
+                            val unmatchedSongsCount = items.filter { (it.id.length != 11 || it.durationText == "00:00") && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) }.size
                             if (unmatchedSongsCount > 0) {
                                 HeaderIconButton(
                                     icon = app.n_zik.android.R.drawable.alert,
@@ -1022,7 +1022,7 @@ fun LocalPlaylistSongs(
 
                 val toolbarButtons = remember { mutableStateListOf<Button>() }
 
-                val hasUnmatchedSongs = remember(items) { items.any { it.id.length != 11 && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) } }
+                val hasUnmatchedSongs = remember(items) { items.any { (it.id.length != 11 || it.durationText == "00:00") && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) } }
 
                 LaunchedEffect(
                     playlistNotMonthlyType,

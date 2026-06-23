@@ -218,7 +218,7 @@ fun HomeSongsScreen(navController: NavController ) {
     // Match confirmation dialog
     if (showConfirmMatchAllDialog) {
         ConfirmationDialog(
-            text = stringResource(R.string.match_all_confirmation, getSongs().count { it.id.length != 11 }),
+            text = stringResource(R.string.match_all_confirmation, getSongs().count { it.id.length != 11 || it.durationText == "00:00" }),
             onDismiss = { showConfirmMatchAllDialog = false },
             onConfirm = {
                 showConfirmMatchAllDialog = false
@@ -281,7 +281,7 @@ fun HomeSongsScreen(navController: NavController ) {
                     retryMatchSongs
                 } else {
                     // Normal mode: match all unmatched songs
-                    itemsOnDisplayState.filter { it.id.length != 11 && !it.id.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX) }
+                    itemsOnDisplayState.filter { (it.id.length != 11 || it.durationText == "00:00") && !it.id.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX) }
                 }
                 totalSongsToMatch = unmatched.size
                 songsMatched = 0
@@ -309,7 +309,7 @@ fun HomeSongsScreen(navController: NavController ) {
 
                 // Check for songs that still couldn't be matched
                 val stillUnmatched = itemsOnDisplayState.filter {
-                    it.id.length != 11 && !it.id.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX)
+                    (it.id.length != 11 || it.durationText == "00:00") && !it.id.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX)
                 }
 
                 showMatchingProgressDialog = false
@@ -514,7 +514,7 @@ fun HomeSongsScreen(navController: NavController ) {
 
             when( builtInPlaylist ) {
                 BuiltInPlaylist.OnDevice -> OnDeviceSong( navController, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs )
-                else                     -> HomeSongs( navController, builtInPlaylist, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs, matchButton = if (itemsOnDisplayState.any { it.id.length != 11 && !it.id.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX) }) matchAlbumButton else null, onRecommendationCountChange = { count -> recommendationCount = count }, onRecommendationsLoadingChange = { loading -> isRecommendationsLoading = loading }, isRecommendationEnabled = isRecommendationEnabled )
+                else                     -> HomeSongs( navController, builtInPlaylist, lazyListState, itemSelector, search, buttons, itemsOnDisplayState, ::getSongs, matchButton = if (itemsOnDisplayState.any { (it.id.length != 11 || it.durationText == "00:00") && !it.id.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX) }) matchAlbumButton else null, onRecommendationCountChange = { count -> recommendationCount = count }, onRecommendationsLoadingChange = { loading -> isRecommendationsLoading = loading }, isRecommendationEnabled = isRecommendationEnabled )
             }
         }
 

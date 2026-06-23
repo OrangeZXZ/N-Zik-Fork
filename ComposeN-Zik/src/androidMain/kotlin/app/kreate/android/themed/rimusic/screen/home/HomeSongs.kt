@@ -368,7 +368,7 @@ fun HomeSongs(
 
     val hasUnmatchedSongs by remember {
         derivedStateOf {
-            itemsOnDisplay.any { it.id.length != 11 && !it.id.startsWith( LOCAL_KEY_PREFIX ) }
+            itemsOnDisplay.any { (it.id.length != 11 || it.durationText == "00:00") && !it.id.startsWith( LOCAL_KEY_PREFIX ) }
         }
     }
 
