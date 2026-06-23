@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Lukitusnäyttö</string>
   <string name="wallpaper_both">Molemmat</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">Ei sanoituksia saatavilla. Yritä uudelleen tai kirjoita ne manuaalisesti.</string>
+  <string name="source_betterlyrics_synced">BetterLyrics (synkronoitu)</string>
+  <string name="source_betterlyrics_karaoke">BetterLyrics (karaoke)</string>
+  <string name="source_lrclib_synced">LrcLib.net (synkronoitu)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (synced)</string>
+  <string name="source_kugou_synced">KuGou.com (synkronoitu)</string>
+  <string name="source_youtube_unsynced">YouTube (synkronoimaton)</string>
 </resources>
