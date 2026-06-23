@@ -374,30 +374,31 @@ fun HomeSongs(
         }
     }
 
-    val localMatchButton = remember(hasUnmatchedSongs) {
-        if (hasUnmatchedSongs) {
-            object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon,
-                     app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive {
-                override val iconId: Int = R.drawable.alert
-                override val messageId: Int = R.string.match_album_audio_version
-                @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
-                override fun onShortClick() { onMatchClick() }
-                override fun onLongClick() {}
-            }
-        } else null
+    val localMatchButton = remember {
+        object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon,
+                 app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive {
+            override val iconId: Int = R.drawable.alert
+            override val messageId: Int = R.string.match_album_audio_version
+            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
+            override fun onShortClick() { onMatchClick() }
+            override fun onLongClick() {}
+        }
     }
 
     LaunchedEffect( builtInPlaylist, songSort.sortBy, songSort.sortOrder, hasUnmatchedSongs ) {
-        buttons.removeAll { it is Sort<*> || it is PeriodSelector || it is PositionLock || it is DownloadAllSongsDialog || it is DeleteAllDownloadedSongsDialog || it is ExportSongsToCSVDialog }
+        buttons.removeAll { it is Sort<*> || it is PeriodSelector || it is PositionLock || it is DownloadAllSongsDialog || it is DeleteAllDownloadedSongsDialog || it is ExportSongsToCSVDialog || it === localMatchButton }
         
         val firstButton = if( builtInPlaylist == BuiltInPlaylist.Top ) topPlaylists else songSort
         buttons.add( 0, firstButton )
         if ( builtInPlaylist != BuiltInPlaylist.Top && songSort.sortBy == SongSortBy.Custom )
             buttons.add( 1, positionLock )
-        if ( localMatchButton != null && builtInPlaylist != BuiltInPlaylist.OnDevice )
-            buttons.add( 2, localMatchButton )
-        buttons.add( 3, downloadAllDialog )
-        buttons.add( 4, deleteDownloadsDialog )
+        if ( hasUnmatchedSongs && builtInPlaylist != BuiltInPlaylist.OnDevice ) {
+            val locatorIdx = buttons.indexOfFirst { it::class.simpleName == "Locator" }.takeIf { it >= 0 } ?: buttons.size
+            buttons.add( locatorIdx, localMatchButton )
+        }
+        val updatedLocatorIdx = buttons.indexOfFirst { it::class.simpleName == "Locator" }.takeIf { it >= 0 } ?: buttons.size
+        buttons.add( updatedLocatorIdx + 1, downloadAllDialog )
+        buttons.add( updatedLocatorIdx + 2, deleteDownloadsDialog )
         buttons.add( exportDialog )
     }
 

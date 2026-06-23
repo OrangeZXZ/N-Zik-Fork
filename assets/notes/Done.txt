@@ -24,3 +24,16 @@
 - Import from Favorites tab: auto-add imported songs to favorites (YouTube, CSV, Spotify CSV, RiPlay CSV)
 - Spotify/RiPlay CSV import: add likeImported parameter for Favorites tab auto-like
 - Fix position loss after match in LocalPlaylist (findPositionOf SQL was selecting string literal 'position' instead of column)
+- Rename ImportSongsFromSpotifyCSV to ImportSongsFromServices
+- Custom order auto-switch on import (HomeSongs, HomeLibrary, LocalPlaylistSongs)
+- Custom order adapts to correct tab (All vs Favorites) in HomeSongsScreen
+- Per-playlist sort order instead of global (PlaylistSongsSort now accepts playlistId)
+- YouTube Music icon detection via browseId starts with VL (gray, not red)
+- N-Zik playlists show N-Zik icon instead of YouTube Music icon
+- RiPlay import: create playlist, force 00:00 duration, detect unmatched songs
+- Fix sync() to not wipe playlist on API failure (check songs before clear)
+- Fix match losing playlist mappings due to CASCADE delete (save + re-insert mappings)
+- Match button reactivity: created inside HomeSongs using derivedStateOf
+- refreshKey forces LaunchedEffect to reload after match completes
+- Sort LaunchedEffect only runs once on first open (doesn't force Custom on revisit)
+- Toolbar button ordering: locator stays after search, download after locator
