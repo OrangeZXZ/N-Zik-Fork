@@ -977,22 +977,6 @@ fun LocalPlaylistSongs(
                             modifier = Modifier.size(48.dp), // Standard IconButton size
                             contentAlignment = Alignment.Center
                         ) {
-                            val unmatchedSongsCount = items.filter { (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) }.size
-                            if (unmatchedSongsCount > 0) {
-                                HeaderIconButton(
-                                    icon = app.n_zik.android.R.drawable.alert,
-                                    enabled = true,
-                                    color = colorPalette().text,
-                                    modifier = Modifier.clip(uiRoundnessShape()),
-                                    onClick = {
-                                        showConfirmMatchAllDialog = true
-                                    },
-                                    onLongClick = {
-                                        Toaster.i("Match songs to album versions")
-                                    }
-                                )
-                                Spacer(modifier = Modifier.height(10.dp))
-                            }
                             if (isRecommendationsLoading) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(24.dp),
