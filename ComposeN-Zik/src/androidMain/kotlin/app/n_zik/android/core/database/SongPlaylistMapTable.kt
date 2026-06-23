@@ -363,6 +363,9 @@ interface SongPlaylistMapTable {
     @Query("UPDATE SongPlaylistMap SET songId = :newId WHERE songId = :oldId")
     fun updateSongId(oldId: String, newId: String)
 
+    @Query("SELECT * FROM SongPlaylistMap WHERE songId = :songId")
+    fun getAllForSong(songId: String): List<SongPlaylistMap>
+
     @Query("SELECT DISTINCT songId FROM SongPlaylistMap")
     fun allMappedSongIds(): Flow<List<String>>
 }

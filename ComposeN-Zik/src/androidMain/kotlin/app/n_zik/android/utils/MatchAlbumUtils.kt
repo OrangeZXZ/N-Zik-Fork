@@ -82,16 +82,11 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
     Database.asyncTransaction {
         if (bestMatch != null) {
             val newSong = bestMatch.asSong
-            // Upsert new song into songTable first
-            songTable.upsert(newSong)
-            // Reassign all references from old ID to new ID
-            songPlaylistMapTable.updateSongId(song.id, newSong.id)
-            songAlbumMapTable.updateSongId(song.id, newSong.id)
-            songArtistMapTable.updateSongId(song.id, newSong.id)
-            eventTable.updateSongId(song.id, newSong.id)
-            // Delete old song — new one already exists
+            // Save playlist mappings before delete (CASCADE will remove them)
+            val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
+            // Delete old song first — CASCADE removes SongPlaylistMap, SongAlbumMap, etc.
             songTable.delete(song)
-            // Merge: keep user-modified properties from old song, take fresh metadata from new
+            // Upsert merged song with new ID
             songTable.upsert(newSong.copy(
                 title = PropUtils.retainIfModified(song.title, newSong.title).orEmpty(),
                 artistsText = PropUtils.retainIfModified(song.artistsText, newSong.artistsText),
@@ -100,6 +95,14 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
                 totalPlayTimeMs = song.totalPlayTimeMs,
                 position = effectivePosition
             ))
+            // Re-insert playlist mappings with new song ID
+            playlistMappings.forEach { mapping ->
+                songPlaylistMapTable.mapAtPosition(newSong.id, mapping.playlistId, mapping.position)
+            }
+            // Update other references
+            songAlbumMapTable.updateSongId(song.id, newSong.id)
+            songArtistMapTable.updateSongId(song.id, newSong.id)
+            eventTable.updateSongId(song.id, newSong.id)
             bestMatch.authors?.forEach { author ->
                 val browseId = author.endpoint?.browseId ?: return@forEach
                 artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(
