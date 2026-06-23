@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -130,6 +131,7 @@ fun LocalSongSearch(
                 .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
             modifier = Modifier
                 .fillMaxSize()
+                .offset(y = (-10).dp)
         ) {
             item(
                 key = "header",
@@ -155,6 +157,7 @@ fun LocalSongSearch(
                 }
                  */
                 Header(
+                    modifier = Modifier.offset(y = (-10).dp),
                     titleContent = {
                         BasicTextField(
                             value = textFieldValue,
@@ -168,11 +171,11 @@ fun LocalSongSearch(
                             modifier = Modifier
                                 .background(
                                     colorPalette().background1,
-                                    shape = app.n_zik.android.thumbnailShape()
+                                    shape = app.n_zik.android.uiRoundnessShape()
                                 )
-                                .padding(all = 4.dp)
+                                .padding(horizontal = 24.dp, vertical = 16.dp)
                                 .focusRequester(focusRequester)
-                                .fillMaxWidth()
+                                .fillMaxWidth(0.95f)
                         )
                     },
                     actionsContent = {

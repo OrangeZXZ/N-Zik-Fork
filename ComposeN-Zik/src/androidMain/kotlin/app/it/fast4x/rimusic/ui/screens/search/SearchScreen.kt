@@ -1,25 +1,42 @@
 package app.it.fast4x.rimusic.ui.screens.search
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.zIndex
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextRange
@@ -32,8 +49,11 @@ import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
+import app.n_zik.android.components.VoiceSearchUtils
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.ui.components.Skeleton
+import app.n_zik.android.components.VoiceSearchOverlay
+import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
 
@@ -69,37 +89,85 @@ fun SearchScreen(
         )
     }
 
+    val (isListening, setIsListening) = rememberSaveable { mutableStateOf(false) }
+    var isSpeaking by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    val context = LocalContext.current
+
+    val voiceSearchUtils = remember {
+        VoiceSearchUtils(
+            context = context,
+            onResult = { result ->
+                onTextFieldValueChanged(
+                    TextFieldValue(
+                        text = result,
+                        selection = TextRange(result.length)
+                    )
+                )
+                onSearch(result)
+            },
+            onPartialResult = { partial ->
+                onTextFieldValueChanged(
+                    TextFieldValue(
+                        text = partial,
+                        selection = TextRange(partial.length)
+                    )
+                )
+            },
+            onError = {
+                errorMessage = context.getString(R.string.voice_search_no_match)
+                Toaster.e(errorMessage ?: "")
+            },
+            onListeningStateChanged = { listening ->
+                setIsListening(listening)
+                if (!listening) {
+                    isSpeaking = false
+                }
+            },
+            onSpeechDetected = {
+                isSpeaking = true
+                errorMessage = null
+            }
+        )
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            voiceSearchUtils.startListening()
+        } else {
+            Toaster.e(context.getString(R.string.voice_search_error_permissions))
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            voiceSearchUtils.destroy()
+        }
+    }
+
     PersistMapCleanup(tagPrefix = "search/")
 
+    Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()) {
             val decorationBox: @Composable (@Composable () -> Unit) -> Unit = { innerTextField ->
                 Box(
                     contentAlignment = Alignment.CenterStart,
                     modifier = Modifier
-                       // .weight(1f)
-                        .padding(horizontal = 10.dp)
+                        .padding(start = 2.dp)
                 ) {
-                    if ( UiType.ViMusic.isCurrent() )
-                        Column (
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                           // if (applyFontPadding)
-                               Spacer(modifier = Modifier.padding(top = 5.dp))
-
-                            IconButton(
-                                onClick = {},
-                                icon = R.drawable.search,
-                                color = colorPalette().favoritesIcon,
-                                modifier = Modifier
-                                    //.align(Alignment.CenterStart)
-                                    .size(20.dp)
-                            )
-                        }
+                    IconButton(
+                        onClick = {},
+                        icon = R.drawable.search,
+                        color = colorPalette().favoritesIcon,
+                        modifier = Modifier
+                            .size(26.dp)
+                    )
                 }
                 Box(
-                    contentAlignment = Alignment.CenterStart,
                     modifier = Modifier
-                       // .weight(1f)
-                        .padding(horizontal = 40.dp)
+                        .padding(start = 44.dp, end = 65.dp)
                 ) {
                     AnimatedVisibility(
                         visible = textFieldValue.text.isEmpty(),
@@ -109,10 +177,9 @@ fun SearchScreen(
                             .align(Alignment.Center)
                     ) {
                         BasicText(
-                            text = stringResource(R.string.search), //stringResource(R.string.enter_a_name),
+                            text = stringResource(R.string.search),
                             maxLines = 1,
-                            style = typography().l.secondary,
-
+                            style = typography().l,
                         )
                     }
                     innerTextField()
@@ -120,22 +187,48 @@ fun SearchScreen(
                 Box(
                     contentAlignment = Alignment.CenterEnd,
                     modifier = Modifier
-                        // .weight(1f)
-                        .padding(horizontal = 10.dp)
+                        .padding(end = 2.dp)
                 ) {
-                    Column (
-                        verticalArrangement = Arrangement.Center
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-
-                        Spacer(modifier = Modifier.padding(top = 5.dp))
-
                         IconButton(
-                            onClick = { onTextFieldValueChanged(TextFieldValue("")) },
-                            icon = R.drawable.close,
-                            color = colorPalette().favoritesIcon,
+                            onClick = {
+                                if (isListening) {
+                                    voiceSearchUtils.stopListening()
+                                } else {
+                                    errorMessage = null
+                                    if (androidx.core.content.ContextCompat.checkSelfPermission(
+                                            context, Manifest.permission.RECORD_AUDIO
+                                        ) == PackageManager.PERMISSION_GRANTED
+                                    ) {
+                                        voiceSearchUtils.startListening()
+                                    } else {
+                                        permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                                    }
+                                }
+                            },
+                            icon = R.drawable.microphone,
+                            color = if (isListening) colorPalette().text else colorPalette().favoritesIcon,
                             modifier = Modifier
-                                .size(24.dp)
+                                .size(26.dp)
                         )
+                        AnimatedVisibility(
+                            visible = textFieldValue.text.isNotEmpty(),
+                            enter = fadeIn(tween(220)) +
+                                    expandHorizontally(tween(220)),
+                            exit = fadeOut(tween(180)) +
+                                    shrinkHorizontally(tween(180))
+                        ) {
+                            IconButton(
+                                onClick = { onTextFieldValueChanged(TextFieldValue("")) },
+                                icon = R.drawable.close,
+                                color = colorPalette().favoritesIcon,
+                                modifier = Modifier
+                                    .size(26.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -191,6 +284,24 @@ fun SearchScreen(
                     }
                 }
             }
+        }
+
+        VoiceSearchOverlay(
+            isVisible = isListening || errorMessage != null,
+            recognizedText = textFieldValue.text,
+            isSpeaking = isSpeaking,
+            errorMessage = errorMessage,
+            onRetry = {
+                errorMessage = null
+                voiceSearchUtils.startListening()
+            },
+            onCancel = {
+                errorMessage = null
+                voiceSearchUtils.stopListening()
+            },
+            modifier = Modifier.zIndex(1000f)
+        )
+    }
 }
 
 

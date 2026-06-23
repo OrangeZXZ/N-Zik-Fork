@@ -12,6 +12,9 @@ import androidx.appcompat.content.res.AppCompatResources
 import es.dmoral.toasty.Toasty
 import app.n_zik.android.R
 import app.n_zik.android.appContext
+import app.it.fast4x.rimusic.enums.NavigationBarPosition
+import app.it.fast4x.rimusic.utils.navigationBarPositionKey
+import app.it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,11 +29,20 @@ import org.intellij.lang.annotations.MagicConstant
  * Additional features include:
  * - Ensure toasts are displayed on **_main_** thread
  * - Customizable background and foreground colors
+ * - Adjusts position when floating navigation bar is active
  *
  * Future plans:
  * - Handles console outputs for debugging
  */
 object Toaster {
+
+    // floatingNavBarHeight (84.dp) + navBarBottomPadding (25.dp minimum)
+    private const val FLOATING_BAR_HEIGHT_DP = 109
+
+    private fun isFloatingBarActive(): Boolean {
+        val positionName = appContext().preferences.getString(navigationBarPositionKey, NavigationBarPosition.BottomFloating.name)
+        return positionName == NavigationBarPosition.BottomFloating.name
+    }
 
     enum class Type(
         @ColorInt val background: Int,
@@ -81,9 +93,19 @@ object Toaster {
         foreground: Int
     ) {
         CoroutineScope( Dispatchers.Main ).launch {
-            Toasty.custom(
+            val toast = Toasty.custom(
                 appContext(), message, icon, background, foreground, duration, icon != Type.NORMAL.icon, true
-            ).show()
+            )
+            if (isFloatingBarActive()) {
+                val density = appContext().resources.displayMetrics.density
+                val offsetPx = (FLOATING_BAR_HEIGHT_DP * density).toInt()
+                toast.setGravity(
+                    android.view.Gravity.BOTTOM or android.view.Gravity.CENTER_HORIZONTAL,
+                    0,
+                    offsetPx
+                )
+            }
+            toast.show()
         }
     }
 

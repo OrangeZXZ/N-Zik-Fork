@@ -57,6 +57,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.offset
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
@@ -197,6 +198,7 @@ fun OnlineSearch(
                 .only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
             modifier = Modifier
                 .fillMaxSize()
+                .offset(y = (-10).dp)
         ) {
             item(
                 key = "header",
@@ -222,6 +224,7 @@ fun OnlineSearch(
                 }
                  */
                 Header(
+                    modifier = Modifier.offset(y = (-10).dp),
                     titleContent = {
                         BasicTextField(
                             value = textFieldValue,
@@ -242,11 +245,11 @@ fun OnlineSearch(
                                 .background(
                                     //colorPalette().background4,
                                     colorPalette().background1,
-                                    shape = app.n_zik.android.thumbnailShape()
+                                    shape = app.n_zik.android.uiRoundnessShape()
                                 )
-                                .padding(all = 4.dp)
+                                .padding(horizontal = 24.dp, vertical = 16.dp)
                                 .focusRequester(focusRequester)
-                                .fillMaxWidth()
+                                .fillMaxWidth(0.95f)
                         )
                     },
                     actionsContent = {

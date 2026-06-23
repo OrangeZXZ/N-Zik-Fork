@@ -45,3 +45,11 @@
 - Remove 44 hardcoded user-facing strings across the app
 - Add 21 new string resources for notifications, games, settings, errors
 - Changelog: load from cache first, fetch network async, update cache on success
+- Add voice search to online search with Google native SpeechRecognizer (auto language detection, same as RiPlay)
+- Voice search overlay with FM waveform visualizer that reacts to speech
+- Voice search language auto-detection (works with any language without manual selection)
+- Voice search retry button on error instead of closing
+- Voice search cancel button
+- Voice search permission handling (RECORD_AUDIO)
+- Search bar UI improvements: larger size, centered text, smooth animations for mic/close buttons
+- Search bar rounded corners matching bottom floating bar (uiRoundnessShape)
