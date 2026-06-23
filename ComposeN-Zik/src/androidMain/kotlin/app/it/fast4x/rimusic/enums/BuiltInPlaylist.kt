@@ -10,7 +10,7 @@ enum class BuiltInPlaylist(
     @field:StringRes override val textId: Int
 ): Drawable, TextView {
 
-    All( R.drawable.musical_notes, R.string.songs ),
+    All( R.drawable.musical_notes, R.string.all ),
 
     Favorites( R.drawable.heart, R.string.favorites ),
 

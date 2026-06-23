@@ -99,5 +99,8 @@ interface SongAlbumMapTable {
         )
     """)
     fun map( songId: String, albumId: String, position: Int = -1 )
+
+    @Query("UPDATE SongAlbumMap SET songId = :newId WHERE songId = :oldId")
+    fun updateSongId(oldId: String, newId: String)
 }
 

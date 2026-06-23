@@ -93,5 +93,8 @@ interface SongArtistMapTable {
         )
     """)
     fun clearGhostMaps(): Int
+
+    @Query("UPDATE SongArtistMap SET songId = :newId WHERE songId = :oldId")
+    fun updateSongId(oldId: String, newId: String)
 }
 

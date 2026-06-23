@@ -324,5 +324,8 @@ interface PlaylistTable {
         PlaylistSortBy.Custom       -> sortPreviewsByPosition( limit )
     }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
+
+    @Query("SELECT id FROM Playlist WHERE browseId = 'SPOTIFY_IMPORT' OR browseId = 'RIPLAY_IMPORT' OR browseId LIKE '%_HOMESONGS'")
+    fun importPlaylistIds(): Flow<List<Long>>
 }
 

@@ -208,6 +208,15 @@ interface EventTable {
      */
     @Query("SELECT IFNULL(SUM(E.playtime), 0) FROM Event E WHERE E.songId = :songId AND E.timestamp BETWEEN :from AND :to")
     fun getSongPlayTimeBetween(songId: String, from: Long, to: Long = System.currentTimeMillis()): Flow<Long>
+
+    @Query("UPDATE Event SET songId = :newId WHERE songId = :oldId")
+    fun updateSongId(oldId: String, newId: String)
+
+    @Query("DELETE FROM Event WHERE songId IN (:songIds)")
+    fun deleteBySongIds(songIds: List<String>): Int
+
+    @Query("DELETE FROM Event WHERE songId = :songId")
+    fun deleteBySongId(songId: String): Int
 }
 
 

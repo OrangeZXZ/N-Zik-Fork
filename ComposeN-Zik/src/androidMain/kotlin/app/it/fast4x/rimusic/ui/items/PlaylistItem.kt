@@ -229,6 +229,7 @@ fun PlaylistItem(
         alternative = alternative,
         showName = showName,
         disableScrollingText = disableScrollingText,
+        browseId = playlist.key,
         isYoutubePlaylist = isYoutubePlaylist,
         showInfo = showInfo,
         isEditable = isEditable
@@ -277,10 +278,10 @@ fun PlaylistItem(
                 name.startsWith( MONTHLY_PREFIX, true ) ->
                     painterResource( R.drawable.stat_month ) to colorPalette().accent
 
-                browseId == "SPOTIFY_IMPORT" ->
+                browseId == "SPOTIFY_IMPORT" || browseId?.startsWith("SPOTIFY_IMPORT") == true ->
                     painterResource( R.drawable.spotify ) to Color.Unspecified
 
-                browseId == "RIPLAY_IMPORT" ->
+                browseId == "RIPLAY_IMPORT" || browseId?.startsWith("RIPLAY_IMPORT") == true ->
                     painterResource( R.drawable.riplay ) to Color.Unspecified
 
                 isYoutubePlaylist ->

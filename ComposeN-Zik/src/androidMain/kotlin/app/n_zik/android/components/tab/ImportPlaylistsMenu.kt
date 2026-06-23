@@ -96,7 +96,7 @@ class ImportPlaylistsMenu(
                         override val iconId: Int = R.drawable.ytmusic
                         override val messageId: Int = R.string.youtube_music
                         @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
-                        @get:Composable override val color: androidx.compose.ui.graphics.Color get() = androidx.compose.ui.graphics.Color.Unspecified
+                        @get:Composable override val color: androidx.compose.ui.graphics.Color get() = androidx.compose.ui.graphics.Color.Red
                         override fun onShortClick() { menuState.hide(); onImportYoutubeLink() }
                         override fun onLongClick() {}
                     }

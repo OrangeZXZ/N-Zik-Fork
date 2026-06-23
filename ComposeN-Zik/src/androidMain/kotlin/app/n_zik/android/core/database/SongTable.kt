@@ -586,5 +586,20 @@ interface SongTable {
         ORDER BY S.ROWID DESC
     """)
     fun artistSongs(artistId: String): Flow<List<Song>>
+
+    @Query("DELETE FROM Song WHERE id IN (:ids)")
+    fun deleteByIds(ids: List<String>): Int
+
+    @Query("DELETE FROM Song")
+    fun deleteAll(): Int
+
+    @Query("UPDATE Song SET likedAt = NULL WHERE id IN (:ids)")
+    fun unlikeByIds(ids: List<String>): Int
+
+    @Query("UPDATE Song SET likedAt = NULL WHERE likedAt IS NOT NULL AND likedAt > 0")
+    fun unlikeAll(): Int
+
+    @Query("UPDATE Song SET totalPlayTimeMs = 0 WHERE id IN (:ids)")
+    fun resetPlayTimeByIds(ids: List<String>): Int
 }
 

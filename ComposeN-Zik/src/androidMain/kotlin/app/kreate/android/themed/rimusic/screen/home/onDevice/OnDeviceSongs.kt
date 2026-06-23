@@ -53,8 +53,9 @@ import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import app.it.fast4x.rimusic.ui.styling.Dimensions
+import app.it.fast4x.rimusic.utils.Preference
 import app.it.fast4x.rimusic.utils.Preference.HOME_ON_DEVICE_SONGS_SORT_BY
-import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_SORT_ORDER
+import app.it.fast4x.rimusic.utils.Preference.HOME_ON_DEVICE_SONGS_SORT_ORDER
 import app.it.fast4x.rimusic.utils.addNext
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.bold
@@ -131,7 +132,7 @@ fun OnDeviceSong(
     }
     //</editor-fold>
 
-    val odSort = Sort( HOME_ON_DEVICE_SONGS_SORT_BY, HOME_SONGS_SORT_ORDER )
+    val odSort = Sort( HOME_ON_DEVICE_SONGS_SORT_BY, Preference.HOME_ON_DEVICE_SONGS_SORT_ORDER )
 
     LaunchedEffect( isPermissionGranted, odSort.sortBy, odSort.sortOrder ) {
         if( !isPermissionGranted ) return@LaunchedEffect

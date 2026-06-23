@@ -83,6 +83,16 @@ import app.it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_ITEM_SIZE
 import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_SORT_BY
 import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_SORT_ORDER
+import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PLAYLIST_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PLAYLIST_SORT_ORDER
+import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_YT_PLAYLIST_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_YT_PLAYLIST_SORT_ORDER
+import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PIPED_PLAYLIST_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PIPED_PLAYLIST_SORT_ORDER
+import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PINNED_PLAYLIST_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PINNED_PLAYLIST_SORT_ORDER
+import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_ORDER
 import app.it.fast4x.rimusic.utils.autoSyncToolbutton
 import app.it.fast4x.rimusic.utils.autosyncKey
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey
@@ -138,7 +148,13 @@ fun HomeLibrary(
 
     val search = Search(lazyGridState)
 
-    val sort = Sort( HOME_LIBRARY_SORT_BY, HOME_LIBRARY_SORT_ORDER )
+    val sort = when( playlistType ) {
+        PlaylistsType.Playlist -> Sort( HOME_LIBRARY_PLAYLIST_SORT_BY, HOME_LIBRARY_PLAYLIST_SORT_ORDER )
+        PlaylistsType.YTPlaylist -> Sort( HOME_LIBRARY_YT_PLAYLIST_SORT_BY, HOME_LIBRARY_YT_PLAYLIST_SORT_ORDER )
+        PlaylistsType.PipedPlaylist -> Sort( HOME_LIBRARY_PIPED_PLAYLIST_SORT_BY, HOME_LIBRARY_PIPED_PLAYLIST_SORT_ORDER )
+        PlaylistsType.PinnedPlaylist -> Sort( HOME_LIBRARY_PINNED_PLAYLIST_SORT_BY, HOME_LIBRARY_PINNED_PLAYLIST_SORT_ORDER )
+        PlaylistsType.MonthlyPlaylist -> Sort( HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_BY, HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_ORDER )
+    }
     val positionLock = remember( sort.sortOrder ) { PositionLock(sort.sortOrder) }
     val itemSize = ItemSize.init( HOME_LIBRARY_ITEM_SIZE )
 
@@ -174,38 +190,29 @@ fun HomeLibrary(
     val coroutineScope = rememberCoroutineScope()
     
     if (showYouTubeLinkDialog) {
-        TextFieldDialog(
-            hintText = stringResource(R.string.youtube_music),
-            onDismiss = { showYouTubeLinkDialog = false },
-            onDone = { url ->
+        app.n_zik.android.components.dialog.YouTubeLinkImportDialog(
+            onImport = { playlistId ->
                 coroutineScope.launch(Dispatchers.IO) {
-                    val playlistId = listOf(
-                        "https://www.youtube.com/playlist?",
-                        "https://youtube.com/playlist?",
-                        "https://music.youtube.com/playlist?",
-                        "https://m.youtube.com/playlist?"
-                    ).find { url.startsWith(it) }?.let { url.toUri().getQueryParameter("list") }
-                    
-                    if (playlistId != null) {
-                        Innertube.playlistPage(BrowseBody(browseId = playlistId))?.getOrNull()?.let { playlistPage ->
-                            val playlistName = playlistPage.title ?: "YouTube Playlist"
-                            val playlist = Playlist(name = playlistName, browseId = playlistId)
-                            val playlistRowId = Database.playlistTable.insert(playlist)
-                            
-                            val songs = playlistPage.songsPage?.items?.mapNotNull { it.asSong }
-                            if (songs != null) {
-                                Database.asyncTransaction {
-                                    songTable.upsert(songs)
-                                    songs.forEach { song ->
-                                        songPlaylistMapTable.map(song.id, playlistRowId)
-                                    }
+                    val browseId = "VL$playlistId"
+                    Innertube.playlistPage(BrowseBody(browseId = browseId))?.getOrNull()?.let { playlistPage ->
+                        val playlistName = playlistPage.title ?: "YouTube Playlist"
+                        val playlist = Playlist(name = playlistName, browseId = browseId)
+                        val playlistRowId = Database.playlistTable.insert(playlist)
+                        
+                        val songs = playlistPage.songsPage?.items?.mapNotNull { it.asSong.copy(totalPlayTimeMs = 1L) }
+                        if (songs != null) {
+                            Database.asyncTransaction {
+                                songTable.upsert(songs)
+                                songs.forEach { song ->
+                                    songPlaylistMapTable.map(song.id, playlistRowId)
                                 }
-                                Toaster.done()
                             }
+                            Toaster.done()
                         }
                     }
                 }
-            }
+            },
+            onDismiss = { showYouTubeLinkDialog = false }
         )
     }
 

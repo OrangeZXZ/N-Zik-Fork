@@ -392,11 +392,17 @@ fun PlaylistSongList(
                                     )
                                 }
                                 Image(
-                                    painter = painterResource(R.drawable.ytmusic),
+                                    painter = when {
+                                        browseId?.startsWith("SPOTIFY_IMPORT") == true -> painterResource(R.drawable.spotify)
+                                        browseId?.startsWith("RIPLAY_IMPORT") == true -> painterResource(R.drawable.riplay)
+                                        browseId.isNullOrEmpty() -> painterResource(R.drawable.musical_notes)
+                                        else -> painterResource(R.drawable.ytmusic)
+                                    },
                                     contentDescription = null,
-                                    colorFilter = ColorFilter.tint(
-                                        Color.Red.copy(0.75f).compositeOver(Color.White)
-                                    ),
+                                    colorFilter = when {
+                                        browseId?.startsWith("SPOTIFY_IMPORT") == true || browseId?.startsWith("RIPLAY_IMPORT") == true -> null
+                                        else -> ColorFilter.tint(Color.Red.copy(0.75f).compositeOver(Color.White))
+                                    },
                                     modifier = Modifier
                                         .size(40.dp)
                                         .offset(5.dp, 5.dp)

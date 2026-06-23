@@ -94,6 +94,10 @@ import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.LocalAppearance
 import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUMS_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUMS_FAVORITES_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUMS_FAVORITES_SORT_ORDER
+import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUMS_LIBRARY_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUMS_LIBRARY_SORT_ORDER
 import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUM_ITEM_SIZE
 import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUM_SORT_ORDER
 import app.it.fast4x.rimusic.utils.addNext
@@ -152,7 +156,10 @@ fun HomeAlbums(
 
     val search = Search(lazyGridState)
 
-    val sort = Sort( HOME_ALBUMS_SORT_BY, HOME_ALBUM_SORT_ORDER )
+    val sort = when( albumType ) {
+        AlbumsType.Favorites -> Sort( HOME_ALBUMS_FAVORITES_SORT_BY, HOME_ALBUMS_FAVORITES_SORT_ORDER )
+        AlbumsType.Library -> Sort( HOME_ALBUMS_LIBRARY_SORT_BY, HOME_ALBUMS_LIBRARY_SORT_ORDER )
+    }
     val positionLock = remember( sort.sortOrder ) { PositionLock(sort.sortOrder) }
 
     val itemSize = ItemSize.init( HOME_ALBUM_ITEM_SIZE )

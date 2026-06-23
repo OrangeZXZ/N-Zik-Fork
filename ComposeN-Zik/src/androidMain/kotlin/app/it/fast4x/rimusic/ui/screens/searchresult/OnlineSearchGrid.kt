@@ -201,6 +201,7 @@ fun OnlineSearchGrid(
                         alternative = true,
                         showName = false,
                         showInfo = false,
+                        isYoutubePlaylist = true,
                         modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
                             onClick = {
                                 when (tabIndex) {

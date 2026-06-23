@@ -52,7 +52,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
@@ -337,7 +339,8 @@ fun ConfirmationDialog(
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
             ) {
                 Column(
-                    modifier = Modifier.padding(24.dp)
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // Message text
                     BasicText(
@@ -350,43 +353,31 @@ fun ConfirmationDialog(
                             .padding(bottom = 24.dp)
                     )
 
-                    // Action buttons
+                    // Action buttons — same style as InteractiveDialog
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Button(
-                            onClick = onCancel,
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = colorPalette.background2,
-                                contentColor = colorPalette.text
-                            ),
-                            shape = uiRoundnessShape()
-                        ) {
-                            Text(
-                                text = cancelText,
-                                style = typography().s.semiBold
-                            )
-                        }
-
-                        Button(
-                            onClick = {
+                        app.n_zik.android.components.dialog.InteractiveDialog.CancelButton(
+                            modifier = app.n_zik.android.components.dialog.InteractiveDialog.ButtonModifier()
+                                .weight(1f)
+                                .fillMaxWidth(0.98f)
+                                .padding(horizontal = 5.dp)
+                                .padding(vertical = 10.dp),
+                            onCancel = onCancel
+                        )
+                        app.n_zik.android.components.dialog.InteractiveDialog.ConfirmButton(
+                            modifier = app.n_zik.android.components.dialog.InteractiveDialog.ButtonModifier()
+                                .weight(1f)
+                                .fillMaxWidth(0.98f)
+                                .padding(horizontal = 5.dp)
+                                .background(colorPalette.accent)
+                                .padding(vertical = 10.dp),
+                            onConfirm = {
                                 onConfirm()
                                 onDismiss()
-                            },
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = colorPalette.accent,
-                                contentColor = colorPalette.textSecondary
-                            ),
-                            shape = uiRoundnessShape()
-                        ) {
-                            Text(
-                                text = confirmText,
-                                style = typography().s.semiBold
-                            )
-                        }
+                            }
+                        )
                     }
                 }
             }
@@ -1804,9 +1795,23 @@ fun InProgressDialog(
             ),
             overflow = TextOverflow.Ellipsis,
         )
-        Spacer(modifier = Modifier
-            .height(10.dp)
-        )
+        Spacer(modifier = Modifier.height(16.dp))
+        val progress = if (total > 0) done.toFloat() / total.toFloat() else 0f
+        if (total > 0) {
+            androidx.compose.material3.CircularWavyProgressIndicator(
+                progress = { progress },
+                modifier = Modifier.size(48.dp).align(Alignment.CenterHorizontally),
+                color = colorPalette.accent,
+                trackColor = colorPalette.background2
+            )
+        } else {
+            androidx.compose.material3.CircularWavyProgressIndicator(
+                modifier = Modifier.size(48.dp).align(Alignment.CenterHorizontally),
+                color = colorPalette.accent,
+                trackColor = colorPalette.background2
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
         BasicText(
             text = "$done / $total",
             style = TextStyle(

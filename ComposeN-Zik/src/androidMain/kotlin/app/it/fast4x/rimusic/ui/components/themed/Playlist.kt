@@ -98,20 +98,6 @@ fun Playlist(
                     }
                 }
             }
-            if (playlist.browseId?.isNotEmpty() == true && !playlist.name.startsWith(
-                    PIPED_PREFIX)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.ytmusic),
-                    colorFilter = ColorFilter.tint(if (playlist.isYoutubePlaylist) Color.Red.copy(0.75f).compositeOver(
-                        Color.White) else colorPalette().text),
-                    modifier = Modifier
-                        .size(40.dp)
-                        .padding(all = 5.dp),
-                    contentDescription = stringResource(R.string.cd_background_image),
-                    contentScale = ContentScale.Fit
-                )
-            }
             if (playlist.isYoutubePlaylist && !playlist.isEditable){
                 Image(
                     painter = painterResource(R.drawable.locked),
@@ -134,7 +120,10 @@ fun Playlist(
         modifier = modifier,
         alternative = alternative,
         showName = showName,
-        disableScrollingText = disableScrollingText
+        disableScrollingText = disableScrollingText,
+        browseId = playlist.browseId,
+        isYoutubePlaylist = playlist.isYoutubePlaylist,
+        isEditable = playlist.isEditable
     )
 }
 

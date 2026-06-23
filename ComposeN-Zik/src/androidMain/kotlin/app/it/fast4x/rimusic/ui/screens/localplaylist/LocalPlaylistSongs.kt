@@ -23,10 +23,12 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicText
@@ -138,6 +140,9 @@ import app.it.fast4x.rimusic.utils.isPipedEnabledKey
 import app.it.fast4x.rimusic.utils.manageDownload
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 import app.it.fast4x.rimusic.utils.recommendationsNumberKey
+import app.it.fast4x.rimusic.ui.components.themed.TextFieldDialog
+import androidx.core.net.toUri
+import app.it.fast4x.rimusic.utils.asSong
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.removeFromPipedPlaylist
 import app.it.fast4x.rimusic.utils.saveImageToInternalStorage
@@ -202,6 +207,12 @@ fun LocalPlaylistSongs(
     var showConfirmMatchAllDialog by remember { mutableStateOf(false) }
     var totalSongsToMatch by remember { mutableStateOf(0) }
     var songsMatched by remember { mutableStateOf(0) }
+    var retryMatchMode by remember { mutableStateOf(false) }
+    var retryMatchSongs by remember { mutableStateOf<List<Song>>(emptyList()) }
+    var showMatchResultsDialog by remember { mutableStateOf(false) }
+    var matchResultsMatched by remember { mutableStateOf(0) }
+    var matchResultsFailed by remember { mutableStateOf(0) }
+    var matchResultsFailedSongs by remember { mutableStateOf<List<Song>>(emptyList()) }
 
     // Non-vital
     val pipedSession = getPipedSession()
@@ -254,14 +265,32 @@ fun LocalPlaylistSongs(
 
     if (showConfirmMatchAllDialog) {
         app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog(
-            text = stringResource(R.string.match_all_songs_confirmation),
+            text = stringResource(R.string.match_all_confirmation, items.count { it.id.length != 11 }),
             onDismiss = {
                 showConfirmMatchAllDialog = false
             },onConfirm = {
+                retryMatchMode = false
+                retryMatchSongs = emptyList()
                 getAlbumVersion = true
                 showGetAlbumVersionDialogue = true
                 showConfirmMatchAllDialog = false
             }
+        )
+    }
+
+    if (showMatchResultsDialog) {
+        app.n_zik.android.components.dialog.MatchResultsDialog(
+            matched = matchResultsMatched,
+            failed = matchResultsFailed,
+            failedSongs = matchResultsFailedSongs,
+            onRetry = if (matchResultsFailed > 0) {{
+                showMatchResultsDialog = false
+                retryMatchMode = true
+                retryMatchSongs = matchResultsFailedSongs
+                getAlbumVersion = true
+                showGetAlbumVersionDialogue = true
+            }} else null,
+            onDismiss = { showMatchResultsDialog = false }
         )
     }
 
@@ -306,12 +335,16 @@ fun LocalPlaylistSongs(
     LaunchedEffect(getAlbumVersion) {
         if (!getAlbumVersion) return@LaunchedEffect
         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-            val matchedItems = items.filter { it.id.length != 11 && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) }
-            totalSongsToMatch = matchedItems.size
+            val unmatched = if (retryMatchMode && retryMatchSongs.isNotEmpty()) {
+                retryMatchSongs
+            } else {
+                items.filter { it.id.length != 11 && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) }
+            }
+            totalSongsToMatch = unmatched.size
             songsMatched = 0
 
             val jobs = mutableListOf<kotlinx.coroutines.Job>()
-            matchedItems.forEachIndexed { index, song ->
+            unmatched.forEachIndexed { index, song ->
                 jobs.add(launch(kotlinx.coroutines.Dispatchers.IO) {
                     try {
                         app.n_zik.android.utils.getAlbumVersionFromVideo(
@@ -328,11 +361,27 @@ fun LocalPlaylistSongs(
                         songsMatched++
                     }
                 })
-                kotlinx.coroutines.delay(800) // Space out requests to avoid YouTube rate limiting (403 Error)
+                kotlinx.coroutines.delay(800)
             }
             jobs.forEach { it.join() }
+
+            kotlinx.coroutines.delay(500)
+
+            val stillUnmatched = items.filter {
+                it.id.length != 11 && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)
+            }
+
             showGetAlbumVersionDialogue = false
             getAlbumVersion = false
+            retryMatchMode = false
+            retryMatchSongs = emptyList()
+
+            if (unmatched.isNotEmpty()) {
+                matchResultsMatched = unmatched.size - stillUnmatched.size
+                matchResultsFailed = stillUnmatched.size
+                matchResultsFailedSongs = stillUnmatched
+                showMatchResultsDialog = true
+            }
         }
     }
     val shuffle = SongShuffler ( ::getSongs )
@@ -348,13 +397,64 @@ fun LocalPlaylistSongs(
             // Already handled by ImportSongsFromSpotifyCSV internally
         },
         playlistIdForMatch = playlistId,
-        playlistName = playlist?.name ?: ""
+        playlistName = playlist?.name ?: "",
+        source = "SPOTIFY_IMPORT"
     )
+    val importRiplayDialog = app.n_zik.android.components.tab.ImportSongsFromSpotifyCSV.init(
+        afterTransaction = { finalPosition, song, _, _ ->
+        },
+        playlistIdForMatch = playlistId,
+        playlistName = playlist?.name ?: "",
+        source = "RIPLAY_IMPORT"
+    )
+
+    var showYouTubeLinkDialog by remember { mutableStateOf(false) }
+    if (showYouTubeLinkDialog) {
+        app.it.fast4x.rimusic.ui.components.themed.DefaultDialog(
+            onDismiss = { showYouTubeLinkDialog = false },
+            modifier = Modifier.fillMaxWidth(if (app.it.fast4x.rimusic.utils.isLandscape) 0.3f else 0.8f)
+        ) {
+            app.it.fast4x.rimusic.ui.components.themed.InputTextField(
+                onDismiss = { showYouTubeLinkDialog = false },
+                title = stringResource(R.string.import_via_youtube_link),
+                value = "",
+                placeholder = "https://youtube.com/playlist?list=...",
+                setValue = { url ->
+                    showYouTubeLinkDialog = false
+                    coroutineScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                        val urlPlaylistId = listOf(
+                            "https://www.youtube.com/playlist?",
+                            "https://youtube.com/playlist?",
+                            "https://music.youtube.com/playlist?",
+                            "https://m.youtube.com/playlist?"
+                        ).find { url.startsWith(it) }?.let { url.toUri().getQueryParameter("list") }
+
+                        if (urlPlaylistId != null) {
+                            val browseId = "VL$urlPlaylistId"
+                            Innertube.playlistPage(BrowseBody(browseId = browseId))?.getOrNull()?.let { playlistPage ->
+                                val songs = playlistPage.songsPage?.items?.mapNotNull { it.asSong.copy(totalPlayTimeMs = 1L) }
+                                if (songs != null) {
+                                    Database.asyncTransaction {
+                                        songTable.upsert(songs)
+                                        songs.forEach { song ->
+                                            songPlaylistMapTable.map(song.id, playlistId)
+                                        }
+                                    }
+                                    Toaster.done()
+                                }
+                            }
+                        }
+                    }
+                }
+            )
+        }
+    }
+
     val importMenu = remember { app.n_zik.android.components.tab.ImportPlaylistsMenu(
         onImportNzik = { importNzikDialog.onShortClick() },
         onImportSpotify = { importSpotifyDialog.onShortClick() },
-        onImportRiplay = {},
-        onImportYoutubeLink = {}
+        onImportRiplay = { importRiplayDialog.onShortClick() },
+        onImportYoutubeLink = { showYouTubeLinkDialog = true }
     ) }
     val matchAlbumButton = remember {
         object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive {
@@ -1067,7 +1167,7 @@ fun LocalPlaylistSongs(
                                     androidx.compose.material3.Icon(
                                         painter = androidx.compose.ui.res.painterResource(R.drawable.alert),
                                         contentDescription = stringResource(R.string.unmatched_song),
-                                        tint = app.n_zik.android.colorPalette().accent,
+                                        tint = Color(0xFFFF9800),
                                         modifier = Modifier.padding(start = 8.dp).size(18.dp)
                                     )
                                 }

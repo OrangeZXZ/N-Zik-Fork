@@ -72,6 +72,14 @@ import app.it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import app.it.fast4x.rimusic.utils.Preference
 import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_SORT_BY
 import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_SORT_ORDER
+import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_FAVORITES_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_FAVORITES_SORT_ORDER
+import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_OFFLINE_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_OFFLINE_SORT_ORDER
+import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_DOWNLOADED_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_DOWNLOADED_SORT_ORDER
+import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_TOP_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_TOP_SORT_ORDER
 import app.it.fast4x.rimusic.utils.addNext
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.center
@@ -118,6 +126,7 @@ fun HomeSongs(
     buttons: MutableList<Button>,
     itemsOnDisplay: MutableList<Song>,
     getSongs: () -> List<Song>,
+    matchButton: Button? = null,
     onRecommendationCountChange: (Int) -> Unit = {},
     onRecommendationsLoadingChange: (Boolean) -> Unit = {},
     isRecommendationEnabled: Boolean = false,
@@ -135,7 +144,13 @@ fun HomeSongs(
 
     var items by remember { mutableStateOf(emptyList<Song>()) }
 
-    val songSort = Sort ( HOME_SONGS_SORT_BY, HOME_SONGS_SORT_ORDER )
+    val songSort = when( builtInPlaylist ) {
+        BuiltInPlaylist.Favorites -> Sort( Preference.HOME_SONGS_FAVORITES_SORT_BY, Preference.HOME_SONGS_FAVORITES_SORT_ORDER )
+        BuiltInPlaylist.Offline -> Sort( Preference.HOME_SONGS_OFFLINE_SORT_BY, Preference.HOME_SONGS_OFFLINE_SORT_ORDER )
+        BuiltInPlaylist.Downloaded -> Sort( Preference.HOME_SONGS_DOWNLOADED_SORT_BY, Preference.HOME_SONGS_DOWNLOADED_SORT_ORDER )
+        BuiltInPlaylist.Top -> Sort( Preference.HOME_SONGS_TOP_SORT_BY, Preference.HOME_SONGS_TOP_SORT_ORDER )
+        else -> Sort( HOME_SONGS_SORT_BY, HOME_SONGS_SORT_ORDER )
+    }
     val positionLock = remember( songSort.sortOrder ) { PositionLock(songSort.sortOrder) }
     val topPlaylists = PeriodSelector( Preference.HOME_SONGS_TOP_PLAYLIST_PERIOD )
     val hiddenSongs = HiddenSongs()
@@ -351,13 +366,21 @@ fun HomeSongs(
         }
     }
 
-    LaunchedEffect( builtInPlaylist, songSort.sortBy, songSort.sortOrder ) {
+    val hasUnmatchedSongs by remember {
+        derivedStateOf {
+            itemsOnDisplay.any { it.id.length != 11 && !it.id.startsWith( LOCAL_KEY_PREFIX ) }
+        }
+    }
+
+    LaunchedEffect( builtInPlaylist, songSort.sortBy, songSort.sortOrder, hasUnmatchedSongs ) {
         buttons.removeAll { it is Sort<*> || it is PeriodSelector || it is PositionLock || it is DownloadAllSongsDialog || it is DeleteAllDownloadedSongsDialog || it is ExportSongsToCSVDialog }
         
         val firstButton = if( builtInPlaylist == BuiltInPlaylist.Top ) topPlaylists else songSort
         buttons.add( 0, firstButton )
         if ( builtInPlaylist != BuiltInPlaylist.Top && songSort.sortBy == SongSortBy.Custom )
             buttons.add( 1, positionLock )
+        if ( matchButton != null && builtInPlaylist != BuiltInPlaylist.OnDevice && hasUnmatchedSongs )
+            buttons.add( 2, matchButton )
         buttons.add( 3, downloadAllDialog )
         buttons.add( 4, deleteDownloadsDialog )
         buttons.add( exportDialog )
@@ -468,6 +491,14 @@ fun HomeSongs(
                     isRecommended = isRecommended,
                     modifier = Modifier.animateItem(),
                     trailingContent = {
+                        if (song.id.length != 11 && !song.id.startsWith(LOCAL_KEY_PREFIX)) {
+                            androidx.compose.material3.Icon(
+                                painter = androidx.compose.ui.res.painterResource(R.drawable.alert),
+                                contentDescription = stringResource(R.string.unmatched_song),
+                                tint = Color(0xFFFF9800),
+                                modifier = Modifier.padding(start = 8.dp).size(18.dp)
+                            )
+                        }
                         if( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom && songSort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending )
                             Box( Modifier.width( 24.dp ) )
                     },

@@ -115,6 +115,9 @@ interface SongPlaylistMapTable {
     """)
     fun isMapped( songId: String ): Flow<Boolean>
 
+    @Query("SELECT EXISTS(SELECT 1 FROM SongPlaylistMap WHERE songId = :songId)")
+    fun isMappedSync( songId: String ): Boolean
+
     /**
      * @return list of [Playlist.id] that [songId] is mapped to
      */
@@ -356,5 +359,11 @@ interface SongPlaylistMapTable {
         PlaylistSongSortBy.DateAdded        -> allSongsOf( playlistId )     // Already sorted by ROWID
     }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
+
+    @Query("UPDATE SongPlaylistMap SET songId = :newId WHERE songId = :oldId")
+    fun updateSongId(oldId: String, newId: String)
+
+    @Query("SELECT DISTINCT songId FROM SongPlaylistMap")
+    fun allMappedSongIds(): Flow<List<String>>
 }
 

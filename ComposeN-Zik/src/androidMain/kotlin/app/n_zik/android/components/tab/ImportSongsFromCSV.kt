@@ -108,7 +108,7 @@ class ImportSongsFromCSV(
                  }
 
         @Composable
-        operator fun invoke(targetPlaylistId: Long = 0L) = ImportSongsFromCSV(
+        operator fun invoke(targetPlaylistId: Long = 0L, sourceSuffix: String = "") = ImportSongsFromCSV(
             rememberLauncherForActivityResult(
                 ActivityResultContracts.OpenDocument()
             ) { uri ->
@@ -129,7 +129,8 @@ class ImportSongsFromCSV(
                                     ?.let( ::processSongs )
                                     ?.forEach { (playlist, songs) ->
                                         if( playlist.first.isNotBlank() ) {
-                                            val realPlaylist = Playlist(name = playlist.first, browseId = playlist.second)
+                                            val browseId = if (sourceSuffix.isNotEmpty()) "${playlist.second}_$sourceSuffix" else playlist.second
+                                            val realPlaylist = Playlist(name = playlist.first, browseId = browseId)
                                             combos[realPlaylist] = songs
                                         } else
                                             straySongs.addAll( songs )
