@@ -228,19 +228,13 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
         if (matchedSongIndex != -1 && matchedSong != null) {
             val newSong = matchedSong.asSong
 
-            // Upsert new song into songTable first
-            songTable.upsert(newSong)
+            // Save playlist mappings before delete (CASCADE will remove them)
+            val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
 
-            // Reassign ALL references from old ID to new ID
-            songPlaylistMapTable.updateSongId(song.id, newSong.id)
-            songAlbumMapTable.updateSongId(song.id, newSong.id)
-            songArtistMapTable.updateSongId(song.id, newSong.id)
-            eventTable.updateSongId(song.id, newSong.id)
-
-            // Delete old song — new one already exists
+            // Delete old song first — CASCADE removes SongPlaylistMap, etc.
             songTable.delete(song)
 
-            // Merge: keep user-modified properties from old song, take fresh metadata from new
+            // Upsert merged song with new ID
             songTable.upsert(newSong.copy(
                 title = PropUtils.retainIfModified(song.title, newSong.title).orEmpty(),
                 artistsText = PropUtils.retainIfModified(song.artistsText, newSong.artistsText),
@@ -249,6 +243,16 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                 totalPlayTimeMs = song.totalPlayTimeMs,
                 position = effectivePosition
             ))
+
+            // Re-insert playlist mappings with new song ID
+            playlistMappings.forEach { mapping ->
+                songPlaylistMapTable.mapAtPosition(newSong.id, mapping.playlistId, mapping.position)
+            }
+
+            // Update other references
+            songAlbumMapTable.updateSongId(song.id, newSong.id)
+            songArtistMapTable.updateSongId(song.id, newSong.id)
+            eventTable.updateSongId(song.id, newSong.id)
 
             // Restore position in THIS playlist
             if (oldPosition != -1) {
