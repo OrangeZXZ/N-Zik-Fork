@@ -464,10 +464,6 @@ fun DataSpec.process(
         }
     }
 
-    if (videoId.length != 11 && !videoId.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)) {
-        throw UnmatchedSongException()
-    }
-
     var formatUri = formatCache[videoId]
 
     if (formatUri != null) {

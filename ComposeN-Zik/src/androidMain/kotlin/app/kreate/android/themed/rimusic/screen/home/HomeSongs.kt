@@ -556,15 +556,10 @@ fun HomeSongs(
                     onClick = {
                         search.hideIfEmpty()
 
-                        val currentSong = song
-                        if (currentSong.isUnmatched) {
-                            Toaster.w(R.string.playback_blocked_match_first)
-                        } else {
-                            binder?.stopRadio()
+                        binder?.stopRadio()
 
-                            val mediaItems = getSongs().fastMap( Song::asMediaItem )
-                            binder?.player?.forcePlayAtIndex( mediaItems, index )
-                        }
+                        val mediaItems = getSongs().fastMap( Song::asMediaItem )
+                        binder?.player?.forcePlayAtIndex( mediaItems, index )
                     }
                 )
             }

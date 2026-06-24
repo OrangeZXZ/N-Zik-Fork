@@ -1214,22 +1214,18 @@ fun LocalPlaylistSongs(
                                 }
                             },
                             onClick = {
-                                if (song.isUnmatched) {
-                                    Toaster.w(R.string.playback_blocked_match_first)
-                                } else {
-                                    binder?.stopRadio()
-                                    binder?.player?.forcePlayAtIndex(
-                                        itemsOnDisplay.map( Song::asMediaItem ),
-                                        index
-                                    )
+                                binder?.stopRadio()
+                                binder?.player?.forcePlayAtIndex(
+                                    itemsOnDisplay.map( Song::asMediaItem ),
+                                    index
+                                )
 
-                                    /*
-                                        Due to the small size of checkboxes,
-                                        we shouldn't disable [itemSelector]
-                                     */
+                                /*
+                                    Due to the small size of checkboxes,
+                                    we shouldn't disable [itemSelector]
+                                 */
 
-                                    search.hideIfEmpty()
-                                }
+                                search.hideIfEmpty()
                             }
                         )
                     }
@@ -1254,14 +1250,11 @@ fun LocalPlaylistSongs(
                 iconId = R.drawable.shuffle,
                 visible = !reorderingState.isAnyItemDragging,
                 onClick = {
-                    getSongs().let { songs ->
-                        val playableSongs = songs.filter { !it.isUnmatched }
-                        if (playableSongs.isNotEmpty()) {
+                    getMediaItems().let { songs ->
+                        if (songs.isNotEmpty()) {
                             binder?.stopRadio()
                             binder?.player
-                                  ?.forcePlayFromBeginning( playableSongs.shuffled().map( Song::asMediaItem ) )
-                        } else {
-                            Toaster.w(R.string.playback_blocked_match_first)
+                                  ?.forcePlayFromBeginning( songs.shuffled() )
                         }
                     }
                 }
