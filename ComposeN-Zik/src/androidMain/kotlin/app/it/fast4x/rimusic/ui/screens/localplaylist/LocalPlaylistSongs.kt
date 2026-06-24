@@ -390,22 +390,26 @@ fun LocalPlaylistSongs(
                         if (entry.playlistId != playlistId) continue
                         val count = Database.songTable.countById(entry.originalId)
                         val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)
+                        Timber.tag("MatchPlaylist").d("CLEANUP BDD: originalId='${entry.originalId}' count=$count isYouTubeId=$isYouTubeId")
                         if (count > 0) {
                             if (isYouTubeId) {
-                                // Already a YouTube ID - check duration (Riplay has empty Duration in CSV)
                                 val song = Database.songTable.findById(entry.originalId).first()
+                                val dur = song?.durationText ?: "?"
                                 if (song != null && song.durationText == "00:00") {
-                                    // Riplay: YouTube ID OK but duration missing - treat as failed
+                                    Timber.tag("MatchPlaylist").d("CLEANUP BDD: FAIL (Riplay) originalId='${entry.originalId}' - duration='00:00'")
                                     failedCount++
                                     failedEntries.add(entry)
                                 } else {
+                                    Timber.tag("MatchPlaylist").d("CLEANUP BDD: MATCHED originalId='${entry.originalId}' (duration='$dur')")
                                     Database.importSongTable.deleteByOriginalId(entry.originalId)
                                 }
                             } else {
+                                Timber.tag("MatchPlaylist").d("CLEANUP BDD: FAIL originalId='${entry.originalId}' (placeholder)")
                                 failedCount++
                                 failedEntries.add(entry)
                             }
                         } else {
+                            Timber.tag("MatchPlaylist").d("CLEANUP BDD: MATCHED originalId='${entry.originalId}' (deleted)")
                             Database.importSongTable.deleteByOriginalId(entry.originalId)
                         }
                     }
@@ -488,22 +492,26 @@ fun LocalPlaylistSongs(
                         if (entry.playlistId != playlistId) continue
                         val count = Database.songTable.countById(entry.originalId)
                         val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)
+                        Timber.tag("MatchPlaylist").d("CLEANUP BDD: originalId='${entry.originalId}' count=$count isYouTubeId=$isYouTubeId")
                         if (count > 0) {
                             if (isYouTubeId) {
-                                // Already a YouTube ID - check duration (Riplay has empty Duration in CSV)
                                 val song = Database.songTable.findById(entry.originalId).first()
+                                val dur = song?.durationText ?: "?"
                                 if (song != null && song.durationText == "00:00") {
-                                    // Riplay: YouTube ID OK but duration missing - treat as failed
+                                    Timber.tag("MatchPlaylist").d("CLEANUP BDD: FAIL (Riplay) originalId='${entry.originalId}' - duration='00:00'")
                                     failedCount++
                                     failedEntries.add(entry)
                                 } else {
+                                    Timber.tag("MatchPlaylist").d("CLEANUP BDD: MATCHED originalId='${entry.originalId}' (duration='$dur')")
                                     Database.importSongTable.deleteByOriginalId(entry.originalId)
                                 }
                             } else {
+                                Timber.tag("MatchPlaylist").d("CLEANUP BDD: FAIL originalId='${entry.originalId}' (placeholder)")
                                 failedCount++
                                 failedEntries.add(entry)
                             }
                         } else {
+                            Timber.tag("MatchPlaylist").d("CLEANUP BDD: MATCHED originalId='${entry.originalId}' (deleted)")
                             Database.importSongTable.deleteByOriginalId(entry.originalId)
                         }
                     }

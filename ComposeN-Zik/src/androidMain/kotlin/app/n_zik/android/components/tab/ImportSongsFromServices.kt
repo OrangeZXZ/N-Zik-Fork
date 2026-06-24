@@ -181,6 +181,7 @@ class ImportSongsFromServices private constructor(
                                 // Insert the song directly here (within the active transaction)
                                 songTable.insertIgnore( song )
                                 importedCount++
+                                timber.log.Timber.tag("Import").d("ADDED song '${song.title}' id='${song.id}' duration='${song.durationText}' (isRiplayFormat=$isRiplayFormat)")
 
                                 // Save import position for match system
                                 app.n_zik.android.core.database.Database.importSongTable.insert(
@@ -190,6 +191,7 @@ class ImportSongsFromServices private constructor(
                                         playlistId = currentPlaylistId.takeIf { it > 0L }
                                     )
                                 )
+                                timber.log.Timber.tag("Import").d("ImportSong entry created: originalId='${song.id}', position=$finalPosition, playlistId=${currentPlaylistId.takeIf { it > 0L }}")
 
                                 // If a target playlist is set, map immediately
                                 if (currentPlaylistId > 0L) {

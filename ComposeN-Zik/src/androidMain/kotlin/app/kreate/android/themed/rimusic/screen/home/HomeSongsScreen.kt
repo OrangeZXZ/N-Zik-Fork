@@ -344,23 +344,29 @@ fun HomeSongsScreen(navController: NavController ) {
                     for (entry in allEntries) {
                         val count = Database.songTable.countById(entry.originalId)
                         val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX)
+                        Timber.tag("MatchGlobal").d("CLEANUP BDD: originalId='${entry.originalId}' count=$count isYouTubeId=$isYouTubeId")
                         if (count > 0) {
                             if (isYouTubeId) {
                                 // Already a YouTube ID - check duration (Riplay has empty Duration in CSV)
                                 val song = Database.songTable.findById(entry.originalId).first()
+                                val dur = song?.durationText ?: "?"
                                 if (song != null && song.durationText == "00:00") {
                                     // Riplay: YouTube ID OK but duration missing - treat as failed
+                                    Timber.tag("MatchGlobal").d("CLEANUP BDD: FAIL (Riplay) originalId='${entry.originalId}' - YT ID OK but duration='00:00'")
                                     failedCount++
                                     failedEntries.add(entry)
                                 } else {
                                     // YouTube ID OK and duration OK - matched
+                                    Timber.tag("MatchGlobal").d("CLEANUP BDD: MATCHED originalId='${entry.originalId}' (duration='$dur')")
                                     Database.importSongTable.deleteByOriginalId(entry.originalId)
                                 }
                             } else {
+                                Timber.tag("MatchGlobal").d("CLEANUP BDD: FAIL originalId='${entry.originalId}' (placeholder, still in DB)")
                                 failedCount++
                                 failedEntries.add(entry)
                             }
                         } else {
+                            Timber.tag("MatchGlobal").d("CLEANUP BDD: MATCHED originalId='${entry.originalId}' (deleted from Song table)")
                             Database.importSongTable.deleteByOriginalId(entry.originalId)
                         }
                     }
