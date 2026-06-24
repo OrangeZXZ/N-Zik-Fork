@@ -125,6 +125,7 @@ class SmartTrash private constructor(
                 songAlbumMapTable.deleteBySongId( song.id )
                 formatTable.deleteBySongId( song.id )
                 Database.importSongTable.deleteByOriginalId( song.id )
+                Database.importSongTable.clear()
                 songTable.delete( song )
             }
             
