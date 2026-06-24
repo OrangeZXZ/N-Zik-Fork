@@ -157,7 +157,7 @@ class LyricsSettingsMenu private constructor(
         var lyricsSizeAnimate by rememberPreference(lyricsSizeAnimateKey, false)
         var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
         var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
-        var lyricsType by rememberPreference(lyricsTypeKey, LyricsType.Synced)
+        var lyricsType by rememberPreference(lyricsTypeKey, LyricsType.Karaoke)
         val showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
         var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, true)
         var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)

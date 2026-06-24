@@ -83,7 +83,7 @@ fun LyricsScreen(
         val binder = LocalPlayerServiceBinder.current
 
         var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
-        var lyricsType by rememberPreference(lyricsTypeKey, LyricsType.Synced)
+        var lyricsType by rememberPreference(lyricsTypeKey, LyricsType.Karaoke)
         var invalidLrc by remember(mediaId, lyricsType) { mutableStateOf(false) }
         var isPicking by remember(mediaId, lyricsType) { mutableStateOf(false) }
         var lyricsColor by rememberPreference(lyricsColorKey, LyricsColor.White)
