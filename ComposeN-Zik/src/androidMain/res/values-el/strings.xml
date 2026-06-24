@@ -1309,6 +1309,7 @@
   <string name="match_results_ok">Εντάξει</string>
   <string name="retry_match">Επανάληψη Ταίριασμα</string>
   <string name="retry_match_confirmation">Επανάληψη ταιριάσματος %d απέτυχε τραγούδια?</string>
+  <string name="match_results_merged">%d merged with existing</string>
   <string name="notification_skip_back">Παράλειψη πίσω</string>
   <string name="notification_pause">Παύση</string>
   <string name="notification_play">Αναπαραγωγή</string>
