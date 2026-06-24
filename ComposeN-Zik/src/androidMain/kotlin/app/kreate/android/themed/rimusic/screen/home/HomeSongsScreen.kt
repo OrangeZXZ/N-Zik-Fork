@@ -142,6 +142,7 @@ fun HomeSongsScreen(navController: NavController ) {
     var showMatchResultsDialog by remember { mutableStateOf(false) }
     var matchResultsMatched by remember { mutableStateOf(0) }
     var matchResultsFailed by remember { mutableStateOf(0) }
+    var matchResultsMerged by remember { mutableStateOf(0) }
     var matchResultsFailedSongs by remember { mutableStateOf<List<Song>>(emptyList()) }
     var matchRefreshKey by remember { mutableIntStateOf(0) }
 
@@ -262,6 +263,7 @@ fun HomeSongsScreen(navController: NavController ) {
         app.n_zik.android.components.dialog.MatchResultsDialog(
             matched = matchResultsMatched,
             failed = matchResultsFailed,
+            merged = matchResultsMerged,
             failedSongs = matchResultsFailedSongs,
             onRetry = if (matchResultsFailed > 0) {{
                 showMatchResultsDialog = false
@@ -287,13 +289,23 @@ fun HomeSongsScreen(navController: NavController ) {
                 }
                 totalSongsToMatch = unmatched.size
                 songsMatched = 0
+                val mergedCounter = java.util.concurrent.atomic.AtomicInteger(0)
+
+                // Calculate all positions BEFORE starting matches (DB changes during parallel matches would shift positions)
+                val positionsBeforeMatch = withContext(Dispatchers.IO) {
+                    val sortedSongs = Database.songTable.sortAllByPosition().first()
+                    unmatched.associate { song ->
+                        song.id to (sortedSongs.indexOfFirst { it.id == song.id }.takeIf { it >= 0 } ?: 0)
+                    }
+                }
 
                 val jobs = mutableListOf<kotlinx.coroutines.Job>()
                 unmatched.forEachIndexed { index, song ->
+                    val posInList = positionsBeforeMatch[song.id] ?: index
                     jobs.add(launch(Dispatchers.IO) {
                         try {
                             if (cancelMatch) return@launch
-                            getAlbumVersionFromVideoGlobal(song)
+                            getAlbumVersionFromVideoGlobal(song, posInList, mergedCounter)
                         } catch (e: kotlinx.coroutines.CancellationException) {
                             throw e
                         } catch (e: Exception) {
@@ -323,6 +335,7 @@ fun HomeSongsScreen(navController: NavController ) {
                 if (unmatched.isNotEmpty()) {
                     matchResultsMatched = unmatched.size - stillUnmatched.size
                     matchResultsFailed = stillUnmatched.size
+                    matchResultsMerged = mergedCounter.get()
                     matchResultsFailedSongs = stillUnmatched
                     showMatchResultsDialog = true
                 }

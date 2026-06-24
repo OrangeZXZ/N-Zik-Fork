@@ -4,8 +4,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import app.it.fast4x.rimusic.cleanPrefix
 import app.it.fast4x.rimusic.LOCAL_KEY_PREFIX
+import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Playlist
 import app.it.fast4x.rimusic.models.Song
+import app.it.fast4x.rimusic.models.SongArtistMap
 import app.it.fast4x.rimusic.models.SongPlaylistMap
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.asSong
@@ -31,7 +33,7 @@ import kotlin.random.Random
  * Use this from HomeSongsScreen to match without needing a specific playlist.
  */
 @RequiresApi(Build.VERSION_CODES.O)
-suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
+suspend fun getAlbumVersionFromVideoGlobal(song: Song, currentPosition: Int = song.position, mergedCounter: java.util.concurrent.atomic.AtomicInteger? = null) {
     val random4Digit = Random.nextInt(1000, 10000)
 
     fun filteredText(text: String): String = text
@@ -110,7 +112,21 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
             // Check if a song with this YouTube ID already exists (duplicate match)
             val existingSong = runBlocking(Dispatchers.IO) { songTable.findById(newSong.id).first() }
             if (existingSong != null && existingSong.id != song.id) {
-                // DO NOT delete — just skip this match to keep both songs
+                // Merge: transfer playlist mappings, events, likedAt from old song to existing
+                val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
+                playlistMappings.forEach { mapping ->
+                    songPlaylistMapTable.mapAtPosition(existingSong.id, mapping.playlistId, mapping.position)
+                }
+                songArtistMapTable.updateSongId(song.id, existingSong.id)
+                songAlbumMapTable.updateSongId(song.id, existingSong.id)
+                eventTable.updateSongId(song.id, existingSong.id)
+                // Preserve likedAt if the existing song doesn't have it
+                if (existingSong.likedAt == null && song.likedAt != null) {
+                    songTable.upsert(existingSong.copy(likedAt = song.likedAt))
+                }
+                // Delete the old unmatched song
+                songTable.delete(song)
+                mergedCounter?.incrementAndGet()
                 return@asyncTransaction
             }
 
@@ -135,6 +151,12 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
             songAlbumMapTable.updateSongId(song.id, newSong.id)
             songArtistMapTable.updateSongId(song.id, newSong.id)
             eventTable.updateSongId(song.id, newSong.id)
+            // Create album mapping from matched result
+            bestMatch.album?.let { albumInfo ->
+                val albumId = albumInfo.endpoint?.browseId ?: return@let
+                albumTable.insertIgnore(app.it.fast4x.rimusic.models.Album(id = albumId, title = albumInfo.name))
+                songAlbumMapTable.map(newSong.id, albumId)
+            }
             bestMatch.authors?.forEach { author ->
                 val browseId = author.endpoint?.browseId ?: return@forEach
                 artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(
@@ -142,13 +164,14 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
                     name = author.name,
                     thumbnailUrl = null
                 ))
+                songArtistMapTable.insertIgnore(SongArtistMap(newSong.id, browseId))
             }
         } else {
             // Mark as "not found" by giving it a shuffle ID so it won't be retried
             if (song.id == (song.cleanTitle() + song.artistsText).filter { it.isLetterOrDigit() }) {
                 val notFound = song.copy(
                     id = shuffle(song.artistsText + random4Digit + song.cleanTitle() + "56Music").filter { it.isLetterOrDigit() },
-                    position = effectivePosition
+                position = currentPosition
                 )
                 val oldId = song.id
                 songTable.insertIgnore(notFound)
@@ -282,7 +305,18 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
             // Check if a song with this YouTube ID already exists (duplicate match)
             val existingSong = runBlocking(Dispatchers.IO) { songTable.findById(newSong.id).first() }
             if (existingSong != null && existingSong.id != song.id) {
-                // DO NOT delete — just skip this match to keep both songs
+                // Merge: transfer playlist mappings, events, likedAt from old song to existing
+                val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
+                playlistMappings.forEach { mapping ->
+                    songPlaylistMapTable.mapAtPosition(existingSong.id, mapping.playlistId, mapping.position)
+                }
+                songArtistMapTable.updateSongId(song.id, existingSong.id)
+                songAlbumMapTable.updateSongId(song.id, existingSong.id)
+                eventTable.updateSongId(song.id, existingSong.id)
+                if (existingSong.likedAt == null && song.likedAt != null) {
+                    songTable.upsert(existingSong.copy(likedAt = song.likedAt))
+                }
+                songTable.delete(song)
                 return@asyncTransaction
             }
 
@@ -299,7 +333,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                 thumbnailUrl = PropUtils.retainIfModified(song.thumbnailUrl, newSong.thumbnailUrl),
                 likedAt = song.likedAt,
                 totalPlayTimeMs = song.totalPlayTimeMs,
-                position = effectivePosition
+                position = song.position
             ))
 
             // Re-insert playlist mappings with new song ID
@@ -311,6 +345,24 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
             songAlbumMapTable.updateSongId(song.id, newSong.id)
             songArtistMapTable.updateSongId(song.id, newSong.id)
             eventTable.updateSongId(song.id, newSong.id)
+
+            // Create album mapping from matched result
+            matchedSong.album?.let { albumInfo ->
+                val albumId = albumInfo.endpoint?.browseId ?: return@let
+                albumTable.insertIgnore(app.it.fast4x.rimusic.models.Album(id = albumId, title = albumInfo.name))
+                songAlbumMapTable.map(newSong.id, albumId)
+            }
+
+            // Create artist mappings from matched result
+            matchedSong.authors?.forEach { author ->
+                val browseId = author.endpoint?.browseId ?: return@forEach
+                artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(
+                    id = browseId,
+                    name = author.name,
+                    thumbnailUrl = null
+                ))
+                songArtistMapTable.insertIgnore(SongArtistMap(newSong.id, browseId))
+            }
 
             // Restore position in THIS playlist
             if (oldPosition != -1) {

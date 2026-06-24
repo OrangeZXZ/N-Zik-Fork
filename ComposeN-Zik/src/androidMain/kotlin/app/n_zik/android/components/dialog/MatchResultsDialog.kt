@@ -45,6 +45,7 @@ import app.n_zik.android.uiRoundnessShape
 fun MatchResultsDialog(
     matched: Int,
     failed: Int,
+    merged: Int = 0,
     failedSongs: List<Song>,
     onRetry: (() -> Unit)? = null,
     onDismiss: () -> Unit
@@ -82,6 +83,18 @@ fun MatchResultsDialog(
                         style = typography().s.copy(color = colorPalette().text),
                         modifier = Modifier.fillMaxWidth()
                     )
+                }
+
+                if (merged > 0) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    BasicText(
+                        text = "$merged merged with existing",
+                        style = typography().xs.copy(color = colorPalette().textSecondary),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                if (failed > 0) {
                     Spacer(modifier = Modifier.height(8.dp))
                     BasicText(
                         text = stringResource(R.string.match_results_failed_songs),
