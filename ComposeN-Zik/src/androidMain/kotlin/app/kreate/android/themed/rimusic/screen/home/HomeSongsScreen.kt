@@ -113,7 +113,9 @@ import app.n_zik.android.components.tab.ExportSongsToCSVDialog
 import app.n_zik.android.utils.getAlbumVersionFromVideoGlobal
 import app.n_zik.android.uiRoundnessShape
 import app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
+import app.n_zik.android.core.database.Database.songTable
 import app.n_zik.android.download.utils.MyDownloadHelper
+import kotlinx.coroutines.runBlocking
 import kotlin.to
 import app.it.fast4x.rimusic.utils.asSong as toSong
 @RequiresApi(Build.VERSION_CODES.O)
@@ -320,8 +322,10 @@ fun HomeSongsScreen(navController: NavController ) {
                 withContext(Dispatchers.IO) {
                     val allEntries = Database.importSongTable.getAllEntries()
                     for (entry in allEntries) {
-                        val exists = runBlocking { songTable.findById(entry.originalId).first() } != null
-                        if (!exists) {
+                        val count = kotlinx.coroutines.runBlocking {
+                            Database.songTable.countById(entry.originalId)
+                        }
+                        if (count == 0) {
                             Database.importSongTable.deleteByOriginalId(entry.originalId)
                         }
                     }

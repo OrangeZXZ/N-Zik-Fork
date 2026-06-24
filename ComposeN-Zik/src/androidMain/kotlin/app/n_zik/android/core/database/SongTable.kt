@@ -84,6 +84,9 @@ interface SongTable {
     @Query("SELECT DISTINCT * FROM Song WHERE id = :songId")
     fun findById( songId: String ): Flow<Song?>
 
+    @Query("SELECT COUNT(*) FROM Song WHERE id = :songId")
+    fun countById( songId: String ): Int
+
     /**
      * [searchTerm] appears in [Song.title] or [Song.artistsText].
      * Additionally, it's **case-insensitive**
