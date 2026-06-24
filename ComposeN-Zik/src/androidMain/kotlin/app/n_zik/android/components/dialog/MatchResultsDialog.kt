@@ -77,14 +77,6 @@ fun MatchResultsDialog(
                         style = typography().s.copy(color = colorPalette().text),
                         modifier = Modifier.fillMaxWidth()
                     )
-                    if (merged > 0) {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        BasicText(
-                            text = stringResource(R.string.match_results_merged, merged),
-                            style = typography().xs.copy(color = colorPalette().textSecondary),
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
                 } else {
                     BasicText(
                         text = stringResource(R.string.match_results_some_failed, matched, failed),
