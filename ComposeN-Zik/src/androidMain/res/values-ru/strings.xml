@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Экран блокировки</string>
   <string name="wallpaper_both">Оба</string>
   <string name="fluid">ФЛЮИД</string>
+  <string name="lyrics_not_available">Текст песни недоступен. Попробуйте еще раз или введите его вручную.</string>
+  <string name="source_betterlyrics_synced">BetterLyrics (синхронизирован)</string>
+  <string name="source_betterlyrics_karaoke">BetterLyrics (караоке)</string>
+  <string name="source_lrclib_synced">LrcLib.net (синхронизирован)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (без синхронизации)</string>
+  <string name="source_kugou_synced">KuGou.com (синхронизирован)</string>
+  <string name="source_youtube_unsynced">YouTube (не синхронизирован)</string>
 </resources>

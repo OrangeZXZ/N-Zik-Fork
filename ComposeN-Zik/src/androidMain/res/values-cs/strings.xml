@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Zamykací obrazovka</string>
   <string name="wallpaper_both">Oba</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">Žádné texty nejsou k dispozici. Zkuste to prosím znovu nebo je zadejte ručně.</string>
+  <string name="source_betterlyrics_synced">BetterLyrics (synchronizováno)</string>
+  <string name="source_betterlyrics_karaoke">BetterLyrics (karaoke)</string>
+  <string name="source_lrclib_synced">LrcLib.net (synchronizovaný)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (nesynchronizovaný)</string>
+  <string name="source_kugou_synced">KuGou.com (synchronizovaný)</string>
+  <string name="source_youtube_unsynced">YouTube (nesynchronizovaný)</string>
 </resources>

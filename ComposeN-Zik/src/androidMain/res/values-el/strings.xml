@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Οθόνη Κλειδώματος</string>
   <string name="wallpaper_both">Both</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">Δεν υπάρχουν διαθέσιμοι στίχοι. Παρακαλώ δοκιμάστε ξανά ή εισαγάγετε τους χειροκίνητα.</string>
+  <string name="source_betterlyrics_synced">BetterLyrics (συγχρονισμένο)</string>
+  <string name="source_betterlyrics_karaoke">BetterLyrics (καραόκε)</string>
+  <string name="source_lrclib_synced">LrcLib.net (συγχρονισμένο)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (μη συγχρονισμένο)</string>
+  <string name="source_kugou_synced">KuGou.com (συγχρονισμένο)</string>
+  <string name="source_youtube_unsynced">YouTube (μη συγχρονισμένο)</string>
 </resources>

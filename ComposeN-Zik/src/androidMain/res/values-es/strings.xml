@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Pantalla de bloqueo</string>
   <string name="wallpaper_both">Ambos</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">No hay letras disponibles. Por favor, inténtalo de nuevo o introdúzcalas manualmente.</string>
+  <string name="source_betterlyrics_synced">Mejores letras (sincronizado)</string>
+  <string name="source_betterlyrics_karaoke">Mejor Letra (karaoke)</string>
+  <string name="source_lrclib_synced">LrcLib.net (sincronizado)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (sin sincronizar)</string>
+  <string name="source_kugou_synced">KuGou.com (sincronizado)</string>
+  <string name="source_youtube_unsynced">YouTube (sin sincronizar)</string>
 </resources>

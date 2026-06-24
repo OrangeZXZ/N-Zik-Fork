@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Екран блокування</string>
   <string name="wallpaper_both">Обидва</string>
   <string name="fluid">КРИТИЦЯ</string>
+  <string name="lyrics_not_available">Немає доступних текстів. Будь ласка, спробуйте ще раз або введіть їх вручну.</string>
+  <string name="source_betterlyrics_synced">Кращі тексти (синхронізовано)</string>
+  <string name="source_betterlyrics_karaoke">Кращі слова (караоке)</string>
+  <string name="source_lrclib_synced">LrcLib.net (синхронізовано)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (несинхронізовано)</string>
+  <string name="source_kugou_synced">KuGou.com (синхронізовано)</string>
+  <string name="source_youtube_unsynced">YouTube (не синхронізований)</string>
 </resources>

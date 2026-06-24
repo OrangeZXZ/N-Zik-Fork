@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Tela de bloqueio</string>
   <string name="wallpaper_both">Ambos</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">Nenhuma letra disponível. Por favor, tente novamente ou insira-a manualmente.</string>
+  <string name="source_betterlyrics_synced">BetterLyrics (sincronizado)</string>
+  <string name="source_betterlyrics_karaoke">BetterLyrics (karaokê)</string>
+  <string name="source_lrclib_synced">LrcLib.net (sincronizado)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (não sincronizado)</string>
+  <string name="source_kugou_synced">KuGou.com (sincronizado)</string>
+  <string name="source_youtube_unsynced">YouTube (não sincronizado)</string>
 </resources>

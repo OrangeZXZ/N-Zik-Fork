@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Blocco Schermo</string>
   <string name="wallpaper_both">Entrambi</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">Nessun testo disponibile. Si prega di riprovare o inserirli manualmente.</string>
+  <string name="source_betterlyrics_synced">BetterLyrics (sincronizzato)</string>
+  <string name="source_betterlyrics_karaoke">BetterLyrics (karaoke)</string>
+  <string name="source_lrclib_synced">LrcLib.net (sincronizzato)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (non sincronizzato)</string>
+  <string name="source_kugou_synced">KuGou.com (sincronizzato)</string>
+  <string name="source_youtube_unsynced">YouTube (non sincronizzato)</string>
 </resources>

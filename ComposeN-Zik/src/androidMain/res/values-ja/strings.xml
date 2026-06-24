@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">ロック画面</string>
   <string name="wallpaper_both">両方</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">歌詞がありません。もう一度試すか、手動で入力してください。</string>
+  <string name="source_betterlyrics_synced">BetterLyrics (同期済み)</string>
+  <string name="source_betterlyrics_karaoke">BetterLyrics(カラオケ)</string>
+  <string name="source_lrclib_synced">LrcLib.net (同期済み)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (非同期)</string>
+  <string name="source_kugou_synced">KuGou.com (同期済み)</string>
+  <string name="source_youtube_unsynced">YouTube (同期されていません)</string>
 </resources>

@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Låsskärm</string>
   <string name="wallpaper_both">Båda</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">Inga texter tillgängliga. Försök igen eller ange dem manuellt.</string>
+  <string name="source_betterlyrics_synced">BetterLyrics (synkroniserad)</string>
+  <string name="source_betterlyrics_karaoke">BetterLyrics (karaoke)</string>
+  <string name="source_lrclib_synced">LrcLib.net (synkroniserad)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (osynkad)</string>
+  <string name="source_kugou_synced">KuGou.com (synkroniserad)</string>
+  <string name="source_youtube_unsynced">YouTube (osynkad)</string>
 </resources>

@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">شاشة القفل</string>
   <string name="wallpaper_both">Both</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">لا توجد كلمات متاحة. الرجاء المحاولة مرة أخرى أو إدخالها يدويا.</string>
+  <string name="source_betterlyrics_synced">كلمات افضل (متزامنة)</string>
+  <string name="source_betterlyrics_karaoke">كلمات افضل (karaoke)</string>
+  <string name="source_lrclib_synced">LrcLib.net (مزامنة)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (غير متزامن)</string>
+  <string name="source_kugou_synced">COGou.com (مزامنة)</string>
+  <string name="source_youtube_unsynced">يوتيوب (غير متزامن)</string>
 </resources>

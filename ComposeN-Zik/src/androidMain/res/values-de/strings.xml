@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Sperrbildschirm</string>
   <string name="wallpaper_both">Beides</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">Keine Songtexte verfügbar. Bitte versuchen Sie es erneut oder geben Sie sie manuell ein.</string>
+  <string name="source_betterlyrics_synced">BetterLyrics (synchronisiert)</string>
+  <string name="source_betterlyrics_karaoke">BetterLyrics (Karaoke)</string>
+  <string name="source_lrclib_synced">LrcLib.net (synchronisiert)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (nicht synchronisiert)</string>
+  <string name="source_kugou_synced">KuGou.com (synchronisiert)</string>
+  <string name="source_youtube_unsynced">YouTube (nicht synchronisiert)</string>
 </resources>

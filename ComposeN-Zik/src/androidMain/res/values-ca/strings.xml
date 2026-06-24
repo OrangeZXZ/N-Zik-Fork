@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Lockscreen</string>
   <string name="wallpaper_both">Ambdós</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">No lyrics available. Please try again or enter them manually.</string>
+  <string name="source_betterlyrics_synced">BetterLyrics (synced)</string>
+  <string name="source_betterlyrics_karaoke">BetterLyrics (karaoke)</string>
+  <string name="source_lrclib_synced">LrcLib.net (synced)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (unsynced)</string>
+  <string name="source_kugou_synced">KuGou.com (synced)</string>
+  <string name="source_youtube_unsynced">YouTube (unsynced)</string>
 </resources>

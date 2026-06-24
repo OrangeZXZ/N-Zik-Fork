@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Vergrendelscherm</string>
   <string name="wallpaper_both">Beide</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">Geen songteksten beschikbaar. Probeer het opnieuw of voer ze handmatig in.</string>
+  <string name="source_betterlyrics_synced">Betere songteksten (gesynchroniseerd)</string>
+  <string name="source_betterlyrics_karaoke">Betere songteksten (karaoke)</string>
+  <string name="source_lrclib_synced">LrcLib.net (gesynchroniseerd)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (niet gesynchroniseerd)</string>
+  <string name="source_kugou_synced">KuGou.com (gesynchroniseerd)</string>
+  <string name="source_youtube_unsynced">YouTube (niet gesynchroniseerd)</string>
 </resources>

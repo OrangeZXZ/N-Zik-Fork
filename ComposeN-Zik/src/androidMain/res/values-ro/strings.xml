@@ -1346,4 +1346,11 @@
   <string name="wallpaper_lockscreen">Ecran de blocare</string>
   <string name="wallpaper_both">Ambele</string>
   <string name="fluid">FLUID</string>
+  <string name="lyrics_not_available">Nu sunt disponibile versuri. Vă rugăm să încercaţi din nou sau să le introduceţi manual.</string>
+  <string name="source_betterlyrics_synced">BetterLyrics (sincronizat)</string>
+  <string name="source_betterlyrics_karaoke">Versuri mai bune (karaoke)</string>
+  <string name="source_lrclib_synced">LrcLib.net (sincronizat)</string>
+  <string name="source_lrclib_unsynced">LrcLib.net (nesincronizat)</string>
+  <string name="source_kugou_synced">KuGou.com (sincronizat)</string>
+  <string name="source_youtube_unsynced">YouTube (nesincronizat)</string>
 </resources>
