@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -52,6 +53,9 @@ import dev.rebelonion.translator.Translator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+
+/** Vertical spacing (dp) for header/footer in lyrics views. */
+private val LYRICS_SPACING = 24.dp
 
 /**
  * A single word with its start and end time in milliseconds.
@@ -245,6 +249,7 @@ fun KaraokeLyricsView(
     lyricsAlignment: app.n_zik.android.enums.lyrics.LyricsAlignment,
     clickLyricsText: Boolean,
     karaokeRespectAgentPosition: Boolean,
+    @Suppress("UNUSED_PARAMETER") // Kept for API compatibility; centering now uses viewportHeight
     thumbnailSize: Dp,
     isDisplayed: Boolean,
     onDismiss: () -> Unit,
@@ -463,21 +468,65 @@ fun KaraokeLyricsView(
         }
     }
 
-    LaunchedEffect(primaryActiveIndex, density, isAutoScrollEnabled) {
-        if (!isAutoScrollEnabled) return@LaunchedEffect
-        val centerOffset = with(density) {
-            (-thumbnailSize.div(
-                if (!showlyricsthumbnail && !isLandscape) if (trailingContent == null) 2 else 1
-                else if (trailingContent == null) 3 else 2
-            )).roundToPx()
-        }
+    val config = LocalConfiguration.current
+    val screenHeightPx = with(density) { config.screenHeightDp.dp.roundToPx() }
+    val vpH = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
+    val effectiveVpH = if (vpH > 0) vpH else screenHeightPx
 
-        try {
-            lazyListState.animateScrollToItem(
-                index = primaryActiveIndex + 1, // +1 for header spacer
-                scrollOffset = centerOffset
-            )
-        } catch (_: kotlinx.coroutines.CancellationException) {}
+    // Base multiplier
+    val baseMultiplier = if (showlyricsthumbnail) 0.28f else 0.42f
+
+    // Use true line count from the text (with \n)
+    val currentText = karaokeLines.getOrNull(primaryActiveIndex)?.text ?: ""
+    val translationText = translationCache[primaryActiveIndex] ?: currentText
+    val trueLineCount = translationText.lines().size.coerceIn(1, 5)
+
+    // Map fontSize enum to relative size index (0-4)
+    val fontSizeIndex = when (fontSize) {
+        LyricsFontSize.Light -> 0
+        LyricsFontSize.Medium -> 1
+        LyricsFontSize.Heavy -> 2
+        LyricsFontSize.Large -> 3
+        else -> 4  // Custom
+    }
+    // Base 40 chars at Medium, scale by font size index
+    // Light: 50, Medium: 40, Heavy: 30, Large: 25, Custom: uses customSize
+    val charsPerLine = if (fontSize == LyricsFontSize.Custom) {
+        (40f * 16f / customSize).toInt().coerceAtLeast(10)
+    } else {
+        (50 - fontSizeIndex * 10).coerceAtLeast(10)
+    }
+    val wrappedLines = when {
+        translationText.length > charsPerLine * 2 -> 3
+        translationText.length > charsPerLine -> 2
+        else -> 1
+    }
+    val lineCount = maxOf(trueLineCount, wrappedLines)
+    // Multiplier based on line count (from the logs - this worked)
+    val lineMultiplier = when (lineCount) {
+        1 -> 0.45f
+        2 -> 0.38f
+        else -> 0.30f
+    }
+    val multiplier = if (showlyricsthumbnail) lineMultiplier else 0.42f
+    val fixedCenter = (effectiveVpH * multiplier).toInt()
+
+    LaunchedEffect(primaryActiveIndex, density, isAutoScrollEnabled, vpH) {
+        if (!isAutoScrollEnabled) return@LaunchedEffect
+        if (primaryActiveIndex == 0 || vpH == 0) {
+            delay(100)
+        }
+        val reMeasuredVpH = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
+        val finalEffectiveVpH = if (reMeasuredVpH > 0) reMeasuredVpH else screenHeightPx
+        val hasLoader = showIntervalIndicator && initialGapWindow != null
+        var finalMultiplier = if (reMeasuredVpH > 0) multiplier else 0.45f
+        if (reMeasuredVpH == 0 && hasLoader && primaryActiveIndex == 0) {
+            finalMultiplier = 0.50f
+        }
+        val finalFixedCenter = (finalEffectiveVpH * finalMultiplier).toInt()
+        Timber.d("CENTER: idx=${primaryActiveIndex+1} vpH=$reMeasuredVpH mult=$finalMultiplier center=$finalFixedCenter lines=$lineCount loader=$hasLoader")
+        val scrollIndex = primaryActiveIndex + 1 + (if (hasLoader) 1 else 0)
+        lazyListState.animateScrollToItem(scrollIndex, scrollOffset = -finalFixedCenter)
     }
 
     // Resolve the accent color
@@ -520,7 +569,7 @@ fun KaraokeLyricsView(
                 )
         ) {
         item(key = "header", contentType = 0) {
-            Spacer(modifier = Modifier.height(thumbnailSize))
+            Spacer(modifier = Modifier.height(with(LocalConfiguration.current) { screenHeightDp.dp }))
         }
 
         if (showIntervalIndicator && initialGapWindow != null) {
@@ -569,15 +618,14 @@ fun KaraokeLyricsView(
             val bgAlphaFactor = if (line.isBackground) 0.8f else 1f
 
             val animateOpacity by animateFloatAsState(
-                targetValue = if (isActiveLine) 1f * bgAlphaFactor else 0.6f * bgAlphaFactor,
-                animationSpec = tween(500, easing = LinearOutSlowInEasing),
+                targetValue = if (isActiveLine) 1f * bgAlphaFactor else 0.35f * bgAlphaFactor,
+                animationSpec = tween(400, easing = FastOutSlowInEasing),
                 label = ""
             )
             val animateScale by animateFloatAsState(
-                targetValue = if (isActiveLine && lyricsSizeAnimate) 1.05f * bgScale
-                              else if (lyricsSizeAnimate) 0.85f * bgScale
-                              else 1f * bgScale,
-                animationSpec = tween(500, easing = LinearOutSlowInEasing),
+                targetValue = if (isActiveLine) 1.08f * bgScale
+                              else 0.92f * bgScale,
+                animationSpec = tween(400, easing = FastOutSlowInEasing),
                 label = ""
             )
 
@@ -587,10 +635,8 @@ fun KaraokeLyricsView(
                     .padding(vertical = 4.dp, horizontal = 32.dp)
                     .graphicsLayer {
                         alpha = animateOpacity
-                        if (lyricsSizeAnimate || line.isBackground) {
-                            scaleX = animateScale
-                            scaleY = animateScale
-                        }
+                        scaleX = animateScale
+                        scaleY = animateScale
                     }
                     .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
                     .clickable(
@@ -670,8 +716,8 @@ fun KaraokeLyricsView(
                                         val impactFactor = (((impactRatio - 100f) / 250f).coerceIn(0f, 1f) * 0.6f + ((dur.toFloat() - 300f) / 1500f).coerceIn(0f, 1f) * 0.4f).coerceIn(0f, 1f) * fadeFactor
                                         
                                         // Make the glow completely opaque/solid to combat the transparency
-                                        val glowAlpha = (2f * impactFactor).coerceIn(0f, 1f)
-                                        val baseGlowRadius = with(density) { 12.dp.toPx() } * impactFactor
+                                        val glowAlpha = (1f * impactFactor).coerceIn(0f, 0.7f)
+                                        val baseGlowRadius = with(density) { 8.dp.toPx() } * impactFactor
                                         
                                         if (impactFactor > 0.01f && baseGlowRadius > 0f) {
                                             withStyle(
@@ -859,9 +905,9 @@ fun KaraokeLyricsView(
                             color = if (isActiveLine) lineAccent else lineInactive,
                             fontWeight = if (isActiveLine) FontWeight.ExtraBold else FontWeight.Medium,
                             shadow = if (isActiveLine) Shadow(
-                                color = lineAccent.copy(alpha = 0.3f),
+                                color = lineAccent.copy(alpha = 0.2f),
                                 offset = Offset.Zero,
-                                blurRadius = 12f
+                                blurRadius = 8f
                             ) else null
                         )
                     )
@@ -882,7 +928,7 @@ fun KaraokeLyricsView(
             }
         }
         item(key = "footer", contentType = 2) {
-            Spacer(modifier = Modifier.height(thumbnailSize))
+            Spacer(modifier = Modifier.height(with(LocalConfiguration.current) { screenHeightDp.dp }))
         }
     }
 }
