@@ -182,6 +182,15 @@ class ImportSongsFromServices private constructor(
                                 songTable.insertIgnore( song )
                                 importedCount++
 
+                                // Save import position for match system
+                                app.n_zik.android.core.database.Database.importSongTable.insert(
+                                    app.n_zik.android.core.database.ImportSong(
+                                        originalId = song.id,
+                                        position = finalPosition,
+                                        playlistId = currentPlaylistId.takeIf { it > 0L }
+                                    )
+                                )
+
                                 // If a target playlist is set, map immediately
                                 if (currentPlaylistId > 0L) {
                                     songPlaylistMapTable.mapAtPosition( song.id, currentPlaylistId, finalPosition )

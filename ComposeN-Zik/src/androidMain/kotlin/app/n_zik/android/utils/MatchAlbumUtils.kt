@@ -101,10 +101,9 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
         Timber.w("MatchGlobal: NOT FOUND '${song.title}' (${searchResults?.size ?: 0} results)")
     }
 
-    // Calculate position from DB BEFORE transaction
+    // Get position from import table (fallback to song.position)
     val dbPosition = runBlocking(Dispatchers.IO) {
-        val sorted = Database.songTable.sortAllByPosition().first()
-        sorted.indexOfFirst { it.id == song.id }.takeIf { it >= 0 } ?: song.position
+        Database.importSongTable.getPositionGlobal(song.id) ?: song.position
     }
 
     Database.asyncTransaction {
@@ -256,9 +255,10 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
     val matchedSongIndex = findSongIndex()
     val matchedSong = if (matchedSongIndex != -1) searchResults?.getOrNull(matchedSongIndex) as? Innertube.SongItem else null
 
-    val effectivePosition = Database.songTable.sortAllByPosition().first()
-        .indexOfFirst { it.id == song.id }
-        .takeIf { it >= 0 } ?: song.position
+    // Get position from import table (fallback to effectivePosition)
+    val dbPosition = runBlocking(Dispatchers.IO) {
+        Database.importSongTable.getPosition(song.id, playlistId) ?: effectivePosition
+    }
 
     Database.asyncTransaction {
         val oldPosition = songPlaylistMapTable.findPositionOf(song.id, playlistId)
@@ -290,7 +290,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                 thumbnailUrl = PropUtils.retainIfModified(song.thumbnailUrl, newSong.thumbnailUrl),
                 likedAt = song.likedAt,
                 totalPlayTimeMs = song.totalPlayTimeMs,
-                position = effectivePosition
+                position = dbPosition
             ))
             playlistMappings.forEach { mapping ->
                 songPlaylistMapTable.mapAtPosition(newSong.id, mapping.playlistId, mapping.position)

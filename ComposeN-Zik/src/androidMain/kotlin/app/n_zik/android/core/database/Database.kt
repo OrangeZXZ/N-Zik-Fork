@@ -91,6 +91,8 @@ object Database {
         get() = _internal.songArtistMapTable
     val songPlaylistMapTable: SongPlaylistMapTable
         get() = _internal.songPlaylistMapTable
+    val importSongTable: ImportSongTable
+        get() = _internal.importSongTable
 
     //**********************************************
 
@@ -377,11 +379,12 @@ object Database {
         Format::class,
         Event::class,
         Lyrics::class,
+        ImportSong::class,
     ],
     views = [
         SortedSongPlaylistMap::class
     ],
-    version = 28,
+    version = 29,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -402,6 +405,7 @@ object Database {
         AutoMigration(from = 19, to = 20),
         AutoMigration(from = 20, to = 21, spec = From20To21Migration::class),
         AutoMigration(from = 21, to = 22, spec = From21To22Migration::class),
+        AutoMigration(from = 28, to = 29),
     ],
 )
 @TypeConverters(Converters::class)
@@ -418,6 +422,7 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
     abstract val songArtistMapTable: SongArtistMapTable
     abstract val songPlaylistMapTable: SongPlaylistMapTable
     abstract val songTable: SongTable
+    abstract val importSongTable: ImportSongTable
 
     companion object {
         val Instance: DatabaseInitializer by lazy {
