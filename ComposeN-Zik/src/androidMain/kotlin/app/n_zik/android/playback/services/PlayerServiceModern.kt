@@ -229,6 +229,10 @@ const val LOCAL_KEY_PREFIX = "local:"
 val MediaItem.isLocal get() = mediaId.contains(LOCAL_KEY_PREFIX)
 val Song.isLocal get() = id.contains(LOCAL_KEY_PREFIX)
 
+val Song.isUnmatched: Boolean
+    get() = (id.length != 11 || (durationText == "00:00" && totalPlayTimeMs == 1L))
+            && !id.startsWith(LOCAL_KEY_PREFIX)
+
 @UnstableApi
 class PlayerServiceModern : MediaLibraryService(),
     Player.Listener,
@@ -911,6 +915,10 @@ class PlayerServiceModern : MediaLibraryService(),
             val rootCause = generateSequence<Throwable>(error) { it.cause }.firstOrNull { it is app.n_zik.android.playback.exceptions.ExplicitContentException }
             if (rootCause != null) {
                 Toaster.w(R.string.parental_control_is_enabled)
+            }
+            val unmatchedCause = generateSequence<Throwable>(error) { it.cause }.firstOrNull { it is app.n_zik.android.playback.exceptions.UnmatchedSongException }
+            if (unmatchedCause != null) {
+                Toaster.w(R.string.playback_blocked_match_first)
             }
             player.pause()
             return
@@ -2410,6 +2418,7 @@ fun Throwable?.isFatalCustomException(): Boolean {
             it is app.n_zik.android.playback.exceptions.LoginRequiredException ||
             it is app.n_zik.android.playback.exceptions.PlayableFormatNonSupported ||
             it is app.n_zik.android.playback.exceptions.UnplayableException ||
-            it is app.n_zik.android.playback.exceptions.VideoIdMismatchException
+            it is app.n_zik.android.playback.exceptions.VideoIdMismatchException ||
+            it is app.n_zik.android.playback.exceptions.UnmatchedSongException
         }
 }

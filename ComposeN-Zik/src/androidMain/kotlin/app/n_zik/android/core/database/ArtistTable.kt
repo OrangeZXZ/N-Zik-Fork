@@ -194,6 +194,22 @@ interface ArtistTable {
     @Query("UPDATE Artist SET position = :position WHERE id = :artistId")
     fun updatePosition( artistId: String, position: Int ): Int
 
+    /**
+     * Delete all artists that have no songs mapped to them
+     * (orphaned artists after songs were deleted)
+     *
+     * @return number of rows affected by this operation
+     */
+    @Query("""
+        DELETE FROM Artist 
+        WHERE id NOT IN (
+            SELECT DISTINCT artistId
+            FROM SongArtistMap
+        )
+        AND bookmarkedAt IS NULL
+    """)
+    fun deleteOrphaned(): Int
+
     //<editor-fold defaultstate="collapsed" desc="Sort all">
     @Query("""
         SELECT DISTINCT * 

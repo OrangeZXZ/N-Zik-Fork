@@ -22,6 +22,7 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.kreate.android.me.knighthat.utils.Toaster
+import timber.log.Timber
 
 @UnstableApi
 class SmartTrash private constructor(
@@ -120,9 +121,16 @@ class SmartTrash private constructor(
                 binder?.cache?.removeResource( song.id )
                 binder?.downloadCache?.removeResource( song.id )
                 songPlaylistMapTable.deleteBySongId( song.id )
+                songArtistMapTable.deleteBySongId( song.id )
+                songAlbumMapTable.deleteBySongId( song.id )
                 formatTable.deleteBySongId( song.id )
                 songTable.delete( song )
             }
+            
+            // Clean up orphaned artists and albums
+            val deletedArtists = artistTable.deleteOrphaned()
+            val deletedAlbums = albumTable.deleteOrphaned()
+            Timber.tag("SmartTrash").d("Cleaned up $deletedArtists orphaned artists, $deletedAlbums orphaned albums")
         }
     }
 

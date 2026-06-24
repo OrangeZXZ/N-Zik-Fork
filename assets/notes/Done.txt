@@ -68,3 +68,10 @@
 - Lyrics: set default font size to Large
 - Lyrics: improve centering in synced/karaoke/unsynced views with multi-line detection
 - Lyrics: tune size and opacity animations (1.08x/0.92x scale, 1f/0.35f opacity, 400ms)
+- Block playback of unmatched songs (toast "Playback blocked, please match first" + safety net in StreamResolver)
+- Spotify Import: add fallback search (title-only) when initial query returns 0 results
+- Spotify Import: add random delay (1-5s) between YouTube searches to avoid bot detection
+- Matching: skip duplicate matches instead of deleting (prevents song count loss)
+- Matching: log position, duplicate, and match status for debugging
+- Smart Trash: clean orphaned artists and albums after deleting songs
+- Smart Trash: delete songArtistMap and songAlbumMap entries on song delete

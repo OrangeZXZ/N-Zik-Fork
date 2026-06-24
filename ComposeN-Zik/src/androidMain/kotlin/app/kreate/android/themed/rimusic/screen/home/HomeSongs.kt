@@ -60,6 +60,8 @@ import app.it.fast4x.rimusic.models.Song
 import app.n_zik.android.download.utils.MyDownloadHelper
 import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
 import app.n_zik.android.playback.services.isLocal
+import app.n_zik.android.playback.services.isUnmatched
+import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.thumbnailShape
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
@@ -554,10 +556,15 @@ fun HomeSongs(
                     onClick = {
                         search.hideIfEmpty()
 
-                        binder?.stopRadio()
+                        val currentSong = song
+                        if (currentSong.isUnmatched) {
+                            Toaster.w(R.string.playback_blocked_match_first)
+                        } else {
+                            binder?.stopRadio()
 
-                        val mediaItems = getSongs().fastMap( Song::asMediaItem )
-                        binder?.player?.forcePlayAtIndex( mediaItems, index )
+                            val mediaItems = getSongs().fastMap( Song::asMediaItem )
+                            binder?.player?.forcePlayAtIndex( mediaItems, index )
+                        }
                     }
                 )
             }

@@ -42,6 +42,7 @@ import app.n_zik.android.playback.exceptions.LoginRequiredException
 import app.n_zik.android.download.utils.MyDownloadHelper
 import app.n_zik.android.playback.exceptions.UnknownException
 import app.n_zik.android.playback.exceptions.UnplayableException
+import app.n_zik.android.playback.exceptions.UnmatchedSongException
 import app.n_zik.android.playback.services.PlayerServiceModern
 import app.it.fast4x.rimusic.utils.isConnectionMetered
 import app.it.fast4x.rimusic.utils.okHttpDataSourceFactory
@@ -461,6 +462,11 @@ fun DataSpec.process(
         if (song?.title?.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) == true) {
             throw ExplicitContentException()
         }
+    }
+
+    if (videoId.length != 11 && !videoId.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)) {
+        Timber.tag(TAG).w("Blocked playback of unmatched song: videoId=$videoId")
+        throw UnmatchedSongException()
     }
 
     var formatUri = formatCache[videoId]

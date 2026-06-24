@@ -233,6 +233,22 @@ interface AlbumTable {
     @Query("UPDATE Album SET position = :position WHERE id = :albumId")
     fun updatePosition( albumId: String, position: Int ): Int
 
+    /**
+     * Delete all albums that have no songs mapped to them
+     * (orphaned albums after songs were deleted)
+     *
+     * @return number of rows affected by this operation
+     */
+    @Query("""
+        DELETE FROM Album 
+        WHERE id NOT IN (
+            SELECT DISTINCT albumId
+            FROM SongAlbumMap
+        )
+        AND bookmarkedAt IS NULL
+    """)
+    fun deleteOrphaned(): Int
+
     //<editor-fold defaultstate="collapsed" desc="Sort bookmarked">
     @Query("""
         SELECT DISTINCT *

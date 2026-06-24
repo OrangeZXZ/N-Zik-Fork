@@ -92,6 +92,7 @@ import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.models.SongPlaylistMap
 import app.n_zik.android.playback.services.isLocal
+import app.n_zik.android.playback.services.isUnmatched
 import app.n_zik.android.thumbnailShape
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.SwipeableQueueItem
@@ -1213,18 +1214,22 @@ fun LocalPlaylistSongs(
                                 }
                             },
                             onClick = {
-                                binder?.stopRadio()
-                                binder?.player?.forcePlayAtIndex(
-                                    itemsOnDisplay.map( Song::asMediaItem ),
-                                    index
-                                )
+                                if (song.isUnmatched) {
+                                    Toaster.w(R.string.playback_blocked_match_first)
+                                } else {
+                                    binder?.stopRadio()
+                                    binder?.player?.forcePlayAtIndex(
+                                        itemsOnDisplay.map( Song::asMediaItem ),
+                                        index
+                                    )
 
-                                /*
-                                    Due to the small size of checkboxes,
-                                    we shouldn't disable [itemSelector]
-                                 */
+                                    /*
+                                        Due to the small size of checkboxes,
+                                        we shouldn't disable [itemSelector]
+                                     */
 
-                                search.hideIfEmpty()
+                                    search.hideIfEmpty()
+                                }
                             }
                         )
                     }
@@ -1249,11 +1254,14 @@ fun LocalPlaylistSongs(
                 iconId = R.drawable.shuffle,
                 visible = !reorderingState.isAnyItemDragging,
                 onClick = {
-                    getMediaItems().let { songs ->
-                        if (songs.isNotEmpty()) {
+                    getSongs().let { songs ->
+                        val playableSongs = songs.filter { !it.isUnmatched }
+                        if (playableSongs.isNotEmpty()) {
                             binder?.stopRadio()
                             binder?.player
-                                  ?.forcePlayFromBeginning( songs.shuffled() )
+                                  ?.forcePlayFromBeginning( playableSongs.shuffled().map( Song::asMediaItem ) )
+                        } else {
+                            Toaster.w(R.string.playback_blocked_match_first)
                         }
                     }
                 }

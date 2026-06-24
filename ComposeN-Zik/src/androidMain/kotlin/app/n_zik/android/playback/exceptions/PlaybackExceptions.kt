@@ -67,3 +67,9 @@ class ExplicitContentException(
     message: String? = null,
     cause: Throwable? = null
 ) : PlaybackException(message, cause, ERROR_CODE_REMOTE_ERROR)
+
+@UnstableApi
+class UnmatchedSongException(
+    message: String? = null,
+    cause: Throwable? = null
+) : PlaybackException(message, cause, ERROR_CODE_REMOTE_ERROR)
