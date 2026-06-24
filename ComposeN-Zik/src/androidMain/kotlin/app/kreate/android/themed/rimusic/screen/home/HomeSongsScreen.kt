@@ -316,6 +316,13 @@ fun HomeSongsScreen(navController: NavController ) {
                 // Wait for database Flow to emit updated list
                 delay(500)
 
+                // Clean up ImportSong entries for matched songs
+                withContext(Dispatchers.IO) {
+                    for (song in unmatched) {
+                        Database.importSongTable.deleteByOriginalId(song.id)
+                    }
+                }
+
                 // Check for songs that still couldn't be matched
                 val stillUnmatched = itemsOnDisplayState.filter {
                     (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX)
