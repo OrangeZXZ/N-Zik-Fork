@@ -340,9 +340,7 @@ fun HomeSongsScreen(navController: NavController ) {
                     val allEntries = Database.importSongTable.getAllEntries()
                     val failedEntries = mutableListOf<app.n_zik.android.core.database.ImportSong>()
                     for (entry in allEntries) {
-                        val count = kotlinx.coroutines.runBlocking {
-                            Database.songTable.countById(entry.originalId)
-                        }
+                        val count = Database.songTable.countById(entry.originalId)
                         if (count > 0) {
                             failedCount++
                             failedEntries.add(entry)

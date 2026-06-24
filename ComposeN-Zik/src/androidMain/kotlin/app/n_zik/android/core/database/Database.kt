@@ -12,6 +12,7 @@ import androidx.room.AutoMigration
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.withTransaction
 import androidx.sqlite.db.SimpleSQLiteQuery
 import it.fast4x.innertube.Innertube
 import app.it.fast4x.rimusic.models.Album
@@ -331,6 +332,14 @@ object Database {
         _internal.transactionExecutor.execute {
             this.block()
         }
+
+    /**
+     * Suspending transaction that waits for the block to complete.
+     * Use this when subsequent code depends on the transaction being committed.
+     */
+    suspend fun transaction( block: suspend Database.() -> Unit ) {
+        _internal.withTransaction { block() }
+    }
 
 
     /**

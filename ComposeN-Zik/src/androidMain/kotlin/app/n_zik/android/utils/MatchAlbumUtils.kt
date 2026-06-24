@@ -18,10 +18,8 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.SearchBody
 import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.utils.from
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 import timber.log.Timber
@@ -102,16 +100,14 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
     }
 
     // Get position from import table (fallback to song.position)
-    val dbPosition = runBlocking(Dispatchers.IO) {
-        Database.importSongTable.getPositionGlobal(song.id) ?: song.position
-    }
+    val dbPosition = Database.importSongTable.getPositionGlobal(song.id) ?: song.position
 
-    Database.asyncTransaction {
+    Database.transaction {
         if (bestMatch != null) {
             val newSong = bestMatch.asSong
 
             // Check if a song with this YouTube ID already exists (duplicate match)
-            val existingSong = runBlocking(Dispatchers.IO) { songTable.findById(newSong.id).first() }
+            val existingSong = songTable.findById(newSong.id).first()
             if (existingSong != null && existingSong.id != song.id) {
                 // Merge: transfer references from old song to existing
                 val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
@@ -127,7 +123,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
                 songTable.delete(song)
                 mergedCounter?.incrementAndGet()
                 Timber.d("MatchGlobal: MERGED '${song.title}' into '${existingSong.id}'")
-                return@asyncTransaction
+                return@transaction
             }
 
             // Save playlist mappings before delete
@@ -276,17 +272,15 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
     val matchedSong = if (matchedSongIndex != -1) searchResults?.getOrNull(matchedSongIndex) as? Innertube.SongItem else null
 
     // Get position from import table (fallback to song.position)
-    val dbPosition = runBlocking(Dispatchers.IO) {
-        Database.importSongTable.getPosition(song.id, playlistId) ?: song.position
-    }
+    val dbPosition = Database.importSongTable.getPosition(song.id, playlistId) ?: song.position
 
-    Database.asyncTransaction {
+    Database.transaction {
         val oldPosition = songPlaylistMapTable.findPositionOf(song.id, playlistId)
 
         if (matchedSongIndex != -1 && matchedSong != null) {
             val newSong = matchedSong.asSong
 
-            val existingSong = runBlocking(Dispatchers.IO) { songTable.findById(newSong.id).first() }
+            val existingSong = songTable.findById(newSong.id).first()
             if (existingSong != null && existingSong.id != song.id) {
                 val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
                 playlistMappings.forEach { mapping ->
@@ -300,7 +294,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                 }
                 songTable.delete(song)
                 mergedCounter?.incrementAndGet()
-                return@asyncTransaction
+                return@transaction
             }
 
             val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
