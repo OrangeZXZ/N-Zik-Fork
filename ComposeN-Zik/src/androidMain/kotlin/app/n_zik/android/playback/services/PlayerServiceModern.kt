@@ -916,6 +916,10 @@ class PlayerServiceModern : MediaLibraryService(),
             if (rootCause != null) {
                 Toaster.w(R.string.parental_control_is_enabled)
             }
+            val unmatchedCause = generateSequence<Throwable>(error) { it.cause }.firstOrNull { it is app.n_zik.android.playback.exceptions.UnmatchedSongException }
+            if (unmatchedCause != null) {
+                Toaster.w(R.string.playback_blocked_match_first)
+            }
             player.pause()
             return
         }

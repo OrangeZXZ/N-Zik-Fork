@@ -556,10 +556,13 @@ fun HomeSongs(
                     onClick = {
                         search.hideIfEmpty()
 
-                        binder?.stopRadio()
-
-                        val mediaItems = getSongs().fastMap( Song::asMediaItem )
-                        binder?.player?.forcePlayAtIndex( mediaItems, index )
+                        if (song.isUnmatched) {
+                            Toaster.w(R.string.playback_blocked_match_first)
+                        } else {
+                            binder?.stopRadio()
+                            val mediaItems = getSongs().fastMap( Song::asMediaItem )
+                            binder?.player?.forcePlayAtIndex( mediaItems, index )
+                        }
                     }
                 )
             }
