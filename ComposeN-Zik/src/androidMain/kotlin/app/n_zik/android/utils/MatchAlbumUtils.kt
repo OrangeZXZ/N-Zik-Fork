@@ -105,13 +105,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
         if (bestMatch != null) {
             val newSong = bestMatch.asSong
 
-            // Update references first (before changing the ID)
-            songAlbumMapTable.updateSongId(song.id, newSong.id)
-            songArtistMapTable.updateSongId(song.id, newSong.id)
-            eventTable.updateSongId(song.id, newSong.id)
-            songPlaylistMapTable.updateSongId(song.id, newSong.id)
-
-            // Update the Song ID + fields in place (no delete, ROWID preserved)
+            // 1. Update Song ID + fields first (new ID must exist for FK)
             songTable.updateId(song.id, newSong.id)
             songTable.upsert(newSong.copy(
                 title = PropUtils.retainIfModified(song.title, newSong.title).orEmpty(),
@@ -122,7 +116,13 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
                 position = song.position
             ))
 
-            // Create album mapping from matched result
+            // 2. Update references from old ID to new ID
+            songAlbumMapTable.updateSongId(song.id, newSong.id)
+            songArtistMapTable.updateSongId(song.id, newSong.id)
+            eventTable.updateSongId(song.id, newSong.id)
+            songPlaylistMapTable.updateSongId(song.id, newSong.id)
+
+            // 3. Create album mapping from matched result
             bestMatch.album?.let { albumInfo ->
                 val albumId = albumInfo.endpoint?.browseId ?: return@let
                 albumTable.insertIgnore(Album(id = albumId, title = albumInfo.name))
@@ -272,13 +272,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                 return@asyncTransaction
             }
 
-            // Update references first (before changing the ID)
-            songAlbumMapTable.updateSongId(song.id, newSong.id)
-            songArtistMapTable.updateSongId(song.id, newSong.id)
-            eventTable.updateSongId(song.id, newSong.id)
-            songPlaylistMapTable.updateSongId(song.id, newSong.id)
-
-            // Update the Song ID + fields in place (no delete, ROWID preserved)
+            // 1. Update Song ID + fields first (new ID must exist for FK)
             songTable.updateId(song.id, newSong.id)
             songTable.upsert(newSong.copy(
                 title = PropUtils.retainIfModified(song.title, newSong.title).orEmpty(),
@@ -289,7 +283,13 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                 position = song.position
             ))
 
-            // Create album mapping from matched result
+            // 2. Update references from old ID to new ID
+            songAlbumMapTable.updateSongId(song.id, newSong.id)
+            songArtistMapTable.updateSongId(song.id, newSong.id)
+            eventTable.updateSongId(song.id, newSong.id)
+            songPlaylistMapTable.updateSongId(song.id, newSong.id)
+
+            // 3. Create album mapping from matched result
             matchedSong.album?.let { albumInfo ->
                 val albumId = albumInfo.endpoint?.browseId ?: return@let
                 albumTable.insertIgnore(Album(id = albumId, title = albumInfo.name))
