@@ -115,7 +115,7 @@ android {
         minSdk = 24
         targetSdk = 37
         versionCode = 57
-        versionName = "5.1.4"
+        versionName = "5.2.0"
 
         /*
                 UNIVERSAL VARIABLES
