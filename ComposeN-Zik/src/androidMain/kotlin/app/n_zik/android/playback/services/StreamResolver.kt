@@ -465,7 +465,6 @@ fun DataSpec.process(
     }
 
     if (videoId.length != 11 && !videoId.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)) {
-        Timber.tag(TAG).w("Blocked playback of unmatched song: videoId=$videoId")
         throw UnmatchedSongException()
     }
 
