@@ -1,8 +1,10 @@
 package app.n_zik.android.core.database
 
 import androidx.room.Dao
+import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.PrimaryKey
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
@@ -10,8 +12,9 @@ import kotlinx.coroutines.flow.Flow
  * Stores the original import position of songs from Spotify/RiPlay CSV imports.
  * Used by the match system to preserve the user's intended order after matching.
  */
+@Entity
 data class ImportSong(
-    @androidx.room.PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val originalId: String,
     val position: Int,
     val playlistId: Long? = null,

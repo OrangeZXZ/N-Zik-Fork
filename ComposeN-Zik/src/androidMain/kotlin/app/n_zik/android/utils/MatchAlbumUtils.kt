@@ -255,9 +255,9 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
     val matchedSongIndex = findSongIndex()
     val matchedSong = if (matchedSongIndex != -1) searchResults?.getOrNull(matchedSongIndex) as? Innertube.SongItem else null
 
-    // Get position from import table (fallback to effectivePosition)
+    // Get position from import table (fallback to song.position)
     val dbPosition = runBlocking(Dispatchers.IO) {
-        Database.importSongTable.getPosition(song.id, playlistId) ?: effectivePosition
+        Database.importSongTable.getPosition(song.id, playlistId) ?: song.position
     }
 
     Database.asyncTransaction {
