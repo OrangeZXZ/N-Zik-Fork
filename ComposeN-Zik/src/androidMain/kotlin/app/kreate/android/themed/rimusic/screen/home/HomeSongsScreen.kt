@@ -1,5 +1,7 @@
 package app.kreate.android.themed.rimusic.screen.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -114,6 +116,7 @@ import app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import app.n_zik.android.download.utils.MyDownloadHelper
 import kotlin.to
 import app.it.fast4x.rimusic.utils.asSong as toSong
+@RequiresApi(Build.VERSION_CODES.O)
 @UnstableApi
 @ExperimentalMaterial3Api
 @ExperimentalAnimationApi
