@@ -149,6 +149,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
                     name = author.name,
                     thumbnailUrl = null
                 ))
+                songArtistMapTable.map(newSong.id, browseId)
             }
         } else {
             // Mark as "not found" by giving it a shuffle ID so it won't be retried
@@ -324,6 +325,17 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                 val albumId = albumInfo.endpoint?.browseId ?: return@let
                 albumTable.insertIgnore(app.it.fast4x.rimusic.models.Album(id = albumId, title = albumInfo.name))
                 songAlbumMapTable.map(newSong.id, albumId)
+            }
+
+            // Create artist mappings from matched result
+            matchedSong.authors?.forEach { author ->
+                val browseId = author.endpoint?.browseId ?: return@forEach
+                artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(
+                    id = browseId,
+                    name = author.name,
+                    thumbnailUrl = null
+                ))
+                songArtistMapTable.map(newSong.id, browseId)
             }
 
             // Restore position in THIS playlist
