@@ -105,24 +105,34 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
         if (bestMatch != null) {
             val newSong = bestMatch.asSong
 
-            // 1. Update Song ID + fields first (new ID must exist for FK)
-            songTable.updateId(song.id, newSong.id)
+            // Calculate position from DB (runBlocking inside transaction)
+            val pos = runBlocking(Dispatchers.IO) {
+                val sorted = songTable.sortAllByPosition().first()
+                sorted.indexOfFirst { it.id == song.id }.takeIf { it >= 0 } ?: song.position
+            }
+
+            // Save playlist mappings before delete
+            val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
+            // Delete old song
+            songTable.delete(song)
+            // Insert with new YouTube ID and calculated position
             songTable.upsert(newSong.copy(
                 title = PropUtils.retainIfModified(song.title, newSong.title).orEmpty(),
                 artistsText = PropUtils.retainIfModified(song.artistsText, newSong.artistsText),
                 thumbnailUrl = PropUtils.retainIfModified(song.thumbnailUrl, newSong.thumbnailUrl),
                 likedAt = song.likedAt,
                 totalPlayTimeMs = song.totalPlayTimeMs,
-                position = song.position
+                position = pos
             ))
-
-            // 2. Update references from old ID to new ID
+            // Re-insert playlist mappings
+            playlistMappings.forEach { mapping ->
+                songPlaylistMapTable.mapAtPosition(newSong.id, mapping.playlistId, mapping.position)
+            }
+            // Update other references
             songAlbumMapTable.updateSongId(song.id, newSong.id)
             songArtistMapTable.updateSongId(song.id, newSong.id)
             eventTable.updateSongId(song.id, newSong.id)
-            songPlaylistMapTable.updateSongId(song.id, newSong.id)
-
-            // 3. Create album mapping from matched result
+            // Create album mapping
             bestMatch.album?.let { albumInfo ->
                 val albumId = albumInfo.endpoint?.browseId ?: return@let
                 albumTable.insertIgnore(Album(id = albumId, title = albumInfo.name))
@@ -133,7 +143,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
                 artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(id = browseId, name = author.name, thumbnailUrl = null))
                 songArtistMapTable.insertIgnore(SongArtistMap(newSong.id, browseId))
             }
-            Timber.d("MatchGlobal: DONE '${song.title}' -> '${newSong.id}'")
+            Timber.d("MatchGlobal: DONE '${song.title}' -> '${newSong.id}' (pos=$pos)")
         } else {
             if (song.id == (song.cleanTitle() + song.artistsText).filter { it.isLetterOrDigit() }) {
                 val notFound = song.copy(
@@ -272,24 +282,22 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                 return@asyncTransaction
             }
 
-            // 1. Update Song ID + fields first (new ID must exist for FK)
-            songTable.updateId(song.id, newSong.id)
+            val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
+            songTable.delete(song)
             songTable.upsert(newSong.copy(
                 title = PropUtils.retainIfModified(song.title, newSong.title).orEmpty(),
                 artistsText = PropUtils.retainIfModified(song.artistsText, newSong.artistsText),
                 thumbnailUrl = PropUtils.retainIfModified(song.thumbnailUrl, newSong.thumbnailUrl),
                 likedAt = song.likedAt,
                 totalPlayTimeMs = song.totalPlayTimeMs,
-                position = song.position
+                position = effectivePosition
             ))
-
-            // 2. Update references from old ID to new ID
+            playlistMappings.forEach { mapping ->
+                songPlaylistMapTable.mapAtPosition(newSong.id, mapping.playlistId, mapping.position)
+            }
             songAlbumMapTable.updateSongId(song.id, newSong.id)
             songArtistMapTable.updateSongId(song.id, newSong.id)
             eventTable.updateSongId(song.id, newSong.id)
-            songPlaylistMapTable.updateSongId(song.id, newSong.id)
-
-            // 3. Create album mapping from matched result
             matchedSong.album?.let { albumInfo ->
                 val albumId = albumInfo.endpoint?.browseId ?: return@let
                 albumTable.insertIgnore(Album(id = albumId, title = albumInfo.name))
@@ -300,7 +308,6 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                 artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(id = browseId, name = author.name, thumbnailUrl = null))
                 songArtistMapTable.insertIgnore(SongArtistMap(newSong.id, browseId))
             }
-
             if (oldPosition != -1) {
                 songPlaylistMapTable.updatePosition(playlistId, newSong.id, oldPosition)
             }
