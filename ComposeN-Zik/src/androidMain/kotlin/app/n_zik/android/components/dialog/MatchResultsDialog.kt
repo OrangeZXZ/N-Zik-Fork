@@ -3,6 +3,7 @@ package app.n_zik.android.components.dialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -128,36 +129,48 @@ fun MatchResultsDialog(
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     if (failed > 0 && onRetry != null) {
-                        androidx.compose.foundation.text.BasicText(
-                            text = stringResource(R.string.retry_match),
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .background(colorPalette().background2, uiRoundnessShape())
+                                .clip(uiRoundnessShape())
+                                .clickable(onClick = onRetry)
+                                .padding(vertical = 12.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            BasicText(
+                                text = stringResource(R.string.retry_match),
+                                style = typography().xs
+                                    .medium
+                                    .copy(
+                                        color = colorPalette().text,
+                                        textAlign = TextAlign.Center
+                                    )
+                            )
+                        }
+                    }
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .background(colorPalette().accent, uiRoundnessShape())
+                            .clip(uiRoundnessShape())
+                            .clickable(onClick = onDismiss)
+                            .padding(vertical = 12.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        BasicText(
+                            text = stringResource(R.string.confirm),
                             style = typography().xs
                                 .medium
                                 .copy(
-                                    color = colorPalette().text,
+                                    color = colorPalette().onAccent,
                                     textAlign = TextAlign.Center
-                                ),
-                            modifier = InteractiveDialog.ButtonModifier()
-                                .weight(1f)
-                                .fillMaxWidth(0.98f)
-                                .padding(horizontal = 5.dp)
-                                .background(colorPalette().background2)
-                                .padding(vertical = 10.dp)
-                                .clip(uiRoundnessShape())
-                                .clickable(onClick = onRetry)
+                                )
                         )
                     }
-                    InteractiveDialog.ConfirmButton(
-                        modifier = InteractiveDialog.ButtonModifier()
-                            .weight(1f)
-                            .fillMaxWidth(0.98f)
-                            .padding(horizontal = 5.dp)
-                            .background(colorPalette().accent)
-                            .padding(vertical = 10.dp),
-                        onConfirm = onDismiss
-                    )
                 }
             }
         }

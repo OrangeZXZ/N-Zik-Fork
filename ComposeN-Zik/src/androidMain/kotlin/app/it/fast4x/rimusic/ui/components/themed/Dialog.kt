@@ -354,31 +354,52 @@ fun ConfirmationDialog(
                             .padding(bottom = 24.dp)
                     )
 
-                    // Action buttons — same style as InteractiveDialog
+                    // Action buttons — Row with weight, no conflicting fillMaxWidth
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        app.n_zik.android.components.dialog.InteractiveDialog.CancelButton(
-                            modifier = app.n_zik.android.components.dialog.InteractiveDialog.ButtonModifier()
+                        Box(
+                            modifier = Modifier
                                 .weight(1f)
-                                .fillMaxWidth(0.98f)
-                                .padding(horizontal = 5.dp)
-                                .padding(vertical = 10.dp),
-                            onCancel = onCancel
-                        )
-                        app.n_zik.android.components.dialog.InteractiveDialog.ConfirmButton(
-                            modifier = app.n_zik.android.components.dialog.InteractiveDialog.ButtonModifier()
+                                .background(colorPalette.background2, uiRoundnessShape())
+                                .clip(uiRoundnessShape())
+                                .clickable(onClick = onCancel)
+                                .padding(vertical = 12.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            BasicText(
+                                text = cancelText,
+                                style = typography().xs
+                                    .medium
+                                    .copy(
+                                        color = colorPalette.text,
+                                        textAlign = TextAlign.Center
+                                    )
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
                                 .weight(1f)
-                                .fillMaxWidth(0.98f)
-                                .padding(horizontal = 5.dp)
-                                .background(colorPalette.accent)
-                                .padding(vertical = 10.dp),
-                            onConfirm = {
-                                onConfirm()
-                                onDismiss()
-                            }
-                        )
+                                .background(colorPalette.accent, uiRoundnessShape())
+                                .clip(uiRoundnessShape())
+                                .clickable {
+                                    onConfirm()
+                                    onDismiss()
+                                }
+                                .padding(vertical = 12.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            BasicText(
+                                text = confirmText,
+                                style = typography().xs
+                                    .medium
+                                    .copy(
+                                        color = colorPalette.onAccent,
+                                        textAlign = TextAlign.Center
+                                    )
+                            )
+                        }
                     }
                 }
             }
