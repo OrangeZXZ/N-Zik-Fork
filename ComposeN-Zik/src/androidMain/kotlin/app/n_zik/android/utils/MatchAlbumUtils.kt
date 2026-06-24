@@ -181,7 +181,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
     }
 }
 
-suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int, playlist: Playlist?) {
+suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int, playlist: Playlist?, mergedCounter: java.util.concurrent.atomic.AtomicInteger? = null) {
     val isExtPlaylist = (song.thumbnailUrl.isNullOrEmpty()) && (song.durationText != "0:00")
     var songNotFound: Song
     val random4Digit = Random.nextInt(1000, 10000)
@@ -299,6 +299,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                     songTable.upsert(existingSong.copy(likedAt = song.likedAt))
                 }
                 songTable.delete(song)
+                mergedCounter?.incrementAndGet()
                 return@asyncTransaction
             }
 

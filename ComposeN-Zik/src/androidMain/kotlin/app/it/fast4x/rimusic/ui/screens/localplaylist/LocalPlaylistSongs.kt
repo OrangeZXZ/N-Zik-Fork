@@ -207,6 +207,8 @@ fun LocalPlaylistSongs(
     var showGetAlbumVersionDialogue by remember { mutableStateOf(false) }
     var showGetAlbumVersionDialogueExt by remember { mutableStateOf(false) }
     var cancelMatchExt by remember { mutableStateOf(false) }
+    var matchRunning by remember { mutableStateOf(false) }
+    var matchRunningExt by remember { mutableStateOf(false) }
     var showConfirmMatchAllDialog by remember { mutableStateOf(false) }
     var totalSongsToMatch by remember { mutableStateOf(0) }
     var songsMatched by remember { mutableStateOf(0) }
@@ -215,6 +217,7 @@ fun LocalPlaylistSongs(
     var showMatchResultsDialog by remember { mutableStateOf(false) }
     var matchResultsMatched by remember { mutableStateOf(0) }
     var matchResultsFailed by remember { mutableStateOf(0) }
+    var matchResultsMerged by remember { mutableStateOf(0) }
     var matchResultsFailedSongs by remember { mutableStateOf<List<Song>>(emptyList()) }
 
     // Non-vital
@@ -266,8 +269,8 @@ fun LocalPlaylistSongs(
             done = songsMatched,
             text = stringResource(R.string.matching_songs),
             onDismiss = {
-                getAlbumVersion = false
                 showGetAlbumVersionDialogue = false
+                cancelMatchExt = true
             }
         )
     }
@@ -283,6 +286,8 @@ fun LocalPlaylistSongs(
             }
         )
     }
+    // Note: cancel only closes the dialog, matchRunningExt stays true so the LaunchedEffect
+    // continues to completion and shows the results dialog.
 
     if (showConfirmMatchAllDialog) {
         app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog(
@@ -295,6 +300,8 @@ fun LocalPlaylistSongs(
                 getAlbumVersion = true
                 showGetAlbumVersionDialogue = true
                 showConfirmMatchAllDialog = false
+                matchRunning = true
+                cancelMatchExt = false
             }
         )
     }
@@ -303,6 +310,7 @@ fun LocalPlaylistSongs(
         app.n_zik.android.components.dialog.MatchResultsDialog(
             matched = matchResultsMatched,
             failed = matchResultsFailed,
+            merged = matchResultsMerged,
             failedSongs = matchResultsFailedSongs,
             onRetry = if (matchResultsFailed > 0) {{
                 showMatchResultsDialog = false
@@ -310,51 +318,87 @@ fun LocalPlaylistSongs(
                 retryMatchSongs = matchResultsFailedSongs
                 getAlbumVersion = true
                 showGetAlbumVersionDialogue = true
+                matchRunning = true
+                cancelMatchExt = false
             }} else null,
             onDismiss = { showMatchResultsDialog = false }
         )
     }
 
     val unmatchedExt = remember(items) { items.any { song -> song.id == (app.it.fast4x.rimusic.cleanPrefix(song.title ?: "")+(song.artistsText ?: "")).filter{it.isLetterOrDigit()} } }
-    if (unmatchedExt && !cancelMatchExt){
+    if (unmatchedExt && !matchRunningExt){
+        matchRunningExt = true
         showGetAlbumVersionDialogueExt = true
-        LaunchedEffect(unmatchedExt, cancelMatchExt) {
-            if (cancelMatchExt) return@LaunchedEffect
-            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-                val matchedItems = items.filter{song -> song.id == (app.it.fast4x.rimusic.cleanPrefix(song.title ?: "")+(song.artistsText ?: "")).filter{it.isLetterOrDigit()}}
-                totalSongsToMatch = matchedItems.size
-                songsMatched = 0
+        cancelMatchExt = false
+    }
+    LaunchedEffect(matchRunningExt) {
+        if (!matchRunningExt) return@LaunchedEffect
+        kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            val matchedItems = items.filter{song -> song.id == (app.it.fast4x.rimusic.cleanPrefix(song.title ?: "")+(song.artistsText ?: "")).filter{it.isLetterOrDigit()}}
+            totalSongsToMatch = matchedItems.size
+            songsMatched = 0
+            val mergedCounter = java.util.concurrent.atomic.AtomicInteger(0)
 
-                val jobs = mutableListOf<kotlinx.coroutines.Job>()
-                matchedItems.forEachIndexed { index, song ->
-                    jobs.add(launch(Dispatchers.IO) {
-                        try {
-                            app.n_zik.android.utils.getAlbumVersionFromVideo(
-                                song = song,
-                                playlistId = playlistId,
-                                position = index,
-                                playlist = playlist
-                            )
-                        } catch (e: kotlinx.coroutines.CancellationException) {
-                            throw e
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        } finally {
-                            songsMatched++
-                        }
-                    })
-                    kotlinx.coroutines.delay(800) // Space out requests to avoid YouTube rate limiting (403 Error)
+            val jobs = mutableListOf<kotlinx.coroutines.Job>()
+            matchedItems.forEachIndexed { index, song ->
+                jobs.add(launch(Dispatchers.IO) {
+                    try {
+                        if (cancelMatchExt) return@launch
+                        app.n_zik.android.utils.getAlbumVersionFromVideo(
+                            song = song,
+                            playlistId = playlistId,
+                            position = index,
+                            playlist = playlist,
+                            mergedCounter = mergedCounter
+                        )
+                    } catch (e: kotlinx.coroutines.CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    } finally {
+                        songsMatched++
+                    }
+                })
+                kotlinx.coroutines.delay(800) // Space out requests to avoid YouTube rate limiting (403 Error)
+            }
+            jobs.forEach { it.join() }
+
+            kotlinx.coroutines.delay(500)
+
+            // Clean up ImportSong entries where original ID is no longer in DB
+            val allEntries = Database.importSongTable.getAllEntries()
+            for (entry in allEntries) {
+                if (entry.playlistId != playlistId) continue
+                val count = kotlinx.coroutines.runBlocking {
+                    Database.songTable.countById(entry.originalId)
                 }
-                jobs.forEach { it.join() }
-                showGetAlbumVersionDialogueExt = false
-                getAlbumVersion = false
-                cancelMatchExt = false
+                if (count == 0) {
+                    Database.importSongTable.deleteByOriginalId(entry.originalId)
+                }
+            }
+
+            val stillUnmatched = matchedItems.filter {
+                (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)
+            }
+
+            showGetAlbumVersionDialogueExt = false
+            getAlbumVersion = false
+            matchRunningExt = false
+            cancelMatchExt = false
+
+            // Show results dialog (even on cancel, so user sees what was matched)
+            if (matchedItems.isNotEmpty()) {
+                matchResultsMatched = songsMatched
+                matchResultsFailed = matchedItems.size - songsMatched
+                matchResultsMerged = mergedCounter.get()
+                matchResultsFailedSongs = stillUnmatched
+                showMatchResultsDialog = true
             }
         }
     }
 
-    LaunchedEffect(getAlbumVersion) {
-        if (!getAlbumVersion) return@LaunchedEffect
+    LaunchedEffect(matchRunning) {
+        if (!matchRunning) return@LaunchedEffect
         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             val unmatched = if (retryMatchMode && retryMatchSongs.isNotEmpty()) {
                 retryMatchSongs
@@ -363,16 +407,19 @@ fun LocalPlaylistSongs(
             }
             totalSongsToMatch = unmatched.size
             songsMatched = 0
+            val mergedCounter = java.util.concurrent.atomic.AtomicInteger(0)
 
             val jobs = mutableListOf<kotlinx.coroutines.Job>()
             unmatched.forEachIndexed { index, song ->
                 jobs.add(launch(kotlinx.coroutines.Dispatchers.IO) {
                     try {
+                        if (cancelMatchExt) return@launch
                         app.n_zik.android.utils.getAlbumVersionFromVideo(
                             song = song,
                             playlistId = playlistId,
                             position = index,
-                            playlist = playlist
+                            playlist = playlist,
+                            mergedCounter = mergedCounter
                         )
                     } catch (e: kotlinx.coroutines.CancellationException) {
                         throw e
@@ -388,6 +435,18 @@ fun LocalPlaylistSongs(
 
             kotlinx.coroutines.delay(500)
 
+            // Clean up ImportSong entries where original ID is no longer in DB
+            val allEntries = Database.importSongTable.getAllEntries()
+            for (entry in allEntries) {
+                if (entry.playlistId != playlistId) continue
+                val count = kotlinx.coroutines.runBlocking {
+                    Database.songTable.countById(entry.originalId)
+                }
+                if (count == 0) {
+                    Database.importSongTable.deleteByOriginalId(entry.originalId)
+                }
+            }
+
             val stillUnmatched = items.filter {
                 (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)
             }
@@ -396,10 +455,13 @@ fun LocalPlaylistSongs(
             getAlbumVersion = false
             retryMatchMode = false
             retryMatchSongs = emptyList()
+            matchRunning = false
+            cancelMatchExt = false
 
             if (unmatched.isNotEmpty()) {
-                matchResultsMatched = unmatched.size - stillUnmatched.size
-                matchResultsFailed = stillUnmatched.size
+                matchResultsMatched = songsMatched
+                matchResultsFailed = unmatched.size - songsMatched
+                matchResultsMerged = mergedCounter.get()
                 matchResultsFailedSongs = stillUnmatched
                 showMatchResultsDialog = true
             }
