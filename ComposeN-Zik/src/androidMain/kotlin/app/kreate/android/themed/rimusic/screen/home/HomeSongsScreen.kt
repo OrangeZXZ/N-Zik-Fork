@@ -108,6 +108,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.first
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
@@ -345,9 +346,16 @@ fun HomeSongsScreen(navController: NavController ) {
                         val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX)
                         if (count > 0) {
                             if (isYouTubeId) {
-                                // Already a YouTube ID - was matched or imported with real ID
-                                // Not a failure, just clean up the ImportSong entry
-                                Database.importSongTable.deleteByOriginalId(entry.originalId)
+                                // Already a YouTube ID - check duration (Riplay has empty Duration in CSV)
+                                val song = Database.songTable.findById(entry.originalId).first()
+                                if (song != null && song.durationText == "00:00") {
+                                    // Riplay: YouTube ID OK but duration missing - treat as failed
+                                    failedCount++
+                                    failedEntries.add(entry)
+                                } else {
+                                    // YouTube ID OK and duration OK - matched
+                                    Database.importSongTable.deleteByOriginalId(entry.originalId)
+                                }
                             } else {
                                 failedCount++
                                 failedEntries.add(entry)

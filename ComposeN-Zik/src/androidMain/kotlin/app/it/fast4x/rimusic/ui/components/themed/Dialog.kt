@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -405,12 +406,14 @@ inline fun DefaultDialog(
                 horizontalAlignment = horizontalAlignment,
                 modifier = modifier
                     .fillMaxWidth(0.9f)
+                    .heightIn(max = 600.dp)
                     .padding(all = 10.dp)
                     .background(
                         color = colorPalette().background1,
                         shape = uiRoundnessShape()
                     )
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .verticalScroll(rememberScrollState()),
                 content = content
             )
         }

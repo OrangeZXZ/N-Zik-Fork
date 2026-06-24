@@ -56,7 +56,8 @@ fun MatchResultsDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth(if (isLandscape) 0.5f else 0.9f)
-                .padding(16.dp),
+                .padding(16.dp)
+                .heightIn(max = 600.dp),
             shape = uiRoundnessShape(),
             colors = CardDefaults.cardColors(
                 containerColor = colorPalette().background1
