@@ -22,16 +22,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.absoluteValue
 import kotlin.random.Random
+import timber.log.Timber
 
-/**
- * Global version of match: replaces a local/unmatched song across
- * ALL playlists, events, and relation maps in the database.
- * Use this from HomeSongsScreen to match without needing a specific playlist.
- */
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun getAlbumVersionFromVideoGlobal(song: Song, currentPosition: Int = song.position, mergedCounter: java.util.concurrent.atomic.AtomicInteger? = null) {
     val random4Digit = Random.nextInt(1000, 10000)
@@ -53,31 +47,34 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, currentPosition: Int = so
         return String(chars)
     }
 
-    // Random delay to avoid bot detection (500ms - 2500ms)
-    delay(Random.nextLong(1000, 5000))
+    delay(Random.nextLong(2000, 8000))
 
-    val searchQuery = Innertube.searchPage<Innertube.SongItem>(
-        body = SearchBody(
-            query = filteredText("${song.cleanTitle()} ${song.artistsText}"),
-            params = Innertube.SearchFilter.Song.value
-        ),
-        fromMusicShelfRendererContent = { content -> Innertube.SongItem.from(content) }
-    )
-
-    var searchResults = searchQuery?.getOrNull()?.items
-    val sourceSongWords = filteredText(song.cleanTitle()).split(" ").filter { it.isNotEmpty() }
-
-    // Fallback: if 0 results, try simpler query (just title)
-    if (searchResults.isNullOrEmpty()) {
-        val simpleQuery = filteredText(song.cleanTitle())
-        delay(Random.nextLong(1500, 4000))
-        val fallbackQuery = Innertube.searchPage<Innertube.SongItem>(
+    val searchQuery = runCatching {
+        Innertube.searchPage<Innertube.SongItem>(
             body = SearchBody(
-                query = simpleQuery,
+                query = filteredText("${song.cleanTitle()} ${song.artistsText}"),
                 params = Innertube.SearchFilter.Song.value
             ),
             fromMusicShelfRendererContent = { content -> Innertube.SongItem.from(content) }
         )
+    }.onFailure { Timber.e(it, "MatchGlobal: search failed") }.getOrNull()
+
+    var searchResults = searchQuery?.getOrNull()?.items
+    val sourceSongWords = filteredText(song.cleanTitle()).split(" ").filter { it.isNotEmpty() }
+
+    if (searchResults.isNullOrEmpty()) {
+        val simpleQuery = filteredText(song.cleanTitle())
+        Timber.d("MatchGlobal: fallback query='$simpleQuery'")
+        delay(Random.nextLong(2000, 8000))
+        val fallbackQuery = runCatching {
+            Innertube.searchPage<Innertube.SongItem>(
+                body = SearchBody(
+                    query = simpleQuery,
+                    params = Innertube.SearchFilter.Song.value
+                ),
+                fromMusicShelfRendererContent = { content -> Innertube.SongItem.from(content) }
+            )
+        }.onFailure { Timber.e(it, "MatchGlobal: fallback search failed") }.getOrNull()
         searchResults = fallbackQuery?.getOrNull()?.items
     }
 
@@ -98,21 +95,18 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, currentPosition: Int = so
         ?.filter { scoreCandidate(it) >= 10 }
         ?.maxByOrNull { scoreCandidate(it) }
 
-    // Calculate the song's effective position in custom sort order BEFORE any DB changes.
-    // This is needed because when position == -1, the sort uses ROWID, and after
-    // delete + re-insert the ROWID changes, causing the song to jump to the end.
-    val effectivePosition = Database.songTable.sortAllByPosition().first()
-        .indexOfFirst { it.id == song.id }
-        .takeIf { it >= 0 } ?: song.position
+    if (bestMatch != null) {
+        Timber.d("MatchGlobal: MATCHED '${bestMatch.info?.name}' -> '${bestMatch.key}'")
+    } else {
+        Timber.w("MatchGlobal: NOT FOUND '${song.title}' (${searchResults?.size ?: 0} results)")
+    }
 
     Database.asyncTransaction {
         if (bestMatch != null) {
             val newSong = bestMatch.asSong
 
-            // Check if a song with this YouTube ID already exists (duplicate match)
             val existingSong = runBlocking(Dispatchers.IO) { songTable.findById(newSong.id).first() }
             if (existingSong != null && existingSong.id != song.id) {
-                // Merge: transfer playlist mappings, events, likedAt from old song to existing
                 val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
                 playlistMappings.forEach { mapping ->
                     songPlaylistMapTable.mapAtPosition(existingSong.id, mapping.playlistId, mapping.position)
@@ -120,58 +114,47 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, currentPosition: Int = so
                 songArtistMapTable.updateSongId(song.id, existingSong.id)
                 songAlbumMapTable.updateSongId(song.id, existingSong.id)
                 eventTable.updateSongId(song.id, existingSong.id)
-                // Preserve likedAt if the existing song doesn't have it
                 if (existingSong.likedAt == null && song.likedAt != null) {
                     songTable.upsert(existingSong.copy(likedAt = song.likedAt))
                 }
-                // Delete the old unmatched song
                 songTable.delete(song)
                 mergedCounter?.incrementAndGet()
+                Timber.d("MatchGlobal: MERGED '${song.title}' into '${existingSong.id}'")
                 return@asyncTransaction
             }
 
-            // Save playlist mappings before delete (CASCADE will remove them)
             val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
-            // Delete old song first — CASCADE removes SongPlaylistMap, SongAlbumMap, etc.
             songTable.delete(song)
-            // Upsert merged song with new ID
             songTable.upsert(newSong.copy(
                 title = PropUtils.retainIfModified(song.title, newSong.title).orEmpty(),
                 artistsText = PropUtils.retainIfModified(song.artistsText, newSong.artistsText),
                 thumbnailUrl = PropUtils.retainIfModified(song.thumbnailUrl, newSong.thumbnailUrl),
                 likedAt = song.likedAt,
                 totalPlayTimeMs = song.totalPlayTimeMs,
-                position = effectivePosition
+                position = currentPosition
             ))
-            // Re-insert playlist mappings with new song ID
             playlistMappings.forEach { mapping ->
                 songPlaylistMapTable.mapAtPosition(newSong.id, mapping.playlistId, mapping.position)
             }
-            // Update other references
             songAlbumMapTable.updateSongId(song.id, newSong.id)
             songArtistMapTable.updateSongId(song.id, newSong.id)
             eventTable.updateSongId(song.id, newSong.id)
-            // Create album mapping from matched result
             bestMatch.album?.let { albumInfo ->
                 val albumId = albumInfo.endpoint?.browseId ?: return@let
-                albumTable.insertIgnore(app.it.fast4x.rimusic.models.Album(id = albumId, title = albumInfo.name))
+                albumTable.insertIgnore(Album(id = albumId, title = albumInfo.name))
                 songAlbumMapTable.map(newSong.id, albumId)
             }
             bestMatch.authors?.forEach { author ->
                 val browseId = author.endpoint?.browseId ?: return@forEach
-                artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(
-                    id = browseId,
-                    name = author.name,
-                    thumbnailUrl = null
-                ))
+                artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(id = browseId, name = author.name, thumbnailUrl = null))
                 songArtistMapTable.insertIgnore(SongArtistMap(newSong.id, browseId))
             }
+            Timber.d("MatchGlobal: DONE '${song.title}' -> '${newSong.id}'")
         } else {
-            // Mark as "not found" by giving it a shuffle ID so it won't be retried
             if (song.id == (song.cleanTitle() + song.artistsText).filter { it.isLetterOrDigit() }) {
                 val notFound = song.copy(
                     id = shuffle(song.artistsText + random4Digit + song.cleanTitle() + "56Music").filter { it.isLetterOrDigit() },
-                position = currentPosition
+                    position = currentPosition
                 )
                 val oldId = song.id
                 songTable.insertIgnore(notFound)
@@ -181,7 +164,6 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, currentPosition: Int = so
                 eventTable.updateSongId(oldId, notFound.id)
                 songTable.delete(song)
             }
-            // else: Song has a Spotify URI (or other non-pseudo ID) and no match found - keeping as-is
         }
     }
 }
@@ -191,50 +173,45 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
     var songNotFound: Song
     val random4Digit = Random.nextInt(1000, 10000)
 
-    fun filteredText(text: String): String {
-        val filteredText = text
-            .lowercase()
-            .replace("(", " ")
-            .replace(")", " ")
-            .replace("-", " ")
-            .replace("lyrics", "")
-            .replace("vevo", "")
-            .replace(" hd", "")
-            .replace("official video", "")
-            .filter { it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
-            .replace(Regex("\\s+"), " ")
-        return filteredText
-    }
+    fun filteredText(text: String): String = text
+        .lowercase()
+        .replace("(", " ").replace(")", " ").replace("-", " ")
+        .replace("lyrics", "").replace("vevo", "").replace(" hd", "")
+        .replace("official video", "")
+        .filter { it.isLetterOrDigit() || it.isWhitespace() || it == '\'' || it == ',' }
+        .replace(Regex("\\s+"), " ")
 
-    // Random delay to avoid bot detection (500ms - 2500ms)
-    delay(Random.nextLong(1000, 5000))
+    delay(Random.nextLong(2000, 8000))
 
-    val searchQuery = Innertube.searchPage<Innertube.SongItem>(
-        body = SearchBody(
-            query = filteredText("${song.cleanTitle()} ${song.artistsText}"),
-            params = Innertube.SearchFilter.Song.value
-        ),
-        fromMusicShelfRendererContent = { content -> Innertube.SongItem.from(content) }
-    )
-
-    var searchResults = searchQuery?.getOrNull()?.items
-
-    // Fallback: if 0 results, try simpler query (just title)
-    if (searchResults.isNullOrEmpty()) {
-        val simpleQuery = filteredText(song.cleanTitle())
-        delay(Random.nextLong(1500, 4000))
-        val fallbackQuery = Innertube.searchPage<Innertube.SongItem>(
+    val searchQuery = runCatching {
+        Innertube.searchPage<Innertube.SongItem>(
             body = SearchBody(
-                query = simpleQuery,
+                query = filteredText("${song.cleanTitle()} ${song.artistsText}"),
                 params = Innertube.SearchFilter.Song.value
             ),
             fromMusicShelfRendererContent = { content -> Innertube.SongItem.from(content) }
         )
+    }.onFailure { Timber.e(it, "MatchPlaylist: search failed") }.getOrNull()
+
+    var searchResults = searchQuery?.getOrNull()?.items
+
+    if (searchResults.isNullOrEmpty()) {
+        val simpleQuery = filteredText(song.cleanTitle())
+        Timber.d("MatchPlaylist: fallback query='$simpleQuery'")
+        delay(Random.nextLong(2000, 8000))
+        val fallbackQuery = runCatching {
+            Innertube.searchPage<Innertube.SongItem>(
+                body = SearchBody(
+                    query = simpleQuery,
+                    params = Innertube.SearchFilter.Song.value
+                ),
+                fromMusicShelfRendererContent = { content -> Innertube.SongItem.from(content) }
+            )
+        }.onFailure { Timber.e(it, "MatchPlaylist: fallback search failed") }.getOrNull()
         searchResults = fallbackQuery?.getOrNull()?.items
     }
 
-    val sourceSongWords = filteredText(song.cleanTitle())
-        .split(" ").filter { it.isNotEmpty() }
+    val sourceSongWords = filteredText(song.cleanTitle()).split(" ").filter { it.isNotEmpty() }
     val lofi = sourceSongWords.contains("lofi")
     val rock = sourceSongWords.contains("rock")
     val reprise = sourceSongWords.contains("reprise")
@@ -260,10 +237,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
     fun findSongIndex(): Int {
         for (i in 0..4) {
             val requiredSong = searchResults?.getOrNull(i) as? Innertube.SongItem ?: continue
-            val requiredSongWords = filteredText(song.cleanTitle()) // Actually in RiPlay it was filteredText(cleanPrefix(requiredSong?.title ?: ""))
-            // Wait, I should implement exactly like RiPlay
             val reqWords = filteredText(requiredSong.title ?: "").split(" ").filter { it.isNotEmpty() }
-
             val songMatched = (reqWords.any { it in sourceSongWords })
                     && (if (lofi) (reqWords.any { it == "lofi" }) else reqWords.all { it != "lofi" })
                     && (if (rock) (reqWords.any { it == "rock" }) else reqWords.all { it != "rock" })
@@ -279,10 +253,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                     && (if (redux) (reqWords.any { it == "redux" }) else reqWords.all { it != "redux" })
                     && (if (isExtPlaylist) {
                 (durationTextToMillis(requiredSong.durationText ?: "") - durationTextToMillis(song.durationText ?: "")).absoluteValue <= 7000
-            } else {
-                true
-            })
-
+            } else { true })
             if (songMatched) return i
         }
         return -1
@@ -291,7 +262,6 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
     val matchedSongIndex = findSongIndex()
     val matchedSong = if (matchedSongIndex != -1) searchResults?.getOrNull(matchedSongIndex) as? Innertube.SongItem else null
 
-    // Calculate the song's effective position in custom sort order BEFORE any DB changes.
     val effectivePosition = Database.songTable.sortAllByPosition().first()
         .indexOfFirst { it.id == song.id }
         .takeIf { it >= 0 } ?: song.position
@@ -302,10 +272,8 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
         if (matchedSongIndex != -1 && matchedSong != null) {
             val newSong = matchedSong.asSong
 
-            // Check if a song with this YouTube ID already exists (duplicate match)
             val existingSong = runBlocking(Dispatchers.IO) { songTable.findById(newSong.id).first() }
             if (existingSong != null && existingSong.id != song.id) {
-                // Merge: transfer playlist mappings, events, likedAt from old song to existing
                 val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
                 playlistMappings.forEach { mapping ->
                     songPlaylistMapTable.mapAtPosition(existingSong.id, mapping.playlistId, mapping.position)
@@ -320,54 +288,36 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                 return@asyncTransaction
             }
 
-            // Save playlist mappings before delete (CASCADE will remove them)
             val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
-
-            // Delete old song first — CASCADE removes SongPlaylistMap, etc.
             songTable.delete(song)
-
-            // Upsert merged song with new ID
             songTable.upsert(newSong.copy(
                 title = PropUtils.retainIfModified(song.title, newSong.title).orEmpty(),
                 artistsText = PropUtils.retainIfModified(song.artistsText, newSong.artistsText),
                 thumbnailUrl = PropUtils.retainIfModified(song.thumbnailUrl, newSong.thumbnailUrl),
                 likedAt = song.likedAt,
                 totalPlayTimeMs = song.totalPlayTimeMs,
-                position = song.position
+                position = effectivePosition
             ))
-
-            // Re-insert playlist mappings with new song ID
             playlistMappings.forEach { mapping ->
                 songPlaylistMapTable.mapAtPosition(newSong.id, mapping.playlistId, mapping.position)
             }
-
-            // Update other references
             songAlbumMapTable.updateSongId(song.id, newSong.id)
             songArtistMapTable.updateSongId(song.id, newSong.id)
             eventTable.updateSongId(song.id, newSong.id)
-
-            // Create album mapping from matched result
             matchedSong.album?.let { albumInfo ->
                 val albumId = albumInfo.endpoint?.browseId ?: return@let
-                albumTable.insertIgnore(app.it.fast4x.rimusic.models.Album(id = albumId, title = albumInfo.name))
+                albumTable.insertIgnore(Album(id = albumId, title = albumInfo.name))
                 songAlbumMapTable.map(newSong.id, albumId)
             }
-
-            // Create artist mappings from matched result
             matchedSong.authors?.forEach { author ->
                 val browseId = author.endpoint?.browseId ?: return@forEach
-                artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(
-                    id = browseId,
-                    name = author.name,
-                    thumbnailUrl = null
-                ))
+                artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(id = browseId, name = author.name, thumbnailUrl = null))
                 songArtistMapTable.insertIgnore(SongArtistMap(newSong.id, browseId))
             }
-
-            // Restore position in THIS playlist
             if (oldPosition != -1) {
                 songPlaylistMapTable.updatePosition(playlistId, newSong.id, oldPosition)
             }
+            Timber.d("MatchPlaylist: DONE '${song.title}' -> '${newSong.id}'")
         } else if (song.id == (song.cleanTitle() + song.artistsText).filter { it.isLetterOrDigit() }) {
             songNotFound = song.copy(id = shuffle(song.artistsText + random4Digit + song.cleanTitle() + "56Music").filter { it.isLetterOrDigit() })
             songTable.insertIgnore(songNotFound)
@@ -376,6 +326,5 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                 songPlaylistMapTable.updatePosition(playlistId, songNotFound.id, oldPosition)
             }
         }
-        // else: Song has a Spotify URI (or other non-pseudo ID) and no match found - keeping as-is
     }
 }
