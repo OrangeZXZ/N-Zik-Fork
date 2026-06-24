@@ -7,6 +7,7 @@ import app.it.fast4x.rimusic.LOCAL_KEY_PREFIX
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Playlist
 import app.it.fast4x.rimusic.models.Song
+import app.it.fast4x.rimusic.models.SongArtistMap
 import app.it.fast4x.rimusic.models.SongPlaylistMap
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.asSong
@@ -149,7 +150,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
                     name = author.name,
                     thumbnailUrl = null
                 ))
-                songArtistMapTable.map(newSong.id, browseId)
+                songArtistMapTable.insertIgnore(SongArtistMap(newSong.id, browseId))
             }
         } else {
             // Mark as "not found" by giving it a shuffle ID so it won't be retried
@@ -335,7 +336,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                     name = author.name,
                     thumbnailUrl = null
                 ))
-                songArtistMapTable.map(newSong.id, browseId)
+                songArtistMapTable.insertIgnore(SongArtistMap(newSong.id, browseId))
             }
 
             // Restore position in THIS playlist
