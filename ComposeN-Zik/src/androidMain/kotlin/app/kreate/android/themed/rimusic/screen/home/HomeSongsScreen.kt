@@ -101,9 +101,13 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.playlistPage
 import app.n_zik.android.core.database.Database
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.ensureActive
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
@@ -140,6 +144,7 @@ fun HomeSongsScreen(navController: NavController ) {
     var showMatchingProgressDialog by remember { mutableStateOf(false) }
     var cancelMatch by remember { mutableStateOf(false) }
     var matchRunning by remember { mutableStateOf(false) }
+    var matchJob by remember { mutableStateOf<Job?>(null) }
     var totalSongsToMatch by remember { mutableStateOf(0) }
     var songsMatched by remember { mutableStateOf(0) }
     var retryMatchMode by remember { mutableStateOf(false) }
@@ -262,6 +267,7 @@ fun HomeSongsScreen(navController: NavController ) {
             onDismiss = {
                 cancelMatch = true
                 showMatchingProgressDialog = false
+                matchJob?.cancel()
             }
         )
     }
@@ -285,74 +291,95 @@ fun HomeSongsScreen(navController: NavController ) {
         )
     }
 
-    // Global match LaunchedEffect - decoupled from dialog state so cancel can show results
+    // Global match LaunchedEffect - launches a real cancellable Job
     LaunchedEffect(matchRunning) {
         if (!matchRunning) return@LaunchedEffect
-        withContext(Dispatchers.IO) {
-            val unmatched = if (retryMatchMode && retryMatchSongs.isNotEmpty()) {
-                // Retry mode: only match the previously failed songs
-                retryMatchSongs
-            } else {
-                // Normal mode: match all unmatched songs
-                itemsOnDisplayState.filter { (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX) }
-            }
-            totalSongsToMatch = unmatched.size
-            songsMatched = 0
-            val mergedCounter = java.util.concurrent.atomic.AtomicInteger(0)
-
-            val jobs = mutableListOf<kotlinx.coroutines.Job>()
-            unmatched.forEachIndexed { index, song ->
-                jobs.add(launch(Dispatchers.IO) {
-                    try {
-                        if (cancelMatch) return@launch
-                        getAlbumVersionFromVideoGlobal(song, mergedCounter)
-                    } catch (e: kotlinx.coroutines.CancellationException) {
-                        throw e
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    } finally {
-                        songsMatched++
-                    }
-                })
-                delay(800)
-            }
-            jobs.forEach { it.join() }
-
-            // Wait for database Flow to emit updated list
-            delay(500)
-
-            // Clean up ALL ImportSong entries where old ID no longer exists in DB
-            withContext(Dispatchers.IO) {
-                val allEntries = Database.importSongTable.getAllEntries()
-                for (entry in allEntries) {
-                    val count = kotlinx.coroutines.runBlocking {
-                        Database.songTable.countById(entry.originalId)
-                    }
-                    if (count == 0) {
-                        Database.importSongTable.deleteByOriginalId(entry.originalId)
-                    }
+        val mergedCounter = java.util.concurrent.atomic.AtomicInteger(0)
+        val job = launch(Dispatchers.IO) {
+            try {
+                val unmatched = if (retryMatchMode && retryMatchSongs.isNotEmpty()) {
+                    // Retry mode: only match the previously failed songs
+                    retryMatchSongs
+                } else {
+                    // Normal mode: match all unmatched songs
+                    itemsOnDisplayState.filter { (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX) }
                 }
+                totalSongsToMatch = unmatched.size
+                songsMatched = 0
+
+                val jobs = mutableListOf<kotlinx.coroutines.Job>()
+                unmatched.forEachIndexed { index, song ->
+                    ensureActive()
+                    jobs.add(launch(Dispatchers.IO) {
+                        var wasCancelled = false
+                        try {
+                            if (cancelMatch) return@launch
+                            getAlbumVersionFromVideoGlobal(song, mergedCounter)
+                        } catch (e: kotlinx.coroutines.CancellationException) {
+                            wasCancelled = true
+                            throw e
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        } finally {
+                            if (!wasCancelled) songsMatched++
+                        }
+                    })
+                    delay(800)
+                }
+                jobs.forEach { it.join() }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                // Expected on cancel - cleanup happens in finally
+            } finally {
+                // Cleanup that runs even on cancel
+                withContext(NonCancellable) {
+                    // Wait for database Flow to emit updated list
+                    delay(500)
+
+                    // Count failed: ImportSong entries where originalId is still in DB
+                    var failedCount = 0
+                    val allEntries = Database.importSongTable.getAllEntries()
+                    val failedEntries = mutableListOf<app.n_zik.android.core.database.ImportSong>()
+                    for (entry in allEntries) {
+                        val count = kotlinx.coroutines.runBlocking {
+                            Database.songTable.countById(entry.originalId)
+                        }
+                        if (count > 0) {
+                            failedCount++
+                            failedEntries.add(entry)
+                        } else {
+                            Database.importSongTable.deleteByOriginalId(entry.originalId)
+                        }
+                    }
+
+                    // Check for songs that still couldn't be matched (DB-based count = accurate)
+                    val stillUnmatched = itemsOnDisplayState.filter {
+                        (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX)
+                    }
+
+                    matchRefreshKey++
+
+                    // Show results dialog (even on cancel, so user sees what was matched)
+                    // Use ImportSong-based count for accuracy
+                    val matchedCount = maxOf(0, totalSongsToMatch - failedCount)
+                    matchResultsMatched = matchedCount
+                    matchResultsFailed = if (failedCount > 0) failedCount else stillUnmatched.size
+                    matchResultsMerged = mergedCounter.get()
+                    // Build failedSongs list: prefer items from itemsOnDisplayState that match failed entries
+                    val failedOriginalIds = failedEntries.map { it.originalId }.toSet()
+                    val failedSongsList = itemsOnDisplayState.filter { it.id in failedOriginalIds }
+                    matchResultsFailedSongs = if (failedSongsList.isNotEmpty()) failedSongsList else stillUnmatched
+                    showMatchResultsDialog = true
+                }
+                showMatchingProgressDialog = false
+                retryMatchMode = false
+                retryMatchSongs = emptyList()
+                matchRunning = false
+                cancelMatch = false
+                matchJob = null
             }
-
-            // Check for songs that still couldn't be matched
-            val stillUnmatched = itemsOnDisplayState.filter {
-                (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX)
-            }
-
-            showMatchingProgressDialog = false
-            retryMatchMode = false
-            retryMatchSongs = emptyList()
-            matchRefreshKey++
-            matchRunning = false
-            cancelMatch = false
-
-            // Show results dialog (even on cancel, so user sees what was matched)
-            matchResultsMatched = songsMatched
-            matchResultsFailed = unmatched.size - songsMatched
-            matchResultsMerged = mergedCounter.get()
-            matchResultsFailedSongs = unmatched.takeLast(unmatched.size - songsMatched)
-            showMatchResultsDialog = true
         }
+        matchJob = job
+        job.join()
     }
 
     val matchAlbumButton = remember {
