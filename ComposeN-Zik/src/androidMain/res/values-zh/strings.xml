@@ -1309,6 +1309,7 @@
   <string name="match_results_ok">好的</string>
   <string name="retry_match">重试比赛</string>
   <string name="retry_match_confirmation">重试匹配 %d 失败的歌曲吗？</string>
+  <string name="match_results_merged">%d merged with existing</string>
   <string name="notification_skip_back">跳过</string>
   <string name="notification_pause">暂停</string>
   <string name="notification_play">播放</string>

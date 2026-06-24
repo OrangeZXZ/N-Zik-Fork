@@ -288,7 +288,7 @@
   <string name="catalan">Catalan (Català)</string>
   <string name="disable_scrolling_text">Désactiver le défilement du texte</string>
   <string name="scrolling_text_is_used_for_long_texts">Le défilement du texte est utilisé pour les longs textes</string>
-  <string name="audio_quality_format">Audio Quality</string>
+  <string name="audio_quality_format">Qualité audio</string>
   <string name="persian">Persan (فارسی)</string>
   <string name="hungarian">Hongrois (Magyar)</string>
   <string name="korean">Coréen (한국인)</string>
@@ -1310,6 +1310,7 @@ Volume BAS : titre précédent</string>
   <string name="match_results_ok">Ok</string>
   <string name="retry_match">Réessayer la correspondance</string>
   <string name="retry_match_confirmation">Retenter la correspondance de %d chansons échouées ?</string>
+  <string name="match_results_merged">%d merged with existing</string>
   <string name="notification_skip_back">Revenir en arrière</string>
   <string name="notification_pause">Mettre en pause</string>
   <string name="notification_play">Jouer</string>

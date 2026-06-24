@@ -1309,6 +1309,7 @@
   <string name="match_results_ok">حسناً</string>
   <string name="retry_match">إعادة محاولة المباراة</string>
   <string name="retry_match_confirmation">إعادة محاولة مطابقة %d أغنية فاشلة؟</string>
+  <string name="match_results_merged">%d merged with existing</string>
   <string name="notification_skip_back">تخطي الخلف</string>
   <string name="notification_pause">إيقاف</string>
   <string name="notification_play">تشغيل</string>

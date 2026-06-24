@@ -1309,6 +1309,7 @@
   <string name="match_results_ok">Гаразд</string>
   <string name="retry_match">Повторити гру</string>
   <string name="retry_match_confirmation">Повторити спробу відповідних пісень %d не вдалося?</string>
+  <string name="match_results_merged">%d merged with existing</string>
   <string name="notification_skip_back">Назад</string>
   <string name="notification_pause">Пауза</string>
   <string name="notification_play">Відтворити</string>
