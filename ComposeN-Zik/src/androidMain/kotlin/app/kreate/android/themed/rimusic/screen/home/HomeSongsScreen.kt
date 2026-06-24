@@ -339,8 +339,10 @@ fun HomeSongsScreen(navController: NavController ) {
                     var failedCount = 0
                     val allEntries = Database.importSongTable.getAllEntries()
                     val failedEntries = mutableListOf<app.n_zik.android.core.database.ImportSong>()
+                    Timber.d("MatchGlobal: CLEANUP START - totalSongsToMatch=$totalSongsToMatch, allEntries=${allEntries.size}")
                     for (entry in allEntries) {
                         val count = Database.songTable.countById(entry.originalId)
+                        Timber.d("MatchGlobal: CLEANUP entry originalId='${entry.originalId}' count=$count")
                         if (count > 0) {
                             failedCount++
                             failedEntries.add(entry)
@@ -348,6 +350,7 @@ fun HomeSongsScreen(navController: NavController ) {
                             Database.importSongTable.deleteByOriginalId(entry.originalId)
                         }
                     }
+                    Timber.d("MatchGlobal: CLEANUP DONE - failedCount=$failedCount")
 
                     // Check for songs that still couldn't be matched (DB-based count = accurate)
                     val stillUnmatched = itemsOnDisplayState.filter {

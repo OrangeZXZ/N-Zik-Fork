@@ -102,6 +102,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
     // Get position from import table (fallback to song.position)
     val dbPosition = Database.importSongTable.getPositionGlobal(song.id) ?: song.position
 
+    Timber.d("MatchGlobal: BEFORE TX for '${song.title}' originalId='${song.id}'")
     Database.transaction {
         if (bestMatch != null) {
             val newSong = bestMatch.asSong
@@ -175,6 +176,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
             }
         }
     }
+    Timber.d("MatchGlobal: AFTER TX for '${song.title}' newId='${bestMatch?.key}'")
 }
 
 suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int, playlist: Playlist?, mergedCounter: java.util.concurrent.atomic.AtomicInteger? = null) {
