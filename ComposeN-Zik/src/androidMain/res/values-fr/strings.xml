@@ -196,7 +196,7 @@
   <string name="discovery">Découverte</string>
   <string name="mood">Humeur</string>
   <string name="new_albums">Nouveaux Albums</string>
-  <string name="moods_and_genres">Humeurs et Genres</string>
+  <string name="moods_and_genres">Ambiances et Genres</string>
   <string name="search_queries">" requêtes de recherche"</string>
   <string name="not_find_battery_optimization_settings">Impossible de trouver les paramètres d\'optimisation de la batterie, veuillez les ajouter manuellement à la liste blanche</string>
   <string name="search">Rechercher</string>
@@ -204,7 +204,7 @@
   <string name="voice_search_not_available">La recherche vocale n\'est pas disponible sur cet appareil</string>
   <string name="voice_search_error_audio">Erreur d\'enregistrement audio</string>
   <string name="voice_search_error_client">Erreur client</string>
-  <string name="voice_search_error_permissions">Autorisation du microphone requise</string>
+  <string name="voice_search_error_permissions">Autorisation d\'accès au microphone requise</string>
   <string name="voice_search_error_network">Erreur réseau</string>
   <string name="voice_search_error_network_timeout">Délai d\'attente du réseau</string>
   <string name="voice_search_error_no_match">Aucune parole reconnue</string>
@@ -225,7 +225,7 @@
   <string name="play_next">Musique suivante</string>
   <string name="toggle_lyrics">Afficher/masquer les paroles</string>
   <string name="by_tapping_on_the_thumbnail">En appuyant sur la pochette d\'album</string>
-  <string name="require_mic_permission">Le visualiser nécessite l\'autorisation du micro.</string>
+  <string name="require_mic_permission">L\'effet « Visualizer » nécessite l\'autorisation d\'accès au micro. Veuillez l\'accorder.</string>
   <string name="vt_fancy">Circulaire 3D</string>
   <string name="vt_circular">Circulaire</string>
   <string name="vt_disabled">Désactivé</string>
@@ -327,7 +327,7 @@
   <string name="paste_or_type_a_valid_url">Coller ou taper une URL valide</string>
   <string name="you_can_put_a_complete_link">Vous pouvez mettre un lien complet d\'une playlist, d\'un album, d\'une chaîne ou d\'un seul titre sur YouTube ou YouTube Music</string>
   <string name="go_to_link">Accéder au lien</string>
-  <string name="action_bar_show_download_button">Affiche le bouton de téléchargement</string>
+  <string name="action_bar_show_download_button">Bouton « Téléchargement »</string>
   <string name="action_bar_show_add_to_playlist_button">Bouton « Ajouter à la playlist »</string>
   <string name="action_bar_show_loop_button">Bouton « Boucle »</string>
   <string name="action_bar_show_shuffle_button">Bouton « Lecture Aléatoire »</string>
@@ -440,7 +440,7 @@
   <string name="use_gradient_background">Utiliser le dégradé d\'arrière-plan</string>
   <string name="show_total_time_of_queue">Afficher la durée totale de la file d\'attente</string>
   <string name="lang_telugu">Télougou (తెలుగు)</string>
-  <string name="media_permission_required_please_grant">Autorisation du média requise, veuillez l\'accorder.</string>
+  <string name="media_permission_required_please_grant">Autorisation d\'accès aux médias requise, veuillez l\'accorder.</string>
   <string name="open_permission_settings">Ouvrir les paramètres d\'autorisation</string>
   <string name="background_progress_bar">Barre de progression en arrière-plan</string>
   <string name="minimized_player">Lecteur minimisé</string>
@@ -594,7 +594,7 @@
   <string name="pinfo_type">Type d\'informations</string>
   <string name="pinfo_album_and_artist_name">Album et nom de l\'artiste</string>
   <string name="show_player_top_actions_bar">Afficher la barre d\'actions supérieure</string>
-  <string name="icon_like_button">Bouton J\'aime</string>
+  <string name="icon_like_button">Bouton « Favoris »</string>
   <string name="icon_like_apple">Pomme</string>
   <string name="icon_like_breaked">Brisé</string>
   <string name="icon_like_gift">Cadeau</string>
@@ -763,7 +763,7 @@ Volume BAS : titre précédent</string>
   <string name="lang_norwegian">Norvégien</string>
   <string name="translate_to">Traduire en %s</string>
   <string name="translate_to_other_language">Traduire en une autre langue</string>
-  <string name="action_bar_show_video_button">Bouton « Afficher la vidéo »</string>
+  <string name="action_bar_show_video_button">Bouton « Vidéo »</string>
   <string name="social_telegram">Telegram</string>
   <string name="social_telegram_info">Rejoignez le groupe sur Telegram</string>
   <string name="social_github">GitHub</string>
@@ -1149,7 +1149,7 @@ Volume BAS : titre précédent</string>
   <string name="songs_liked_yt_failed_with_index">%1$s %2$s</string>
   <string name="battery_optimization_msg">%1$s %2$s</string>
   <string name="player_presets_and_layout">Préréglages &amp; Mise en page</string>
-  <string name="cover_and_thumbnail">Couverture &amp; Vignette</string>
+  <string name="cover_and_thumbnail">Pochette &amp; Miniature</string>
   <string name="timeline_and_controls">Chronologie &amp; Commandes</string>
   <string name="colors_and_background">Couleurs &amp; Arrière-plan</string>
   <string name="player_behavior_and_visuals">Comportement du lecteur &amp; Visuels</string>
