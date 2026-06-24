@@ -110,6 +110,26 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
         if (bestMatch != null) {
             val newSong = bestMatch.asSong
 
+            // Check if a song with this YouTube ID already exists (duplicate match)
+            val existingSong = runBlocking(Dispatchers.IO) { songTable.findById(newSong.id).first() }
+            if (existingSong != null && existingSong.id != song.id) {
+                // Merge: transfer references from old song to existing
+                val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
+                playlistMappings.forEach { mapping ->
+                    songPlaylistMapTable.mapAtPosition(existingSong.id, mapping.playlistId, mapping.position)
+                }
+                songArtistMapTable.updateSongId(song.id, existingSong.id)
+                songAlbumMapTable.updateSongId(song.id, existingSong.id)
+                eventTable.updateSongId(song.id, existingSong.id)
+                if (existingSong.likedAt == null && song.likedAt != null) {
+                    songTable.upsert(existingSong.copy(likedAt = song.likedAt))
+                }
+                songTable.delete(song)
+                mergedCounter?.incrementAndGet()
+                Timber.d("MatchGlobal: MERGED '${song.title}' into '${existingSong.id}'")
+                return@asyncTransaction
+            }
+
             // Save playlist mappings before delete
             val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
             // Delete old song
