@@ -316,18 +316,12 @@ fun HomeSongsScreen(navController: NavController ) {
                 // Wait for database Flow to emit updated list
                 delay(500)
 
-                // Clean up ImportSong entries
+                // Clean up ImportSong entries for matched songs (old ID gone from DB)
                 withContext(Dispatchers.IO) {
-                    if (cancelMatch) {
-                        // Cancel: clear all entries (user stopped entirely)
-                        Database.importSongTable.clear()
-                    } else {
-                        // Normal end: clean matched songs (old ID gone from DB)
-                        for (song in unmatched) {
-                            val exists = runBlocking { songTable.findById(song.id).first() } != null
-                            if (!exists) {
-                                Database.importSongTable.deleteByOriginalId(song.id)
-                            }
+                    for (song in unmatched) {
+                        val exists = runBlocking { songTable.findById(song.id).first() } != null
+                        if (!exists) {
+                            Database.importSongTable.deleteByOriginalId(song.id)
                         }
                     }
                 }
