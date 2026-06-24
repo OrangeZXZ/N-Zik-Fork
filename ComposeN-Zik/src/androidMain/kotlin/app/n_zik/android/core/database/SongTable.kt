@@ -161,6 +161,9 @@ interface SongTable {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateReplace( song: Song )
 
+    @Query("UPDATE Song SET id = :newId WHERE id = :oldId")
+    fun updateId(oldId: String, newId: String): Int
+
     /**
      * Attempt to write [song] into database.
      *

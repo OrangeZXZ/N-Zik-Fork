@@ -1254,12 +1254,12 @@ fun LocalPlaylistSongs(
                 iconId = R.drawable.shuffle,
                 visible = !reorderingState.isAnyItemDragging,
                 onClick = {
-                    getMediaItems().let { songs ->
+                    getSongs().let { songs ->
                         val playableSongs = songs.filter { !it.isUnmatched }
                         if (playableSongs.isNotEmpty()) {
                             binder?.stopRadio()
                             binder?.player
-                                  ?.forcePlayFromBeginning( playableSongs )
+                                  ?.forcePlayFromBeginning( playableSongs.shuffled().map( Song::asMediaItem ) )
                         } else {
                             Toaster.w(R.string.playback_blocked_match_first)
                         }
