@@ -341,14 +341,12 @@ fun HomeSongsScreen(navController: NavController ) {
                 retryMatchSongs = emptyList()
                 matchRefreshKey++
 
-                // Show results dialog if there were unmatched songs
-                if (unmatched.isNotEmpty()) {
-                    matchResultsMatched = unmatched.size - stillUnmatched.size
-                    matchResultsFailed = stillUnmatched.size
-                    matchResultsMerged = mergedCounter.get()
-                    matchResultsFailedSongs = stillUnmatched
-                    showMatchResultsDialog = true
-                }
+                // Show results dialog (even on cancel, so user sees what was matched)
+                matchResultsMatched = songsMatched
+                matchResultsFailed = unmatched.size - songsMatched
+                matchResultsMerged = mergedCounter.get()
+                matchResultsFailedSongs = unmatched.takeLast(unmatched.size - songsMatched)
+                showMatchResultsDialog = true
             }
         }
     }
