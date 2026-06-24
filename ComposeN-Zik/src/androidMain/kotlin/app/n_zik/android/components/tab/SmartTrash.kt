@@ -124,13 +124,21 @@ class SmartTrash private constructor(
                 songArtistMapTable.deleteBySongId( song.id )
                 songAlbumMapTable.deleteBySongId( song.id )
                 formatTable.deleteBySongId( song.id )
-                Database.importSongTable.clear()
                 songTable.delete( song )
             }
             
-            // Clean up orphaned artists and albums
+            // Clean up orphaned artists, albums and empty playlists
             val deletedArtists = artistTable.deleteOrphaned()
             val deletedAlbums = albumTable.deleteOrphaned()
+            // Delete playlists that have no songs left
+            val playlists = playlistTable.getAll()
+            for (playlist in playlists) {
+                val songCount = songPlaylistMapTable.countSongsInPlaylist(playlist.id)
+                if (songCount == 0) {
+                    playlistTable.delete(playlist)
+                }
+            }
+            Database.importSongTable.clear()
             Timber.tag("SmartTrash").d("Cleaned up $deletedArtists orphaned artists, $deletedAlbums orphaned albums")
         }
     }

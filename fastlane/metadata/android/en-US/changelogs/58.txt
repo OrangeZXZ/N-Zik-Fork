@@ -2,6 +2,9 @@ Hotfix:
 - Fix match dialog showing wrong matched/failed count
 - Fix merged count not showing when all songs matched
 - Fix merged count showing twice in dialog
+- Fix match dialog not showing on cancel
+- Fix SmartTrash not cleaning ImportSong table
+- Fix SmartTrash not deleting playlists
 
 Added:
 - ImportSong table to preserve import positions for match system

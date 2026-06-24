@@ -217,6 +217,9 @@ interface SongPlaylistMapTable {
     @Query("SELECT IFNULL(MAX(position), -1) FROM SongPlaylistMap WHERE playlistId = :playlistId")
     fun getMaxPosition(playlistId: Long): Int
 
+    @Query("SELECT COUNT(*) FROM SongPlaylistMap WHERE playlistId = :playlistId")
+    fun countSongsInPlaylist(playlistId: Long): Int
+
     //<editor-fold defaultstate="collapsed" desc="Sort songs of playlist">
     @Query("""
         SELECT DISTINCT S.*

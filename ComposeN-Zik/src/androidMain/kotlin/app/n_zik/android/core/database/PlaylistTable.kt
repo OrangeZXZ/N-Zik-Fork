@@ -220,6 +220,9 @@ interface PlaylistTable {
     @Delete
     fun delete( playlist: Playlist ): Int
 
+    @Query("SELECT * FROM Playlist")
+    fun getAll(): List<Playlist>
+
     /**
      * @return whether a playlist with name [playlistName] exists in the database
      */
