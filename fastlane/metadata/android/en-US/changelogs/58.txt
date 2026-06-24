@@ -1,0 +1,24 @@
+Hotfix:
+- Fix match dialog showing "0 matched, N failed" when all songs were matched
+- Fix match dialog not showing merged count for duplicate songs
+- Fix playback blocked toast showing for matched songs
+- Fix info screen showing stale data after match
+
+Added:
+- Match: create album and artist mappings from Innertube result (fixes lyrics showing 'N/A' for album)
+- Match: merge duplicate songs instead of skipping (transfers playlist/album/artist mappings)
+- Match: pre-calculate positions from DB before parallel matches (preserves order)
+- Match: increase delays to 2-8s to avoid YouTube rate limiting
+- Match: wrap search requests in runCatching with error logging
+- Block playback of unmatched songs with toast warning
+- UnmatchedSongException (fatal, no recovery retries)
+
+Changed:
+- Match dialog now correctly counts matched/failed/merged songs
+- Karaoke lyrics mode is now default on fresh install
+
+Fixed:
+- Match position: songs no longer get shuffled after matching from HomeSongs
+- Match album: lyrics fetcher now gets album info from matched songs
+- Match artist: artist logo/name updates correctly after matching
+- Remove 44+ debug Timber logs from match and import functions
