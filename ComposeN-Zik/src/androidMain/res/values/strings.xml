@@ -1309,7 +1309,6 @@
 <string name="match_results_ok">OK</string>
 <string name="retry_match">Retry Match</string>
 <string name="retry_match_confirmation">Retry matching %d failed songs?</string>
-<string name="match_results_merged">%d merged with existing</string>
 <string name="notification_skip_back">Skip back</string>
 <string name="notification_pause">Pause</string>
 <string name="notification_play">Play</string>
