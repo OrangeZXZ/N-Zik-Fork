@@ -410,9 +410,7 @@ fun LocalPlaylistSongs(
                         // For failedSongs list, look up current Song objects in items
                         val failedOriginalIds = failedEntries.map { it.originalId }.toSet()
                         val failedSongsList = items.filter { it.id in failedOriginalIds }
-                        matchResultsFailedSongs = if (failedSongsList.isNotEmpty()) failedSongsList else items.filter {
-                            (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)
-                        }
+                        matchResultsFailedSongs = failedSongsList
                         showMatchResultsDialog = true
                     }
                 }
@@ -501,9 +499,7 @@ fun LocalPlaylistSongs(
                         matchResultsMerged = mergedCounter.get()
                         val failedOriginalIds = failedEntries.map { it.originalId }.toSet()
                         val failedSongsList = items.filter { it.id in failedOriginalIds }
-                        matchResultsFailedSongs = if (failedSongsList.isNotEmpty()) failedSongsList else items.filter {
-                            (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)
-                        }
+                        matchResultsFailedSongs = failedSongsList
                         showMatchResultsDialog = true
                     }
                 }

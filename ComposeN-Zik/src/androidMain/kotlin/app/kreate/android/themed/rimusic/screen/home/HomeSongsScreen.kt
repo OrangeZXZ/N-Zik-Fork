@@ -340,11 +340,9 @@ fun HomeSongsScreen(navController: NavController ) {
                     var failedCount = 0
                     val allEntries = Database.importSongTable.getAllEntries()
                     val failedEntries = mutableListOf<app.n_zik.android.core.database.ImportSong>()
-                    Timber.d("MatchGlobal: CLEANUP START - totalSongsToMatch=$totalSongsToMatch, allEntries=${allEntries.size}")
                     for (entry in allEntries) {
                         val count = Database.songTable.countById(entry.originalId)
                         val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX)
-                        Timber.d("MatchGlobal: CLEANUP entry originalId='${entry.originalId}' count=$count isYouTubeId=$isYouTubeId")
                         if (count > 0) {
                             if (isYouTubeId) {
                                 // Already a YouTube ID - was matched or imported with real ID
@@ -358,7 +356,6 @@ fun HomeSongsScreen(navController: NavController ) {
                             Database.importSongTable.deleteByOriginalId(entry.originalId)
                         }
                     }
-                    Timber.d("MatchGlobal: CLEANUP DONE - failedCount=$failedCount")
 
                     // Check for songs that still couldn't be matched (DB-based count = accurate)
                     val stillUnmatched = itemsOnDisplayState.filter {
@@ -368,15 +365,16 @@ fun HomeSongsScreen(navController: NavController ) {
                     matchRefreshKey++
 
                     // Show results dialog (even on cancel, so user sees what was matched)
-                    // Use ImportSong-based count for accuracy
+                    // Use ImportSong-based count for accuracy (don't fallback to stillUnmatched
+                    // because Riplay imports may have duration="00:00" even after successful match)
                     val matchedCount = maxOf(0, totalSongsToMatch - failedCount)
                     matchResultsMatched = matchedCount
-                    matchResultsFailed = if (failedCount > 0) failedCount else stillUnmatched.size
+                    matchResultsFailed = failedCount
                     matchResultsMerged = mergedCounter.get()
-                    // Build failedSongs list: prefer items from itemsOnDisplayState that match failed entries
+                    // Build failedSongs list from failed entries
                     val failedOriginalIds = failedEntries.map { it.originalId }.toSet()
                     val failedSongsList = itemsOnDisplayState.filter { it.id in failedOriginalIds }
-                    matchResultsFailedSongs = if (failedSongsList.isNotEmpty()) failedSongsList else stillUnmatched
+                    matchResultsFailedSongs = failedSongsList
                     showMatchResultsDialog = true
                 }
                 showMatchingProgressDialog = false
