@@ -332,8 +332,8 @@ fun HomeSongsScreen(navController: NavController ) {
             } finally {
                 // Cleanup that runs even on cancel
                 withContext(NonCancellable) {
-                    // Wait for database Flow to emit updated list
-                    delay(500)
+                    // Wait for database transactions to commit and Flow to emit updated list
+                    delay(1500)
 
                     // Count failed: ImportSong entries where originalId is still in DB
                     var failedCount = 0

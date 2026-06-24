@@ -338,7 +338,10 @@ object Database {
      * Use this when subsequent code depends on the transaction being committed.
      */
     suspend fun transaction( block: suspend Database.() -> Unit ) {
-        _internal.withTransaction { block() }
+        val db = this
+        _internal.withTransaction {
+            db.block()
+        }
     }
 
 
