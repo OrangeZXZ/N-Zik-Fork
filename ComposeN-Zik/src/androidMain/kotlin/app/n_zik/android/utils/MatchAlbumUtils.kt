@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import app.it.fast4x.rimusic.cleanPrefix
 import app.it.fast4x.rimusic.LOCAL_KEY_PREFIX
+import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Playlist
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.models.SongPlaylistMap
@@ -135,6 +136,12 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
             songAlbumMapTable.updateSongId(song.id, newSong.id)
             songArtistMapTable.updateSongId(song.id, newSong.id)
             eventTable.updateSongId(song.id, newSong.id)
+            // Create album mapping from matched result
+            bestMatch.album?.let { albumInfo ->
+                val albumId = albumInfo.endpoint?.browseId ?: return@let
+                albumTable.insertIgnore(app.it.fast4x.rimusic.models.Album(id = albumId, title = albumInfo.name))
+                songAlbumMapTable.map(newSong.id, albumId)
+            }
             bestMatch.authors?.forEach { author ->
                 val browseId = author.endpoint?.browseId ?: return@forEach
                 artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(
@@ -311,6 +318,13 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
             songAlbumMapTable.updateSongId(song.id, newSong.id)
             songArtistMapTable.updateSongId(song.id, newSong.id)
             eventTable.updateSongId(song.id, newSong.id)
+
+            // Create album mapping from matched result
+            matchedSong.album?.let { albumInfo ->
+                val albumId = albumInfo.endpoint?.browseId ?: return@let
+                albumTable.insertIgnore(app.it.fast4x.rimusic.models.Album(id = albumId, title = albumInfo.name))
+                songAlbumMapTable.map(newSong.id, albumId)
+            }
 
             // Restore position in THIS playlist
             if (oldPosition != -1) {
