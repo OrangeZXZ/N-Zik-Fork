@@ -176,7 +176,8 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
             }
         }
     }
-    Timber.d("MatchGlobal: AFTER TX for '${song.title}' newId='${bestMatch?.key}'")
+    val verifyCount = Database.songTable.countById(song.id)
+    Timber.d("MatchGlobal: AFTER TX for '${song.title}' originalId='${song.id}' verifyCount=$verifyCount newId='${bestMatch?.key}'")
 }
 
 suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int, playlist: Playlist?, mergedCounter: java.util.concurrent.atomic.AtomicInteger? = null) {
