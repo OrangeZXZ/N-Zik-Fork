@@ -112,6 +112,7 @@ import app.n_zik.android.utils.getAlbumVersionFromVideoGlobal
 import app.n_zik.android.uiRoundnessShape
 import app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import app.n_zik.android.download.utils.MyDownloadHelper
+import kotlin.to
 import app.it.fast4x.rimusic.utils.asSong as toSong
 @UnstableApi
 @ExperimentalMaterial3Api
@@ -292,11 +293,10 @@ fun HomeSongsScreen(navController: NavController ) {
                 val mergedCounter = java.util.concurrent.atomic.AtomicInteger(0)
 
                 // Calculate all positions BEFORE starting matches (DB changes during parallel matches would shift positions)
-                val positionsBeforeMatch = withContext(Dispatchers.IO) {
-                    val sortedSongs = Database.songTable.sortAllByPosition().first()
-                    unmatched.associate { song ->
-                        song.id to (sortedSongs.indexOfFirst { it.id == song.id }.takeIf { it >= 0 } ?: 0)
-                    }
+                val positionsBeforeMatch = mutableMapOf<String, Int>()
+                for (song in unmatched) {
+                    val idx = itemsOnDisplayState.indexOfFirst { it.id == song.id }
+                    positionsBeforeMatch[song.id] = if (idx >= 0) idx else 0
                 }
 
                 val jobs = mutableListOf<kotlinx.coroutines.Job>()
