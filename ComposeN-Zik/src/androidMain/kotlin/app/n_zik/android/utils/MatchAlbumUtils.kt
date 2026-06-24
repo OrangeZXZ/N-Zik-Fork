@@ -101,28 +101,28 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
         Timber.w("MatchGlobal: NOT FOUND '${song.title}' (${searchResults?.size ?: 0} results)")
     }
 
+    // Calculate position from DB BEFORE transaction
+    val dbPosition = runBlocking(Dispatchers.IO) {
+        val sorted = Database.songTable.sortAllByPosition().first()
+        sorted.indexOfFirst { it.id == song.id }.takeIf { it >= 0 } ?: song.position
+    }
+
     Database.asyncTransaction {
         if (bestMatch != null) {
             val newSong = bestMatch.asSong
-
-            // Calculate position from DB (runBlocking inside transaction)
-            val pos = runBlocking(Dispatchers.IO) {
-                val sorted = songTable.sortAllByPosition().first()
-                sorted.indexOfFirst { it.id == song.id }.takeIf { it >= 0 } ?: song.position
-            }
 
             // Save playlist mappings before delete
             val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
             // Delete old song
             songTable.delete(song)
-            // Insert with new YouTube ID and calculated position
+            // Insert with new YouTube ID and pre-calculated position
             songTable.upsert(newSong.copy(
                 title = PropUtils.retainIfModified(song.title, newSong.title).orEmpty(),
                 artistsText = PropUtils.retainIfModified(song.artistsText, newSong.artistsText),
                 thumbnailUrl = PropUtils.retainIfModified(song.thumbnailUrl, newSong.thumbnailUrl),
                 likedAt = song.likedAt,
                 totalPlayTimeMs = song.totalPlayTimeMs,
-                position = pos
+                position = dbPosition
             ))
             // Re-insert playlist mappings
             playlistMappings.forEach { mapping ->
@@ -143,7 +143,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
                 artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(id = browseId, name = author.name, thumbnailUrl = null))
                 songArtistMapTable.insertIgnore(SongArtistMap(newSong.id, browseId))
             }
-            Timber.d("MatchGlobal: DONE '${song.title}' -> '${newSong.id}' (pos=$pos)")
+            Timber.d("MatchGlobal: DONE '${song.title}' -> '${newSong.id}' (pos=$dbPosition)")
         } else {
             if (song.id == (song.cleanTitle() + song.artistsText).filter { it.isLetterOrDigit() }) {
                 val notFound = song.copy(
