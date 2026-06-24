@@ -295,20 +295,12 @@ fun HomeSongsScreen(navController: NavController ) {
                 songsMatched = 0
                 val mergedCounter = java.util.concurrent.atomic.AtomicInteger(0)
 
-                // Calculate all positions BEFORE starting matches (DB changes during parallel matches would shift positions)
-                val positionsBeforeMatch = mutableMapOf<String, Int>()
-                for (song in unmatched) {
-                    val idx = itemsOnDisplayState.indexOfFirst { it.id == song.id }
-                    positionsBeforeMatch[song.id] = if (idx >= 0) idx else 0
-                }
-
                 val jobs = mutableListOf<kotlinx.coroutines.Job>()
                 unmatched.forEachIndexed { index, song ->
-                    val posInList = positionsBeforeMatch[song.id] ?: index
                     jobs.add(launch(Dispatchers.IO) {
                         try {
                             if (cancelMatch) return@launch
-                            getAlbumVersionFromVideoGlobal(song, posInList, mergedCounter)
+                            getAlbumVersionFromVideoGlobal(song, mergedCounter)
                         } catch (e: kotlinx.coroutines.CancellationException) {
                             throw e
                         } catch (e: Exception) {

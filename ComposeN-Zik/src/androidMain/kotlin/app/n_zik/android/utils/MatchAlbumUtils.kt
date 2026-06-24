@@ -27,7 +27,7 @@ import kotlin.random.Random
 import timber.log.Timber
 
 @RequiresApi(Build.VERSION_CODES.O)
-suspend fun getAlbumVersionFromVideoGlobal(song: Song, currentPosition: Int = song.position, mergedCounter: java.util.concurrent.atomic.AtomicInteger? = null) {
+suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.concurrent.atomic.AtomicInteger? = null) {
     val random4Digit = Random.nextInt(1000, 10000)
 
     fun filteredText(text: String): String = text
@@ -131,7 +131,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, currentPosition: Int = so
                 thumbnailUrl = PropUtils.retainIfModified(song.thumbnailUrl, newSong.thumbnailUrl),
                 likedAt = song.likedAt,
                 totalPlayTimeMs = song.totalPlayTimeMs,
-                position = currentPosition
+                position = song.position
             ))
             playlistMappings.forEach { mapping ->
                 songPlaylistMapTable.mapAtPosition(newSong.id, mapping.playlistId, mapping.position)
@@ -154,7 +154,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, currentPosition: Int = so
             if (song.id == (song.cleanTitle() + song.artistsText).filter { it.isLetterOrDigit() }) {
                 val notFound = song.copy(
                     id = shuffle(song.artistsText + random4Digit + song.cleanTitle() + "56Music").filter { it.isLetterOrDigit() },
-                    position = currentPosition
+                    position = song.position
                 )
                 val oldId = song.id
                 songTable.insertIgnore(notFound)
