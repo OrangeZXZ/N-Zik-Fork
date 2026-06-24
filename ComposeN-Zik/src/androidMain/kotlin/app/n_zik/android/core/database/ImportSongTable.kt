@@ -38,6 +38,9 @@ interface ImportSongTable {
     @Query("DELETE FROM ImportSong WHERE originalId = :originalId")
     fun deleteByOriginalId(originalId: String)
 
+    @Query("SELECT * FROM ImportSong")
+    fun getAllEntries(): List<ImportSong>
+
     @Query("DELETE FROM ImportSong")
     fun clear()
 }
