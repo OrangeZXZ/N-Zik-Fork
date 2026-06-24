@@ -88,7 +88,7 @@ fun MatchResultsDialog(
                 if (merged > 0) {
                     Spacer(modifier = Modifier.height(4.dp))
                     BasicText(
-                        text = "$merged merged with existing",
+                        text = stringResource(R.string.match_results_merged, merged),
                         style = typography().xs.copy(color = colorPalette().textSecondary),
                         modifier = Modifier.fillMaxWidth()
                     )
