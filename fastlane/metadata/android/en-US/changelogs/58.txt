@@ -5,6 +5,7 @@ Hotfix:
 - Fix match dialog not showing on cancel
 - Fix SmartTrash not cleaning ImportSong table
 - Fix SmartTrash not deleting playlists
+- Fix match dialog not showing on cancel in LocalPlaylist (auto and manual)
 
 Added:
 - ImportSong table to preserve import positions for match system
@@ -15,13 +16,17 @@ Added:
 - Match: wrap search requests in runCatching with error logging
 - Block playback of unmatched songs with toast warning
 - UnmatchedSongException (fatal, no recovery retries)
+- Match cancel now shows results dialog with matched/failed/merged counts and cleans ImportSong
 
 Changed:
 - Match dialog now correctly counts matched/failed/merged songs
 - Karaoke lyrics mode is now default on fresh install
+- Match LaunchedEffect decoupled from dialog state via matchRunning flag (cancel no longer kills the work)
 
 Fixed:
 - Match position: songs no longer get shuffled after matching from HomeSongs
 - Match album: lyrics fetcher now gets album info from matched songs
 - Match artist: artist logo/name updates correctly after matching
 - Remove debug Timber logs from match and import functions
+- LocalPlaylist match: cancel now properly shows results and cleans ImportSong entries
+- LocalPlaylist match: support for merged counter in match function
