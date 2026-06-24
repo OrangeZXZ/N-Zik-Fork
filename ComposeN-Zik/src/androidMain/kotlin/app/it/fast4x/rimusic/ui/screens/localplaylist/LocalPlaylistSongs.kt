@@ -381,17 +381,21 @@ fun LocalPlaylistSongs(
                     kotlinx.coroutines.delay(500)
 
                     // Count failed: ImportSong entries where originalId is still in DB
+                    // AND is NOT a valid YouTube ID (Riplay imports may have YouTube IDs as originalId)
                     var failedCount = 0
                     val allEntries = Database.importSongTable.getAllEntries()
                     val failedEntries = mutableListOf<app.n_zik.android.core.database.ImportSong>()
                     for (entry in allEntries) {
                         if (entry.playlistId != playlistId) continue
-                        val count = kotlinx.coroutines.runBlocking {
-                            Database.songTable.countById(entry.originalId)
-                        }
+                        val count = Database.songTable.countById(entry.originalId)
+                        val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)
                         if (count > 0) {
-                            failedCount++
-                            failedEntries.add(entry)
+                            if (isYouTubeId) {
+                                Database.importSongTable.deleteByOriginalId(entry.originalId)
+                            } else {
+                                failedCount++
+                                failedEntries.add(entry)
+                            }
                         } else {
                             Database.importSongTable.deleteByOriginalId(entry.originalId)
                         }
@@ -469,17 +473,21 @@ fun LocalPlaylistSongs(
                     kotlinx.coroutines.delay(500)
 
                     // Count failed: ImportSong entries where originalId is still in DB
+                    // AND is NOT a valid YouTube ID (Riplay imports may have YouTube IDs as originalId)
                     var failedCount = 0
                     val allEntries = Database.importSongTable.getAllEntries()
                     val failedEntries = mutableListOf<app.n_zik.android.core.database.ImportSong>()
                     for (entry in allEntries) {
                         if (entry.playlistId != playlistId) continue
-                        val count = kotlinx.coroutines.runBlocking {
-                            Database.songTable.countById(entry.originalId)
-                        }
+                        val count = Database.songTable.countById(entry.originalId)
+                        val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)
                         if (count > 0) {
-                            failedCount++
-                            failedEntries.add(entry)
+                            if (isYouTubeId) {
+                                Database.importSongTable.deleteByOriginalId(entry.originalId)
+                            } else {
+                                failedCount++
+                                failedEntries.add(entry)
+                            }
                         } else {
                             Database.importSongTable.deleteByOriginalId(entry.originalId)
                         }

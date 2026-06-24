@@ -336,16 +336,24 @@ fun HomeSongsScreen(navController: NavController ) {
                     delay(1500)
 
                     // Count failed: ImportSong entries where originalId is still in DB
+                    // AND is NOT a valid YouTube ID (Riplay imports may have YouTube IDs as originalId)
                     var failedCount = 0
                     val allEntries = Database.importSongTable.getAllEntries()
                     val failedEntries = mutableListOf<app.n_zik.android.core.database.ImportSong>()
                     Timber.d("MatchGlobal: CLEANUP START - totalSongsToMatch=$totalSongsToMatch, allEntries=${allEntries.size}")
                     for (entry in allEntries) {
                         val count = Database.songTable.countById(entry.originalId)
-                        Timber.d("MatchGlobal: CLEANUP entry originalId='${entry.originalId}' count=$count")
+                        val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX)
+                        Timber.d("MatchGlobal: CLEANUP entry originalId='${entry.originalId}' count=$count isYouTubeId=$isYouTubeId")
                         if (count > 0) {
-                            failedCount++
-                            failedEntries.add(entry)
+                            if (isYouTubeId) {
+                                // Already a YouTube ID - was matched or imported with real ID
+                                // Not a failure, just clean up the ImportSong entry
+                                Database.importSongTable.deleteByOriginalId(entry.originalId)
+                            } else {
+                                failedCount++
+                                failedEntries.add(entry)
+                            }
                         } else {
                             Database.importSongTable.deleteByOriginalId(entry.originalId)
                         }
