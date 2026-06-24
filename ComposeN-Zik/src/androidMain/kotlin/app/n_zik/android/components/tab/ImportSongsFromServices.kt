@@ -25,7 +25,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import app.n_zik.android.components.ImportFromFile
-import timber.log.Timber
 
 class ImportSongsFromServices private constructor(
     launcher: ManagedActivityResultLauncher<Array<String>, Uri?>
@@ -64,9 +63,7 @@ class ImportSongsFromServices private constructor(
                         var skippedCount = 0
                         var spotifyCount = 0
                         var otherCount = 0
-                        
-                        Timber.tag("SpotifyImport").i("=== STARTING IMPORT ===")
-                        
+
                         readAllWithHeaderAsSequence().forEachIndexed { index, row: Map<String, String> ->
                             totalRows++
                             
@@ -100,13 +97,11 @@ class ImportSongsFromServices private constructor(
                                     val explicitPrefix = if (row["Explicit"] == "true") app.it.fast4x.rimusic.EXPLICIT_PREFIX else ""
                                     val mediaId = row["Track URI"]
                                     if (mediaId == null) {
-                                        Timber.tag("SpotifyImport").w("ROW $index: MISSING Track URI, skipping")
                                         skippedCount++
                                         return@asyncTransaction
                                     }
                                     val title = row["Track Name"]
                                     if (title == null) {
-                                        Timber.tag("SpotifyImport").w("ROW $index: MISSING Track Name for URI=$mediaId, skipping")
                                         skippedCount++
                                         return@asyncTransaction
                                     }
@@ -186,7 +181,6 @@ class ImportSongsFromServices private constructor(
                                 // Insert the song directly here (within the active transaction)
                                 songTable.insertIgnore( song )
                                 importedCount++
-                                Timber.tag("SpotifyImport").d("ROW $index: INSERTED id=${song.id} title='${song.title}' artist='${song.artistsText}' likedAt=${song.likedAt}")
 
                                 // If a target playlist is set, map immediately
                                 if (currentPlaylistId > 0L) {
@@ -199,12 +193,6 @@ class ImportSongsFromServices private constructor(
                             }
                         }
                         
-                        Timber.tag("SpotifyImport").i("=== IMPORT COMPLETE ===")
-                        Timber.tag("SpotifyImport").i("Total rows processed: $totalRows")
-                        Timber.tag("SpotifyImport").i("Spotify format: $spotifyCount")
-                        Timber.tag("SpotifyImport").i("Other format: $otherCount")
-                        Timber.tag("SpotifyImport").i("Playlist ID: $activePlaylistId")
-                        Timber.tag("SpotifyImport").i("Note: songs are inserted asynchronously, check INSERTED logs for actual count")
                     }
                 }
             return activePlaylistId

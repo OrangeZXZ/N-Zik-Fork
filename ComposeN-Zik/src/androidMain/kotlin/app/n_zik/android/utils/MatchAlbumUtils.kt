@@ -24,7 +24,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.absoluteValue
 import kotlin.random.Random
-import timber.log.Timber
 
 /**
  * Global version of match: replaces a local/unmatched song across
@@ -34,9 +33,7 @@ import timber.log.Timber
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
     val random4Digit = Random.nextInt(1000, 10000)
-    
-    Timber.tag("SongMatch").d("GLOBAL MATCH START: id='${song.id}' title='${song.title}' artist='${song.artistsText}'")
-    
+
     fun filteredText(text: String): String = text
         .lowercase()
         .replace("(", " ").replace(")", " ").replace("-", " ")
@@ -55,9 +52,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
     }
 
     // Random delay to avoid bot detection (500ms - 2500ms)
-    val randomDelay = Random.nextLong(1000, 5000)
-    Timber.tag("SongMatch").d("GLOBAL DELAY: waiting ${randomDelay}ms before search")
-    delay(randomDelay)
+    delay(Random.nextLong(1000, 5000))
 
     val searchQuery = Innertube.searchPage<Innertube.SongItem>(
         body = SearchBody(
@@ -69,16 +64,11 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
 
     var searchResults = searchQuery?.getOrNull()?.items
     val sourceSongWords = filteredText(song.cleanTitle()).split(" ").filter { it.isNotEmpty() }
-    
-    Timber.tag("SongMatch").d("GLOBAL SEARCH: query='${filteredText("${song.cleanTitle()} ${song.artistsText}")}' results=${searchResults?.size ?: 0}")
 
     // Fallback: if 0 results, try simpler query (just title)
     if (searchResults.isNullOrEmpty()) {
         val simpleQuery = filteredText(song.cleanTitle())
-        Timber.tag("SongMatch").d("GLOBAL FALLBACK: retrying with simpler query='$simpleQuery'")
-        val fallbackDelay = Random.nextLong(1500, 4000)
-        Timber.tag("SongMatch").d("GLOBAL FALLBACK DELAY: waiting ${fallbackDelay}ms")
-        delay(fallbackDelay)
+        delay(Random.nextLong(1500, 4000))
         val fallbackQuery = Innertube.searchPage<Innertube.SongItem>(
             body = SearchBody(
                 query = simpleQuery,
@@ -87,7 +77,6 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
             fromMusicShelfRendererContent = { content -> Innertube.SongItem.from(content) }
         )
         searchResults = fallbackQuery?.getOrNull()?.items
-        Timber.tag("SongMatch").d("GLOBAL FALLBACK RESULTS: query='$simpleQuery' results=${searchResults?.size ?: 0}")
     }
 
     fun scoreCandidate(candidate: Innertube.SongItem): Int {
@@ -107,20 +96,12 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
         ?.filter { scoreCandidate(it) >= 10 }
         ?.maxByOrNull { scoreCandidate(it) }
 
-    if (bestMatch != null) {
-        Timber.tag("SongMatch").d("GLOBAL FOUND: title='${bestMatch.info?.name}' artist='${bestMatch.authors?.firstOrNull()?.name}' videoId='${bestMatch.key}'")
-    } else {
-        Timber.tag("SongMatch").w("GLOBAL NOT FOUND: id='${song.id}' title='${song.title}' - no match in ${searchResults?.size ?: 0} results")
-    }
-
     // Calculate the song's effective position in custom sort order BEFORE any DB changes.
     // This is needed because when position == -1, the sort uses ROWID, and after
     // delete + re-insert the ROWID changes, causing the song to jump to the end.
     val effectivePosition = Database.songTable.sortAllByPosition().first()
         .indexOfFirst { it.id == song.id }
         .takeIf { it >= 0 } ?: song.position
-    
-    Timber.tag("SongMatch").d("GLOBAL POSITION: song='${song.title}' position=${song.position} effectivePosition=$effectivePosition")
 
     Database.asyncTransaction {
         if (bestMatch != null) {
@@ -129,14 +110,10 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
             // Check if a song with this YouTube ID already exists (duplicate match)
             val existingSong = runBlocking(Dispatchers.IO) { songTable.findById(newSong.id).first() }
             if (existingSong != null && existingSong.id != song.id) {
-                Timber.tag("SongMatch").w("GLOBAL DUPLICATE: videoId='${newSong.id}'")
-                Timber.tag("SongMatch").w("  EXISTING: id='${existingSong.id}' title='${existingSong.title}' artist='${existingSong.artistsText}' likedAt=${existingSong.likedAt}")
-                Timber.tag("SongMatch").w("  SKIPPED:  id='${song.id}' title='${song.title}' artist='${song.artistsText}' likedAt=${song.likedAt}")
                 // DO NOT delete — just skip this match to keep both songs
                 return@asyncTransaction
             }
 
-            Timber.tag("SongMatch").d("GLOBAL ACTION: MATCHED - replacing '${song.id}' with '${newSong.id}'")
             // Save playlist mappings before delete (CASCADE will remove them)
             val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
             // Delete old song first — CASCADE removes SongPlaylistMap, SongAlbumMap, etc.
@@ -174,21 +151,14 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song) {
                     position = effectivePosition
                 )
                 val oldId = song.id
-                Timber.tag("SongMatch").d("GLOBAL ACTION: NOT FOUND - shuffling ID '${oldId}' -> '${notFound.id}'")
-                Timber.tag("SongMatch").d("GLOBAL DB: inserting notFound id='${notFound.id}'")
                 songTable.insertIgnore(notFound)
-                Timber.tag("SongMatch").d("GLOBAL DB: updating playlist mappings oldId='$oldId' -> newId='${notFound.id}'")
                 songPlaylistMapTable.updateSongId(oldId, notFound.id)
                 songAlbumMapTable.updateSongId(oldId, notFound.id)
                 songArtistMapTable.updateSongId(oldId, notFound.id)
                 eventTable.updateSongId(oldId, notFound.id)
-                Timber.tag("SongMatch").d("GLOBAL DB: deleting original song id='$oldId' title='${song.title}'")
                 songTable.delete(song)
-            } else {
-                // Song has a Spotify URI (or other non-pseudo ID) and no match found - keeping as-is
-                Timber.tag("SongMatch").d("GLOBAL ACTION: KEPT AS-IS - id='${song.id}' (no match, not pseudo-ID)")
-                Timber.tag("SongMatch").d("GLOBAL DB: song NOT deleted, should remain in DB with id='${song.id}'")
             }
+            // else: Song has a Spotify URI (or other non-pseudo ID) and no match found - keeping as-is
         }
     }
 }
@@ -197,9 +167,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
     val isExtPlaylist = (song.thumbnailUrl.isNullOrEmpty()) && (song.durationText != "0:00")
     var songNotFound: Song
     val random4Digit = Random.nextInt(1000, 10000)
-    
-    Timber.tag("SongMatch").d("MATCH START: id='${song.id}' title='${song.title}' artist='${song.artistsText}'")
-    
+
     fun filteredText(text: String): String {
         val filteredText = text
             .lowercase()
@@ -216,9 +184,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
     }
 
     // Random delay to avoid bot detection (500ms - 2500ms)
-    val randomDelay = Random.nextLong(1000, 5000)
-    Timber.tag("SongMatch").d("DELAY: waiting ${randomDelay}ms before search")
-    delay(randomDelay)
+    delay(Random.nextLong(1000, 5000))
 
     val searchQuery = Innertube.searchPage<Innertube.SongItem>(
         body = SearchBody(
@@ -233,10 +199,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
     // Fallback: if 0 results, try simpler query (just title)
     if (searchResults.isNullOrEmpty()) {
         val simpleQuery = filteredText(song.cleanTitle())
-        Timber.tag("SongMatch").d("FALLBACK: retrying with simpler query='$simpleQuery'")
-        val fallbackDelay = Random.nextLong(1500, 4000)
-        Timber.tag("SongMatch").d("FALLBACK DELAY: waiting ${fallbackDelay}ms")
-        delay(fallbackDelay)
+        delay(Random.nextLong(1500, 4000))
         val fallbackQuery = Innertube.searchPage<Innertube.SongItem>(
             body = SearchBody(
                 query = simpleQuery,
@@ -245,7 +208,6 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
             fromMusicShelfRendererContent = { content -> Innertube.SongItem.from(content) }
         )
         searchResults = fallbackQuery?.getOrNull()?.items
-        Timber.tag("SongMatch").d("FALLBACK RESULTS: query='$simpleQuery' results=${searchResults?.size ?: 0}")
     }
 
     val sourceSongWords = filteredText(song.cleanTitle())
@@ -305,37 +267,24 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
 
     val matchedSongIndex = findSongIndex()
     val matchedSong = if (matchedSongIndex != -1) searchResults?.getOrNull(matchedSongIndex) as? Innertube.SongItem else null
-    
-    if (matchedSong != null) {
-        Timber.tag("SongMatch").d("FOUND: index=$matchedSongIndex title='${matchedSong.info?.name}' artist='${matchedSong.authors?.firstOrNull()?.name}' videoId='${matchedSong.key}'")
-    } else {
-        Timber.tag("SongMatch").w("NOT FOUND: id='${song.id}' title='${song.title}' - no match in ${searchResults?.size ?: 0} results")
-    }
 
     // Calculate the song's effective position in custom sort order BEFORE any DB changes.
     val effectivePosition = Database.songTable.sortAllByPosition().first()
         .indexOfFirst { it.id == song.id }
         .takeIf { it >= 0 } ?: song.position
 
-    Timber.tag("SongMatch").d("POSITION: song='${song.title}' position=${song.position} effectivePosition=$effectivePosition")
-
     Database.asyncTransaction {
         val oldPosition = songPlaylistMapTable.findPositionOf(song.id, playlistId)
-        
+
         if (matchedSongIndex != -1 && matchedSong != null) {
             val newSong = matchedSong.asSong
 
             // Check if a song with this YouTube ID already exists (duplicate match)
             val existingSong = runBlocking(Dispatchers.IO) { songTable.findById(newSong.id).first() }
             if (existingSong != null && existingSong.id != song.id) {
-                Timber.tag("SongMatch").w("DUPLICATE: videoId='${newSong.id}'")
-                Timber.tag("SongMatch").w("  EXISTING: id='${existingSong.id}' title='${existingSong.title}' artist='${existingSong.artistsText}' likedAt=${existingSong.likedAt}")
-                Timber.tag("SongMatch").w("  SKIPPED:  id='${song.id}' title='${song.title}' artist='${song.artistsText}' likedAt=${song.likedAt}")
                 // DO NOT delete — just skip this match to keep both songs
                 return@asyncTransaction
             }
-
-            Timber.tag("SongMatch").d("ACTION: MATCHED - replacing '${song.id}' with '${newSong.id}'")
 
             // Save playlist mappings before delete (CASCADE will remove them)
             val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
@@ -369,18 +318,12 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
             }
         } else if (song.id == (song.cleanTitle() + song.artistsText).filter { it.isLetterOrDigit() }) {
             songNotFound = song.copy(id = shuffle(song.artistsText + random4Digit + song.cleanTitle() + "56Music").filter { it.isLetterOrDigit() })
-            Timber.tag("SongMatch").d("ACTION: NOT FOUND - shuffling ID '${song.id}' -> '${songNotFound.id}'")
-            Timber.tag("SongMatch").d("DB: inserting notFound id='${songNotFound.id}'")
             songTable.insertIgnore(songNotFound)
-            Timber.tag("SongMatch").d("DB: mapping to playlist songNotFound.id='${songNotFound.id}' playlistId=$playlistId")
             songPlaylistMapTable.map(songNotFound.id, playlistId)
             if (oldPosition != -1) {
                 songPlaylistMapTable.updatePosition(playlistId, songNotFound.id, oldPosition)
             }
-        } else {
-            // Song has a Spotify URI (or other non-pseudo ID) and no match found - keeping as-is
-            Timber.tag("SongMatch").d("ACTION: KEPT AS-IS - id='${song.id}' (no match, not pseudo-ID)")
-            Timber.tag("SongMatch").d("DB: song NOT deleted, should remain in DB with id='${song.id}'")
         }
+        // else: Song has a Spotify URI (or other non-pseudo ID) and no match found - keeping as-is
     }
 }
