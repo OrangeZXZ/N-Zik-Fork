@@ -12,14 +12,12 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.clickable
-import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
-import app.n_zik.android.components.menu.artist.OnlineArtistItemMenu
-import app.n_zik.android.components.menu.video.VideoItemMenu
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -30,6 +28,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -40,6 +39,7 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,19 +47,26 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
+import app.n_zik.android.components.menu.artist.OnlineArtistItemMenu
+import app.n_zik.android.components.menu.video.VideoItemMenu
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -139,6 +146,7 @@ import app.it.fast4x.rimusic.utils.showChartsKey
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
 import app.it.fast4x.rimusic.utils.showMonthlyPlaylistInQuickPicksKey
 import app.it.fast4x.rimusic.utils.showMoodsAndGenresKey
+import app.it.fast4x.rimusic.models.toUiMood
 import app.it.fast4x.rimusic.utils.showNewAlbumsArtistsKey
 import app.it.fast4x.rimusic.utils.showNewAlbumsKey
 import app.it.fast4x.rimusic.utils.showPlaylistMightLikeKey
@@ -152,11 +160,14 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.ui.graphics.ColorFilter
 import app.it.fast4x.rimusic.ui.components.themed.LazyMenu
+import java.time.format.TextStyle as TimeTextStyle
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -174,6 +185,7 @@ fun HomeQuickPicks(
     onPlaylistClick: (String) -> Unit,
     onSearchClick: () -> Unit,
     onMoodClick: (mood: Innertube.Mood.Item) -> Unit,
+    onChipClick: (chip: Innertube.Chip) -> Unit,
     onSettingsClick: () -> Unit
 ) {
     val binder = LocalPlayerServiceBinder.current
@@ -246,7 +258,7 @@ fun HomeQuickPicks(
     suspend fun loadData() {
 
         //Used to refresh chart when country change
-        if (showCharts && !loadedData)
+        if (showCharts)
             chartsPageResult =
                 Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
 
@@ -326,7 +338,7 @@ fun HomeQuickPicks(
                 }
             }
 
-            if ((showNewAlbums || showNewAlbumsArtists || showMoodsAndGenres) && !loadedData) {
+            if (showNewAlbums || showNewAlbumsArtists || showMoodsAndGenres) {
                 discoverPageResult = Innertube.discoverPage()
             }
 
@@ -386,6 +398,7 @@ fun HomeQuickPicks(
         trending = null
         homePageResult = null
         discoverPageResult = null
+        chartsPageResult = null
         refreshScope.launch(Dispatchers.IO) {
             refreshing = true
             loadData()
@@ -410,6 +423,7 @@ fun HomeQuickPicks(
     val chartsPageArtistLazyGridState = rememberLazyGridState()
 
     val endPaddingValues = windowInsets.only(WindowInsetsSides.End).asPaddingValues()
+    val gridsContentPadding = PaddingValues(start = 12.dp, end = endPaddingValues.calculateEndPadding(LocalLayoutDirection.current))
 
     val sectionTextModifier = Modifier
         .padding(horizontal = 16.dp)
@@ -533,6 +547,8 @@ fun HomeQuickPicks(
                 /*   Load data from url or from saved preference   */
 
 
+                WelcomeMessage()
+
                 if (UiType.ViMusic.isCurrent())
                     HeaderWithIcon(
                         title = if (!isYouTubeLoggedIn()) stringResource(R.string.quick_picks)
@@ -543,16 +559,6 @@ fun HomeQuickPicks(
                         modifier = Modifier,
                         onClick = onSearchClick
                     )
-
-                if (showLoader) {
-                    androidx.compose.foundation.layout.Box(
-                        modifier = Modifier.fillMaxWidth().height(this@BoxWithConstraints.maxHeight),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        app.it.fast4x.rimusic.ui.components.themed.Loader()
-                    }
-                } else {
-                    WelcomeMessage()
 
                 if (showTips) {
                     Title3Actions(
@@ -616,11 +622,30 @@ fun HomeQuickPicks(
                             .padding(bottom = 8.dp)
                     )
 
+                    if (relatedPageResult == null) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().height(200.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            app.it.fast4x.rimusic.ui.components.themed.Loader()
+                        }
+                    }
+
                     if (relatedPageResult != null) {
                         // Prepare the final list : 6 locals (or less depending on the local recommandations number) + 14 YT recommendations (or less), then shuffle to show max 21 songs
                         var recommendations by persistList<Song>("home/quickpicks/recommendations_list")
-                        
-                        LaunchedEffect(trendingList, relatedInit, localCount, playEventType) {
+
+                        val ytmQuickPicks = remember(homePageInit) {
+                            homePageInit?.sections
+                                ?.filter { it.title.contains("Quick picks", ignoreCase = true) }
+                                ?.flatMap { section ->
+                                    section.items.filterIsInstance<Innertube.SongItem>().map { it.asSong }
+                                }
+                                ?.distinctBy { it.id }
+                                .orEmpty()
+                        }
+
+                        LaunchedEffect(trendingList, relatedInit, localCount, playEventType, ytmQuickPicks) {
                              val mainIds = trendingList.map { it.id }.toSet()
                              // Create a stable seed based on the content IDs. Any change in the source data will change the shuffle.
                              val seed = (trendingList.joinToString { it.id } + (relatedInit?.songs?.joinToString { it.key } ?: "")).hashCode()
@@ -646,7 +671,7 @@ fun HomeQuickPicks(
                                             ?.take(21 - total.size)
                                             .orEmpty()
                                     } else emptyList()
-                                    (listOfNotNull(first) + (total + extra).shuffled(random)).distinctBy { it.id }
+                                    (listOfNotNull(first) + (total + extra).shuffled(random) + ytmQuickPicks).distinctBy { it.id }.take(21)
                                 } else {
                                     // Random Mode will randomize the list : all mixed
                                     val locals = trendingList.take(localCount)
@@ -667,7 +692,7 @@ fun HomeQuickPicks(
                                             ?.take(21 - total.size)
                                             .orEmpty()
                                     } else emptyList()
-                                    (total + extra).shuffled(random).distinctBy { it.id }
+                                    (total + extra + ytmQuickPicks).shuffled(random).distinctBy { it.id }.take(21)
                                 }
                                 
                                 // Only update if the CONTENT (Set of IDs) has changed, otherwise keep the existing shuffle order.
@@ -766,6 +791,112 @@ fun HomeQuickPicks(
                             }
 
                         }
+
+                    val ytmNewReleases = remember(homePageInit) {
+                        homePageInit?.sections
+                            ?.filter { it.title.contains("New release", ignoreCase = true) || it.title.contains("Fresh new music", ignoreCase = true) }
+                            .orEmpty()
+                    }
+
+                    ytmNewReleases.forEachIndexed { index, section ->
+                        if (section.items.isNotEmpty() && section.items.firstOrNull()?.key != null) {
+                            val isSongOnly = section.items.all { item -> item is Innertube.SongItem }
+
+                            TitleMiniSection(section.label ?: "", modifier = Modifier.padding(horizontal = 12.dp).padding(top = if (index == 0) 14.dp else 4.dp, bottom = 4.dp))
+
+                            BasicText(
+                                text = section.title,
+                                style = typography().l.semiBold.color(colorPalette().text),
+                                modifier = Modifier.padding(horizontal = 12.dp).padding(vertical = 4.dp)
+                            )
+
+                            if (isSongOnly) {
+                                val songItems = section.items.filterIsInstance<Innertube.SongItem>()
+                                LazyHorizontalGrid(
+                                    rows = GridCells.Fixed(3),
+                                    flingBehavior = ScrollableDefaults.flingBehavior(),
+                                    contentPadding = endPaddingValues,
+                                    modifier = Modifier.fillMaxWidth()
+                                        .height(Dimensions.itemsVerticalPadding * 3 * 9)
+                                ) {
+                                    items(songItems) { item ->
+                                        app.n_zik.android.components.SongItem(
+                                            song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
+                                            navController = navController,
+                                            onClick = {
+                                                val mediaItem = item.asMediaItem
+                                                binder?.stopRadio()
+                                                binder?.player?.forcePlay(mediaItem)
+                                                binder?.player?.addMediaItems(songItems.map { s -> s.asMediaItem })
+                                            },
+                                            modifier = Modifier.width(itemInHorizontalGridWidth)
+                                        )
+                                    }
+                                }
+                            } else {
+                                LazyRow(contentPadding = endPaddingValues) {
+                                    items(section.items) { item ->
+                                        when (item) {
+                                            is Innertube.SongItem -> {
+                                                app.n_zik.android.components.SongItem(
+                                                    song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
+                                                    navController = navController,
+                                                    onClick = {
+                                                        val mediaItem = item.asMediaItem
+                                                        binder?.stopRadio()
+                                                        binder?.player?.forcePlay(mediaItem)
+                                                    }
+                                                )
+                                            }
+                                            is Innertube.AlbumItem -> {
+                                                AlbumItem(
+                                                    album = item,
+                                                    thumbnailSizePx = albumThumbnailSizePx,
+                                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                                    alternative = true,
+                                                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                        onClick = { onAlbumClick(item.key) },
+                                                        onLongClick = { menuState.display { OnlineAlbumItemMenu(navController = navController, album = item).MenuComponent() } }
+                                                    ),
+                                                    disableScrollingText = disableScrollingText
+                                                )
+                                            }
+                                            is Innertube.ArtistItem -> {
+                                                ArtistItem(
+                                                    artist = item,
+                                                    thumbnailSizePx = songThumbnailSizePx,
+                                                    thumbnailSizeDp = songThumbnailSizeDp,
+                                                    alternative = false,
+                                                    modifier = Modifier.width(200.dp)
+                                                        .clip(uiRoundnessShape()).combinedClickable(
+                                                            onClick = { onArtistClick(item.key) },
+                                                            onLongClick = { menuState.display { OnlineArtistItemMenu(navController = navController, artist = item).MenuComponent() } }
+                                                        ),
+                                                    disableScrollingText = disableScrollingText
+                                                )
+                                            }
+                                            is Innertube.PlaylistItem -> {
+                                                PlaylistItem(
+                                                    playlist = item,
+                                                    thumbnailSizePx = playlistThumbnailSizePx,
+                                                    thumbnailSizeDp = playlistThumbnailSizeDp,
+                                                    alternative = true,
+                                                    showSongsCount = false,
+                                                    isYoutubePlaylist = true,
+                                                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                        onClick = { navController.navigate("${NavRoutes.playlist.name}/${item.key}") },
+                                                        onLongClick = { menuState.display { app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu(navController = navController, playlist = item).MenuComponent() } }
+                                                    ),
+                                                    disableScrollingText = disableScrollingText
+                                                )
+                                            }
+                                            else -> {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     if (showNewAlbums) {
                         Title(
@@ -886,6 +1017,65 @@ fun HomeQuickPicks(
 
 
 
+                homePageInit?.chips?.let { chips ->
+                    if (chips.isNotEmpty()) {
+                        Title(
+                            title = stringResource(R.string.moods),
+                        )
+
+                        LazyHorizontalGrid(
+                            rows = GridCells.Fixed(4),
+                            flingBehavior = ScrollableDefaults.flingBehavior(),
+                            contentPadding = gridsContentPadding,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(Dimensions.itemsVerticalPadding * 4 * 8)
+                        ) {
+                            items(chips) { chip ->
+                                val chipColor by remember { derivedStateOf<Color> { Color(255, Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)) } }
+                                Column(
+                                    verticalArrangement = Arrangement.SpaceAround,
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(5.dp)
+                                        .clip(app.n_zik.android.thumbnailShape())
+                                        .clickable { onChipClick(chip) }
+                                ) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.Start,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier
+                                            .background(color = chipColor)
+                                            .padding(start = 10.dp)
+                                            .fillMaxHeight(0.9f)
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .requiredWidth(150.dp)
+                                                .background(color = colorPalette().background4)
+                                                .fillMaxSize()
+                                        ) {
+                                            BasicText(
+                                                text = chip.title,
+                                                style = TextStyle(
+                                                    color = colorPalette().text,
+                                                    fontStyle = typography().xs.semiBold.fontStyle,
+                                                    fontWeight = typography().xs.semiBold.fontWeight
+                                                ),
+                                                modifier = Modifier.padding(horizontal = 10.dp).align(Alignment.CenterStart),
+                                                maxLines = 2,
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 if (showMoodsAndGenres)
                     discoverPageInit?.let { page ->
 
@@ -902,7 +1092,7 @@ fun HomeQuickPicks(
                                 rows = GridCells.Fixed(4),
                                 flingBehavior = ScrollableDefaults.flingBehavior(),
                                 //flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
-                                contentPadding = endPaddingValues,
+                                contentPadding = gridsContentPadding,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     //.height((thumbnailSizeDp + Dimensions.itemsVerticalPadding * 8) * 8)
@@ -924,6 +1114,40 @@ fun HomeQuickPicks(
 
                         }
                     }
+
+                if (homePageResult == null || chartsPageResult == null || discoverPageResult == null) {
+                    ShimmerHost {
+                        repeat(3) {
+                            SongItemPlaceholder()
+                        }
+                        TextPlaceholder(modifier = sectionTextModifier)
+                        LazyRow(contentPadding = endPaddingValues) {
+                            repeat(4) {
+                                item {
+                                    PlaylistItemPlaceholder(
+                                        thumbnailSizeDp = albumThumbnailSizeDp,
+                                        alternative = true
+                                    )
+                                }
+                            }
+                        }
+                        TextPlaceholder(modifier = sectionTextModifier)
+                        LazyHorizontalGrid(
+                            rows = GridCells.Fixed(4),
+                            modifier = Modifier.fillMaxWidth()
+                                .height(Dimensions.itemsVerticalPadding * 4 * 4)
+                        ) {
+                            items(16) {
+                                Box(
+                                    modifier = Modifier.padding(4.dp)
+                                        .height(48.dp)
+                                        .clip(uiRoundnessShape())
+                                        .background(colorPalette().background1)
+                                )
+                            }
+                        }
+                    }
+                }
 
                 val monthlyPlaylists by remember {
                     Database.playlistTable
@@ -972,6 +1196,11 @@ fun HomeQuickPicks(
                             }
                         }
                     }
+
+                val ytmChartsSection = remember(homePageInit) {
+                    homePageInit?.sections
+                        ?.find { it.title.contains("Charts", ignoreCase = true) }
+                }
 
                 if (showCharts) {
 
@@ -1142,27 +1371,154 @@ fun HomeQuickPicks(
                                 }
                             }
                         }
+                        }
+
+                        ytmChartsSection?.let { section ->
+                            if (section.items.isNotEmpty() && section.items.firstOrNull()?.key != null) {
+                                TitleMiniSection(section.label ?: "", modifier = Modifier.padding(horizontal = 12.dp).padding(top = 14.dp, bottom = 4.dp))
+                                BasicText(
+                                    text = section.title,
+                                    style = typography().l.semiBold.color(colorPalette().text),
+                                    modifier = Modifier.padding(horizontal = 12.dp).padding(vertical = 4.dp)
+                                )
+                                val isSongOnly = section.items.all { item -> item is Innertube.SongItem }
+                                if (isSongOnly) {
+                                    val songItems = section.items.filterIsInstance<Innertube.SongItem>()
+                                    LazyHorizontalGrid(
+                                        rows = GridCells.Fixed(3),
+                                        flingBehavior = ScrollableDefaults.flingBehavior(),
+                                        contentPadding = endPaddingValues,
+                                        modifier = Modifier.fillMaxWidth()
+                                            .height(Dimensions.itemsVerticalPadding * 3 * 9)
+                                    ) {
+                                        items(songItems) { item ->
+                                            app.n_zik.android.components.SongItem(
+                                                song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
+                                                navController = navController,
+                                                onClick = {
+                                                    val mediaItem = item.asMediaItem
+                                                    binder?.stopRadio()
+                                                    binder?.player?.forcePlay(mediaItem)
+                                                    binder?.player?.addMediaItems(songItems.map { s -> s.asMediaItem })
+                                                },
+                                                modifier = Modifier.width(itemInHorizontalGridWidth)
+                                            )
+                                        }
+                                    }
+                                } else {
+                                    LazyRow(contentPadding = endPaddingValues) {
+                                        items(section.items) { item ->
+                                            when (item) {
+                                                is Innertube.SongItem -> {
+                                                    app.n_zik.android.components.SongItem(
+                                                        song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
+                                                        navController = navController,
+                                                        onClick = {
+                                                            val mediaItem = item.asMediaItem
+                                                            binder?.stopRadio()
+                                                            binder?.player?.forcePlay(mediaItem)
+                                                        }
+                                                    )
+                                                }
+                                                is Innertube.AlbumItem -> {
+                                                    AlbumItem(
+                                                        album = item,
+                                                        thumbnailSizePx = albumThumbnailSizePx,
+                                                        thumbnailSizeDp = albumThumbnailSizeDp,
+                                                        alternative = true,
+                                                        modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                            onClick = { onAlbumClick(item.key) },
+                                                            onLongClick = { menuState.display { OnlineAlbumItemMenu(navController = navController, album = item).MenuComponent() } }
+                                                        ),
+                                                        disableScrollingText = disableScrollingText
+                                                    )
+                                                }
+                                                is Innertube.ArtistItem -> {
+                                                    ArtistItem(
+                                                        artist = item,
+                                                        thumbnailSizePx = songThumbnailSizePx,
+                                                        thumbnailSizeDp = songThumbnailSizeDp,
+                                                        alternative = false,
+                                                        modifier = Modifier.width(200.dp)
+                                                            .clip(uiRoundnessShape()).combinedClickable(
+                                                                onClick = { onArtistClick(item.key) },
+                                                                onLongClick = { menuState.display { OnlineArtistItemMenu(navController = navController, artist = item).MenuComponent() } }
+                                                            ),
+                                                        disableScrollingText = disableScrollingText
+                                                    )
+                                                }
+                                                is Innertube.PlaylistItem -> {
+                                                    PlaylistItem(
+                                                        playlist = item,
+                                                        thumbnailSizePx = playlistThumbnailSizePx,
+                                                        thumbnailSizeDp = playlistThumbnailSizeDp,
+                                                        alternative = true,
+                                                        showSongsCount = false,
+                                                        isYoutubePlaylist = true,
+                                                        modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                            onClick = { navController.navigate("${NavRoutes.playlist.name}/${item.key}") },
+                                                            onLongClick = { menuState.display { app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu(navController = navController, playlist = item).MenuComponent() } }
+                                                        ),
+                                                        disableScrollingText = disableScrollingText
+                                                    )
+                                                }
+                                                else -> {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                }
 
-
-                homePageInit?.let { page ->
+                    homePageInit?.let { page ->
 
                     page.sections.forEach {
                         if (it.items.isEmpty() || it.items.firstOrNull()?.key == null) return@forEach
+                        if (it.title.contains("Quick picks", ignoreCase = true)) return@forEach
+                        if (it.title.contains("New release", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Fresh new music", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Charts", ignoreCase = true)) return@forEach
                         println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
                         println("homePage() in HomeYouTubeMusic sections items: ${it.items}")
 
-                        TitleMiniSection(it.label ?: "", modifier = Modifier.padding(horizontal = 16.dp).padding(top = 14.dp, bottom = 4.dp))
+                        val isSongOnly = it.items.all { item -> item is Innertube.SongItem }
+
+                        TitleMiniSection(it.label ?: "", modifier = Modifier.padding(horizontal = 12.dp).padding(top = 14.dp, bottom = 4.dp))
 
                         BasicText(
                             text = it.title,
                             style = typography().l.semiBold.color(colorPalette().text),
-                            modifier = Modifier.padding(horizontal = 16.dp).padding(vertical = 4.dp)
+                            modifier = Modifier.padding(horizontal = 12.dp).padding(vertical = 4.dp)
                         )
-                        LazyRow(contentPadding = endPaddingValues) {
-                            items(it.items) { item ->
-                                when (item) {
+
+                        if (isSongOnly) {
+                            val songItems = it.items.filterIsInstance<Innertube.SongItem>()
+                            LazyHorizontalGrid(
+                                rows = GridCells.Fixed(3),
+                                flingBehavior = ScrollableDefaults.flingBehavior(),
+                                contentPadding = endPaddingValues,
+                                modifier = Modifier.fillMaxWidth()
+                                    .height(Dimensions.itemsVerticalPadding * 3 * 9)
+                            ) {
+                                items(songItems) { item ->
+                                    app.n_zik.android.components.SongItem(
+                                        song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
+                                        navController = navController,
+                                        onClick = {
+                                            val mediaItem = item.asMediaItem
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlay(mediaItem)
+                                            binder?.player?.addMediaItems(songItems.map { s -> s.asMediaItem })
+                                        },
+                                        modifier = Modifier.width(itemInHorizontalGridWidth)
+                                    )
+                                }
+                            }
+                        } else {
+                            LazyRow(contentPadding = endPaddingValues) {
+                                items(it.items) { item ->
+                                    when (item) {
                                     is Innertube.SongItem -> {
                                         println("Innertube homePage SongItem: ${item.info?.name}")
                                         app.n_zik.android.components.SongItem(
@@ -1249,6 +1605,7 @@ fun HomeQuickPicks(
 
                             }
                         }
+                        }
                     }
                 } ?: if (homePageResult == null) {
                     ShimmerHost {
@@ -1279,74 +1636,34 @@ fun HomeQuickPicks(
                         }
                     }
                 } else {
-                    // Silent fallback when home page fetch failed
                 }
 
 
 
-
-
-
-                Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
-
-
-                //} ?:
-                }
-
-                relatedPageResult?.exceptionOrNull()?.let {
+                if (relatedPageResult?.exceptionOrNull() != null) {
+                    Spacer(modifier = Modifier.height(50.dp))
                     BasicText(
                         text = stringResource(R.string.page_not_been_loaded),
                         style = typography().s.secondary.center,
                         modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
+                            .fillMaxWidth()
                             .padding(all = 16.dp)
                     )
+                } else {
+                    if (!isYouTubeLoggedIn()) {
+                        Spacer(modifier = Modifier.height(50.dp))
+                        BasicText(
+                            text = stringResource(R.string.log_in_to_ytm),
+                            style = typography().s.secondary.center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .clickable(onClick = onSettingsClick)
+                        )
+                    }
                 }
 
-                /*
-                if (related == null)
-                    ShimmerHost {
-                        repeat(3) {
-                            SongItemPlaceholder(
-                                thumbnailSizeDp = songThumbnailSizeDp,
-                            )
-                        }
-
-                        TextPlaceholder(modifier = sectionTextModifier)
-
-                        Row {
-                            repeat(2) {
-                                AlbumItemPlaceholder(
-                                    thumbnailSizeDp = albumThumbnailSizeDp,
-                                    alternative = true
-                                )
-                            }
-                        }
-
-                        TextPlaceholder(modifier = sectionTextModifier)
-
-                        Row {
-                            repeat(2) {
-                                ArtistItemPlaceholder(
-                                    thumbnailSizeDp = albumThumbnailSizeDp,
-                                    alternative = true
-                                )
-                            }
-                        }
-
-                        TextPlaceholder(modifier = sectionTextModifier)
-
-                        Row {
-                            repeat(2) {
-                                PlaylistItemPlaceholder(
-                                    thumbnailSizeDp = albumThumbnailSizeDp,
-                                    alternative = true
-                                )
-                            }
-                        }
-                    }
-                 */
-
+                Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
 
             }
 
@@ -1365,9 +1682,54 @@ fun HomeQuickPicks(
     }
 }
 
+@Composable
+fun ChipItemColored(
+    chip: Innertube.Chip,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val chipColor by remember { derivedStateOf<Color> { Color(255, Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)) } }
 
-
-
+    Column(
+        verticalArrangement = Arrangement.SpaceAround,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(5.dp)
+            .clip(app.n_zik.android.thumbnailShape())
+            .clickable(onClick = onClick)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = chipColor)
+                .padding(start = 10.dp)
+                .fillMaxHeight(0.9f)
+        ) {
+            Box(
+                modifier = Modifier
+                    .requiredWidth(150.dp)
+                    .background(color = colorPalette().background4)
+                    .fillMaxSize()
+            ) {
+                BasicText(
+                    text = chip.title,
+                    style = TextStyle(
+                        color = colorPalette().text,
+                        fontStyle = typography().xs.semiBold.fontStyle,
+                        fontWeight = typography().xs.semiBold.fontWeight,
+                        fontSize = typography().xs.semiBold.fontSize
+                    ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(horizontal = 10.dp).align(Alignment.CenterStart)
+                )
+            }
+        }
+    }
+}
 
 
 

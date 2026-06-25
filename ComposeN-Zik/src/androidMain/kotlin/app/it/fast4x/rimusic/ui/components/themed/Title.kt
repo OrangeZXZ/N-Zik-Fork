@@ -94,7 +94,6 @@ fun Title2Actions(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
             .clip(uiRoundnessShape()).clickable(enabled = onClick1 != null) {
                 if (enableClick)
                     onClick1?.invoke()
@@ -156,7 +155,6 @@ fun Title3Actions(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
             .clip(uiRoundnessShape()).clickable(enabled = onClick1 != null) {
                 if (enableClick)
                     onClick1?.invoke()

@@ -166,7 +166,7 @@ fun HeaderWithIcon (
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             //.requiredHeight(Dimensions.halfheaderHeight)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(horizontal = 12.dp, vertical = 8.dp)
 
     ){
 

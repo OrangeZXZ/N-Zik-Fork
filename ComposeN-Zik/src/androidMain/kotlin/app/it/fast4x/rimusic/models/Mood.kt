@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import androidx.compose.ui.graphics.Color
 import it.fast4x.innertube.Innertube
+import kotlin.random.Random
 
 data class Mood(
     val name: String,
@@ -38,6 +39,13 @@ fun Innertube.Mood.Item.toUiMood() = Mood(
     color = Color(stripeColor),
     browseId = endpoint.browseId,
     params = endpoint.params
+)
+
+fun Innertube.Chip.toUiMood() = Mood(
+    name = title,
+    color = Color(255, Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)),
+    browseId = endpoint?.browseId,
+    params = endpoint?.params
 )
 
 
