@@ -221,6 +221,7 @@ import kotlin.math.roundToInt
 import kotlin.system.exitProcess
 import android.os.Binder as AndroidBinder
 import androidx.compose.ui.util.fastMap
+import app.it.fast4x.rimusic.utils.isDiscordBrowsingEnabledKey
 import app.it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
 
 
@@ -578,6 +579,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 discordPresenceManager = DiscordPresenceManager(
                     context = this,
                     getToken = { token },
+                    getBrowsingEnabled = { preferences.getBoolean(isDiscordBrowsingEnabledKey, true) },
                 )
             }
         }

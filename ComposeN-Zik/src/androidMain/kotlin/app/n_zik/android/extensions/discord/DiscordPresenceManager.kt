@@ -25,6 +25,7 @@ import timber.log.Timber
 class DiscordPresenceManager(
     private val context: Context,
     private val getToken: () -> String?,
+    private val getBrowsingEnabled: () -> Boolean = { true },
     private val externalScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 ) {
     companion object {
@@ -62,7 +63,7 @@ class DiscordPresenceManager(
     init {
         discordScope.launch {
             DiscordUiState.currentRoute.collect { route ->
-                if (!isStopped && !hasActiveMediaItem && route != null) {
+                if (!isStopped && !hasActiveMediaItem && getBrowsingEnabled() && route != null) {
                     sendBrowsingPresence(route)
                 }
             }
@@ -140,10 +141,12 @@ class DiscordPresenceManager(
         hasActiveMediaItem = mediaItem != null
 
         if (mediaItem == null) {
-            // No media item = no music at all → show browsing if we have a route
+            // No media item = no music at all → show browsing if enabled and we have a route
             debounceJob?.cancel()
-            DiscordUiState.currentRoute.value?.let { route ->
-                sendBrowsingPresence(route)
+            if (getBrowsingEnabled()) {
+                DiscordUiState.currentRoute.value?.let { route ->
+                    sendBrowsingPresence(route)
+                }
             }
             return
         }

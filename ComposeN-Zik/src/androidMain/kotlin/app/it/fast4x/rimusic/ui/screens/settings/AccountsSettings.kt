@@ -72,6 +72,7 @@ import app.it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import app.it.fast4x.rimusic.utils.enableYouTubeLoginKey
 import app.it.fast4x.rimusic.utils.enableYouTubeSyncKey
 import app.it.fast4x.rimusic.utils.isAtLeastAndroid7
+import app.it.fast4x.rimusic.utils.isDiscordBrowsingEnabledKey
 import app.it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
 import app.it.fast4x.rimusic.utils.isPipedCustomEnabledKey
 import app.it.fast4x.rimusic.utils.isPipedEnabledKey
@@ -657,6 +658,16 @@ fun AccountsSettings() {
 
                         AnimatedVisibility(visible = isDiscordPresenceEnabled) {
                             Column {
+                                var isDiscordBrowsingEnabled by rememberPreference(isDiscordBrowsingEnabledKey, true)
+
+                                OtherSwitchSettingEntry(
+                                    title = stringResource(R.string.discord_enable_browsing),
+                                    text = "",
+                                    isChecked = isDiscordBrowsingEnabled,
+                                    onCheckedChange = { isDiscordBrowsingEnabled = it },
+                                    icon = R.drawable.discover
+                                )
+
                                 if (showTokenError) {
                                     Text(
                                         text = stringResource(R.string.discord_token_text_invalid),
