@@ -126,12 +126,16 @@ object YtMusic {
         println("homePage() response sections: ${response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
             ?.tabRenderer?.content?.sectionListRenderer?.contents}" )
 
+        val sectionListRender = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer
 
-        var continuation = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
-            ?.tabRenderer?.content?.sectionListRenderer?.continuations?.getContinuation()
+        var continuation = sectionListRender?.continuations?.getContinuation()
 
-        val sections = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
-            ?.tabRenderer?.content?.sectionListRenderer?.contents!!
+        val chips = sectionListRender?.header?.chipCloudRenderer?.chips?.mapNotNull {
+            Innertube.Chip.fromChipCloudChipRenderer(it)
+        }
+
+        val sections = sectionListRender?.contents!!
             .mapNotNull { it.musicCarouselShelfRenderer }
             .mapNotNull {
                 HomePage.Section.fromMusicCarouselShelfRenderer(it)
@@ -149,7 +153,7 @@ object YtMusic {
                 }.orEmpty()
 
         }
-        HomePage( sections = sections )
+        HomePage( sections = sections, chips = chips )
     }
 
     suspend fun getHistory(setLogin: Boolean = false): Result<HistoryPage> = runCatching {

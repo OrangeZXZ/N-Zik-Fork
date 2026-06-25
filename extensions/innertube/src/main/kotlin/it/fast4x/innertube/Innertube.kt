@@ -212,6 +212,23 @@ object Innertube {
     }
 
     @Serializable
+    data class Chip(
+        val title: String,
+        val endpoint: NavigationEndpoint.Endpoint.Browse?,
+        val deselectEndpoint: NavigationEndpoint.Endpoint.Browse?,
+    ) {
+        companion object {
+            fun fromChipCloudChipRenderer(renderer: it.fast4x.innertube.models.SectionListRenderer.Header.ChipCloudRenderer.Chip): Chip? {
+                return Chip(
+                    title = renderer.chipCloudChipRenderer.text?.runs?.firstOrNull()?.text ?: return null,
+                    endpoint = renderer.chipCloudChipRenderer.navigationEndpoint?.browseEndpoint,
+                    deselectEndpoint = renderer.chipCloudChipRenderer.onDeselectedCommand?.browseEndpoint,
+                )
+            }
+        }
+    }
+
+    @Serializable
     data class SongItem(
         val info: Info<NavigationEndpoint.Endpoint.Watch>?,
         val authors: List<Info<NavigationEndpoint.Endpoint.Browse>>?,

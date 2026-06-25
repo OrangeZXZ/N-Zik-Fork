@@ -11,6 +11,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class HomePage(
     val sections: List<Section>,
+    val chips: List<Innertube.Chip>?,
 ) {
     @Serializable
     data class Section(
