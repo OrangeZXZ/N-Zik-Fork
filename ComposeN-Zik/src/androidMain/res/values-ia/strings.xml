@@ -195,8 +195,10 @@
   <string name="dynamic">Dynamic</string>
   <string name="discovery">Discoperir</string>
   <string name="mood">Humor</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Nove albumes</string>
   <string name="moods_and_genres">Humores e generos</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" requestas de cerca"</string>
   <string name="not_find_battery_optimization_settings">Couldn\'t find battery optimization settings, please whitelist manually</string>
   <string name="search">Cercar</string>
