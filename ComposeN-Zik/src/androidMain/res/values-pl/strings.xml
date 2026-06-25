@@ -195,8 +195,10 @@
   <string name="dynamic">Dynamiczny</string>
   <string name="discovery">Odkrywanie</string>
   <string name="mood">Nastrój</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Nowe albumy</string>
   <string name="moods_and_genres">Nastroje i gatunki</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" zapytania"</string>
   <string name="not_find_battery_optimization_settings">Nie udało się znaleźć ustawień optymalizacji baterii. Ręcznie dodaj aplikację do białej listy.</string>
   <string name="search">Szukaj</string>
