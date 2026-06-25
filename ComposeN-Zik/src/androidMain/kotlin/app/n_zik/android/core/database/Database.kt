@@ -233,10 +233,40 @@ object Database {
         // Insert artist
         val artistsNames = mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames").orEmpty()
         val artistsIds = mediaItem.mediaMetadata.extras?.getStringArrayList("artistIds").orEmpty()
-        artistsNames.fastZip( artistsIds ) { name, id -> Artist( id, name ) }
-                    .also( artistTable::insertIgnore )
-                    .map { SongArtistMap(mediaItem.mediaId, it.id) }
-                    .also( songArtistMapTable::insertIgnore )
+        
+        if (artistsIds.isNotEmpty()) {
+            // Normal case: zip names with IDs
+            artistsNames.zip(artistsIds) { name, id -> Artist(id, name) }
+                        .also( artistTable::insertIgnore )
+                        .map { SongArtistMap(mediaItem.mediaId, it.id) }
+                        .also( songArtistMapTable::insertIgnore )
+        } else if (artistsNames.isNotEmpty()) {
+            // No browse IDs but we have names: try database by name first
+            artistsNames.forEach { name ->
+                val existingArtist = runBlocking { artistTable.findByName(name).first() }
+                if (existingArtist != null) {
+                    songArtistMapTable.insertIgnore(SongArtistMap(mediaItem.mediaId, existingArtist.id))
+                } else {
+                    // Search online for the artist
+                    try {
+                        val searchResult = runBlocking {
+                            it.fast4x.innertube.Innertube.searchPage<it.fast4x.innertube.Innertube.ArtistItem>(
+                                it.fast4x.innertube.models.bodies.SearchBody(
+                                    query = name,
+                                    params = it.fast4x.innertube.Innertube.SearchFilter.Artist.value
+                                )
+                            ) { content -> it.fast4x.innertube.Innertube.ArtistItem.from(content) }
+                        }?.getOrNull()
+                        
+                        val foundArtist = searchResult?.items?.firstOrNull()
+                        if (foundArtist != null && foundArtist.key != null) {
+                            artistTable.insertIgnore(Artist(id = foundArtist.key, name = foundArtist.info?.name ?: name, isYoutubeArtist = true))
+                            songArtistMapTable.insertIgnore(SongArtistMap(mediaItem.mediaId, foundArtist.key))
+                        }
+                    } catch (_: Exception) { }
+                }
+            }
+        }
     }
 
     /**
