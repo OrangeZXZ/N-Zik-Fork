@@ -330,8 +330,7 @@ fun HomeQuickPicks(
                 discoverPageResult = Innertube.discoverPage()
             }
 
-            if (isYouTubeLoggedIn() && !loadedData)
-                homePageResult = YtMusic.getHomePage()
+            homePageResult = YtMusic.getHomePage(setLogin = isYouTubeLoggedIn())
 
         }.onFailure {
             Timber.e("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
@@ -346,6 +345,7 @@ fun HomeQuickPicks(
 
     var lastPlayEventType by remember { mutableStateOf(playEventType) }
     var lastSelectedCountry by remember { mutableStateOf(selectedCountryCode) }
+    var lastYouTubeLoggedIn by remember { mutableStateOf(isYouTubeLoggedIn()) }
 
     LaunchedEffect(playEventType, selectedCountryCode) {
         if (playEventType != lastPlayEventType || selectedCountryCode != lastSelectedCountry) {
@@ -364,6 +364,17 @@ fun HomeQuickPicks(
         loadData()
     }
 
+    // Re-fetch when login state changes (user logs in/out while on Home tab)
+    val currentYouTubeLoggedIn = isYouTubeLoggedIn()
+    LaunchedEffect(currentYouTubeLoggedIn) {
+        if (currentYouTubeLoggedIn != lastYouTubeLoggedIn) {
+            lastYouTubeLoggedIn = currentYouTubeLoggedIn
+            homePageResult = null
+            loadedData = false
+            loadData()
+        }
+    }
+
     var refreshing by remember { mutableStateOf(false) }
 
     fun refresh() {
@@ -373,6 +384,8 @@ fun HomeQuickPicks(
         relatedPageResult = null
         // relatedInit = null
         trending = null
+        homePageResult = null
+        discoverPageResult = null
         refreshScope.launch(Dispatchers.IO) {
             refreshing = true
             loadData()
@@ -1137,7 +1150,6 @@ fun HomeQuickPicks(
 
                     page.sections.forEach {
                         if (it.items.isEmpty() || it.items.firstOrNull()?.key == null) return@forEach
-                        if (it.title.contains("Quick picks", ignoreCase = true)) return@forEach
                         println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
                         println("homePage() in HomeYouTubeMusic sections items: ${it.items}")
 
@@ -1238,18 +1250,7 @@ fun HomeQuickPicks(
                             }
                         }
                     }
-                } ?: if (!isYouTubeLoggedIn()) BasicText(
-                    text = stringResource(R.string.log_in_to_ytm),
-                    style = typography().xs.center,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .padding(vertical = 32.dp)
-                        .fillMaxWidth()
-                        .clip(uiRoundnessShape()).clickable {
-                            navController.navigate(NavRoutes.settings.name)
-                        }
-                ) else {
+                } ?: if (homePageResult == null) {
                     ShimmerHost {
                         repeat(3) {
                             SongItemPlaceholder()
@@ -1277,6 +1278,8 @@ fun HomeQuickPicks(
                             }
                         }
                     }
+                } else {
+                    // Silent fallback when home page fetch failed
                 }
 
 
