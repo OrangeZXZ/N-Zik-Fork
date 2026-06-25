@@ -70,8 +70,12 @@ fun VideoOrSongInfoScreen(
             if (dbArtists.isNotEmpty()) {
                 finalArtists = dbArtists.map { it.id to (it.name ?: "") }
             } else if (songArtist.isNotBlank()) {
-                // Parse songArtist and fetch IDs from database or search online
-                val parsed = songArtist.split(",").map { it.trim() }.filter { it.isNotBlank() }
+                // Parse songArtist - handle "," and "&" separators, then deduplicate
+                val parsed = songArtist
+                    .split(",", "&")
+                    .map { it.trim() }
+                    .filter { it.isNotBlank() }
+                    .distinctBy { it.lowercase() }
                 val artistsWithIds = mutableListOf<Pair<String, String>>()
                 for (name in parsed) {
                     // Try database first
