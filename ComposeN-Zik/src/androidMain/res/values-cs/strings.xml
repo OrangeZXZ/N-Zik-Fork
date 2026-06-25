@@ -195,8 +195,10 @@
   <string name="dynamic">Dynamický</string>
   <string name="discovery">Objevit</string>
   <string name="mood">Nálady</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Nová alba</string>
   <string name="moods_and_genres">Nálady a žánry</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" vyhledávací dotazy"</string>
   <string name="not_find_battery_optimization_settings">Nepodařilo se najít nastavení optimalizace baterie, prosím, vytvořte whitelist ručně</string>
   <string name="search">Vyhledávání</string>
