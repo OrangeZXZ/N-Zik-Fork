@@ -26,9 +26,22 @@
   - SongItemMenu.kt, VideoItemMenu.kt, SearchItemMenu.kt: try DB by name first (works after search online populated it), fallback to Innertube nextPage
   - Use NavRoutes.artist.navigateHere() to dispatch navigation on Main thread (fixes crash when called from Dispatchers.IO)
 
-- Debug logs added (NZIK_DB_TRACE) for tracing song metadata:
-  - Database.upsert(SongItem) before/after values
-  - Database.insertIgnore(MediaItem) with mediaMetadata
-  - MediaItemUtils.artistTextWithFallback / artistTextOrDb with DB values
-  - albumPage for each song with authors
-  - Online artist search (found/not found/error)
+- Fix Database.upsert(SongItem) to be synchronous (runBlocking + withTransaction)
+  - Previously used asyncTransaction which was fire-and-forget
+  - forcePlayAtIndex now calls upsertSongInfo synchronously, so the search online completes
+    before the DB is read, ensuring all browse IDs are available for the MediaItem
+  - Fixes songs with multiple artists (e.g. "Say My Name" by David Guetta, Bebe Rexha, J Balvin)
+    showing only 1 artist on first play
+
+- ImageCacheFactory.SubcomposeImage composable added for artist thumbnails
+  - Uses SubcomposeAsyncImage with a CircularProgressIndicator spinner
+  - Shows spinner when URL is null (data not yet available)
+  - Shows spinner while loading from network
+  - Shows image when successfully loaded
+  - Shows fallback only on actual error
+
+- Global fix: ImageCacheFactory default fallback changed from R.drawable.ic_launcher_box to R.drawable.loader
+  - Applies to Thumbnail, Painter, AsyncImage methods
+  - When image URL is null/empty, the loader image shows instead of the no-image icon
+  - Real errors still show ic_launcher_box via the error parameter
+  - Affects all images throughout the app (albums, songs, artists, playlists, podcasts)
