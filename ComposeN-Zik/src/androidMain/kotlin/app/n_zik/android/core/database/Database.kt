@@ -33,9 +33,12 @@ import app.it.fast4x.rimusic.models.SongPlaylistMap
 import app.it.fast4x.rimusic.models.SortedSongPlaylistMap
 import app.it.fast4x.rimusic.utils.asSong
 import app.it.fast4x.rimusic.utils.parseArtists
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import app.n_zik.android.core.database.AlbumTable
 import app.n_zik.android.core.database.ArtistTable
@@ -123,7 +126,7 @@ object Database {
         println("NZIK_DB_TRACE upsert(SongItem) id=${song.id} dbTitle='${dbSong?.title}' dbArtistsText='${dbSong?.artistsText}' finalTitle='$finalTitle' finalArtistsText='$finalArtistsText'")
         songTable.upsert(Song(
             id = song.id,
-            title = finalTitle,
+            title = finalTitle.orEmpty(),
             artistsText = finalArtistsText ?: "",
             durationText = song.durationText,       // Force update to new duration text
             thumbnailUrl = PropUtils.retainIfModified( dbSong?.thumbnailUrl, song.thumbnailUrl ),
@@ -267,13 +270,13 @@ object Database {
                     // Search online for the artist in background (non-blocking)
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            val searchResult = Innertube.searchPage<Innertube.ArtistItem>(
-                                SearchBody(
-                                    query = name,
-                                    params = Innertube.SearchFilter.Artist.value
-                                )
-                            ) { content -> Innertube.ArtistItem.from(content) }
-                                .getOrNull()
+                            val searchResult: Innertube.ItemsPage<Innertube.ArtistItem>? =
+                                Innertube.searchPage<Innertube.ArtistItem>(
+                                    SearchBody(
+                                        query = name,
+                                        params = Innertube.SearchFilter.Artist.value
+                                    )
+                                ) { content -> Innertube.ArtistItem.from(content) }?.getOrNull()
 
                             val foundArtist = searchResult?.items?.firstOrNull { item ->
                                 item.info?.name?.equals(name, ignoreCase = true) == true

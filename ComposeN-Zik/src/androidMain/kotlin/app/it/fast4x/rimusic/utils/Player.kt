@@ -18,6 +18,7 @@ import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.DurationInMinutes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import app.kreate.android.me.knighthat.utils.Toaster
@@ -161,11 +162,24 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
             // This handles the common case where browse IDs are already in DB.
             val enrichedItem = runCatching {
                 runBlocking {
-                    val dbSong = app.n_zik.android.core.database.Database.songTable.findById(videoId).firstOrNull()
+                    val dbSong = app.n_zik.android.core.database.Database
+                        .songTable.findById(videoId)
+                        .first()
                     if (dbSong != null) {
-                        val dbArtists = app.n_zik.android.core.database.Database.artistTable.findBySongId(videoId)
-                        val dbAlbum = app.n_zik.android.core.database.Database.albumTable.findBySongId(videoId)
+                        val dbArtists = app.n_zik.android.core.database.Database
+                            .artistTable.findBySongId(videoId)
+                            .first()
+                        val dbAlbum = app.n_zik.android.core.database.Database
+                            .albumTable.findBySongId(videoId)
+                            .first()
                         val existing = targetItem.mediaMetadata
+                        val artistNames = ArrayList<String>().apply { addAll(dbArtists.mapNotNull { it.name }) }
+                        val artistIds = ArrayList<String>().apply { addAll(dbArtists.map { it.id }) }
+                        val bundle = (existing.extras ?: android.os.Bundle()).apply {
+                            putStringArrayList("artistNames", artistNames)
+                            putStringArrayList("artistIds", artistIds)
+                            dbAlbum?.id?.let { putString("albumId", it) }
+                        }
                         targetItem.buildUpon()
                             .setMediaMetadata(
                                 existing.buildUpon()
@@ -173,19 +187,7 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
                                         if (dbSong.artistsText.isNullOrBlank()) existing.artist?.toString()
                                         else dbSong.artistsText
                                     )
-                                    .setExtras(
-                                        (existing.extras ?: android.os.Bundle()).apply {
-                                            putStringArrayList(
-                                                "artistNames",
-                                                ArrayList(dbArtists.map { it.name })
-                                            )
-                                            putStringArrayList(
-                                                "artistIds",
-                                                ArrayList(dbArtists.map { it.id })
-                                            )
-                                            dbAlbum?.id?.let { putString("albumId", it) }
-                                        }
-                                    )
+                                    .setExtras(bundle)
                                     .build()
                             )
                             .build()
