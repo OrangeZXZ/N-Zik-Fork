@@ -195,8 +195,10 @@
   <string name="dynamic">דינמי</string>
   <string name="discovery">גילוי</string>
   <string name="mood">מצב רוח</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">אלבומים חדשים</string>
   <string name="moods_and_genres">מצבי רוח וז\'אנרים</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" שאילתות חיפוש"</string>
   <string name="not_find_battery_optimization_settings">לא ניתן היה למצוא את הגדרות אופטימיזציית הסוללה, נא לרשום היתרים באופן ידני</string>
   <string name="search">לחפש</string>
