@@ -6,6 +6,7 @@ import app.n_zik.android.appRunningInBackground
 import app.n_zik.android.core.database.*
 import app.n_zik.android.utils.artistIdsWithFallback
 import app.n_zik.android.utils.albumIdWithFallback
+import app.n_zik.android.utils.artistTextWithFallback
 
 import app.it.fast4x.rimusic.ui.components.themed.SleepTimerDialog
 import android.annotation.SuppressLint
@@ -2269,7 +2270,7 @@ fun Player(
             SearchYoutubeEntity(
                 navController = navController,
                 onDismiss = { showSearchEntity = false },
-                query = "${mediaItem.mediaMetadata.artist.toString()} - ${mediaItem.mediaMetadata.title.toString()}",
+                query = "${mediaItem.artistTextWithFallback()} - ${mediaItem.mediaMetadata.title.toString()}",
                 disableScrollingText = disableScrollingText
             )
         }
