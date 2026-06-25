@@ -22,6 +22,7 @@ import androidx.media3.exoplayer.offline.DownloadNotificationHelper
 import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.scheduler.Requirements
+import app.n_zik.android.utils.artistTextOrDb
 import app.n_zik.android.playback.services.createDataSourceFactory
 import app.n_zik.android.core.database.Database
 
@@ -302,7 +303,7 @@ object MyDownloadHelper {
                     ?: Uri.parse(ExternalUris.youtubeMusic(mediaItem.mediaId))
             )
             .setCustomCacheKey(mediaItem.mediaId)
-            .setData("${mediaItem.mediaMetadata.artist ?: ""} - ${mediaItem.mediaMetadata.title ?: ""}".encodeToByteArray()) // Title in notification
+            .setData("${mediaItem.artistTextOrDb()} - ${mediaItem.mediaMetadata.title ?: ""}".encodeToByteArray()) // Title in notification
             .build()
 
         Database.asyncTransaction {

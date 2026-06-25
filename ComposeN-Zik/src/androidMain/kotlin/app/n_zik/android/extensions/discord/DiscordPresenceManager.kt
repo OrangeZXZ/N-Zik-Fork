@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.media3.common.MediaItem
 import app.n_zik.android.core.network.utils.isNetworkAvailable
 import app.n_zik.android.R
+import app.n_zik.android.utils.artistTextOrDb
 import app.kreate.android.me.knighthat.utils.Toaster
 import com.metrolist.music.discordrpc.DiscordRpcConnection
 import com.metrolist.music.discordrpc.entities.Timestamps
@@ -190,7 +191,7 @@ class DiscordPresenceManager(
         }
 
         val title = mediaItem.mediaMetadata.title?.toString().takeIf { !it.isNullOrBlank() } ?: context.getString(R.string.unknown_title)
-        val artist = mediaItem.mediaMetadata.artist?.toString().takeIf { !it.isNullOrBlank() } ?: context.getString(R.string.unknown_artist)
+        val artist = mediaItem.artistTextOrDb().takeIf { it.isNotBlank() } ?: context.getString(R.string.unknown_artist)
         discordScope.launch {
             if (isStopped) return@launch
             sendActivity(
@@ -353,7 +354,7 @@ class DiscordPresenceManager(
         }
 
         val title = mediaItem.mediaMetadata.title?.toString().takeIf { !it.isNullOrBlank() } ?: context.getString(R.string.unknown_title)
-        val artist = mediaItem.mediaMetadata.artist?.toString().takeIf { !it.isNullOrBlank() } ?: context.getString(R.string.unknown_artist)
+        val artist = mediaItem.artistTextOrDb().takeIf { it.isNotBlank() } ?: context.getString(R.string.unknown_artist)
         discordScope.launch {
             sendActivity(
                 mediaItem = mediaItem,

@@ -8,12 +8,15 @@ import androidx.media3.common.MediaItem
 import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.models.Info
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+
+// ─── Composable fallbacks (for UI) ───
 
 @Composable
 fun MediaItem.artistTextWithFallback(): String {
     val artist = mediaMetadata.artist?.toString() ?: ""
     if (artist.isNotBlank() && artist != "null") return artist
-
     val dbSong by remember(mediaId) {
         Database.songTable.findById(mediaId)
     }.collectAsState(null, Dispatchers.IO)
@@ -41,4 +44,22 @@ fun MediaItem.albumIdWithFallback(): String? {
         Database.albumTable.findBySongId(mediaId)
     }.collectAsState(null, Dispatchers.IO)
     return dbAlbum?.id
+}
+
+// ─── Non-Composable fallbacks (for services, notifications, etc.) ───
+
+fun MediaItem.artistTextOrDb(): String {
+    val artist = mediaMetadata.artist?.toString() ?: ""
+    if (artist.isNotBlank() && artist != "null") return artist
+    return runBlocking {
+        Database.songTable.findById(mediaId).first()?.artistsText ?: artist
+    }
+}
+
+fun MediaItem.albumTitleOrDb(): String {
+    val album = mediaMetadata.albumTitle?.toString() ?: ""
+    if (album.isNotBlank() && album != "null") return album
+    return runBlocking {
+        Database.albumTable.findBySongId(mediaId).first()?.title ?: album
+    }
 }

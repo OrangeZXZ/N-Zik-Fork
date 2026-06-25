@@ -6,6 +6,9 @@ import app.n_zik.android.playback.services.*
 import app.n_zik.android.playback.models.*
 import app.n_zik.android.playback.exceptions.*
 import app.n_zik.android.playback.utils.*
+import app.n_zik.android.utils.artistTextOrDb
+import app.n_zik.android.utils.albumTitleOrDb
+import kotlinx.coroutines.runBlocking
 
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.delay
@@ -1337,6 +1340,15 @@ class PlayerServiceModern : MediaLibraryService(),
 
         val mediaMetadata = player.mediaMetadata
 
+        val artistText = runBlocking {
+            val mediaItem = binder?.player?.currentMediaItem
+            mediaItem?.artistTextOrDb() ?: ""
+        }
+        val albumText = runBlocking {
+            val mediaItem = binder?.player?.currentMediaItem
+            mediaItem?.albumTitleOrDb() ?: ""
+        }
+
         // Load bitmap with proper fallback handling
         bitmapProvider.load(mediaMetadata.artworkUri) {
             // Callback is called with the final bitmap (including fallback)
@@ -1349,14 +1361,18 @@ class PlayerServiceModern : MediaLibraryService(),
         }
             .setContentTitle(cleanPrefix(player.mediaMetadata.title.toString()))
             .setContentText(
-                if (mediaMetadata.albumTitle != null && mediaMetadata.artist != "")
-                    "${mediaMetadata.artist} | ${mediaMetadata.albumTitle}"
-                else mediaMetadata.artist
+                if (albumText.isNotBlank() && artistText.isNotBlank()) {
+                    "$artistText | $albumText"
+                } else {
+                    artistText
+                }
             )
             .setSubText(
-                if (mediaMetadata.albumTitle != null && mediaMetadata.artist != "")
-                    "${mediaMetadata.artist} | ${mediaMetadata.albumTitle}"
-                else mediaMetadata.artist
+                if (albumText.isNotBlank() && artistText.isNotBlank()) {
+                    "$artistText | $albumText"
+                } else {
+                    artistText
+                }
             )
             .setLargeIcon(bitmapProvider.bitmap)
             .setAutoCancel(false)
