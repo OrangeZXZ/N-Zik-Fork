@@ -448,7 +448,7 @@ object ImageCacheFactory {
         thumbnailUrl: String?,
         contentDescription: String? = null,
         contentScale: ContentScale = ContentScale.Crop,
-        modifier: Modifier = Modifier.clip(thumbnailShape()).fillMaxSize(),
+        modifier: Modifier = Modifier,
         @DrawableRes error: Int = R.drawable.ic_launcher_box
     ) {
         val cleanedUrl = thumbnailUrl?.let { cleanPrefix(it) }
