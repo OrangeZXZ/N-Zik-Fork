@@ -195,8 +195,10 @@
   <string name="dynamic">Dinamikus</string>
   <string name="discovery">Felfedezés</string>
   <string name="mood">Hangulat</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Új albumok</string>
   <string name="moods_and_genres">Hangulatok és műfajok</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" keresési lekérdezések"</string>
   <string name="not_find_battery_optimization_settings">Nem találhatók az akkumulátor-optimalizálási beállítások, kérjük, tegye fel manuálisan az engedélyezési listára</string>
   <string name="search">Keresés</string>
