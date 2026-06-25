@@ -122,6 +122,15 @@ fun VideoOrSongInfoScreen(
                 finalArtists = listOf(apiAuthorId to apiAuthor)
             }
         }
+        
+        // Final deduplication by artist name (case-insensitive)
+        // Keep the entry with a non-empty ID if possible
+        finalArtists = finalArtists
+            .groupBy { it.second.lowercase() }
+            .map { (_, group) ->
+                group.firstOrNull { it.first.isNotBlank() } ?: group.first()
+            }
+        
         isLoading = false
     }
 
