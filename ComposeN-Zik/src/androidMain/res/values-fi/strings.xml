@@ -1309,7 +1309,6 @@
   <string name="match_results_ok">Ok</string>
   <string name="retry_match">Yritä Osumaa Uudelleen</string>
   <string name="retry_match_confirmation">Yritä hakua %d epäonnistuneita kappaleita?</string>
-  <string name="match_results_merged">%d merged with existing</string>
   <string name="notification_skip_back">Ohita takaisin</string>
   <string name="notification_pause">Tauko</string>
   <string name="notification_play">Toista</string>
