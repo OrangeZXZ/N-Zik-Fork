@@ -109,8 +109,17 @@ object Database {
         val dbSong = runBlocking {
             songTable.findById( song.id ).first()
         }
-        val finalTitle = PropUtils.retainIfModified( dbSong?.title, song.title ).orEmpty()
-        val finalArtistsText = PropUtils.retainIfModified( dbSong?.artistsText, song.artistsText )
+        // Protect against wiping: if new value is blank but DB has a value, keep DB
+        val newTitle = song.title
+        val finalTitle = when {
+            newTitle.isNullOrBlank() && !dbSong?.title.isNullOrBlank() -> dbSong.title
+            else -> PropUtils.retainIfModified( dbSong?.title, newTitle )
+        }
+        val newArtistsText = song.artistsText
+        val finalArtistsText = when {
+            newArtistsText.isNullOrBlank() && !dbSong?.artistsText.isNullOrBlank() -> dbSong.artistsText
+            else -> PropUtils.retainIfModified( dbSong?.artistsText, newArtistsText )
+        }
         println("NZIK_DB_TRACE upsert(SongItem) id=${song.id} dbTitle='${dbSong?.title}' dbArtistsText='${dbSong?.artistsText}' finalTitle='$finalTitle' finalArtistsText='$finalArtistsText'")
         songTable.upsert(Song(
             id = song.id,

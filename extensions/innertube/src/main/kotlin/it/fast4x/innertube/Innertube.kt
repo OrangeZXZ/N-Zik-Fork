@@ -249,9 +249,8 @@ object Innertube {
                 var album: Info<NavigationEndpoint.Endpoint.Browse>? = null
                 plRenderer.longBylineText
                           ?.runs
-                          ?.filter { it.navigationEndpoint != null }
-                          ?.groupBy {
-                              it.navigationEndpoint
+                          ?.groupBy { run ->
+                              run.navigationEndpoint
                                   ?.browseEndpoint
                                   ?.browseEndpointContextSupportedConfigs
                                   ?.browseEndpointContextMusicConfig
@@ -262,7 +261,7 @@ object Innertube {
                                   "MUSIC_PAGE_TYPE_ARTIST" -> authors.addAll( runs.map( ::Info ) )
                                   "MUSIC_PAGE_TYPE_ALBUM"  -> album = runs.firstOrNull()?.let( ::Info )
                                   else -> return@mapNotNull
-                              } 
+                              }
                           }
                 //</editor-fold>
                 
