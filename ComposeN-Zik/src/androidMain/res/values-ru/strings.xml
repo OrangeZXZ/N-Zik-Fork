@@ -1354,4 +1354,5 @@
   <string name="source_kugou_synced">KuGou.com (синхронизирован)</string>
   <string name="source_youtube_unsynced">YouTube (не синхронизирован)</string>
   <string name="clipboard_contains_non_text_content">Буфер обмена содержит нетекстовое содержимое (изображение или другой носитель)</string>
+  <string name="match_results_merged">%d merged with existing</string>
 </resources>
