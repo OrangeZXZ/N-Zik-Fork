@@ -195,8 +195,10 @@
   <string name="dynamic">動的</string>
   <string name="discovery">探索</string>
   <string name="mood">ムード</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">新しいアルバム</string>
   <string name="moods_and_genres">ムードとジャンル</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" 個の検索クエリ"</string>
   <string name="not_find_battery_optimization_settings">充電最適化の設定を見つけられませんでした。手動でホワイトリストに登録してください</string>
   <string name="search">検索...</string>
