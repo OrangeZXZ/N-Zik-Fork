@@ -1355,4 +1355,5 @@ Volume BAS : titre précédent</string>
   <string name="source_kugou_synced">KuGou.com (synchronisé)</string>
   <string name="source_youtube_unsynced">YouTube (non synchronisé)</string>
   <string name="clipboard_contains_non_text_content">Le presse-papier contient du contenu non textuel (image ou autre média)</string>
+  <string name="match_results_merged">%d merged with existing</string>
 </resources>
