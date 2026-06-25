@@ -195,8 +195,10 @@
   <string name="dynamic">Dynamisch</string>
   <string name="discovery">Entdecken</string>
   <string name="mood">Stimmung</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Neue Alben</string>
   <string name="moods_and_genres">Stimmungen und Genres</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" Suchanfragen"</string>
   <string name="not_find_battery_optimization_settings">Konnte die Einstellungen für die Batterieoptimierung nicht finden, bitte manuell auf die Whitelist setzen</string>
   <string name="search">Suche</string>
