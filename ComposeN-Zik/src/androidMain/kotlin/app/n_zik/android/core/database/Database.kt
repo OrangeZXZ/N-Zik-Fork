@@ -104,120 +104,113 @@ object Database {
 
     //**********************************************
 
-    fun upsert( songItem: Innertube.SongItem ) = asyncTransaction {
-        val song =  songItem.asSong
+    fun upsert( songItem: Innertube.SongItem ) = runBlocking {
+        _internal.withTransaction {
+            val song =  songItem.asSong
 
-        //<editor-fold defaultstate="collapsed" desc="Upsert song">
-        val dbSong = runBlocking {
-            songTable.findById( song.id ).first()
-        }
-        // Protect against wiping: if new value is blank but DB has a value, keep DB
-        val newTitle = song.title
-        val finalTitle = when {
-            newTitle.isNullOrBlank() && !dbSong?.title.isNullOrBlank() -> dbSong.title
-            else -> PropUtils.retainIfModified( dbSong?.title, newTitle )
-        }
-        val newArtistsText = song.artistsText
-        val finalArtistsText = when {
-            newArtistsText.isNullOrBlank() && !dbSong?.artistsText.isNullOrBlank() -> dbSong.artistsText
-            else -> PropUtils.retainIfModified( dbSong?.artistsText, newArtistsText )
-        }
-        songTable.upsert(Song(
-            id = song.id,
-            title = finalTitle.orEmpty(),
-            artistsText = finalArtistsText ?: "",
-            durationText = song.durationText,       // Force update to new duration text
-            thumbnailUrl = PropUtils.retainIfModified( dbSong?.thumbnailUrl, song.thumbnailUrl ),
-            likedAt = dbSong?.likedAt,
-            totalPlayTimeMs = dbSong?.totalPlayTimeMs ?: 0,
-            position = dbSong?.position ?: -1
-        ))
-        //</editor-fold>
+            //<editor-fold defaultstate="collapsed" desc="Upsert song">
+            val dbSong = songTable.findById( song.id ).first()
+            // Protect against wiping: if new value is blank but DB has a value, keep DB
+            val newTitle = song.title
+            val finalTitle = when {
+                newTitle.isNullOrBlank() && !dbSong?.title.isNullOrBlank() -> dbSong.title
+                else -> PropUtils.retainIfModified( dbSong?.title, newTitle )
+            }
+            val newArtistsText = song.artistsText
+            val finalArtistsText = when {
+                newArtistsText.isNullOrBlank() && !dbSong?.artistsText.isNullOrBlank() -> dbSong.artistsText
+                else -> PropUtils.retainIfModified( dbSong?.artistsText, newArtistsText )
+            }
+            songTable.upsert(Song(
+                id = song.id,
+                title = finalTitle.orEmpty(),
+                artistsText = finalArtistsText ?: "",
+                durationText = song.durationText,
+                thumbnailUrl = PropUtils.retainIfModified( dbSong?.thumbnailUrl, song.thumbnailUrl ),
+                likedAt = dbSong?.likedAt,
+                totalPlayTimeMs = dbSong?.totalPlayTimeMs ?: 0,
+                position = dbSong?.position ?: -1
+            ))
+            //</editor-fold>
 
-        //<editor-fold defaultstate="collapsed" desc="Upsert artists">
-        // Parse artist names from authors, handling combined names like "A & B"
-        val artistNames = songItem.authors.parseArtists()
-        val artistsToUpsert = mutableListOf<Artist>()
-        
-        for (artistName in artistNames) {
-            // Try to find browse ID from original authors first
-            val originalAuthor = songItem.authors?.find { it.name == artistName }
-            val browseId = originalAuthor?.endpoint?.browseId
-            
-            if (browseId != null) {
-                // Has browse ID, upsert directly
-                val dbArtist = runBlocking { artistTable.findById(browseId).first() }
-                artistsToUpsert.add(Artist(
-                    id = browseId,
-                    name = PropUtils.retainIfModified(dbArtist?.name, artistName),
-                    thumbnailUrl = dbArtist?.thumbnailUrl,
-                    timestamp = dbArtist?.timestamp,
-                    bookmarkedAt = dbArtist?.bookmarkedAt,
-                    isYoutubeArtist = dbArtist?.isYoutubeArtist == true
-                ))
-            } else {
-                // No browse ID, try database by name
-                val dbArtistByName = runBlocking { artistTable.findByName(artistName).first() }
-                if (dbArtistByName != null) {
-                    artistsToUpsert.add(dbArtistByName)
+            //<editor-fold defaultstate="collapsed" desc="Upsert artists">
+            val artistNames = songItem.authors.parseArtists()
+            val artistsToUpsert = mutableListOf<Artist>()
+
+            for (artistName in artistNames) {
+                val originalAuthor = songItem.authors?.find { it.name == artistName }
+                val browseId = originalAuthor?.endpoint?.browseId
+
+                if (browseId != null) {
+                    val dbArtist = artistTable.findById(browseId).first()
+                    artistsToUpsert.add(Artist(
+                        id = browseId,
+                        name = PropUtils.retainIfModified(dbArtist?.name, artistName),
+                        thumbnailUrl = dbArtist?.thumbnailUrl,
+                        timestamp = dbArtist?.timestamp,
+                        bookmarkedAt = dbArtist?.bookmarkedAt,
+                        isYoutubeArtist = dbArtist?.isYoutubeArtist == true
+                    ))
                 } else {
-                    // Last resort: search online by name
-                    try {
-                        val searchResult = runBlocking {
-                            it.fast4x.innertube.Innertube.searchPage<it.fast4x.innertube.Innertube.ArtistItem>(
-                                it.fast4x.innertube.models.bodies.SearchBody(
-                                    query = artistName,
-                                    params = it.fast4x.innertube.Innertube.SearchFilter.Artist.value
-                                )
-                            ) { content -> it.fast4x.innertube.Innertube.ArtistItem.from(content) }
-                        }?.getOrNull()
+                    val dbArtistByName = artistTable.findByName(artistName).first()
+                    if (dbArtistByName != null) {
+                        artistsToUpsert.add(dbArtistByName)
+                    } else {
+                        // Last resort: search online by name
+                        try {
+                            val searchResult: Innertube.ItemsPage<Innertube.ArtistItem>? =
+                                Innertube.searchPage<Innertube.ArtistItem>(
+                                    SearchBody(
+                                        query = artistName,
+                                        params = Innertube.SearchFilter.Artist.value
+                                    )
+                                ) { content -> Innertube.ArtistItem.from(content) }?.getOrNull()
 
-                        val foundArtist = searchResult?.items?.firstOrNull { item ->
-                            item.info?.name?.equals(artistName, ignoreCase = true) == true
-                        } ?: searchResult?.items?.firstOrNull()
-                        if (foundArtist != null && foundArtist.key != null) {
-                            artistsToUpsert.add(Artist(
-                                id = foundArtist.key,
-                                name = foundArtist.info?.name ?: artistName,
-                                isYoutubeArtist = true
-                            ))
-                        }
-                    } catch (_: Exception) { }
+                            val foundArtist = searchResult?.items?.firstOrNull { item ->
+                                item.info?.name?.equals(artistName, ignoreCase = true) == true
+                            } ?: searchResult?.items?.firstOrNull()
+                            if (foundArtist != null && foundArtist.key != null) {
+                                artistsToUpsert.add(Artist(
+                                    id = foundArtist.key,
+                                    name = foundArtist.info?.name ?: artistName,
+                                    isYoutubeArtist = true
+                                ))
+                            }
+                        } catch (_: Exception) { }
+                    }
                 }
             }
-        }
-        
-        if (artistsToUpsert.isNotEmpty()) {
-            artistTable.upsert(artistsToUpsert)
-            artistsToUpsert.forEach { mapIgnore(it, song) }
-        }
-        //</editor-fold>
 
-        //<editor-fold defaultstate="collapsed" desc="Upsert album">
-        songItem.album
-                ?.let {
-                    val browseId = it.endpoint?.browseId ?: return@let
+            if (artistsToUpsert.isNotEmpty()) {
+                artistTable.upsert(artistsToUpsert)
+                artistsToUpsert.forEach { mapIgnore(it, song) }
+            }
+            //</editor-fold>
 
-                    val dbAlbum = runBlocking {
-                        albumTable.findById( browseId ).first()
-                    }
+            //<editor-fold defaultstate="collapsed" desc="Upsert album">
+            songItem.album
+                    ?.let {
+                        val browseId = it.endpoint?.browseId ?: return@let
 
-                    val fetchedAlbum = Album(
-                        id = browseId,
-                        title = PropUtils.retainIfModified( dbAlbum?.title, it.name ),
-                        thumbnailUrl = PropUtils.retainIfModified( dbAlbum?.thumbnailUrl, song.thumbnailUrl ),
-                        year = dbAlbum?.year,
-                        authorsText = PropUtils.retainIfModified( dbAlbum?.authorsText, songItem.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() }),
-                        shareUrl = dbAlbum?.shareUrl,
-                        timestamp = dbAlbum?.timestamp,
-                        bookmarkedAt = dbAlbum?.bookmarkedAt,
+                        val dbAlbum = albumTable.findById( browseId ).first()
+
+                        val fetchedAlbum = Album(
+                            id = browseId,
+                            title = PropUtils.retainIfModified( dbAlbum?.title, it.name ),
+                            thumbnailUrl = PropUtils.retainIfModified( dbAlbum?.thumbnailUrl, song.thumbnailUrl ),
+                            year = dbAlbum?.year,
+                            authorsText = PropUtils.retainIfModified( dbAlbum?.authorsText, songItem.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() }),
+                            shareUrl = dbAlbum?.shareUrl,
+                            timestamp = dbAlbum?.timestamp,
+                            bookmarkedAt = dbAlbum?.bookmarkedAt,
                         isYoutubeAlbum = dbAlbum?.isYoutubeAlbum == true
                     )
 
                     albumTable.upsert( fetchedAlbum )
                     mapIgnore( fetchedAlbum, song )
                 }
-        //</editor-fold>
+            //</editor-fold>
+        }
     }
 
     /**
