@@ -99,7 +99,7 @@ private val jsonParser = Json {
 }
 
 @Blocking
-private fun upsertSongInfo(videoId: String) = runBlocking {
+fun upsertSongInfo(videoId: String) = runBlocking {
     if (videoId == justInserted) return@runBlocking
     Innertube.nextPage(NextBody(videoId = videoId))?.fold(
         onSuccess = { nextPage ->

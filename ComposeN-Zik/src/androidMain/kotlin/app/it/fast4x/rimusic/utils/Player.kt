@@ -132,7 +132,7 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
 
     // This will prevent UI from freezing up during conversion
     CoroutineScope( Dispatchers.Default ).launch {
-        val cleanedMediaItems = mediaItems.fastMap( MediaItem::cleaned ).fastDistinctBy( MediaItem::mediaId )
+        val cleanedMediaItems = mediaItems.fastMap( MediaItem::cleaned ).fastDistinctBy( MediaItem::mediaId ).toMutableList()
         // Use the cleaned mediaId for lookup to ensure consistent comparison
         val targetMediaId = mediaItems.getOrNull(mediaItemIndex)?.cleaned?.mediaId
         val foundIndex = if (targetMediaId != null) {
@@ -145,6 +145,53 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
         } else {
             Timber.w("forcePlayAtIndex: target index $mediaItemIndex not found after dedup, falling back to 0")
             0
+        }
+
+        // Pre-fetch full metadata (with browse IDs) before starting playback.
+        // This ensures the UI shows the correct artist names + browse IDs from the start.
+        val targetItem = cleanedMediaItems.getOrNull(newIndex)
+        if (targetItem != null) {
+            val videoId = targetItem.mediaId.substringAfter("/").ifBlank { targetItem.mediaId }
+            try {
+                app.n_zik.android.playback.services.upsertSongInfo(videoId)
+            } catch (_: Exception) { }
+            // Rebuild the target MediaItem from DB so browse IDs and artist names are populated
+            val enrichedItem = runCatching {
+                runBlocking {
+                    val dbSong = app.n_zik.android.core.database.Database.songTable.findById(videoId).firstOrNull()
+                    if (dbSong != null) {
+                        val dbArtists = app.n_zik.android.core.database.Database.artistTable.findBySongId(videoId)
+                        val dbAlbum = app.n_zik.android.core.database.Database.albumTable.findBySongId(videoId)
+                        val existing = targetItem.mediaMetadata
+                        targetItem.buildUpon()
+                            .setMediaMetadata(
+                                existing.buildUpon()
+                                    .setArtist(
+                                        if (dbSong.artistsText.isNullOrBlank()) existing.artist?.toString()
+                                        else dbSong.artistsText
+                                    )
+                                    .setExtras(
+                                        (existing.extras ?: android.os.Bundle()).apply {
+                                            putStringArrayList(
+                                                "artistNames",
+                                                ArrayList(dbArtists.map { it.name })
+                                            )
+                                            putStringArrayList(
+                                                "artistIds",
+                                                ArrayList(dbArtists.map { it.id })
+                                            )
+                                            dbAlbum?.id?.let { putString("albumId", it) }
+                                        }
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    } else null
+                }
+            }.getOrNull()
+            if (enrichedItem != null) {
+                cleanedMediaItems[newIndex] = enrichedItem
+            }
         }
 
         runBlocking( Dispatchers.Main ) {
