@@ -1309,7 +1309,6 @@
   <string name="match_results_ok">OK</string>
   <string name="retry_match">Riprova A Corrispondenza</string>
   <string name="retry_match_confirmation">Riprova a abbinare le canzoni di %d?</string>
-  <string name="match_results_merged">%d merged with existing</string>
   <string name="notification_skip_back">Salta indietro</string>
   <string name="notification_pause">Pausa</string>
   <string name="notification_play">Gioca</string>
@@ -1355,4 +1354,5 @@
   <string name="source_kugou_synced">KuGou.com (sincronizzato)</string>
   <string name="source_youtube_unsynced">YouTube (non sincronizzato)</string>
   <string name="clipboard_contains_non_text_content">Gli appunti contengono contenuti non testuali (immagine o altri supporti)</string>
+  <string name="match_results_merged">%d merged with existing</string>
 </resources>

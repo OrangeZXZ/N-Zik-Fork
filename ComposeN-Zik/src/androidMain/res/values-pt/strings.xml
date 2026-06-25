@@ -1309,7 +1309,6 @@
   <string name="match_results_ok">Certo</string>
   <string name="retry_match">Repetir Partida</string>
   <string name="retry_match_confirmation">Tentar novamente corresponder %d músicas com falha?</string>
-  <string name="match_results_merged">%d merged with existing</string>
   <string name="notification_skip_back">Pular para trás</string>
   <string name="notification_pause">Suspender</string>
   <string name="notification_play">Reproduzir</string>
@@ -1355,4 +1354,5 @@
   <string name="source_kugou_synced">KuGou.com (sincronizado)</string>
   <string name="source_youtube_unsynced">YouTube (não sincronizado)</string>
   <string name="clipboard_contains_non_text_content">Área de transferência contém conteúdo sem texto (imagem ou outra mídia)</string>
+  <string name="match_results_merged">%d merged with existing</string>
 </resources>

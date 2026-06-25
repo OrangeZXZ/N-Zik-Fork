@@ -1309,7 +1309,6 @@
   <string name="match_results_ok">好的</string>
   <string name="retry_match">重试比赛</string>
   <string name="retry_match_confirmation">重试匹配 %d 失败的歌曲吗？</string>
-  <string name="match_results_merged">%d merged with existing</string>
   <string name="notification_skip_back">跳过</string>
   <string name="notification_pause">暂停</string>
   <string name="notification_play">播放</string>
@@ -1355,4 +1354,5 @@
   <string name="source_kugou_synced">KuGou.com (同步)</string>
   <string name="source_youtube_unsynced">YouTube (未同步)</string>
   <string name="clipboard_contains_non_text_content">剪贴板包含非文本内容(图像或其他媒体)</string>
+  <string name="match_results_merged">%d merged with existing</string>
 </resources>
