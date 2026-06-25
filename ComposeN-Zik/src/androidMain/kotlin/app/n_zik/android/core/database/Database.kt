@@ -103,15 +103,19 @@ object Database {
 
     fun upsert( songItem: Innertube.SongItem ) = asyncTransaction {
         val song =  songItem.asSong
+        println("NZIK_DB_TRACE upsert(SongItem) id=${song.id} title='${song.title}' fetchedArtistsText='${song.artistsText}' authors=${songItem.authors?.map { it.name + "|" + (it.endpoint?.browseId ?: "null") }}")
 
         //<editor-fold defaultstate="collapsed" desc="Upsert song">
         val dbSong = runBlocking {
             songTable.findById( song.id ).first()
         }
+        val finalTitle = PropUtils.retainIfModified( dbSong?.title, song.title ).orEmpty()
+        val finalArtistsText = PropUtils.retainIfModified( dbSong?.artistsText, song.artistsText )
+        println("NZIK_DB_TRACE upsert(SongItem) id=${song.id} dbTitle='${dbSong?.title}' dbArtistsText='${dbSong?.artistsText}' finalTitle='$finalTitle' finalArtistsText='$finalArtistsText'")
         songTable.upsert(Song(
             id = song.id,
-            title = PropUtils.retainIfModified( dbSong?.title, song.title ).orEmpty(),
-            artistsText = PropUtils.retainIfModified( dbSong?.artistsText, song.artistsText ),
+            title = finalTitle,
+            artistsText = finalArtistsText ?: "",
             durationText = song.durationText,       // Force update to new duration text
             thumbnailUrl = PropUtils.retainIfModified( dbSong?.thumbnailUrl, song.thumbnailUrl ),
             likedAt = dbSong?.likedAt,
@@ -213,6 +217,8 @@ object Database {
      * this method handles the insertion automatically.
      */
     fun insertIgnore( mediaItem: MediaItem ) {
+        val md = mediaItem.mediaMetadata
+        println("NZIK_DB_TRACE insertIgnore(MediaItem) id=${mediaItem.mediaId} title='${md.title}' artist='${md.artist}' albumTitle='${md.albumTitle}' extrasArtistNames=${md.extras?.getStringArrayList("artistNames")} extrasArtistIds=${md.extras?.getStringArrayList("artistIds")}")
         // Insert song
         songTable.insertIgnore( mediaItem.asSong )
 

@@ -20,7 +20,10 @@ fun MediaItem.artistTextWithFallback(): String {
     val dbSong by remember(mediaId) {
         Database.songTable.findById(mediaId)
     }.collectAsState(null, Dispatchers.IO)
-    return dbSong?.artistsText ?: artist
+    val dbText = dbSong?.artistsText
+    println("NZIK_DB_TRACE artistTextWithFallback id=$mediaId mediaArtist='$artist' dbArtistsText='$dbText'")
+    if (!dbText.isNullOrBlank() && dbText != "null") return dbText
+    return artist
 }
 
 @Composable
@@ -51,9 +54,12 @@ fun MediaItem.albumIdWithFallback(): String? {
 fun MediaItem.artistTextOrDb(): String {
     val artist = mediaMetadata.artist?.toString() ?: ""
     if (artist.isNotBlank() && artist != "null") return artist
-    return runBlocking {
-        Database.songTable.findById(mediaId).first()?.artistsText ?: artist
+    val dbText = runBlocking {
+        Database.songTable.findById(mediaId).first()?.artistsText
     }
+    println("NZIK_DB_TRACE artistTextOrDb id=$mediaId mediaArtist='$artist' dbArtistsText='$dbText'")
+    if (!dbText.isNullOrBlank() && dbText != "null") return dbText
+    return artist
 }
 
 fun MediaItem.albumTitleOrDb(): String {
