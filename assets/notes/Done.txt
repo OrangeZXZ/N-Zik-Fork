@@ -1,0 +1,6 @@
+- Fix bottom floating bar / mini player qui cache le contenu dans :
+  - ArtistLocalSongs.kt (onglet local de la page artiste) : ajout contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer) sur les 2 variantes (modern + legacy)
+  - StatisticsPage.kt : ajout contentPadding sur LazyVerticalGrid + suppression du Spacer mal placé (frère du grid dans un Box)
+  - Même pattern que ArtistDetails.kt qui fonctionnait déjà
+
+- Ajout browsing Discord

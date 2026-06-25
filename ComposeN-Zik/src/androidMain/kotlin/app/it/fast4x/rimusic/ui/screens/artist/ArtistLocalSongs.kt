@@ -74,6 +74,7 @@ import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -141,6 +142,7 @@ fun ArtistLocalSongs(
 
     LazyColumn(
         state = lazyListState,
+        contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer),
         modifier = Modifier.fillMaxSize()
     ) {
         item {
@@ -363,8 +365,7 @@ fun ArtistLocalSongs(
         ) {
             LazyColumn(
                 state = lazyListState,
-                //contentPadding = LocalPlayerAwareWindowInsets.current
-                //.only(WindowInsetsSides.Vertical + WindowInsetsSides.End).asPaddingValues(),
+                contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer),
                 modifier = Modifier
                     .background(colorPalette().background0)
                     .fillMaxSize()

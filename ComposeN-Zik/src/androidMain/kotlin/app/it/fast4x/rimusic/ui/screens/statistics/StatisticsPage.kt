@@ -15,13 +15,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -233,6 +232,7 @@ fun StatisticsPage(
                 columns = GridCells.Adaptive(
                     if(statisticsCategory == StatisticsCategory.Songs) 200.dp else playlistThumbnailSizeDp
                 ),
+                contentPadding = PaddingValues(bottom = Dimensions.bottomSpacer),
                 modifier = Modifier
                     .background(colorPalette().background0)
                     .fillMaxSize()
@@ -530,8 +530,6 @@ fun StatisticsPage(
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
 
         }
 }
