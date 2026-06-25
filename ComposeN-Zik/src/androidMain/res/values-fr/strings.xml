@@ -1356,4 +1356,5 @@ Volume BAS : titre précédent</string>
   <string name="source_youtube_unsynced">YouTube (non synchronisé)</string>
   <string name="clipboard_contains_non_text_content">Le presse-papier contient du contenu non textuel (image ou autre média)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>
