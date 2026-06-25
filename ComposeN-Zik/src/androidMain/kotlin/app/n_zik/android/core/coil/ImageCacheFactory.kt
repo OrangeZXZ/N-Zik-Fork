@@ -464,7 +464,8 @@ object ImageCacheFactory {
             androidx.compose.foundation.Image(
                 painter = painterResource(R.drawable.loader),
                 contentDescription = null,
-                modifier = modifier
+                modifier = modifier.fillMaxSize(),
+                contentScale = contentScale
             )
             return
         }
@@ -509,14 +510,16 @@ object ImageCacheFactory {
                 androidx.compose.foundation.Image(
                     painter = painterResource(R.drawable.loader),
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = contentScale
                 )
             },
             error = {
                 androidx.compose.foundation.Image(
                     painter = painterResource(error),
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = contentScale
                 )
             }
         )
