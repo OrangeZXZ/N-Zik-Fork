@@ -117,9 +117,8 @@ val Innertube.SongItem.asMediaItem: MediaItem
                     bundleOf(
                         "albumId" to album?.endpoint?.browseId,
                         "durationText" to durationText,
-                        "artistNames" to authors?.filter { it.endpoint != null }
-                            ?.mapNotNull { it.name },
-                        "artistIds" to authors?.mapNotNull { it.endpoint?.browseId },
+                        "artistNames" to ArrayList(authors.parseArtists()),
+                        "artistIds" to ArrayList(authors?.mapNotNull { it.endpoint?.browseId } ?: emptyList()),
                         EXPLICIT_BUNDLE_TAG to explicit,
                         EXTRAS_KEY_IS_EXPLICIT to explicit,
                         "setVideoId" to setVideoId,
@@ -175,9 +174,8 @@ val Innertube.VideoItem.asMediaItem: MediaItem
                 .setExtras(
                     bundleOf(
                         "durationText" to durationText,
-                        "artistNames" to authors?.filter { it.endpoint != null }
-                            ?.mapNotNull { it.name },
-                        "artistIds" to authors?.mapNotNull { it.endpoint?.browseId },
+                        "artistNames" to ArrayList(authors.parseArtists()),
+                        "artistIds" to ArrayList(authors?.mapNotNull { it.endpoint?.browseId } ?: emptyList()),
                         "isOfficialMusicVideo" to isOfficialMusicVideo,
                         "isUserGeneratedContent" to isUserGeneratedContent,
                         "isVideo" to true,
