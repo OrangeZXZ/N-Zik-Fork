@@ -754,7 +754,7 @@ object Innertube {
     ): HttpResponse {
         ensureVisitorData()
         return client.post(browse) {
-            setLogin(ytClient, true)
+            setLogin(ytClient, setLogin)
             setBody(
                 BrowseBody(
                     context = Context.DefaultWebWithLocale,

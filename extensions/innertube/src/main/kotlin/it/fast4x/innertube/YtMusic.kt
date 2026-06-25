@@ -138,7 +138,7 @@ object YtMusic {
             }.toMutableList()
         while (continuation != null) {
             println("gethomePage() continuation before:  ${continuation}" )
-            response = Innertube.browse(continuation = continuation).body<BrowseResponse>()
+            response = Innertube.browse(continuation = continuation, setLogin = setLogin).body<BrowseResponse>()
             continuation = response.continuationContents?.sectionListContinuation?.continuations?.getContinuation()
             println("gethomePage() continuation after:  ${continuation}" )
 
