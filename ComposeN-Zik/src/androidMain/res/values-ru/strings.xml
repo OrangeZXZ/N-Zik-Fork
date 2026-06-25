@@ -195,8 +195,10 @@
   <string name="dynamic">Динамически</string>
   <string name="discovery">Открытия</string>
   <string name="mood">Настроение</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Новые альбомы</string>
   <string name="moods_and_genres">Настроение и жанры</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" поисковые запросы"</string>
   <string name="not_find_battery_optimization_settings">Не удалось найти настройки оптимизации батареи. Добавьте вручную в белый список.</string>
   <string name="search">Поиск</string>
