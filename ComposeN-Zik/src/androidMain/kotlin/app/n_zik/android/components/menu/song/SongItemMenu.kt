@@ -223,7 +223,7 @@ class SongItemMenu private constructor(
                 if (artistsData.isEmpty()) {
                     // No DB data: split artistsText to create per-artist buttons
                     val artistNames = song.artistsText
-                        ?.split(",")
+                        ?.split(",", "&")
                         ?.map { it.trim() }
                         ?.filter { it.isNotBlank() }
                         ?: emptyList()

@@ -153,7 +153,7 @@ suspend fun importYTMLikedAlbums(): Boolean {
                         thumbnailUrl = remoteAlbum.thumbnail?.url,
                         bookmarkedAt = System.currentTimeMillis(),
                         year = remoteAlbum.year,
-                        authorsText = remoteAlbum.authors?.getOrNull(1)?.name,
+                        authorsText = remoteAlbum.authors.parseArtists().joinToString(", "),
                         isYoutubeAlbum = true
                     )
                     Database.albumTable.upsert( localAlbum )

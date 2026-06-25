@@ -210,7 +210,7 @@ class VideoItemMenu private constructor(
             
             if (artistsData.isEmpty()) {
                 val artistNames = song.artistsText
-                    ?.split(",")
+                    ?.split(",", "&")
                     ?.map { it.trim() }
                     ?.filter { it.isNotBlank() }
                     ?: emptyList()

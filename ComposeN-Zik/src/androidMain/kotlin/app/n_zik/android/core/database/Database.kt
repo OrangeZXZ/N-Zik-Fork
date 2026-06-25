@@ -29,6 +29,7 @@ import app.it.fast4x.rimusic.models.SongArtistMap
 import app.it.fast4x.rimusic.models.SongPlaylistMap
 import app.it.fast4x.rimusic.models.SortedSongPlaylistMap
 import app.it.fast4x.rimusic.utils.asSong
+import app.it.fast4x.rimusic.utils.parseArtists
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -152,7 +153,7 @@ object Database {
                         title = PropUtils.retainIfModified( dbAlbum?.title, it.name ),
                         thumbnailUrl = PropUtils.retainIfModified( dbAlbum?.thumbnailUrl, song.thumbnailUrl ),
                         year = dbAlbum?.year,
-                        authorsText = PropUtils.retainIfModified( dbAlbum?.authorsText, it.name ),
+                        authorsText = PropUtils.retainIfModified( dbAlbum?.authorsText, songItem.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() }),
                         shareUrl = dbAlbum?.shareUrl,
                         timestamp = dbAlbum?.timestamp,
                         bookmarkedAt = dbAlbum?.bookmarkedAt,

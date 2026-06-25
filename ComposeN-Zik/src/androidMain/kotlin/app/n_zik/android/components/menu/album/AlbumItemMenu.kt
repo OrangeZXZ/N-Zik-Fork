@@ -314,7 +314,7 @@ class AlbumItemMenu private constructor(
             
             if (artistsData.isEmpty()) {
                 val artistNames = album.authorsText
-                    ?.split(",")
+                    ?.split(",", "&")
                     ?.map { it.trim() }
                     ?.filter { it.isNotBlank() }
                     ?: emptyList()
