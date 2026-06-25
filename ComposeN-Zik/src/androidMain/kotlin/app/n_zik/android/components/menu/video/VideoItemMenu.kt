@@ -65,6 +65,7 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import app.n_zik.android.components.SongItem
 import app.n_zik.android.components.menu.GridMenu
@@ -227,6 +228,15 @@ class VideoItemMenu private constructor(
                             override fun onShortClick() {
                                 menuState.hide()
                                 CoroutineScope(Dispatchers.IO).launch {
+                                    // Try DB by name first (works after search online populated it)
+                                    val dbArtist = try {
+                                        Database.artistTable.findByName(artistName).first()
+                                    } catch (_: Exception) { null }
+                                    if (dbArtist != null) {
+                                        navController.navigate("${app.it.fast4x.rimusic.enums.NavRoutes.artist.name}/${dbArtist.id}")
+                                        return@launch
+                                    }
+                                    // Fallback: Innertube nextPage
                                     it.fast4x.innertube.Innertube.nextPage(it.fast4x.innertube.models.bodies.NextBody(videoId = song.id))
                                         ?.getOrNull()
                                         ?.itemsPage?.items?.firstOrNull()
