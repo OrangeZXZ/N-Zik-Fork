@@ -365,7 +365,7 @@ object ImageCacheFactory {
             modifier = modifier,
             placeholder = painterResource(R.drawable.loader),
             error = painterResource(R.drawable.ic_launcher_box),
-            fallback = painterResource(R.drawable.ic_launcher_box)
+            fallback = painterResource(R.drawable.loader)
         )
     }
 
@@ -439,7 +439,7 @@ object ImageCacheFactory {
             contentScale = contentScale,
             placeholder = painterResource(placeholder ?: R.drawable.loader),
             error = painterResource(error),
-            fallback = painterResource(fallback),
+            fallback = painterResource(R.drawable.loader),
             onLoading = onLoading,
             onSuccess = onSuccess,
             onError = { state ->
@@ -605,7 +605,7 @@ object ImageCacheFactory {
             modifier = modifier,
             placeholder = painterResource(R.drawable.loader),
             error = painterResource(R.drawable.ic_launcher_box),
-            fallback = painterResource(R.drawable.ic_launcher_box),
+            fallback = painterResource(R.drawable.loader),
             onLoading = onLoading,
             onSuccess = onSuccess,
             onError = { state ->
