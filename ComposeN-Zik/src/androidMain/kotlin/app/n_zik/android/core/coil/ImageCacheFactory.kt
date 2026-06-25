@@ -4,12 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -19,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import app.n_zik.android.R
 import coil3.ImageLoader
@@ -465,16 +460,12 @@ object ImageCacheFactory {
         }
 
         if (currentUrl == null) {
-            // No URL yet (data not available): show loader spinner
-            Box(
-                modifier = modifier,
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(32.dp),
-                    strokeWidth = 2.dp
-                )
-            }
+            // No URL yet (data not available): show static loader
+            androidx.compose.foundation.Image(
+                painter = painterResource(R.drawable.loader),
+                contentDescription = null,
+                modifier = modifier
+            )
             return
         }
 
@@ -515,15 +506,11 @@ object ImageCacheFactory {
             contentScale = contentScale,
             modifier = modifier,
             loading = {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(32.dp),
-                        strokeWidth = 2.dp
-                    )
-                }
+                androidx.compose.foundation.Image(
+                    painter = painterResource(R.drawable.loader),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
             },
             error = {
                 androidx.compose.foundation.Image(
