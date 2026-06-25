@@ -126,7 +126,7 @@ class ImportSongsFromServices private constructor(
                                         title = albumTitle
                                     )
 
-                                    val artistNames = row["Artist Name(s)"]?.split(",")
+                                    val artistNames = row["Artist Name(s)"]?.split(",", "&")
                                     artists = artistNames?.map { name ->
                                         Artist(
                                             id = "",
@@ -163,7 +163,7 @@ class ImportSongsFromServices private constructor(
                                         title = albumTitle
                                     )
 
-                                    val artistNames = row["Artists"]?.split(",")
+                                    val artistNames = row["Artists"]?.split(",", "&")
                                     val artistIds = row["ArtistIds"]?.split(",")
                                     val mutableArtists = mutableListOf<Artist>()
                                     if (artistIds != null && (artistNames?.size == artistIds.size)) {
