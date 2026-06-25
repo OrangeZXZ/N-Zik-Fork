@@ -15,6 +15,9 @@ import androidx.room.TypeConverters
 import androidx.room.withTransaction
 import androidx.sqlite.db.SimpleSQLiteQuery
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.requests.searchPage
+import it.fast4x.innertube.utils.from
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Artist
 import app.it.fast4x.rimusic.models.Event
@@ -118,25 +121,60 @@ object Database {
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Upsert artists">
-        songItem.authors
-                ?.fastMapNotNull {
-                    val browseId = it.endpoint?.browseId ?: return@fastMapNotNull null
-
-                    val dbArtist = runBlocking {
-                        artistTable.findById( browseId ).first()
-                    }
-
-                    Artist(
-                        id = browseId,
-                        name = PropUtils.retainIfModified( dbArtist?.name, it.name ),
-                        thumbnailUrl = dbArtist?.thumbnailUrl,
-                        timestamp = dbArtist?.timestamp,
-                        bookmarkedAt = dbArtist?.bookmarkedAt,
-                        isYoutubeArtist = dbArtist?.isYoutubeArtist == true
-                    )
+        // Parse artist names from authors, handling combined names like "A & B"
+        val artistNames = songItem.authors.parseArtists()
+        val artistsToUpsert = mutableListOf<Artist>()
+        
+        for (artistName in artistNames) {
+            // Try to find browse ID from original authors first
+            val originalAuthor = songItem.authors?.find { it.name == artistName }
+            val browseId = originalAuthor?.endpoint?.browseId
+            
+            if (browseId != null) {
+                // Has browse ID, upsert directly
+                val dbArtist = runBlocking { artistTable.findById(browseId).first() }
+                artistsToUpsert.add(Artist(
+                    id = browseId,
+                    name = PropUtils.retainIfModified(dbArtist?.name, artistName),
+                    thumbnailUrl = dbArtist?.thumbnailUrl,
+                    timestamp = dbArtist?.timestamp,
+                    bookmarkedAt = dbArtist?.bookmarkedAt,
+                    isYoutubeArtist = dbArtist?.isYoutubeArtist == true
+                ))
+            } else {
+                // No browse ID, try database by name
+                val dbArtistByName = runBlocking { artistTable.findByName(artistName).first() }
+                if (dbArtistByName != null) {
+                    artistsToUpsert.add(dbArtistByName)
+                } else {
+                    // Last resort: search online
+                    try {
+                        val searchResult = runBlocking {
+                            it.fast4x.innertube.Innertube.searchPage<it.fast4x.innertube.Innertube.ArtistItem>(
+                                it.fast4x.innertube.models.bodies.SearchBody(
+                                    query = artistName,
+                                    params = it.fast4x.innertube.Innertube.SearchFilter.Artist.value
+                                )
+                            ) { content -> it.fast4x.innertube.Innertube.ArtistItem.from(content) }
+                        }?.getOrNull()
+                        
+                        val foundArtist = searchResult?.items?.firstOrNull()
+                        if (foundArtist != null && foundArtist.key != null) {
+                            artistsToUpsert.add(Artist(
+                                id = foundArtist.key,
+                                name = foundArtist.info?.name ?: artistName,
+                                isYoutubeArtist = true
+                            ))
+                        }
+                    } catch (_: Exception) { }
                 }
-                ?.also( artistTable::upsert )
-                ?.fastForEach { mapIgnore( it, song ) }
+            }
+        }
+        
+        if (artistsToUpsert.isNotEmpty()) {
+            artistTable.upsert(artistsToUpsert)
+            artistsToUpsert.forEach { mapIgnore(it, song) }
+        }
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Upsert album">
