@@ -3,6 +3,7 @@ package app.it.fast4x.rimusic.ui.screens.player
 
 import app.n_zik.android.core.database.*
 import app.n_zik.android.uiRoundnessShape
+import app.n_zik.android.utils.artistTextWithFallback
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
@@ -420,7 +421,7 @@ fun MiniPlayer(
                 }
 
                 BasicText(
-                    text = cleanPrefix( mediaItem.mediaMetadata.artist.toString() ),
+                    text = cleanPrefix( mediaItem.artistTextWithFallback() ),
                     style = typography().xxs.semiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

@@ -1,6 +1,7 @@
 package app.it.fast4x.rimusic.ui.screens.player
 
 import app.n_zik.android.core.database.*
+import app.n_zik.android.utils.artistTextWithFallback
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -110,7 +111,7 @@ fun Controls(
     },
     mediaId = mediaItem.mediaId,
     title = cleanPrefix( mediaItem.mediaMetadata.title.toString() ),
-    artist = cleanPrefix( mediaItem.mediaMetadata.artist.toString() ),
+    artist = cleanPrefix( mediaItem.artistTextWithFallback() ),
     artistIds = artistIds,
     albumId = albumId,
     shouldBePlaying = shouldBePlaying,

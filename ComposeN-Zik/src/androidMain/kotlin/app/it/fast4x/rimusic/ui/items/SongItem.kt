@@ -3,6 +3,7 @@ package app.it.fast4x.rimusic.ui.items
 
 import app.n_zik.android.core.database.*
 import app.n_zik.android.uiRoundnessShape
+import app.n_zik.android.utils.artistTextWithFallback
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -351,7 +352,7 @@ fun SongItem(
     else DownloadedStateMedia.DOWNLOADED
 
     val title = mediaItem.mediaMetadata.title.toString()
-    val authors = mediaItem.mediaMetadata.artist.toString()
+    val authors = mediaItem.artistTextWithFallback()
     val duration = mediaItem.mediaMetadata.extras?.getString("durationText")
 
     val playlistindicator by rememberPreference(playlistindicatorKey,false)

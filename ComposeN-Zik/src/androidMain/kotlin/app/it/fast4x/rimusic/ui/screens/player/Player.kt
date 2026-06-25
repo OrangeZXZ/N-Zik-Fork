@@ -4,6 +4,8 @@ import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.appRunningInBackground
 
 import app.n_zik.android.core.database.*
+import app.n_zik.android.utils.artistIdsWithFallback
+import app.n_zik.android.utils.albumIdWithFallback
 
 import app.it.fast4x.rimusic.ui.components.themed.SleepTimerDialog
 import android.annotation.SuppressLint
@@ -546,31 +548,8 @@ fun Player(
         updateBrush = true
     }
 
-    val artistInfos by remember( mediaItem ) {
-        val ids = mediaItem.mediaMetadata.extras?.getStringArrayList( "artistIds" ).orEmpty()
-        val names = mediaItem.mediaMetadata.extras?.getStringArrayList( "artistNames" ).orEmpty()
-
-        if( ids.isNotEmpty() )
-            return@remember flowOf (
-                ids.fastZip( names ) { id, name -> Info(id, name) }
-            )
-
-        Database.songArtistMapTable
-                .findArtistsOf( mediaItem.mediaId )
-                .distinctUntilChanged()
-                .map { list ->
-                    list.map { Info(it.id, it.name) }
-                }
-    }.collectAsState( emptyList(), Dispatchers.IO )
-    val albumId by remember( mediaItem ) {
-        val result = mediaItem.mediaMetadata.extras?.getString("albumId")
-        if( !result.isNullOrBlank() )
-            return@remember flowOf( result )
-
-        Database.songAlbumMapTable
-                .findAlbumOf( mediaItem.mediaId )
-                .map { it?.id }
-    }.collectAsState( null, Dispatchers.IO )
+    val artistInfos = mediaItem.artistIdsWithFallback()
+    val albumId = mediaItem.albumIdWithFallback()
 
     var showCircularSlider by remember {
         mutableStateOf(false)
