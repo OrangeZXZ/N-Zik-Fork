@@ -233,7 +233,7 @@ class VideoItemMenu private constructor(
                                         Database.artistTable.findByName(artistName).first()
                                     } catch (_: Exception) { null }
                                     if (dbArtist != null) {
-                                        navController.navigate("${app.it.fast4x.rimusic.enums.NavRoutes.artist.name}/${dbArtist.id}")
+                                        app.it.fast4x.rimusic.enums.NavRoutes.artist.navigateHere(navController, dbArtist.id)
                                         return@launch
                                     }
                                     // Fallback: Innertube nextPage

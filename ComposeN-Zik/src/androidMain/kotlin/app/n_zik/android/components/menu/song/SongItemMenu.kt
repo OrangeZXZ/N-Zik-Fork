@@ -247,7 +247,7 @@ class SongItemMenu private constructor(
                                             Database.artistTable.findByName(artistName).first()
                                         } catch (_: Exception) { null }
                                         if (dbArtist != null) {
-                                            navController.navigate("${NavRoutes.artist.name}/${dbArtist.id}")
+                                            NavRoutes.artist.navigateHere(navController, dbArtist.id)
                                             return@launch
                                         }
                                         // Fallback: try Innertube nextPage
