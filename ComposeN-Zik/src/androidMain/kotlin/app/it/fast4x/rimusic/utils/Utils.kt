@@ -55,6 +55,7 @@ import app.it.fast4x.rimusic.ui.components.themed.NewVersionDialog
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import app.kreate.android.me.knighthat.utils.Toaster
 import java.io.File
 import java.time.Duration
@@ -196,9 +197,14 @@ val Song.asMediaItem: MediaItem
                 .setTitle(cleanPrefix(title))
                 .setArtist(
                     if (title.startsWith(EXPLICIT_PREFIX, true)) {
-                        if (artistsText.isNullOrEmpty()) "\uD83C\uDD74" else "\uD83C\uDD74 $artistsText"
+                        val text = artistsText ?: runBlocking {
+                            Database.songTable.findById(id).first()?.artistsText
+                        }
+                        if (text.isNullOrEmpty()) "\uD83C\uDD74" else "\uD83C\uDD74 $text"
                     } else {
-                        artistsText
+                        artistsText ?: runBlocking {
+                            Database.songTable.findById(id).first()?.artistsText
+                        }
                     }
                 )
                 .setArtworkUri(thumbnailUrl?.thumbnail(1200)?.toUri() ?: app.n_zik.android.playback.models.MediaItemMapper.drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
