@@ -195,8 +195,10 @@
   <string name="dynamic">Dinamik</string>
   <string name="discovery">Keşif</string>
   <string name="mood">Ruh Hali</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Yeni albümler</string>
   <string name="moods_and_genres">Ruh Halleri ve Türler</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">"arama sorguları"</string>
   <string name="not_find_battery_optimization_settings">Pil optimizasyon ayarları bulunamadı, lütfen manuel olarak beyaz listeye ekleyin</string>
   <string name="search">Ara</string>
