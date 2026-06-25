@@ -123,17 +123,19 @@ fun AlbumScreen(
                            position = album?.position ?: -1
                        ))
 
-                       online.songs
-                             .map( Innertube.SongItem::asMediaItem )
-                             .onEach( ::insertIgnore )
-                             .mapIndexed { position, mediaItem ->
-                                 SongAlbumMap(
-                                     songId = mediaItem.mediaId,
-                                     albumId = browseId,
-                                     position = position
-                                 )
-                             }
-                             .also( songAlbumMapTable::upsert )
+                        online.songs
+                              .map { songItem ->
+                                  Database.upsert(songItem)
+                                  songItem.asMediaItem
+                              }
+                              .mapIndexed { position, mediaItem ->
+                                  SongAlbumMap(
+                                      songId = mediaItem.mediaId,
+                                      albumId = browseId,
+                                      position = position
+                                  )
+                              }
+                              .also( songAlbumMapTable::upsert )
                    }
 
                    alternatives = online.otherVersions
