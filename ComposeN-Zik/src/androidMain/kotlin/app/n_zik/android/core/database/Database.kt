@@ -264,23 +264,31 @@ object Database {
                 if (existingArtist != null) {
                     songArtistMapTable.insertIgnore(SongArtistMap(mediaItem.mediaId, existingArtist.id))
                 } else {
-                    // Search online for the artist
-                    try {
-                        val searchResult = runBlocking {
-                            it.fast4x.innertube.Innertube.searchPage<it.fast4x.innertube.Innertube.ArtistItem>(
-                                it.fast4x.innertube.models.bodies.SearchBody(
+                    // Search online for the artist in background (non-blocking)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val searchResult = Innertube.searchPage<Innertube.ArtistItem>(
+                                SearchBody(
                                     query = name,
-                                    params = it.fast4x.innertube.Innertube.SearchFilter.Artist.value
+                                    params = Innertube.SearchFilter.Artist.value
                                 )
-                            ) { content -> it.fast4x.innertube.Innertube.ArtistItem.from(content) }
-                        }?.getOrNull()
-                        
-                        val foundArtist = searchResult?.items?.firstOrNull()
-                        if (foundArtist != null && foundArtist.key != null) {
-                            artistTable.insertIgnore(Artist(id = foundArtist.key, name = foundArtist.info?.name ?: name, isYoutubeArtist = true))
-                            songArtistMapTable.insertIgnore(SongArtistMap(mediaItem.mediaId, foundArtist.key))
+                            ) { content -> Innertube.ArtistItem.from(content) }
+                                .getOrNull()
+
+                            val foundArtist = searchResult?.items?.firstOrNull { item ->
+                                item.info?.name?.equals(name, ignoreCase = true) == true
+                            } ?: searchResult?.items?.firstOrNull()
+                            if (foundArtist != null && foundArtist.key != null) {
+                                println("NZIK_DB_TRACE insertIgnore search online found artist for name='$name' -> id=${foundArtist.key}")
+                                artistTable.insertIgnore(Artist(id = foundArtist.key, name = foundArtist.info?.name ?: name, isYoutubeArtist = true))
+                                songArtistMapTable.insertIgnore(SongArtistMap(mediaItem.mediaId, foundArtist.key))
+                            } else {
+                                println("NZIK_DB_TRACE insertIgnore search online NO artist found for name='$name'")
+                            }
+                        } catch (e: Exception) {
+                            println("NZIK_DB_TRACE insertIgnore search online FAILED for name='$name' error=${e.message}")
                         }
-                    } catch (_: Exception) { }
+                    }
                 }
             }
         }
