@@ -98,8 +98,8 @@ fun UpdateYoutubeAlbum (browseId: String) {
                                     )
                                     currentAlbumPage.songsPage
                                                     ?.items
+                                                    ?.onEach { Database.upsert(it) }
                                                     ?.map(Innertube.SongItem::asMediaItem)
-                                                    ?.onEach( Database::insertIgnore )
                                                     ?.mapIndexed { position, mediaItem ->
                                                         SongAlbumMap(
                                                             songId = mediaItem.mediaId,

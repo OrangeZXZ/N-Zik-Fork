@@ -147,7 +147,7 @@ object Database {
                 if (dbArtistByName != null) {
                     artistsToUpsert.add(dbArtistByName)
                 } else {
-                    // Last resort: search online
+                    // Last resort: search online by name
                     try {
                         val searchResult = runBlocking {
                             it.fast4x.innertube.Innertube.searchPage<it.fast4x.innertube.Innertube.ArtistItem>(
@@ -157,8 +157,10 @@ object Database {
                                 )
                             ) { content -> it.fast4x.innertube.Innertube.ArtistItem.from(content) }
                         }?.getOrNull()
-                        
-                        val foundArtist = searchResult?.items?.firstOrNull()
+
+                        val foundArtist = searchResult?.items?.firstOrNull { item ->
+                            item.info?.name?.equals(artistName, ignoreCase = true) == true
+                        } ?: searchResult?.items?.firstOrNull()
                         if (foundArtist != null && foundArtist.key != null) {
                             artistsToUpsert.add(Artist(
                                 id = foundArtist.key,

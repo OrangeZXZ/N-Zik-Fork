@@ -164,7 +164,7 @@ suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { al
             songsPage = album.songsPage?.copy(
                 items = album.songsPage.items?.map { song ->
                     song.copy(
-                        authors = song.authors ?: album.authors,
+                        authors = song.authors?.takeIf { it.isNotEmpty() } ?: album.authors,
                         album = albumInfo,
                         thumbnail = album.thumbnail
                     )

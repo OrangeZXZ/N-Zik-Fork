@@ -117,26 +117,32 @@ class ResetSongDialog private constructor(
 
             val fetchIds = arrayOf(TITLE_CHECKBOX_ID, AUTHORS_CHECKBOX_ID, THUMBNAIL_CHECKBOX_ID)
             if( items.fastAny { it.id in fetchIds && it.selected } ) {
-                val fetchedSong: Song? = Innertube.nextPage( NextBody(videoId = song.id) )
+                val songItem = Innertube.nextPage( NextBody(videoId = song.id) )
                                                   ?.getOrNull()
                                                   ?.itemsPage
                                                   ?.items
                                                   ?.firstOrNull()
-                                                  ?.asSong
 
-                @Contract("_,null->null")
-                fun <T> getProperty( itemId: String, result: T? ): T? =
-                    if ( items.first { it.id == itemId }.selected ) result else null
+                if (songItem != null) {
+                    val fetchedSong = songItem.asSong
 
-                val title = getProperty( TITLE_CHECKBOX_ID, fetchedSong?.title )
-                val authors = getProperty( AUTHORS_CHECKBOX_ID, fetchedSong?.artistsText )
-                val thumbnailUrl = getProperty( THUMBNAIL_CHECKBOX_ID, fetchedSong?.thumbnailUrl )
+                    @Contract("_,null->null")
+                    fun <T> getProperty( itemId: String, result: T? ): T? =
+                        if ( items.first { it.id == itemId }.selected ) result else null
 
-                song = song.copy(
-                    title = title ?: song.title,
-                    artistsText = authors ?: song.artistsText,
-                    thumbnailUrl = thumbnailUrl ?: song.thumbnailUrl,
-                )
+                    val title = getProperty( TITLE_CHECKBOX_ID, fetchedSong?.title )
+                    val authors = getProperty( AUTHORS_CHECKBOX_ID, fetchedSong?.artistsText )
+                    val thumbnailUrl = getProperty( THUMBNAIL_CHECKBOX_ID, fetchedSong?.thumbnailUrl )
+
+                    song = song.copy(
+                        title = title ?: song.title,
+                        artistsText = authors ?: song.artistsText,
+                        thumbnailUrl = thumbnailUrl ?: song.thumbnailUrl,
+                    )
+
+                    // Also re-save artists to fix missing browse IDs
+                    Database.upsert(songItem)
+                }
             }
 
             if( items.first { it.id == PLAYTIME_CHECKBOX_ID }.selected )
