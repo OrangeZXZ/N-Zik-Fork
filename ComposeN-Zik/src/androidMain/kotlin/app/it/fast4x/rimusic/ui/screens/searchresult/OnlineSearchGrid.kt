@@ -37,6 +37,7 @@ import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import app.it.fast4x.rimusic.utils.addNext
+import app.it.fast4x.rimusic.utils.parseArtists
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.asSong
 import app.it.fast4x.rimusic.utils.enqueue
@@ -258,7 +259,7 @@ fun OnlineSearchGrid(
                 )
             }
             if (item is Innertube.AlbumItem) {
-                item.authors?.filter { it.name?.matches(Regex("\\s*([,&])\\s*")) == false }?.joinToString(", ") { it.name ?: "" }?.let { authors ->
+                item.authors.parseArtists().joinToString(", ").let { authors ->
                     if (authors.isNotBlank()) {
                         BasicText(
                             text = authors,

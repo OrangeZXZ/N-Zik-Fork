@@ -60,6 +60,7 @@ import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.SongAlbumMap
 import app.it.fast4x.rimusic.utils.asMediaItem
+import app.it.fast4x.rimusic.utils.parseArtists
 import app.it.fast4x.rimusic.utils.playerPositionKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.transitionEffectKey
@@ -106,9 +107,7 @@ fun AlbumScreen(
         YtMusic.getAlbum( browseId, true )
                .onSuccess { online ->
                    val onlineAlbum = online.album
-                   val authorsText: String? = onlineAlbum.authors
-                                                         ?.fastMapNotNull { it.name }
-                                                         ?.fastJoinToString( "" )
+                    val authorsText: String? = onlineAlbum.authors.parseArtists().joinToString(", ")
 
                    Database.asyncTransaction {
                        albumTable.upsert(Album(

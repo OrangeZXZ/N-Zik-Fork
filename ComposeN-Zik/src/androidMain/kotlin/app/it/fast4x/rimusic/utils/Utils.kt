@@ -69,7 +69,7 @@ val Innertube.AlbumItem.asAlbum: Album
         title = info?.name,
         thumbnailUrl = thumbnail?.url,
         year = year,
-        authorsText = authors?.filter { it.name?.matches(Regex("\\s*([,&])\\s*")) == false }?.joinToString(", ") { it.name ?: "" },
+        authorsText = authors.parseArtists().joinToString(", "),
         //shareUrl =
     )
 
@@ -108,9 +108,8 @@ val Innertube.SongItem.asMediaItem: MediaItem
             MediaMetadata.Builder()
                 .setTitle(info?.name)
                 .setArtist(
-                    authors?.filter { it.name?.matches(Regex("\\s*([,&])\\s*")) == false }
-                        ?.joinToString(", ") { it.name ?: "" }
-                        ?.let { if (explicit) "\uD83C\uDD74 $it" else it }
+                    authors.parseArtists().joinToString(", ")
+                        .let { if (explicit) "\uD83C\uDD74 $it" else it }
                 )
                 .setAlbumTitle(album?.name)
                 .setArtworkUri(thumbnail?.url?.toUri())
@@ -130,11 +129,34 @@ val Innertube.SongItem.asMediaItem: MediaItem
         )
         .build()
 
+/**
+ * Parse artist names from authors list, handling "&" and "," separators within single strings.
+ * Returns a clean list of individual artist names.
+ */
+fun List<Innertube.Info<*>?>?.parseArtists(): List<String> {
+    if (this == null) return emptyList()
+    
+    val result = mutableListOf<String>()
+    for (author in this) {
+        val name = author?.name ?: continue
+        // Skip pure separators
+        if (name.matches(Regex("\\s*([,&])\\s*"))) continue
+        // Check if this name contains multiple artists
+        if (name.contains("&") || name.contains(",")) {
+            // Split by & or , and add each
+            name.split("&", ",").map { it.trim() }.filter { it.isNotBlank() }.forEach { result.add(it) }
+        } else {
+            result.add(name)
+        }
+    }
+    return result.distinctBy { it.lowercase() }
+}
+
 val Innertube.SongItem.asSong: Song
     get() = Song (
         id = key,
         title = (if( explicit ) EXPLICIT_PREFIX else "").plus( info?.name ?: "" ),
-        artistsText = authors?.filter { it.name?.matches(Regex("\\s*([,&])\\s*")) == false }?.joinToString(", ") { it.name ?: "" },
+        artistsText = authors.parseArtists().joinToString(", "),
         durationText = durationText,
         thumbnailUrl = thumbnail?.url
     )
@@ -148,7 +170,7 @@ val Innertube.VideoItem.asMediaItem: MediaItem
         .setMediaMetadata(
             MediaMetadata.Builder()
                 .setTitle(info?.name)
-                .setArtist(authors?.filter { it.name?.matches(Regex("\\s*([,&])\\s*")) == false }?.joinToString(", ") { it.name ?: "" })
+                .setArtist(authors.parseArtists().joinToString(", "))
                 .setArtworkUri(thumbnail?.url?.toUri())
                 .setExtras(
                     bundleOf(
@@ -208,7 +230,7 @@ val Innertube.VideoItem.asSong: Song
     get() = Song (
         id = key,
         title = info?.name ?: "",
-        artistsText = authors?.filter { it.name?.matches(Regex("\\s*([,&])\\s*")) == false }?.joinToString(", ") { it.name ?: "" },
+        artistsText = authors.parseArtists().joinToString(", "),
         durationText = durationText,
         thumbnailUrl = thumbnail?.url
     )

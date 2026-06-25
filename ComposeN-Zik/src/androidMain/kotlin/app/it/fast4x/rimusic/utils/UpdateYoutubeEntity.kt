@@ -90,8 +90,7 @@ fun UpdateYoutubeAlbum (browseId: String) {
                                             title = currentAlbumPage.title,
                                             thumbnailUrl = currentAlbumPage.thumbnail?.url,
                                             year = currentAlbumPage.year,
-                                            authorsText = currentAlbumPage.authors
-                                                ?.joinToString("") { it.name ?: "" },
+                                            authorsText = currentAlbumPage.authors.parseArtists().joinToString(", "),
                                             shareUrl = currentAlbumPage.url,
                                             timestamp = System.currentTimeMillis(),
                                             bookmarkedAt = album?.bookmarkedAt

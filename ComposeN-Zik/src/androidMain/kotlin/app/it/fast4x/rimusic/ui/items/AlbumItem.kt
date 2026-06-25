@@ -43,6 +43,7 @@ import app.it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.shimmer
 import app.it.fast4x.rimusic.utils.conditional
+import app.it.fast4x.rimusic.utils.parseArtists
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
@@ -97,7 +98,7 @@ fun AlbumItem(
     AlbumItem(
         thumbnailUrl = album.thumbnail?.url,
         title = album.info?.name,
-        authors = album.authors?.filter { it.name?.matches(Regex("\\s*([,&])\\s*")) == false }?.joinToString(", ") { it.name ?: "" },
+        authors = album.authors.parseArtists().joinToString(", "),
         year = album.year,
         yearCentered = yearCentered,
         thumbnailSizePx = thumbnailSizePx,

@@ -65,6 +65,7 @@ import app.n_zik.android.playback.models.MediaSessionConstants.ID_PLAYLISTS_PIPE
 import app.n_zik.android.playback.models.MediaSessionConstants.ID_PLAYLISTS_YT
 import app.n_zik.android.playback.models.MediaSessionConstants.ID_QUICK_PICKS
 import app.it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
+import app.it.fast4x.rimusic.utils.parseArtists
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.asSong
 import app.it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
@@ -451,7 +452,7 @@ class MediaLibrarySessionCallback(
                                     Innertube.searchPage<Innertube.AlbumItem>(ContinuationBody(continuation = cont), { content -> Innertube.AlbumItem.from(content) })?.getOrNull()
                                 }
                                 val items = resultPage?.items ?: emptyList()
-                                allMapped.addAll(items.map { ali -> MediaItemMapper.mapAlbumToMediaItem(PlayerServiceModern.ALBUM, ali.key ?: "", ali.info?.name ?: "", ali.authors?.joinToString(", ") { a -> a.name ?: "" }, ali.thumbnail?.url, parentId) })
+                                allMapped.addAll(items.map { ali -> MediaItemMapper.mapAlbumToMediaItem(PlayerServiceModern.ALBUM, ali.key ?: "", ali.info?.name ?: "", ali.authors.parseArtists().joinToString(", "), ali.thumbnail?.url, parentId) })
                                 cont = resultPage?.continuation
                             } while (cont != null && allMapped.size < 150)
                             allMapped
@@ -513,7 +514,7 @@ class MediaLibrarySessionCallback(
                                     Innertube.searchPage<Innertube.AlbumItem>(ContinuationBody(continuation = cont), { content -> Innertube.AlbumItem.from(content) })?.getOrNull()
                                 }
                                 val items = resultPage?.items ?: emptyList()
-                                allMapped.addAll(items.map { ali -> MediaItemMapper.mapAlbumToMediaItem(PlayerServiceModern.ALBUM, ali.key ?: "", ali.info?.name ?: "", ali.authors?.joinToString(", ") { a -> a.name ?: "" }, ali.thumbnail?.url, parentId) })
+                                allMapped.addAll(items.map { ali -> MediaItemMapper.mapAlbumToMediaItem(PlayerServiceModern.ALBUM, ali.key ?: "", ali.info?.name ?: "", ali.authors.parseArtists().joinToString(", "), ali.thumbnail?.url, parentId) })
                                 cont = resultPage?.continuation
                             } while (cont != null && allMapped.size < 150)
                             allMapped
@@ -556,7 +557,7 @@ class MediaLibrarySessionCallback(
                                             items.mapNotNull { item ->
                                                 when (item) {
                                                     is Innertube.SongItem -> { val song = item.asSong; searchedSongs = (searchedSongs + song).distinctBy { s -> s.id }; MediaItemMapper.mapSongToMediaItem(song, parentId) }
-                                                    is Innertube.AlbumItem -> MediaItemMapper.mapAlbumToMediaItem(PlayerServiceModern.ALBUM, item.key ?: "", item.info?.name ?: "", item.authors?.joinToString(", ") { a -> a.name ?: "" }, item.thumbnail?.url)
+                                                    is Innertube.AlbumItem -> MediaItemMapper.mapAlbumToMediaItem(PlayerServiceModern.ALBUM, item.key ?: "", item.info?.name ?: "", item.authors.parseArtists().joinToString(", "), item.thumbnail?.url)
                                                     else -> null
                                                 }
                                             }

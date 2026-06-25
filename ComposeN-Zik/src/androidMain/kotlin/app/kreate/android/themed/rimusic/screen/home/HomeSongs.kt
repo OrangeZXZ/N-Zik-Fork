@@ -96,6 +96,7 @@ import app.it.fast4x.rimusic.utils.manageDownload
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 import app.it.fast4x.rimusic.utils.recommendationsNumberKey
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.parseArtists
 import app.it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -306,7 +307,7 @@ fun HomeSongs(
                                 val song = Song(
                                     id = "$prefix$videoId",
                                     title = info.name!!,
-                                    artistsText = songItem.authors?.joinToString { author -> author.name ?: "" },
+                                    artistsText = songItem.authors.parseArtists().joinToString(", "),
                                     durationText = songItem.durationText,
                                     thumbnailUrl = songItem.thumbnail?.url
                                 )

@@ -38,6 +38,7 @@ import app.n_zik.android.components.menu.video.VideoItemMenu
 import app.it.fast4x.rimusic.ui.screens.searchresult.ItemsPage
 
 import app.it.fast4x.rimusic.utils.addNext
+import app.it.fast4x.rimusic.utils.parseArtists
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.asSong
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey
@@ -108,7 +109,7 @@ fun ArtistVideos(
                             thumbnailUrl = video?.thumbnail?.url ?: song?.thumbnail?.url,
                             duration = video?.durationText ?: song?.durationText,
                             title = item.title,
-                            uploader = (video?.authors ?: song?.authors)?.joinToString(", ") { it.name ?: "" },
+                            uploader = (video?.authors ?: song?.authors).parseArtists().joinToString(", "),
                             views = video?.viewsText,
                             thumbnailWidthDp = thumbnailWidthDp,
                             thumbnailHeightDp = thumbnailHeightDp,

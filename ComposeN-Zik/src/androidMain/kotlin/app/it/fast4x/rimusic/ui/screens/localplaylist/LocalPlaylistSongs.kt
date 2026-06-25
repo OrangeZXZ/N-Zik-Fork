@@ -144,6 +144,7 @@ import app.it.fast4x.rimusic.utils.recommendationsNumberKey
 import app.it.fast4x.rimusic.ui.components.themed.TextFieldDialog
 import androidx.core.net.toUri
 import app.it.fast4x.rimusic.utils.asSong
+import app.it.fast4x.rimusic.utils.parseArtists
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.preferences
 import app.it.fast4x.rimusic.utils.Preference
@@ -852,7 +853,7 @@ fun LocalPlaylistSongs(
                         val song = Song(
                             id = "$prefix${songItem.info!!.endpoint!!.videoId!!}",
                             title = songItem.info!!.name!!,
-                            artistsText = songItem.authors?.joinToString { author -> author.name ?: "" },
+                            artistsText = songItem.authors.parseArtists().joinToString(", "),
                             durationText = songItem.durationText,
                             thumbnailUrl = songItem.thumbnail?.url
                         )
