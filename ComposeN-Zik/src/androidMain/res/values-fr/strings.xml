@@ -1310,7 +1310,6 @@ Volume BAS : titre précédent</string>
   <string name="match_results_ok">Ok</string>
   <string name="retry_match">Réessayer la correspondance</string>
   <string name="retry_match_confirmation">Retenter la correspondance de %d chansons échouées ?</string>
-  <string name="match_results_merged">%d merged with existing</string>
   <string name="notification_skip_back">Revenir en arrière</string>
   <string name="notification_pause">Mettre en pause</string>
   <string name="notification_play">Jouer</string>
