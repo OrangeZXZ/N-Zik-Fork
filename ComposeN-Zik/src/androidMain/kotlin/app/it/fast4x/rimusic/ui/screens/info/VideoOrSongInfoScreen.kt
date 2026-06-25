@@ -27,7 +27,11 @@ import app.n_zik.android.typography
 import app.n_zik.android.uiRoundnessShape
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.VideoOrSongInfo
+import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.requests.songInfo
+import it.fast4x.innertube.utils.from
+import kotlinx.coroutines.flow.first
 import timber.log.Timber
 
 @Composable
@@ -47,6 +51,7 @@ fun VideoOrSongInfoScreen(
 
     var info by remember { mutableStateOf<VideoOrSongInfo?>(null) }
     var isLoading by remember { mutableStateOf(true) }
+    var finalArtists by remember { mutableStateOf<List<Pair<String, String>>>(emptyList()) }
 
     LaunchedEffect(videoId) {
         isLoading = true
@@ -58,13 +63,66 @@ fun VideoOrSongInfoScreen(
         } catch (e: Exception) {
             Timber.e(e, "VideoOrSongInfo exception")
         }
+        
+        // Fetch artists from database
+        try {
+            val dbArtists = app.n_zik.android.core.database.Database.artistTable.findBySongId(videoId).first()
+            if (dbArtists.isNotEmpty()) {
+                finalArtists = dbArtists.map { it.id to (it.name ?: "") }
+            } else if (songArtist.isNotBlank()) {
+                // Parse songArtist and fetch IDs from database or search online
+                val parsed = songArtist.split(",").map { it.trim() }.filter { it.isNotBlank() }
+                val artistsWithIds = mutableListOf<Pair<String, String>>()
+                for (name in parsed) {
+                    // Try database first
+                    var artistId = try {
+                        app.n_zik.android.core.database.Database.artistTable.findByName(name).first()?.id
+                    } catch (e: Exception) { null }
+                    
+                    // If not in database, search online
+                    if (artistId == null) {
+                        try {
+                            val searchResult = it.fast4x.innertube.Innertube.searchPage<it.fast4x.innertube.Innertube.ArtistItem>(
+                                it.fast4x.innertube.models.bodies.SearchBody(query = name, params = it.fast4x.innertube.Innertube.SearchFilter.Artist.value),
+                                { content -> it.fast4x.innertube.Innertube.ArtistItem.from(content) }
+                            )?.getOrNull()
+                            val foundArtist = searchResult?.items?.firstOrNull()
+                            if (foundArtist != null) {
+                                artistId = foundArtist.key
+                                // Save to database
+                                app.n_zik.android.core.database.Database.artistTable.insertIgnore(
+                                    app.it.fast4x.rimusic.models.Artist(id = artistId, name = foundArtist.info?.name ?: name)
+                                )
+                                app.n_zik.android.core.database.Database.songArtistMapTable.insertIgnore(
+                                    app.it.fast4x.rimusic.models.SongArtistMap(songId = videoId, artistId = artistId)
+                                )
+                            }
+                        } catch (e: Exception) { /* Silently fail */ }
+                    }
+                    
+                    artistsWithIds.add((artistId ?: "") to name)
+                }
+                finalArtists = artistsWithIds
+            } else {
+                val apiAuthor = info?.author?.takeIf { it.isNotBlank() }
+                val apiAuthorId = info?.authorId
+                if (apiAuthor != null && apiAuthorId != null) {
+                    finalArtists = listOf(apiAuthorId to apiAuthor)
+                }
+            }
+        } catch (e: Exception) {
+            // Fallback
+            val apiAuthor = info?.author?.takeIf { it.isNotBlank() }
+            val apiAuthorId = info?.authorId
+            if (apiAuthor != null && apiAuthorId != null) {
+                finalArtists = listOf(apiAuthorId to apiAuthor)
+            }
+        }
         isLoading = false
     }
 
     val displayTitle = info?.title?.takeIf { it.isNotBlank() } ?: songTitle
-    val displayArtist = info?.author?.takeIf { it.isNotBlank() } ?: songArtist
     val displayThumbnail = songThumbnailUrl.takeIf { it.isNotBlank() }
-    val displayAuthorId = info?.authorId
 
     Column(
         modifier = Modifier
@@ -138,15 +196,35 @@ fun VideoOrSongInfoScreen(
                         
                         Spacer(Modifier.height(8.dp))
                         
-                        // Artiste + Flèche
-                        InfoRow(
-                            label = stringResource(R.string.artists),
-                            value = displayArtist,
-                            showArrow = displayAuthorId != null,
-                            onClick = { 
-                                navController?.navigate("${NavRoutes.artist.name}/$displayAuthorId") 
+                        // Artistes - un par ligne si plusieurs, sinon une seule ligne
+                        if (finalArtists.size > 1) {
+                            // Multiple artists - show each separately
+                            finalArtists.forEach { (artistId, artistName) ->
+                                InfoRow(
+                                    label = stringResource(R.string.artists),
+                                    value = artistName,
+                                    showArrow = artistId.isNotBlank(),
+                                    onClick = { 
+                                        if (artistId.isNotBlank()) {
+                                            navController?.navigate("${NavRoutes.artist.name}/$artistId")
+                                        }
+                                    }
+                                )
+                                Spacer(Modifier.height(8.dp))
                             }
-                        )
+                        } else if (finalArtists.size == 1) {
+                            // Single artist
+                            InfoRow(
+                                label = stringResource(R.string.artists),
+                                value = finalArtists[0].second,
+                                showArrow = finalArtists[0].first.isNotBlank(),
+                                onClick = { 
+                                    if (finalArtists[0].first.isNotBlank()) {
+                                        navController?.navigate("${NavRoutes.artist.name}/${finalArtists[0].first}")
+                                    }
+                                }
+                            )
+                        }
 
                         // Album + Flèche
                         if (albumId.isNotBlank()) {

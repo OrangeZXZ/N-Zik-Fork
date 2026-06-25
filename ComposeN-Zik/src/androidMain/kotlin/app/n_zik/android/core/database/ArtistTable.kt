@@ -75,6 +75,13 @@ interface ArtistTable {
     fun findBySongId( songId: String ): Flow<List<Artist>>
 
     /**
+     * @param name artist name to search for (case-insensitive)
+     * @return first [Artist] that matches the name
+     */
+    @Query("SELECT DISTINCT * FROM Artist WHERE name = :name COLLATE NOCASE LIMIT 1")
+    fun findByName( name: String ): Flow<Artist?>
+
+    /**
      * @return whether [Artist] with id [artistId] is followed by user,
      * if artist doesn't exist, return default value - `false`
      */
