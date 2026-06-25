@@ -4,3 +4,31 @@
   - Same pattern as ArtistDetails.kt which already worked
 
 - Added an option to enable/disable discord browsing
+
+- Fix YouTube Music metadata bug for songs with combined authors (e.g. "Bebe Rexha & David Guetta" where YTM returns a single run with no navigationEndpoint)
+  - Innertube.kt SongItem.parse: removed filter that dropped runs without navigationEndpoint, so parseArtists() can split combined names
+  - FromMusicResponsiveListItemRenderer.kt: same fix, replaced filterIsInstance<Browse> with name.isNullOrBlank() check
+  - AlbumPage.kt: song.authors?.takeIf { it.isNotEmpty() } ?: album.authors (handles empty list, not just null)
+  - Utils.kt parseArtists(): splits combined names on " & " and "," and dedupes case-insensitively
+
+- Fix artist name wipe after play+back to album
+  - Database.upsert(SongItem): protect against wipe - if new value is blank/null but DB has a value, keep DB value (for both title and artistsText)
+  - Database.upsert(SongItem): search online for missing browse IDs by exact name match (case-insensitive) before falling back to first result
+  - Database.insertIgnore(MediaItem): same online search for artists when no browse IDs are provided by YTM
+  - Database.insertIgnore(MediaItem): search online now runs in background coroutine (Dispatchers.IO) to not block album load
+
+- Pre-fetch full song metadata (browse IDs) before playback
+  - StreamResolver.upsertSongInfo exposed as public
+  - Player.forcePlayAtIndex: launches non-blocking pre-fetch + sync read of DB to enrich MediaItem right away
+  - UI auto-updates via collectAsState when DB changes
+
+- Fix "More of [artist]" button in song/video/search item menus
+  - SongItemMenu.kt, VideoItemMenu.kt, SearchItemMenu.kt: try DB by name first (works after search online populated it), fallback to Innertube nextPage
+  - Use NavRoutes.artist.navigateHere() to dispatch navigation on Main thread (fixes crash when called from Dispatchers.IO)
+
+- Debug logs added (NZIK_DB_TRACE) for tracing song metadata:
+  - Database.upsert(SongItem) before/after values
+  - Database.insertIgnore(MediaItem) with mediaMetadata
+  - MediaItemUtils.artistTextWithFallback / artistTextOrDb with DB values
+  - albumPage for each song with authors
+  - Online artist search (found/not found/error)
