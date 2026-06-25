@@ -195,8 +195,10 @@
   <string name="dynamic">Dynaaminen</string>
   <string name="discovery">Löydä uutta</string>
   <string name="mood">Tunnelma</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Uudet albumit</string>
   <string name="moods_and_genres">Tunnelmat ja tyylilajit</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" hakuja"</string>
   <string name="not_find_battery_optimization_settings">Akun optimointiasetuksia ei löytynyt, ole hyvä ja muuta manuaalisesti</string>
   <string name="search">Search...</string>
