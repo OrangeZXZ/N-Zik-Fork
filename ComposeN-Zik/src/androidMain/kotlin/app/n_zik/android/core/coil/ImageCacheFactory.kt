@@ -4,8 +4,12 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -15,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import app.n_zik.android.R
 import coil3.ImageLoader
@@ -22,6 +27,7 @@ import coil3.annotation.ExperimentalCoilApi
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.compose.AsyncImagePainter.State
+import coil3.compose.SubcomposeAsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import coil3.decode.DataSource
 import coil3.disk.DiskCache
@@ -438,6 +444,93 @@ object ImageCacheFactory {
             onSuccess = onSuccess,
             onError = { state ->
                 onError?.invoke(state)
+            }
+        )
+    }
+
+    @Composable
+    fun SubcomposeImage(
+        thumbnailUrl: String?,
+        contentDescription: String? = null,
+        contentScale: ContentScale = ContentScale.Crop,
+        modifier: Modifier = Modifier.clip(thumbnailShape()).fillMaxSize(),
+        @DrawableRes error: Int = R.drawable.ic_launcher_box
+    ) {
+        val cleanedUrl = thumbnailUrl?.let { cleanPrefix(it) }
+        val validUrl = if (cleanedUrl.isNullOrBlank() || cleanedUrl == "null") null else cleanedUrl
+        val decision = getDownloadDecision(validUrl)
+        val version by storeVersion.collectAsState()
+        var currentUrl by remember(validUrl, version) {
+            mutableStateOf(validUrl?.thumbnail(decision.quality.size))
+        }
+
+        if (currentUrl == null) {
+            // No URL yet (data not available): show loader spinner
+            Box(
+                modifier = modifier,
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(32.dp),
+                    strokeWidth = 2.dp
+                )
+            }
+            return
+        }
+
+        val request = ImageRequest.Builder(appContext())
+            .data(currentUrl)
+            .diskCacheKey(generateCacheKeySync(currentUrl, decision.quality))
+            .memoryCacheKey(generateCacheKeySync(currentUrl, decision.quality))
+            .listener(
+                onSuccess = { _, result ->
+                    val dataSource = result.dataSource
+                    if (dataSource != DataSource.MEMORY_CACHE) {
+                        val id = currentUrl?.getYouTubeId()
+                        if (id != null) {
+                            PlaylistThumbnailStore.save(id, currentUrl!!, currentUrl!!.isYouTubeHighRes())
+                        }
+                    }
+                    if (validUrl != null && decision.useNetwork) {
+                        CacheMetadataStore.save(validUrl, decision.quality)
+                    }
+                },
+                onError = { _, _ ->
+                    val id = currentUrl?.getYouTubeId()
+                    if (currentUrl != validUrl && id != null &&
+                        (currentUrl?.contains("i.ytimg.com/pl_c/") == true || currentUrl?.contains("podcasts") == true)) {
+                        clearCacheForKey(currentUrl, decision.quality)
+                        PlaylistThumbnailStore.clear(id)
+                        currentUrl = validUrl
+                        return@listener
+                    }
+                }
+            )
+            .build()
+
+        SubcomposeAsyncImage(
+            model = request,
+            imageLoader = LOADER,
+            contentDescription = contentDescription,
+            contentScale = contentScale,
+            modifier = modifier,
+            loading = {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(32.dp),
+                        strokeWidth = 2.dp
+                    )
+                }
+            },
+            error = {
+                androidx.compose.foundation.Image(
+                    painter = painterResource(error),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         )
     }
