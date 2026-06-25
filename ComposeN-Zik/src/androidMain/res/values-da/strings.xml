@@ -195,8 +195,10 @@
   <string name="dynamic">Dynamisk</string>
   <string name="discovery">Opdag</string>
   <string name="mood">Humør</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Nye album</string>
   <string name="moods_and_genres">Humør og genrer</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" søgninger"</string>
   <string name="not_find_battery_optimization_settings">Kunne ikke finde batterioptimeringsindstillinger; hvidlist venligst manuelt</string>
   <string name="search">Søg...</string>
