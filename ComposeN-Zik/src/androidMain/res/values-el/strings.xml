@@ -1355,4 +1355,5 @@
   <string name="source_youtube_unsynced">YouTube (μη συγχρονισμένο)</string>
   <string name="clipboard_contains_non_text_content">Το πρόχειρο περιέχει περιεχόμενο χωρίς κείμενο (εικόνα ή άλλα πολυμέσα)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>
