@@ -152,10 +152,13 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
         val targetItem = cleanedMediaItems.getOrNull(newIndex)
         if (targetItem != null) {
             val videoId = targetItem.mediaId.substringAfter("/").ifBlank { targetItem.mediaId }
-            try {
-                app.n_zik.android.playback.services.upsertSongInfo(videoId)
-            } catch (_: Exception) { }
-            // Rebuild the target MediaItem from DB so browse IDs and artist names are populated
+            // Run pre-fetch in background so it doesn't block playback.
+            // The DB will be updated and the UI will pick it up on next render via collectAsState.
+            CoroutineScope(Dispatchers.IO).launch {
+                runCatching { app.n_zik.android.playback.services.upsertSongInfo(videoId) }
+            }
+            // Try a quick sync fetch first to populate the MediaItem right away.
+            // This handles the common case where browse IDs are already in DB.
             val enrichedItem = runCatching {
                 runBlocking {
                     val dbSong = app.n_zik.android.core.database.Database.songTable.findById(videoId).firstOrNull()
