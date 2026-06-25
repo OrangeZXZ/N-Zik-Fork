@@ -195,8 +195,10 @@
   <string name="dynamic">다이나믹</string>
   <string name="discovery">탐색</string>
   <string name="mood">분위기</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">새 앨범</string>
   <string name="moods_and_genres">분위기 및 장르</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" 검색어"</string>
   <string name="not_find_battery_optimization_settings">배터리 최적화 설정을 찾지 못했습니다, 수동으로 해제해주세요</string>
   <string name="search">검색</string>
