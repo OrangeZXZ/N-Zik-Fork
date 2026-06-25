@@ -44,7 +44,7 @@ fun Innertube.SongItem.Companion.from(renderer: MusicResponsiveListItemRenderer)
             ?.text
             ?.runs
             ?.map { Innertube.Info(name = it.text, endpoint = it.navigationEndpoint?.browseEndpoint) }
-            ?.filter { it.name.isNotBlank() }
+            ?.filter { !it.name.isNullOrBlank() }
             ?.takeIf(List<Any>::isNotEmpty),
         durationText = renderer
             .fixedColumns
