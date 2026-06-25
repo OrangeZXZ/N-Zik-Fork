@@ -145,10 +145,6 @@ suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { al
 
     ?.map { album ->
         //println("mediaItem albumPage post songsPage ${album?.songsPage?.items?.size} des ${album?.description} browseId ${body.browseId}")
-        println("NZIK_TRACE albumPage post songsPage songs count=${album?.songsPage?.items?.size} browseId=${body.browseId}")
-        album?.songsPage?.items?.forEach { song ->
-            println("NZIK_TRACE albumPage song id=${song.info?.endpoint?.videoId} name='${song.info?.name}' authors=${song.authors?.map { it.name + "|" + (it.endpoint?.browseId ?: "null") }}")
-        }
         /*
         println("mediaItem albumPage post songsPage songs id ${album?.songsPage?.items?.size}")
         album?.songsPage?.items?.forEach {

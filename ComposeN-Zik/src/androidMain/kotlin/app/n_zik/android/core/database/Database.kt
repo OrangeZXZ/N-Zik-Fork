@@ -106,7 +106,6 @@ object Database {
 
     fun upsert( songItem: Innertube.SongItem ) = asyncTransaction {
         val song =  songItem.asSong
-        println("NZIK_DB_TRACE upsert(SongItem) id=${song.id} title='${song.title}' fetchedArtistsText='${song.artistsText}' authors=${songItem.authors?.map { it.name + "|" + (it.endpoint?.browseId ?: "null") }}")
 
         //<editor-fold defaultstate="collapsed" desc="Upsert song">
         val dbSong = runBlocking {
@@ -123,7 +122,6 @@ object Database {
             newArtistsText.isNullOrBlank() && !dbSong?.artistsText.isNullOrBlank() -> dbSong.artistsText
             else -> PropUtils.retainIfModified( dbSong?.artistsText, newArtistsText )
         }
-        println("NZIK_DB_TRACE upsert(SongItem) id=${song.id} dbTitle='${dbSong?.title}' dbArtistsText='${dbSong?.artistsText}' finalTitle='$finalTitle' finalArtistsText='$finalArtistsText'")
         songTable.upsert(Song(
             id = song.id,
             title = finalTitle.orEmpty(),
@@ -229,8 +227,6 @@ object Database {
      * this method handles the insertion automatically.
      */
     fun insertIgnore( mediaItem: MediaItem ) {
-        val md = mediaItem.mediaMetadata
-        println("NZIK_DB_TRACE insertIgnore(MediaItem) id=${mediaItem.mediaId} title='${md.title}' artist='${md.artist}' albumTitle='${md.albumTitle}' extrasArtistNames=${md.extras?.getStringArrayList("artistNames")} extrasArtistIds=${md.extras?.getStringArrayList("artistIds")}")
         // Insert song
         songTable.insertIgnore( mediaItem.asSong )
 
@@ -282,15 +278,10 @@ object Database {
                                 item.info?.name?.equals(name, ignoreCase = true) == true
                             } ?: searchResult?.items?.firstOrNull()
                             if (foundArtist != null && foundArtist.key != null) {
-                                println("NZIK_DB_TRACE insertIgnore search online found artist for name='$name' -> id=${foundArtist.key}")
                                 artistTable.insertIgnore(Artist(id = foundArtist.key, name = foundArtist.info?.name ?: name, isYoutubeArtist = true))
                                 songArtistMapTable.insertIgnore(SongArtistMap(mediaItem.mediaId, foundArtist.key))
-                            } else {
-                                println("NZIK_DB_TRACE insertIgnore search online NO artist found for name='$name'")
                             }
-                        } catch (e: Exception) {
-                            println("NZIK_DB_TRACE insertIgnore search online FAILED for name='$name' error=${e.message}")
-                        }
+                        } catch (_: Exception) { }
                     }
                 }
             }
