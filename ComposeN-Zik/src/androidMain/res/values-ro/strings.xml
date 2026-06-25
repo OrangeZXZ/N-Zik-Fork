@@ -195,8 +195,10 @@
   <string name="dynamic">Dinamic</string>
   <string name="discovery">Descoperiri</string>
   <string name="mood">Stare</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Albume noi</string>
   <string name="moods_and_genres">Stări și genuri</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" căutări"</string>
   <string name="not_find_battery_optimization_settings">Nu s-au găsit setările de optimizare a bateriei, te rugăm să le adaugi manual în lista albă</string>
   <string name="search">Căutare</string>
