@@ -68,6 +68,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
@@ -154,6 +155,9 @@ import app.it.fast4x.rimusic.utils.showRelatedAlbumsKey
 import app.it.fast4x.rimusic.utils.showSearchTabKey
 import app.it.fast4x.rimusic.utils.showSimilarArtistsKey
 import app.it.fast4x.rimusic.utils.showTipsKey
+import app.it.fast4x.rimusic.utils.showMyTopPlaylistKey
+import app.it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
+import app.it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -237,6 +241,11 @@ fun HomeQuickPicks(
     )
     val showTips by rememberPreference(showTipsKey, true)
     val showCharts by rememberPreference(showChartsKey, true)
+    val showMyTopPlaylist by rememberPreference(showMyTopPlaylistKey, true)
+    val maxTopPlaylistItems by rememberPreference(
+        MaxTopPlaylistItemsKey,
+        MaxTopPlaylistItems.`10`
+    )
 
     val refreshScope = rememberCoroutineScope()
     val last50Year: Duration = 18250.days
@@ -258,7 +267,7 @@ fun HomeQuickPicks(
     suspend fun loadData() {
 
         //Used to refresh chart when country change
-        if (showCharts)
+        if (showCharts && !loadedData)
             chartsPageResult =
                 Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
 
@@ -338,11 +347,12 @@ fun HomeQuickPicks(
                 }
             }
 
-            if (showNewAlbums || showNewAlbumsArtists || showMoodsAndGenres) {
+            if ((showNewAlbums || showNewAlbumsArtists || showMoodsAndGenres) && !loadedData) {
                 discoverPageResult = Innertube.discoverPage()
             }
 
-            homePageResult = YtMusic.getHomePage(setLogin = isYouTubeLoggedIn())
+            if (!loadedData)
+                homePageResult = YtMusic.getHomePage(setLogin = isYouTubeLoggedIn())
 
         }.onFailure {
             Timber.e("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
@@ -560,16 +570,47 @@ fun HomeQuickPicks(
                         onClick = onSearchClick
                     )
 
-                if (showTips) {
-                    if (relatedPageResult == null) {
-                        Spacer(modifier = Modifier.height(50.dp))
-                        Box(
-                            modifier = Modifier.fillMaxWidth().height(300.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            app.it.fast4x.rimusic.ui.components.themed.Loader(size = 300.dp)
+                if (showLoader) {
+                    Spacer(modifier = Modifier.height(50.dp))
+                    Box(
+                        modifier = Modifier.fillMaxWidth().height(300.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Loader(size = 300.dp)
+                    }
+                    ShimmerHost {
+                        repeat(3) {
+                            SongItemPlaceholder()
                         }
-                    } else {
+                        TextPlaceholder(modifier = sectionTextModifier)
+                        LazyRow(contentPadding = endPaddingValues) {
+                            repeat(4) {
+                                item {
+                                    PlaylistItemPlaceholder(
+                                        thumbnailSizeDp = albumThumbnailSizeDp,
+                                        alternative = true
+                                    )
+                                }
+                            }
+                        }
+                        TextPlaceholder(modifier = sectionTextModifier)
+                        LazyHorizontalGrid(
+                            rows = GridCells.Fixed(4),
+                            modifier = Modifier.fillMaxWidth()
+                                .height(Dimensions.itemsVerticalPadding * 4 * 4)
+                        ) {
+                            items(16) {
+                                Box(
+                                    modifier = Modifier.padding(4.dp)
+                                        .height(48.dp)
+                                        .clip(uiRoundnessShape())
+                                        .background(colorPalette().background1)
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    if (showTips) {
                     Title3Actions(
                         title = stringResource(R.string.tips),
                         icon1 = R.drawable.settings,
@@ -741,8 +782,111 @@ fun HomeQuickPicks(
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
+
+                val ytmSections = remember(homePageInit) {
+                    homePageInit?.sections.orEmpty()
+                }
+
+                val ytmFreshFinds = ytmSections.filter { it.title.contains("Fresh, finds, old favorites", ignoreCase = true) }
+                ytmFreshFinds.forEachIndexed { index, section ->
+                    YtmSectionItems(
+                        section = section, index = index,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
+                val ytmMixedForYou = ytmSections.filter { it.title.contains("Mixed for you", ignoreCase = true) }
+                ytmMixedForYou.forEachIndexed { index, section ->
+                    YtmSectionItems(
+                        section = section, index = index,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
+                val ytmDailyDiscover = ytmSections.filter { it.title.contains("Your daily discover", ignoreCase = true) }
+                ytmDailyDiscover.forEachIndexed { index, section ->
+                    YtmSectionItems(
+                        section = section, index = index,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
+                val ytmFreshNewMusic = ytmSections.filter { it.title.contains("Fresh new music", ignoreCase = true) }
+                ytmFreshNewMusic.forEachIndexed { index, section ->
+                    YtmSectionItems(
+                        section = section, index = index,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
+                val ytmNewReleasesOnly = ytmSections.filter { it.title.contains("New release", ignoreCase = true) && !it.title.contains("Fresh new music", ignoreCase = true) }
+                ytmNewReleasesOnly.forEachIndexed { index, section ->
+                    YtmSectionItems(
+                        section = section, index = index,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
 
                 discoverPageInit?.let { page ->
                     val artists by remember {
@@ -789,112 +933,6 @@ fun HomeQuickPicks(
 
                         }
 
-                    val ytmNewReleases = remember(homePageInit) {
-                        homePageInit?.sections
-                            ?.filter { it.title.contains("New release", ignoreCase = true) || it.title.contains("Fresh new music", ignoreCase = true) }
-                            .orEmpty()
-                    }
-
-                    ytmNewReleases.forEachIndexed { index, section ->
-                        if (section.items.isNotEmpty() && section.items.firstOrNull()?.key != null) {
-                            val isSongOnly = section.items.all { item -> item is Innertube.SongItem }
-
-                            TitleMiniSection(section.label ?: "", modifier = Modifier.padding(horizontal = 12.dp).padding(top = if (index == 0) 16.dp else 8.dp, bottom = 4.dp))
-
-                            BasicText(
-                                text = section.title,
-                                style = typography().l.semiBold.color(colorPalette().text),
-                                modifier = Modifier.padding(horizontal = 12.dp).padding(vertical = 4.dp)
-                            )
-
-                            if (isSongOnly) {
-                                val songItems = section.items.filterIsInstance<Innertube.SongItem>()
-                                LazyHorizontalGrid(
-                                    rows = GridCells.Fixed(3),
-                                    flingBehavior = ScrollableDefaults.flingBehavior(),
-                                    contentPadding = endPaddingValues,
-                                    modifier = Modifier.fillMaxWidth()
-                                        .height(Dimensions.itemsVerticalPadding * 3 * 9)
-                                ) {
-                                    items(songItems) { item ->
-                                        app.n_zik.android.components.SongItem(
-                                            song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
-                                            navController = navController,
-                                            onClick = {
-                                                val mediaItem = item.asMediaItem
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlay(mediaItem)
-                                                binder?.player?.addMediaItems(songItems.map { s -> s.asMediaItem })
-                                            },
-                                            modifier = Modifier.width(itemInHorizontalGridWidth)
-                                        )
-                                    }
-                                }
-                            } else {
-                                LazyRow(contentPadding = endPaddingValues) {
-                                    items(section.items) { item ->
-                                        when (item) {
-                                            is Innertube.SongItem -> {
-                                                app.n_zik.android.components.SongItem(
-                                                    song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
-                                                    navController = navController,
-                                                    onClick = {
-                                                        val mediaItem = item.asMediaItem
-                                                        binder?.stopRadio()
-                                                        binder?.player?.forcePlay(mediaItem)
-                                                    }
-                                                )
-                                            }
-                                            is Innertube.AlbumItem -> {
-                                                AlbumItem(
-                                                    album = item,
-                                                    thumbnailSizePx = albumThumbnailSizePx,
-                                                    thumbnailSizeDp = albumThumbnailSizeDp,
-                                                    alternative = true,
-                                                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
-                                                        onClick = { onAlbumClick(item.key) },
-                                                        onLongClick = { menuState.display { OnlineAlbumItemMenu(navController = navController, album = item).MenuComponent() } }
-                                                    ),
-                                                    disableScrollingText = disableScrollingText
-                                                )
-                                            }
-                                            is Innertube.ArtistItem -> {
-                                                ArtistItem(
-                                                    artist = item,
-                                                    thumbnailSizePx = songThumbnailSizePx,
-                                                    thumbnailSizeDp = songThumbnailSizeDp,
-                                                    alternative = false,
-                                                    modifier = Modifier.width(200.dp)
-                                                        .clip(uiRoundnessShape()).combinedClickable(
-                                                            onClick = { onArtistClick(item.key) },
-                                                            onLongClick = { menuState.display { OnlineArtistItemMenu(navController = navController, artist = item).MenuComponent() } }
-                                                        ),
-                                                    disableScrollingText = disableScrollingText
-                                                )
-                                            }
-                                            is Innertube.PlaylistItem -> {
-                                                PlaylistItem(
-                                                    playlist = item,
-                                                    thumbnailSizePx = playlistThumbnailSizePx,
-                                                    thumbnailSizeDp = playlistThumbnailSizeDp,
-                                                    alternative = true,
-                                                    showSongsCount = false,
-                                                    isYoutubePlaylist = true,
-                                                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
-                                                        onClick = { navController.navigate("${NavRoutes.playlist.name}/${item.key}") },
-                                                        onLongClick = { menuState.display { app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu(navController = navController, playlist = item).MenuComponent() } }
-                                                    ),
-                                                    disableScrollingText = disableScrollingText
-                                                )
-                                            }
-                                            else -> {}
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
                     if (showNewAlbums) {
                         Title(
                             title = stringResource(R.string.new_albums),
@@ -921,6 +959,107 @@ fun HomeQuickPicks(
                         }
                     }
                 }
+
+                val ytmAlbumsForYou = ytmSections.filter { it.title.contains("Albums for you", ignoreCase = true) }
+                ytmAlbumsForYou.forEachIndexed { index, section ->
+                    YtmSectionItems(
+                        section = section, index = index,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
+                val monthlyPlaylists by remember {
+                    Database.playlistTable
+                            .allAsPreview()
+                            .distinctUntilChanged()
+                            .map { list ->
+                                list.filter {
+                                    it.playlist.name.startsWith( MONTHLY_PREFIX, true )
+                                }
+                            }
+                }.collectAsState( emptyList(), Dispatchers.IO )
+
+                if (showMonthlyPlaylistInQuickPicks)
+                    monthlyPlaylists.let { playlists ->
+                        if (playlists.isNotEmpty()) {
+                            BasicText(
+                                text = stringResource(R.string.monthly_playlists),
+                                style = typography().l.semiBold,
+                                modifier = Modifier
+                                    .padding(horizontal = 12.dp)
+                                    .padding(top = 16.dp, bottom = 8.dp)
+                            )
+
+                            LazyRow(contentPadding = endPaddingValues) {
+                                items(
+                                    items = playlists.distinctBy { it.playlist.id },
+                                    key = { it.playlist.id }
+                                ) { playlist ->
+                                    PlaylistItem(
+                                        playlist = playlist,
+                                        thumbnailSizeDp = playlistThumbnailSizeDp,
+                                        thumbnailSizePx = playlistThumbnailSizePx,
+                                        alternative = true,
+                                        modifier = Modifier
+                                            .animateItem(
+                                                fadeInSpec = null,
+                                                fadeOutSpec = null
+                                            )
+                                            .fillMaxSize()
+                                            .clip(uiRoundnessShape()).clickable(onClick = { navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.playlist.id}") }),
+                                        disableScrollingText = disableScrollingText,
+                                        isYoutubePlaylist = playlist.playlist.isYoutubePlaylist,
+                                        isEditable = playlist.playlist.isEditable
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                val myTopSongs by remember {
+                    Database.eventTable
+                        .findSongsMostPlayedBetween(
+                            from = 0L,
+                            limit = maxTopPlaylistItems.toInt()
+                        )
+                }.collectAsState( emptyList(), Dispatchers.IO )
+
+                if (showMyTopPlaylist)
+                    myTopSongs.let { songs ->
+                        if (songs.isNotEmpty()) {
+                            BasicText(
+                                text = stringResource(R.string.my_playlist_top1),
+                                style = typography().l.semiBold,
+                                modifier = sectionTextModifier
+                            )
+
+                            LazyRow(contentPadding = endPaddingValues) {
+                                items(
+                                    items = songs.distinctBy { it.id },
+                                    key = { it.id }
+                                ) { song ->
+                                    app.n_zik.android.components.SongItem(
+                                        song = song,
+                                        navController = navController,
+                                        onClick = { binder?.startRadio(song, true) },
+                                        modifier = Modifier.width(itemInHorizontalGridWidth),
+                                    )
+                                }
+                            }
+                        }
+                    }
 
                 if (showRelatedAlbums)
                     relatedInit?.albums?.let { albums ->
@@ -980,6 +1119,46 @@ fun HomeQuickPicks(
                         }
                     }
 
+                val ytmBiggestHits = ytmSections.filter { it.title.contains("Today's biggest hits", ignoreCase = true) }
+                ytmBiggestHits.forEachIndexed { index, section ->
+                    YtmSectionItems(
+                        section = section, index = index,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
+                val ytmAllHits = ytmSections.filter { it.title.contains("All hits", ignoreCase = true) }
+                ytmAllHits.forEachIndexed { index, section ->
+                    YtmSectionItems(
+                        section = section, index = index,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
                 if (showPlaylistMightLike)
                     relatedInit?.playlists?.let { playlists ->
                         BasicText(
@@ -1011,8 +1190,152 @@ fun HomeQuickPicks(
                             }
                         }
                     }
+                    
+                    
 
+                homePageInit?.let { page ->
 
+                    page.sections.forEach {
+                        if (it.items.isEmpty() || it.items.firstOrNull()?.key == null) return@forEach
+                        if (it.title.contains("Quick picks", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Fresh, finds, old favorites", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Mixed for you", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Your daily discover", ignoreCase = true)) return@forEach
+                        if (it.title.contains("New release", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Fresh new music", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Albums for you", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Today's biggest hits", ignoreCase = true)) return@forEach
+                        if (it.title.contains("All hits", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Charts", ignoreCase = true)) return@forEach
+                        println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
+                        println("homePage() in HomeYouTubeMusic sections items: ${it.items}")
+
+                        val isSongOnly = it.items.all { item -> item is Innertube.SongItem }
+
+                        TitleMiniSection(it.label ?: "", modifier = Modifier.padding(horizontal = 12.dp).padding(top = 16.dp, bottom = 4.dp))
+
+                        BasicText(
+                            text = it.title,
+                            style = typography().l.semiBold.color(colorPalette().text),
+                            modifier = Modifier.padding(horizontal = 12.dp).padding(vertical = 4.dp)
+                        )
+
+                        if (isSongOnly) {
+                            val songItems = it.items.filterIsInstance<Innertube.SongItem>()
+                            LazyHorizontalGrid(
+                                rows = GridCells.Fixed(3),
+                                flingBehavior = ScrollableDefaults.flingBehavior(),
+                                contentPadding = endPaddingValues,
+                                modifier = Modifier.fillMaxWidth()
+                                    .height(Dimensions.itemsVerticalPadding * 3 * 9)
+                            ) {
+                                items(songItems) { item ->
+                                    app.n_zik.android.components.SongItem(
+                                        song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
+                                        navController = navController,
+                                        onClick = {
+                                            val mediaItem = item.asMediaItem
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlay(mediaItem)
+                                            binder?.player?.addMediaItems(songItems.map { s -> s.asMediaItem })
+                                        },
+                                        modifier = Modifier.width(itemInHorizontalGridWidth)
+                                    )
+                                }
+                            }
+                        } else {
+                            LazyRow(contentPadding = endPaddingValues) {
+                                items(it.items) { item ->
+                                    when (item) {
+                                    is Innertube.SongItem -> {
+                                        println("Innertube homePage SongItem: ${item.info?.name}")
+                                        app.n_zik.android.components.SongItem(
+                                            song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
+                                            navController = navController,
+                                            onClick = {
+                                                val mediaItem = item.asMediaItem
+                                                binder?.stopRadio()
+                                                binder?.player?.forcePlay(mediaItem)
+                                            }
+                                        )
+                                    }
+
+                                    is Innertube.AlbumItem -> {
+                                        println("Innertube homePage AlbumItem: ${item.info?.name}")
+                                        AlbumItem(
+                                            album = item,
+                                            alternative = true,
+                                            thumbnailSizePx = albumThumbnailSizePx,
+                                            thumbnailSizeDp = albumThumbnailSizeDp,
+                                            disableScrollingText = disableScrollingText,
+                                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                onClick = { navController.navigate("${NavRoutes.album.name}/${item.key}") },
+                                                onLongClick = { menuState.display { OnlineAlbumItemMenu(navController = navController, album = item).MenuComponent() } }
+                                            )
+                                        )
+                                    }
+
+                                    is Innertube.ArtistItem -> {
+                                        println("Innertube homePage ArtistItem: ${item.info?.name}")
+                                        ArtistItem(
+                                            artist = item,
+                                            thumbnailSizePx = artistThumbnailSizePx,
+                                            thumbnailSizeDp = artistThumbnailSizeDp,
+                                            disableScrollingText = disableScrollingText,
+                                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                onClick = {
+                                                    navController.navigate("${NavRoutes.artist.name}/${item.key}")
+                                                },
+                                                onLongClick = {
+                                                    menuState.display { OnlineArtistItemMenu(navController = navController, artist = item).MenuComponent() }
+                                                }
+                                            )
+                                        )
+                                    }
+
+                                    is Innertube.PlaylistItem -> {
+                                        println("Innertube homePage PlaylistItem: ${item.info?.name}")
+                                        PlaylistItem(
+                                            playlist = item,
+                                            alternative = true,
+                                            thumbnailSizePx = playlistThumbnailSizePx,
+                                            thumbnailSizeDp = playlistThumbnailSizeDp,
+                                            disableScrollingText = disableScrollingText,
+                                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                onClick = { navController.navigate("${NavRoutes.playlist.name}/${item.key}") },
+                                                onLongClick = { menuState.display { app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu(navController = navController, playlist = item).MenuComponent() } }
+                                            )
+                                        )
+                                    }
+
+                                    is Innertube.VideoItem -> {
+                                        println("Innertube homePage VideoItem: ${item.info?.name}")
+                                        VideoItem(
+                                            video = item,
+                                            thumbnailHeightDp = 72.dp,
+                                            thumbnailWidthDp = 128.dp,
+                                            disableScrollingText = disableScrollingText,
+                                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                                onClick = {
+                                                    binder?.stopRadio()
+                                                    if (isVideoEnabled())
+                                                        binder?.player?.playVideo(item.asMediaItem)
+                                                    else
+                                                        binder?.player?.forcePlay(item.asMediaItem)
+                                                },
+                                                onLongClick = { menuState.display { VideoItemMenu(navController = navController, song = item.asSong).MenuComponent() } }
+                                            )
+                                        )
+                                    }
+
+                                    null -> {}
+                                }
+
+                        }
+                        }
+                        }
+                    }
+                }
 
                 homePageInit?.chips?.let { chips ->
                     if (chips.isNotEmpty()) {
@@ -1073,125 +1396,38 @@ fun HomeQuickPicks(
                     }
                 }
 
-                if (showMoodsAndGenres)
-                    discoverPageInit?.let { page ->
+                if (showMoodsAndGenres) {
+                    val moods = discoverPageInit?.moods
+                    Timber.e("MoodsAndGenres: moods=${moods?.size}")
+                    if (moods != null && moods.isNotEmpty()) {
+                    Title(
+                        title = stringResource(R.string.moods_and_genres),
+                        onClick = { navController.navigate(NavRoutes.moodsPage.name) },
+                        verticalPadding = 16.dp,
+                    )
 
-                        if (page.moods.isNotEmpty()) {
-
-                            Title(
-                                title = stringResource(R.string.moods_and_genres),
-                                onClick = { navController.navigate(NavRoutes.moodsPage.name) },
-                                verticalPadding = 16.dp,
-                            )
-
-                            LazyHorizontalGrid(
-                                state = moodAngGenresLazyGridState,
-                                rows = GridCells.Fixed(4),
-                                flingBehavior = ScrollableDefaults.flingBehavior(),
-                                //flingBehavior = rememberSnapFlingBehavior(snapLayoutInfoProvider),
-                                contentPadding = gridsContentPadding,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    //.height((thumbnailSizeDp + Dimensions.itemsVerticalPadding * 8) * 8)
-                                    .height(Dimensions.itemsVerticalPadding * 4 * 8)
-                            ) {
-                                items(
-                                    items = page.moods.sortedBy { it.title },
-                                    key = { it.endpoint.params ?: it.title }
-                                ) {
-                                    MoodItemColored(
-                                        mood = it,
-                                        onClick = { it.endpoint.browseId?.let { _ -> onMoodClick(it) } },
-                                        modifier = Modifier
-                                            //.width(itemWidth)
-                                            .padding(4.dp)
-                                    )
-                                }
-                            }
-
-                        }
-                    }
-
-                if (homePageResult == null || chartsPageResult == null || discoverPageResult == null) {
-                    ShimmerHost {
-                        repeat(3) {
-                            SongItemPlaceholder()
-                        }
-                        TextPlaceholder(modifier = sectionTextModifier)
-                        LazyRow(contentPadding = endPaddingValues) {
-                            repeat(4) {
-                                item {
-                                    PlaylistItemPlaceholder(
-                                        thumbnailSizeDp = albumThumbnailSizeDp,
-                                        alternative = true
-                                    )
-                                }
-                            }
-                        }
-                        TextPlaceholder(modifier = sectionTextModifier)
-                        LazyHorizontalGrid(
-                            rows = GridCells.Fixed(4),
-                            modifier = Modifier.fillMaxWidth()
-                                .height(Dimensions.itemsVerticalPadding * 4 * 4)
+                    LazyHorizontalGrid(
+                        state = moodAngGenresLazyGridState,
+                        rows = GridCells.Fixed(4),
+                        flingBehavior = ScrollableDefaults.flingBehavior(),
+                        contentPadding = gridsContentPadding,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(Dimensions.itemsVerticalPadding * 4 * 8)
+                    ) {
+                        items(
+                            items = moods.sortedBy { it.title },
+                            key = { it.endpoint.params ?: it.title }
                         ) {
-                            items(16) {
-                                Box(
-                                    modifier = Modifier.padding(4.dp)
-                                        .height(48.dp)
-                                        .clip(uiRoundnessShape())
-                                        .background(colorPalette().background1)
-                                )
-                            }
+                            MoodItemColored(
+                                mood = it,
+                                onClick = { it.endpoint.browseId?.let { _ -> onMoodClick(it) } },
+                                modifier = Modifier
+                                    .padding(4.dp)
+                            )
                         }
                     }
-                }
-
-                val monthlyPlaylists by remember {
-                    Database.playlistTable
-                            .allAsPreview()
-                            .distinctUntilChanged()
-                            .map { list ->
-                                list.filter {
-                                    it.playlist.name.startsWith( MONTHLY_PREFIX, true )
-                                }
-                            }
-                }.collectAsState( emptyList(), Dispatchers.IO )
-
-                if (showMonthlyPlaylistInQuickPicks)
-                    monthlyPlaylists.let { playlists ->
-                        if (playlists.isNotEmpty()) {
-                            BasicText(
-                                text = stringResource(R.string.monthly_playlists),
-                                style = typography().l.semiBold,
-                                modifier = Modifier
-                                    .padding(horizontal = 12.dp)
-                                    .padding(top = 16.dp, bottom = 8.dp)
-                            )
-
-                            LazyRow(contentPadding = endPaddingValues) {
-                                items(
-                                    items = playlists.distinctBy { it.playlist.id },
-                                    key = { it.playlist.id }
-                                ) { playlist ->
-                                    PlaylistItem(
-                                        playlist = playlist,
-                                        thumbnailSizeDp = playlistThumbnailSizeDp,
-                                        thumbnailSizePx = playlistThumbnailSizePx,
-                                        alternative = true,
-                                        modifier = Modifier
-                                            .animateItem(
-                                                fadeInSpec = null,
-                                                fadeOutSpec = null
-                                            )
-                                            .fillMaxSize()
-                                            .clip(uiRoundnessShape()).clickable(onClick = { navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.playlist.id}") }),
-                                        disableScrollingText = disableScrollingText,
-                                        isYoutubePlaylist = playlist.playlist.isYoutubePlaylist,
-                                        isEditable = playlist.playlist.isEditable
-                                    )
-                                }
-                            }
-                        }
+                    }
                     }
 
                 val ytmChartsSection = remember(homePageInit) {
@@ -1223,15 +1459,6 @@ fun HomeQuickPicks(
                         )
 
                         page.playlists?.let { playlists ->
-                            /*
-                           BasicText(
-                               text = stringResource(R.string.playlists),
-                               style = typography().l.semiBold,
-                               modifier = Modifier
-                                   .padding(horizontal = 12.dp)
-                                   .padding(top = 16.dp, bottom = 8.dp)
-                           )
-                             */
 
                             LazyRow(contentPadding = endPaddingValues) {
                                 items(
@@ -1467,178 +1694,9 @@ fun HomeQuickPicks(
                                 }
                             }
                         }
-                    }
+        }
 
-                    homePageInit?.let { page ->
-
-                    page.sections.forEach {
-                        if (it.items.isEmpty() || it.items.firstOrNull()?.key == null) return@forEach
-                        if (it.title.contains("Quick picks", ignoreCase = true)) return@forEach
-                        if (it.title.contains("New release", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Fresh new music", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Charts", ignoreCase = true)) return@forEach
-                        println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
-                        println("homePage() in HomeYouTubeMusic sections items: ${it.items}")
-
-                        val isSongOnly = it.items.all { item -> item is Innertube.SongItem }
-
-                        TitleMiniSection(it.label ?: "", modifier = Modifier.padding(horizontal = 12.dp).padding(top = 16.dp, bottom = 4.dp))
-
-                        BasicText(
-                            text = it.title,
-                            style = typography().l.semiBold.color(colorPalette().text),
-                            modifier = Modifier.padding(horizontal = 12.dp).padding(vertical = 4.dp)
-                        )
-
-                        if (isSongOnly) {
-                            val songItems = it.items.filterIsInstance<Innertube.SongItem>()
-                            LazyHorizontalGrid(
-                                rows = GridCells.Fixed(3),
-                                flingBehavior = ScrollableDefaults.flingBehavior(),
-                                contentPadding = endPaddingValues,
-                                modifier = Modifier.fillMaxWidth()
-                                    .height(Dimensions.itemsVerticalPadding * 3 * 9)
-                            ) {
-                                items(songItems) { item ->
-                                    app.n_zik.android.components.SongItem(
-                                        song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
-                                        navController = navController,
-                                        onClick = {
-                                            val mediaItem = item.asMediaItem
-                                            binder?.stopRadio()
-                                            binder?.player?.forcePlay(mediaItem)
-                                            binder?.player?.addMediaItems(songItems.map { s -> s.asMediaItem })
-                                        },
-                                        modifier = Modifier.width(itemInHorizontalGridWidth)
-                                    )
-                                }
-                            }
-                        } else {
-                            LazyRow(contentPadding = endPaddingValues) {
-                                items(it.items) { item ->
-                                    when (item) {
-                                    is Innertube.SongItem -> {
-                                        println("Innertube homePage SongItem: ${item.info?.name}")
-                                        app.n_zik.android.components.SongItem(
-                                            song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
-                                            navController = navController,
-                                            onClick = {
-                                                val mediaItem = item.asMediaItem
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlay(mediaItem)
-                                            }
-                                        )
-                                    }
-
-                                    is Innertube.AlbumItem -> {
-                                        println("Innertube homePage AlbumItem: ${item.info?.name}")
-                                        AlbumItem(
-                                            album = item,
-                                            alternative = true,
-                                            thumbnailSizePx = albumThumbnailSizePx,
-                                            thumbnailSizeDp = albumThumbnailSizeDp,
-                                            disableScrollingText = disableScrollingText,
-                                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
-                                                onClick = { navController.navigate("${NavRoutes.album.name}/${item.key}") },
-                                                onLongClick = { menuState.display { OnlineAlbumItemMenu(navController = navController, album = item).MenuComponent() } }
-                                            )
-                                        )
-                                    }
-
-                                    is Innertube.ArtistItem -> {
-                                        println("Innertube homePage ArtistItem: ${item.info?.name}")
-                                        ArtistItem(
-                                            artist = item,
-                                            thumbnailSizePx = artistThumbnailSizePx,
-                                            thumbnailSizeDp = artistThumbnailSizeDp,
-                                            disableScrollingText = disableScrollingText,
-                                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
-                                                onClick = {
-                                                    navController.navigate("${NavRoutes.artist.name}/${item.key}")
-                                                },
-                                                onLongClick = {
-                                                    menuState.display { OnlineArtistItemMenu(navController = navController, artist = item).MenuComponent() }
-                                                }
-                                            )
-                                        )
-                                    }
-
-                                    is Innertube.PlaylistItem -> {
-                                        println("Innertube homePage PlaylistItem: ${item.info?.name}")
-                                        PlaylistItem(
-                                            playlist = item,
-                                            alternative = true,
-                                            thumbnailSizePx = playlistThumbnailSizePx,
-                                            thumbnailSizeDp = playlistThumbnailSizeDp,
-                                            disableScrollingText = disableScrollingText,
-                                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
-                                                onClick = { navController.navigate("${NavRoutes.playlist.name}/${item.key}") },
-                                                onLongClick = { menuState.display { app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu(navController = navController, playlist = item).MenuComponent() } }
-                                            )
-                                        )
-                                    }
-
-                                    is Innertube.VideoItem -> {
-                                        println("Innertube homePage VideoItem: ${item.info?.name}")
-                                        VideoItem(
-                                            video = item,
-                                            thumbnailHeightDp = playlistThumbnailSizeDp,
-                                            thumbnailWidthDp = playlistThumbnailSizeDp,
-                                            disableScrollingText = disableScrollingText,
-                                            modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
-                                                onClick = {
-                                                    binder?.stopRadio()
-                                                    if (isVideoEnabled())
-                                                        binder?.player?.playVideo(item.asMediaItem)
-                                                    else
-                                                        binder?.player?.forcePlay(item.asMediaItem)
-                                                },
-                                                onLongClick = { menuState.display { VideoItemMenu(navController = navController, song = item.asSong).MenuComponent() } }
-                                            )
-                                        )
-                                    }
-
-                                    null -> {}
-                                }
-
-                            }
-                        }
-                        }
-                    }
-                } ?: if (homePageResult == null) {
-                    ShimmerHost {
-                        repeat(3) {
-                            SongItemPlaceholder()
-                        }
-
-                        TextPlaceholder(modifier = sectionTextModifier)
-
-                        Row {
-                            repeat(2) {
-                                AlbumItemPlaceholder(
-                                    thumbnailSizeDp = albumThumbnailSizeDp,
-                                    alternative = true
-                                )
-                            }
-                        }
-
-                        TextPlaceholder(modifier = sectionTextModifier)
-
-                        Row {
-                            repeat(2) {
-                                PlaylistItemPlaceholder(
-                                    thumbnailSizeDp = albumThumbnailSizeDp,
-                                    alternative = true
-                                )
-                            }
-                        }
-                    }
-                } else {
-                }
-
-
-
-                if (relatedPageResult?.exceptionOrNull() != null) {
+    if (relatedPageResult?.exceptionOrNull() != null) {
                     Spacer(modifier = Modifier.height(50.dp))
                     BasicText(
                         text = stringResource(R.string.page_not_been_loaded),
@@ -1678,7 +1736,177 @@ fun HomeQuickPicks(
         }
 
     }
+
 }
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun YtmSectionItems(
+    section: HomePage.Section,
+    index: Int,
+    itemInHorizontalGridWidth: Dp,
+    albumThumbnailSizePx: Int,
+    albumThumbnailSizeDp: Dp,
+    songThumbnailSizePx: Int,
+    songThumbnailSizeDp: Dp,
+    playlistThumbnailSizePx: Int,
+    playlistThumbnailSizeDp: Dp,
+    disableScrollingText: Boolean,
+    endPaddingValues: PaddingValues,
+    navController: NavController,
+    onAlbumClick: (String) -> Unit,
+    onArtistClick: (String) -> Unit,
+    onPlaylistClick: (String) -> Unit
+) {
+    if (section.items.isNotEmpty() && section.items.firstOrNull()?.key != null) {
+        val isSongOnly = section.items.all { item -> item is Innertube.SongItem }
+
+        TitleMiniSection(
+            section.label ?: "",
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(top = 16.dp, bottom = 4.dp)
+        )
+
+        BasicText(
+            text = section.title,
+            style = typography().l.semiBold.color(colorPalette().text),
+            modifier = Modifier
+                .padding(horizontal = 12.dp)
+                .padding(vertical = 4.dp)
+        )
+
+        if (isSongOnly) {
+            val songItems = section.items.filterIsInstance<Innertube.SongItem>()
+            LazyHorizontalGrid(
+                rows = GridCells.Fixed(3),
+                flingBehavior = ScrollableDefaults.flingBehavior(),
+                contentPadding = endPaddingValues,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(Dimensions.itemsVerticalPadding * 3 * 9)
+            ) {
+                items(songItems) { item ->
+                    val binder = LocalPlayerServiceBinder.current
+                    app.n_zik.android.components.SongItem(
+                        song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
+                        navController = navController,
+                        onClick = {
+                            val mediaItem = item.asMediaItem
+                            binder?.stopRadio()
+                            binder?.player?.forcePlay(mediaItem)
+                            binder?.player?.addMediaItems(songItems.map { s -> s.asMediaItem })
+                        },
+                        modifier = Modifier.width(itemInHorizontalGridWidth)
+                    )
+                }
+            }
+        } else {
+            LazyRow(contentPadding = endPaddingValues) {
+                items(section.items) { item ->
+                    when (item) {
+                        is Innertube.SongItem -> {
+                            val binder = LocalPlayerServiceBinder.current
+                            app.n_zik.android.components.SongItem(
+                                song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
+                                navController = navController,
+                                onClick = {
+                                    val mediaItem = item.asMediaItem
+                                    binder?.stopRadio()
+                                    binder?.player?.forcePlay(mediaItem)
+                                }
+                            )
+                        }
+                        is Innertube.AlbumItem -> {
+                            val menuState = LocalMenuState.current
+                            AlbumItem(
+                                album = item,
+                                thumbnailSizePx = albumThumbnailSizePx,
+                                thumbnailSizeDp = albumThumbnailSizeDp,
+                                alternative = true,
+                                modifier = Modifier
+                                    .clip(uiRoundnessShape())
+                                    .combinedClickable(
+                                        onClick = { onAlbumClick(item.key) },
+                                        onLongClick = {
+                                            menuState.display { OnlineAlbumItemMenu(navController = navController, album = item).MenuComponent() }
+                                        }
+                                    ),
+                                disableScrollingText = disableScrollingText
+                            )
+                        }
+                        is Innertube.ArtistItem -> {
+                            val menuState = LocalMenuState.current
+                            ArtistItem(
+                                artist = item,
+                                thumbnailSizePx = songThumbnailSizePx,
+                                thumbnailSizeDp = songThumbnailSizeDp,
+                                alternative = false,
+                                modifier = Modifier
+                                    .width(200.dp)
+                                    .clip(uiRoundnessShape())
+                                    .combinedClickable(
+                                        onClick = { onArtistClick(item.key) },
+                                        onLongClick = {
+                                            menuState.display { OnlineArtistItemMenu(navController = navController, artist = item).MenuComponent() }
+                                        }
+                                    ),
+                                disableScrollingText = disableScrollingText
+                            )
+                        }
+                        is Innertube.PlaylistItem -> {
+                            val menuState = LocalMenuState.current
+                            PlaylistItem(
+                                playlist = item,
+                                thumbnailSizePx = playlistThumbnailSizePx,
+                                thumbnailSizeDp = playlistThumbnailSizeDp,
+                                alternative = true,
+                                showSongsCount = false,
+                                isYoutubePlaylist = true,
+                                modifier = Modifier
+                                    .clip(uiRoundnessShape())
+                                    .combinedClickable(
+                                        onClick = { onPlaylistClick(item.key) },
+                                        onLongClick = {
+                                            menuState.display { app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu(navController = navController, playlist = item).MenuComponent() }
+                                        }
+                                    ),
+                                disableScrollingText = disableScrollingText
+                            )
+                        }
+                        is Innertube.VideoItem -> {
+                            val binder = LocalPlayerServiceBinder.current
+                            val menuState = LocalMenuState.current
+                            VideoItem(
+                                video = item,
+                                thumbnailHeightDp = 72.dp,
+                                thumbnailWidthDp = 128.dp,
+                                disableScrollingText = disableScrollingText,
+                                modifier = Modifier
+                                    .clip(uiRoundnessShape())
+                                    .combinedClickable(
+                                        onClick = {
+                                            binder?.stopRadio()
+                                            if (isVideoEnabled())
+                                                binder?.player?.playVideo(item.asMediaItem)
+                                            else
+                                                binder?.player?.forcePlay(item.asMediaItem)
+                                        },
+                                        onLongClick = {
+                                            menuState.display { VideoItemMenu(navController = navController, song = item.asSong).MenuComponent() }
+                                        }
+                                    )
+                            )
+                        }
+                        null -> {}
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun ChipItemColored(
