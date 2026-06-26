@@ -44,4 +44,13 @@
   - Applies to Thumbnail, Painter, AsyncImage methods
   - When image URL is null/empty, the loader image shows instead of the no-image icon
   - Real errors still show ic_launcher_box via the error parameter
-  - Affects all images throughout the app (albums, songs, artists, playlists, podcasts)
+   - Affects all images throughout the app (albums, songs, artists, playlists, podcasts)
+
+- Home Quick Picks: spacer(16dp) moved inside else block (after grid content)
+  - Fixes ShimmerHost appearing "too low" during loading (spacer was emitted in all states)
+  - Loader area: Spacer(50dp) + Box(300.dp) with Loader(size=300.dp) fills the Quick Picks area during load
+
+- All section spacing uniformized to 16dp
+  - Title(MiniSection) built-in padding(top=5dp) removed from Title.kt:247
+  - Title calls changed from verticalPadding=12dp to 16dp
+  - TitleMiniSection callers changed from top=14dp to 16dp

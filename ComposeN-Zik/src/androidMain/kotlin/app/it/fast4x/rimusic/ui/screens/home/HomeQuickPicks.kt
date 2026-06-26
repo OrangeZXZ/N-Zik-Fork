@@ -426,8 +426,8 @@ fun HomeQuickPicks(
     val gridsContentPadding = PaddingValues(start = 12.dp, end = endPaddingValues.calculateEndPadding(LocalLayoutDirection.current))
 
     val sectionTextModifier = Modifier
-        .padding(horizontal = 16.dp)
-        .padding(top = 24.dp, bottom = 8.dp)
+        .padding(horizontal = 12.dp)
+        .padding(top = 16.dp, bottom = 8.dp)
         .padding(endPaddingValues)
 
     val showSearchTab by rememberPreference(showSearchTabKey, false)
@@ -561,6 +561,15 @@ fun HomeQuickPicks(
                     )
 
                 if (showTips) {
+                    if (relatedPageResult == null) {
+                        Spacer(modifier = Modifier.height(50.dp))
+                        Box(
+                            modifier = Modifier.fillMaxWidth().height(300.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            app.it.fast4x.rimusic.ui.components.themed.Loader(size = 300.dp)
+                        }
+                    } else {
                     Title3Actions(
                         title = stringResource(R.string.tips),
                         icon1 = R.drawable.settings,
@@ -618,20 +627,10 @@ fun HomeQuickPicks(
                         text = playEventType.text,
                         style = typography().xxs.secondary,
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = 8.dp)
-                    )
+                        .padding(horizontal = 12.dp)
+                        .padding(bottom = 8.dp)
+                )
 
-                    if (relatedPageResult == null) {
-                        Box(
-                            modifier = Modifier.fillMaxWidth().height(200.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            app.it.fast4x.rimusic.ui.components.themed.Loader()
-                        }
-                    }
-
-                    if (relatedPageResult != null) {
                         // Prepare the final list : 6 locals (or less depending on the local recommandations number) + 14 YT recommendations (or less), then shuffle to show max 21 songs
                         var recommendations by persistList<Song>("home/quickpicks/recommendations_list")
 
@@ -741,11 +740,9 @@ fun HomeQuickPicks(
                                 )
                             }
                         }
+
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
-
-                    if (relatedPageResult == null) Loader()
-                }
-
 
                 discoverPageInit?.let { page ->
                     val artists by remember {
@@ -802,7 +799,7 @@ fun HomeQuickPicks(
                         if (section.items.isNotEmpty() && section.items.firstOrNull()?.key != null) {
                             val isSongOnly = section.items.all { item -> item is Innertube.SongItem }
 
-                            TitleMiniSection(section.label ?: "", modifier = Modifier.padding(horizontal = 12.dp).padding(top = if (index == 0) 14.dp else 4.dp, bottom = 4.dp))
+                            TitleMiniSection(section.label ?: "", modifier = Modifier.padding(horizontal = 12.dp).padding(top = if (index == 0) 16.dp else 8.dp, bottom = 4.dp))
 
                             BasicText(
                                 text = section.title,
@@ -902,7 +899,7 @@ fun HomeQuickPicks(
                         Title(
                             title = stringResource(R.string.new_albums),
                             onClick = { navController.navigate(NavRoutes.newAlbums.name) },
-                            //modifier = Modifier.fillMaxWidth(0.7f)
+                            verticalPadding = 16.dp,
                         )
 
                         LazyRow(contentPadding = endPaddingValues) {
@@ -989,8 +986,8 @@ fun HomeQuickPicks(
                             text = stringResource(R.string.playlists_you_might_like),
                             style = typography().l.semiBold,
                             modifier = Modifier
-                                .padding(horizontal = 16.dp)
-                                .padding(top = 24.dp, bottom = 8.dp)
+                                .padding(horizontal = 12.dp)
+                                .padding(top = 16.dp, bottom = 8.dp)
                         )
 
                         LazyRow(contentPadding = endPaddingValues) {
@@ -1021,6 +1018,7 @@ fun HomeQuickPicks(
                     if (chips.isNotEmpty()) {
                         Title(
                             title = stringResource(R.string.moods),
+                            verticalPadding = 16.dp,
                         )
 
                         LazyHorizontalGrid(
@@ -1071,10 +1069,9 @@ fun HomeQuickPicks(
                                 }
                             }
                         }
+                        }
                     }
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
 
                 if (showMoodsAndGenres)
                     discoverPageInit?.let { page ->
@@ -1084,7 +1081,7 @@ fun HomeQuickPicks(
                             Title(
                                 title = stringResource(R.string.moods_and_genres),
                                 onClick = { navController.navigate(NavRoutes.moodsPage.name) },
-                                //modifier = Modifier.fillMaxWidth(0.7f)
+                                verticalPadding = 16.dp,
                             )
 
                             LazyHorizontalGrid(
@@ -1167,8 +1164,8 @@ fun HomeQuickPicks(
                                 text = stringResource(R.string.monthly_playlists),
                                 style = typography().l.semiBold,
                                 modifier = Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .padding(top = 24.dp, bottom = 8.dp)
+                                    .padding(horizontal = 12.dp)
+                                    .padding(top = 16.dp, bottom = 8.dp)
                             )
 
                             LazyRow(contentPadding = endPaddingValues) {
@@ -1222,6 +1219,7 @@ fun HomeQuickPicks(
                                     }
                                 }
                             },
+                            verticalPadding = 16.dp,
                         )
 
                         page.playlists?.let { playlists ->
@@ -1230,8 +1228,8 @@ fun HomeQuickPicks(
                                text = stringResource(R.string.playlists),
                                style = typography().l.semiBold,
                                modifier = Modifier
-                                   .padding(horizontal = 16.dp)
-                                   .padding(top = 24.dp, bottom = 8.dp)
+                                   .padding(horizontal = 12.dp)
+                                   .padding(top = 16.dp, bottom = 8.dp)
                            )
                              */
 
@@ -1263,8 +1261,8 @@ fun HomeQuickPicks(
                                     text = stringResource(R.string.chart_top_songs),
                                     style = typography().l.semiBold,
                                     modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .padding(top = 24.dp, bottom = 8.dp)
+                                        .padding(horizontal = 12.dp)
+                                        .padding(top = 16.dp, bottom = 8.dp)
                                 )
 
 
@@ -1321,8 +1319,8 @@ fun HomeQuickPicks(
                                     text = stringResource(R.string.chart_top_artists),
                                     style = typography().l.semiBold,
                                     modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .padding(top = 24.dp, bottom = 8.dp)
+                                        .padding(horizontal = 12.dp)
+                                        .padding(bottom = 8.dp)
                                 )
 
 
@@ -1375,7 +1373,7 @@ fun HomeQuickPicks(
 
                         ytmChartsSection?.let { section ->
                             if (section.items.isNotEmpty() && section.items.firstOrNull()?.key != null) {
-                                TitleMiniSection(section.label ?: "", modifier = Modifier.padding(horizontal = 12.dp).padding(top = 14.dp, bottom = 4.dp))
+                                TitleMiniSection(section.label ?: "", modifier = Modifier.padding(horizontal = 12.dp).padding(top = 16.dp, bottom = 4.dp))
                                 BasicText(
                                     text = section.title,
                                     style = typography().l.semiBold.color(colorPalette().text),
@@ -1484,7 +1482,7 @@ fun HomeQuickPicks(
 
                         val isSongOnly = it.items.all { item -> item is Innertube.SongItem }
 
-                        TitleMiniSection(it.label ?: "", modifier = Modifier.padding(horizontal = 12.dp).padding(top = 14.dp, bottom = 4.dp))
+                        TitleMiniSection(it.label ?: "", modifier = Modifier.padding(horizontal = 12.dp).padding(top = 16.dp, bottom = 4.dp))
 
                         BasicText(
                             text = it.title,
