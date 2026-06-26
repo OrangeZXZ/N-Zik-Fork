@@ -195,8 +195,10 @@
   <string name="dynamic">Dinamično</string>
   <string name="discovery">Otkriće</string>
   <string name="mood">Raspoloženje</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Novi albumi</string>
   <string name="moods_and_genres">Raspoloženja i žanrovi</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" upiti za pretragu"</string>
   <string name="not_find_battery_optimization_settings">Nismo uspeli da pronađemo podešavanja za optimizaciju baterije, ručno stavite na belu listu</string>
   <string name="search">Pretraga</string>
@@ -1355,4 +1357,5 @@
   <string name="source_youtube_unsynced">YouTube (unsynced)</string>
   <string name="clipboard_contains_non_text_content">Clipboard contains non-text content (image or other media)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>

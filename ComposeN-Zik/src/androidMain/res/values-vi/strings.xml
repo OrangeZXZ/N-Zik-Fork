@@ -195,8 +195,10 @@
   <string name="dynamic">Động</string>
   <string name="discovery">Khám phá</string>
   <string name="mood">Mood</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">New albums</string>
   <string name="moods_and_genres">Moods and genres</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" search queries"</string>
   <string name="not_find_battery_optimization_settings">Couldn\'t find battery optimization settings, please whitelist manually</string>
   <string name="search">Tìm kiếm</string>
@@ -1355,4 +1357,5 @@
   <string name="source_youtube_unsynced">YouTube (unsynced)</string>
   <string name="clipboard_contains_non_text_content">Clipboard contains non-text content (image or other media)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>

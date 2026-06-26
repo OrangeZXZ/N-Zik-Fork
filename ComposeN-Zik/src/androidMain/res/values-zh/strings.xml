@@ -195,8 +195,10 @@
   <string name="dynamic">動態</string>
   <string name="discovery">搜索</string>
   <string name="mood">情境</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">新推出的專輯</string>
   <string name="moods_and_genres">氣氛與類型</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" 關鍵字詞"</string>
   <string name="not_find_battery_optimization_settings">请手动将其添加到电池优化设置的白名单中，我们未能找到电池优化设置。</string>
   <string name="search">搜尋</string>
@@ -1355,4 +1357,5 @@
   <string name="source_youtube_unsynced">YouTube (未同步)</string>
   <string name="clipboard_contains_non_text_content">剪贴板包含非文本内容(图像或其他媒体)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>

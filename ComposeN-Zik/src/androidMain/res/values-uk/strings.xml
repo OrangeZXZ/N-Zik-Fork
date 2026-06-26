@@ -195,8 +195,10 @@
   <string name="dynamic">Динамічна</string>
   <string name="discovery">Відкриття</string>
   <string name="mood">Настрій</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Нові альбоми</string>
   <string name="moods_and_genres">Настрої та жанри</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" пошукові запити"</string>
   <string name="not_find_battery_optimization_settings">Не вдалося знайти налаштування оптимізації батареї, будь ласка, додайте до білого списку вручну</string>
   <string name="search">Пошук</string>
@@ -1355,4 +1357,5 @@
   <string name="source_youtube_unsynced">YouTube (не синхронізований)</string>
   <string name="clipboard_contains_non_text_content">Буфер обміну містить нетекстове зображення (зображення або інші медіа-файли)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>
