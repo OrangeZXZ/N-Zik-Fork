@@ -788,7 +788,7 @@ fun HomeQuickPicks(
                     homePageInit?.sections.orEmpty()
                 }
 
-                val ytmFreshFinds = ytmSections.filter { it.title.contains("Fresh, finds, old favorites", ignoreCase = true) }
+                val ytmFreshFinds = ytmSections.filter { it.title.contains("Fresh finds", ignoreCase = true) }
                 ytmFreshFinds.forEachIndexed { index, section ->
                     YtmSectionItems(
                         section = section, index = index,
@@ -1189,16 +1189,34 @@ fun HomeQuickPicks(
                                 )
                             }
                         }
-                    }
-                    
-                    
+                }
+
+                val ytmFeaturedPlaylists = ytmSections.filter { it.title.contains("Featured playlists", ignoreCase = true) }
+                ytmFeaturedPlaylists.forEachIndexed { index, section ->
+                    YtmSectionItems(
+                        section = section, index = index,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
 
                 homePageInit?.let { page ->
 
                     page.sections.forEach {
                         if (it.items.isEmpty() || it.items.firstOrNull()?.key == null) return@forEach
                         if (it.title.contains("Quick picks", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Fresh, finds, old favorites", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Fresh finds", ignoreCase = true)) return@forEach
                         if (it.title.contains("Mixed for you", ignoreCase = true)) return@forEach
                         if (it.title.contains("Your daily discover", ignoreCase = true)) return@forEach
                         if (it.title.contains("New release", ignoreCase = true)) return@forEach
@@ -1206,6 +1224,7 @@ fun HomeQuickPicks(
                         if (it.title.contains("Albums for you", ignoreCase = true)) return@forEach
                         if (it.title.contains("Today's biggest hits", ignoreCase = true)) return@forEach
                         if (it.title.contains("All hits", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Featured playlists", ignoreCase = true)) return@forEach
                         if (it.title.contains("Charts", ignoreCase = true)) return@forEach
                         println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
                         println("homePage() in HomeYouTubeMusic sections items: ${it.items}")
@@ -1762,19 +1781,10 @@ private fun YtmSectionItems(
     if (section.items.isNotEmpty() && section.items.firstOrNull()?.key != null) {
         val isSongOnly = section.items.all { item -> item is Innertube.SongItem }
 
-        TitleMiniSection(
-            section.label ?: "",
-            modifier = Modifier
-                .padding(horizontal = 12.dp)
-                .padding(top = 16.dp, bottom = 4.dp)
-        )
-
-        BasicText(
-            text = section.title,
-            style = typography().l.semiBold.color(colorPalette().text),
-            modifier = Modifier
-                .padding(horizontal = 12.dp)
-                .padding(vertical = 4.dp)
+        Title(
+            title = section.title,
+            onClick = {},
+            verticalPadding = 16.dp,
         )
 
         if (isSongOnly) {
