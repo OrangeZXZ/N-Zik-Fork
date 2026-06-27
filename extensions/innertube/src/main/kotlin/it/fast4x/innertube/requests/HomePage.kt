@@ -23,8 +23,6 @@ data class HomePage(
     ) {
         companion object {
             fun fromMusicCarouselShelfRenderer(renderer: MusicCarouselShelfRenderer): Section? {
-                println("getHomePage() fromMusicCarouselShelfRenderer musicTwoRowItemRenderer: section title ${renderer.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.firstOrNull()?.text}")
-                println("getHomePage() fromMusicCarouselShelfRenderer musicTwoRowItemRenderer: section items ${renderer.contents.map { it.musicTwoRowItemRenderer?.title?.runs?.firstOrNull()?.text }}")
                 return Section(
                     title = renderer.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.firstOrNull()?.text
                         ?: "",
@@ -38,8 +36,7 @@ data class HomePage(
                     items = renderer.contents
                         .mapNotNull {
                             fromMusicTwoRowItemRenderer(
-                                it.musicTwoRowItemRenderer,
-                                renderer.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.firstOrNull()?.text
+                                it.musicTwoRowItemRenderer
                             ) ?: it.musicResponsiveListItemRenderer?.let { listItem ->
                                 LibraryPage.fromMusicResponsiveListItemRenderer(listItem)
                             }
@@ -47,17 +44,20 @@ data class HomePage(
                 )
             }
 
-            private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer?, sectionTitle: String? = null): Innertube.Item? {
-                println("getHomePage() fromMusicTwoRowItemRenderer for section $sectionTitle: ${renderer?.title?.runs?.firstOrNull()?.text}")
+            private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer?): Innertube.Item? {
                 return when {
                     renderer?.isSong == true -> {
                         println("getHomePage() fromMusicTwoRowItemRenderer isSong: ${renderer.title?.runs?.firstOrNull()?.text}")
+                        val songSubtitleRuns = renderer.subtitle?.runs?.map { "${it.text}(${it.navigationEndpoint?.browseEndpoint != null})" }
+                        println("getHomePage() isSong subtitle runs: $songSubtitleRuns")
                         Innertube.SongItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
                                 renderer.navigationEndpoint?.watchEndpoint
                             ),
-                            authors = renderer.subtitle?.runs?.map {
+                            authors = renderer.subtitle?.runs
+                                ?.filter { it.navigationEndpoint?.browseEndpoint != null }
+                                ?.map {
                                 Innertube.Info(
                                     name = it.text,
                                     endpoint = it.navigationEndpoint?.browseEndpoint
@@ -125,20 +125,30 @@ data class HomePage(
 
                     renderer?.isVideo == true -> {
                         println("getHomePage() fromMusicTwoRowItemRenderer isVideo: ${renderer.title?.runs?.firstOrNull()?.text}")
+                        val subtitleParts = renderer.subtitle?.splitBySeparator() ?: emptyList()
+                        println("getHomePage() isVideo subtitleParts count=${subtitleParts.size}: $subtitleParts")
                         Innertube.VideoItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
                                 renderer.navigationEndpoint?.watchEndpoint
                             ),
-                            authors = renderer.subtitle?.runs?.map {
+                            authors = subtitleParts.getOrNull(0)
+                                ?.filter { it.navigationEndpoint?.browseEndpoint != null }
+                                ?.map {
                                 Innertube.Info(
                                     name = it.text,
                                     endpoint = it.navigationEndpoint?.browseEndpoint
                                 )
                             },
-                            durationText = null,
+                            durationText = subtitleParts.getOrNull(
+                                if (subtitleParts.size >= 3) subtitleParts.lastIndex else -1
+                            )?.firstOrNull()?.text,
                             thumbnail = renderer.thumbnailRenderer?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull(),
-                            viewsText = null
+                            viewsText = subtitleParts.getOrNull(
+                                if (subtitleParts.size >= 3) subtitleParts.lastIndex - 1
+                                else if (subtitleParts.size == 2) 1
+                                else -1
+                            )?.firstOrNull()?.text
                         )
 
                     }

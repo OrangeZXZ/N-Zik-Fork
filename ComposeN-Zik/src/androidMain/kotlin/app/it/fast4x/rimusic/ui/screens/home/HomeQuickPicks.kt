@@ -43,6 +43,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -55,6 +56,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
 import app.n_zik.android.components.menu.artist.OnlineArtistItemMenu
+import app.n_zik.android.components.menu.song.SongItemMenu
 import app.n_zik.android.components.menu.video.VideoItemMenu
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -79,6 +81,8 @@ import app.it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.bodies.NextBody
+import it.fast4x.innertube.models.bodies.QueueBody
+import it.fast4x.innertube.requests.queue
 import it.fast4x.innertube.requests.HomePage
 import it.fast4x.innertube.requests.chartsPageComplete
 import it.fast4x.innertube.requests.discoverPage
@@ -113,6 +117,7 @@ import app.it.fast4x.rimusic.ui.components.themed.TitleMiniSection
 import app.it.fast4x.rimusic.ui.items.AlbumItem
 import app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 import app.it.fast4x.rimusic.ui.items.ArtistItem
+import app.it.fast4x.rimusic.ui.items.ArtistItemPlaceholder
 import app.it.fast4x.rimusic.ui.items.PlaylistItem
 import app.it.fast4x.rimusic.ui.items.PlaylistItemPlaceholder
 import app.n_zik.android.components.SongItem
@@ -125,6 +130,7 @@ import app.it.fast4x.rimusic.utils.WelcomeMessage
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.asSong
 import app.it.fast4x.rimusic.utils.bold
+import app.it.fast4x.rimusic.utils.parseArtists
 import app.it.fast4x.rimusic.utils.center
 import app.it.fast4x.rimusic.utils.color
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey
@@ -171,10 +177,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.ui.graphics.ColorFilter
 import app.it.fast4x.rimusic.ui.components.themed.LazyMenu
+import app.it.fast4x.rimusic.utils.parseArtists
 import java.time.format.TextStyle as TimeTextStyle
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalFoundationApi
@@ -221,12 +228,6 @@ fun HomeQuickPicks(
     var chartsPageResult by persist<Result<Innertube.ChartsPage?>>("home/quickpicks/chartsPageResult")
     var chartsPageInit by persist<Innertube.ChartsPage>("home/quickpicks/chartsPageInit")
 //    var chartsPagePreference by rememberPreference(quickPicsChartsPageKey, chartsPageInit)
-
-    var downloadState by remember {
-        mutableStateOf(Download.STATE_STOPPED)
-    }
-
-    val context = LocalContext.current
 
 
     val showRelatedAlbums by rememberPreference(showRelatedAlbumsKey, true)
@@ -283,7 +284,7 @@ fun HomeQuickPicks(
                                 .distinctUntilChanged()
                                 .collect { songs ->
                                     trendingList = songs.distinctBy { it.id }
-                                                        .filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
+                                                        .filter { !parentalControlEnabled || it.title.startsWith(EXPLICIT_PREFIX, true) != true }
                                                         .take(localCount)
                                     trending = trendingList.firstOrNull()
                                     // mostPopularSong = trendingList.firstOrNull() // the first is the most popular
@@ -304,7 +305,7 @@ fun HomeQuickPicks(
                                 .distinctUntilChanged()
                                 .collect { songs ->
                                     trendingList = songs.distinctBy { it.id }
-                                                        .filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
+                                                        .filter { !parentalControlEnabled || it.title.startsWith(EXPLICIT_PREFIX, true) != true }
                                                         .take(localCount)
                                     trending = trendingList.firstOrNull()
                                     // mostPopularSong = trendingList.firstOrNull() // the first is the most recent
@@ -328,7 +329,7 @@ fun HomeQuickPicks(
                                 .distinctUntilChanged()
                                 .collect { songs ->
                                     val originalList = songs.distinctBy { it.id }
-                                                            .filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
+                                                            .filter { !parentalControlEnabled || it.title.startsWith(EXPLICIT_PREFIX, true) != true }
                                     // mostPopularSong = originalList.firstOrNull() // Garder la vraie plus populaire
                                     val shuffled = originalList.shuffled().take(localCount)
                                     trendingList = shuffled
@@ -466,6 +467,45 @@ fun HomeQuickPicks(
         }
     }
 
+    LaunchedEffect(loadedData) {
+        if (loadedData) {
+            val itemsToFetch = homePageInit?.sections?.flatMap { it.items }
+                ?.filterIsInstance<Innertube.VideoItem>()
+                ?.filter { it.durationText == null }
+                ?.map { it.key }
+                ?.distinct()
+                ?: emptyList()
+            if (itemsToFetch.isNotEmpty()) {
+                Innertube.queue(QueueBody(videoIds = itemsToFetch))?.onSuccess { queueItems ->
+                    val durationsMap = queueItems?.associate { it.key to it.durationText } ?: emptyMap()
+                    if (durationsMap.isNotEmpty()) {
+                        homePageInit = homePageInit?.copy(
+                            sections = homePageInit!!.sections.map { section ->
+                                section.copy(
+                                    items = section.items.map { item ->
+                                        when (item) {
+                                            is Innertube.VideoItem -> {
+                                                val duration = durationsMap[item.key]
+                                                if (duration != null) item.copy(durationText = duration)
+                                                else item
+                                            }
+                                            is Innertube.SongItem -> {
+                                                val duration = durationsMap[item.key]
+                                                if (duration != null) item.copy(durationText = duration)
+                                                else item
+                                            }
+                                            else -> item
+                                        }
+                                    }
+                                )
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     PullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = ::refresh
@@ -484,7 +524,6 @@ fun HomeQuickPicks(
 
             val moodItemWidthFactor =
                 if (isLandscape && maxWidth * 0.475f >= 320.dp) 0.475f else 0.9f
-            val itemWidth = maxWidth * moodItemWidthFactor
 
             Column(
                 modifier = Modifier
@@ -570,47 +609,7 @@ fun HomeQuickPicks(
                         onClick = onSearchClick
                     )
 
-                if (showLoader) {
-                    Spacer(modifier = Modifier.height(50.dp))
-                    Box(
-                        modifier = Modifier.fillMaxWidth().height(300.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Loader(size = 300.dp)
-                    }
-                    ShimmerHost {
-                        repeat(3) {
-                            SongItemPlaceholder()
-                        }
-                        TextPlaceholder(modifier = sectionTextModifier)
-                        LazyRow(contentPadding = endPaddingValues) {
-                            repeat(4) {
-                                item {
-                                    PlaylistItemPlaceholder(
-                                        thumbnailSizeDp = albumThumbnailSizeDp,
-                                        alternative = true
-                                    )
-                                }
-                            }
-                        }
-                        TextPlaceholder(modifier = sectionTextModifier)
-                        LazyHorizontalGrid(
-                            rows = GridCells.Fixed(4),
-                            modifier = Modifier.fillMaxWidth()
-                                .height(Dimensions.itemsVerticalPadding * 4 * 4)
-                        ) {
-                            items(16) {
-                                Box(
-                                    modifier = Modifier.padding(4.dp)
-                                        .height(48.dp)
-                                        .clip(uiRoundnessShape())
-                                        .background(colorPalette().background1)
-                                )
-                            }
-                        }
-                    }
-                } else {
-                    if (showTips) {
+                if (showTips) {
                     Title3Actions(
                         title = stringResource(R.string.tips),
                         icon1 = R.drawable.settings,
@@ -648,7 +647,7 @@ fun HomeQuickPicks(
                         onClick3 = {
                             binder?.stopRadio()
                             val allItems = listOfNotNull(trending?.asMediaItem) +
-                                           (relatedInit?.songs?.map { it.asMediaItem } ?: emptyList())
+                                    (relatedInit?.songs?.map { it.asMediaItem } ?: emptyList())
                             val shuffled = allItems.shuffled()
                             if (shuffled.isNotEmpty()) {
                                 binder?.player?.forcePlay(shuffled.first())
@@ -668,104 +667,117 @@ fun HomeQuickPicks(
                         text = playEventType.text,
                         style = typography().xxs.secondary,
                         modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .padding(bottom = 8.dp)
-                )
+                            .padding(horizontal = 12.dp)
+                            .padding(bottom = 8.dp)
+                    )
 
-                        // Prepare the final list : 6 locals (or less depending on the local recommandations number) + 14 YT recommendations (or less), then shuffle to show max 21 songs
-                        var recommendations by persistList<Song>("home/quickpicks/recommendations_list")
+                    // Prepare the final list : 6 locals (or less depending on the local recommandations number) + 14 YT recommendations (or less), then shuffle to show max 21 songs
+                    var recommendations by persistList<Song>("home/quickpicks/recommendations_list")
 
-                        val ytmQuickPicks = remember(homePageInit) {
-                            homePageInit?.sections
-                                ?.filter { it.title.contains("Quick picks", ignoreCase = true) }
-                                ?.flatMap { section ->
-                                    section.items.filterIsInstance<Innertube.SongItem>().map { it.asSong }
-                                }
+                    val ytmQuickPicks = remember(homePageInit) {
+                        homePageInit?.sections
+                            ?.filter { it.title.contains("Quick picks", ignoreCase = true) }
+                            ?.flatMap { section ->
+                                section.items.filterIsInstance<Innertube.SongItem>().map { it.asSong }
+                            }
+                            ?.distinctBy { it.id }
+                            .orEmpty()
+                    }
+
+                    LaunchedEffect(trendingList, relatedInit, localCount, playEventType, ytmQuickPicks) {
+                        val mainIds = trendingList.map { it.id }.toSet()
+                        // Create a stable seed based on the content IDs. Any change in the source data will change the shuffle.
+                        val seed = (trendingList.joinToString { it.id } + (relatedInit?.songs?.joinToString { it.key } ?: "")).hashCode()
+                        val random = kotlin.random.Random(seed)
+
+                        val candidateList = if (playEventType == PlayEventsType.MostPlayed || playEventType == PlayEventsType.LastPlayed) {
+                            val first = trendingList.firstOrNull()
+                            val others = trendingList.drop(1)
+                            val relatedSongs = relatedInit?.songs
+                                ?.map { it.asSong }
+                                ?.filter { it.id !in mainIds }
+                                ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
                                 ?.distinctBy { it.id }
+                                ?.take(21 - (1 + others.size))
                                 .orEmpty()
+                            val total = (others + relatedSongs)
+                            val extra = if (total.size < 21) {
+                                relatedInit?.songs
+                                    ?.map { it.asSong }
+                                    ?.filter { it.id !in (others.map { s -> s.id } + (first?.id ?: "")) }
+                                    ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
+                                    ?.distinctBy { it.id }
+                                    ?.take(21 - total.size)
+                                    .orEmpty()
+                            } else emptyList()
+                            (listOfNotNull(first) + (total + extra).shuffled(random) + ytmQuickPicks).distinctBy { it.id }.take(21)
+                        } else {
+                            // Random Mode will randomize the list : all mixed
+                            val locals = trendingList.take(localCount)
+                            val relatedSongs = relatedInit?.songs
+                                ?.map { it.asSong }
+                                ?.filter { it.id !in locals.map { it.id } }
+                                ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
+                                ?.distinctBy { it.id }
+                                ?.take(21 - locals.size)
+                                .orEmpty()
+                            val total = (locals + relatedSongs)
+                            val extra = if (total.size < 21) {
+                                relatedInit?.songs
+                                    ?.map { it.asSong }
+                                    ?.filter { it.id !in total.map { s -> s.id } }
+                                    ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
+                                    ?.distinctBy { it.id }
+                                    ?.take(21 - total.size)
+                                    .orEmpty()
+                            } else emptyList()
+                            (total + extra + ytmQuickPicks).shuffled(random).distinctBy { it.id }.take(21)
                         }
 
-                        LaunchedEffect(trendingList, relatedInit, localCount, playEventType, ytmQuickPicks) {
-                             val mainIds = trendingList.map { it.id }.toSet()
-                             // Create a stable seed based on the content IDs. Any change in the source data will change the shuffle.
-                             val seed = (trendingList.joinToString { it.id } + (relatedInit?.songs?.joinToString { it.key } ?: "")).hashCode()
-                             val random = kotlin.random.Random(seed)
-                             
-                                val candidateList = if (playEventType == PlayEventsType.MostPlayed || playEventType == PlayEventsType.LastPlayed) {
-                                    val first = trendingList.firstOrNull()
-                                    val others = trendingList.drop(1)
-                                    val relatedSongs = relatedInit?.songs
-                                        ?.map { it.asSong }
-                                        ?.filter { it.id !in mainIds }
-                                        ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
-                                        ?.distinctBy { it.id }
-                                        ?.take(21 - (1 + others.size))
-                                        .orEmpty()
-                                    val total = (others + relatedSongs)
-                                    val extra = if (total.size < 21) {
-                                        relatedInit?.songs
-                                            ?.map { it.asSong }
-                                            ?.filter { it.id !in (others.map { s -> s.id } + (first?.id ?: "")) }
-                                            ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
-                                            ?.distinctBy { it.id }
-                                            ?.take(21 - total.size)
-                                            .orEmpty()
-                                    } else emptyList()
-                                    (listOfNotNull(first) + (total + extra).shuffled(random) + ytmQuickPicks).distinctBy { it.id }.take(21)
-                                } else {
-                                    // Random Mode will randomize the list : all mixed
-                                    val locals = trendingList.take(localCount)
-                                    val relatedSongs = relatedInit?.songs
-                                        ?.map { it.asSong }
-                                        ?.filter { it.id !in locals.map { it.id } }
-                                        ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
-                                        ?.distinctBy { it.id }
-                                        ?.take(21 - locals.size)
-                                        .orEmpty()
-                                    val total = (locals + relatedSongs)
-                                    val extra = if (total.size < 21) {
-                                        relatedInit?.songs
-                                            ?.map { it.asSong }
-                                            ?.filter { it.id !in total.map { s -> s.id } }
-                                            ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
-                                            ?.distinctBy { it.id }
-                                            ?.take(21 - total.size)
-                                            .orEmpty()
-                                    } else emptyList()
-                                    (total + extra + ytmQuickPicks).shuffled(random).distinctBy { it.id }.take(21)
-                                }
-                                
-                                // Only update if the CONTENT (Set of IDs) has changed, otherwise keep the existing shuffle order.
-                                // This prevents re-shuffling on simple navigation or configuration changes that don't affect the data set.
-                                val oldIds = recommendations.map { it.id }.toSet()
-                                val newIds = candidateList.map { it.id }.toSet()
-                                
-                                if (recommendations.isEmpty() || oldIds != newIds) {
-                                    recommendations = candidateList
-                                }
-                        }
+                        // Only update if the CONTENT (Set of IDs) has changed, otherwise keep the existing shuffle order.
+                        // This prevents re-shuffling on simple navigation or configuration changes that don't affect the data set.
+                        val oldIds = recommendations.map { it.id }.toSet()
+                        val newIds = candidateList.map { it.id }.toSet()
 
+                        if (recommendations.isEmpty() || oldIds != newIds) {
+                            recommendations = candidateList
+                        }
+                    }
+
+                    if (recommendations.isEmpty() && showLoader) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(Dimensions.itemsVerticalPadding * 3 * 9),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            androidx.compose.material3.LoadingIndicator(
+                                color = colorPalette().accent,
+                                modifier = Modifier.size(64.dp)
+                            )
+                        }
+                    } else {
                         LazyHorizontalGrid(
                             state = quickPicksLazyGridState,
                             rows = GridCells.Fixed(if (recommendations.isNotEmpty()) 3 else 1),
                             flingBehavior = ScrollableDefaults.flingBehavior(),
                             contentPadding = endPaddingValues,
                             modifier = Modifier.fillMaxWidth()
-                                           .height(
-                                               if (recommendations.isNotEmpty())
-                                                   Dimensions.itemsVerticalPadding * 3 * 9
-                                               else
-                                                   Dimensions.itemsVerticalPadding * 9
-                                           )
+                                .height(
+                                    if (recommendations.isNotEmpty())
+                                        Dimensions.itemsVerticalPadding * 3 * 9
+                                    else
+                                        Dimensions.itemsVerticalPadding * 9
+                                )
                         ) {
                             items(recommendations, key = { it.id }) { song ->
-                                app.n_zik.android.components.SongItem(
+                                SongItem(
                                     song = song,
                                     navController = navController,
                                     onClick = { binder?.startRadio(song, true) },
                                     modifier = Modifier.width(itemInHorizontalGridWidth),
                                     thumbnailOverlay = {
-                                        if (playEventType != PlayEventsType.CasualPlayed && 
+                                        if (playEventType != PlayEventsType.CasualPlayed &&
                                             trendingList.any { it.id == song.id }) {
                                             Image(
                                                 painter = painterResource(R.drawable.star_brilliant),
@@ -781,17 +793,26 @@ fun HomeQuickPicks(
                                 )
                             }
                         }
-
                     }
+
+                }
+
+                if (showLoader) {
+                    HomeBottomShimmer(
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        artistThumbnailSizeDp = artistThumbnailSizeDp,
+                        endPaddingValues = endPaddingValues
+                    )
+                } else {
 
                 val ytmSections = remember(homePageInit) {
                     homePageInit?.sections.orEmpty()
                 }
 
                 val ytmFreshFinds = ytmSections.filter { it.title.contains("Fresh finds", ignoreCase = true) }
-                ytmFreshFinds.forEachIndexed { index, section ->
+                ytmFreshFinds.forEach { section ->
                     YtmSectionItems(
-                        section = section, index = index,
+                        section = section,
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -809,9 +830,9 @@ fun HomeQuickPicks(
                 }
 
                 val ytmMixedForYou = ytmSections.filter { it.title.contains("Mixed for you", ignoreCase = true) }
-                ytmMixedForYou.forEachIndexed { index, section ->
+                ytmMixedForYou.forEach { section ->
                     YtmSectionItems(
-                        section = section, index = index,
+                        section = section,
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -829,9 +850,9 @@ fun HomeQuickPicks(
                 }
 
                 val ytmDailyDiscover = ytmSections.filter { it.title.contains("Your daily discover", ignoreCase = true) }
-                ytmDailyDiscover.forEachIndexed { index, section ->
+                ytmDailyDiscover.forEach { section ->
                     YtmSectionItems(
-                        section = section, index = index,
+                        section = section,
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -849,9 +870,9 @@ fun HomeQuickPicks(
                 }
 
                 val ytmFreshNewMusic = ytmSections.filter { it.title.contains("Fresh new music", ignoreCase = true) }
-                ytmFreshNewMusic.forEachIndexed { index, section ->
+                ytmFreshNewMusic.forEach { section ->
                     YtmSectionItems(
-                        section = section, index = index,
+                        section = section,
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -869,9 +890,9 @@ fun HomeQuickPicks(
                 }
 
                 val ytmNewReleasesOnly = ytmSections.filter { it.title.contains("New release", ignoreCase = true) && !it.title.contains("Fresh new music", ignoreCase = true) }
-                ytmNewReleasesOnly.forEachIndexed { index, section ->
+                ytmNewReleasesOnly.forEach { section ->
                     YtmSectionItems(
-                        section = section, index = index,
+                        section = section,
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -961,9 +982,9 @@ fun HomeQuickPicks(
                 }
 
                 val ytmAlbumsForYou = ytmSections.filter { it.title.contains("Albums for you", ignoreCase = true) }
-                ytmAlbumsForYou.forEachIndexed { index, section ->
+                ytmAlbumsForYou.forEach { section ->
                     YtmSectionItems(
-                        section = section, index = index,
+                        section = section,
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -979,6 +1000,35 @@ fun HomeQuickPicks(
                         onPlaylistClick = onPlaylistClick
                     )
                 }
+
+                if (showRelatedAlbums)
+                    relatedInit?.albums?.let { albums ->
+                        BasicText(
+                            text = stringResource(R.string.related_albums),
+                            style = typography().l.semiBold,
+                            modifier = sectionTextModifier
+                        )
+
+                        LazyRow(contentPadding = endPaddingValues) {
+                            items(
+                                items = albums.distinctBy { it.key },
+                                key = Innertube.AlbumItem::key
+                            ) { album ->
+                                AlbumItem(
+                                    album = album,
+                                    thumbnailSizePx = albumThumbnailSizePx,
+                                    thumbnailSizeDp = albumThumbnailSizeDp,
+                                    alternative = true,
+                                    modifier = Modifier
+                                        .clip(uiRoundnessShape()).combinedClickable(
+                                            onClick = { onAlbumClick(album.key) },
+                                            onLongClick = { menuState.display { OnlineAlbumItemMenu(navController = navController, album = album).MenuComponent() } }
+                                        ),
+                                    disableScrollingText = disableScrollingText
+                                )
+                            }
+                        }
+                    }
 
                 val monthlyPlaylists by remember {
                     Database.playlistTable
@@ -1050,42 +1100,13 @@ fun HomeQuickPicks(
                                     items = songs.distinctBy { it.id },
                                     key = { it.id }
                                 ) { song ->
-                                    app.n_zik.android.components.SongItem(
+                                    SongItem(
                                         song = song,
                                         navController = navController,
                                         onClick = { binder?.startRadio(song, true) },
                                         modifier = Modifier.width(itemInHorizontalGridWidth),
                                     )
                                 }
-                            }
-                        }
-                    }
-
-                if (showRelatedAlbums)
-                    relatedInit?.albums?.let { albums ->
-                        BasicText(
-                            text = stringResource(R.string.related_albums),
-                            style = typography().l.semiBold,
-                            modifier = sectionTextModifier
-                        )
-
-                        LazyRow(contentPadding = endPaddingValues) {
-                            items(
-                                items = albums.distinctBy { it.key },
-                                key = Innertube.AlbumItem::key
-                            ) { album ->
-                                AlbumItem(
-                                    album = album,
-                                    thumbnailSizePx = albumThumbnailSizePx,
-                                    thumbnailSizeDp = albumThumbnailSizeDp,
-                                    alternative = true,
-                                    modifier = Modifier
-                                        .clip(uiRoundnessShape()).combinedClickable(
-                                            onClick = { onAlbumClick(album.key) },
-                                            onLongClick = { menuState.display { OnlineAlbumItemMenu(navController = navController, album = album).MenuComponent() } }
-                                        ),
-                                    disableScrollingText = disableScrollingText
-                                )
                             }
                         }
                     }
@@ -1120,9 +1141,9 @@ fun HomeQuickPicks(
                     }
 
                 val ytmBiggestHits = ytmSections.filter { it.title.contains("Today's biggest hits", ignoreCase = true) }
-                ytmBiggestHits.forEachIndexed { index, section ->
+                ytmBiggestHits.forEach { section ->
                     YtmSectionItems(
-                        section = section, index = index,
+                        section = section,
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1140,9 +1161,9 @@ fun HomeQuickPicks(
                 }
 
                 val ytmAllHits = ytmSections.filter { it.title.contains("All hits", ignoreCase = true) }
-                ytmAllHits.forEachIndexed { index, section ->
+                ytmAllHits.forEach { section ->
                     YtmSectionItems(
-                        section = section, index = index,
+                        section = section,
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1192,9 +1213,129 @@ fun HomeQuickPicks(
                 }
 
                 val ytmFeaturedPlaylists = ytmSections.filter { it.title.contains("Featured playlists", ignoreCase = true) }
-                ytmFeaturedPlaylists.forEachIndexed { index, section ->
+                ytmFeaturedPlaylists.forEach { section ->
                     YtmSectionItems(
-                        section = section, index = index,
+                        section = section,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
+                val ytmTrendingCommunity = ytmSections.filter { it.title.contains("Trending community playlists", ignoreCase = true) }
+                ytmTrendingCommunity.forEach { section ->
+                    YtmSectionItems(
+                        section = section,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
+                val ytmFromTheCommunity = ytmSections.filter { it.title.contains("From the community", ignoreCase = true) }
+                ytmFromTheCommunity.forEach { section ->
+                    YtmSectionItems(
+                        section = section,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
+                val ytmTrendingSongs = ytmSections.filter { it.title.contains("Trending songs for you", ignoreCase = true) }
+                ytmTrendingSongs.forEach { section ->
+                    YtmSectionItems(
+                        section = section,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
+                val ytmCoverRemixes = ytmSections.filter { it.title.contains("Cover and remixes", ignoreCase = true) || it.title.contains("Cover & remixes", ignoreCase = true) }
+                ytmCoverRemixes.forEach { section ->
+                    YtmSectionItems(
+                        section = section,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
+                val ytmMusicVideos = ytmSections.filter { it.title.contains("Music videos for you", ignoreCase = true) }
+                ytmMusicVideos.forEach { section ->
+                    YtmSectionItems(
+                        section = section,
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
+                val ytmLivePerformances = ytmSections.filter { it.title.contains("Live performances", ignoreCase = true) }
+                ytmLivePerformances.forEach { section ->
+                    YtmSectionItems(
+                        section = section,
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1225,6 +1366,12 @@ fun HomeQuickPicks(
                         if (it.title.contains("Today's biggest hits", ignoreCase = true)) return@forEach
                         if (it.title.contains("All hits", ignoreCase = true)) return@forEach
                         if (it.title.contains("Featured playlists", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Trending community playlists", ignoreCase = true)) return@forEach
+                        if (it.title.contains("From the community", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Trending songs for you", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Cover", ignoreCase = true) && it.title.contains("remixes", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Music videos for you", ignoreCase = true)) return@forEach
+                        if (it.title.contains("Live performances", ignoreCase = true)) return@forEach
                         if (it.title.contains("Charts", ignoreCase = true)) return@forEach
                         println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
                         println("homePage() in HomeYouTubeMusic sections items: ${it.items}")
@@ -1249,8 +1396,8 @@ fun HomeQuickPicks(
                                     .height(Dimensions.itemsVerticalPadding * 3 * 9)
                             ) {
                                 items(songItems) { item ->
-                                    app.n_zik.android.components.SongItem(
-                                        song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
+                                    SongItem(
+                                        song = item.asSong ?: Song.makePlaceholder(""),
                                         navController = navController,
                                         onClick = {
                                             val mediaItem = item.asMediaItem
@@ -1268,8 +1415,8 @@ fun HomeQuickPicks(
                                     when (item) {
                                     is Innertube.SongItem -> {
                                         println("Innertube homePage SongItem: ${item.info?.name}")
-                                        app.n_zik.android.components.SongItem(
-                                            song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
+                                        SongItem(
+                                            song = item.asSong ?: Song.makePlaceholder(""),
                                             navController = navController,
                                             onClick = {
                                                 val mediaItem = item.asMediaItem
@@ -1328,12 +1475,12 @@ fun HomeQuickPicks(
                                     }
 
                                     is Innertube.VideoItem -> {
-                                        println("Innertube homePage VideoItem: ${item.info?.name}")
                                         VideoItem(
                                             video = item,
-                                            thumbnailHeightDp = 72.dp,
-                                            thumbnailWidthDp = 128.dp,
+                                            thumbnailHeightDp = albumThumbnailSizeDp,
+                                            thumbnailWidthDp = (albumThumbnailSizeDp * 16 / 9),
                                             disableScrollingText = disableScrollingText,
+                                            alternative = true,
                                             modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
                                                 onClick = {
                                                     binder?.stopRadio()
@@ -1543,8 +1690,8 @@ fun HomeQuickPicks(
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis
                                             )
-                                            app.n_zik.android.components.SongItem(
-                                                song = song.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
+                                            SongItem(
+                                                song = song.asSong ?: Song.makePlaceholder(""),
                                                 navController = navController,
                                                 onClick = {
                                                     val mediaItem = song.asMediaItem
@@ -1636,8 +1783,8 @@ fun HomeQuickPicks(
                                             .height(Dimensions.itemsVerticalPadding * 3 * 9)
                                     ) {
                                         items(songItems) { item ->
-                                            app.n_zik.android.components.SongItem(
-                                                song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
+                                            SongItem(
+                                                song = item.asSong ?: Song.makePlaceholder(""),
                                                 navController = navController,
                                                 onClick = {
                                                     val mediaItem = item.asMediaItem
@@ -1716,30 +1863,29 @@ fun HomeQuickPicks(
         }
 
     if (relatedPageResult?.exceptionOrNull() != null) {
-                    Spacer(modifier = Modifier.height(50.dp))
-                    BasicText(
-                        text = stringResource(R.string.page_not_been_loaded),
-                        style = typography().s.secondary.center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(all = 16.dp)
-                    )
-                } else {
-                    if (!isYouTubeLoggedIn()) {
-                        Spacer(modifier = Modifier.height(50.dp))
-                        BasicText(
-                            text = stringResource(R.string.log_in_to_ytm),
-                            style = typography().s.secondary.center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
-                                .clickable(onClick = onSettingsClick)
-                        )
-                    }
-                }
+        Spacer(modifier = Modifier.height(50.dp))
+        BasicText(
+            text = stringResource(R.string.page_not_been_loaded),
+            style = typography().s.secondary.center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = 16.dp)
+        )
+    } else {
+        if (!isYouTubeLoggedIn()) {
+            Spacer(modifier = Modifier.height(50.dp))
+            BasicText(
+                text = stringResource(R.string.log_in_to_ytm),
+                style = typography().s.secondary.center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .clickable(onClick = onSettingsClick)
+            )
+        }
+    }
 
                 Spacer(modifier = Modifier.height(Dimensions.bottomSpacer))
-
             }
 
 
@@ -1759,11 +1905,54 @@ fun HomeQuickPicks(
 }
 
 
+@UnstableApi
+@Composable
+private fun HomeBottomShimmer(
+    albumThumbnailSizeDp: Dp,
+    artistThumbnailSizeDp: Dp,
+    endPaddingValues: PaddingValues
+) {
+    ShimmerHost {
+        repeat(3) {
+            // Album/Playlist Section Placeholder
+            TextPlaceholder(
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .padding(top = 16.dp, bottom = 8.dp)
+            )
+            LazyRow(contentPadding = endPaddingValues) {
+                items(5) {
+                    AlbumItemPlaceholder(
+                        thumbnailSizeDp = albumThumbnailSizeDp,
+                        modifier = Modifier.padding(horizontal = 4.dp)
+                    )
+                }
+            }
+
+            // Artist Section Placeholder
+            TextPlaceholder(
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .padding(top = 16.dp, bottom = 8.dp)
+            )
+            LazyRow(contentPadding = endPaddingValues) {
+                items(5) {
+                    ArtistItemPlaceholder(
+                        thumbnailSizeDp = artistThumbnailSizeDp,
+                        modifier = Modifier.padding(horizontal = 4.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun YtmSectionItems(
     section: HomePage.Section,
-    index: Int,
     itemInHorizontalGridWidth: Dp,
     albumThumbnailSizePx: Int,
     albumThumbnailSizeDp: Dp,
@@ -1783,8 +1972,9 @@ private fun YtmSectionItems(
 
         Title(
             title = section.title,
-            onClick = {},
-            verticalPadding = 16.dp,
+            enableClick = false,
+            onClick = null,
+            verticalPadding = 16.dp
         )
 
         if (isSongOnly) {
@@ -1818,14 +2008,30 @@ private fun YtmSectionItems(
                     when (item) {
                         is Innertube.SongItem -> {
                             val binder = LocalPlayerServiceBinder.current
-                            app.n_zik.android.components.SongItem(
-                                song = item.asSong ?: app.it.fast4x.rimusic.models.Song.makePlaceholder(""),
-                                navController = navController,
-                                onClick = {
-                                    val mediaItem = item.asMediaItem
-                                    binder?.stopRadio()
-                                    binder?.player?.forcePlay(mediaItem)
-                                }
+                            val menuState = LocalMenuState.current
+                            val song = item.asSong ?: Song.makePlaceholder("")
+                            AlbumItem(
+                                thumbnailUrl = item.thumbnail?.url,
+                                title = item.info?.name,
+                                authors = item.authors?.parseArtists()?.joinToString(", "),
+                                year = null,
+                                thumbnailSizePx = albumThumbnailSizePx,
+                                thumbnailSizeDp = albumThumbnailSizeDp,
+                                alternative = true,
+                                showAuthors = true,
+                                modifier = Modifier
+                                    .clip(uiRoundnessShape())
+                                    .combinedClickable(
+                                        onClick = {
+                                            val mediaItem = item.asMediaItem
+                                            binder?.stopRadio()
+                                            binder?.player?.forcePlay(mediaItem)
+                                        },
+                                        onLongClick = {
+                                            menuState.display { SongItemMenu(navController = navController, song = song).MenuComponent() }
+                                        }
+                                    ),
+                                disableScrollingText = disableScrollingText
                             )
                         }
                         is Innertube.AlbumItem -> {
@@ -1890,9 +2096,10 @@ private fun YtmSectionItems(
                             val menuState = LocalMenuState.current
                             VideoItem(
                                 video = item,
-                                thumbnailHeightDp = 72.dp,
-                                thumbnailWidthDp = 128.dp,
+                                thumbnailHeightDp = albumThumbnailSizeDp,
+                                thumbnailWidthDp = (albumThumbnailSizeDp * 16 / 9),
                                 disableScrollingText = disableScrollingText,
+                                alternative = true,
                                 modifier = Modifier
                                     .clip(uiRoundnessShape())
                                     .combinedClickable(
@@ -1966,9 +2173,6 @@ fun ChipItemColored(
         }
     }
 }
-
-
-
 
 
 

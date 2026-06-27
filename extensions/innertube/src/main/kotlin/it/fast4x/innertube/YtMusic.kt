@@ -156,6 +156,21 @@ object YtMusic {
         HomePage( sections = sections, chips = chips )
     }
 
+    suspend fun getQuickPicks(setLogin: Boolean = false): Result<List<Innertube.SongItem>> = runCatching {
+        val response = Innertube.browse(browseId = "FEmusic_home", setLogin = setLogin).body<BrowseResponse>()
+
+        val sectionListRender = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer
+
+        sectionListRender?.contents
+            ?.mapNotNull { it.musicCarouselShelfRenderer }
+            ?.mapNotNull { HomePage.Section.fromMusicCarouselShelfRenderer(it) }
+            ?.firstOrNull { it.title.contains("Quick picks", ignoreCase = true) }
+            ?.items
+            ?.filterIsInstance<Innertube.SongItem>()
+            .orEmpty()
+    }
+
     suspend fun getHistory(setLogin: Boolean = false): Result<HistoryPage> = runCatching {
 
         val response = Innertube.browse(browseId = "FEmusic_history", setLogin = setLogin)

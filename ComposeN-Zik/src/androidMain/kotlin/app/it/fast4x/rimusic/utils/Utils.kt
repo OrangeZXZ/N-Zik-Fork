@@ -141,6 +141,8 @@ fun List<Innertube.Info<*>?>?.parseArtists(): List<String> {
         val name = author?.name ?: continue
         // Skip pure separators
         if (name.matches(Regex("\\s*([,&])\\s*"))) continue
+        // Skip view/play count patterns like "123,456,789 views" or "1.2M vues"
+        if (Regex("\\d.*(view|plays)", RegexOption.IGNORE_CASE).containsMatchIn(name)) continue
         // Check if this name contains multiple artists
         if (name.contains("&") || name.contains(",")) {
             // Split by & or , and add each
