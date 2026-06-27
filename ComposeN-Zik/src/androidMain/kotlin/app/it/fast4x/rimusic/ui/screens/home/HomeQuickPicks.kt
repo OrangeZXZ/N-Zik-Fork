@@ -387,7 +387,7 @@ fun HomeQuickPicks(
                 // Log missing sections after 3 attempts
                 val requestedSections = listOf(
                     "Quick picks", "Fresh finds", "Old favorites", "Mixed for you",
-                    "Your daily discover", "Fresh new music", "New release",
+                    "Forgotten favorites", "Your daily discover", "Fresh new music", "New release",
                     "Albums for you", "Today's biggest hits", "All hits",
                     "Featured playlists", "Trending community playlists",
                     "From the community", "Trending songs for you", "Cover",
@@ -890,6 +890,26 @@ fun HomeQuickPicks(
                     YtmSectionItems(
                         section = section,
                         titleOverride = stringResource(R.string.mixed_for_you),
+                        itemInHorizontalGridWidth = itemInHorizontalGridWidth,
+                        albumThumbnailSizePx = albumThumbnailSizePx,
+                        albumThumbnailSizeDp = albumThumbnailSizeDp,
+                        songThumbnailSizePx = songThumbnailSizePx,
+                        songThumbnailSizeDp = songThumbnailSizeDp,
+                        playlistThumbnailSizePx = playlistThumbnailSizePx,
+                        playlistThumbnailSizeDp = playlistThumbnailSizeDp,
+                        disableScrollingText = disableScrollingText,
+                        endPaddingValues = endPaddingValues,
+                        navController = navController,
+                        onAlbumClick = onAlbumClick,
+                        onArtistClick = onArtistClick,
+                        onPlaylistClick = onPlaylistClick
+                    )
+                }
+
+                ytmSections.filterAndMerge { it.contains("Forgotten favorites", ignoreCase = true) }?.let { section ->
+                    YtmSectionItems(
+                        section = section,
+                        titleOverride = stringResource(R.string.forgotten_favorites),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1431,6 +1451,7 @@ fun HomeQuickPicks(
                         if (title.contains("Fresh finds", ignoreCase = true)) return@forEach
                         if (title.contains("Old favorites", ignoreCase = true)) return@forEach
                         if (title.contains("Mixed for you", ignoreCase = true)) return@forEach
+                        if (title.contains("Forgotten favorites", ignoreCase = true)) return@forEach
                         if (title.contains("Your daily discover", ignoreCase = true)) return@forEach
                         if (title.contains("New release", ignoreCase = true)) return@forEach
                         if (title.contains("Fresh new music", ignoreCase = true)) return@forEach
