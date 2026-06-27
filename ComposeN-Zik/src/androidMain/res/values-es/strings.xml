@@ -195,8 +195,10 @@
   <string name="dynamic">Dinámico</string>
   <string name="discovery">Descubrir</string>
   <string name="mood">Estado de ánimo</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Nuevos álbumes</string>
   <string name="moods_and_genres">Estados de ánimo y géneros</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" entradas de búsqueda"</string>
   <string name="not_find_battery_optimization_settings">No se pudieron encontrar los ajustes de optimización de la batería. Por favor, otorga los permisos manualmente</string>
   <string name="search">Buscar</string>
@@ -1355,4 +1357,5 @@
   <string name="source_youtube_unsynced">YouTube (sin sincronizar)</string>
   <string name="clipboard_contains_non_text_content">El portapapeles contiene contenido no textual (imagen u otro medio)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>

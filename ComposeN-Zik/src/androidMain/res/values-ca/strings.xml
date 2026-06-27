@@ -195,8 +195,10 @@
   <string name="dynamic">Dinàmic</string>
   <string name="discovery">Descobreix</string>
   <string name="mood">Estat d\'ànim</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Àlbums nous</string>
   <string name="moods_and_genres">Estats d\'ànim i gèneres</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" consultes de cerca"</string>
   <string name="not_find_battery_optimization_settings">No s\'ha pogut trobar la configuració d\'optimització de la bateria, si us plau, afegiu la llista blanca manualment</string>
   <string name="search">Search...</string>
@@ -1355,4 +1357,5 @@
   <string name="source_youtube_unsynced">YouTube (unsynced)</string>
   <string name="clipboard_contains_non_text_content">Clipboard contains non-text content (image or other media)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>

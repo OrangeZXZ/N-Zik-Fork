@@ -195,8 +195,10 @@
   <string name="dynamic">Dynamiczny</string>
   <string name="discovery">Odkrywanie</string>
   <string name="mood">Nastrój</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Nowe albumy</string>
   <string name="moods_and_genres">Nastroje i gatunki</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" zapytania"</string>
   <string name="not_find_battery_optimization_settings">Nie udało się znaleźć ustawień optymalizacji baterii. Ręcznie dodaj aplikację do białej listy.</string>
   <string name="search">Szukaj</string>
@@ -1355,4 +1357,5 @@
   <string name="source_youtube_unsynced">YouTube (niezsynchronizowany)</string>
   <string name="clipboard_contains_non_text_content">Schowek zawiera nietekstową zawartość (obraz lub inne media)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>

@@ -195,8 +195,10 @@
   <string name="dynamic">Dynamisch</string>
   <string name="discovery">Ontdekken</string>
   <string name="mood">Stemming</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Nieuwe albums</string>
   <string name="moods_and_genres">Stemmingen en genres</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" zoekopdrachten"</string>
   <string name="not_find_battery_optimization_settings">Kon de accuoptimalisatie-instellingen niet vinden, gelieve handmatig whitelisten</string>
   <string name="search">Zoeken</string>
@@ -1355,4 +1357,5 @@
   <string name="source_youtube_unsynced">YouTube (niet gesynchroniseerd)</string>
   <string name="clipboard_contains_non_text_content">Klembord bevat niet-tekstinhoud (afbeelding of andere media)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>

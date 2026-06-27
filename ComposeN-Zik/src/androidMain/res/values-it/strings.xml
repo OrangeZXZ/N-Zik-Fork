@@ -195,8 +195,10 @@
   <string name="dynamic">Dinamico</string>
   <string name="discovery">Scopri</string>
   <string name="mood">Stato d\'animo</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Nuovi album</string>
   <string name="moods_and_genres">Moods and generi</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" query di ricerca"</string>
   <string name="not_find_battery_optimization_settings">Impossibile trovare le impostazioni di ottimizzazione della batteria, si prega di farlo manualmente</string>
   <string name="search">Cerca</string>
@@ -1355,4 +1357,5 @@
   <string name="source_youtube_unsynced">YouTube (non sincronizzato)</string>
   <string name="clipboard_contains_non_text_content">Gli appunti contengono contenuti non testuali (immagine o altri supporti)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>

@@ -195,8 +195,10 @@
   <string name="dynamic">Dynamisk</string>
   <string name="discovery">Opdag</string>
   <string name="mood">Humør</string>
+  <string name="moods">Moods</string>
   <string name="new_albums">Nye album</string>
   <string name="moods_and_genres">Humør og genrer</string>
+  <string name="genres">Genres</string>
   <string name="search_queries">" søgninger"</string>
   <string name="not_find_battery_optimization_settings">Kunne ikke finde batterioptimeringsindstillinger; hvidlist venligst manuelt</string>
   <string name="search">Søg...</string>
@@ -1355,4 +1357,5 @@
   <string name="source_youtube_unsynced">YouTube (ikke-synkroniseret)</string>
   <string name="clipboard_contains_non_text_content">Udklipsholder indeholder ikke-tekstindhold (billede eller andre medier)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>
