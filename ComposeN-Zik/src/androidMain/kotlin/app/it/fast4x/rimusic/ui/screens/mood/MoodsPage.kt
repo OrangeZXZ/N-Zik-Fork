@@ -44,7 +44,7 @@ import app.it.fast4x.rimusic.ui.components.themed.HeaderPlaceholder
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
-import app.it.fast4x.rimusic.ui.screens.home.MoodGridItemColored
+import app.n_zik.android.components.ui.screens.home.MoodGridItemColored
 import app.it.fast4x.rimusic.ui.components.themed.Loader
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.center

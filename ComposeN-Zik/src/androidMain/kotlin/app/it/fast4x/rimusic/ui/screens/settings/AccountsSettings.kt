@@ -50,6 +50,7 @@ import app.n_zik.android.R
 import io.ktor.http.Url
 import app.n_zik.android.components.dialog.RestartAppDialog
 import app.it.fast4x.compose.persist.persistList
+import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.utils.parseCookieString
 import it.fast4x.piped.Piped
 import it.fast4x.piped.models.Instance
@@ -82,9 +83,13 @@ import app.it.fast4x.rimusic.utils.pipedInstanceNameKey
 import app.it.fast4x.rimusic.utils.pipedPasswordKey
 import app.it.fast4x.rimusic.utils.pipedUsernameKey
 import app.it.fast4x.rimusic.utils.preferences
+import app.it.fast4x.rimusic.utils.quickPicsDiscoverPageKey
+import app.it.fast4x.rimusic.utils.quickPicsHomePageKey
+import app.it.fast4x.rimusic.utils.quickPicsYtmQuickPicksKey
 import app.it.fast4x.rimusic.utils.rememberEncryptedPreference
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.restartActivityKey
+import androidx.core.content.edit
 import app.it.fast4x.rimusic.utils.ytAccountChannelHandleKey
 import app.it.fast4x.rimusic.utils.ytAccountEmailKey
 import app.it.fast4x.rimusic.utils.ytAccountNameKey
@@ -178,6 +183,17 @@ fun AccountsSettings() {
                                 accountName = ""
                                 accountChannelHandle = ""
                                 accountEmail = ""
+                                // Clear Innertube singleton
+                                Innertube.cookie = null
+                                Innertube.dataSyncId = null
+                                Innertube.visitorData = Innertube.DEFAULT_VISITOR_DATA
+
+                                // Clear cached data
+                                appContext().preferences.edit {
+                                    remove(quickPicsHomePageKey)
+                                    remove(quickPicsYtmQuickPicksKey)
+                                    remove(quickPicsDiscoverPageKey)
+                                }
                             }
                         },
                         icon = R.drawable.ytmusic

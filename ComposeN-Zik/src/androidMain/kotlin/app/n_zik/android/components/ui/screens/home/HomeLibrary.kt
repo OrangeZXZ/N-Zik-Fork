@@ -1,16 +1,13 @@
-package app.it.fast4x.rimusic.ui.screens.home
+package app.n_zik.android.components.ui.screens.home
 
 import androidx.compose.ui.draw.clip
 
 import app.n_zik.android.uiRoundnessShape
 
-import app.n_zik.android.core.database.*
-
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +16,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -34,15 +30,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.size
@@ -62,10 +54,12 @@ import app.it.fast4x.rimusic.MONTHLY_PREFIX
 import app.it.fast4x.rimusic.PINNED_PREFIX
 import app.n_zik.android.R
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.YTP_PREFIX
 import app.n_zik.android.colorPalette
-import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.PlaylistsType
 import app.it.fast4x.rimusic.enums.UiType
 import app.it.fast4x.rimusic.models.Playlist
@@ -81,8 +75,6 @@ import app.it.fast4x.rimusic.ui.items.PlaylistItem
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.CheckMonthlyPlaylist
 import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_ITEM_SIZE
-import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_SORT_BY
-import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_SORT_ORDER
 import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PLAYLIST_SORT_BY
 import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PLAYLIST_SORT_ORDER
 import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_YT_PLAYLIST_SORT_BY
@@ -115,13 +107,18 @@ import app.n_zik.android.components.tab.Search
 import app.n_zik.android.components.tab.SongShuffler
 import it.fast4x.innertube.requests.playlistPage
 import app.kreate.android.me.knighthat.utils.Toaster
-import app.it.fast4x.rimusic.ui.components.themed.TextFieldDialog
 import it.fast4x.innertube.models.bodies.BrowseBody
-import androidx.core.net.toUri
+import app.it.fast4x.rimusic.enums.SortOrder
+import app.it.fast4x.rimusic.ui.components.LocalMenuState
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import it.fast4x.innertube.Innertube
 import app.it.fast4x.rimusic.utils.asSong
 import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.utils.preferences
+import app.n_zik.android.components.dialog.YouTubeLinkImportDialog
+import app.n_zik.android.components.tab.ImportPlaylistsMenu
+import app.n_zik.android.components.tab.ImportSongsFromServices
+import app.n_zik.android.typography
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -135,7 +132,7 @@ fun HomeLibrary(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-    val menuState = app.it.fast4x.rimusic.ui.components.LocalMenuState.current
+    val menuState = LocalMenuState.current
     
     // Essentials
     val lazyGridState = rememberLazyGridState()
@@ -187,10 +184,10 @@ fun HomeLibrary(
     val importPlaylistDialog = ImportSongsFromCSV(onImportComplete = {
         appContext().preferences.edit().putString(HOME_LIBRARY_PLAYLIST_SORT_BY.key, PlaylistSortBy.Custom.name).apply()
     })
-    val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "SPOTIFY_IMPORT", onImportComplete = {
+    val importSpotifyDialog = ImportSongsFromServices.init(source = "SPOTIFY_IMPORT", onImportComplete = {
         appContext().preferences.edit().putString(HOME_LIBRARY_PLAYLIST_SORT_BY.key, PlaylistSortBy.Custom.name).apply()
     })
-    val importRiPlayDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "RIPLAY_IMPORT", onImportComplete = {
+    val importRiPlayDialog = ImportSongsFromServices.init(source = "RIPLAY_IMPORT", onImportComplete = {
         appContext().preferences.edit().putString(HOME_LIBRARY_PLAYLIST_SORT_BY.key, PlaylistSortBy.Custom.name).apply()
     })
     
@@ -198,7 +195,7 @@ fun HomeLibrary(
     val coroutineScope = rememberCoroutineScope()
     
     if (showYouTubeLinkDialog) {
-        app.n_zik.android.components.dialog.YouTubeLinkImportDialog(
+        YouTubeLinkImportDialog(
             onImport = { playlistId ->
                 coroutineScope.launch(Dispatchers.IO) {
                     val browseId = if (playlistId.startsWith("VL")) playlistId else "VL$playlistId"
@@ -225,12 +222,14 @@ fun HomeLibrary(
         )
     }
 
-    val importMenu = remember { app.n_zik.android.components.tab.ImportPlaylistsMenu(
-        onImportNzik = { importPlaylistDialog.onShortClick() },
-        onImportSpotify = { importSpotifyDialog.onShortClick() },
-        onImportRiplay = { importRiPlayDialog.onShortClick() },
-        onImportYoutubeLink = { showYouTubeLinkDialog = true }
-    ) }
+    val importMenu = remember {
+        ImportPlaylistsMenu(
+            onImportNzik = { importPlaylistDialog.onShortClick() },
+            onImportSpotify = { importSpotifyDialog.onShortClick() },
+            onImportRiplay = { importRiPlayDialog.onShortClick() },
+            onImportYoutubeLink = { showYouTubeLinkDialog = true }
+        )
+    }
     val sync = autoSyncToolbutton(R.string.autosync)
 
     LaunchedEffect( sort.sortBy, sort.sortOrder ) {
@@ -315,12 +314,12 @@ fun HomeLibrary(
                     HeaderInfo( items.size.toString(), R.drawable.playlist )
                 }
 
-                val toolbarButtons = remember { mutableStateListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>() }
+                val toolbarButtons = remember { mutableStateListOf<Button>() }
 
                 LaunchedEffect(sort.sortBy, sort.sortOrder) {
                     toolbarButtons.clear()
                     toolbarButtons.add(sort)
-                    if (sort.sortBy == app.it.fast4x.rimusic.enums.PlaylistSortBy.Custom)
+                    if (sort.sortBy == PlaylistSortBy.Custom)
                         toolbarButtons.add(positionLock)
                     toolbarButtons.add(sync)
                     toolbarButtons.add(search)
@@ -415,7 +414,7 @@ fun HomeLibrary(
                             key = preview.playlist.id
                         ) { isDraggingItem ->
                             Box(modifier = Modifier) {
-                                if (!positionLock.isLocked() && sort.sortBy == app.it.fast4x.rimusic.enums.PlaylistSortBy.Custom && sort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending) {
+                                if (!positionLock.isLocked() && sort.sortBy == PlaylistSortBy.Custom && sort.sortOrder == SortOrder.Ascending) {
                                     Box(
                                         modifier = Modifier
                                             .padding(4.dp)
@@ -438,8 +437,8 @@ fun HomeLibrary(
                                             ),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        androidx.compose.material3.Icon(
-                                            painter = androidx.compose.ui.res.painterResource(R.drawable.reorder),
+                                        Icon(
+                                            painter = painterResource(R.drawable.reorder),
                                             contentDescription = null,
                                             tint = if (isDraggingItem) colorPalette().accent else colorPalette().textDisabled
                                         )
@@ -482,9 +481,9 @@ fun HomeLibrary(
                         modifier = Modifier.fillMaxSize().padding(bottom = 47.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        androidx.compose.foundation.text.BasicText(
+                        BasicText(
                             text = stringResource(R.string.no_items),
-                            style = app.n_zik.android.typography().m.semiBold.copy(
+                            style = typography().m.semiBold.copy(
                                 color = colorPalette().textSecondary
                             )
                         )

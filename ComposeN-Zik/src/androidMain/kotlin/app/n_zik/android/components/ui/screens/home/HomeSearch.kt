@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.screens.home
+package app.n_zik.android.components.ui.screens.home
 
 import app.n_zik.android.uiRoundnessShape
 
@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
 import app.n_zik.android.LocalPlayerAwareWindowInsets
 import app.n_zik.android.colorPalette
-import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.SearchType
 import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon

@@ -1,8 +1,6 @@
-package app.it.fast4x.rimusic.ui.screens.home
+package app.n_zik.android.components.ui.screens.home
 
 import app.n_zik.android.uiRoundnessShape
-
-import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -61,7 +59,6 @@ import it.fast4x.innertube.requests.discoverPage
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.LocalPlayerAwareWindowInsets
 import app.n_zik.android.colorPalette
-import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.UiType
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.ShimmerHost
@@ -84,13 +81,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.navigation.NavController
+import app.it.fast4x.rimusic.ui.components.LocalMenuState
+import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
+import app.n_zik.android.thumbnailShape
 
 @SuppressLint("SuspiciousIndentation")
 @UnstableApi
 @OptIn(ExperimentalAnimationApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeDiscovery(
-    navController: androidx.navigation.NavController,
+    navController: NavController,
     onMoodClick: (mood: Innertube.Mood.Item) -> Unit,
     onNewReleaseAlbumClick: (String) -> Unit,
     onSearchClick: () -> Unit
@@ -124,8 +126,8 @@ fun HomeDiscovery(
     //Log.d("mediaItemArtists",preferitesArtists.toString())
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
-    val menuState = app.it.fast4x.rimusic.ui.components.LocalMenuState.current
-    val hapticFeedback = androidx.compose.ui.platform.LocalHapticFeedback.current
+    val menuState = LocalMenuState.current
+    val hapticFeedback = LocalHapticFeedback.current
 
     BoxWithConstraints {
 
@@ -203,7 +205,7 @@ fun HomeDiscovery(
                                                 onLongClick = {
                                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.display {
-                                                        app.n_zik.android.components.menu.album.OnlineAlbumItemMenu(
+                                                        OnlineAlbumItemMenu(
                                                             navController = navController,
                                                             album = it
                                                         ).MenuComponent()
@@ -238,7 +240,7 @@ fun HomeDiscovery(
                                     onLongClick = {
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                         menuState.display {
-                                            app.n_zik.android.components.menu.album.OnlineAlbumItemMenu(
+                                            OnlineAlbumItemMenu(
                                                 navController = navController,
                                                 album = it
                                             ).MenuComponent()
@@ -354,7 +356,7 @@ fun MoodItemColored(
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
-            .clip(app.n_zik.android.thumbnailShape())
+            .clip(thumbnailShape())
             .clickable { onClick() }
 
     ) {
@@ -413,7 +415,7 @@ fun MoodGridItemColored(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxSize(0.9f)
-                .clip(app.n_zik.android.thumbnailShape())
+                .clip(thumbnailShape())
 
         ) {
             Row(
@@ -461,14 +463,14 @@ fun MoodItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp)
-            .clip(app.n_zik.android.thumbnailShape())
+            .clip(thumbnailShape())
             .clickable { onClick() }
 
     ) {
         Box(
             modifier = Modifier
                 .requiredWidth(150.dp)
-                .background(color = colorPalette().background4, shape = app.n_zik.android.thumbnailShape())
+                .background(color = colorPalette().background4, shape = thumbnailShape())
                 .fillMaxWidth(0.9f)
                 .padding(all = 10.dp)
         ){
@@ -503,13 +505,13 @@ fun MoodGridItem(
         modifier = modifier
             .size(thumbnailSizeDp,thumbnailSizeDp)
             //.background(colorPalette().background1)
-            .clip(app.n_zik.android.thumbnailShape())
+            .clip(thumbnailShape())
             .clickable { onClick() }
 
     ) {
         Box(
             modifier = Modifier
-                .background(color = colorPalette().background4, shape = app.n_zik.android.thumbnailShape())
+                .background(color = colorPalette().background4, shape = thumbnailShape())
                 .fillMaxSize(0.9f)
                 .padding(horizontal = 10.dp)
                 .padding(vertical = 50.dp)

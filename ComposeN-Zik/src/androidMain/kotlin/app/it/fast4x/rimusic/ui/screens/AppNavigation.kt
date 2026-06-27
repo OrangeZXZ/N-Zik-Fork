@@ -61,7 +61,7 @@ import app.it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import app.it.fast4x.rimusic.ui.screens.album.AlbumScreen
 import app.it.fast4x.rimusic.ui.screens.artist.ArtistScreenModern
 import app.it.fast4x.rimusic.ui.screens.history.HistoryScreen
-import app.it.fast4x.rimusic.ui.screens.home.HomeScreen
+import app.n_zik.android.components.ui.screens.home.HomeScreen
 import app.it.fast4x.rimusic.ui.screens.localplaylist.LocalPlaylistScreen
 import app.it.fast4x.rimusic.ui.screens.mood.MoodScreen
 import app.it.fast4x.rimusic.ui.screens.mood.MoodsPageScreen

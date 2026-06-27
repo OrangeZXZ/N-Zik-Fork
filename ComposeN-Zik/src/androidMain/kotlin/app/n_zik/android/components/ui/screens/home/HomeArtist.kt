@@ -1,14 +1,14 @@
-package app.it.fast4x.rimusic.ui.screens.home
+package app.n_zik.android.components.ui.screens.home
+
+import androidx.compose.ui.draw.clip
 
 import app.n_zik.android.uiRoundnessShape
 
-import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -32,210 +31,170 @@ import androidx.compose.ui.zIndex
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.padding
 import sh.calvin.reorderable.rememberReorderableLazyGridState
 import sh.calvin.reorderable.ReorderableItem
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
-import app.it.fast4x.rimusic.enums.AlbumSortBy
+import app.it.fast4x.rimusic.enums.ArtistSortBy
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
-import androidx.navigation.NavController
 import app.n_zik.android.R
 import app.it.fast4x.compose.persist.persistList
+import it.fast4x.innertube.YtMusic
 import app.n_zik.android.core.database.Database
-import app.n_zik.android.LocalPlayerServiceBinder
-import app.it.fast4x.rimusic.MODIFIED_PREFIX
 import app.n_zik.android.colorPalette
-import app.it.fast4x.rimusic.enums.AlbumsType
+import app.it.fast4x.rimusic.enums.ArtistsType
 import app.it.fast4x.rimusic.enums.FilterBy
-import app.it.fast4x.rimusic.enums.NavRoutes
-import app.it.fast4x.rimusic.enums.NavigationBarPosition
+import app.it.fast4x.rimusic.enums.SortOrder
 import app.it.fast4x.rimusic.enums.UiType
-import app.it.fast4x.rimusic.models.Album
-import app.it.fast4x.rimusic.models.Song
-import app.n_zik.android.thumbnailShape
+import app.it.fast4x.rimusic.models.Artist
 import app.it.fast4x.rimusic.ui.components.ButtonsRow
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 import app.it.fast4x.rimusic.ui.components.tab.ItemSize
 import app.it.fast4x.rimusic.ui.components.tab.TabHeader
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Randomizer
-import app.n_zik.android.components.menu.album.AlbumItemMenu
 import app.it.fast4x.rimusic.ui.components.themed.FilterMenu
 import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import app.it.fast4x.rimusic.ui.components.themed.HeaderInfo
 import app.it.fast4x.rimusic.ui.components.themed.MultiFloatingActionsContainer
-import app.it.fast4x.rimusic.ui.items.AlbumItem
+import app.it.fast4x.rimusic.ui.items.ArtistItem
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.LocalAppearance
-import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUMS_SORT_BY
-import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUMS_FAVORITES_SORT_BY
-import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUMS_FAVORITES_SORT_ORDER
-import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUMS_LIBRARY_SORT_BY
-import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUMS_LIBRARY_SORT_ORDER
-import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUM_ITEM_SIZE
-import app.it.fast4x.rimusic.utils.Preference.HOME_ALBUM_SORT_ORDER
-import app.it.fast4x.rimusic.utils.addNext
-import app.it.fast4x.rimusic.utils.addToYtPlaylist
-import app.it.fast4x.rimusic.utils.albumTypeKey
-import app.it.fast4x.rimusic.utils.asMediaItem
+import app.it.fast4x.rimusic.utils.Preference.HOME_ARTISTS_FAVORITES_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_ARTISTS_FAVORITES_SORT_ORDER
+import app.it.fast4x.rimusic.utils.Preference.HOME_ARTISTS_LIBRARY_SORT_BY
+import app.it.fast4x.rimusic.utils.Preference.HOME_ARTISTS_LIBRARY_SORT_ORDER
+import app.it.fast4x.rimusic.utils.Preference.HOME_ARTIST_ITEM_SIZE
+import app.it.fast4x.rimusic.utils.artistTypeKey
 import app.it.fast4x.rimusic.utils.autoSyncToolbutton
 import app.it.fast4x.rimusic.utils.autosyncKey
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey
-import app.it.fast4x.rimusic.utils.enqueue
 import app.it.fast4x.rimusic.utils.filterByKey
-import app.it.fast4x.rimusic.utils.importYTMLikedAlbums
+import app.it.fast4x.rimusic.utils.importYTMSubscribedChannels
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import app.n_zik.android.components.Sort
 import app.n_zik.android.components.tab.Search
 import app.n_zik.android.components.tab.SongShuffler
-import app.n_zik.android.core.database.AlbumTable
+import app.n_zik.android.components.menu.artist.LocalArtistItemMenu
 
-@OptIn(ExperimentalMaterial3Api::class)
-@ExperimentalTextApi
+@ExperimentalMaterial3Api
 @UnstableApi
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
+@ExperimentalComposeUiApi
 @Composable
-fun HomeAlbums(
-    navController: NavController,
-    onAlbumClick: (Album) -> Unit,
+fun HomeArtists(
+    onArtistClick: (Artist) -> Unit,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
     // Essentials
-    val menuState = LocalMenuState.current
-    val binder = LocalPlayerServiceBinder.current
     val lazyGridState = rememberLazyGridState()
+    val (colorPalette, typography) = LocalAppearance.current
+    val menuState = LocalMenuState.current
+    val coroutineScope = rememberCoroutineScope()
 
     // Settings
-    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
-    var albumType by rememberPreference(albumTypeKey, AlbumsType.Favorites )
-
-    var items by persistList<Album>( "home/albums/items" )
-    var itemsToFilter by persistList<Album>( "home/albums/itemsToFilter" )
+    var artistType by rememberPreference(artistTypeKey, ArtistsType.Favorites )
     var filterBy by rememberPreference(filterByKey, FilterBy.All)
-    val (colorPalette, typography) = LocalAppearance.current
 
-    var itemsOnDisplay by persistList<Album>( "home/albums/on_display" )
+
+    var items by persistList<Artist>( "home/artists/items")
+    var itemsToFilter by persistList<Artist>( "home/artists/itemsToFilter" )
+
+    var itemsOnDisplay by persistList<Artist>( "home/artists/on_display" )
+
+    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
     val search = Search(lazyGridState)
 
-    val sort = when( albumType ) {
-        AlbumsType.Favorites -> Sort( HOME_ALBUMS_FAVORITES_SORT_BY, HOME_ALBUMS_FAVORITES_SORT_ORDER )
-        AlbumsType.Library -> Sort( HOME_ALBUMS_LIBRARY_SORT_BY, HOME_ALBUMS_LIBRARY_SORT_ORDER )
+    val sort = when( artistType ) {
+        ArtistsType.Favorites -> Sort( HOME_ARTISTS_FAVORITES_SORT_BY, HOME_ARTISTS_FAVORITES_SORT_ORDER )
+        ArtistsType.Library -> Sort( HOME_ARTISTS_LIBRARY_SORT_BY, HOME_ARTISTS_LIBRARY_SORT_ORDER )
     }
     val positionLock = remember( sort.sortOrder ) { PositionLock(sort.sortOrder) }
 
-    val itemSize = ItemSize.init( HOME_ALBUM_ITEM_SIZE )
+    val itemSize = ItemSize.init( HOME_ARTIST_ITEM_SIZE )
 
-    val randomizer = object: Randomizer<Album> {
-        override fun getItems(): List<Album> = itemsOnDisplay
-        override fun onClick(index: Int) = onAlbumClick( itemsOnDisplay[index] )
+    val randomizer = object: Randomizer<Artist> {
+        override fun getItems(): List<Artist> = itemsOnDisplay
+        override fun onClick(index: Int) = onArtistClick(itemsOnDisplay[index])
+
     }
     val shuffle = SongShuffler(
-        databaseCall = Database.albumTable::allSongsInBookmarked,
-        key = arrayOf( albumType )
+        databaseCall = Database.artistTable::allSongsInFollowing,
+        key = arrayOf( artistType )
     )
 
-    val buttonsList = AlbumsType.entries.map { it to it.text }
+    val buttonsList = ArtistsType.entries.map { it to it.text }
 
     if (!isYouTubeSyncEnabled()) {
         filterBy = FilterBy.All
     }
 
-    LaunchedEffect( sort.sortBy, sort.sortOrder, albumType ) {
-        when ( albumType ) {
-            AlbumsType.Favorites -> Database.albumTable.sortBookmarked( sort.sortBy, sort.sortOrder )
-            AlbumsType.Library -> Database.albumTable.sortInLibrary( sort.sortBy, sort.sortOrder )
+    LaunchedEffect( Unit, sort.sortBy, sort.sortOrder, artistType ) {
+        when( artistType ) {
+            ArtistsType.Favorites -> Database.artistTable.sortFollowing( sort.sortBy, sort.sortOrder )
+            ArtistsType.Library -> Database.artistTable.sortInLibrary( sort.sortBy, sort.sortOrder )
         }.collect { itemsToFilter = it }
     }
     LaunchedEffect( Unit, itemsToFilter, filterBy ) {
         items = when(filterBy) {
             FilterBy.All -> itemsToFilter
-            FilterBy.YoutubeLibrary -> itemsToFilter.filter { it.isYoutubeAlbum }
-            FilterBy.Local -> itemsToFilter.filterNot { it.isYoutubeAlbum }
+            FilterBy.YoutubeLibrary -> itemsToFilter.filter { it.isYoutubeArtist }
+            FilterBy.Local -> itemsToFilter.filterNot { it.isYoutubeArtist }
         }
 
     }
     LaunchedEffect( items, search.inputValue ) {
         itemsOnDisplay = items.filter {
-            it.title?.contains( search.inputValue, true) ?: false
-                    || it.year?.contains( search.inputValue, true) ?: false
-                    || it.authorsText?.contains( search.inputValue, true) ?: false
+            it.name?.contains( search.inputValue, true ) ?: false
+        }
+    }
+    if (items.any{it.thumbnailUrl == null}) {
+        LaunchedEffect(Unit) {
+            withContext(Dispatchers.IO) {
+                items.filter { it.thumbnailUrl == null }.forEach { artist ->
+                    coroutineScope.launch(Dispatchers.IO) {
+                        val artistThumbnail = YtMusic.getArtistPage(artist.id).getOrNull()?.artist?.thumbnail?.url
+                        Database.asyncTransaction {
+                            artistTable.update( artist.copy(thumbnailUrl = artistThumbnail) )
+                        }
+                    }
+                }
+            }
         }
     }
 
-    LaunchedEffect( Unit ) {
-        // TODO Convert to fetch from the internet
-        Database.asyncTransaction {
-            // Only occurs when album doesn't have thumbnailUrl assigned
-            items.filter { it.thumbnailUrl == null }
-                 .forEach { album ->
-                     /**
-                      * Topology:
-                      *
-                      * Return the most frequently occurring [Song.thumbnailUrl]
-                      * among all songs of this album.
-                      *
-                      * Explanation:
-                      *
-                      * [Song.thumbnailUrl] can be changed by user.
-                      * If 1 song has its thumbnail changed, the result
-                      * remains the same because all others have the same url.
-                      *
-                      * Even when most changed to different urls, it only needs
-                      * 2 songs to have the same [Song.thumbnailUrl] to return
-                      * the same result.
-                      */
-                     runBlocking {
-                         songAlbumMapTable.allSongsOf( album.id )
-                                          .first()
-                                          .groupingBy( Song::thumbnailUrl )
-                                          .eachCount()
-                                          .maxByOrNull { it.value }
-                                          ?.key
-                     }?.let { albumTable.updateCover( album.id, it ) }
-                 }
-        }
-    }
-
-    val sync = autoSyncToolbutton(R.string.autosync_albums)
+    val sync = autoSyncToolbutton(R.string.autosync_channels)
 
     val doAutoSync by rememberPreference(autosyncKey, false)
     var justSynced by rememberSaveable { mutableStateOf(!doAutoSync) }
@@ -255,15 +214,15 @@ fun HomeAlbums(
 
     // START: Import YTM subscribed channels
     LaunchedEffect(justSynced, doAutoSync) {
-        if (!justSynced && importYTMLikedAlbums())
-            justSynced = true
+        if (!justSynced && importYTMSubscribedChannels())
+                justSynced = true
     }
 
     PullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = ::refresh
     ) {
-        Box(
+        Box (
             modifier = Modifier
                 .background(colorPalette().background0)
                 .fillMaxHeight()
@@ -272,16 +231,16 @@ fun HomeAlbums(
 
             Column( Modifier.fillMaxSize() ) {
                 // Sticky tab's title
-                TabHeader(R.string.albums) {
-                    HeaderInfo(items.size.toString(), R.drawable.album)
+                TabHeader( R.string.artists ) {
+                    HeaderInfo(items.size.toString(), R.drawable.people)
                 }
 
-                val toolbarButtons = remember { mutableStateListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>() }
+                val toolbarButtons = remember { mutableStateListOf<Button>() }
 
                 LaunchedEffect(sort.sortBy, sort.sortOrder) {
                     toolbarButtons.clear()
                     toolbarButtons.add(sort)
-                    if (sort.sortBy == app.it.fast4x.rimusic.enums.AlbumSortBy.Custom)
+                    if (sort.sortBy == ArtistSortBy.Custom)
                         toolbarButtons.add(positionLock)
                     toolbarButtons.add(sync)
                     toolbarButtons.add(search)
@@ -334,8 +293,8 @@ fun HomeAlbums(
                             Box {
                                 ButtonsRow(
                                     chips = buttonsList,
-                                    currentValue = albumType,
-                                    onValueUpdate = { albumType = it },
+                                    currentValue = artistType,
+                                    onValueUpdate = { artistType = it },
                                     modifier = Modifier.padding(end = 12.dp)
                                 )
                                 if (isYouTubeSyncEnabled()) {
@@ -355,20 +314,21 @@ fun HomeAlbums(
                                             modifier = Modifier
                                                 .align(Alignment.CenterVertically)
                                                 .padding(end = 5.dp)
-                                                .clip(uiRoundnessShape()).clickable {
-                                                    menuState.display {
-                                                        FilterMenu(
-                                                            title = stringResource(R.string.filter_by),
-                                                            onDismiss = menuState::hide,
-                                                            onAll = { filterBy = FilterBy.All },
-                                                            onYoutubeLibrary = {
-                                                                filterBy = FilterBy.YoutubeLibrary
-                                                            },
-                                                            onLocal = { filterBy = FilterBy.Local }
-                                                        )
+                                                .clip(uiRoundnessShape()).combinedClickable(
+                                                    onClick = {
+                                                        menuState.display {
+                                                            FilterMenu(
+                                                                title = stringResource(R.string.filter_by),
+                                                                onDismiss = menuState::hide,
+                                                                onAll = { filterBy = FilterBy.All },
+                                                                onYoutubeLibrary = {
+                                                                    filterBy = FilterBy.YoutubeLibrary
+                                                                },
+                                                                onLocal = { filterBy = FilterBy.Local }
+                                                            )
+                                                        }
                                                     }
-
-                                                }
+                                                )
                                         )
                                         HeaderIconButton(
                                             icon = R.drawable.playlist,
@@ -376,7 +336,7 @@ fun HomeAlbums(
                                             onClick = {},
                                             modifier = Modifier
                                                 .offset(0.dp, 2.5.dp)
-                                                .clip(uiRoundnessShape()).clickable(
+                                                .clip(uiRoundnessShape()).combinedClickable(
                                                     interactionSource = remember { MutableInteractionSource() },
                                                     indication = null,
                                                     onClick = {}
@@ -387,16 +347,13 @@ fun HomeAlbums(
                             }
                         }
                     }
-                    items(
-                        items = itemsOnDisplay,
-                        key = { it.id }
-                    ) { album ->
+                    items(items = itemsOnDisplay, key = { it.id }) { artist ->
                         ReorderableItem(
                             reorderableLazyGridState,
-                            key = album.id
+                            key = artist.id
                         ) { isDraggingItem ->
                             Box(modifier = Modifier) {
-                                if (!positionLock.isLocked() && sort.sortBy == app.it.fast4x.rimusic.enums.AlbumSortBy.Custom && sort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending) {
+                                if (!positionLock.isLocked() && sort.sortBy == ArtistSortBy.Custom && sort.sortOrder == SortOrder.Ascending) {
                                     Box(
                                         modifier = Modifier
                                             .padding(4.dp)
@@ -411,61 +368,39 @@ fun HomeAlbums(
                                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                                     val currentItems = itemsOnDisplay.toList()
                                                     Database.asyncTransaction {
-                                                        currentItems.forEachIndexed { index, album ->
-                                                            albumTable.updatePosition(album.id, index)
+                                                        currentItems.forEachIndexed { index, artist ->
+                                                            artistTable.updatePosition(artist.id, index)
                                                         }
                                                     }
                                                 }
                                             ),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        androidx.compose.material3.Icon(
-                                            painter = androidx.compose.ui.res.painterResource(R.drawable.reorder),
+                                        Icon(
+                                            painter = painterResource(R.drawable.reorder),
                                             contentDescription = null,
                                             tint = if (isDraggingItem) colorPalette().accent else colorPalette().textDisabled
                                         )
                                     }
                                 }
 
-                                val songs by remember {
-                                    Database.songAlbumMapTable
-                                            .allSongsOf( album.id )
-                                            .distinctUntilChanged()
-                                }.collectAsState( emptyList(), Dispatchers.IO )
-
-                        var position by remember {
-                            mutableIntStateOf(0)
-                        }
-                        val context = LocalContext.current
-
-                        AlbumItem(
-                            alternative = true,
-                            showAuthors = true,
-                            album = album,
-                            thumbnailSizeDp = itemSize.size.dp,
-                            thumbnailSizePx = itemSize.size.px,
-                            modifier = Modifier
-                                .clip(uiRoundnessShape()).combinedClickable(
-
-                                    onLongClick = {
-                                        menuState.display {
-                                            AlbumItemMenu(
-                                                navController = navController,
-                                                album = album,
-                                                songs = songs,
-                                                binder = binder
-                                            ).MenuComponent()
+                                ArtistItem(
+                                    artist = artist,
+                                    thumbnailSizeDp = itemSize.size.dp,
+                                    thumbnailSizePx = itemSize.size.px,
+                                    alternative = true,
+                                    modifier = Modifier.clip(uiRoundnessShape()).combinedClickable(
+                                        onClick = {
+                                            search.hideIfEmpty()
+                                            onArtistClick( artist )
+                                        },
+                                        onLongClick = {
+                                            menuState.display { LocalArtistItemMenu(artist = artist).MenuComponent() }
                                         }
-                                    },
-                                    onClick = {
-                                        search.hideIfEmpty()
-                                        onAlbumClick( album )
-                                    }
+                                    ),
+                                    disableScrollingText = disableScrollingText,
+                                    isYoutubeArtist = artist.isYoutubeArtist
                                 )
-                                .clip(thumbnailShape()),
-                            disableScrollingText = disableScrollingText,
-                            isYoutubeAlbum = album.isYoutubeAlbum
-                        )
                             }
                         }
                     }
@@ -487,10 +422,10 @@ fun HomeAlbums(
             }
             }
 
-            FloatingActionsContainerWithScrollToTop( lazyGridState )
+            FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if ( UiType.ViMusic.isCurrent() && showFloatingIcon )
+            if( UiType.ViMusic.isCurrent() && showFloatingIcon )
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.search,
                     onClick = onSearchClick,
@@ -500,6 +435,8 @@ fun HomeAlbums(
         }
     }
 }
+
+
 
 
 

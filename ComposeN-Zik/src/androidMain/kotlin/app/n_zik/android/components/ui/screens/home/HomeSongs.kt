@@ -1,35 +1,14 @@
-package app.kreate.android.themed.rimusic.screen.home
+package app.n_zik.android.components.ui.screens.home
 
-import app.n_zik.android.core.database.*
-
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.ui.zIndex
-import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 import androidx.compose.material3.Icon
-import androidx.compose.ui.res.painterResource
-import app.it.fast4x.rimusic.ui.components.themed.IconButton
-import androidx.compose.material3.ripple
-import androidx.compose.ui.res.stringResource
-import app.n_zik.android.R
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -37,41 +16,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.compose.ui.util.fastFilter
 import androidx.compose.ui.util.fastMap
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import androidx.navigation.NavController
-import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.bodies.NextBody
-import it.fast4x.innertube.requests.relatedSongs
-import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
-import app.n_zik.android.LocalPlayerServiceBinder
-import app.n_zik.android.colorPalette
-import app.it.fast4x.rimusic.enums.BuiltInPlaylist
-import app.it.fast4x.rimusic.enums.DurationInMinutes
-import app.it.fast4x.rimusic.enums.MaxTopPlaylistItems
-import app.it.fast4x.rimusic.enums.RecommendationsNumber
-import app.it.fast4x.rimusic.enums.SongSortBy
+import app.it.fast4x.rimusic.enums.*
 import app.it.fast4x.rimusic.models.Song
-import app.n_zik.android.download.utils.MyDownloadHelper
-import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
-import app.n_zik.android.playback.services.isLocal
-import app.n_zik.android.playback.services.isUnmatched
-import app.kreate.android.me.knighthat.utils.Toaster
-import app.n_zik.android.thumbnailShape
-import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.SwipeablePlaylistItem
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import app.it.fast4x.rimusic.ui.items.SongItemPlaceholder
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.onOverlay
 import app.it.fast4x.rimusic.ui.styling.overlay
-import app.it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
-import app.it.fast4x.rimusic.utils.Preference
+import androidx.compose.foundation.text.BasicText
 import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_SORT_BY
 import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_SORT_ORDER
 import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_FAVORITES_SORT_BY
@@ -82,38 +46,34 @@ import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_DOWNLOADED_SORT_BY
 import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_DOWNLOADED_SORT_ORDER
 import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_TOP_SORT_BY
 import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_TOP_SORT_ORDER
-import app.it.fast4x.rimusic.utils.addNext
-import app.it.fast4x.rimusic.utils.asMediaItem
-import app.it.fast4x.rimusic.utils.center
-import app.it.fast4x.rimusic.utils.color
-import app.it.fast4x.rimusic.utils.durationTextToMillis
-import app.it.fast4x.rimusic.utils.enqueue
-import app.it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
-import app.it.fast4x.rimusic.utils.forcePlayAtIndex
-import app.it.fast4x.rimusic.utils.includeLocalSongsKey
-import app.it.fast4x.rimusic.utils.isDownloadedSong
-import app.it.fast4x.rimusic.utils.manageDownload
-import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
-import app.it.fast4x.rimusic.utils.recommendationsNumberKey
-import app.it.fast4x.rimusic.utils.rememberPreference
-import app.it.fast4x.rimusic.utils.parseArtists
-import app.it.fast4x.rimusic.utils.semiBold
+import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_TOP_PLAYLIST_PERIOD
+import app.it.fast4x.rimusic.utils.*
+import app.kreate.android.me.knighthat.utils.Toaster
+import app.kreate.android.themed.rimusic.component.playlist.PositionLock
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.R
+import app.n_zik.android.colorPalette
+import app.n_zik.android.components.SongItem
+import app.n_zik.android.components.Sort
+import app.n_zik.android.components.song.PeriodSelector
+import app.n_zik.android.components.tab.*
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.core.database.ext.FormatWithSong
+import app.n_zik.android.download.utils.MyDownloadHelper
+import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
+import app.n_zik.android.playback.services.isLocal
+import app.n_zik.android.playback.services.isUnmatched
+import app.n_zik.android.thumbnailShape
+import app.n_zik.android.typography
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.bodies.NextBody
+import it.fast4x.innertube.requests.relatedSongs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import app.n_zik.android.components.SongItem
-import app.n_zik.android.components.Sort
-import app.n_zik.android.components.song.PeriodSelector
-import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
-import app.n_zik.android.components.tab.DownloadAllSongsDialog
-import app.n_zik.android.components.tab.ExportSongsToCSVDialog
-import app.n_zik.android.components.tab.HiddenSongs
-import app.n_zik.android.components.tab.ItemSelector
-import app.n_zik.android.components.tab.Search
-import app.n_zik.android.core.database.ext.FormatWithSong
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
@@ -136,28 +96,25 @@ fun HomeSongs(
     refreshKey: Int = 0,
     onMatchClick: () -> Unit = {},
 ) {
-    // Essentials
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
 
-    //<editor-fold defaultstate="collapsed" desc="Settings">
     val parentalControlEnabled by rememberPreference( parentalControlEnabledKey, false )
     val maxTopPlaylistItems by rememberPreference( MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10` )
     val includeLocalSongs by rememberPreference( includeLocalSongsKey, true )
     val excludeSongWithDurationLimit by rememberPreference( excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled )
-    //</editor-fold>
 
     var items by remember { mutableStateOf(emptyList<Song>()) }
 
     val songSort = when( builtInPlaylist ) {
-        BuiltInPlaylist.Favorites -> Sort( Preference.HOME_SONGS_FAVORITES_SORT_BY, Preference.HOME_SONGS_FAVORITES_SORT_ORDER )
-        BuiltInPlaylist.Offline -> Sort( Preference.HOME_SONGS_OFFLINE_SORT_BY, Preference.HOME_SONGS_OFFLINE_SORT_ORDER )
-        BuiltInPlaylist.Downloaded -> Sort( Preference.HOME_SONGS_DOWNLOADED_SORT_BY, Preference.HOME_SONGS_DOWNLOADED_SORT_ORDER )
-        BuiltInPlaylist.Top -> Sort( Preference.HOME_SONGS_TOP_SORT_BY, Preference.HOME_SONGS_TOP_SORT_ORDER )
+        BuiltInPlaylist.Favorites -> Sort( HOME_SONGS_FAVORITES_SORT_BY, HOME_SONGS_FAVORITES_SORT_ORDER )
+        BuiltInPlaylist.Offline -> Sort( HOME_SONGS_OFFLINE_SORT_BY, HOME_SONGS_OFFLINE_SORT_ORDER )
+        BuiltInPlaylist.Downloaded -> Sort( HOME_SONGS_DOWNLOADED_SORT_BY, HOME_SONGS_DOWNLOADED_SORT_ORDER )
+        BuiltInPlaylist.Top -> Sort( HOME_SONGS_TOP_SORT_BY, HOME_SONGS_TOP_SORT_ORDER )
         else -> Sort( HOME_SONGS_SORT_BY, HOME_SONGS_SORT_ORDER )
     }
     val positionLock = remember( songSort.sortOrder ) { PositionLock(songSort.sortOrder) }
-    val topPlaylists = PeriodSelector( Preference.HOME_SONGS_TOP_PLAYLIST_PERIOD )
+    val topPlaylists = PeriodSelector( HOME_SONGS_TOP_PLAYLIST_PERIOD )
     val hiddenSongs = HiddenSongs()
     val exportDialog = ExportSongsToCSVDialog(
         playlistName = builtInPlaylist.text,
@@ -166,16 +123,6 @@ fun HomeSongs(
     val downloadAllDialog = DownloadAllSongsDialog( getSongs )
     val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog( getSongs )
 
-    /**
-     * This variable tells [LazyColumn] to render [SongItemPlaceholder]
-     * instead of [SongItem] queried from the database.
-     *
-     * This indication also tells user that songs are being loaded
-     * and not it's definitely not freezing up.
-     *
-     * > This variable should **_NOT_** be set to `false` while inside **first** phrase,
-     * and should **_NOT_** be set to `true` while in **second** phrase.
-     */
     var isLoading by remember { mutableStateOf(true) }
 
     LaunchedEffect( itemSelector.isActive ) {
@@ -188,15 +135,11 @@ fun HomeSongs(
         }
     }
 
-    //<editor-fold defaultstate="collapsed" desc="Smart recommendation state">
     val recommendationsNumber by rememberPreference( recommendationsNumberKey, RecommendationsNumber.Adaptive )
     var relatedSongs by remember { mutableStateOf(emptyList<Song>()) }
     var relatedSongsPositions by remember { mutableStateOf(emptyMap<Song, Int>()) }
     var isRecommendationsLoading by remember { mutableStateOf(false) }
-    //</editor-fold>
 
-    // This phrase loads all songs across types into [items]
-    // No filtration applied to this stage, only sort
     LaunchedEffect( builtInPlaylist, topPlaylists.period, songSort.sortBy, songSort.sortOrder, hiddenSongs.isFirstIcon, refreshKey ) {
         isLoading = true
 
@@ -204,15 +147,12 @@ fun HomeSongs(
             BuiltInPlaylist.All -> Database.songTable
                                            .sortAll( songSort.sortBy, songSort.sortOrder, excludeHidden = hiddenSongs.isHiddenExcluded() )
                                            .map { list ->
-                                               // Include local songs if enabled
                                                list.fastFilter {
                                                    !includeLocalSongs || !it.id.startsWith( LOCAL_KEY_PREFIX, true )
                                                }
                                            }
 
             BuiltInPlaylist.Downloaded -> {
-                // [MyDownloadHelper] provide a list of downloaded songs, which is faster to retrieve
-                // than using `Cache.isCached()` call
                 val downloaded: List<String> = MyDownloadHelper.downloads
                                                                .value
                                                                .values
@@ -242,7 +182,6 @@ fun HomeSongs(
                                                limit = maxTopPlaylistItems.toInt()
                                            )
                                            .map { list ->
-                                               // Exclude songs with duration higher than what [excludeSongWithDurationLimit] is
                                                list.fastFilter { song ->
                                                    excludeSongWithDurationLimit == DurationInMinutes.Disabled
                                                            || song.durationText
@@ -269,8 +208,6 @@ fun HomeSongs(
             return@LaunchedEffect
         }
 
-        // If we already have recommendations and the list size hasn't changed significantly,
-        // we don't recalculate to avoid unnecessary recalculations during playback
         if (relatedSongs.isNotEmpty() && 
             relatedSongs.size >= recommendationsNumber.calculateAdaptiveRecommendations(items.size) * 0.8) {
             return@LaunchedEffect
@@ -321,15 +258,12 @@ fun HomeSongs(
                 }
 
                 if (numberOfRequests > 1) delay(200L)
-
             } catch (e: Exception) {
                 continue
             }
         }
 
         relatedSongs = allRelatedSongs.take(targetRecommendations)
-        
-        // Assign stable positions to recommendations
         val newPositions = relatedSongs.associate { song ->
             song to (0..items.size).random()
         }
@@ -344,7 +278,6 @@ fun HomeSongs(
              .apply {
                  if (isRecommendationEnabled) {
                      relatedSongsPositions.forEach { (song, position) ->
-                         // Use the memorized position, but ensure it's within bounds
                          val safePosition = position.coerceIn(0, size)
                          add( safePosition, song )
                      }
@@ -405,11 +338,9 @@ fun HomeSongs(
         buttons.add( exportDialog )
     }
 
-    //<editor-fold defaultstate="collapsed" desc="Dialog Renders">
     exportDialog.Render()
     downloadAllDialog.Render()
     deleteDownloadsDialog.Render()
-    //</editor-fold>
 
     val hapticFeedback = LocalHapticFeedback.current
     val reorderableLazyListState = rememberReorderableLazyListState(
@@ -423,8 +354,6 @@ fun HomeSongs(
             itemsOnDisplay.add(toIndex, movedSong)
         }
     }
-
-    val rippleIndication = ripple(bounded = false)
 
     val showNoItems by remember {
         derivedStateOf {
@@ -451,9 +380,9 @@ fun HomeSongs(
                     modifier = Modifier.fillParentMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    androidx.compose.foundation.text.BasicText(
+                    BasicText(
                         text = stringResource(R.string.no_items),
-                        style = app.n_zik.android.typography().m.semiBold.copy(
+                        style = typography().m.semiBold.copy(
                             color = colorPalette().textSecondary
                         )
                     )
@@ -470,7 +399,6 @@ fun HomeSongs(
                 key = song.id
             ) { isDraggingItem ->
                 val mediaItem = song.asMediaItem
-
                 val isLocal by remember { derivedStateOf { mediaItem.isLocal } }
                 val isDownloaded = isLocal || isDownloadedSong( mediaItem.mediaId )
 
@@ -479,120 +407,113 @@ fun HomeSongs(
                         .fillMaxWidth()
                         .zIndex(2f)
                 ) {
-
-                SwipeablePlaylistItem(
-                mediaItem = mediaItem,
-                onPlayNext = { binder?.player?.addNext( mediaItem ) },
-                onDownload = {
-                    if( builtInPlaylist != BuiltInPlaylist.OnDevice ) {
-                        binder?.cache?.removeResource(mediaItem.mediaId)
-                        Database.asyncTransaction {
-                            formatTable.updateContentLengthOf( mediaItem.mediaId )
-                        }
-                        if ( !isLocal )
-                            manageDownload(
-                                context = context,
-                                mediaItem = mediaItem,
-                                downloadState = isDownloaded
-                            )
-                    }
-                },
-                onEnqueue = {
-                    binder?.player?.enqueue(mediaItem)
-                }
-            ) {
-                val isRecommended = song in relatedSongs
-
-                SongItem(
-                    song = song,
-                    itemSelector = itemSelector,
-                    navController = navController,
-                    isRecommended = isRecommended,
-                    modifier = Modifier.animateItem(),
-                    trailingContent = {
-                        if ((song.id.length != 11 || (song.durationText == "00:00" && song.totalPlayTimeMs == 1L)) && !song.id.startsWith(LOCAL_KEY_PREFIX)) {
-                            androidx.compose.material3.Icon(
-                                painter = androidx.compose.ui.res.painterResource(R.drawable.alert),
-                                contentDescription = stringResource(R.string.unmatched_song),
-                                tint = Color(0xFFFF9800),
-                                modifier = Modifier.padding(start = 8.dp).size(18.dp)
-                            )
-                        }
-                        if( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom && songSort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending )
-                            Box( Modifier.width( 24.dp ) )
-                    },
-                    thumbnailOverlay = {
-                        if ( songSort.sortBy == SongSortBy.PlayTime || builtInPlaylist == BuiltInPlaylist.Top ) {
-                            var text = song.formattedTotalPlayTime
-                            var typography = typography().xxs
-                            var alignment = Alignment.BottomCenter
-
-                            if( builtInPlaylist == BuiltInPlaylist.Top ) {
-                                text = (index + 1).toString()
-                                typography = typography().m
-                                alignment = Alignment.Center
-                            }
-
-                            BasicText(
-                                text = text,
-                                style = typography.semiBold.center.color(colorPalette().onOverlay),
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 8.dp, vertical = 4.dp)
-                                    .align(alignment)
-                                    .background(
-                                        brush = Brush.verticalGradient(
-                                            colors = listOf(
-                                                Color.Transparent,
-                                                colorPalette().overlay
-                                            )
-                                        ),
-                                        shape = thumbnailShape()
-                                    )
-                            )
-                        }
-                    },
-                    onClick = {
-                        search.hideIfEmpty()
-
-                        if (song.isUnmatched) {
-                            Toaster.w(R.string.playback_blocked_match_first)
-                        } else {
-                            binder?.stopRadio()
-                            val mediaItems = getSongs().fastMap( Song::asMediaItem )
-                            binder?.player?.forcePlayAtIndex( mediaItems, index )
-                        }
-                    }
-                )
-            }
-
-            if ( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom && songSort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending ) {
-                Icon(
-                    painter = painterResource( R.drawable.reorder ),
-                    contentDescription = null,
-                    tint = colorPalette().textSecondary,
-                    modifier = Modifier
-                        .align( Alignment.CenterEnd )
-                        .draggableHandle(
-                            onDragStarted = { hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress) },
-                            onDragStopped = { 
-                                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove) 
-                                val currentItems = itemsOnDisplay.toList()
+                    SwipeablePlaylistItem(
+                        mediaItem = mediaItem,
+                        onPlayNext = { binder?.player?.addNext( mediaItem ) },
+                        onDownload = {
+                            if( builtInPlaylist != BuiltInPlaylist.OnDevice ) {
+                                binder?.cache?.removeResource(mediaItem.mediaId)
                                 Database.asyncTransaction {
-                                    currentItems.forEachIndexed { index, song ->
-                                        songTable.updatePosition( song.id, index )
+                                    formatTable.updateContentLengthOf( mediaItem.mediaId )
+                                }
+                                if ( !isLocal )
+                                    manageDownload(
+                                        context = context,
+                                        mediaItem = mediaItem,
+                                        downloadState = isDownloaded
+                                    )
+                            }
+                        },
+                        onEnqueue = { binder?.player?.enqueue(mediaItem) }
+                    ) {
+                        val isRecommended = song in relatedSongs
+                        SongItem(
+                            song = song,
+                            itemSelector = itemSelector,
+                            navController = navController,
+                            isRecommended = isRecommended,
+                            modifier = Modifier.animateItem(),
+                            trailingContent = {
+                                if ((song.id.length != 11 || (song.durationText == "00:00" && song.totalPlayTimeMs == 1L)) && !song.id.startsWith(LOCAL_KEY_PREFIX)) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.alert),
+                                        contentDescription = stringResource(R.string.unmatched_song),
+                                        tint = Color(0xFFFF9800),
+                                        modifier = Modifier.padding(start = 8.dp).size(18.dp)
+                                    )
+                                }
+                                if( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom && songSort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending )
+                                    Box( Modifier.width( 24.dp ) )
+                            },
+                            thumbnailOverlay = {
+                                if ( songSort.sortBy == SongSortBy.PlayTime || builtInPlaylist == BuiltInPlaylist.Top ) {
+                                    var text = song.formattedTotalPlayTime
+                                    var typography = typography().xxs
+                                    var alignment = Alignment.BottomCenter
+                                    if( builtInPlaylist == BuiltInPlaylist.Top ) {
+                                        text = (index + 1).toString()
+                                        typography = typography().m
+                                        alignment = Alignment.Center
                                     }
+                                    BasicText(
+                                        text = text,
+                                        style = typography.semiBold.center.color(colorPalette().onOverlay),
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                                            .align(alignment)
+                                            .background(
+                                                brush = Brush.verticalGradient(
+                                                    colors = listOf(
+                                                        Color.Transparent,
+                                                        colorPalette().overlay
+                                                    )
+                                                ),
+                                                shape = thumbnailShape()
+                                            )
+                                    )
+                                }
+                            },
+                            onClick = {
+                                search.hideIfEmpty()
+                                if (song.isUnmatched) {
+                                    Toaster.w(R.string.playback_blocked_match_first)
+                                } else {
+                                    binder?.stopRadio()
+                                    val mediaItems = getSongs().fastMap( Song::asMediaItem )
+                                    binder?.player?.forcePlayAtIndex( mediaItems, index )
                                 }
                             }
                         )
-                        .padding(end = 12.dp)
-                        .size(20.dp)
-                )
+                    }
+
+                    if ( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom && songSort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending ) {
+                        Icon(
+                            painter = painterResource( R.drawable.reorder ),
+                            contentDescription = null,
+                            tint = colorPalette().textSecondary,
+                            modifier = Modifier
+                                .align( Alignment.CenterEnd )
+                                .draggableHandle(
+                                    onDragStarted = { hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress) },
+                                    onDragStopped = { 
+                                        hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove) 
+                                        val currentItems = itemsOnDisplay.toList()
+                                        Database.asyncTransaction {
+                                            currentItems.forEachIndexed { index, song ->
+                                                songTable.updatePosition( song.id, index )
+                                            }
+                                        }
+                                    }
+                                )
+                                .padding(end = 12.dp)
+                                .size(20.dp)
+                        )
+                    }
+                }
             }
         }
     }
-}
-}
 }

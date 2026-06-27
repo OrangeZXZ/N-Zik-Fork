@@ -338,6 +338,7 @@ const val quickPicsRelatedPageKey = "quickPicsRelatedPage"
 const val quickPicsChartsPageKey = "quickPicsChartsPage"
 const val quickPicsDiscoverPageKey = "quickPicsDiscoverPage"
 const val quickPicsHomePageKey = "quickPicsHomePage"
+const val quickPicsYtmQuickPicksKey = "quickPicsYtmQuickPicks"
 const val loadedDataKey = "loadedData"
 
 const val enablePictureInPictureKey = "enablePicturInPicture"
@@ -474,6 +475,32 @@ inline fun <reified T : Json> rememberPreference(key: String, defaultValue: T, j
     }
 }
 */
+
+@Composable
+fun rememberPreference(key: String, defaultValue: List<Song>): MutableState<List<Song>> {
+    val context = LocalContext.current
+    val json = Json.encodeToString(defaultValue)
+    return remember {
+        mutableStatePreferenceOf(
+            try {
+                val raw = context.preferences.getString(key, json)
+                if (raw == null || raw == "null") {
+                    emptyList()
+                } else {
+                    Json.decodeFromString<List<Song>>(raw)
+                }
+            } catch (e: Exception) {
+                Timber.e("RememberPreference List<Song> Error: ${ e.stackTraceToString() }")
+                emptyList()
+            }
+        ) {
+            context.preferences.edit { putString(
+                key,
+                Json.encodeToString(it)
+            ) }
+        }
+    }
+}
 
 @Composable
 fun rememberPreference(key: String, defaultValue: Song?): MutableState<Song?> {

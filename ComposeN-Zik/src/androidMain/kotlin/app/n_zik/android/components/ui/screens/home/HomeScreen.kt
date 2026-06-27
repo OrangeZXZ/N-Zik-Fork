@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.screens.home
+package app.n_zik.android.components.ui.screens.home
 
 import android.app.Activity
 import android.os.Build
@@ -25,8 +25,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.kreate.android.themed.rimusic.screen.home.HomeSongsScreen
-import app.it.fast4x.compose.persist.PersistMapCleanup
 import app.it.fast4x.rimusic.enums.HomeScreenTabs
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.toUiMood
@@ -47,6 +45,7 @@ import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.ui.components.themed.Loader
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import app.n_zik.android.components.ui.screens.home.quickpicks.HomeQuickPicks
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -139,11 +138,17 @@ fun HomeScreen(
                         navController.navigate(NavRoutes.search.name)
                     },
                     onMoodClick = { mood ->
-                        navController.currentBackStackEntry?.savedStateHandle?.set("mood", mood.toUiMood())
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            "mood",
+                            mood.toUiMood()
+                        )
                         navController.navigate(NavRoutes.mood.name)
                     },
                     onChipClick = { chip ->
-                        navController.currentBackStackEntry?.savedStateHandle?.set("mood", chip.toUiMood())
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            "mood",
+                            chip.toUiMood()
+                        )
                         navController.navigate(NavRoutes.mood.name)
                     },
                     onSettingsClick = {
