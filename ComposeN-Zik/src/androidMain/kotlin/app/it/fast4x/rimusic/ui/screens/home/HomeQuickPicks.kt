@@ -258,6 +258,7 @@ fun HomeQuickPicks(
     val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     //var loadedData by rememberSaveable { mutableStateOf(false) }
+    var loadedQuickPicks by rememberPreference("loadedQuickPicksKey", false)
     var loadedData by rememberPreference(loadedDataKey, false)
 
     val localRecommandationsNumber by rememberPreference(
@@ -274,7 +275,7 @@ fun HomeQuickPicks(
                 Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
 
         runCatching {
-            refreshScope.launch(Dispatchers.IO) {
+            val quickPicksJob = refreshScope.launch(Dispatchers.IO) {
                 when (playEventType) {
                     PlayEventsType.MostPlayed ->
                         Database.eventTable
@@ -297,6 +298,7 @@ fun HomeQuickPicks(
                                         )
                                         // relatedInit = relatedPageResult?.getOrNull()
                                     }
+                                    loadedQuickPicks = true
                                 }
                     PlayEventsType.LastPlayed -> {
                         Database.eventTable
@@ -319,6 +321,7 @@ fun HomeQuickPicks(
                                             )
                                         // relatedInit = relatedPageResult?.getOrNull()
                                     }
+                                    loadedQuickPicks = true
                                 }
                     }
                     PlayEventsType.CasualPlayed -> {
@@ -344,6 +347,7 @@ fun HomeQuickPicks(
                                             )
                                         // relatedInit = relatedPageResult?.getOrNull()
                                     }
+                                    loadedQuickPicks = true
                                 }
                     }
                 }
@@ -420,6 +424,7 @@ fun HomeQuickPicks(
     LaunchedEffect(playEventType, selectedCountryCode) {
         if (playEventType != lastPlayEventType || selectedCountryCode != lastSelectedCountry) {
             // Reset of all states related only if params changed
+            loadedQuickPicks = false
             loadedData = false
             relatedPageResult = null
             // relatedInit = null
@@ -440,6 +445,7 @@ fun HomeQuickPicks(
         if (currentYouTubeLoggedIn != lastYouTubeLoggedIn) {
             lastYouTubeLoggedIn = currentYouTubeLoggedIn
             homePageResult = null
+            loadedQuickPicks = false
             loadedData = false
             loadData()
         }
@@ -450,6 +456,7 @@ fun HomeQuickPicks(
     fun refresh() {
         if (refreshing) return
         trendingList = emptyList()
+        loadedQuickPicks = false
         loadedData = false
         relatedPageResult = null
         // relatedInit = null
@@ -645,18 +652,31 @@ fun HomeQuickPicks(
 
                 WelcomeMessage()
 
-                if (UiType.ViMusic.isCurrent())
-                    HeaderWithIcon(
-                        title = if (!isYouTubeLoggedIn()) stringResource(R.string.quick_picks)
-                        else stringResource(R.string.home),
-                        iconId = R.drawable.search,
-                        enabled = true,
-                        showIcon = !showSearchTab,
-                        modifier = Modifier,
-                        onClick = onSearchClick
-                    )
+                if (!loadedQuickPicks) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(Dimensions.itemsVerticalPadding * 3 * 9),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        @OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+                        androidx.compose.material3.LoadingIndicator(
+                            color = colorPalette().accent,
+                            modifier = Modifier.fillMaxHeight(0.5f).aspectRatio(1f)
+                        )
+                    }
+                } else {
+                    if (UiType.ViMusic.isCurrent())
+                        HeaderWithIcon(
+                            title = if (!isYouTubeLoggedIn()) stringResource(R.string.quick_picks)
+                            else stringResource(R.string.home),
+                            iconId = R.drawable.search,
+                            enabled = true,
+                            showIcon = !showSearchTab,
+                            modifier = Modifier,
+                            onClick = onSearchClick
+                        )
 
-                if (showTips) {
                     Title3Actions(
                         title = stringResource(R.string.tips),
                         icon1 = R.drawable.settings,
@@ -791,57 +811,42 @@ fun HomeQuickPicks(
                         }
                     }
 
-                    if ((recommendations.isEmpty() || (isYouTubeLoggedIn() && ytmQuickPicks.isEmpty())) && showLoader) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(Dimensions.itemsVerticalPadding * 3 * 9),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            androidx.compose.material3.LoadingIndicator(
-                                color = colorPalette().accent,
-                                modifier = Modifier.fillMaxHeight(0.5f).aspectRatio(1f)
+                    LazyHorizontalGrid(
+                        state = quickPicksLazyGridState,
+                        rows = GridCells.Fixed(if (recommendations.isNotEmpty()) 3 else 1),
+                        flingBehavior = ScrollableDefaults.flingBehavior(),
+                        contentPadding = endPaddingValues,
+                        modifier = Modifier.fillMaxWidth()
+                            .height(
+                                if (recommendations.isNotEmpty())
+                                    Dimensions.itemsVerticalPadding * 3 * 9
+                                else
+                                    Dimensions.itemsVerticalPadding * 9
+                            )
+                    ) {
+                        items(recommendations, key = { it.id }) { song ->
+                            SongItem(
+                                song = song,
+                                navController = navController,
+                                onClick = { binder?.startRadio(song, true) },
+                                modifier = Modifier.width(itemInHorizontalGridWidth),
+                                thumbnailOverlay = {
+                                    if (playEventType != PlayEventsType.CasualPlayed &&
+                                        trendingList.any { it.id == song.id }) {
+                                        Image(
+                                            painter = painterResource(R.drawable.star_brilliant),
+                                            contentDescription = null,
+                                            colorFilter = ColorFilter.tint(colorPalette().accent),
+                                            modifier = Modifier
+                                                .size(23.dp)
+                                                .align(Alignment.TopEnd)
+                                                .padding(4.dp)
+                                        )
+                                    }
+                                }
                             )
                         }
-                    } else {
-                        LazyHorizontalGrid(
-                            state = quickPicksLazyGridState,
-                            rows = GridCells.Fixed(if (recommendations.isNotEmpty()) 3 else 1),
-                            flingBehavior = ScrollableDefaults.flingBehavior(),
-                            contentPadding = endPaddingValues,
-                            modifier = Modifier.fillMaxWidth()
-                                .height(
-                                    if (recommendations.isNotEmpty())
-                                        Dimensions.itemsVerticalPadding * 3 * 9
-                                    else
-                                        Dimensions.itemsVerticalPadding * 9
-                                )
-                        ) {
-                            items(recommendations, key = { it.id }) { song ->
-                                SongItem(
-                                    song = song,
-                                    navController = navController,
-                                    onClick = { binder?.startRadio(song, true) },
-                                    modifier = Modifier.width(itemInHorizontalGridWidth),
-                                    thumbnailOverlay = {
-                                        if (playEventType != PlayEventsType.CasualPlayed &&
-                                            trendingList.any { it.id == song.id }) {
-                                            Image(
-                                                painter = painterResource(R.drawable.star_brilliant),
-                                                contentDescription = null,
-                                                colorFilter = ColorFilter.tint(colorPalette().accent),
-                                                modifier = Modifier
-                                                    .size(23.dp)
-                                                    .align(Alignment.TopEnd)
-                                                    .padding(4.dp)
-                                            )
-                                        }
-                                    }
-                                )
-                            }
-                        }
                     }
-
                 }
 
                 if (showLoader) {
@@ -2012,6 +2017,7 @@ fun HomeQuickPicks(
 }
 
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @UnstableApi
 @Composable
 fun HomeBottomShimmer(
@@ -2019,35 +2025,37 @@ fun HomeBottomShimmer(
     artistThumbnailSizeDp: Dp,
     endPaddingValues: PaddingValues
 ) {
-    ShimmerHost {
-        repeat(3) {
-            // Album/Playlist Section Placeholder
-            TextPlaceholder(
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .padding(top = 16.dp, bottom = 8.dp)
-            )
-            LazyRow(contentPadding = endPaddingValues) {
-                items(5) {
-                    AlbumItemPlaceholder(
-                        thumbnailSizeDp = albumThumbnailSizeDp,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
+    Column {
+        ShimmerHost {
+            repeat(3) {
+                // Album/Playlist Section Placeholder
+                TextPlaceholder(
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                        .padding(top = 16.dp, bottom = 8.dp)
+                )
+                LazyRow(contentPadding = endPaddingValues) {
+                    items(5) {
+                        AlbumItemPlaceholder(
+                            thumbnailSizeDp = albumThumbnailSizeDp,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
                 }
-            }
 
-            // Artist Section Placeholder
-            TextPlaceholder(
-                modifier = Modifier
-                    .padding(horizontal = 12.dp)
-                    .padding(top = 16.dp, bottom = 8.dp)
-            )
-            LazyRow(contentPadding = endPaddingValues) {
-                items(5) {
-                    ArtistItemPlaceholder(
-                        thumbnailSizeDp = artistThumbnailSizeDp,
-                        modifier = Modifier.padding(horizontal = 4.dp)
-                    )
+                // Artist Section Placeholder
+                TextPlaceholder(
+                    modifier = Modifier
+                        .padding(horizontal = 12.dp)
+                        .padding(top = 16.dp, bottom = 8.dp)
+                )
+                LazyRow(contentPadding = endPaddingValues) {
+                    items(5) {
+                        ArtistItemPlaceholder(
+                            thumbnailSizeDp = artistThumbnailSizeDp,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
                 }
             }
         }
@@ -2218,9 +2226,7 @@ fun YtmSectionItems(
                                             else
                                                 binder?.player?.forcePlay(item.asMediaItem)
                                         },
-                                        onLongClick = {
-                                            menuState.display { VideoItemMenu(navController = navController, song = item.asSong).MenuComponent() }
-                                        }
+                                        onLongClick = { menuState.display { VideoItemMenu(navController = navController, song = item.asSong).MenuComponent() } }
                                     )
                             )
                         }

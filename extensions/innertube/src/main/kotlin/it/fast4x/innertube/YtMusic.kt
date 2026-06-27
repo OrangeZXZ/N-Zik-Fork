@@ -121,7 +121,8 @@ object YtMusic {
 
     suspend fun getHomePage(setLogin: Boolean = false): Result<HomePage> = runCatching {
 
-        var response = Innertube.browse(browseId = "FEmusic_home", setLogin = setLogin, hl = "en").body<BrowseResponse>()
+        val hl = "en" // Force English to keep section matching simple in HomeQuickPicks
+        var response = Innertube.browse(browseId = "FEmusic_home", setLogin = setLogin, hl = hl).body<BrowseResponse>()
 
         println("homePage() response sections: ${response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
             ?.tabRenderer?.content?.sectionListRenderer?.contents}" )
@@ -142,7 +143,7 @@ object YtMusic {
             }.toMutableList()
         while (continuation != null) {
             println("gethomePage() continuation before:  ${continuation}" )
-            response = Innertube.browse(continuation = continuation, setLogin = setLogin).body<BrowseResponse>()
+            response = Innertube.browse(continuation = continuation, setLogin = setLogin, hl = "en").body<BrowseResponse>()
             continuation = response.continuationContents?.sectionListContinuation?.continuations?.getContinuation()
             println("gethomePage() continuation after:  ${continuation}" )
 
