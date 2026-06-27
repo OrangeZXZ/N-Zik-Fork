@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -352,8 +353,54 @@ fun HomeQuickPicks(
                 discoverPageResult = Innertube.discoverPage()
             }
 
-            if (!loadedData)
-                homePageResult = YtMusic.getHomePage(setLogin = isYouTubeLoggedIn())
+            if (!loadedData) {
+                var cumulativeSections = homePageInit?.sections.orEmpty()
+                var cumulativeChips = homePageInit?.chips.orEmpty()
+                repeat(3) { attempt ->
+                    val result = YtMusic.getHomePage(setLogin = isYouTubeLoggedIn())
+                    result.getOrNull()?.let { page ->
+                        val newSections = mutableListOf<HomePage.Section>()
+                        val existingSections = cumulativeSections.toMutableList()
+
+                        page.sections.forEach { newSection ->
+                            val index = existingSections.indexOfFirst { it.title == newSection.title }
+                            if (index != -1) {
+                                val existing = existingSections[index]
+                                val mergedItems = (existing.items + newSection.items)
+                                    .filterNotNull()
+                                    .distinctBy { it.key }
+                                existingSections[index] = existing.copy(items = mergedItems)
+                            } else {
+                                newSections.add(newSection)
+                            }
+                        }
+
+                        cumulativeSections = existingSections + newSections
+                        cumulativeChips = (cumulativeChips + (page.chips ?: emptyList())).distinctBy { it.title }
+                        homePageResult = Result.success(HomePage(sections = cumulativeSections, chips = cumulativeChips))
+                    }
+                    if (cumulativeSections.size > 15) return@repeat
+                }
+
+                homePageInit = homePageResult?.getOrNull()
+
+                // Log missing sections after 3 attempts
+                val requestedSections = listOf(
+                    "Quick picks", "Fresh finds", "Old favorites", "Mixed for you",
+                    "Your daily discover", "Fresh new music", "New release",
+                    "Albums for you", "Today's biggest hits", "All hits",
+                    "Featured playlists", "Trending community playlists",
+                    "From the community", "Trending songs for you", "Cover",
+                    "remix", "Music videos for you", "Live performances", "Charts"
+                )
+                val missing = requestedSections.filter { req ->
+                    cumulativeSections.none { it.title.contains(req, ignoreCase = true) }
+                }
+                if (missing.isNotEmpty()) {
+                    Timber.d("HomeQuickPicks: Missing sections after 3 attempts: $missing")
+                    println("HomeQuickPicks: Missing sections after 3 attempts: $missing")
+                }
+            }
 
         }.onFailure {
             Timber.e("Failed loadData in QuickPicsModern ${it.stackTraceToString()}")
@@ -744,7 +791,7 @@ fun HomeQuickPicks(
                         }
                     }
 
-                    if (recommendations.isEmpty() && showLoader) {
+                    if ((recommendations.isEmpty() || (isYouTubeLoggedIn() && ytmQuickPicks.isEmpty())) && showLoader) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -753,7 +800,7 @@ fun HomeQuickPicks(
                         ) {
                             androidx.compose.material3.LoadingIndicator(
                                 color = colorPalette().accent,
-                                modifier = Modifier.size(64.dp)
+                                modifier = Modifier.fillMaxHeight(0.5f).aspectRatio(1f)
                             )
                         }
                     } else {
@@ -808,11 +855,21 @@ fun HomeQuickPicks(
                 val ytmSections = remember(homePageInit) {
                     homePageInit?.sections.orEmpty()
                 }
+                val displayedSectionTitles = mutableSetOf<String>()
 
-                val ytmFreshFinds = ytmSections.filter { it.title.contains("Fresh finds", ignoreCase = true) }
-                ytmFreshFinds.forEach { section ->
+                fun List<HomePage.Section>.filterAndMerge(predicate: (String) -> Boolean): HomePage.Section? {
+                    val matching = this.filter { predicate(it.title) }
+                    if (matching.isEmpty()) return null
+                    matching.forEach { displayedSectionTitles.add(it.title) }
+                    return matching.first().copy(
+                        items = matching.flatMap { it.items }.filterNotNull().distinctBy { it.key }
+                    )
+                }
+
+                ytmSections.filterAndMerge { it.contains("Fresh finds", ignoreCase = true) || it.contains("Old favorites", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.fresh_finds_old_favorites),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -829,10 +886,10 @@ fun HomeQuickPicks(
                     )
                 }
 
-                val ytmMixedForYou = ytmSections.filter { it.title.contains("Mixed for you", ignoreCase = true) }
-                ytmMixedForYou.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("Mixed for you", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.mixed_for_you),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -849,10 +906,10 @@ fun HomeQuickPicks(
                     )
                 }
 
-                val ytmDailyDiscover = ytmSections.filter { it.title.contains("Your daily discover", ignoreCase = true) }
-                ytmDailyDiscover.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("Your daily discover", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.your_daily_discover),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -869,10 +926,10 @@ fun HomeQuickPicks(
                     )
                 }
 
-                val ytmFreshNewMusic = ytmSections.filter { it.title.contains("Fresh new music", ignoreCase = true) }
-                ytmFreshNewMusic.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("Fresh new music", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.fresh_new_music),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -889,10 +946,10 @@ fun HomeQuickPicks(
                     )
                 }
 
-                val ytmNewReleasesOnly = ytmSections.filter { it.title.contains("New release", ignoreCase = true) && !it.title.contains("Fresh new music", ignoreCase = true) }
-                ytmNewReleasesOnly.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("New release", ignoreCase = true) && !it.contains("Fresh new music", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.new_releases),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -955,6 +1012,7 @@ fun HomeQuickPicks(
                         }
 
                     if (showNewAlbums) {
+                        displayedSectionTitles.add("New albums")
                         Title(
                             title = stringResource(R.string.new_albums),
                             onClick = { navController.navigate(NavRoutes.newAlbums.name) },
@@ -981,10 +1039,10 @@ fun HomeQuickPicks(
                     }
                 }
 
-                val ytmAlbumsForYou = ytmSections.filter { it.title.contains("Albums for you", ignoreCase = true) }
-                ytmAlbumsForYou.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("Albums for you", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.albums_for_you),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1003,6 +1061,7 @@ fun HomeQuickPicks(
 
                 if (showRelatedAlbums)
                     relatedInit?.albums?.let { albums ->
+                        displayedSectionTitles.add("Related albums")
                         BasicText(
                             text = stringResource(R.string.related_albums),
                             style = typography().l.semiBold,
@@ -1113,6 +1172,7 @@ fun HomeQuickPicks(
 
                 if (showSimilarArtists)
                     relatedInit?.artists?.let { artists ->
+                        displayedSectionTitles.add("Similar artists")
                         BasicText(
                             text = stringResource(R.string.similar_artists),
                             style = typography().l.semiBold,
@@ -1140,10 +1200,10 @@ fun HomeQuickPicks(
                         }
                     }
 
-                val ytmBiggestHits = ytmSections.filter { it.title.contains("Today's biggest hits", ignoreCase = true) }
-                ytmBiggestHits.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("Today's biggest hits", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.todays_biggest_hits),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1160,10 +1220,10 @@ fun HomeQuickPicks(
                     )
                 }
 
-                val ytmAllHits = ytmSections.filter { it.title.contains("All hits", ignoreCase = true) }
-                ytmAllHits.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("All hits", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.all_hits),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1182,6 +1242,8 @@ fun HomeQuickPicks(
 
                 if (showPlaylistMightLike)
                     relatedInit?.playlists?.let { playlists ->
+                        displayedSectionTitles.add("Playlists you might like")
+                        displayedSectionTitles.add("Playlist you might like")
                         BasicText(
                             text = stringResource(R.string.playlists_you_might_like),
                             style = typography().l.semiBold,
@@ -1212,10 +1274,10 @@ fun HomeQuickPicks(
                         }
                 }
 
-                val ytmFeaturedPlaylists = ytmSections.filter { it.title.contains("Featured playlists", ignoreCase = true) }
-                ytmFeaturedPlaylists.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("Featured playlists", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.featured_playlists_for_you),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1232,10 +1294,10 @@ fun HomeQuickPicks(
                     )
                 }
 
-                val ytmTrendingCommunity = ytmSections.filter { it.title.contains("Trending community playlists", ignoreCase = true) }
-                ytmTrendingCommunity.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("Trending community playlists", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.trending_community_playlists),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1252,10 +1314,10 @@ fun HomeQuickPicks(
                     )
                 }
 
-                val ytmFromTheCommunity = ytmSections.filter { it.title.contains("From the community", ignoreCase = true) }
-                ytmFromTheCommunity.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("From the community", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.from_the_community),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1272,10 +1334,10 @@ fun HomeQuickPicks(
                     )
                 }
 
-                val ytmTrendingSongs = ytmSections.filter { it.title.contains("Trending songs for you", ignoreCase = true) }
-                ytmTrendingSongs.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("Trending songs for you", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.trending_songs_for_you),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1292,10 +1354,10 @@ fun HomeQuickPicks(
                     )
                 }
 
-                val ytmCoverRemixes = ytmSections.filter { it.title.contains("Cover and remixes", ignoreCase = true) || it.title.contains("Cover & remixes", ignoreCase = true) }
-                ytmCoverRemixes.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("Cover", ignoreCase = true) || it.contains("remix", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.cover_and_remixes),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1312,10 +1374,10 @@ fun HomeQuickPicks(
                     )
                 }
 
-                val ytmMusicVideos = ytmSections.filter { it.title.contains("Music videos for you", ignoreCase = true) }
-                ytmMusicVideos.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("Music videos for you", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.music_videos_for_you),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1332,10 +1394,10 @@ fun HomeQuickPicks(
                     )
                 }
 
-                val ytmLivePerformances = ytmSections.filter { it.title.contains("Live performances", ignoreCase = true) }
-                ytmLivePerformances.forEach { section ->
+                ytmSections.filterAndMerge { it.contains("Live performances", ignoreCase = true) }?.let { section ->
                     YtmSectionItems(
                         section = section,
+                        titleOverride = stringResource(R.string.live_performances),
                         itemInHorizontalGridWidth = itemInHorizontalGridWidth,
                         albumThumbnailSizePx = albumThumbnailSizePx,
                         albumThumbnailSizeDp = albumThumbnailSizeDp,
@@ -1356,23 +1418,43 @@ fun HomeQuickPicks(
 
                     page.sections.forEach {
                         if (it.items.isEmpty() || it.items.firstOrNull()?.key == null) return@forEach
-                        if (it.title.contains("Quick picks", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Fresh finds", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Mixed for you", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Your daily discover", ignoreCase = true)) return@forEach
-                        if (it.title.contains("New release", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Fresh new music", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Albums for you", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Today's biggest hits", ignoreCase = true)) return@forEach
-                        if (it.title.contains("All hits", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Featured playlists", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Trending community playlists", ignoreCase = true)) return@forEach
-                        if (it.title.contains("From the community", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Trending songs for you", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Cover", ignoreCase = true) && it.title.contains("remixes", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Music videos for you", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Live performances", ignoreCase = true)) return@forEach
-                        if (it.title.contains("Charts", ignoreCase = true)) return@forEach
+                        
+                        val title = it.title
+                        val browseId = it.endpoint?.browseId
+
+                        if (displayedSectionTitles.contains(title)) return@forEach
+                        if (browseId == "FEmusic_new_releases_albums") return@forEach
+                        if (browseId == "FEmusic_charts") return@forEach
+                        if (browseId == "FEmusic_moods_and_genres") return@forEach
+                        
+                        if (title.contains("Quick picks", ignoreCase = true)) return@forEach
+                        if (title.contains("Fresh finds", ignoreCase = true)) return@forEach
+                        if (title.contains("Old favorites", ignoreCase = true)) return@forEach
+                        if (title.contains("Mixed for you", ignoreCase = true)) return@forEach
+                        if (title.contains("Your daily discover", ignoreCase = true)) return@forEach
+                        if (title.contains("New release", ignoreCase = true)) return@forEach
+                        if (title.contains("Fresh new music", ignoreCase = true)) return@forEach
+                        if (title.contains("Albums for you", ignoreCase = true)) return@forEach
+                        if (title.contains("Today's biggest hits", ignoreCase = true)) return@forEach
+                        if (title.contains("All hits", ignoreCase = true)) return@forEach
+                        if (title.contains("Featured playlists", ignoreCase = true)) return@forEach
+                        if (title.contains("Trending community playlists", ignoreCase = true)) return@forEach
+                        if (title.contains("From the community", ignoreCase = true)) return@forEach
+                        if (title.contains("Trending songs for you", ignoreCase = true)) return@forEach
+                        if (title.contains("Cover", ignoreCase = true)) return@forEach
+                        if (title.contains("remix", ignoreCase = true)) return@forEach
+                        if (title.contains("Music videos for you", ignoreCase = true)) return@forEach
+                        if (title.contains("Live performances", ignoreCase = true)) return@forEach
+                        if (title.contains("Charts", ignoreCase = true)) return@forEach
+                        if (title.contains("New albums", ignoreCase = true)) return@forEach
+                        if (title.contains("Related albums", ignoreCase = true)) return@forEach
+                        if (title.contains("Similar artists", ignoreCase = true)) return@forEach
+                        if (title.contains("Playlist you might like", ignoreCase = true)) return@forEach
+                        if (title.contains("Moods", ignoreCase = true)) return@forEach
+                        if (title.contains("Genre", ignoreCase = true)) return@forEach
+
+                        displayedSectionTitles.add(title)
+
                         println("homePage() in HomeYouTubeMusic sections: ${it.title} ${it.items.size}")
                         println("homePage() in HomeYouTubeMusic sections items: ${it.items}")
 
@@ -1505,6 +1587,7 @@ fun HomeQuickPicks(
 
                 homePageInit?.chips?.let { chips ->
                     if (chips.isNotEmpty()) {
+                        displayedSectionTitles.add("Moods")
                         Title(
                             title = stringResource(R.string.moods),
                             verticalPadding = 16.dp,
@@ -1558,14 +1641,14 @@ fun HomeQuickPicks(
                                 }
                             }
                         }
-                        }
                     }
                 }
 
                 if (showMoodsAndGenres) {
                     val moods = discoverPageInit?.moods
-                    Timber.e("MoodsAndGenres: moods=${moods?.size}")
                     if (moods != null && moods.isNotEmpty()) {
+                    displayedSectionTitles.add("Moods and genres")
+                    displayedSectionTitles.add("Moods & genres")
                     Title(
                         title = stringResource(R.string.moods_and_genres),
                         onClick = { navController.navigate(NavRoutes.moodsPage.name) },
@@ -1604,7 +1687,7 @@ fun HomeQuickPicks(
                 if (showCharts) {
 
                     chartsPageInit?.let { page ->
-
+                        displayedSectionTitles.add("Charts")
                         Title(
                             title = "${stringResource(R.string.charts)} (${selectedCountryCode.countryName})",
                             onClick = {
@@ -1860,7 +1943,8 @@ fun HomeQuickPicks(
                                 }
                             }
                         }
-        }
+                    }
+                }
 
     if (relatedPageResult?.exceptionOrNull() != null) {
         Spacer(modifier = Modifier.height(50.dp))
@@ -1891,12 +1975,14 @@ fun HomeQuickPicks(
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
             if (UiType.ViMusic.isCurrent() && showFloatingIcon)
-                MultiFloatingActionsContainer(
-                    iconId = R.drawable.search,
-                    onClick = onSearchClick,
-                    onClickSettings = onSettingsClick,
-                    onClickSearch = onSearchClick
-                )
+                Box(modifier = Modifier.fillMaxSize()) {
+                    MultiFloatingActionsContainer(
+                        iconId = R.drawable.search,
+                        onClick = onSearchClick,
+                        onClickSettings = onSettingsClick,
+                        onClickSearch = onSearchClick
+                    )
+                }
 
         }
 
@@ -1907,7 +1993,7 @@ fun HomeQuickPicks(
 
 @UnstableApi
 @Composable
-private fun HomeBottomShimmer(
+fun HomeBottomShimmer(
     albumThumbnailSizeDp: Dp,
     artistThumbnailSizeDp: Dp,
     endPaddingValues: PaddingValues
@@ -1951,8 +2037,9 @@ private fun HomeBottomShimmer(
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun YtmSectionItems(
+fun YtmSectionItems(
     section: HomePage.Section,
+    titleOverride: String? = null,
     itemInHorizontalGridWidth: Dp,
     albumThumbnailSizePx: Int,
     albumThumbnailSizeDp: Dp,
@@ -1971,7 +2058,7 @@ private fun YtmSectionItems(
         val isSongOnly = section.items.all { item -> item is Innertube.SongItem }
 
         Title(
-            title = section.title,
+            title = titleOverride ?: section.title,
             enableClick = false,
             onClick = null,
             verticalPadding = 16.dp
@@ -2173,7 +2260,3 @@ fun ChipItemColored(
         }
     }
 }
-
-
-
-

@@ -5,6 +5,7 @@ import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.BrowseResponse
 import it.fast4x.innertube.models.MusicCarouselShelfRenderer
 import it.fast4x.innertube.models.NextResponse
@@ -40,7 +41,10 @@ suspend fun Innertube.relatedPage(body: NextBody) = runCatchingNonCancellable {
         ?: return@runCatchingNonCancellable null
 
     val response = client.post(browse) {
-        setBody(BrowseBody(browseId = browseId))
+        setBody(BrowseBody(
+            context = Context.DefaultWeb.copy(client = Context.DefaultWeb.client.copy(hl = "en")),
+            browseId = browseId
+        ))
         mask("contents.sectionListRenderer.contents.musicCarouselShelfRenderer(header.musicCarouselShelfBasicHeaderRenderer(title,strapline),contents($musicResponsiveListItemRendererMask,$musicTwoRowItemRendererMask))")
     }.body<BrowseResponse>()
 

@@ -768,13 +768,14 @@ object Innertube {
         params: String? = null,
         continuation: String? = null,
         setLogin: Boolean = false,
+        hl: String? = null,
     ): HttpResponse {
         ensureVisitorData()
         return client.post(browse) {
             setLogin(ytClient, setLogin)
             setBody(
                 BrowseBody(
-                    context = Context.DefaultWebWithLocale,
+                    context = if (hl != null) Context.DefaultWeb.copy(client = Context.DefaultWeb.client.copy(hl = hl)) else Context.DefaultWebWithLocale,
                     browseId = browseId,
                     params = params,
                 )
