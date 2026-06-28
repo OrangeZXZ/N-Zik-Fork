@@ -121,6 +121,16 @@ Join the N-Zik Discord:
 # 📷 Screenshots & Videos
 
 <div align="center">
+    <img alt="Home Demo" src="assets/design/preview/framed_videos/home.gif" height="350px" />
+    <img alt="Carousel Demo" src="assets/design/preview/framed_videos/carrousel.gif" height="350px" />
+    <img alt="Lyrics Demo" src="assets/design/preview/framed_videos/lyrics.gif" height="350px" />
+    <img alt="Artist Demo" src="assets/design/preview/framed_videos/artist.gif" height="350px" />
+    <img alt="Songs Demo" src="assets/design/preview/framed_videos/songs.gif" height="350px" />
+    <img alt="Search Demo" src="assets/design/preview/framed_videos/search.gif" height="350px" />
+    <img alt="Settings Demo" src="assets/design/preview/framed_videos/settings.gif" height="350px" />
+    <img alt="OTA Demo" src="assets/design/preview/framed_videos/ota.gif" height="350px" />
+    <img alt="VZ Demo" src="assets/design/preview/framed_videos/vz.gif" height="350px" />
+    <br><br>
     <img alt="Home (Dark)" src="assets/design/preview/img/homedark.png" height="350px" />
     <img alt="Home (White)" src="assets/design/preview/img/homewhite.png" height="350px" />
     <img alt="Home (AMOLED)" src="assets/design/preview/img/homeamoled.png" height="350px" />
@@ -132,16 +142,7 @@ Join the N-Zik Discord:
     <img alt="Discord Integration" src="assets/design/preview/img/compte2discord.png" height="350px" />
     <img alt="Carousel" src="assets/design/preview/img/carrousel.png" height="350px" />
     <img alt="Discord RPC" src="assets/design/preview/img/discordrpc.png" height="350px" />
-    <br><br>
-    <img alt="Home Demo" src="assets/design/preview/framed_videos/home.gif" height="350px" />
-    <img alt="Carousel Demo" src="assets/design/preview/framed_videos/carrousel.gif" height="350px" />
-    <img alt="Lyrics Demo" src="assets/design/preview/framed_videos/lyrics.gif" height="350px" />
-    <img alt="Artist Demo" src="assets/design/preview/framed_videos/artist.gif" height="350px" />
-    <img alt="Songs Demo" src="assets/design/preview/framed_videos/songs.gif" height="350px" />
-    <img alt="Search Demo" src="assets/design/preview/framed_videos/search.gif" height="350px" />
-    <img alt="Settings Demo" src="assets/design/preview/framed_videos/settings.gif" height="350px" />
-    <img alt="OTA Demo" src="assets/design/preview/framed_videos/ota.gif" height="350px" />
-    <img alt="VZ Demo" src="assets/design/preview/framed_videos/vz.gif" height="350px" />
+
 </div>
 
 # 🌐 Supported Languages
