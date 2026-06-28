@@ -286,3 +286,6 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+tasks.register("assembleFossRelease") {
+    dependsOn("assembleFoss")
+}
