@@ -1,0 +1,2 @@
+FDROID:
+- should resolve fdroid build error
