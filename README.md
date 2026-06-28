@@ -124,27 +124,17 @@ Join the N-Zik Discord:
 # 📷 Screenshots
 
 <div align="center">
-    <img alt="Screenshot 01" src="fastlane/metadata/android/en-US/images/phoneScreenshots/01.png" height="350px"/>
-    <img alt="Screenshot 02" src="fastlane/metadata/android/en-US/images/phoneScreenshots/02.png" height="350px" />
-    <img alt="Screenshot 03" src="fastlane/metadata/android/en-US/images/phoneScreenshots/03.png" height="350px" />
-    <img alt="Screenshot 04" src="fastlane/metadata/android/en-US/images/phoneScreenshots/04.png" height="350px" />
-    <img alt="Screenshot 05" src="fastlane/metadata/android/en-US/images/phoneScreenshots/05.png" height="350px" />
-    <img alt="Screenshot 06" src="fastlane/metadata/android/en-US/images/phoneScreenshots/06.png" height="350px" />
-    <img alt="Screenshot 07" src="fastlane/metadata/android/en-US/images/phoneScreenshots/07.png" height="350px" />
-    <img alt="Screenshot 08" src="fastlane/metadata/android/en-US/images/phoneScreenshots/08.png" height="350px" />
-    <img alt="Screenshot 09" src="fastlane/metadata/android/en-US/images/phoneScreenshots/09.png" height="350px" />
-    <img alt="Screenshot 10" src="fastlane/metadata/android/en-US/images/phoneScreenshots/10.png" height="350px" />
-    <img alt="Screenshot 11" src="fastlane/metadata/android/en-US/images/phoneScreenshots/11.png" height="350px" />
-    <img alt="Screenshot 12" src="fastlane/metadata/android/en-US/images/phoneScreenshots/12.png" height="350px" />
-    <img alt="Screenshot 13" src="fastlane/metadata/android/en-US/images/phoneScreenshots/13.png" height="350px" />
-    <img alt="Screenshot 14" src="fastlane/metadata/android/en-US/images/phoneScreenshots/14.png" height="350px" />
-    <img alt="Screenshot 15" src="fastlane/metadata/android/en-US/images/phoneScreenshots/15.png" height="350px" />
-    <img alt="Screenshot 16" src="fastlane/metadata/android/en-US/images/phoneScreenshots/16.png" height="350px" />
-    <img alt="Screenshot 17" src="fastlane/metadata/android/en-US/images/phoneScreenshots/17.png" height="350px" />
-    <img alt="Screenshot 18" src="fastlane/metadata/android/en-US/images/phoneScreenshots/18.png" height="350px" />
-    <img alt="Screenshot 19" src="fastlane/metadata/android/en-US/images/phoneScreenshots/19.png" height="350px" />
-    <img alt="Screenshot 20" src="fastlane/metadata/android/en-US/images/phoneScreenshots/20.png" height="350px" />
-    <img alt="Screenshot 21" src="fastlane/metadata/android/en-US/images/phoneScreenshots/21.png" height="350px" />
+    <img alt="Home (Dark)" src="assets/design/preview/img/homedark.png" height="350px" />
+    <img alt="Home (White)" src="assets/design/preview/img/homewhite.png" height="350px" />
+    <img alt="Home (AMOLED)" src="assets/design/preview/img/homeamoled.png" height="350px" />
+    <img alt="Playlist" src="assets/design/preview/img/playlist.png" height="350px" />
+    <img alt="Player Queue" src="assets/design/preview/img/queue.png" height="350px" />
+    <img alt="Stats" src="assets/design/preview/img/stats.png" height="350px" />
+    <img alt="History" src="assets/design/preview/img/history.png" height="350px" />
+    <img alt="YouTube Integration" src="assets/design/preview/img/compte1youtube.png" height="350px" />
+    <img alt="Discord Integration" src="assets/design/preview/img/compte2discord.png" height="350px" />
+    <img alt="Carousel" src="assets/design/preview/img/carrousel.png" height="350px" />
+    <img alt="Discord RPC" src="assets/design/preview/img/discordrpc.png" height="350px" />
 </div>
 
 # 🌐 Supported Languages
