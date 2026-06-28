@@ -114,14 +114,20 @@ android {
         applicationId = "com.nevar.nzik"
         minSdk = 24
         targetSdk = 37
-        versionCode = 61
-        versionName = "5.2.7"
+        versionCode = 62
+        versionName = "5.2.8"
 
         /*
                 UNIVERSAL VARIABLES
          */
         buildConfigField( "Boolean", "IS_AUTOUPDATE", "true" )
         buildConfigField( "String", "APP_NAME", "\"$APP_NAME\"" )
+    }
+
+    packaging {
+        jniLibs {
+            keepDebugSymbols.add("**/*.so")
+        }
     }
 
     splits {
