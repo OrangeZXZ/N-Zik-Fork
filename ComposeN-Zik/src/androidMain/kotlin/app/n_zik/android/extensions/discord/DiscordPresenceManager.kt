@@ -72,11 +72,11 @@ class DiscordPresenceManager(
     }
 
     private fun getSmallImageUrl(): String {
-        return "https://raw.githubusercontent.com/N-Zik-Group/N-Zik/main/assets/discord/fallback_app.png"
+        return "https://raw.githubusercontent.com/N-Zik-Group/N-Zik/main/assets/discord/fallback_app.png?v=2"
     }
 
     private fun getLargeImageFallback(): String {
-        return "https://raw.githubusercontent.com/N-Zik-Group/N-Zik/main/assets/discord/fallback_album.png"
+        return "https://raw.githubusercontent.com/N-Zik-Group/N-Zik/main/assets/discord/fallback_album.png?v=2"
     }
 
     /**
