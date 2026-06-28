@@ -172,6 +172,14 @@ android {
             matchingFallbacks += listOf("release")
         }
 
+        create( "foss" ) {
+            initWith( maybeCreate("full") )
+            versionNameSuffix = "-foss"
+            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
+            // Fallback for modules that don't have a 'foss' build type
+            matchingFallbacks += listOf("release")
+        }
+
         /**
          * For convenience only.
          * "Forkers" want to change app name across builds
