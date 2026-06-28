@@ -26,7 +26,6 @@
     there are plenty of great alternatives.
   </p>
 
-  
   <br>
   
 </div>
@@ -35,13 +34,12 @@
   <img src="assets/stats/download-card.svg" alt="N-Zik Stats" />
   <img src="assets/stats/chart.svg" alt="Download Growth" />
   
- <br> <br> 
+ <br> <br>
 
 [![Launched on DevGlobe](https://devglobe.app/badges/launched-on-devglobe-dark.svg)](https://devglobe.app/projects/n-zik?utm_source=badge&utm_medium=embed)
 
 [![Localization Progress](https://badges.crowdin.net/N-Zik/localized.svg)](https://crowdin.com/project/N-Zik) [![License: GPL v3](https://img.shields.io/github/license/N-Zik-Group/N-Zik?color=blue)](https://www.gnu.org/licenses/gpl-3.0)
 [![CodeFactor](https://www.codefactor.io/repository/github/N-Zik-Group/n-zik/badge)](https://www.codefactor.io/repository/github/N-Zik-Group/n-zik)
-
 
 </div>
 
@@ -57,7 +55,6 @@
 <h1>⏳ Only <a href="https://keepandroidopen.org"><img src="https://img.shields.io/badge/J--65-red?style=flat-round&logo=android&logoColor=white" alt="Android Lockdown"/></a> days remaining until Android Lockdown</h1>
 
 Starting in **September 2026**, Google will require **identity verification for all Android developers**, including those distributing applications **outside of Google Play**.
-
 
 As a **Free and Open Source Software (FOSS)** project, **N‑Zik** and his **developer** opposes this requirement due to its impact on developer privacy, independent distribution, and software freedom.
 
@@ -135,22 +132,16 @@ Join the N-Zik Discord:
     <img alt="Discord Integration" src="assets/design/preview/img/compte2discord.png" height="350px" />
     <img alt="Carousel" src="assets/design/preview/img/carrousel.png" height="350px" />
     <img alt="Discord RPC" src="assets/design/preview/img/discordrpc.png" height="350px" />
-    <img alt="Preset 0" src="assets/design/preview/img/preset0.webp" height="350px" />
-    <img alt="Preset 1" src="assets/design/preview/img/preset1.webp" height="350px" />
-    <img alt="Preset 2" src="assets/design/preview/img/preset2.webp" height="350px" />
-    <img alt="Preset 3" src="assets/design/preview/img/preset3.webp" height="350px" />
-    <img alt="Preset 4" src="assets/design/preview/img/preset4.webp" height="350px" />
-    <img alt="Preset 5" src="assets/design/preview/img/preset5.webp" height="350px" />
     <br><br>
-    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/home.mp4" height="350px" autoplay loop muted></video>
-    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/carrousel.mp4" height="350px" autoplay loop muted></video>
-    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/lyrics.mp4" height="350px" autoplay loop muted></video>
-    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/artist.mp4" height="350px" autoplay loop muted></video>
-    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/songs.mp4" height="350px" autoplay loop muted></video>
-    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/search.mp4" height="350px" autoplay loop muted></video>
-    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/settings.mp4" height="350px" autoplay loop muted></video>
-    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/ota.mp4" height="350px" autoplay loop muted></video>
-    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/vz.mp4" height="350px" autoplay loop muted></video>
+    <img alt="Home Demo" src="assets/design/preview/framed_videos/home.gif" height="350px" />
+    <img alt="Carousel Demo" src="assets/design/preview/framed_videos/carrousel.gif" height="350px" />
+    <img alt="Lyrics Demo" src="assets/design/preview/framed_videos/lyrics.gif" height="350px" />
+    <img alt="Artist Demo" src="assets/design/preview/framed_videos/artist.gif" height="350px" />
+    <img alt="Songs Demo" src="assets/design/preview/framed_videos/songs.gif" height="350px" />
+    <img alt="Search Demo" src="assets/design/preview/framed_videos/search.gif" height="350px" />
+    <img alt="Settings Demo" src="assets/design/preview/framed_videos/settings.gif" height="350px" />
+    <img alt="OTA Demo" src="assets/design/preview/framed_videos/ota.gif" height="350px" />
+    <img alt="VZ Demo" src="assets/design/preview/framed_videos/vz.gif" height="350px" />
 </div>
 
 # 🌐 Supported Languages
@@ -201,7 +192,6 @@ Here are the languages currently supported:
 - 🇺🇦 **Ukrainian** — [Avin](https://crowdin.com/profile/avinateachip), [Crayz310](https://github.com/Crayz310), and more...
 - 🇻🇳 **Vietnamese** — [teaminh](https://crowdin.com/profile/teaminh)
 
-  
 ## 🌍 Help Translate
 
 Want to:
@@ -298,7 +288,7 @@ New:
 [![Comment or close on label](https://github.com/N-Zik-Group/N-Zik/actions/workflows/comment-on-label.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/comment-on-label.yaml)  
 [![CodeQL](https://github.com/N-Zik-Group/N-Zik/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/github-code-scanning/codeql)  
 [![Update Project Stats and Chart](https://github.com/N-Zik-Group/N-Zik/actions/workflows/metrics.yml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/metrics.yml)  
-[![Update Android Lockdown Countdown](https://github.com/N-Zik-Group/N-Zik/actions/workflows/update-android-lockdown-countdown.yml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/update-android-lockdown-countdown.yml)  
+[![Update Android Lockdown Countdown](https://github.com/N-Zik-Group/N-Zik/actions/workflows/update-android-lockdown-countdown.yml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/update-android-lockdown-countdown.yml)
 
 ## 🌐 Localization
 
