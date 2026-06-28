@@ -1,0 +1,2 @@
+Fix:
+- Crash on home quick picks

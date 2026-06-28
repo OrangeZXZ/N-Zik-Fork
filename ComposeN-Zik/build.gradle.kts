@@ -114,8 +114,8 @@ android {
         applicationId = "com.nevar.nzik"
         minSdk = 24
         targetSdk = 37
-        versionCode = 59
-        versionName = "5.2.5"
+        versionCode = 60
+        versionName = "5.2.6"
 
         /*
                 UNIVERSAL VARIABLES
@@ -174,7 +174,6 @@ android {
 
         create( "foss" ) {
             initWith( maybeCreate("full") )
-            versionNameSuffix = "-foss"
             buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
             // Fallback for modules that don't have a 'foss' build type
             matchingFallbacks += listOf("release")
