@@ -135,16 +135,22 @@ Join the N-Zik Discord:
     <img alt="Discord Integration" src="assets/design/preview/img/compte2discord.png" height="350px" />
     <img alt="Carousel" src="assets/design/preview/img/carrousel.png" height="350px" />
     <img alt="Discord RPC" src="assets/design/preview/img/discordrpc.png" height="350px" />
+    <img alt="Preset 0" src="assets/design/preview/img/preset0.webp" height="350px" />
+    <img alt="Preset 1" src="assets/design/preview/img/preset1.webp" height="350px" />
+    <img alt="Preset 2" src="assets/design/preview/img/preset2.webp" height="350px" />
+    <img alt="Preset 3" src="assets/design/preview/img/preset3.webp" height="350px" />
+    <img alt="Preset 4" src="assets/design/preview/img/preset4.webp" height="350px" />
+    <img alt="Preset 5" src="assets/design/preview/img/preset5.webp" height="350px" />
     <br><br>
-    <video src="assets/design/preview/framed_videos/home.mp4" height="350px" autoplay loop muted></video>
-    <video src="assets/design/preview/framed_videos/carrousel.mp4" height="350px" autoplay loop muted></video>
-    <video src="assets/design/preview/framed_videos/lyrics.mp4" height="350px" autoplay loop muted></video>
-    <video src="assets/design/preview/framed_videos/artist.mp4" height="350px" autoplay loop muted></video>
-    <video src="assets/design/preview/framed_videos/songs.mp4" height="350px" autoplay loop muted></video>
-    <video src="assets/design/preview/framed_videos/search.mp4" height="350px" autoplay loop muted></video>
-    <video src="assets/design/preview/framed_videos/settings.mp4" height="350px" autoplay loop muted></video>
-    <video src="assets/design/preview/framed_videos/ota.mp4" height="350px" autoplay loop muted></video>
-    <video src="assets/design/preview/framed_videos/vz.mp4" height="350px" autoplay loop muted></video>
+    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/home.mp4" height="350px" autoplay loop muted></video>
+    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/carrousel.mp4" height="350px" autoplay loop muted></video>
+    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/lyrics.mp4" height="350px" autoplay loop muted></video>
+    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/artist.mp4" height="350px" autoplay loop muted></video>
+    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/songs.mp4" height="350px" autoplay loop muted></video>
+    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/search.mp4" height="350px" autoplay loop muted></video>
+    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/settings.mp4" height="350px" autoplay loop muted></video>
+    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/ota.mp4" height="350px" autoplay loop muted></video>
+    <video src="https://github.com/N-Zik-Group/N-Zik/raw/main/assets/design/preview/framed_videos/vz.mp4" height="350px" autoplay loop muted></video>
 </div>
 
 # 🌐 Supported Languages
