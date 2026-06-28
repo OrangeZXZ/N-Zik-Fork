@@ -347,7 +347,7 @@ fun HomeArtists(
                             }
                         }
                     }
-                    items(items = itemsOnDisplay, key = { it.id }) { artist ->
+                    items(items = itemsOnDisplay.distinctBy { it.id }, key = { it.id }) { artist ->
                         ReorderableItem(
                             reorderableLazyGridState,
                             key = artist.id

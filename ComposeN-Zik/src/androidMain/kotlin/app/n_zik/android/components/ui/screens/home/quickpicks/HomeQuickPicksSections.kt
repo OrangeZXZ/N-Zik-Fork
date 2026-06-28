@@ -137,7 +137,7 @@ fun QuickPicksGrid(
                     Dimensions.itemsVerticalPadding * 9
             )
     ) {
-        items(recommendations, key = { it.id }) { song ->
+        items(recommendations.distinctBy { it.id }, key = { it.id }) { song ->
             SongItem(
                 song = song,
                 navController = navController,

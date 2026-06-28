@@ -190,7 +190,7 @@ fun HomeDiscovery(
                     )
 
                     LazyRow(contentPadding = endPaddingValues) {
-                        items(items = newReleaseAlbumsFiltered.distinct(), key = { it.key }) {
+                        items(items = newReleaseAlbumsFiltered.distinctBy { it.key }, key = { it.key }) {
                               //preferitesArtists.forEach { artist ->
                               //      if (artist.name == it.authors?.first()?.name)
                                         AlbumItem(
@@ -229,7 +229,7 @@ fun HomeDiscovery(
                     )
 
                     LazyRow(contentPadding = endPaddingValues) {
-                        items(items = page.newReleaseAlbums, key = { it.key }) {
+                        items(items = page.newReleaseAlbums.distinctBy { it.key }, key = { it.key }) {
                             AlbumItem(
                                 album = it,
                                 thumbnailSizePx = thumbnailPx,

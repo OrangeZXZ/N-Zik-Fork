@@ -263,7 +263,7 @@ fun OnDeviceSong(
         }
 
         itemsIndexed(
-            items = itemsOnDisplay,
+            items = itemsOnDisplay.distinctBy { it.id },
             key = { _, song -> song.id }
         ) { index, song ->
             val mediaItem = song.asMediaItem

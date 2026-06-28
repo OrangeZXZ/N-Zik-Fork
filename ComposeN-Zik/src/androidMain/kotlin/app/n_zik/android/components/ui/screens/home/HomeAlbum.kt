@@ -374,7 +374,7 @@ fun HomeAlbums(
                         }
                     }
                     items(
-                        items = itemsOnDisplay,
+                        items = itemsOnDisplay.distinctBy { it.id },
                         key = { it.id }
                     ) { album ->
                         ReorderableItem(
