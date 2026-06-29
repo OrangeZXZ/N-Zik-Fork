@@ -142,10 +142,10 @@ Join the N-Zik Discord:
     <img alt="Discord Integration" src="assets/design/preview/img/compte2discord.png" height="300px" />
     <img alt="Carousel" src="assets/design/preview/img/carrousel.png" height="300px" />
     <img alt="Discord RPC" src="assets/design/preview/img/discordrpc.png" height="300px" />
-    <img alt="Android Auto" src="assets/design/preview/img/AndroidAuto.png" height="250px" />
-    <img alt="Android Automotive" src="assets/design/preview/img/AndroidAutomotive.png" height="250px" />
-    <img alt="Android TV" src="assets/design/preview/img/AndroidTV.png" height="250px" />
-    <img alt="Android Tablet" src="assets/design/preview/img/AndroidTablet.png" height="250px" />
+    <img alt="Android Auto" src="assets/design/preview/img/AndroidAuto.png" height="200px" />
+    <img alt="Android Automotive" src="assets/design/preview/img/AndroidAutomotive.png" height="200px" />
+    <img alt="Android TV" src="assets/design/preview/img/AndroidTV.png" height="200px" />
+    <img alt="Android Tablet" src="assets/design/preview/img/AndroidTablet.png" height="200px" />
 
 </div>
 
