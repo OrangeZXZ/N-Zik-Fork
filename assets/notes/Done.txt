@@ -2,3 +2,4 @@
 - Fix "stuck" data issue by removing disk persistence for dynamic YouTube sections
 - Reset session and cache on login/logout
 - Refactor Discover feature: update Radio/Discover behavior logic, fix string states, standardise Discover button UI (ActionBar & Queue) to match settings and fix visual padding/alignment
+- fix login for radio, discover, autofill.
