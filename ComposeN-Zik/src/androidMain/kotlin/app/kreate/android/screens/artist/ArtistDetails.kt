@@ -122,6 +122,9 @@ import app.n_zik.android.components.tab.ItemSelector
 import app.n_zik.android.components.tab.Radio
 import app.n_zik.android.components.tab.SongShuffler
 import app.n_zik.android.playback.utils.Shuffler
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.components.ui.screens.DynamicOrientationLayout
 import app.n_zik.android.components.ui.screens.album.Translate
 import kotlinx.coroutines.launch
@@ -156,6 +159,9 @@ fun ArtistDetails(
     val albumThumbnailSizeDp = 108.dp
     val albumThumbnailSizePx = albumThumbnailSizeDp.px
 
+    var isGlobalLoading by remember { mutableStateOf(false) }
+    var sectionLoadingId by remember { mutableStateOf<String?>(null) }
+
     val songs = remember(parentalControlEnabled) {
         artistPage.sections
                   .fastFirstOrNull { section ->
@@ -171,30 +177,74 @@ fun ArtistDetails(
 
     //<editor-fold defaultstate="collapsed" desc="Buttons">
     val itemSelector = ItemSelector<Song>()
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+
+    suspend fun fetchAllArtistSongs(): List<Song> {
+        val songsSection = artistPage.sections.fastFirstOrNull { section ->
+            section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null
+        }
+        if (songsSection != null) {
+            val fetched = it.fast4x.innertube.YtMusic.getPlaylist(songsSection.moreEndpoint!!.browseId!!)
+                .getOrNull()?.songs?.mapNotNull { it.asSong }
+            if (!fetched.isNullOrEmpty()) return fetched
+        }
+        return songs
+    }
 
     fun getSongs() = itemSelector.ifEmpty { songs }
     fun getMediaItems() = getSongs().map( Song::asMediaItem )
 
     val followButton = localArtist?.let { artist -> FollowButton { artist } }
-    val shuffler = SongShuffler(::getSongs)
+    val shuffler = object: MenuIcon, Descriptive {
+        override val iconId: Int = R.drawable.shuffle
+        override val messageId: Int = R.string.info_shuffle
+        override val menuIconTitle: String
+            @Composable get() = stringResource(R.string.shuffle)
+
+        override fun onShortClick() {
+            scope.launch {
+                isGlobalLoading = true
+                try {
+                    val allSongs = fetchAllArtistSongs()
+                    if (allSongs.isNotEmpty()) {
+                        binder?.let { Shuffler.play(it, allSongs) }
+                    } else {
+                        Toaster.i(R.string.no_song_to_shuffle)
+                    }
+                } finally {
+                    isGlobalLoading = false
+                }
+            }
+        }
+    }
 
     val downloadAllDialog = DownloadAllSongsDialog(::getSongs)
     val deleteAllDownloadsDialog = DeleteAllDownloadedSongsDialog(::getSongs)
     val radio = Radio(::getSongs)
     val playNext = PlayNext {
-        getMediaItems().let {
-            binder?.player?.addNext( it, appContext() )
-
-            // Turn of selector clears the selected list
-            itemSelector.isActive = false
+        scope.launch {
+            isGlobalLoading = true
+            try {
+                val allSongs = fetchAllArtistSongs()
+                val mediaItems = allSongs.map(Song::asMediaItem)
+                binder?.player?.addNext(mediaItems, appContext())
+                itemSelector.isActive = false
+            } finally {
+                isGlobalLoading = false
+            }
         }
     }
     val enqueue = Enqueue {
-        getMediaItems().let {
-            binder?.player?.enqueue( it, appContext() )
-
-            // Turn of selector clears the selected list
-            itemSelector.isActive = false
+        scope.launch {
+            isGlobalLoading = true
+            try {
+                val allSongs = fetchAllArtistSongs()
+                val mediaItems = allSongs.map(Song::asMediaItem)
+                binder?.player?.enqueue(mediaItems, appContext())
+                itemSelector.isActive = false
+            } finally {
+                isGlobalLoading = false
+            }
         }
     }
     //</editor-fold>
@@ -294,26 +344,38 @@ fun ArtistDetails(
             }
 
             item( "action_buttons") {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    followButton?.ToolBarButton()
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        followButton?.ToolBarButton()
 
-                    Spacer( Modifier.width( 5.dp ) )
+                        Spacer( Modifier.width( 5.dp ) )
 
-
-                    TabToolBar.Buttons(
-                        shuffler,
-                        playNext,
-                        enqueue,
-                        radio,
-                        itemSelector,
-                        downloadAllDialog,
-                        deleteAllDownloadsDialog,
-                        modifier = Modifier.fillMaxWidth( .8f )
-                    )
+                        if (isGlobalLoading) {
+                            androidx.compose.material3.CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp,
+                                color = colorPalette().accent
+                            )
+                        } else {
+                            TabToolBar.Buttons(
+                                shuffler,
+                                playNext,
+                                enqueue,
+                                radio,
+                                itemSelector,
+                                downloadAllDialog,
+                                deleteAllDownloadsDialog,
+                                modifier = Modifier.fillMaxWidth( .8f )
+                            )
+                        }
+                    }
                 }
             }
             if (!artistPage.description.isNullOrBlank()) {
@@ -423,80 +485,99 @@ fun ArtistDetails(
                     )
 
                     if (!section.items.fastAll { it is Innertube.ArtistItem }) {
-                        val scope = androidx.compose.runtime.rememberCoroutineScope()
                         val context = LocalContext.current
+                        val sectionId = section.title
+                        val isSectionLoading = sectionLoadingId == sectionId
 
-                        androidx.compose.material3.Icon(
-                            painter = androidx.compose.ui.res.painterResource(R.drawable.dice),
-                            contentDescription = null,
-                            tint = colorPalette().textSecondary,
-                            modifier = Modifier
-                                .padding(end = 12.dp)
-                                .clip(uiRoundnessShape()).clickable {
-                                    scope.launch(Dispatchers.IO) {
-                                        val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
-                                        if (section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null) {
-                                            it.fast4x.innertube.YtMusic.getPlaylist(section.moreEndpoint!!.browseId!!).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
-                                        }
-                                        if (allMediaItems.isEmpty()) {
-                                            section.items.forEach { item ->
-                                                when (item) {
-                                                    is Innertube.SongItem -> item.asSong?.asMediaItem?.let { allMediaItems.add(it) }
-                                                    is Innertube.VideoItem -> allMediaItems.add(item.asMediaItem)
-                                                    is Innertube.AlbumItem -> it.fast4x.innertube.YtMusic.getAlbum(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
-                                                    is Innertube.PlaylistItem -> it.fast4x.innertube.YtMusic.getPlaylist(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
-                                                    else -> {}
+                        if (isSectionLoading) {
+                            androidx.compose.material3.CircularProgressIndicator(
+                                modifier = Modifier.padding(end = 12.dp).size(24.dp),
+                                strokeWidth = 2.dp,
+                                color = colorPalette().textSecondary
+                            )
+                        } else {
+                            androidx.compose.material3.Icon(
+                                painter = androidx.compose.ui.res.painterResource(R.drawable.dice),
+                                contentDescription = null,
+                                tint = colorPalette().textSecondary,
+                                modifier = Modifier
+                                    .padding(end = 12.dp)
+                                    .clip(uiRoundnessShape()).clickable {
+                                        scope.launch(Dispatchers.IO) {
+                                            sectionLoadingId = sectionId
+                                            try {
+                                                val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
+                                                if (section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null) {
+                                                    it.fast4x.innertube.YtMusic.getPlaylist(section.moreEndpoint!!.browseId!!).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
                                                 }
-                                            }
-                                        }
-                                        if (allMediaItems.isNotEmpty()) {
-                                            binder?.let { Shuffler.play(it, allMediaItems) }
-                                        } else {
-                                            withContext(Dispatchers.Main) {
-                                                app.kreate.android.me.knighthat.utils.Toaster.e(R.string.no_song_found)
+                                                if (allMediaItems.isEmpty()) {
+                                                    section.items.forEach { item ->
+                                                        when (item) {
+                                                            is Innertube.SongItem -> item.asSong?.asMediaItem?.let { allMediaItems.add(it) }
+                                                            is Innertube.VideoItem -> allMediaItems.add(item.asMediaItem)
+                                                            is Innertube.AlbumItem -> it.fast4x.innertube.YtMusic.getAlbum(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                            is Innertube.PlaylistItem -> it.fast4x.innertube.YtMusic.getPlaylist(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                            else -> {}
+                                                        }
+                                                    }
+                                                }
+                                                if (allMediaItems.isNotEmpty()) {
+                                                    binder?.let { Shuffler.play(it, allMediaItems) }
+                                                } else {
+                                                    withContext(Dispatchers.Main) {
+                                                        app.kreate.android.me.knighthat.utils.Toaster.e(R.string.no_song_found)
+                                                    }
+                                                }
+                                            } finally {
+                                                sectionLoadingId = null
                                             }
                                         }
                                     }
-                                }
-                        )
+                            )
 
-                        androidx.compose.material3.Icon(
-                            painter = androidx.compose.ui.res.painterResource(R.drawable.play),
-                            contentDescription = null,
-                            tint = colorPalette().textSecondary,
-                            modifier = Modifier
-                                .padding(end = 12.dp)
-                                .clip(uiRoundnessShape()).clickable {
-                                    scope.launch(Dispatchers.IO) {
-                                        val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
-                                        if (section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null) {
-                                            it.fast4x.innertube.YtMusic.getPlaylist(section.moreEndpoint!!.browseId!!).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
-                                        }
-                                        if (allMediaItems.isEmpty()) {
-                                            section.items.forEach { item ->
-                                                when (item) {
-                                                    is Innertube.SongItem -> item.asSong?.asMediaItem?.let { allMediaItems.add(it) }
-                                                    is Innertube.VideoItem -> allMediaItems.add(item.asMediaItem)
-                                                    is Innertube.AlbumItem -> it.fast4x.innertube.YtMusic.getAlbum(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
-                                                    is Innertube.PlaylistItem -> it.fast4x.innertube.YtMusic.getPlaylist(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
-                                                    else -> {}
+                            androidx.compose.material3.Icon(
+                                painter = androidx.compose.ui.res.painterResource(R.drawable.play),
+                                contentDescription = null,
+                                tint = colorPalette().textSecondary,
+                                modifier = Modifier
+                                    .padding(end = 12.dp)
+                                    .clip(uiRoundnessShape()).clickable {
+                                        scope.launch(Dispatchers.IO) {
+                                            sectionLoadingId = sectionId
+                                            try {
+                                                val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
+                                                if (section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null) {
+                                                    it.fast4x.innertube.YtMusic.getPlaylist(section.moreEndpoint!!.browseId!!).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
                                                 }
-                                            }
-                                        }
-                                        if (allMediaItems.isNotEmpty()) {
-                                            withContext(Dispatchers.Main) {
-                                                binder?.stopRadio()
-                                                binder?.player?.forcePlay(allMediaItems.first())
-                                                binder?.player?.addMediaItems(allMediaItems.drop(1))
-                                            }
-                                        } else {
-                                            withContext(Dispatchers.Main) {
-                                                app.kreate.android.me.knighthat.utils.Toaster.e(R.string.no_song_found)
+                                                if (allMediaItems.isEmpty()) {
+                                                    section.items.forEach { item ->
+                                                        when (item) {
+                                                            is Innertube.SongItem -> item.asSong?.asMediaItem?.let { allMediaItems.add(it) }
+                                                            is Innertube.VideoItem -> allMediaItems.add(item.asMediaItem)
+                                                            is Innertube.AlbumItem -> it.fast4x.innertube.YtMusic.getAlbum(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                            is Innertube.PlaylistItem -> it.fast4x.innertube.YtMusic.getPlaylist(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                            else -> {}
+                                                        }
+                                                    }
+                                                }
+                                                if (allMediaItems.isNotEmpty()) {
+                                                    withContext(Dispatchers.Main) {
+                                                        binder?.stopRadio()
+                                                        binder?.player?.forcePlay(allMediaItems.first())
+                                                        binder?.player?.addMediaItems(allMediaItems.drop(1))
+                                                    }
+                                                } else {
+                                                    withContext(Dispatchers.Main) {
+                                                        app.kreate.android.me.knighthat.utils.Toaster.e(R.string.no_song_found)
+                                                    }
+                                                }
+                                            } finally {
+                                                sectionLoadingId = null
                                             }
                                         }
                                     }
-                                }
-                        )
+                            )
+                        }
                     }
 
                     section.moreEndpoint?.browseId?.let { browseId ->
