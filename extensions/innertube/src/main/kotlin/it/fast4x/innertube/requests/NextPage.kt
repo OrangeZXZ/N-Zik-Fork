@@ -14,6 +14,7 @@ import it.fast4x.innertube.utils.runCatchingNonCancellable
 suspend fun Innertube.nextPage(body: NextBody): Result<Innertube.NextPage>? =
     runCatchingNonCancellable {
         val response = client.post(next) {
+            setLogin(clientType = body.context.client, setLogin = true)
             setBody(body)
             mask("contents.singleColumnMusicWatchNextResultsRenderer.tabbedRenderer.watchNextTabbedResultsRenderer.tabs.tabRenderer.content.musicQueueRenderer.content.playlistPanelRenderer(continuations,contents(automixPreviewVideoRenderer,$playlistPanelVideoRendererMask))")
         }.body<NextResponse>()
@@ -64,6 +65,7 @@ suspend fun Innertube.nextPage(body: NextBody): Result<Innertube.NextPage>? =
 
 suspend fun Innertube.nextPage(body: ContinuationBody) = runCatchingNonCancellable {
     val response = client.post(next) {
+        setLogin(clientType = body.context.client, setLogin = true)
         setBody(body)
         mask("continuationContents.playlistPanelContinuation(continuations,contents.$playlistPanelVideoRendererMask)")
     }.body<ContinuationResponse>()
