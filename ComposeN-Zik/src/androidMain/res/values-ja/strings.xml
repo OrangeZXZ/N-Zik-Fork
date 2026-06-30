@@ -5,6 +5,7 @@
   <string name="hidesong">この曲を非表示にしますか？再生時間とキャッシュは消去されます。この操作は元に戻せません。</string>
   <string name="new_playlist">新規プレイリスト</string>
   <string name="start_radio">ラジオを開始</string>
+  <string name="stop_radio">Stop radio</string>
   <string name="equalizer">イコライザ</string>
   <string name="stop_sleep_timer">スリープタイマーを停止しますか？</string>
   <string name="set_sleep_timer">スリープタイマーの設定</string>
@@ -1375,5 +1376,12 @@
   <string name="source_youtube_unsynced">YouTube (同期されていません)</string>
   <string name="clipboard_contains_non_text_content">クリップボードには非テキストコンテンツ（画像またはその他のメディア）が含まれています</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="state_radio_on_discover">Radio started (Filters known songs and add new discoveries)</string>
+  <string name="state_radio_on_classic">Radio started (Includes known songs and new discoveries)</string>
+  <string name="state_radio_off">Radio stopped (Return to normal)</string>
+  <string name="state_discover_on">Discover mode ON (Filters known songs and add new discoveries)</string>
+  <string name="state_discover_off">Discover mode OFF (Includes known songs and new discoveries)</string>
+  <string name="state_reminder_discover">Reminder: Discover mode is still active</string>
+  <string name="state_discover_error">Turn on Radio or Auto-fill to use Discover</string>
   <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>

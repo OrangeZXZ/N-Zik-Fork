@@ -5,6 +5,7 @@
   <string name="hidesong">Voulez-vous vraiment masquer ce titre ? Son temps de lecture et son cache seront effacés. Cette action est irréversible.</string>
   <string name="new_playlist">Nouvelle playlist</string>
   <string name="start_radio">Écouter la radio</string>
+  <string name="stop_radio">Stop radio</string>
   <string name="equalizer">Égaliseur</string>
   <string name="stop_sleep_timer">Voulez-vous désactiver la minuterie de mise en veille ?</string>
   <string name="set_sleep_timer">Régler le minuteur de mise en veille</string>
@@ -1376,5 +1377,12 @@ Volume BAS : titre précédent</string>
   <string name="source_youtube_unsynced">YouTube (non synchronisé)</string>
   <string name="clipboard_contains_non_text_content">Le presse-papier contient du contenu non textuel (image ou autre média)</string>
   <string name="match_results_merged">%d a été fusionné avec l\'élément existant</string>
+  <string name="state_radio_on_discover">Radio started (Filters known songs and add new discoveries)</string>
+  <string name="state_radio_on_classic">Radio started (Includes known songs and new discoveries)</string>
+  <string name="state_radio_off">Radio stopped (Return to normal)</string>
+  <string name="state_discover_on">Discover mode ON (Filters known songs and add new discoveries)</string>
+  <string name="state_discover_off">Discover mode OFF (Includes known songs and new discoveries)</string>
+  <string name="state_reminder_discover">Reminder: Discover mode is still active</string>
+  <string name="state_discover_error">Turn on Radio or Auto-fill to use Discover</string>
   <string name="discord_enable_browsing">Activer l\'état de navigation</string>
 </resources>

@@ -5,6 +5,7 @@
   <string name="hidesong">Ви дійсно хочете приховати цю пісню? Час відтворення і кеш буде очищено. Ця дія незворотня.</string>
   <string name="new_playlist">Новий плейлист</string>
   <string name="start_radio">Увімкнути радіо</string>
+  <string name="stop_radio">Stop radio</string>
   <string name="equalizer">Еквалайзер</string>
   <string name="stop_sleep_timer">Ви хочете зупинити таймер сну?</string>
   <string name="set_sleep_timer">Встановити таймер сну</string>
@@ -1375,5 +1376,12 @@
   <string name="source_youtube_unsynced">YouTube (не синхронізований)</string>
   <string name="clipboard_contains_non_text_content">Буфер обміну містить нетекстове зображення (зображення або інші медіа-файли)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="state_radio_on_discover">Radio started (Filters known songs and add new discoveries)</string>
+  <string name="state_radio_on_classic">Radio started (Includes known songs and new discoveries)</string>
+  <string name="state_radio_off">Radio stopped (Return to normal)</string>
+  <string name="state_discover_on">Discover mode ON (Filters known songs and add new discoveries)</string>
+  <string name="state_discover_off">Discover mode OFF (Includes known songs and new discoveries)</string>
+  <string name="state_reminder_discover">Reminder: Discover mode is still active</string>
+  <string name="state_discover_error">Turn on Radio or Auto-fill to use Discover</string>
   <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>

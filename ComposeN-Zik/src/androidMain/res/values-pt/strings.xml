@@ -5,6 +5,7 @@
   <string name="hidesong">Você realmente quer esconder essa música? O tempo de reprodução e a memória transitória serão apagados. Esta ação é irreversível.</string>
   <string name="new_playlist">Nova lista de reprodução</string>
   <string name="start_radio">Começar rádio</string>
+  <string name="stop_radio">Stop radio</string>
   <string name="equalizer">Equalizador</string>
   <string name="stop_sleep_timer">Você quer parar o temporizador de suspensão?</string>
   <string name="set_sleep_timer">Definir temporizador de suspensão</string>
@@ -1375,5 +1376,12 @@
   <string name="source_youtube_unsynced">YouTube (não sincronizado)</string>
   <string name="clipboard_contains_non_text_content">Área de transferência contém conteúdo sem texto (imagem ou outra mídia)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="state_radio_on_discover">Radio started (Filters known songs and add new discoveries)</string>
+  <string name="state_radio_on_classic">Radio started (Includes known songs and new discoveries)</string>
+  <string name="state_radio_off">Radio stopped (Return to normal)</string>
+  <string name="state_discover_on">Discover mode ON (Filters known songs and add new discoveries)</string>
+  <string name="state_discover_off">Discover mode OFF (Includes known songs and new discoveries)</string>
+  <string name="state_reminder_discover">Reminder: Discover mode is still active</string>
+  <string name="state_discover_error">Turn on Radio or Auto-fill to use Discover</string>
   <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>

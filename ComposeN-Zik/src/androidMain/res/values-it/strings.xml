@@ -5,6 +5,7 @@
   <string name="hidesong">Vuoi davvero nascondere questa canzone? Il suo tempo di riproduzione e la cache saranno cancellati. Questa azione è irreversibile.</string>
   <string name="new_playlist">Nuova playlist</string>
   <string name="start_radio">Ascolta radio</string>
+  <string name="stop_radio">Stop radio</string>
   <string name="equalizer">Equalizzatore</string>
   <string name="stop_sleep_timer">Disattiva timer di spegnimento?</string>
   <string name="set_sleep_timer">Timer spegnimento</string>
@@ -1375,5 +1376,12 @@
   <string name="source_youtube_unsynced">YouTube (non sincronizzato)</string>
   <string name="clipboard_contains_non_text_content">Gli appunti contengono contenuti non testuali (immagine o altri supporti)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="state_radio_on_discover">Radio started (Filters known songs and add new discoveries)</string>
+  <string name="state_radio_on_classic">Radio started (Includes known songs and new discoveries)</string>
+  <string name="state_radio_off">Radio stopped (Return to normal)</string>
+  <string name="state_discover_on">Discover mode ON (Filters known songs and add new discoveries)</string>
+  <string name="state_discover_off">Discover mode OFF (Includes known songs and new discoveries)</string>
+  <string name="state_reminder_discover">Reminder: Discover mode is still active</string>
+  <string name="state_discover_error">Turn on Radio or Auto-fill to use Discover</string>
   <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>
