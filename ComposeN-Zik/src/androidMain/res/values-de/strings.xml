@@ -1002,6 +1002,7 @@
   <string name="invalid_input">Ungültige Eingabe!</string>
   <string name="rename_playlist">Wiedergabeliste umbenennen</string>
   <string name="no_song_to_shuffle">Keine Titel für die Zufallswiedergabe</string>
+  <string name="shuffle_count">Shuffled %d songs</string>
   <string name="looking_up_artist_online">Online nach %s suchen...</string>
   <string name="failed_to_fetch_artist">Abruf des Künstlers fehlgeschlagen</string>
   <string name="looking_up_album_from_the_internet">Suche im Internet nach dem Album</string>
