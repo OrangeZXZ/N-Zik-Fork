@@ -1002,7 +1002,6 @@
   <string name="invalid_input">Inserimento non valido!</string>
   <string name="rename_playlist">Rinomina playlist</string>
   <string name="no_song_to_shuffle">Nessuna canzone da riprodurre in modalità casuale</string>
-  <string name="shuffle_count">Shuffled %d songs</string>
   <string name="looking_up_artist_online">Sto cercando %s online...</string>
   <string name="failed_to_fetch_artist">Impossibile recuperare l\'artista</string>
   <string name="looking_up_album_from_the_internet">Cercando l\'album da internet</string>
@@ -1385,4 +1384,7 @@
   <string name="state_reminder_discover">Reminder: Discover mode is still active</string>
   <string name="state_discover_error">Turn on Radio or Auto-fill to use Discover</string>
   <string name="discord_enable_browsing">Enable Browsing Status</string>
+  <string name="songs_shuffled">%d songs shuffled</string>
+  <string name="queue_shuffled">Queue shuffled (%d songs)</string>
+  <string name="playlist_positions_shuffled">%d positions shuffled</string>
 </resources>
