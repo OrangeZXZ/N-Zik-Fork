@@ -1003,6 +1003,7 @@ Volume BAS : titre précédent</string>
   <string name="invalid_input">Entrée invalide !</string>
   <string name="rename_playlist">Renommer la playlist</string>
   <string name="no_song_to_shuffle">Aucun titre à mélanger</string>
+  <string name="shuffle_count">Shuffled %d songs</string>
   <string name="looking_up_artist_online">Recherche de %s en ligne...</string>
   <string name="failed_to_fetch_artist">Impossible de récupérer l\'artiste</string>
   <string name="looking_up_album_from_the_internet">Recherche d\'album sur Internet</string>
