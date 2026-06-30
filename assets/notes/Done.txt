@@ -3,3 +3,4 @@
 - Reset session and cache on login/logout
 - Refactor Discover feature: update Radio/Discover behavior logic, fix string states, standardise Discover button UI (ActionBar & Queue) to match settings and fix visual padding/alignment
 - fix login for radio, discover, autofill.
+- Centralize all shuffle operations into Shuffler.kt + add toast notifications with item count for all user-initiated shuffles
