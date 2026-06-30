@@ -1003,7 +1003,6 @@ Volume BAS : titre précédent</string>
   <string name="invalid_input">Entrée invalide !</string>
   <string name="rename_playlist">Renommer la playlist</string>
   <string name="no_song_to_shuffle">Aucun titre à mélanger</string>
-  <string name="shuffle_count">Shuffled %d songs</string>
   <string name="looking_up_artist_online">Recherche de %s en ligne...</string>
   <string name="failed_to_fetch_artist">Impossible de récupérer l\'artiste</string>
   <string name="looking_up_album_from_the_internet">Recherche d\'album sur Internet</string>
@@ -1386,4 +1385,7 @@ Volume BAS : titre précédent</string>
   <string name="state_reminder_discover">Reminder: Discover mode is still active</string>
   <string name="state_discover_error">Turn on Radio or Auto-fill to use Discover</string>
   <string name="discord_enable_browsing">Activer l\'état de navigation</string>
+  <string name="songs_shuffled">%d songs shuffled</string>
+  <string name="queue_shuffled">Queue shuffled (%d songs)</string>
+  <string name="playlist_positions_shuffled">%d positions shuffled</string>
 </resources>
