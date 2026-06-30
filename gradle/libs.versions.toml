@@ -2,7 +2,7 @@
 [versions]
 compose-plugin = "1.11.1"
 agp = "9.2.1"
-hilt = "2.59.2"
+hilt = "2.60"
 composeMarkdownVersion = "0.7.2"
 kotlin = "2.4.0"
 kotlin-ksp = "2.3.5"
