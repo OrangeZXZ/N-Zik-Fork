@@ -55,6 +55,27 @@ private const val GAP_THRESHOLD_MS = 4000L
 /** Vertical spacing (dp) for header/footer in lyrics views. */
 private val LYRICS_SPACING = 24.dp
 
+private data class SyncedSentence(
+    val timeMs: Long,
+    val text: String,
+    val agent: String? = null,
+    val isBackground: Boolean = false
+)
+
+private val agentTagRegex = Regex("\\{agent:([^}]*)\\}")
+private val bgTagRegex = Regex("\\{bg\\}")
+
+private fun parseSyncedSentences(lrcText: String): List<SyncedSentence> {
+    val rawSentences = LrcLib.Lyrics(lrcText).sentences
+    return rawSentences.map { (time, line) ->
+        val agentMatch = agentTagRegex.find(line)
+        val agent = agentMatch?.groupValues?.get(1)
+        val isBg = bgTagRegex.containsMatchIn(line)
+        val cleanText = line.replace(agentTagRegex, "").replace(bgTagRegex, "").trim()
+        SyncedSentence(time, cleanText, agent, isBg)
+    }
+}
+
 @Composable
 fun SyncedLyricsView(
     text: String,
@@ -88,32 +109,36 @@ fun SyncedLyricsView(
     isDisplayed: Boolean,
     onDismiss: () -> Unit,
     onInvalidLrc: (Boolean) -> Unit,
-    showIntervalIndicator: Boolean = true
+    showIntervalIndicator: Boolean = true,
+    karaokeRespectAgentPosition: Boolean = true
 ) {
     val density = LocalDensity.current
-    val synchronizedLyrics = remember(text) {
+    val syncedSentences = remember(text) {
         val decodedText = app.n_zik.android.components.player.lyrics.utils.HtmlDecoder.decodeHtmlEntities(text)
-        val sentences = LrcLib.Lyrics(decodedText).sentences
+        val sentences = parseSyncedSentences(decodedText)
         if (sentences.isEmpty()) onInvalidLrc(true) else onInvalidLrc(false)
-        SynchronizedLyrics(sentences) { currentPositionProvider() + 50L }
+        sentences
+    }
+    val synchronizedLyrics = remember(syncedSentences) {
+        val pairs = syncedSentences.map { it.timeMs to it.text }
+        app.n_zik.android.components.player.lyrics.utils.SynchronizedLyrics(pairs) { currentPositionProvider() + 50L }
     }
 
     // Pre-compute gap windows: for each sentence index, the gap to the next sentence (if > threshold)
     // Structure: Map<lineIndex, Pair<gapStartMs, gapEndMs>>
-    val gapWindows = remember(text) {
-        val sentences = synchronizedLyrics.sentences
+    val gapWindows = remember(syncedSentences) {
         buildMap {
-            sentences.forEachIndexed { index, sentence ->
-                val startMs = sentence.first
-                val nextStartMs = if (index < sentences.size - 1) sentences[index + 1].first else startMs + 10000L
-                val sentenceText = sentence.second.trim()
+            syncedSentences.forEachIndexed { index, sentence ->
+                val startMs = sentence.timeMs
+                val nextStartMs = if (index < syncedSentences.size - 1) syncedSentences[index + 1].timeMs else startMs + 10000L
+                val sentenceText = sentence.text.trim()
                 
                 if (sentenceText.isBlank()) {
                     var currentEnd = startMs
-                    val prevSentence = if (index > 0) sentences[index - 1] else null
-                    if (prevSentence != null && prevSentence.second.isNotBlank()) {
-                        val prevStartMs = prevSentence.first
-                        val prevText = prevSentence.second.trim()
+                    val prevSentence = if (index > 0) syncedSentences[index - 1] else null
+                    if (prevSentence != null && prevSentence.text.isNotBlank()) {
+                        val prevStartMs = prevSentence.timeMs
+                        val prevText = prevSentence.text.trim()
                         
                         // Estimate end of singing: ~120ms per character + 500ms trailing
                         val estimatedDuration = (prevText.length * 120L) + 500L
@@ -159,8 +184,8 @@ fun SyncedLyricsView(
         if (!showSecondLine && !translateEnabled && !romanizationEnabled) return@LaunchedEffect
 
         val linesToTranslate = mutableListOf<Pair<Int, String>>()
-        synchronizedLyrics.sentences.forEachIndexed { index, sentence ->
-            val trimmed = sentence.second.trim()
+        syncedSentences.forEachIndexed { index, sentence ->
+            val trimmed = sentence.text.trim()
             if (trimmed.isEmpty()) {
                 translationCache[index] = trimmed
             } else if (!translationCache.containsKey(index)) {
@@ -274,8 +299,8 @@ fun SyncedLyricsView(
     val vpH = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
     val effectiveVpH = if (vpH > 0) vpH else screenHeightPx
 
-    val currentText = synchronizedLyrics.sentences
-        .getOrNull(synchronizedLyrics.index)?.second ?: ""
+    val currentText = syncedSentences
+        .getOrNull(synchronizedLyrics.index)?.text ?: ""
     val translationText = translationCache[synchronizedLyrics.index] ?: currentText
     val trueLineCount = translationText.lines().size.coerceIn(1, 5)
 
@@ -373,9 +398,9 @@ if (showBackgroundLyrics && showlyricsthumbnail) modifierBG =
             }
 
             itemsIndexed(
-                items = synchronizedLyrics.sentences
+                items = syncedSentences
             ) { index, sentence ->
-                val trimmedSentence = sentence.second.trim()
+                val trimmedSentence = sentence.text.trim()
 
                 // Read from cache — no network call here
                 val displayText = if (showSecondLine || translateEnabled || romanizationEnabled) {
@@ -386,27 +411,46 @@ if (showBackgroundLyrics && showlyricsthumbnail) modifierBG =
 
                 val hasGapIndicator = showIntervalIndicator && gapWindows.containsKey(index)
 
+                // Agent-based alignment: v1=Left, v2=Right, bg/v1000=Center
+                val effectiveAlignment = when {
+                    karaokeRespectAgentPosition && sentence.agent == "v1" -> LyricsAlignment.Left
+                    karaokeRespectAgentPosition && sentence.agent == "v2" -> LyricsAlignment.Right
+                    karaokeRespectAgentPosition && sentence.agent == "v1000" -> LyricsAlignment.Center
+                    karaokeRespectAgentPosition && sentence.isBackground -> LyricsAlignment.Center
+                    else -> lyricsAlignment
+                }
+                val lineAlignment = when (effectiveAlignment) {
+                    LyricsAlignment.Left -> Alignment.CenterStart
+                    LyricsAlignment.Center -> Alignment.Center
+                    LyricsAlignment.Right -> Alignment.CenterEnd
+                }
+
                 if (!hasGapIndicator) {
-                    LyricsTextPainter(
-                        text = displayText,
-                        isSync = true,
-                        isCurrentIndex = index == synchronizedLyrics.index,
-                        showlyricsthumbnail = showlyricsthumbnail,
-                        lyricsOutline = lyricsOutline,
-                        colorPaletteMode = colorPaletteMode,
-                        fontSize = fontSize,
-                        customSize = customSize,
-                        lyricsAlignment = lyricsAlignment,
-                        lyricsSizeAnimate = lyricsSizeAnimate,
-                        lyricsColor = lyricsColor,
-                        lyricsCustomColor = lyricsCustomColor,
-                        dominantColor = dominantColor,
-                        lyricsHighlight = lyricsHighlight,
-                        clickLyricsText = clickLyricsText,
-                        onClick = {
-                            if (clickLyricsText) onSeekTo(sentence.first) else onDismiss()
-                        }
-                    )
+                    Box(
+                        contentAlignment = lineAlignment,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        LyricsTextPainter(
+                            text = displayText,
+                            isSync = true,
+                            isCurrentIndex = index == synchronizedLyrics.index,
+                            showlyricsthumbnail = showlyricsthumbnail,
+                            lyricsOutline = lyricsOutline,
+                            colorPaletteMode = colorPaletteMode,
+                            fontSize = fontSize,
+                            customSize = customSize,
+                            lyricsAlignment = effectiveAlignment,
+                            lyricsSizeAnimate = lyricsSizeAnimate,
+                            lyricsColor = lyricsColor,
+                            lyricsCustomColor = lyricsCustomColor,
+                            dominantColor = dominantColor,
+                            lyricsHighlight = lyricsHighlight,
+                            clickLyricsText = clickLyricsText,
+                            onClick = {
+                                if (clickLyricsText) onSeekTo(sentence.timeMs) else onDismiss()
+                            }
+                        )
+                    }
                 }
 
                 // Interval indicator after this line (if there is a gap and the feature is enabled)

@@ -166,7 +166,7 @@ fun LyricsScreen(
         showOffsetDialog.Render()
 
         LaunchedEffect(mediaMetadata.title, mediaMetadata.artist) {
-            artistName = mediaMetadata.artist?.toString().orEmpty()
+            artistName = cleanPrefix(mediaMetadata.artist?.toString().orEmpty())
             title = cleanPrefix(mediaMetadata.title?.toString().orEmpty())
             lyrics = null
             checkedLyricsLrc = false
@@ -339,7 +339,8 @@ fun LyricsScreen(
                             isDisplayed = isDisplayed,
                             onDismiss = onDismiss,
                             onInvalidLrc = { invalidLrc = it },
-                            showIntervalIndicator = showIntervalIndicator
+                            showIntervalIndicator = showIntervalIndicator,
+                            karaokeRespectAgentPosition = karaokeRespectAgentPosition
                         )
                     }
                     lyricsType == LyricsType.Unsynced -> {
