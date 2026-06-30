@@ -5,8 +5,4 @@
 - fix login for radio, discover, autofill.
 - Centralize all shuffle operations into Shuffler.kt + add toast notifications with item count for all user-initiated shuffles
 - ArtistDetails: fetch all songs for global shuffle/play-next/enqueue instead of only top 5 + add loading indicators on dice and global toolbar
-- Fix BetterLyrics synced lyrics: strip {agent:...} and {bg} tags from SyncedLyricsView to prevent 'agent' text display and position issues
-- SyncedLyricsView: parse agent/bg tags for chat alignment (v1=Left, v2=Right) like KaraokeLyricsView
-- Fix lyrics re-fetch when switching Karaoke→Sync with BetterLyrics TTML (detect TTML format for re-fetch trigger)
-- Fix SyncedLyricsView: keep blank lines for gap indicator (loader) detection
-- Fix lyrics mode switch: force re-fetch on any mode switch (Karaoke↔Sync↔Unsync) with toast
+- BetterLyrics lyrics overhaul: parse agent/bg tags for chat alignment, force re-fetch on mode switch (Karaoke/Sync/Unsync), keep existing synced when karaoke not found, cleanPrefix on artistName, toast for all lyrics sources
