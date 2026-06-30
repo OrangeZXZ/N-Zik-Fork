@@ -1002,7 +1002,6 @@
   <string name="invalid_input">Geçersiz giriş!</string>
   <string name="rename_playlist">Çalma listesini yeniden adlandır</string>
   <string name="no_song_to_shuffle">Karıştırılacak şarkı yok</string>
-  <string name="shuffle_count">Shuffled %d songs</string>
   <string name="looking_up_artist_online">%s çevrimiçi aranıyor...</string>
   <string name="failed_to_fetch_artist">Sanatçı getirilemedi</string>
   <string name="looking_up_album_from_the_internet">Albüm internetten aranıyor</string>
@@ -1385,4 +1384,7 @@
   <string name="state_reminder_discover">Reminder: Discover mode is still active</string>
   <string name="state_discover_error">Turn on Radio or Auto-fill to use Discover</string>
   <string name="discord_enable_browsing">Gezinme Durumunu Etkinleştir</string>
+  <string name="songs_shuffled">%d songs shuffled</string>
+  <string name="queue_shuffled">Queue shuffled (%d songs)</string>
+  <string name="playlist_positions_shuffled">%d positions shuffled</string>
 </resources>
