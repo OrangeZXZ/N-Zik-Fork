@@ -157,6 +157,15 @@ class ShufflerTest {
 
             verify { Toaster.s(R.string.songs_shuffled, formatArgs = *arrayOf(10)) }
         }
+
+        @Test
+        fun `stopRadio exception shows error toast`() {
+            every { binder.stopRadio() } throws RuntimeException("radio error")
+
+            Shuffler.play(binder, mediaItems(3))
+
+            verify { Toaster.e(R.string.no_song_found) }
+        }
     }
 
     @Nested
@@ -219,6 +228,15 @@ class ShufflerTest {
             Shuffler.queue(player)
 
             verify(exactly = 0) { Toaster.s(any<Int>(), any()) }
+        }
+
+        @Test
+        fun `exception shows error toast`() {
+            every { player.currentMediaItemIndex } throws RuntimeException("player error")
+
+            Shuffler.queue(player)
+
+            verify { Toaster.e(R.string.no_song_found) }
         }
     }
 

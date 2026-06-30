@@ -36,9 +36,13 @@ object Shuffler {
             .toInt()
         val toPlay = mediaItems.shuffled().take(max)
         CoroutineScope(Dispatchers.Main).launch {
-            binder.stopRadio()
-            binder.player.forcePlayFromBeginning(toPlay)
-            Toaster.s(R.string.songs_shuffled, formatArgs = *arrayOf(toPlay.size))
+            try {
+                binder.stopRadio()
+                binder.player.forcePlayFromBeginning(toPlay)
+                Toaster.s(R.string.songs_shuffled, formatArgs = *arrayOf(toPlay.size))
+            } catch (e: Exception) {
+                Toaster.e(R.string.no_song_found)
+            }
         }
     }
 
@@ -48,19 +52,23 @@ object Shuffler {
     }
 
     fun queue(player: Player) {
-        val current = player.currentMediaItemIndex
-        val total = player.mediaItemCount
-        if (total <= 1) return
+        try {
+            val current = player.currentMediaItemIndex
+            val total = player.mediaItemCount
+            if (total <= 1) return
 
-        val items = player.mediaItems.toMutableList().apply {
-            removeAt(current)
-        }
-        val count = items.size
-        if (count > 0) {
-            if (current > 0) player.removeMediaItems(0, current)
-            if (current < player.mediaItemCount - 1) player.removeMediaItems(1, player.mediaItemCount)
-            player.addMediaItems(items.shuffled())
-            Toaster.s(R.string.queue_shuffled, formatArgs = *arrayOf(count))
+            val items = player.mediaItems.toMutableList().apply {
+                removeAt(current)
+            }
+            val count = items.size
+            if (count > 0) {
+                if (current > 0) player.removeMediaItems(0, current)
+                if (current < player.mediaItemCount - 1) player.removeMediaItems(1, player.mediaItemCount)
+                player.addMediaItems(items.shuffled())
+                Toaster.s(R.string.queue_shuffled, formatArgs = *arrayOf(count))
+            }
+        } catch (e: Exception) {
+            Toaster.e(R.string.no_song_found)
         }
     }
 
@@ -68,17 +76,23 @@ object Shuffler {
 
     fun positions(playlistId: Long) {
         CoroutineScope(Dispatchers.Default).launch {
-            val items = Database.songPlaylistMapTable.allSongsOf(playlistId).first()
-            val count = items.size
-            if (count == 0) return@launch
-            val shuffled = items.shuffled()
-            Database.asyncTransaction {
-                shuffled.forEachIndexed { i, song ->
-                    Database.songPlaylistMapTable.updatePosition(playlistId, song.id, i)
+            try {
+                val items = Database.songPlaylistMapTable.allSongsOf(playlistId).first()
+                val count = items.size
+                if (count == 0) return@launch
+                val shuffled = items.shuffled()
+                Database.asyncTransaction {
+                    shuffled.forEachIndexed { i, song ->
+                        Database.songPlaylistMapTable.updatePosition(playlistId, song.id, i)
+                    }
                 }
-            }
-            withContext(Dispatchers.Main) {
-                Toaster.s(R.string.playlist_positions_shuffled, formatArgs = *arrayOf(count))
+                withContext(Dispatchers.Main) {
+                    Toaster.s(R.string.playlist_positions_shuffled, formatArgs = *arrayOf(count))
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toaster.e(R.string.no_song_found)
+                }
             }
         }
     }
