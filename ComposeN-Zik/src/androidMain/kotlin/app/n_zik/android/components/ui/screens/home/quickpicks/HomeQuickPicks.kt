@@ -44,6 +44,7 @@ import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.typography
+import app.n_zik.android.playback.utils.Shuffler
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.QueueBody
 import it.fast4x.innertube.requests.queue
@@ -263,14 +264,9 @@ fun HomeQuickPicks(
                         playEventType = playEventType,
                         onPlayEventTypeChange = { playEventType = it },
                         onDiceClick = {
-                            binder?.stopRadio()
                             val relatedInit = state.relatedPageResult.value?.getOrNull()
                             val allItems = listOfNotNull(state.trending.value?.asMediaItem) + (relatedInit?.songs?.map { it.asMediaItem } ?: emptyList())
-                            val shuffled = allItems.shuffled()
-                            if (shuffled.isNotEmpty()) {
-                                binder?.player?.forcePlay(shuffled.first())
-                                binder?.player?.addMediaItems(shuffled.drop(1))
-                            }
+                            binder?.let { Shuffler.play(it, allItems) }
                         },
                         onPlayAllClick = {
                             binder?.stopRadio()

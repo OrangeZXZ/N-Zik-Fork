@@ -130,6 +130,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import app.it.fast4x.rimusic.utils.ExternalUris
 import app.kreate.android.me.knighthat.utils.Toaster
+import app.n_zik.android.playback.utils.Shuffler
 
 
 @ExperimentalTextApi
@@ -440,13 +441,10 @@ fun Podcast(
                                 modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             if (podcastPage?.listEpisode?.isNotEmpty() == true) {
-                                                binder?.stopRadio()
-                                                podcastPage?.listEpisode?.shuffled()?.map(Innertube.Podcast.EpisodeItem::asMediaItem)
-                                                    ?.let {
-                                                        binder?.player?.forcePlayFromBeginning(
-                                                            it
-                                                        )
-                                                    }
+                                                val mediaItems = podcastPage?.listEpisode
+                                                    ?.map(Innertube.Podcast.EpisodeItem::asMediaItem)
+                                                    ?: emptyList()
+                                                binder?.let { Shuffler.play(it, mediaItems) }
                                             }
                                         },
                                         onLongClick = {
@@ -716,12 +714,10 @@ fun Podcast(
                 lazyListState = lazyListState,
                 iconId = R.drawable.shuffle,
                 onClick = {
-                    podcastPage?.listEpisode?.let { songs ->
-                        if (songs.isNotEmpty()) {
-                            binder?.stopRadio()
-                            binder?.player?.forcePlayFromBeginning(
-                                songs.shuffled().map(Innertube.Podcast.EpisodeItem::asMediaItem)
-                            )
+                    podcastPage?.listEpisode?.let { episodes ->
+                        if (episodes.isNotEmpty()) {
+                            val mediaItems = episodes.map(Innertube.Podcast.EpisodeItem::asMediaItem)
+                            binder?.let { Shuffler.play(it, mediaItems) }
                         }
                     }
                 }

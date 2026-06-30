@@ -223,7 +223,7 @@ class NZikRadio(
                 !(isMapped && isLiked) // Keep if NOT (mapped AND liked)
             }
         }
-        return filtered.shuffled()
+        return Shuffler.shuffle(filtered)
     }
 
     @MainThread

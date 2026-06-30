@@ -278,6 +278,7 @@ dependencies {
 
     testImplementation(libs.bundles.junit5)
     testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     testRuntimeOnly(libs.junit.platform)
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)

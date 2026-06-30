@@ -1,6 +1,7 @@
 package app.n_zik.android.components.playlist
 
 import app.n_zik.android.core.database.*
+import app.n_zik.android.playback.utils.Shuffler
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -55,19 +56,7 @@ class Reposition private constructor(
     override fun onShortClick() = super.onShortClick()
 
     override fun onConfirm() {
-        CoroutineScope( Dispatchers.Default ).launch {
-            val currentItems = Database.songPlaylistMapTable.allSongsOf( playlistId ).first()
-            val shuffledItems = currentItems.shuffled()
-            Database.asyncTransaction {
-                shuffledItems.forEachIndexed { index, song ->
-                    Database.songPlaylistMapTable.updatePosition( playlistId, song.id, index )
-                }
-            }
-            withContext( Dispatchers.Main ) {
-                Toaster.done()
-            }
-        }
-
+        Shuffler.positions( playlistId )
         onDismiss()
         menuState.hide()
     }

@@ -94,6 +94,7 @@ import app.it.fast4x.rimusic.utils.fadingEdge
 import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.components.artist.FollowButton
+import app.n_zik.android.playback.utils.Shuffler
 import app.it.fast4x.rimusic.utils.addNext
 import app.n_zik.android.components.SongItem
 
@@ -193,8 +194,7 @@ fun ArtistLocalSongs(
                     onClick = {
                         songs?.let { songs ->
                             if (songs.isNotEmpty()) {
-                                binder?.stopRadio()
-                                binder?.player?.forcePlayFromBeginning(songs.shuffled().map(Song::asMediaItem))
+                                binder?.let { Shuffler.play(it, songs) }
                             }
                         }
                     },
@@ -471,10 +471,7 @@ fun ArtistLocalSongs(
                                         onClick = {
                                             songs?.let { songs ->
                                                 if (songs.isNotEmpty()) {
-                                                    binder?.stopRadio()
-                                                    binder?.player?.forcePlayFromBeginning(
-                                                        songs.shuffled().map(Song::asMediaItem)
-                                                    )
+                                                    binder?.let { Shuffler.play(it, songs) }
                                                 }
                                             }
                                         },
@@ -540,10 +537,7 @@ fun ArtistLocalSongs(
                     onClick = {
                         songs?.let { songs ->
                             if (songs.isNotEmpty()) {
-                                binder?.stopRadio()
-                                binder?.player?.forcePlayFromBeginning(
-                                    songs.shuffled().map(Song::asMediaItem)
-                                )
+                                binder?.let { Shuffler.play(it, songs) }
                             }
                         }
                     },

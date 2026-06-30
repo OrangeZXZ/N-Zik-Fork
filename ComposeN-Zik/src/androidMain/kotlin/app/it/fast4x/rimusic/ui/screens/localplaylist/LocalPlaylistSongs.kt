@@ -179,6 +179,7 @@ import app.n_zik.android.components.tab.LikeComponent
 import app.n_zik.android.components.tab.Locator
 import app.n_zik.android.components.tab.Search
 import app.n_zik.android.components.tab.SongShuffler
+import app.n_zik.android.playback.utils.Shuffler
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.UUID
@@ -1393,9 +1394,7 @@ fun LocalPlaylistSongs(
                     getSongs().let { songs ->
                         val playableSongs = songs.filter { !it.isUnmatched }
                         if (playableSongs.isNotEmpty()) {
-                            binder?.stopRadio()
-                            binder?.player
-                                  ?.forcePlayFromBeginning( playableSongs.shuffled().map( Song::asMediaItem ) )
+                            binder?.let { Shuffler.play(it, playableSongs) }
                         } else {
                             Toaster.w(R.string.playback_blocked_match_first)
                         }

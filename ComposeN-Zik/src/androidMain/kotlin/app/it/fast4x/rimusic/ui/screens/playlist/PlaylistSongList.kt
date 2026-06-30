@@ -156,6 +156,7 @@ import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
 import app.n_zik.android.components.SongItem
 import app.kreate.android.me.knighthat.utils.Toaster
+import app.n_zik.android.playback.utils.Shuffler
 
 
 @ExperimentalTextApi
@@ -593,15 +594,11 @@ fun PlaylistSongList(
                                 modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
-                                                binder?.stopRadio()
-                                                playlistPage?.songs?.filter { it.asMediaItem.mediaId !in dislikedSongs }
-                                                    ?.shuffled()
+                                                val mediaItems = playlistPage?.songs
+                                                    ?.filter { it.asMediaItem.mediaId !in dislikedSongs }
                                                     ?.map(Innertube.SongItem::asMediaItem)
-                                                    ?.let {
-                                                        binder?.player?.forcePlayFromBeginning(
-                                                            it
-                                                        )
-                                                    }
+                                                    ?: emptyList()
+                                                binder?.let { Shuffler.play(it, mediaItems) }
                                             } else
                                                 Toaster.e( R.string.disliked_this_collection )
                                         },
@@ -1035,13 +1032,11 @@ fun PlaylistSongList(
                 iconId = R.drawable.shuffle,
                 onClick = {
                     if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) {
-                        binder?.stopRadio()
-                        playlistPage?.songs?.filter{ it.asMediaItem.mediaId !in dislikedSongs }?.shuffled()?.map(Innertube.SongItem::asMediaItem)
-                            ?.let {
-                                binder?.player?.forcePlayFromBeginning(
-                                    it
-                                )
-                            }
+                        val mediaItems = playlistPage?.songs
+                            ?.filter { it.asMediaItem.mediaId !in dislikedSongs }
+                            ?.map(Innertube.SongItem::asMediaItem)
+                            ?: emptyList()
+                        binder?.let { Shuffler.play(it, mediaItems) }
                     } else
                         Toaster.e( R.string.disliked_this_collection )
                 }

@@ -121,6 +121,7 @@ import app.n_zik.android.components.tab.DownloadAllSongsDialog
 import app.n_zik.android.components.tab.ItemSelector
 import app.n_zik.android.components.tab.Radio
 import app.n_zik.android.components.tab.SongShuffler
+import app.n_zik.android.playback.utils.Shuffler
 import app.n_zik.android.components.ui.screens.DynamicOrientationLayout
 import app.n_zik.android.components.ui.screens.album.Translate
 import kotlinx.coroutines.launch
@@ -449,12 +450,7 @@ fun ArtistDetails(
                                             }
                                         }
                                         if (allMediaItems.isNotEmpty()) {
-                                            withContext(Dispatchers.Main) {
-                                                binder?.stopRadio()
-                                                val shuffled = allMediaItems.shuffled()
-                                                binder?.player?.forcePlay(shuffled.first())
-                                                binder?.player?.addMediaItems(shuffled.drop(1))
-                                            }
+                                            binder?.let { Shuffler.play(it, allMediaItems) }
                                         } else {
                                             withContext(Dispatchers.Main) {
                                                 app.kreate.android.me.knighthat.utils.Toaster.e(R.string.no_song_found)
