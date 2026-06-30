@@ -5,6 +5,7 @@
   <string name="hidesong">আপনি কি সত্যি গানটা লুকাতে চান? এর প্লেব্যাক টাইম আর ক্যাশে মুছে যাবে। \n এটা পুনরুদ্ধার করা যাবে না আর।</string>
   <string name="new_playlist">নতুন প্লে-লিস্ট</string>
   <string name="start_radio">রেডিও চালু</string>
+  <string name="stop_radio">Stop radio</string>
   <string name="equalizer">ইকুয়ালাইজার</string>
   <string name="stop_sleep_timer">স্লিপ টাইমার অফ করতে চান?</string>
   <string name="set_sleep_timer">স্লিপ টাইমার সেট করুন</string>
@@ -1375,5 +1376,12 @@
   <string name="source_youtube_unsynced">YouTube (unsynced)</string>
   <string name="clipboard_contains_non_text_content">Clipboard contains non-text content (image or other media)</string>
   <string name="match_results_merged">%d merged with existing</string>
+  <string name="state_radio_on_discover">Radio started (Filters known songs and add new discoveries)</string>
+  <string name="state_radio_on_classic">Radio started (Includes known songs and new discoveries)</string>
+  <string name="state_radio_off">Radio stopped (Return to normal)</string>
+  <string name="state_discover_on">Discover mode ON (Filters known songs and add new discoveries)</string>
+  <string name="state_discover_off">Discover mode OFF (Includes known songs and new discoveries)</string>
+  <string name="state_reminder_discover">Reminder: Discover mode is still active</string>
+  <string name="state_discover_error">Turn on Radio or Auto-fill to use Discover</string>
   <string name="discord_enable_browsing">Enable Browsing Status</string>
 </resources>
