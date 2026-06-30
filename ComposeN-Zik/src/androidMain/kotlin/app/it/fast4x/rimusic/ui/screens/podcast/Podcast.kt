@@ -457,14 +457,16 @@ fun Podcast(
                             HeaderIconButton(
                                 icon = R.drawable.radio,
                                 enabled = podcastPage?.listEpisode?.isNotEmpty() == true,
-                                color = colorPalette().text,
+                                color = if (podcastPage?.listEpisode?.isNotEmpty() != true) colorPalette().textDisabled 
+                                        else if (binder?.isRadioActive == true) colorPalette().accent 
+                                        else colorPalette().text,
                                 modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             val mediaItem = binder?.player?.currentMediaItem ?: podcastPage?.listEpisode?.first()?.asMediaItem
-                                            mediaItem?.let { binder?.startRadio( it ) }
+                                            mediaItem?.let { binder?.startRadio( it, false, null, true ) }
                                         },
                                         onLongClick = {
-                                            Toaster.i( R.string.info_start_radio )
+                                            Toaster.i( binder?.radioActionTextRes ?: R.string.info_start_radio )
                                         }
                             )
 

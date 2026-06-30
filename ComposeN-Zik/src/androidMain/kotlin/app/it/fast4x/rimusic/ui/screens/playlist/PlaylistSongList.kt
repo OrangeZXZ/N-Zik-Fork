@@ -613,7 +613,9 @@ fun PlaylistSongList(
                             HeaderIconButton(
                                 icon = R.drawable.radio,
                                 enabled = playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true,
-                                color = if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } == true) colorPalette().text else colorPalette().textDisabled,
+                                color = if (playlistPage?.songs?.any { it.asMediaItem.mediaId !in dislikedSongs } != true) colorPalette().textDisabled
+                                        else if (binder?.isRadioActive == true) colorPalette().accent
+                                        else colorPalette().text,
                                 modifier = Modifier.padding(horizontal = 5.dp).clip(uiRoundnessShape()),
                                         onClick = {
                                             val songs = playlistPage?.songs.orEmpty()
@@ -626,10 +628,10 @@ fun PlaylistSongList(
                                                 // [songs.fastFirst] won't throw NoSuchElementException
                                                 // because of the checking above.
                                                 binder?.player?.currentMediaItem ?: songs.fastFirst { it.key !in dislikedSongs }.asMediaItem
-                                            mediaItem.let { binder?.startRadio( it ) }
+                                            mediaItem.let { binder?.startRadio( it, false, null, true ) }
                                         },
                                         onLongClick = {
-                                            Toaster.i( R.string.info_start_radio )
+                                            Toaster.i( binder?.radioActionTextRes ?: R.string.info_start_radio )
                                         }
                             )
 

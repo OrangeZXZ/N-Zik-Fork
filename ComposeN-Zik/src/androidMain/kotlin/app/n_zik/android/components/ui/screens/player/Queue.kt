@@ -31,20 +31,26 @@ import kotlinx.coroutines.launch
 @SuppressLint("ComposableNaming")
 @Composable
 fun Discover(
-    onDiscoverClick: (Boolean) -> Unit
+    isDiscoverClickable: Boolean,
+    onDiscoverClick: () -> Unit
 ): MenuIcon = object: MenuIcon, Descriptive, DynamicColor {
     override val menuIconTitle: String
         @Composable
         get() = stringResource( R.string.discover )
-    override val iconId: Int = R.drawable.star_brilliant
+    override val iconId: Int = R.drawable.discover
     override val messageId: Int = R.string.discoverinfo
 
     // Active state of this button
     override var isFirstColor: Boolean by rememberPreference(discoverKey, false)
+    
+    override val isEnabled: Boolean = true
+
+    override val color: androidx.compose.ui.graphics.Color
+        @Composable
+        get() = if (isDiscoverClickable) super<DynamicColor>.color else super<DynamicColor>.color.copy(alpha = 0.4f)
 
     override fun onShortClick() {
-        isFirstColor = !isFirstColor
-        onDiscoverClick( isFirstColor )
+        onDiscoverClick()
     }
 }
 

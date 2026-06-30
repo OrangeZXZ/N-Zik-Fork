@@ -30,13 +30,16 @@ class Radio private constructor(
     }
 
     override val iconId: Int = R.drawable.radio
-    override val messageId: Int = R.string.info_start_radio
+    override val color: androidx.compose.ui.graphics.Color
+        @Composable
+        get() = if (binder?.isRadioActive == true) app.n_zik.android.colorPalette().accent else app.n_zik.android.colorPalette().text
+    override val messageId: Int = R.string.start_radio
     override val menuIconTitle: String
         @Composable
-        get() = stringResource( messageId )
+        get() = stringResource(binder?.radioActionTextRes ?: messageId)
 
     override fun onShortClick() {
-        binder?.startRadio( songs().random() )
+        binder?.startRadio( songs().random(), false, null, true )
 
         menuState.hide()
     }

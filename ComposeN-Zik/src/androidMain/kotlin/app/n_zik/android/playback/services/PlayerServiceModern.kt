@@ -130,7 +130,6 @@ import app.n_zik.android.download.utils.MyDownloadHelper
 import app.n_zik.android.download.services.MyDownloadService
 import app.it.fast4x.rimusic.utils.CoilBitmapLoader
 import app.it.fast4x.rimusic.utils.TimerJob
-import app.it.fast4x.rimusic.utils.YouTubeRadio
 import app.it.fast4x.rimusic.utils.activityPendingIntent
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.audioQualityFormatKey
@@ -278,7 +277,7 @@ class PlayerServiceModern : MediaLibraryService(),
     lateinit var audioQualityFormat: AudioQualityFormat
     lateinit var sleepTimer: SleepTimer
     private var timerJob: TimerJob? = null
-    private var radio: YouTubeRadio? = null
+    lateinit var nzikRadio: NZikRadio
 
     val currentMediaItem = MutableStateFlow<MediaItem?>(null)
 
@@ -520,6 +519,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
         QuickPicksRepository.refreshIfNeeded()
 
+        nzikRadio = NZikRadio(this, binder, coroutineScope)
 
         val filter = IntentFilter().apply {
             addAction(Action.play.value)
@@ -789,6 +789,7 @@ class PlayerServiceModern : MediaLibraryService(),
         }
 
         currentMediaItem.update { mediaItem }
+        nzikRadio.showReminderIfNeeded()
         maybeRecoverPlaybackError()
         maybeNormalizeVolume()
         loadFromRadio(reason)
@@ -1026,17 +1027,10 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     private fun loadFromRadio( reason: Int ) {
-        val isEnabled = preferences.getBoolean( autoLoadSongsInQueueKey, true )
         val isRepeatTransition = reason == Player.MEDIA_ITEM_TRANSITION_REASON_REPEAT
-
-        // Don't fetch more item if:
-        // - Feature is disabled
-        // - When song is repeated
-        // - Start new queue
-        if( isEnabled && !isRepeatTransition && !binder.isLoadingRadio && player.mediaItemCount > 1 && preferences.getBoolean(autoLoadSongsInQueueKey, true) )
-            player.currentMediaItem?.let {
-                binder.startRadio( it, true )
-            }
+        if (!isRepeatTransition && player.mediaItemCount > 1) {
+            nzikRadio.autoFillQueue()
+        }
     }
 
     private fun maybeBassBoost() {
@@ -1503,7 +1497,7 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     fun startRadio() {
-        player.currentMediaItem?.let( binder::startRadio )
+        player.currentMediaItem?.let { binder.startRadio(it, false, null, true) }
     }
 
     private fun showSmartMessage( message: String ) = Toaster.i(message)
@@ -1909,107 +1903,33 @@ class PlayerServiceModern : MediaLibraryService(),
             timerJob = null
         }
 
-        private var radioJob: Job? = null
+        val isLoadingRadio: Boolean
+            get() = nzikRadio.isLoading
 
-        var isLoadingRadio by mutableStateOf(false)
-            private set
+        val isRadioActive: Boolean
+            get() = nzikRadio.isRadioActive
 
-        /**
-         * Contains 2 major steps:
-         * 1. Fetch YouTube Music for **playlistId** of this song
-         * 2. Use said **playlistId** to get more songs
-         *
-         * **_playlistId_** isn't the playlist this song belongs to,
-         * but rather the "mood", "style", or "vibe" matches this song.
-         */
+        val radioActionTextRes: Int
+            get() = nzikRadio.radioActionTextRes
+
         fun startRadio(
             mediaItem: MediaItem,
             append: Boolean = false,
-            endpoint: NavigationEndpoint.Endpoint.Watch? = null
+            endpoint: NavigationEndpoint.Endpoint.Watch? = null,
+            isExplicit: Boolean = false
         ) {
-            this.stopRadio()
-
-            // Play song immediately while other songs are being loaded
-            if( player.currentMediaItem?.mediaId != mediaItem.mediaId )
-                player.forcePlay( mediaItem )
-
-            // Prevent UI from freezing up while data is being fetched
-            radioJob = coroutineScope.launch {
-                isLoadingRadio = true
-
-                var playlistId = endpoint?.playlistId
-
-                if( playlistId == null )
-                    // Retrieve "playlistId" by sending song's id to "next" endpoint
-                    Innertube.nextPage( NextBody(videoId = mediaItem.mediaId) )
-                             ?.getOrNull()
-                             ?.itemsPage
-                             ?.items
-                             ?.firstOrNull()
-                             ?.let { it.info?.endpoint?.playlistId }
-                             ?.also { playlistId = it }
-
-                // This time add "playlistId" to the search to get more songs
-                if( !playlistId.isNullOrBlank() )
-                    Innertube.nextPage( NextBody(videoId = mediaItem.mediaId, playlistId = playlistId) )
-                             ?.getOrNull()
-                             ?.itemsPage
-                             ?.items
-                             ?.map( Innertube.SongItem::asMediaItem )
-                             ?.let { relatedSongs ->
-                                 Database.asyncTransaction {
-                                     relatedSongs.forEach( ::insertIgnore )
-                                 }
-
-                                 // Any call to [player] must happen on Main thread
-                                 val currentQueue = withContext( Dispatchers.Main ) {
-                                    player.mediaItems.fastMap( MediaItem::mediaId )
-                                }
-
-                                 // Songs with the same id as provided [Song] should be removed.
-                                 // The song usually lives at the the first index, but this
-                                 // way is safer to implement, as it can live through changes in position.
-                                 relatedSongs.dropWhile { it.mediaId == mediaItem.mediaId || it.mediaId in currentQueue }
-                             }
-                             ?.also {
-                                 // Any call to [player] must happen on Main thread
-                                 withContext( Dispatchers.Main ) {
-                                     /*
-                                        There are 2 possible outcomes when append is not enabled.
-                                        User starts radio on currently playing song,
-                                        or on a completely different song.
-
-                                        When radio is activated on the same song, remain position
-                                        of currently playing song, delete next songs, and append
-                                        it with new songs.
-
-                                        When new song is used for radio, replace entire queue with new songs.
-                                      */
-                                     val curIndex = player.currentMediaItemIndex
-                                     val endIndex = player.mediaItemCount
-                                     if( !append && player.mediaItemCount > 1 ) {
-                                         player.moveMediaItem( curIndex, 0 )
-                                         player.removeMediaItems( curIndex + 1, endIndex )
-                                     }
-
-                                     player.addMediaItems(it)
-                                 }
-                             }
-
-                isLoadingRadio = false
-            }
+            nzikRadio.startRadio(mediaItem, append, endpoint, isExplicit)
         }
 
         fun startRadio(
             song: Song,
             append: Boolean = false,
-            endpoint: NavigationEndpoint.Endpoint.Watch? = null
-        ) = startRadio( song.asMediaItem, append, endpoint )
+            endpoint: NavigationEndpoint.Endpoint.Watch? = null,
+            isExplicit: Boolean = false
+        ) = startRadio( song.asMediaItem, append, endpoint, isExplicit )
 
         fun stopRadio() {
-            isLoadingRadio = false
-            radioJob?.cancel()
-            radio = null
+            nzikRadio.stopRadio(showToast = false)
         }
 
         /**

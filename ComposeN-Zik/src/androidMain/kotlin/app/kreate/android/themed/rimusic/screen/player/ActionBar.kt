@@ -13,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.ui.draw.alpha
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material3.minimumInteractiveComponentSize
@@ -90,6 +91,7 @@ import app.n_zik.android.components.menu.player.PlayerMenu
 import app.it.fast4x.rimusic.utils.DisposableListener
 import app.it.fast4x.rimusic.utils.actionspacedevenlyKey
 import app.it.fast4x.rimusic.utils.addNext
+import app.it.fast4x.rimusic.utils.autoLoadSongsInQueueKey
 import app.it.fast4x.rimusic.utils.blackgradientKey
 import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import app.it.fast4x.rimusic.utils.colorPaletteNameKey
@@ -487,28 +489,21 @@ fun BoxScope.ActionBar(
                     )
 
                 val showButtonPlayerDiscover by rememberPreference( showButtonPlayerDiscoverKey, false )
+                val isAutoFillEnabled by rememberPreference(autoLoadSongsInQueueKey, true)
+                
                 if (showButtonPlayerDiscover) {
                     var discoverIsEnabled by discoverState
+                    val isDiscoverClickable = binder.service.nzikRadio.isRadioActive || isAutoFillEnabled
 
-                    Box(
+                    IconButton(
+                        icon = R.drawable.discover,
+                        color = if (discoverIsEnabled && isDiscoverClickable) colorPalette().accent else Color.Gray,
+                        onClick = { binder.service.nzikRadio.toggleDiscover() },
+                        onLongClick = { Toaster.i(R.string.discoverinfo) },
                         modifier = Modifier
-                            .minimumInteractiveComponentSize()
-                            .clip(uiRoundnessShape())
-                            .combinedClickable(
-                                onClick = { discoverIsEnabled = !discoverIsEnabled },
-                                onLongClick = {
-                                    Toaster.i(R.string.discoverinfo)
-                                }
-                            ),
-                        contentAlignment = androidx.compose.ui.Alignment.Center
-                    ) {
-                        androidx.compose.material3.Icon(
-                            painter = androidx.compose.ui.res.painterResource(R.drawable.star_brilliant),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp),
-                            tint = if (discoverIsEnabled) colorPalette().text else colorPalette().textDisabled
-                        )
-                    }
+                            .size(24.dp)
+                            .alpha(if (isDiscoverClickable) 1f else 0.4f)
+                    )
                 }
 
                 val showButtonPlayerDownload by rememberPreference( showButtonPlayerDownloadKey, true )
@@ -693,9 +688,9 @@ fun BoxScope.ActionBar(
                 if (showButtonPlayerStartRadio)
                     IconButton(
                         icon = R.drawable.radio,
-                        color = colorPalette().accent,
+                        color = if (binder.isRadioActive) colorPalette().accent else Color.Gray,
                         onClick = {
-                            binder.startRadio( mediaItem )
+                            binder.startRadio( mediaItem, false, null, true )
                         },
                         modifier = Modifier.size( 24.dp )
                     )

@@ -2245,7 +2245,7 @@ fun Player(
                     showQueue = false
                 },
                 onDiscoverClick = {
-                    discoverState.value = it
+                    binder.service.nzikRadio.toggleDiscover()
                 }
             )
         }

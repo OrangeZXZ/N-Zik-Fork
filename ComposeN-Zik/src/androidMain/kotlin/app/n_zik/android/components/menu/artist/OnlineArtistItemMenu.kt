@@ -262,8 +262,11 @@ class OnlineArtistItemMenu private constructor(
 
         val playRadio = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
             override val iconId: Int = R.drawable.radio
+            override val color: androidx.compose.ui.graphics.Color
+                @Composable
+                get() = if (binder?.isRadioActive == true) app.n_zik.android.colorPalette().accent else app.n_zik.android.colorPalette().text
             override val messageId: Int = R.string.start_radio
-            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
+            @get:Composable override val menuIconTitle: String get() = stringResource(binder?.radioActionTextRes ?: messageId)
             override fun onShortClick() {
                 if (isFetching) {
                     Toaster.w(R.string.opening_url)

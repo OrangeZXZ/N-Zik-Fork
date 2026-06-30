@@ -91,6 +91,7 @@ import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.DisposableListener
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.asSong
+import app.it.fast4x.rimusic.utils.autoLoadSongsInQueueKey
 import app.it.fast4x.rimusic.utils.enqueue
 import app.it.fast4x.rimusic.utils.findMediaItemIndexById
 import app.it.fast4x.rimusic.utils.isDownloadedSong
@@ -129,7 +130,7 @@ import androidx.compose.ui.res.stringResource
 fun Queue(
     navController: NavController,
     onDismiss: (QueueLoopType) -> Unit,
-    onDiscoverClick: (Boolean) -> Unit,
+    onDiscoverClick: () -> Unit,
 ) {
     // Essentials
     val context = LocalContext.current
@@ -241,7 +242,9 @@ fun Queue(
             songs = ::getSongs
         )
         val shuffle = ShuffleQueue( player, lazyListState, coroutineScope )
-        val discover = Discover( onDiscoverClick )
+        val isAutoFillEnabled by rememberPreference(autoLoadSongsInQueueKey, true)
+        val isDiscoverClickable = binder.service.nzikRadio.isRadioActive || isAutoFillEnabled
+        val discover = Discover( isDiscoverClickable, onDiscoverClick )
         val repeat = Repeat.init()
         val deleteDialog = DeleteFromQueue {
             if( itemSelector.isEmpty() ) {
