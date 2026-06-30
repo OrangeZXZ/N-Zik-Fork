@@ -1002,6 +1002,7 @@
   <string name="invalid_input">¡Entrada no válida!</string>
   <string name="rename_playlist">Renombrar lista de reproducción</string>
   <string name="no_song_to_shuffle">No hay canción aleatoria</string>
+  <string name="shuffle_count">Shuffled %d songs</string>
   <string name="looking_up_artist_online">Buscar %s en línea...</string>
   <string name="failed_to_fetch_artist">Error al buscar el artista</string>
   <string name="looking_up_album_from_the_internet">Buscar álbum en Internet</string>
