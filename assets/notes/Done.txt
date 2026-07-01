@@ -10,3 +10,4 @@
 - Fix Android Auto tabs order to match app predefined order (Songs: All/Favorites/Cached/Downloaded/Top/OnDevice, Artists: Favorites/Library, Albums: Favorites/Library, Playlists: Local/Pinned/Monthly/Piped/YT)
 - Fix Android Auto sort order to match user preferences for all sections (Songs, Artists, Albums, Playlists)
 - Fix Android Auto playlist songs sort order to match user preferences per playlist (PlaylistSongsSortBy_$playlistId)
+- Optimize Android Auto artwork sizes: 1200px for main player and 250px for library lists (artists, albums, songs) to reduce data/RAM usage

@@ -365,7 +365,7 @@ class PlayerServiceModern : MediaLibraryService(),
         runCatching {
             bitmapProvider = BitmapProvider(
                 scope = coroutineScope,
-                bitmapSize = (512 * resources.displayMetrics.density).roundToInt(),
+                bitmapSize = (1200 * resources.displayMetrics.density).roundToInt(),
                 colorProvider = { isSystemInDarkMode ->
                     if (isSystemInDarkMode) Color.BLACK else Color.WHITE
                 }
@@ -473,7 +473,7 @@ class PlayerServiceModern : MediaLibraryService(),
                     CoilBitmapLoader(
                         this,
                         coroutineScope,
-                        512 * resources.displayMetrics.density.toInt()
+                        250 * resources.displayMetrics.density.toInt()
                     )
                 )
                 .build()

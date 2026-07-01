@@ -37,7 +37,7 @@ object MediaItemMapper {
         id = "$parentId/$id",
         title = name,
         subtitle = subtext,
-        iconUri = thumbnailUrl?.thumbnail(1200)?.toUri(), // ENHANCED QUALITY
+        iconUri = thumbnailUrl?.thumbnail(250)?.toUri(), // ENHANCED QUALITY
         mediaType = MediaMetadata.MEDIA_TYPE_ARTIST,
         path = searchPath.ifEmpty { parentId }
     )
@@ -53,7 +53,7 @@ object MediaItemMapper {
         id = "$parentId/$id",
         title = title,
         subtitle = authorsText,
-        iconUri = thumbnailUrl?.thumbnail(1200)?.toUri(), // ENHANCED QUALITY
+        iconUri = thumbnailUrl?.thumbnail(250)?.toUri(), // ENHANCED QUALITY
         mediaType = MediaMetadata.MEDIA_TYPE_ALBUM,
         path = searchPath.ifEmpty { parentId }
     )
