@@ -263,9 +263,11 @@ class MediaLibrarySessionCallback(
                 }
                 MediaSessionConstants.ID_QUICK_PICKS -> {
                     val luckyItem = MediaItem.Builder().setMediaId(MediaSessionConstants.ID_LUCKY_SHUFFLE).setMediaMetadata(MediaMetadata.Builder().setTitle(context.getString(R.string.lucky_shuffle)).setArtworkUri(MediaItemMapper.drawableUri(context, R.drawable.smart_shuffle)).setIsPlayable(true).setIsBrowsable(false).setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC).build()).build()
-                    val trending = QuickPicksRepository.trendingList.value.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
-                    val related = QuickPicksRepository.relatedPage.value?.songs?.map { item -> MediaItemMapper.mapSongToMediaItem(item.asSong, parentId) } ?: emptyList()
-                    (listOf(luckyItem) + (trending + related).distinctBy { it.mediaId })
+                    val ytmQuickPicks = if (app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn()) {
+                        it.fast4x.innertube.YtMusic.getQuickPicks(setLogin = true).getOrNull()?.map { it.asSong.let { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) } } ?: emptyList()
+                    } else emptyList()
+                    val trending = database.eventTable.findSongsMostPlayedBetween(from = 0, limit = 500).first().map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
+                    (listOf(luckyItem) + (ytmQuickPicks + trending).distinctBy { it.mediaId })
                 }
                 PlayerServiceModern.SONG -> {
                     val showFavoritesPlaylist = try { context.preferences.getBoolean(showFavoritesPlaylistKey, true) } catch (e: Exception) { true }
@@ -957,7 +959,14 @@ class MediaLibrarySessionCallback(
             var songId = ""
             val paths = mediaItems.first().mediaId.split("/")
             when (paths.first()) {
-                MediaSessionConstants.ID_QUICK_PICKS -> { songId = paths[1]; queryList = (QuickPicksRepository.trendingList.value + (QuickPicksRepository.relatedPage.value?.songs?.map { it.asSong } ?: emptyList())).distinctBy { it.id } }
+                MediaSessionConstants.ID_QUICK_PICKS -> { 
+                    songId = paths[1]
+                    val ytmQuickPicks = if (app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn()) {
+                        it.fast4x.innertube.YtMusic.getQuickPicks(setLogin = true).getOrNull()?.map { it.asSong } ?: emptyList()
+                    } else emptyList()
+                    val trending = database.eventTable.findSongsMostPlayedBetween(from = 0, limit = 500).first()
+                    queryList = (ytmQuickPicks + trending).distinctBy { it.id } 
+                }
                 MediaSessionConstants.ID_SEARCH_SONGS -> { songId = paths[2]; queryList = searchedSongs }
                 MediaSessionConstants.ID_SEARCH_VIDEOS -> { songId = paths[2]; queryList = searchedVideos.map { it.asSong } }
                 PlayerServiceModern.SEARCHED -> { songId = paths[1]; queryList = searchedSongs }
