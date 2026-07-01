@@ -90,16 +90,15 @@ object MediaItemMapper {
     }
 
     fun mapSongToMediaItem(song: Song, isFromPersistentQueue: Boolean = false): MediaItem {
-        val bundle = Bundle().apply {
+        val mediaItem = song.asMediaItem
+        val existingExtras = mediaItem.mediaMetadata.extras ?: android.os.Bundle()
+        val bundle = android.os.Bundle(existingExtras).apply {
             putBoolean(persistentQueueKey, isFromPersistentQueue)
         }
 
-        val mediaItem = song.asMediaItem
         var metadataBuilder = mediaItem.mediaMetadata
             .buildUpon()
             .setExtras(bundle)
-
-
 
         return mediaItem.buildUpon().setMediaMetadata(metadataBuilder.build()).build()
     }
