@@ -36,7 +36,10 @@ import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.requests.artistPage
 import it.fast4x.innertube.requests.albumPage
 import it.fast4x.innertube.requests.playlistPage
+import it.fast4x.innertube.requests.relatedPage
 import it.fast4x.innertube.YtMusic
+import it.fast4x.innertube.models.bodies.NextBody
+import timber.log.Timber
 import it.fast4x.innertube.models.BrowseEndpoint
 import it.fast4x.innertube.utils.from
 import androidx.core.net.toUri
@@ -263,11 +266,18 @@ class MediaLibrarySessionCallback(
                 }
                 MediaSessionConstants.ID_QUICK_PICKS -> {
                     val luckyItem = MediaItem.Builder().setMediaId(MediaSessionConstants.ID_LUCKY_SHUFFLE).setMediaMetadata(MediaMetadata.Builder().setTitle(context.getString(R.string.lucky_shuffle)).setArtworkUri(MediaItemMapper.drawableUri(context, R.drawable.smart_shuffle)).setIsPlayable(true).setIsBrowsable(false).setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC).build()).build()
-                    val ytmQuickPicks = if (app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn()) {
-                        it.fast4x.innertube.YtMusic.getQuickPicks(setLogin = true).getOrNull()?.map { it.asSong.let { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) } } ?: emptyList()
+                    val trending = database.eventTable.findSongsMostPlayedBetween(from = 0, limit = 500).first()
+                    val relatedSongs = if (trending.isNotEmpty()) {
+                        it.fast4x.innertube.Innertube.relatedPage(NextBody(videoId = trending.first().id))?.getOrNull()?.songs?.map { it.asSong } ?: emptyList()
                     } else emptyList()
-                    val trending = database.eventTable.findSongsMostPlayedBetween(from = 0, limit = 500).first().map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
-                    (listOf(luckyItem) + (ytmQuickPicks + trending).distinctBy { it.mediaId })
+                    val ytmQuickPicks = if (app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn()) {
+                        it.fast4x.innertube.YtMusic.getQuickPicks(setLogin = true).getOrNull()?.map { it.asSong } ?: emptyList()
+                    } else emptyList()
+                    Timber.d("Android Auto: Quick picks loaded -> trending: ${trending.size}, related: ${relatedSongs.size}, ytb: ${ytmQuickPicks.size}")
+                    val trendingItems = trending.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
+                    val relatedItems = relatedSongs.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
+                    val ytmItems = ytmQuickPicks.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
+                    (listOf(luckyItem) + (ytmItems + trendingItems + relatedItems).distinctBy { it.mediaId })
                 }
                 PlayerServiceModern.SONG -> {
                     val showFavoritesPlaylist = try { context.preferences.getBoolean(showFavoritesPlaylistKey, true) } catch (e: Exception) { true }
@@ -961,11 +971,15 @@ class MediaLibrarySessionCallback(
             when (paths.first()) {
                 MediaSessionConstants.ID_QUICK_PICKS -> { 
                     songId = paths[1]
+                    val trending = database.eventTable.findSongsMostPlayedBetween(from = 0, limit = 500).first()
+                    val relatedSongs = if (trending.isNotEmpty()) {
+                        it.fast4x.innertube.Innertube.relatedPage(NextBody(videoId = trending.first().id))?.getOrNull()?.songs?.map { it.asSong } ?: emptyList()
+                    } else emptyList()
                     val ytmQuickPicks = if (app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn()) {
                         it.fast4x.innertube.YtMusic.getQuickPicks(setLogin = true).getOrNull()?.map { it.asSong } ?: emptyList()
                     } else emptyList()
-                    val trending = database.eventTable.findSongsMostPlayedBetween(from = 0, limit = 500).first()
-                    queryList = (ytmQuickPicks + trending).distinctBy { it.id } 
+                    Timber.d("Android Auto: Quick picks play list loaded -> trending: ${trending.size}, related: ${relatedSongs.size}, ytb: ${ytmQuickPicks.size}")
+                    queryList = (ytmQuickPicks + trending + relatedSongs).distinctBy { it.id } 
                 }
                 MediaSessionConstants.ID_SEARCH_SONGS -> { songId = paths[2]; queryList = searchedSongs }
                 MediaSessionConstants.ID_SEARCH_VIDEOS -> { songId = paths[2]; queryList = searchedVideos.map { it.asSong } }
