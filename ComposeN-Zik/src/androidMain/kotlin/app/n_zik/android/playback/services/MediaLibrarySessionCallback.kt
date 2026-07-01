@@ -8,6 +8,7 @@ import app.n_zik.android.playback.exceptions.*
 import app.n_zik.android.playback.utils.*
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import androidx.annotation.OptIn
 import androidx.compose.ui.util.fastFilter
@@ -41,7 +42,15 @@ import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.models.bodies.NextBody
 import timber.log.Timber
 import it.fast4x.innertube.models.BrowseEndpoint
+import it.fast4x.innertube.models.BrowseResponse
+import it.fast4x.innertube.models.GridRenderer
+import it.fast4x.innertube.models.MusicShelfRenderer
+import it.fast4x.innertube.models.SectionListRenderer
+import it.fast4x.innertube.requests.ArtistItemsPage
+import it.fast4x.innertube.requests.ArtistPage
+import it.fast4x.innertube.requests.ArtistSection
 import it.fast4x.innertube.utils.from
+import io.ktor.client.call.body
 import androidx.core.net.toUri
 import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.enums.MaxTopPlaylistItems
@@ -89,8 +98,6 @@ import kotlinx.coroutines.guava.future
 import app.n_zik.android.core.database.ext.FormatWithSong
 import it.fast4x.innertube.models.NavigationEndpoint
 import kotlinx.coroutines.flow.Flow
-import it.fast4x.innertube.models.MusicShelfRenderer
-
 @UnstableApi
 class MediaLibrarySessionCallback(
     val context: Context,
@@ -647,46 +654,81 @@ class MediaLibrarySessionCallback(
                             if (artistId.startsWith(LOCAL_KEY_PREFIX)) {
                                 database.songArtistMapTable.allSongsBy(artistId).first().map { song -> MediaItemMapper.mapSongToMediaItem(song, actualParentId) }
                             } else {
+                                val sectionItems = mutableListOf<MediaItem>()
                                 if (parts.size == 2) {
-                                    listOf(
-                                        MediaItemMapper.browsableMediaItem("$parentId/SONGS", context.getString(R.string.songs), null, MediaItemMapper.drawableUri(context, R.drawable.musical_notes), MediaMetadata.MEDIA_TYPE_FOLDER_MIXED),
-                                        MediaItemMapper.browsableMediaItem("$parentId/ALBUMS", context.getString(R.string.albums), null, MediaItemMapper.drawableUri(context, R.drawable.album), MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS),
-                                        MediaItemMapper.browsableMediaItem("$parentId/VIDEOS", context.getString(R.string.videos), null, MediaItemMapper.drawableUri(context, R.drawable.video), MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)
-                                    )
-                                } else {
-                                        when (parts[2]) {
-                                        "VIDEOS" -> {
-                                            val artistName = parts.getOrNull(1) ?: artistId
-                                            val allMapped = mutableListOf<MediaItem>()
-                                            var cont: String? = null
-                                            do {
-                                                val resultPage = if (cont == null) {
-                                                    Innertube.searchPage<Innertube.VideoItem>(SearchBody(query = "$artistName official music video", params = Innertube.SearchFilter.Video.value), { content -> Innertube.VideoItem.from(content) })?.getOrNull()
-                                                } else {
-                                                    Innertube.searchPage<Innertube.VideoItem>(ContinuationBody(continuation = cont), { content -> Innertube.VideoItem.from(content) })?.getOrNull()
-                                                }
-                                                val items = resultPage?.items ?: emptyList()
-                                                val songs = items.map { it.asSong }
-                                                searchedVideos = (searchedVideos + items).distinctBy { it.key }
-                                                allMapped.addAll(songs.map { s -> MediaItemMapper.mapSongToMediaItem(s, parentId) })
-                                                cont = resultPage?.continuation
-                                            } while (cont != null && allMapped.size < 150)
-                                            allMapped
+                                    val artistPage = YtMusic.getArtistPage(artistId).getOrNull()
+                                    Timber.i("AA artist sections: page=${artistPage != null}")
+                                    artistPage?.sections?.forEach { section ->
+                                        val type = when {
+                                            section.items.all { it is Innertube.SongItem } -> { sectionItems.add(MediaItemMapper.browsableMediaItem("$parentId/${Uri.encode(section.title)}", section.title, null, MediaItemMapper.drawableUri(context, R.drawable.musical_notes), MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)); "Songs" }
+                                            section.items.all { it is Innertube.AlbumItem } -> { sectionItems.add(MediaItemMapper.browsableMediaItem("$parentId/${Uri.encode(section.title)}", section.title, null, MediaItemMapper.drawableUri(context, R.drawable.album), MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS)); "Albums" }
+                                            section.items.all { it is Innertube.VideoItem } -> { sectionItems.add(MediaItemMapper.browsableMediaItem("$parentId/${Uri.encode(section.title)}", section.title, null, MediaItemMapper.drawableUri(context, R.drawable.video), MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)); "Videos" }
+                                            section.items.all { it is Innertube.PlaylistItem } -> { sectionItems.add(MediaItemMapper.browsableMediaItem("$parentId/${Uri.encode(section.title)}", section.title, null, MediaItemMapper.drawableUri(context, R.drawable.playlist), MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS)); "Playlists" }
+                                            section.items.all { it is Innertube.ArtistItem } -> { sectionItems.add(MediaItemMapper.browsableMediaItem("$parentId/${Uri.encode(section.title)}", section.title, null, MediaItemMapper.drawableUri(context, R.drawable.people), MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS)); "Artists" }
+                                            else -> "UNMATCHED"
                                         }
-                                        else -> {
-                                            val params = when (parts[2]) { "SONGS" -> "ggMCcgQYAxAAMAO4AgE%3D"; "ALBUMS" -> "ggMCcgQIARAAMAO4AgE%3D"; else -> null }
-                                            val result = YtMusic.getArtistItemsPage(BrowseEndpoint(browseId = artistId, params = params)).getOrNull()
-                                            val items = result?.items ?: emptyList()
-                                            items.mapNotNull { item ->
+                                        Timber.i("AA section: title=\"${section.title}\" items=${section.items.size} firstType=${section.items.firstOrNull()?.let { it::class.simpleName }} type=$type more=${section.moreEndpoint != null}")
+                                    }
+                                } else {
+                                    val sectionTitle = Uri.decode(parts[2])
+                                    Timber.i("AA browsing section: title=\"$sectionTitle\"")
+                                    val artistPage = YtMusic.getArtistPage(artistId).getOrNull()
+                                    val section = artistPage?.sections?.firstOrNull { it.title == sectionTitle }
+                                    if (section != null) {
+                                        Timber.i("AA section found: items=${section.items.size} more=${section.moreEndpoint?.browseId}")
+                                        val moreBrowseId = section.moreEndpoint?.browseId
+                                        val moreParams = section.moreEndpoint?.params
+                                        if (moreBrowseId != null) {
+                                            try {
+                                                val response = Innertube.browse(browseId = moreBrowseId, params = moreParams).body<BrowseResponse>()
+                                                val tabs = response.contents?.singleColumnBrowseResultsRenderer?.tabs.orEmpty()
+                                                var sectionContent = tabs.mapNotNull { tab -> tab.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull() }.firstOrNull() ?: response.contents?.sectionListRenderer?.contents?.firstOrNull()
+                                                if (sectionContent == null) {
+                                                    val tabEndpoint = tabs.mapNotNull { it.tabRenderer?.endpoint?.browseEndpoint }.firstOrNull()
+                                                    if (tabEndpoint != null) {
+                                                        val tabResponse = Innertube.browse(browseId = tabEndpoint.browseId ?: moreBrowseId, params = tabEndpoint.params).body<BrowseResponse>()
+                                                        val tabTabs = tabResponse.contents?.singleColumnBrowseResultsRenderer?.tabs.orEmpty()
+                                                        sectionContent = tabTabs.mapNotNull { tab -> tab.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull() }.firstOrNull() ?: tabResponse.contents?.sectionListRenderer?.contents?.firstOrNull()
+                                                    }
+                                                }
+                                                if (sectionContent != null) {
+                                                    val fetched = mutableListOf<Innertube.Item>()
+                                                    sectionContent.gridRenderer?.items?.mapNotNull(GridRenderer.Item::musicTwoRowItemRenderer)?.mapNotNull(ArtistItemsPage.Companion::fromMusicTwoRowItemRenderer)?.forEach { fetched.add(it) }
+                                                    sectionContent.musicCarouselShelfRenderer?.contents?.mapNotNull { it.musicTwoRowItemRenderer }?.mapNotNull(ArtistItemsPage.Companion::fromMusicTwoRowItemRenderer)?.forEach { fetched.add(it) }
+                                                    sectionContent.musicShelfRenderer?.contents?.mapNotNull { it.musicResponsiveListItemRenderer?.let { r -> Innertube.SongItem.from(r) } }?.forEach { fetched.add(it) }
+                                                    sectionContent.musicPlaylistShelfRenderer?.contents?.mapNotNull { it.musicResponsiveListItemRenderer?.let { r -> Innertube.SongItem.from(r) } }?.forEach { fetched.add(it) }
+                                                    Timber.i("AA browse section: fetched=${fetched.size} grid=${sectionContent.gridRenderer != null} carousel=${sectionContent.musicCarouselShelfRenderer != null} shelf=${sectionContent.musicShelfRenderer != null} playlistShelf=${sectionContent.musicPlaylistShelfRenderer != null}")
+                                                    fetched.distinctBy { it.key }.forEach { item ->
+                                                        when (item) {
+                                                            is Innertube.SongItem -> { val song = item.asSong; searchedSongs = (searchedSongs + song).distinctBy { s -> s.id }; sectionItems.add(MediaItemMapper.mapSongToMediaItem(song, actualParentId)) }
+                                                            is Innertube.AlbumItem -> sectionItems.add(MediaItemMapper.mapAlbumToMediaItem(PlayerServiceModern.ALBUM, item.key ?: "", item.info?.name ?: "", item.authors.parseArtists().joinToString(", "), item.thumbnail?.url))
+                                                            is Innertube.VideoItem -> { val s = item.asSong; searchedVideos = (searchedVideos + item).distinctBy { it.key }; sectionItems.add(MediaItemMapper.mapSongToMediaItem(s, parentId)) }
+                                                            is Innertube.PlaylistItem -> sectionItems.add(MediaItemMapper.browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${item.key}", item.info?.name ?: "", null, item.thumbnail?.url?.toUri(), MediaMetadata.MEDIA_TYPE_PLAYLIST, parentId))
+                                                            is Innertube.ArtistItem -> sectionItems.add(MediaItemMapper.mapArtistToMediaItem(PlayerServiceModern.ARTIST, item.key ?: "", item.info?.name ?: "", item.thumbnail?.url, item.subscribersCountText, parentId))
+                                                        }
+                                                    }
+                                                }
+                                            } catch (e: Exception) {
+                                                Timber.w(e, "AA browse section failed")
+                                            }
+                                        }
+                                        if (sectionItems.isEmpty()) {
+                                            Timber.i("AA fallback to section items: ${section.items.size} items")
+                                            section.items.forEach { item ->
                                                 when (item) {
-                                                    is Innertube.SongItem -> { val song = item.asSong; searchedSongs = (searchedSongs + song).distinctBy { s -> s.id }; MediaItemMapper.mapSongToMediaItem(song, actualParentId) }
-                                                    is Innertube.AlbumItem -> MediaItemMapper.mapAlbumToMediaItem(PlayerServiceModern.ALBUM, item.key ?: "", item.info?.name ?: "", item.authors.parseArtists().joinToString(", "), item.thumbnail?.url)
-                                                    else -> null
+                                                    is Innertube.SongItem -> { val song = item.asSong; searchedSongs = (searchedSongs + song).distinctBy { s -> s.id }; sectionItems.add(MediaItemMapper.mapSongToMediaItem(song, actualParentId)) }
+                                                    is Innertube.AlbumItem -> sectionItems.add(MediaItemMapper.mapAlbumToMediaItem(PlayerServiceModern.ALBUM, item.key ?: "", item.info?.name ?: "", item.authors.parseArtists().joinToString(", "), item.thumbnail?.url))
+                                                    is Innertube.VideoItem -> { val s = item.asSong; searchedVideos = (searchedVideos + item).distinctBy { it.key }; sectionItems.add(MediaItemMapper.mapSongToMediaItem(s, parentId)) }
+                                                    is Innertube.PlaylistItem -> sectionItems.add(MediaItemMapper.browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${item.key}", item.info?.name ?: "", null, item.thumbnail?.url?.toUri(), MediaMetadata.MEDIA_TYPE_PLAYLIST, parentId))
+                                                    is Innertube.ArtistItem -> sectionItems.add(MediaItemMapper.mapArtistToMediaItem(PlayerServiceModern.ARTIST, item.key ?: "", item.info?.name ?: "", item.thumbnail?.url, item.subscribersCountText, parentId))
                                                 }
                                             }
                                         }
+                                    } else {
+                                        Timber.w("AA section not found for title=\"$sectionTitle\"")
                                     }
                                 }
+                                sectionItems.distinctBy { it.mediaId }
                             }
                         }
                         PlayerServiceModern.ALBUM -> {
@@ -735,10 +777,30 @@ class MediaLibrarySessionCallback(
                             
                             if (!onlineSongs.isNullOrEmpty()) {
                                 searchedSongs = (searchedSongs + onlineSongs).distinctBy { s -> s.id }
-                                onlineSongs.map { song -> MediaItemMapper.mapSongToMediaItem(song, actualParentId) }
+                                onlineSongs.mapIndexed { index, song ->
+                                    MediaItemMapper.mapSongToMediaItem(song, actualParentId).let { item ->
+                                        item.buildUpon()
+                                            .setMediaMetadata(
+                                                item.mediaMetadata.buildUpon()
+                                                    .setTrackNumber(index + 1)
+                                                    .build()
+                                            )
+                                            .build()
+                                    }
+                                }
                             } else {
                                 val localSongs = database.songAlbumMapTable.allSongsOf(albumId).first()
-                                localSongs.map { song -> MediaItemMapper.mapSongToMediaItem(song, actualParentId) }
+                                localSongs.mapIndexed { index, song ->
+                                    MediaItemMapper.mapSongToMediaItem(song, actualParentId).let { item ->
+                                        item.buildUpon()
+                                            .setMediaMetadata(
+                                                item.mediaMetadata.buildUpon()
+                                                    .setTrackNumber(index + 1)
+                                                    .build()
+                                            )
+                                            .build()
+                                    }
+                                }
                             }
                         }
                         PlayerServiceModern.PLAYLIST -> {

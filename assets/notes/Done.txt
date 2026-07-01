@@ -19,3 +19,4 @@
 - Added 'Play All' and 'Shuffle' buttons to the top of all Android Auto folders (Songs, Artists, Albums, Playlists).
 - Fixed 'Play All' and 'Shuffle' sorting behavior in Android Auto to strictly respect the user's custom sort preferences instead of defaulting to database fetch order.
 - ANDROID AUTO If a playlist exceed 200 music the app will create subfolder by page to avoid Android auto missing songs
+- ANDROID AUTO Refactor artist browse tree to mirror ArtistDetails: dynamic sections from YtMusic.getArtistPage() instead of hardcoded ALBUMS/SINGLES/VIDEOS/SONGS — handles all section types (Songs, Albums, Singles & EPs, Videos, Playlists, Fans might also like) with proper moreEndpoint browse handling for each renderer type (grid, carousel, shelf, playlistShelf). Fixes #498.
