@@ -55,6 +55,7 @@ import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.LOCAL_KEY_PREFIX
 import app.it.fast4x.rimusic.enums.AudioQualityFormat
 import app.it.fast4x.rimusic.enums.PlaylistSortBy
+import app.it.fast4x.rimusic.enums.PlaylistSongSortBy
 import app.n_zik.android.playback.models.MediaSessionConstants.ID_ALBUMS_FAVORITES
 import app.n_zik.android.playback.models.MediaSessionConstants.ID_ALBUMS_LIBRARY
 import app.n_zik.android.playback.models.MediaSessionConstants.ID_ARTISTS_FAVORITES
@@ -707,13 +708,79 @@ class MediaLibrarySessionCallback(
                             val playlistId = parts[1]
                             val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_PLAYLIST_SHUFFLE)
                             val listFlow = when (playlistId) {
-                                MediaSessionConstants.ID_FAVORITES -> database.songTable.allFavorites().map { fl -> fl.reversed() }
-                                MediaSessionConstants.ID_CACHED -> database.formatTable.allWithSongs().map { flist -> flist.fastFilter { itf -> val contentLength = itf.format.contentLength; contentLength != null && (if (::binder.isInitialized) binder.cache.isCached(itf.song.id, 0L, contentLength) else false) }.reversed().fastMap { itf -> itf.song } }
-                                MediaSessionConstants.ID_TOP -> database.eventTable.findSongsMostPlayedBetween(from = 0, limit = context.preferences.getEnum(MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10`).toInt())
-                                MediaSessionConstants.ID_ONDEVICE -> database.songTable.allOnDevice()
-                                MediaSessionConstants.ID_DOWNLOADED -> { val downloads = downloadHelper.downloads.value; database.songTable.all(excludeHidden = false).map { songs -> songs.fastFilter { song -> downloads[song.id]?.state == Download.STATE_COMPLETED }.sortedByDescending { song -> downloads[song.id]?.updateTimeMs ?: 0L } } }
+                                MediaSessionConstants.ID_FAVORITES -> {
+                                    val sortBy = context.preferences.getEnum(Preference.HOME_SONGS_FAVORITES_SORT_BY.key, SongSortBy.DateLiked)
+                                    val sortOrder = context.preferences.getEnum(Preference.HOME_SONGS_FAVORITES_SORT_ORDER.key, SortOrder.Descending)
+                                    database.songTable.sortFavorites(sortBy, sortOrder)
+                                }
+                                MediaSessionConstants.ID_CACHED -> {
+                                    val sortBy = context.preferences.getEnum(Preference.HOME_SONGS_OFFLINE_SORT_BY.key, SongSortBy.Title)
+                                    val sortOrder = context.preferences.getEnum(Preference.HOME_SONGS_OFFLINE_SORT_ORDER.key, SortOrder.Ascending)
+                                    database.formatTable.allWithSongs().map { flist ->
+                                        flist.fastFilter { itf -> val contentLength = itf.format.contentLength; contentLength != null && (if (::binder.isInitialized) binder.cache.isCached(itf.song.id, 0L, contentLength) else false) }.fastMap { itf -> itf.song }
+                                    }.map { songs ->
+                                        when (sortBy) {
+                                            SongSortBy.Title -> songs.sortedBy { it.cleanTitle() }
+                                            SongSortBy.PlayTime -> songs.sortedBy { it.totalPlayTimeMs }
+                                            SongSortBy.DateAdded -> songs.sortedByDescending { it.id }
+                                            SongSortBy.Duration -> songs.sortedBy { app.it.fast4x.rimusic.utils.durationToMillis(it.durationText ?: "0:0") }
+                                            SongSortBy.Artist -> songs.sortedBy { it.cleanArtistsText() }
+                                            else -> songs.sortedBy { it.cleanTitle() }
+                                        }.let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
+                                    }
+                                }
+                                MediaSessionConstants.ID_TOP -> {
+                                    val sortBy = context.preferences.getEnum(Preference.HOME_SONGS_TOP_SORT_BY.key, SongSortBy.PlayTime)
+                                    val sortOrder = context.preferences.getEnum(Preference.HOME_SONGS_TOP_SORT_ORDER.key, SortOrder.Descending)
+                                    database.eventTable.findSongsMostPlayedBetween(from = 0, limit = context.preferences.getEnum(MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10`).toInt()).map { songs ->
+                                        when (sortBy) {
+                                            SongSortBy.Title -> songs.sortedBy { it.cleanTitle() }
+                                            SongSortBy.PlayTime -> songs.sortedBy { it.totalPlayTimeMs }
+                                            SongSortBy.DateAdded -> songs.sortedByDescending { it.id }
+                                            SongSortBy.Duration -> songs.sortedBy { app.it.fast4x.rimusic.utils.durationToMillis(it.durationText ?: "0:0") }
+                                            SongSortBy.Artist -> songs.sortedBy { it.cleanArtistsText() }
+                                            else -> songs.sortedBy { it.totalPlayTimeMs }
+                                        }.let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
+                                    }
+                                }
+                                MediaSessionConstants.ID_ONDEVICE -> {
+                                    val sortBy = context.preferences.getEnum(Preference.HOME_ON_DEVICE_SONGS_SORT_BY.key, app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Title)
+                                    val sortOrder = context.preferences.getEnum(Preference.HOME_ON_DEVICE_SONGS_SORT_ORDER.key, SortOrder.Ascending)
+                                    database.songTable.allOnDevice().map { songs ->
+                                        when (sortBy) {
+                                            app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Title -> songs.sortedBy { it.cleanTitle() }
+                                            app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.DateAdded -> songs.sortedByDescending { it.id }
+                                            app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Duration -> songs.sortedBy { app.it.fast4x.rimusic.utils.durationToMillis(it.durationText ?: "0:0") }
+                                            app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Artist -> songs.sortedBy { it.cleanArtistsText() }
+                                            else -> songs.sortedBy { it.cleanTitle() }
+                                        }.let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
+                                    }
+                                }
+                                MediaSessionConstants.ID_DOWNLOADED -> {
+                                    val sortBy = context.preferences.getEnum(Preference.HOME_SONGS_DOWNLOADED_SORT_BY.key, SongSortBy.Custom)
+                                    val sortOrder = context.preferences.getEnum(Preference.HOME_SONGS_DOWNLOADED_SORT_ORDER.key, SortOrder.Descending)
+                                    val downloads = downloadHelper.downloads.value
+                                    database.songTable.all(excludeHidden = false).map { songs ->
+                                        songs.fastFilter { song -> downloads[song.id]?.state == Download.STATE_COMPLETED }
+                                    }.map { downloadedSongs ->
+                                        when (sortBy) {
+                                            SongSortBy.Title -> downloadedSongs.sortedBy { it.cleanTitle() }
+                                            SongSortBy.PlayTime -> downloadedSongs.sortedBy { it.totalPlayTimeMs }
+                                            SongSortBy.DateAdded -> downloadedSongs.sortedByDescending { it.id }
+                                            SongSortBy.DatePlayed -> downloadedSongs.sortedByDescending { downloads[it.id]?.updateTimeMs ?: 0L }
+                                            SongSortBy.Duration -> downloadedSongs.sortedBy { app.it.fast4x.rimusic.utils.durationToMillis(it.durationText ?: "0:0") }
+                                            SongSortBy.Artist -> downloadedSongs.sortedBy { it.cleanArtistsText() }
+                                            SongSortBy.Custom -> downloadedSongs.sortedByDescending { downloads[it.id]?.updateTimeMs ?: 0L }
+                                            else -> downloadedSongs.sortedByDescending { downloads[it.id]?.updateTimeMs ?: 0L }
+                                        }.let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
+                                    }
+                                }
                                 else -> {
-                                    if (playlistId.toLongOrNull() != null) { database.songPlaylistMapTable.allSongsOf(playlistId.toLong()) } else {
+                                    if (playlistId.toLongOrNull() != null) {
+                                        val sortBy = context.preferences.getEnum("PlaylistSongsSortBy_$playlistId", PlaylistSongSortBy.Title)
+                                        val sortOrder = context.preferences.getEnum("PlaylistSongsSortOrder_$playlistId", SortOrder.Ascending)
+                                        database.songPlaylistMapTable.sortSongs(playlistId.toLong(), sortBy, sortOrder)
+                                    } else {
                                         val playlistPage = Innertube.playlistPage(BrowseBody(browseId = playlistId))?.getOrNull()
                                         val songs = playlistPage?.songsPage?.items?.toList()?.map { item -> item.asSong } ?: emptyList()
                                         searchedSongs = (searchedSongs + songs).distinctBy { s -> s.id }

@@ -9,3 +9,4 @@
 - Fix explicit badge not showing when playing from Android Auto (preserve existing extras in MediaItemMapper.mapSongToMediaItem)
 - Fix Android Auto tabs order to match app predefined order (Songs: All/Favorites/Cached/Downloaded/Top/OnDevice, Artists: Favorites/Library, Albums: Favorites/Library, Playlists: Local/Pinned/Monthly/Piped/YT)
 - Fix Android Auto sort order to match user preferences for all sections (Songs, Artists, Albums, Playlists)
+- Fix Android Auto playlist songs sort order to match user preferences per playlist (PlaylistSongsSortBy_$playlistId)
