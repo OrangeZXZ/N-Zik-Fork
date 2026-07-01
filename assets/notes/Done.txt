@@ -11,3 +11,4 @@
 - Fix Android Auto sort order to match user preferences for all sections (Songs, Artists, Albums, Playlists)
 - Fix Android Auto playlist songs sort order to match user preferences per playlist (PlaylistSongsSortBy_$playlistId)
 - Optimize Android Auto artwork sizes: 1200px for main player and 250px for library lists (artists, albums, songs) to reduce data/RAM usage
+- Fix Android Auto album tracklist to fetch from network first (for complete lists) before falling back to local DB

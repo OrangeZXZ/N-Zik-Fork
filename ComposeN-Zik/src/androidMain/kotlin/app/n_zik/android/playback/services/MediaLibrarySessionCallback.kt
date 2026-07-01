@@ -696,14 +696,15 @@ class MediaLibrarySessionCallback(
                         }
                         PlayerServiceModern.ALBUM -> {
                             val albumId = parts[1]
-                            val localSongs = database.songAlbumMapTable.allSongsOf(albumId).first()
-                            if (localSongs.isNotEmpty()) {
-                                localSongs.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
+                            val albumPage = Innertube.albumPage(BrowseBody(browseId = albumId))?.getOrNull()
+                            val onlineSongs = albumPage?.songsPage?.items?.toList()?.map { item -> item.asSong }
+                            
+                            if (!onlineSongs.isNullOrEmpty()) {
+                                searchedSongs = (searchedSongs + onlineSongs).distinctBy { s -> s.id }
+                                onlineSongs.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
                             } else {
-                                val albumPage = Innertube.albumPage(BrowseBody(browseId = albumId))?.getOrNull()
-                                val songs = albumPage?.songsPage?.items?.toList()?.map { item -> item.asSong } ?: emptyList()
-                                searchedSongs = (searchedSongs + songs).distinctBy { s -> s.id }
-                                songs.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
+                                val localSongs = database.songAlbumMapTable.allSongsOf(albumId).first()
+                                localSongs.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
                             }
                         }
                         PlayerServiceModern.PLAYLIST -> {
