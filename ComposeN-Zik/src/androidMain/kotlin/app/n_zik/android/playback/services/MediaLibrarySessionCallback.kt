@@ -54,6 +54,7 @@ import app.it.fast4x.rimusic.PINNED_PREFIX
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.LOCAL_KEY_PREFIX
 import app.it.fast4x.rimusic.enums.AudioQualityFormat
+import app.it.fast4x.rimusic.enums.PlaylistSortBy
 import app.n_zik.android.playback.models.MediaSessionConstants.ID_ALBUMS_FAVORITES
 import app.n_zik.android.playback.models.MediaSessionConstants.ID_ALBUMS_LIBRARY
 import app.n_zik.android.playback.models.MediaSessionConstants.ID_ARTISTS_FAVORITES
@@ -78,6 +79,7 @@ import app.it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import app.it.fast4x.rimusic.utils.getEnum
 import app.it.fast4x.rimusic.utils.persistentQueueKey
 import app.it.fast4x.rimusic.utils.preferences
+import app.it.fast4x.rimusic.utils.Preference
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.guava.future
@@ -301,44 +303,93 @@ class MediaLibrarySessionCallback(
                 }
                 MediaSessionConstants.ID_SONGS_TOP -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_SONGS_TOP_SHUFFLE)
-                    val songs = database.eventTable.findSongsMostPlayedBetween(from = 0, limit = context.preferences.getEnum(MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10`).toInt()).first().map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
-                    listOf(shuffleItem) + songs
+                    val sortBy = context.preferences.getEnum(Preference.HOME_SONGS_TOP_SORT_BY.key, SongSortBy.PlayTime)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_SONGS_TOP_SORT_ORDER.key, SortOrder.Descending)
+                    val topSongs = database.eventTable.findSongsMostPlayedBetween(from = 0, limit = context.preferences.getEnum(MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10`).toInt()).first()
+                    val songs = when (sortBy) {
+                        SongSortBy.Title -> topSongs.sortedBy { it.cleanTitle() }
+                        SongSortBy.PlayTime -> topSongs.sortedBy { it.totalPlayTimeMs }
+                        SongSortBy.DateAdded -> topSongs.sortedByDescending { it.id }
+                        SongSortBy.Duration -> topSongs.sortedBy { app.it.fast4x.rimusic.utils.durationToMillis(it.durationText ?: "0:0") }
+                        SongSortBy.Artist -> topSongs.sortedBy { it.cleanArtistsText() }
+                        else -> topSongs.sortedBy { it.totalPlayTimeMs }
+                    }.let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
+                    listOf(shuffleItem) + songs.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
                 }
                 MediaSessionConstants.ID_SONGS_ALL -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_SONGS_ALL_SHUFFLE)
-                    val songs = database.songTable.sortAll(SongSortBy.DateAdded, SortOrder.Descending, excludeHidden = true).first().map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
+                    val sortBy = context.preferences.getEnum(Preference.HOME_SONGS_SORT_BY.key, SongSortBy.DateAdded)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_SONGS_SORT_ORDER.key, SortOrder.Descending)
+                    val songs = database.songTable.sortAll(sortBy, sortOrder, excludeHidden = true).first().map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
                     listOf(shuffleItem) + songs
                 }
                 MediaSessionConstants.ID_SONGS_FAVORITES -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_SONGS_FAVORITES_SHUFFLE)
-                    val songs = database.songTable.allFavorites().first().reversed().map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
+                    val sortBy = context.preferences.getEnum(Preference.HOME_SONGS_FAVORITES_SORT_BY.key, SongSortBy.DateLiked)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_SONGS_FAVORITES_SORT_ORDER.key, SortOrder.Descending)
+                    val songs = database.songTable.sortFavorites(sortBy, sortOrder).first().map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
                     listOf(shuffleItem) + songs
                 }
                 MediaSessionConstants.ID_SONGS_DOWNLOADED -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_SONGS_DOWNLOADED_SHUFFLE)
                     downloadHelper.getDownloadManager(context)
                     val downloads = downloadHelper.downloads.value
-                    val songs = database.songTable.all(excludeHidden = false).first().fastFilter { song -> downloads[song.id]?.state == Download.STATE_COMPLETED }.sortedByDescending { song -> downloads[song.id]?.updateTimeMs ?: 0L }.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
-                    listOf(shuffleItem) + songs
+                    val sortBy = context.preferences.getEnum(Preference.HOME_SONGS_DOWNLOADED_SORT_BY.key, SongSortBy.Custom)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_SONGS_DOWNLOADED_SORT_ORDER.key, SortOrder.Descending)
+                    val downloadedSongs = database.songTable.all(excludeHidden = false).first().fastFilter { song -> downloads[song.id]?.state == Download.STATE_COMPLETED }
+                    val songs = when (sortBy) {
+                        SongSortBy.Title -> downloadedSongs.sortedBy { it.cleanTitle() }
+                        SongSortBy.PlayTime -> downloadedSongs.sortedBy { it.totalPlayTimeMs }
+                        SongSortBy.DateAdded -> downloadedSongs.sortedByDescending { it.id }
+                        SongSortBy.DatePlayed -> downloadedSongs.sortedByDescending { downloads[it.id]?.updateTimeMs ?: 0L }
+                        SongSortBy.Duration -> downloadedSongs.sortedBy { app.it.fast4x.rimusic.utils.durationToMillis(it.durationText ?: "0:0") }
+                        SongSortBy.Artist -> downloadedSongs.sortedBy { it.cleanArtistsText() }
+                        SongSortBy.Custom -> downloadedSongs.sortedByDescending { downloads[it.id]?.updateTimeMs ?: 0L }
+                        else -> downloadedSongs.sortedByDescending { downloads[it.id]?.updateTimeMs ?: 0L }
+                    }.let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
+                    listOf(shuffleItem) + songs.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
                 }
                 MediaSessionConstants.ID_SONGS_ONDEVICE -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_SONGS_ONDEVICE_SHUFFLE)
-                    val songs = database.songTable.allOnDevice().first().map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
-                    listOf(shuffleItem) + songs
+                    val sortBy = context.preferences.getEnum(Preference.HOME_ON_DEVICE_SONGS_SORT_BY.key, app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Title)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_ON_DEVICE_SONGS_SORT_ORDER.key, SortOrder.Ascending)
+                    val onDeviceSongs = database.songTable.allOnDevice().first()
+                    val songs = when (sortBy) {
+                        app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Title -> onDeviceSongs.sortedBy { it.cleanTitle() }
+                        app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.DateAdded -> onDeviceSongs.sortedByDescending { it.id }
+                        app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Duration -> onDeviceSongs.sortedBy { app.it.fast4x.rimusic.utils.durationToMillis(it.durationText ?: "0:0") }
+                        app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Artist -> onDeviceSongs.sortedBy { it.cleanArtistsText() }
+                        else -> onDeviceSongs.sortedBy { it.cleanTitle() }
+                    }.let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
+                    listOf(shuffleItem) + songs.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
                 }
                 MediaSessionConstants.ID_SONGS_CACHED -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_SONGS_CACHED_SHUFFLE)
-                    val songs = database.formatTable.allWithSongs().first().fastFilter { itf -> itf.format.contentLength != null && (if (::binder.isInitialized) binder.cache.isCached(itf.song.id, 0L, itf.format.contentLength ?: 0L) else false) }.reversed().fastMap { itf -> itf.song }.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
-                    listOf(shuffleItem) + songs
+                    val sortBy = context.preferences.getEnum(Preference.HOME_SONGS_OFFLINE_SORT_BY.key, SongSortBy.Title)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_SONGS_OFFLINE_SORT_ORDER.key, SortOrder.Ascending)
+                    val cachedSongs = database.formatTable.allWithSongs().first().fastFilter { itf -> itf.format.contentLength != null && (if (::binder.isInitialized) binder.cache.isCached(itf.song.id, 0L, itf.format.contentLength ?: 0L) else false) }.fastMap { itf -> itf.song }
+                    val songs = when (sortBy) {
+                        SongSortBy.Title -> cachedSongs.sortedBy { it.cleanTitle() }
+                        SongSortBy.PlayTime -> cachedSongs.sortedBy { it.totalPlayTimeMs }
+                        SongSortBy.DateAdded -> cachedSongs.sortedByDescending { it.id }
+                        SongSortBy.Duration -> cachedSongs.sortedBy { app.it.fast4x.rimusic.utils.durationToMillis(it.durationText ?: "0:0") }
+                        SongSortBy.Artist -> cachedSongs.sortedBy { it.cleanArtistsText() }
+                        else -> cachedSongs.sortedBy { it.cleanTitle() }
+                    }.let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
+                    listOf(shuffleItem) + songs.map { song -> MediaItemMapper.mapSongToMediaItem(song, parentId) }
                 }
                 MediaSessionConstants.ID_ARTISTS_LIBRARY -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_ARTISTS_LIBRARY_SHUFFLE)
-                    val artists = database.artistTable.allInLibrary().first().map { artist -> MediaItemMapper.mapArtistToMediaItem(PlayerServiceModern.ARTIST, artist.id, artist.name ?: "", artist.thumbnailUrl) }
+                    val sortBy = context.preferences.getEnum(Preference.HOME_ARTISTS_LIBRARY_SORT_BY.key, app.it.fast4x.rimusic.enums.ArtistSortBy.Name)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_ARTISTS_LIBRARY_SORT_ORDER.key, SortOrder.Ascending)
+                    val artists = database.artistTable.sortInLibrary(sortBy, sortOrder).first().map { artist -> MediaItemMapper.mapArtistToMediaItem(PlayerServiceModern.ARTIST, artist.id, artist.name ?: "", artist.thumbnailUrl) }
                     listOf(shuffleItem) + artists
                 }
                 MediaSessionConstants.ID_ARTISTS_FAVORITES -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_ARTISTS_FAVORITES_SHUFFLE)
-                    val artists = database.artistTable.allFollowing().first().map { artist -> MediaItemMapper.mapArtistToMediaItem(PlayerServiceModern.ARTIST, artist.id, artist.name ?: "", artist.thumbnailUrl) }
+                    val sortBy = context.preferences.getEnum(Preference.HOME_ARTISTS_FAVORITES_SORT_BY.key, app.it.fast4x.rimusic.enums.ArtistSortBy.Name)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_ARTISTS_FAVORITES_SORT_ORDER.key, SortOrder.Ascending)
+                    val artists = database.artistTable.sortFollowing(sortBy, sortOrder).first().map { artist -> MediaItemMapper.mapArtistToMediaItem(PlayerServiceModern.ARTIST, artist.id, artist.name ?: "", artist.thumbnailUrl) }
                     listOf(shuffleItem) + artists
                 }
                 PlayerServiceModern.ALBUM -> {
@@ -374,37 +425,111 @@ class MediaLibrarySessionCallback(
                 }
                 MediaSessionConstants.ID_ALBUMS_LIBRARY -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_ALBUMS_LIBRARY_SHUFFLE)
-                    val albums = database.albumTable.allInLibrary().first().map { album -> MediaItemMapper.mapAlbumToMediaItem(PlayerServiceModern.ALBUM, album.id, album.title ?: "", album.authorsText, album.thumbnailUrl) }
+                    val sortBy = context.preferences.getEnum(Preference.HOME_ALBUMS_LIBRARY_SORT_BY.key, app.it.fast4x.rimusic.enums.AlbumSortBy.Title)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_ALBUMS_LIBRARY_SORT_ORDER.key, SortOrder.Ascending)
+                    val albums = database.albumTable.sortInLibrary(sortBy, sortOrder).first().map { album -> MediaItemMapper.mapAlbumToMediaItem(PlayerServiceModern.ALBUM, album.id, album.title ?: "", album.authorsText, album.thumbnailUrl) }
                     listOf(shuffleItem) + albums
                 }
                 MediaSessionConstants.ID_ALBUMS_FAVORITES -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_ALBUMS_FAVORITES_SHUFFLE)
-                    val albums = database.albumTable.allBookmarked().first().map { album -> MediaItemMapper.mapAlbumToMediaItem(PlayerServiceModern.ALBUM, album.id, album.title ?: "", album.authorsText, album.thumbnailUrl) }
+                    val sortBy = context.preferences.getEnum(Preference.HOME_ALBUMS_FAVORITES_SORT_BY.key, app.it.fast4x.rimusic.enums.AlbumSortBy.Title)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_ALBUMS_FAVORITES_SORT_ORDER.key, SortOrder.Ascending)
+                    val albums = database.albumTable.sortBookmarked(sortBy, sortOrder).first().map { album -> MediaItemMapper.mapAlbumToMediaItem(PlayerServiceModern.ALBUM, album.id, album.title ?: "", album.authorsText, album.thumbnailUrl) }
                     listOf(shuffleItem) + albums
                 }
                 ID_PLAYLISTS_LOCAL -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_PLAYLISTS_LOCAL_SHUFFLE)
-                    val playlists = database.playlistTable.allAsPreview().first().filter { !it.playlist.isYoutubePlaylist && !it.playlist.name.startsWith(PIPED_PREFIX, true) && !it.playlist.name.startsWith(PINNED_PREFIX, true) && !it.playlist.name.startsWith(MONTHLY_PREFIX, true) }.map { preview -> MediaItemMapper.browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
+                    val sortBy = context.preferences.getEnum(Preference.HOME_LIBRARY_PLAYLIST_SORT_BY.key, PlaylistSortBy.SongCount)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_LIBRARY_PLAYLIST_SORT_ORDER.key, SortOrder.Ascending)
+                    val playlists = database.playlistTable.allAsPreview().first()
+                        .filter { !it.playlist.isYoutubePlaylist && !it.playlist.name.startsWith(PIPED_PREFIX, true) && !it.playlist.name.startsWith(PINNED_PREFIX, true) && !it.playlist.name.startsWith(MONTHLY_PREFIX, true) }
+                        .let { list ->
+                            when (sortBy) {
+                                PlaylistSortBy.Name -> list.sortedBy { it.playlist.cleanName() }
+                                PlaylistSortBy.SongCount -> list.sortedBy { it.songCount }
+                                PlaylistSortBy.DateAdded -> list.sortedByDescending { it.playlist.id }
+                                PlaylistSortBy.Custom -> list.sortedBy { it.playlist.position }
+                                else -> list.sortedBy { it.songCount }
+                            }
+                        }
+                        .let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
+                        .map { preview -> MediaItemMapper.browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
                     listOf(shuffleItem) + playlists
                 }
                 ID_PLAYLISTS_YT -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_PLAYLISTS_YT_SHUFFLE)
-                    val playlists = database.playlistTable.allAsPreview().first().filter { it.playlist.isYoutubePlaylist }.map { preview -> MediaItemMapper.browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
+                    val sortBy = context.preferences.getEnum(Preference.HOME_LIBRARY_YT_PLAYLIST_SORT_BY.key, PlaylistSortBy.SongCount)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_LIBRARY_YT_PLAYLIST_SORT_ORDER.key, SortOrder.Ascending)
+                    val playlists = database.playlistTable.allAsPreview().first()
+                        .filter { it.playlist.isYoutubePlaylist }
+                        .let { list ->
+                            when (sortBy) {
+                                PlaylistSortBy.Name -> list.sortedBy { it.playlist.cleanName() }
+                                PlaylistSortBy.SongCount -> list.sortedBy { it.songCount }
+                                PlaylistSortBy.DateAdded -> list.sortedByDescending { it.playlist.id }
+                                PlaylistSortBy.Custom -> list.sortedBy { it.playlist.position }
+                                else -> list.sortedBy { it.songCount }
+                            }
+                        }
+                        .let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
+                        .map { preview -> MediaItemMapper.browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
                     listOf(shuffleItem) + playlists
                 }
                 ID_PLAYLISTS_PIPED -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_PLAYLISTS_PIPED_SHUFFLE)
-                    val playlists = database.playlistTable.allAsPreview().first().filter { it.playlist.name.startsWith(PIPED_PREFIX, true) }.map { preview -> MediaItemMapper.browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
+                    val sortBy = context.preferences.getEnum(Preference.HOME_LIBRARY_PIPED_PLAYLIST_SORT_BY.key, PlaylistSortBy.SongCount)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_LIBRARY_PIPED_PLAYLIST_SORT_ORDER.key, SortOrder.Ascending)
+                    val playlists = database.playlistTable.allAsPreview().first()
+                        .filter { it.playlist.name.startsWith(PIPED_PREFIX, true) }
+                        .let { list ->
+                            when (sortBy) {
+                                PlaylistSortBy.Name -> list.sortedBy { it.playlist.cleanName() }
+                                PlaylistSortBy.SongCount -> list.sortedBy { it.songCount }
+                                PlaylistSortBy.DateAdded -> list.sortedByDescending { it.playlist.id }
+                                PlaylistSortBy.Custom -> list.sortedBy { it.playlist.position }
+                                else -> list.sortedBy { it.songCount }
+                            }
+                        }
+                        .let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
+                        .map { preview -> MediaItemMapper.browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
                     listOf(shuffleItem) + playlists
                 }
                 ID_PLAYLISTS_PINNED -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_PLAYLISTS_PINNED_SHUFFLE)
-                    val playlists = database.playlistTable.allAsPreview().first().filter { it.playlist.name.startsWith(PINNED_PREFIX, true) }.map { preview -> MediaItemMapper.browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
+                    val sortBy = context.preferences.getEnum(Preference.HOME_LIBRARY_PINNED_PLAYLIST_SORT_BY.key, PlaylistSortBy.SongCount)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_LIBRARY_PINNED_PLAYLIST_SORT_ORDER.key, SortOrder.Ascending)
+                    val playlists = database.playlistTable.allAsPreview().first()
+                        .filter { it.playlist.name.startsWith(PINNED_PREFIX, true) }
+                        .let { list ->
+                            when (sortBy) {
+                                PlaylistSortBy.Name -> list.sortedBy { it.playlist.cleanName() }
+                                PlaylistSortBy.SongCount -> list.sortedBy { it.songCount }
+                                PlaylistSortBy.DateAdded -> list.sortedByDescending { it.playlist.id }
+                                PlaylistSortBy.Custom -> list.sortedBy { it.playlist.position }
+                                else -> list.sortedBy { it.songCount }
+                            }
+                        }
+                        .let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
+                        .map { preview -> MediaItemMapper.browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
                     listOf(shuffleItem) + playlists
                 }
                 ID_PLAYLISTS_MONTHLY -> {
                     val shuffleItem = MediaSessionConstants.shuffleItem(context, MediaSessionConstants.ID_PLAYLISTS_MONTHLY_SHUFFLE)
-                    val playlists = database.playlistTable.allAsPreview().first().filter { it.playlist.name.startsWith(MONTHLY_PREFIX, true) }.map { preview -> MediaItemMapper.browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
+                    val sortBy = context.preferences.getEnum(Preference.HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_BY.key, PlaylistSortBy.SongCount)
+                    val sortOrder = context.preferences.getEnum(Preference.HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_ORDER.key, SortOrder.Ascending)
+                    val playlists = database.playlistTable.allAsPreview().first()
+                        .filter { it.playlist.name.startsWith(MONTHLY_PREFIX, true) }
+                        .let { list ->
+                            when (sortBy) {
+                                PlaylistSortBy.Name -> list.sortedBy { it.playlist.cleanName() }
+                                PlaylistSortBy.SongCount -> list.sortedBy { it.songCount }
+                                PlaylistSortBy.DateAdded -> list.sortedByDescending { it.playlist.id }
+                                PlaylistSortBy.Custom -> list.sortedBy { it.playlist.position }
+                                else -> list.sortedBy { it.songCount }
+                            }
+                        }
+                        .let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
+                        .map { preview -> MediaItemMapper.browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
                     listOf(shuffleItem) + playlists
                 }
 
