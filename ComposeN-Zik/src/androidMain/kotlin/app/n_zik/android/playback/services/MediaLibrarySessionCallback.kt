@@ -873,7 +873,7 @@ class MediaLibrarySessionCallback(
             val itemsPerPage = 200
             val shuffleItem = filteredList.firstOrNull { it.mediaId.endsWith("_SHUFFLE") }
             val realItems = filteredList.filter { !it.mediaId.endsWith("_SHUFFLE") && !it.mediaId.endsWith("_PLAY_ALL") }
-            val playAllItem = if (shuffleItem != null) MediaSessionConstants.playAllItem(context, shuffleItem.mediaId.replace("_SHUFFLE", "_PLAY_ALL")) else null
+            val playAllItem = if (shuffleItem != null && shuffleItem.mediaId != MediaSessionConstants.ID_LUCKY_SHUFFLE) MediaSessionConstants.playAllItem(context, shuffleItem.mediaId.replace("_SHUFFLE", "_PLAY_ALL")) else null
             val folders = realItems.chunked(itemsPerPage).mapIndexed { index, chunk ->
                 val start = index * itemsPerPage + 1
                 val end = start + chunk.size - 1
@@ -1143,6 +1143,7 @@ val allSongs = when (sortBy) {
         return downloadHelper.downloads.map { dm -> dm.filter { ite -> ite.value.state == Download.STATE_COMPLETED }.size }
     }
 }
+
 
 
 

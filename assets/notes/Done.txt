@@ -18,3 +18,4 @@
 - Grouped Quick Picks sources on Android Auto into a single list.- Implemented virtual pagination for Android Auto folders exceeding 200 items to bypass the 1000 items limitation and Binder IPC limit.
 - Added 'Play All' and 'Shuffle' buttons to the top of all Android Auto folders (Songs, Artists, Albums, Playlists).
 - Fixed 'Play All' and 'Shuffle' sorting behavior in Android Auto to strictly respect the user's custom sort preferences instead of defaulting to database fetch order.
+- ANDROID AUTO If a playlist exceed 200 music the app will create subfolder by page to avoid Android auto missing songs
