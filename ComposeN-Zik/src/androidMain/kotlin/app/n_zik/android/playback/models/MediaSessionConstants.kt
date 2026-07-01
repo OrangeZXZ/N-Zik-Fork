@@ -79,6 +79,20 @@ object MediaSessionConstants {
                 .build()
         )
         .build()
+        
+    @OptIn(UnstableApi::class)
+    fun playAllItem(context: Context, id: String) = MediaItem.Builder()
+        .setMediaId(id)
+        .setMediaMetadata(
+            MediaMetadata.Builder()
+                .setTitle(context.getString(R.string.play_all))
+                .setArtworkUri(MediaItemMapper.drawableUri(context, R.drawable.play))
+                .setIsPlayable(true)
+                .setIsBrowsable(false)
+                .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+                .build()
+        )
+        .build()
     const val ACTION_TOGGLE_DOWNLOAD = "TOGGLE_DOWNLOAD"
     const val ACTION_TOGGLE_LIKE = "TOGGLE_LIKE"
     const val ACTION_TOGGLE_SHUFFLE = "TOGGLE_SHUFFLE"

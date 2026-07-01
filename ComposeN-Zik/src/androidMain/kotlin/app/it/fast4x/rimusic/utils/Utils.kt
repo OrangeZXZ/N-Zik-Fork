@@ -199,14 +199,10 @@ val Song.asMediaItem: MediaItem
                 .setTitle(cleanPrefix(title))
                 .setArtist(
                     if (title.startsWith(EXPLICIT_PREFIX, true)) {
-                        val text = artistsText ?: runBlocking {
-                            Database.songTable.findById(id).first()?.artistsText
-                        }
-                        if (text.isNullOrEmpty()) "\uD83C\uDD74" else "\uD83C\uDD74 $text"
+                        val text = artistsText ?: ""
+                        if (text.isEmpty()) "\uD83C\uDD74" else "\uD83C\uDD74 $text"
                     } else {
-                        artistsText ?: runBlocking {
-                            Database.songTable.findById(id).first()?.artistsText
-                        }
+                        artistsText ?: ""
                     }
                 )
                 .setArtworkUri(thumbnailUrl?.thumbnail(1200)?.toUri() ?: app.n_zik.android.playback.models.MediaItemMapper.drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
