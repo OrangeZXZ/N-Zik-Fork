@@ -1389,4 +1389,5 @@ Volume BAS : titre précédent</string>
   <string name="songs_shuffled">%d songs shuffled</string>
   <string name="queue_shuffled">Queue shuffled (%d songs)</string>
   <string name="playlist_positions_shuffled">%d positions shuffled</string>
+  <string name="play_all">Play All</string>
 </resources>
