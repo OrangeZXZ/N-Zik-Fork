@@ -254,7 +254,9 @@ class MediaLibrarySessionCallback(
                     listOf(
                         MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_QUICK_PICKS, context.getString(R.string.quick_picks), null, MediaItemMapper.drawableUri(context, R.drawable.sparkles), MediaMetadata.MEDIA_TYPE_FOLDER_MIXED),
                         MediaItemMapper.browsableMediaItem(PlayerServiceModern.SONG, context.getString(R.string.songs), null, MediaItemMapper.drawableUri(context, R.drawable.musical_notes), MediaMetadata.MEDIA_TYPE_PLAYLIST),
-                        MediaItemMapper.browsableMediaItem(PlayerServiceModern.ARTIST, context.getString(R.string.artists), null, MediaItemMapper.drawableUri(context, R.drawable.artist), MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS),
+                        MediaItemMapper.browsableMediaItem(PlayerServiceModern.ARTIST, context.getString(R.string.artists), null, MediaItemMapper.drawableUri(context,
+                            R.drawable.people
+                        ), MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS),
                         MediaItemMapper.browsableMediaItem(PlayerServiceModern.ALBUM, context.getString(R.string.albums), null, MediaItemMapper.drawableUri(context, R.drawable.album), MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS),
                         MediaItemMapper.browsableMediaItem(PlayerServiceModern.PLAYLIST, context.getString(R.string.library), null, MediaItemMapper.drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS)
                     )
