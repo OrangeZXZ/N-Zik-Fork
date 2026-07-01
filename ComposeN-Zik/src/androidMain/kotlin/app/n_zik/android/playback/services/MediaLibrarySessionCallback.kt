@@ -279,24 +279,24 @@ class MediaLibrarySessionCallback(
                     if (showFavoritesPlaylist) {
                         songs.add(MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_SONGS_FAVORITES, context.getString(R.string.favorites), favoritesCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.heart), MediaMetadata.MEDIA_TYPE_PLAYLIST))
                     }
-                    if (showDownloadedPlaylist) {
-                        songs.add(MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_SONGS_DOWNLOADED, context.getString(R.string.downloaded), downloadedCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.downloaded), MediaMetadata.MEDIA_TYPE_PLAYLIST))
-                    }
                     if (showCachedPlaylist) {
                         songs.add(MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_SONGS_CACHED, context.getString(R.string.cached), cachedCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.download), MediaMetadata.MEDIA_TYPE_PLAYLIST))
                     }
+                    if (showDownloadedPlaylist) {
+                        songs.add(MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_SONGS_DOWNLOADED, context.getString(R.string.downloaded), downloadedCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.downloaded), MediaMetadata.MEDIA_TYPE_PLAYLIST))
+                    }
+                    songs.add(MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_SONGS_TOP, context.getString(R.string.playlist_top), topCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.trending), MediaMetadata.MEDIA_TYPE_PLAYLIST))
                     if (showOnDevicePlaylist) {
                         songs.add(MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_SONGS_ONDEVICE, context.getString(R.string.on_device), onDeviceCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.devices), MediaMetadata.MEDIA_TYPE_PLAYLIST))
                     }
-                    songs.add(MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_SONGS_TOP, context.getString(R.string.playlist_top), topCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.trending), MediaMetadata.MEDIA_TYPE_PLAYLIST))
                     songs
                 }
                 PlayerServiceModern.ARTIST -> {
                     val libraryCount = database.artistTable.allInLibrary().first().size
                     val favoritesCount = database.artistTable.allFollowing().first().size
                     listOf(
-                        MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_ARTISTS_LIBRARY, context.getString(R.string.library), libraryCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.artist), MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS),
-                        MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_ARTISTS_FAVORITES, context.getString(R.string.favorites), favoritesCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.heart), MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS)
+                        MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_ARTISTS_FAVORITES, context.getString(R.string.favorites), favoritesCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.heart), MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS),
+                        MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_ARTISTS_LIBRARY, context.getString(R.string.library), libraryCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.artist), MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS)
                     )
                 }
                 MediaSessionConstants.ID_SONGS_TOP -> {
@@ -345,8 +345,8 @@ class MediaLibrarySessionCallback(
                     val libraryCount = database.albumTable.allInLibrary().first().size
                     val favoritesCount = database.albumTable.allBookmarked().first().size
                     listOf(
-                        MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_ALBUMS_LIBRARY, context.getString(R.string.library), libraryCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.album), MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS),
-                        MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_ALBUMS_FAVORITES, context.getString(R.string.favorites), favoritesCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.heart), MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS)
+                        MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_ALBUMS_FAVORITES, context.getString(R.string.favorites), favoritesCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.heart), MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS),
+                        MediaItemMapper.browsableMediaItem(MediaSessionConstants.ID_ALBUMS_LIBRARY, context.getString(R.string.library), libraryCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.album), MediaMetadata.MEDIA_TYPE_FOLDER_ALBUMS)
                     )
                 }
                 PlayerServiceModern.PLAYLIST -> {
@@ -359,17 +359,17 @@ class MediaLibrarySessionCallback(
                     val pipedCount = database.playlistTable.allAsPreview().first().filter { it.playlist.name.startsWith(PIPED_PREFIX, true) }.size
                     val monthlyCount = database.playlistTable.allAsPreview().first().filter { it.playlist.name.startsWith(MONTHLY_PREFIX, true) }.size
                     val playlists = mutableListOf<MediaItem>()
+                    playlists.add(MediaItemMapper.browsableMediaItem(ID_PLAYLISTS_LOCAL, context.getString(R.string.library), localCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS))
                     if (showPinnedPlaylists) {
                         playlists.add(MediaItemMapper.browsableMediaItem(ID_PLAYLISTS_PINNED, context.getString(R.string.pinned_playlists), pinnedCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.pin_filled), MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS))
-                    }
-                    playlists.add(MediaItemMapper.browsableMediaItem(ID_PLAYLISTS_LOCAL, context.getString(R.string.library), localCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS))
-                    playlists.add(MediaItemMapper.browsableMediaItem(ID_PLAYLISTS_YT, context.getString(R.string.ytm_playlists), ytCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.ytmusic), MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS))
-                    if (showPipedPlaylists) {
-                        playlists.add(MediaItemMapper.browsableMediaItem(ID_PLAYLISTS_PIPED, context.getString(R.string.piped_playlists), pipedCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.piped_logo), MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS))
                     }
                     if (showMonthlyPlaylists) {
                         playlists.add(MediaItemMapper.browsableMediaItem(ID_PLAYLISTS_MONTHLY, context.getString(R.string.monthly_playlists), monthlyCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.calendar), MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS))
                     }
+                    if (showPipedPlaylists) {
+                        playlists.add(MediaItemMapper.browsableMediaItem(ID_PLAYLISTS_PIPED, context.getString(R.string.piped_playlists), pipedCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.piped_logo), MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS))
+                    }
+                    playlists.add(MediaItemMapper.browsableMediaItem(ID_PLAYLISTS_YT, context.getString(R.string.ytm_playlists), ytCount.toString(), MediaItemMapper.drawableUri(context, R.drawable.ytmusic), MediaMetadata.MEDIA_TYPE_FOLDER_PLAYLISTS))
                     playlists
                 }
                 MediaSessionConstants.ID_ALBUMS_LIBRARY -> {

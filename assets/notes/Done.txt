@@ -7,3 +7,4 @@
 - ArtistDetails: fetch all songs for global shuffle/play-next/enqueue instead of only top 5 + add loading indicators on dice and global toolbar
 - BetterLyrics lyrics overhaul: parse agent/bg tags for chat alignment, force re-fetch on mode switch (Karaoke/Sync/Unsync), keep existing synced when karaoke not found, cleanPrefix on artistName, toast for all lyrics sources
 - Fix explicit badge not showing when playing from Android Auto (preserve existing extras in MediaItemMapper.mapSongToMediaItem)
+- Fix Android Auto tabs order to match app predefined order (Songs: All/Favorites/Cached/Downloaded/Top/OnDevice, Artists: Favorites/Library, Albums: Favorites/Library, Playlists: Local/Pinned/Monthly/Piped/YT)
