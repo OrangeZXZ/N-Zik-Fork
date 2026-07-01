@@ -248,6 +248,7 @@ class PlayerServiceModern : MediaLibraryService(),
     private lateinit var mediaSession: MediaLibrarySession
     private var mediaLibrarySessionCallback: MediaLibrarySessionCallback =
         MediaLibrarySessionCallback(this, Database, MyDownloadHelper)
+    private var sessionController: MediaController? = null
     lateinit var player: ExoPlayer
     val playerUpdateTrigger = kotlinx.coroutines.flow.MutableStateFlow(0)
     lateinit var cache: Cache
@@ -496,7 +497,9 @@ class PlayerServiceModern : MediaLibraryService(),
         // Keep a connected controller so that notification works
         val sessionToken = SessionToken(this, ComponentName(this, PlayerServiceModern::class.java))
         val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
-        controllerFuture.addListener({ controllerFuture.get() }, MoreExecutors.directExecutor())
+        controllerFuture.addListener({
+            sessionController = controllerFuture.get()
+        }, MoreExecutors.directExecutor())
 
         audioVolumeObserver = AudioVolumeObserver(this)
         audioVolumeObserver.register(AudioManager.STREAM_MUSIC, this)
@@ -688,6 +691,8 @@ class PlayerServiceModern : MediaLibraryService(),
             }
             mediaLibrarySessionCallback.release()
             mediaSession.release()
+            sessionController?.release()
+            sessionController = null
             cache.release()
             //downloadCache.release()
             MyDownloadHelper.getDownloadManager(this).removeListener(downloadListener)

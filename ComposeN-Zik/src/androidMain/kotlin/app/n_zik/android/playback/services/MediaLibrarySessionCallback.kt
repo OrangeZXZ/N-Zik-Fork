@@ -51,7 +51,6 @@ import app.it.fast4x.rimusic.models.Song
 import app.n_zik.android.download.utils.MyDownloadHelper
 import app.it.fast4x.rimusic.repository.QuickPicksRepository
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.combine
 import app.it.fast4x.rimusic.MONTHLY_PREFIX
 import app.it.fast4x.rimusic.PINNED_PREFIX
 import app.it.fast4x.rimusic.PIPED_PREFIX
@@ -117,27 +116,11 @@ class MediaLibrarySessionCallback(
     private val searchCache = mutableMapOf<String, List<MediaItem>>()
 
     fun observeRepository(session: MediaLibrarySession) {
+        // Disabled: notifyChildrenChanged causes Android Auto to rebuild
+        // the browse tree + queue on every DB change, causing queue recomposition
+        // and crashes. Metrolist does not call notifyChildrenChanged at all —
+        // Android Auto queries onGetChildren() on demand.
         observationJob?.cancel()
-        observationJob = scope.launch {
-            combine(
-                QuickPicksRepository.trendingList,
-                QuickPicksRepository.relatedPage,
-                database.artistTable.allFollowing(),
-                database.albumTable.all(),
-                database.songTable.all(),
-                database.eventTable.findSongsMostPlayedBetween(0L),
-                database.playlistTable.allAsPreview(),
-                downloadHelper.downloads,
-                database.formatTable.allWithSongs()
-            ) { _ -> Unit }.collect {
-                session.notifyChildrenChanged(PlayerServiceModern.ROOT, 0, null)
-                session.notifyChildrenChanged(ID_QUICK_PICKS, 0, null)
-                session.notifyChildrenChanged(PlayerServiceModern.SONG, 0, null)
-                session.notifyChildrenChanged(PlayerServiceModern.ARTIST, 0, null)
-                session.notifyChildrenChanged(PlayerServiceModern.ALBUM, 0, null)
-                session.notifyChildrenChanged(PlayerServiceModern.PLAYLIST, 0, null)
-            }
-        }
     }
 
     fun release() {
