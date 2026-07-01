@@ -696,8 +696,47 @@ class MediaLibrarySessionCallback(
                         }
                         PlayerServiceModern.ALBUM -> {
                             val albumId = parts[1]
-                            val albumPage = Innertube.albumPage(BrowseBody(browseId = albumId))?.getOrNull()
-                            val onlineSongs = albumPage?.songsPage?.items?.toList()?.map { item -> item.asSong }
+                            var onlineSongs: List<Song>? = null
+                            
+                            val online = it.fast4x.innertube.YtMusic.getAlbum(albumId, true).getOrNull()
+                            if (online != null) {
+                                val onlineAlbum = online.album
+                                val authorsText: String? = onlineAlbum.authors.parseArtists().joinToString(", ")
+                                onlineSongs = online.songs.map { it.asSong }
+                                
+                                kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                                    val album = database.albumTable.findById(albumId).first()
+                                    database.asyncTransaction {
+                                        albumTable.upsert(
+                                            app.it.fast4x.rimusic.models.Album(
+                                                id = albumId,
+                                                title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(album?.title, onlineAlbum.title),
+                                                thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(album?.thumbnailUrl, onlineAlbum.thumbnail?.url),
+                                                year = onlineAlbum.year,
+                                                authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(album?.authorsText, authorsText),
+                                                shareUrl = online.url,
+                                                timestamp = album?.timestamp ?: System.currentTimeMillis(),
+                                                bookmarkedAt = album?.bookmarkedAt,
+                                                isYoutubeAlbum = album?.isYoutubeAlbum ?: true,
+                                                position = album?.position ?: -1
+                                            )
+                                        )
+
+                                        online.songs.map { it.asMediaItem }.onEach { insertIgnore(it) }
+                                            .mapIndexed { position, mediaItem ->
+                                                app.it.fast4x.rimusic.models.SongAlbumMap(
+                                                    songId = mediaItem.mediaId,
+                                                    albumId = albumId,
+                                                    position = position
+                                                )
+                                            }
+                                            .also(songAlbumMapTable::upsert)
+                                    }
+                                }
+                            } else {
+                                val albumPage = it.fast4x.innertube.Innertube.albumPage(BrowseBody(browseId = albumId))?.getOrNull()
+                                onlineSongs = albumPage?.songsPage?.items?.toList()?.map { item -> item.asSong }
+                            }
                             
                             if (!onlineSongs.isNullOrEmpty()) {
                                 searchedSongs = (searchedSongs + onlineSongs).distinctBy { s -> s.id }
