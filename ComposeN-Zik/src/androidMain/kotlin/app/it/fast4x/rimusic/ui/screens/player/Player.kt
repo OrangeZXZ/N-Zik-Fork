@@ -2236,7 +2236,7 @@ fun Player(
                     shape = app.n_zik.android.uiRoundnessShape()
                 ) {}
             },
-            shape = app.n_zik.android.uiRoundnessShape()
+            shape = androidx.compose.ui.graphics.RectangleShape
         ) {
             Queue(
                 navController = navController,
@@ -2265,7 +2265,7 @@ fun Player(
                     shape = app.n_zik.android.uiRoundnessShape()
                 ) {}
             },
-            shape = app.n_zik.android.uiRoundnessShape()
+            shape = androidx.compose.ui.graphics.RectangleShape
         ) {
             SearchYoutubeEntity(
                 navController = navController,
