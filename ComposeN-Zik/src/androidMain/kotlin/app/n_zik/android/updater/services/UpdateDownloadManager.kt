@@ -114,7 +114,7 @@ object UpdateDownloadManager {
                 val response = call.execute()
 
                 if (!response.isSuccessful) {
-                    try { notificationManager.cancel(UPDATE_NOTIFICATION_ID) } catch (e: Exception) { Timber.w(e, "Failed to cancel notification") }
+                    try { notificationManager.cancel(UPDATE_NOTIFICATION_ID) } catch (e: Exception) { Timber.tag("UpdateDownloadManager").w(e, "Failed to cancel notification") }
                     _downloadState.value = DownloadState.Failed(
                         context.getString(R.string.server_error, response.code.toString(), response.message)
                     )
@@ -122,7 +122,7 @@ object UpdateDownloadManager {
                 }
 
                 val body = response.body ?: run {
-                    try { notificationManager.cancel(UPDATE_NOTIFICATION_ID) } catch (e: Exception) { Timber.w(e, "Failed to cancel notification") }
+                    try { notificationManager.cancel(UPDATE_NOTIFICATION_ID) } catch (e: Exception) { Timber.tag("UpdateDownloadManager").w(e, "Failed to cancel notification") }
                     _downloadState.value = DownloadState.Failed(context.getString(R.string.empty_response_body))
                     return@launch
                 }
@@ -164,7 +164,7 @@ object UpdateDownloadManager {
                         if (progressPercent != lastProgressPercent && progressPercent % 2 == 0) {
                             lastProgressPercent = progressPercent
                             notificationBuilder.setProgress(100, progressPercent, false)
-                            try { notificationManager.notify(UPDATE_NOTIFICATION_ID, notificationBuilder.build()) } catch (e: Exception) { Timber.w(e, "Failed to update progress notification") }
+                            try { notificationManager.notify(UPDATE_NOTIFICATION_ID, notificationBuilder.build()) } catch (e: Exception) { Timber.tag("UpdateDownloadManager").w(e, "Failed to update progress notification") }
                         }
                     }
                 }
@@ -199,7 +199,7 @@ object UpdateDownloadManager {
 
             } catch (e: CancellationException) {
                 // Download was cancelled - clean up silently
-                try { notificationManager.cancel(UPDATE_NOTIFICATION_ID) } catch (ex: Exception) { Timber.w(ex, "Failed to cancel notification on cancellation") }
+                try { notificationManager.cancel(UPDATE_NOTIFICATION_ID) } catch (ex: Exception) { Timber.tag("UpdateDownloadManager").w(ex, "Failed to cancel notification on cancellation") }
                 outputStream?.runCatching { close() }
                 activeCall = null
                 cleanupTempFiles(context)
@@ -209,7 +209,7 @@ object UpdateDownloadManager {
                 outputStream?.runCatching { close() }
                 activeCall = null
                 if (downloadJob?.isCancelled == true) {
-                    try { notificationManager.cancel(UPDATE_NOTIFICATION_ID) } catch (ex: Exception) { Timber.w(ex, "Failed to cancel notification on job cancel") }
+                    try { notificationManager.cancel(UPDATE_NOTIFICATION_ID) } catch (ex: Exception) { Timber.tag("UpdateDownloadManager").w(ex, "Failed to cancel notification on job cancel") }
                     cleanupTempFiles(context)
                     _downloadState.value = DownloadState.Idle
                 } else {
@@ -221,7 +221,7 @@ object UpdateDownloadManager {
                         .setOngoing(false)
                         .setAutoCancel(true)
                         .build()
-                    try { notificationManager.notify(UPDATE_NOTIFICATION_ID, failedNotification) } catch (ex: Exception) { Timber.e(ex, "Failed to show failed notification") }
+                    try { notificationManager.notify(UPDATE_NOTIFICATION_ID, failedNotification) } catch (ex: Exception) { Timber.tag("UpdateDownloadManager").e(ex, "Failed to show failed notification") }
                     
                     _downloadState.value = DownloadState.Failed(
                         e.message ?: context.getString(R.string.download_failed)
@@ -239,7 +239,7 @@ object UpdateDownloadManager {
                     .setOngoing(false)
                     .setAutoCancel(true)
                     .build()
-                try { notificationManager.notify(UPDATE_NOTIFICATION_ID, failedNotification) } catch (ex: Exception) { Timber.e(ex, "Failed to show failed notification") }
+                try { notificationManager.notify(UPDATE_NOTIFICATION_ID, failedNotification) } catch (ex: Exception) { Timber.tag("UpdateDownloadManager").e(ex, "Failed to show failed notification") }
                 
                 _downloadState.value = DownloadState.Failed(
                     e.message ?: context.getString(R.string.download_failed)

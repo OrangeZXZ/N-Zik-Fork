@@ -66,7 +66,7 @@ inline fun <T : Innertube.Item> ItemsList(
                     } else {
                         itemsPage += it
                     }
-                }?.onFailure { e -> Timber.e(e, "ItemsList: Failed to load more items") }
+                }?.onFailure { e -> Timber.tag("ItemsList").e(e, "Failed to load more items") }
             }
     }
 

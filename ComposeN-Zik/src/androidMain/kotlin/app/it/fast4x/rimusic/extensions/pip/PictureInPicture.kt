@@ -42,7 +42,7 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import timber.log.Timber
 
 
-private fun logError(throwable: Throwable) = Timber.e(throwable, "PipHandler: An error occurred")
+private fun logError(throwable: Throwable) = Timber.tag("PictureInPicture").e(throwable, "An error occurred")
 
 val isPipSupported = if (isAtLeastAndroid8)
     appContext().packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)

@@ -134,7 +134,7 @@ inline fun <T : Innertube.Item> ItemsPage(
                 } else {
                     itemsPage = it
                 }
-            }?.onFailure { e -> Timber.e(e, "ItemsPage: Failed to load initial items") }
+            }?.onFailure { e -> Timber.tag("ItemsPage").e(e, "Failed to load initial items") }
         }
     }
 
@@ -312,7 +312,7 @@ inline fun <T : Innertube.Item> ItemsGridPage(
                 } else {
                     itemsPage = it
                 }
-            }?.onFailure { e -> Timber.e(e, "ItemsPage: Failed to load initial items") }
+            }?.onFailure { e -> Timber.tag("ItemsPage").e(e, "Failed to load initial items") }
         }
     }
 

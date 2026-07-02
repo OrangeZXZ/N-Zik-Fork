@@ -345,7 +345,7 @@ suspend fun Result<Innertube.ItemsPage<Innertube.SongItem>?>.completed(
     }
 
     page?.copy(items = songs, continuation = null)
-}.onFailure { e -> Timber.e(e, "Utils: Failed to complete items page") }
+}.onFailure { e -> Timber.tag("Utils").e(e, "Failed to complete items page") }
 
 @JvmName("ResultInnertubePlaylistOrAlbumPageCompleted")
 suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(

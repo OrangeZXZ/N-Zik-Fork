@@ -56,7 +56,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
             ),
             fromMusicShelfRendererContent = { content -> Innertube.SongItem.from(content) }
         )
-    }.onFailure { Timber.e(it, "MatchGlobal: search failed") }.getOrNull()
+    }.onFailure { Timber.tag("MatchAlbumUtils").e(it, "MatchGlobal: search failed") }.getOrNull()
 
     var searchResults = searchQuery?.getOrNull()?.items
     val sourceSongWords = filteredText(song.cleanTitle()).split(" ").filter { it.isNotEmpty() }
@@ -73,7 +73,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
                 ),
                 fromMusicShelfRendererContent = { content -> Innertube.SongItem.from(content) }
             )
-        }.onFailure { Timber.e(it, "MatchGlobal: fallback search failed") }.getOrNull()
+        }.onFailure { Timber.tag("MatchAlbumUtils").e(it, "MatchGlobal: fallback search failed") }.getOrNull()
         searchResults = fallbackQuery?.getOrNull()?.items
     }
 
@@ -212,7 +212,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
             ),
             fromMusicShelfRendererContent = { content -> Innertube.SongItem.from(content) }
         )
-    }.onFailure { Timber.e(it, "MatchPlaylist: search failed") }.getOrNull()
+    }.onFailure { Timber.tag("MatchAlbumUtils").e(it, "MatchPlaylist: search failed") }.getOrNull()
 
     var searchResults = searchQuery?.getOrNull()?.items
 
@@ -228,7 +228,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                 ),
                 fromMusicShelfRendererContent = { content -> Innertube.SongItem.from(content) }
             )
-        }.onFailure { Timber.e(it, "MatchPlaylist: fallback search failed") }.getOrNull()
+        }.onFailure { Timber.tag("MatchAlbumUtils").e(it, "MatchPlaylist: fallback search failed") }.getOrNull()
         searchResults = fallbackQuery?.getOrNull()?.items
     }
 

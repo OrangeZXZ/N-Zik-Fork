@@ -209,7 +209,7 @@ fun PlaylistSongList(
                                                .fastFilter { !parentalControlEnabled || !it.explicit }
                                                .fastDistinctBy( Innertube.SongItem::key )
                 continuation = onlinePlaylist.songsContinuation
-            }.onFailure { e -> Timber.e(e, "PlaylistSongList: Failed to load initial playlist") }
+            }.onFailure { e -> Timber.tag("PlaylistSongList").e(e, "Failed to load initial playlist") }
         }
     }
 
@@ -229,7 +229,7 @@ fun PlaylistSongList(
                                                    .fastFilter { !parentalControlEnabled || !it.explicit }
                                                    .fastDistinctBy( Innertube.SongItem::key )
                     continuation = onlinePlaylist.songsContinuation
-                }.onFailure { e -> Timber.e(e, "PlaylistSongList: Failed to load more playlist songs") }
+                }.onFailure { e -> Timber.tag("PlaylistSongList").e(e, "Failed to load more playlist songs") }
             }
     }
 
