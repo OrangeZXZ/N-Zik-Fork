@@ -1,6 +1,6 @@
 package app.n_zik.android.components.menu
 
-import app.n_zik.android.uiRoundnessShape
+import app.n_zik.android.gridMenuShape
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -87,11 +86,11 @@ object GridMenu {
         onLongClick: () -> Unit = {}
     ) = Column(
         modifier = modifier
-            .clip(ShapeDefaults.Large)
+            .clip(gridMenuShape())
             .height(GridMenuItemHeight)
             .alpha(if (enabled) 1f else 0.5f)
             .padding(12.dp)
-            .clip(uiRoundnessShape()).combinedClickable(
+            .clip(gridMenuShape()).combinedClickable(
                 enabled = enabled,
                 onClick = onClick,
                 onLongClick = onLongClick

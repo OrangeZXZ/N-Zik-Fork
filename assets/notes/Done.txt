@@ -29,3 +29,4 @@
 - Fixed duplicated Artists in the database (caused by YouTube Music using multiple IDs for the same artist) by checking and merging based on exact name match during auto-insertion.
 - Removed UI roundness from the full-screen player bottom sheet to fix background clipping at the top.
 - Replaced all `println(...)` logs across the project with proper `Timber` statements, automatically mapping Error/Exception to `Timber.e`, warnings to `Timber.w`, and standard messages to `Timber.d`.
+- Fixed Grid Menu text cut off by replacing `ShapeDefaults.Large` (28dp) with intelligent `gridMenuShape()` that caps roundness at 15% of item size, respecting user's roundness preference while keeping text readable.

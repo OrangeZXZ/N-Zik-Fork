@@ -1,8 +1,11 @@
 package app.n_zik.android
 
 import android.content.Context
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.ui.graphics.Shape
+import app.it.fast4x.rimusic.ui.styling.BoundedCornerSize
 import app.it.fast4x.rimusic.ui.styling.LocalAppearance
 import app.it.fast4x.rimusic.utils.autosyncKey
 import app.it.fast4x.rimusic.utils.bassboostEnabledKey
@@ -29,6 +32,22 @@ fun thumbnailShape() = LocalAppearance.current.thumbnailShape
 
 @Composable
 fun uiRoundnessShape() = LocalAppearance.current.uiRoundnessShape
+
+@Composable
+fun gridMenuShape(): Shape {
+    val appearance = LocalAppearance.current
+    val shape = appearance.uiRoundnessShape
+    return if (shape is RoundedCornerShape) {
+        val size = shape.topStart
+        if (size is BoundedCornerSize) {
+            RoundedCornerShape(BoundedCornerSize(size.dp, 0.15f))
+        } else {
+            shape
+        }
+    } else {
+        shape
+    }
+}
 
 @Composable
 fun showSearchIconInNav() = rememberPreference( showSearchTabKey, false ).value

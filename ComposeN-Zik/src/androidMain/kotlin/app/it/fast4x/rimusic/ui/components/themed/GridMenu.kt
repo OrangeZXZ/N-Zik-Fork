@@ -1,6 +1,6 @@
 ﻿package app.it.fast4x.rimusic.ui.components.themed
 
-import app.n_zik.android.uiRoundnessShape
+import app.n_zik.android.gridMenuShape
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -111,9 +110,9 @@ fun LazyGridScope.GridMenuItem(
     item {
         Column(
             modifier = modifier
-                .clip(ShapeDefaults.Large)
+                .clip(gridMenuShape())
                 .height(GridMenuItemHeight)
-                .clip(uiRoundnessShape()).clickable(
+                .clip(gridMenuShape()).clickable(
                     enabled = enabled,
                     onClick = onClick
                 )
