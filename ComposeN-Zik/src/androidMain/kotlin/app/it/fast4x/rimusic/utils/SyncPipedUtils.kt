@@ -37,7 +37,7 @@ fun syncSongsInPipedPlaylist(context: Context,coroutineScope: CoroutineScope, pi
             )
         }.await()?.map {playlist ->
 
-            println("pipedInfo syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
+            Timber.d("pipedInfo syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
             Timber.d("SyncPipedUtils syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
 
             Database.playlistTable
@@ -193,7 +193,7 @@ fun String.toID(): String {
 
 fun checkPipedAccount(context: Context, pipedSession: Session): Boolean {
     val isPipedEnabled = context.preferences.getBoolean(isPipedEnabledKey, false)
-    //println("mediaItem SyncPipedUtils checkPipedAccount isPipedEnabled $isPipedEnabled token ${pipedSession.token}")
+    //Timber.d("mediaItem SyncPipedUtils checkPipedAccount isPipedEnabled $isPipedEnabled token ${pipedSession.token}")
     if (isPipedEnabled && pipedSession.token.isEmpty()) {
         Toaster.w( R.string.info_connect_your_piped_account_first )
         Timber.d("SyncPipedUtils checkPipedAccount Piped account not connected")

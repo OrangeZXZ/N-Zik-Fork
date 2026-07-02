@@ -1,6 +1,7 @@
 package app.it.fast4x.rimusic.utils
 
 import android.os.Build
+import timber.log.Timber
 
 
 fun getDeviceInfo() : DeviceInfo? {
@@ -27,7 +28,7 @@ fun getDeviceInfo() : DeviceInfo? {
         )
 
     } catch (e: Exception) {
-        println("Device Info Error: ${e.message}")
+        Timber.e("Device Info Error: ${e.message}")
     }
 
     return null

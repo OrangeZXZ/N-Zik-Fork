@@ -91,6 +91,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import app.n_zik.android.uiRoundnessShape
+import timber.log.Timber
 
 
 @UnstableApi
@@ -662,7 +663,7 @@ fun SongItem(
 
                 Spacer(modifier = Modifier.padding(horizontal = 4.dp))
 
-                //println("downloadutil $mediaId $downloadState: $downloadState")
+                //Timber.d("downloadutil $mediaId $downloadState: $downloadState")
 
                 if ((downloadState == Download.STATE_DOWNLOADING
                             || downloadState == Download.STATE_QUEUED

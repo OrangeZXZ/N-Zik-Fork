@@ -108,7 +108,7 @@ fun YouTubeLogin(
                                     Innertube.visitorData = visitorData
 
                                     Innertube.accountInfo().onSuccess {
-                                        println("YoutubeLogin onPageFinished accountInfo() $it")
+                                        Timber.d("YoutubeLogin onPageFinished accountInfo() $it")
                                         accountName = it?.name.orEmpty()
                                         accountEmail = it?.email.orEmpty()
                                         accountChannelHandle = it?.channelHandle.orEmpty()

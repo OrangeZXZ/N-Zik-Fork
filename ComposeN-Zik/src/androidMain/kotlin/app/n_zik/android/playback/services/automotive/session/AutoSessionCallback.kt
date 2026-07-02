@@ -161,7 +161,7 @@ class AutoSessionCallback(
         query: String,
         params: MediaLibraryService.LibraryParams?
     ): ListenableFuture<LibraryResult<Void>> {
-        println("PlayerServiceModern AutoSessionCallback.onSearch: $query")
+        Timber.d("PlayerServiceModern AutoSessionCallback.onSearch: $query")
         autoBrowseTree.clearCache()
         session.notifySearchResultChanged(browser, query, 0, params)
         return Futures.immediateFuture(LibraryResult.ofVoid(params))

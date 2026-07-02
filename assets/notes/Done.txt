@@ -28,3 +28,4 @@
 - Fixed auto-saved Albums missing artwork, artist name, and year during playback by extracting available details from MediaItem.
 - Fixed duplicated Artists in the database (caused by YouTube Music using multiple IDs for the same artist) by checking and merging based on exact name match during auto-insertion.
 - Removed UI roundness from the full-screen player bottom sheet to fix background clipping at the top.
+- Replaced all `println(...)` logs across the project with proper `Timber` statements, automatically mapping Error/Exception to `Timber.e`, warnings to `Timber.w`, and standard messages to `Timber.d`.

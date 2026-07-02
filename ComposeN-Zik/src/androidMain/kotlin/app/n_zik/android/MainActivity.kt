@@ -746,7 +746,7 @@ class MainActivity :
                             restartActivityKey
                                 -> {
                                 this@MainActivity.recreate()
-                                println("MainActivity.recreate()")
+                                Timber.d("MainActivity.recreate()")
                             }
 
                             isProxyEnabledKey, proxyHostnameKey, proxyPortKey, proxyModeKey -> {

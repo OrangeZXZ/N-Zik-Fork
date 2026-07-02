@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import app.n_zik.android.core.database.Database
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import timber.log.Timber
 
 @Composable
 fun getLikeState(mediaId: String): Int {
@@ -35,7 +36,7 @@ fun setLikeState(likedAt: Long?): Long? {
         null -> System.currentTimeMillis()
         else -> -1L
     }
-    //println("mediaItem setLikeState: $current")
+    //Timber.d("mediaItem setLikeState: $current")
     return current
 
 }

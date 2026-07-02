@@ -62,6 +62,7 @@ import java.io.File
 import java.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
+import timber.log.Timber
 
 const val EXPLICIT_BUNDLE_TAG = "is_explicit"
 
@@ -323,7 +324,7 @@ suspend fun Result<Innertube.ItemsPage<Innertube.SongItem>?>.completed(
     var continuationsList = arrayOf<String>()
     //continuationsList += continuation.orEmpty()
 
-    println("mediaItem playlist completed() continuation? $continuation")
+    Timber.d("mediaItem playlist completed() continuation? $continuation")
 
     while (continuation != null && depth++ < maxDepth) {
         val newSongs = Innertube
@@ -336,11 +337,11 @@ suspend fun Result<Innertube.ItemsPage<Innertube.SongItem>?>.completed(
         newSongs.items?.let { songs += it.filter { it !in songs } }
         continuation = newSongs.continuation
 
-        //println("mediaItem loop $depth continuation founded ${continuationsList.contains(continuation)} $continuation")
+        //Timber.d("mediaItem loop $depth continuation founded ${continuationsList.contains(continuation)} $continuation")
         if (continuationsList.contains(continuation)) break
 
         continuationsList += continuation.orEmpty()
-        //println("mediaItem loop continuationList size ${continuationsList.size}")
+        //Timber.d("mediaItem loop continuationList size ${continuationsList.size}")
     }
 
     page?.copy(items = songs, continuation = null)
@@ -354,12 +355,12 @@ suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
     val songsPage = runCatching {
         page.songsPage
     }.onFailure {
-        println("Innertube songsPage PlaylistOrAlbumPage>.completed ${it.stackTraceToString()}")
+        Timber.d("Innertube songsPage PlaylistOrAlbumPage>.completed ${it.stackTraceToString()}")
     }
     val itemsPage = songsPage.completed(maxDepth).getOrThrow()
     page.copy(songsPage = itemsPage)
 }.onFailure {
-    println("Innertube PlaylistOrAlbumPage>.completed ${it.stackTraceToString()}")
+    Timber.d("Innertube PlaylistOrAlbumPage>.completed ${it.stackTraceToString()}")
 }
 
 //@JvmName("completedPlaylist")
@@ -560,13 +561,13 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
                     Toaster.i(R.string.songs_remaining, formatArgs = arrayOf((mediaItems.size - (index + 1) * 50).toString()))
             }
             .onFailure {
-                println("YtMusic addToPlaylist (list of size ${items.size}) error: ${it.stackTraceToString()}")
+                Timber.e("YtMusic addToPlaylist (list of size ${items.size}) error: ${it.stackTraceToString()}")
                 if(it is ClientRequestException && it.response.status == HttpStatusCode.BadRequest) {
                     Toaster.w( R.string.adding_yt_to_pl_failed )
                     items.forEach { item ->
                         delay(500)
                         addToPlaylist(ytplaylistId, item.mediaId).onFailure {
-                            println("YtMusic addToPlaylist (list insert backup) error: ${it.stackTraceToString()}")
+                            Timber.e("YtMusic addToPlaylist (list insert backup) error: ${it.stackTraceToString()}")
                                 Toaster.e(
                                     appContext().resources.getString(R.string.songs_add_yt_failed)+"${item.mediaMetadata.title} - ${item.mediaMetadata.artist}"
                                 )

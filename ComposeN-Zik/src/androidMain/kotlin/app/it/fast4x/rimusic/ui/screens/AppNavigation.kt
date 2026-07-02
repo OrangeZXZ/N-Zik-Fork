@@ -81,6 +81,7 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.transitionEffectKey
 import app.it.fast4x.rimusic.utils.disableNavigationBackStackKey
 import android.content.Context
+import timber.log.Timber
 
 fun NavHostController.navigateClean(route: String, context: Context) {
     val disableBackStack = context.preferences.getBoolean(disableNavigationBackStackKey, false)
@@ -342,7 +343,7 @@ fun AppNavigation(
                 initialTextInput = text,
                 onViewPlaylist = {},
                 onSearch = { query ->
-                    println("onSearch: $query")
+                    Timber.d("onSearch: $query")
 
                     navController.navigate(
                         route = "${NavRoutes.searchResults.name}/${Uri.encode( query )}",

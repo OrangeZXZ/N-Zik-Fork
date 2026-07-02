@@ -317,7 +317,7 @@ object MyDownloadHelper {
                 if (it is CancellationException) throw it
 
                 Timber.e("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
-                println("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
+                Timber.e("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
                 Toaster.e(app.n_zik.android.R.string.error_playback_failed)
             }
             downloadSyncedLyrics( mediaItem.asSong )
@@ -334,7 +334,7 @@ object MyDownloadHelper {
                 if (it is CancellationException) throw it
 
                 Timber.e(it.stackTraceToString())
-                println("MyDownloadHelper removeDownload exception ${it.stackTraceToString()}")
+                Timber.e("MyDownloadHelper removeDownload exception ${it.stackTraceToString()}")
             }
         }
     }

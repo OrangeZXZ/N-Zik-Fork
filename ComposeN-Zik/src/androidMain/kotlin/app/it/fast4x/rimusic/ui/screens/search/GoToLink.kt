@@ -57,6 +57,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -186,7 +187,7 @@ fun GoToLink(
 
                     LaunchedEffect(Unit) {
                         coroutineScope.launch(Dispatchers.Main) {
-                            println("mediaItem channelId: ${uri.pathSegments}")
+                            Timber.d("mediaItem channelId: ${uri.pathSegments}")
                             when (val path = uri.pathSegments.firstOrNull()) {
                                 "playlist" -> uri.getQueryParameter("list")?.let { playlistId ->
                                     val browseId = "VL$playlistId"

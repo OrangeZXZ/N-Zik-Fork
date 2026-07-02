@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import app.kreate.android.me.knighthat.utils.Toaster
+import timber.log.Timber
 
 @OptIn(UnstableApi::class)
 fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
@@ -46,7 +47,7 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
                 CoroutineScope(Dispatchers.IO).launch {
                     withContext(Dispatchers.IO) {
 
-                        println("ytmPrivatePlaylistSync Remote playlist editable: ${remotePlaylist.isEditable}")
+                        Timber.d("ytmPrivatePlaylistSync Remote playlist editable: ${remotePlaylist.isEditable}")
 
                         // Update here playlist isEditable flag because library contain playlists but isEditable isn't always available
                         if (remotePlaylist.isEditable == true)
@@ -77,7 +78,7 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
 }
 
 suspend fun importYTMSubscribedChannels(): Boolean {
-    println("importYTMSubscribedChannels isYouTubeSyncEnabled() = ${isYouTubeSyncEnabled()} and isAutoSyncEnabled() = ${isAutoSyncEnabled()}")
+    Timber.d("importYTMSubscribedChannels isYouTubeSyncEnabled() = ${isYouTubeSyncEnabled()} and isAutoSyncEnabled() = ${isAutoSyncEnabled()}")
     if (isYouTubeSyncEnabled()) {
 
         Toaster.n( R.string.syncing, Toast.LENGTH_LONG )
@@ -86,12 +87,12 @@ suspend fun importYTMSubscribedChannels(): Boolean {
 
             val ytmArtists = page.items.filterIsInstance<Innertube.ArtistItem>()
 
-            println("YTM artists: $ytmArtists")
+            Timber.d("YTM artists: $ytmArtists")
 
             ytmArtists.forEach { remoteArtist ->
                 var localArtist = Database.artistTable.findById( remoteArtist.key ).first()
-                println("Local artist: $localArtist")
-                println("Remote artist: $remoteArtist")
+                Timber.d("Local artist: $localArtist")
+                Timber.d("Remote artist: $remoteArtist")
 
                 if (localArtist == null) {
                     localArtist = Artist(
@@ -121,7 +122,7 @@ suspend fun importYTMSubscribedChannels(): Boolean {
                     .forEach( Database.artistTable::update )
         }
             .onFailure {
-                println("Error importing YTM subscribed artists channels: ${it.stackTraceToString()}")
+                Timber.e("Error importing YTM subscribed artists channels: ${it.stackTraceToString()}")
                 return false
             }
         return true
@@ -130,7 +131,7 @@ suspend fun importYTMSubscribedChannels(): Boolean {
 }
 
 suspend fun importYTMLikedAlbums(): Boolean {
-    println("importYTMLikedAlbums isYouTubeSyncEnabled() = ${isYouTubeSyncEnabled()} and isAutoSyncEnabled() = ${isAutoSyncEnabled()}")
+    Timber.d("importYTMLikedAlbums isYouTubeSyncEnabled() = ${isYouTubeSyncEnabled()} and isAutoSyncEnabled() = ${isAutoSyncEnabled()}")
     if (isYouTubeSyncEnabled()) {
 
         Toaster.n( R.string.syncing, Toast.LENGTH_LONG )
@@ -139,12 +140,12 @@ suspend fun importYTMLikedAlbums(): Boolean {
 
             val ytmAlbums = page.items.filterIsInstance<Innertube.AlbumItem>()
 
-            println("YTM albums: $ytmAlbums")
+            Timber.d("YTM albums: $ytmAlbums")
 
             ytmAlbums.forEach { remoteAlbum ->
                 var localAlbum = Database.albumTable.findById( remoteAlbum.key ).first()
-                println("Local album: $localAlbum")
-                println("Remote album: $remoteAlbum")
+                Timber.d("Local album: $localAlbum")
+                Timber.d("Remote album: $remoteAlbum")
 
                 if (localAlbum == null) {
                     localAlbum = Album(
@@ -176,7 +177,7 @@ suspend fun importYTMLikedAlbums(): Boolean {
                     .also( Database.albumTable::updateReplace )
         }
             .onFailure {
-                println("Error importing YTM liked albums: ${it.stackTraceToString()}")
+                Timber.e("Error importing YTM liked albums: ${it.stackTraceToString()}")
                 return false
             }
         return true
@@ -189,7 +190,7 @@ suspend fun removeYTSongFromPlaylist(
     playlistBrowseId: String,
     playlistId: Long,
 ): Boolean {
-    println("removeYTSongFromPlaylist removeSongFromPlaylist params songId = $songId, playlistBrowseId = $playlistBrowseId, playlistId = $playlistId")
+    Timber.d("removeYTSongFromPlaylist removeSongFromPlaylist params songId = $songId, playlistBrowseId = $playlistBrowseId, playlistId = $playlistId")
 
     if ( isYouTubeSyncEnabled() )  {
         val setVideoId: String = Database.songPlaylistMapTable
@@ -197,7 +198,7 @@ suspend fun removeYTSongFromPlaylist(
                                          .first()
                                          ?.setVideoId ?: return false
 
-        println("removeYTSongFromPlaylist removeSongFromPlaylist songSetVideoId = $setVideoId")
+        Timber.d("removeYTSongFromPlaylist removeSongFromPlaylist songSetVideoId = $setVideoId")
 
         YtMusic.removeFromPlaylist( playlistBrowseId, songId, setVideoId )
     }

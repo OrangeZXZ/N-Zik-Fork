@@ -32,6 +32,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import app.n_zik.android.components.dialog.InputDialogConstraints
 import app.n_zik.android.components.dialog.TextInputDialog
+import timber.log.Timber
 
 class NewPlaylistDialog private constructor(
     activeState: MutableState<Boolean>,
@@ -98,7 +99,7 @@ class NewPlaylistDialog private constructor(
                                isYoutubePlaylist = true,
                                isEditable = true
                            )
-                           println("Innertube YtMusic createPlaylist: $it")
+                           Timber.d("Innertube YtMusic createPlaylist: $it")
                        }
             }
         } else {

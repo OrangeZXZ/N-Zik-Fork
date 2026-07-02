@@ -47,6 +47,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.utils.Toaster
 import io.ktor.client.statement.bodyAsText
+import timber.log.Timber
 
 @OptIn(UnstableApi::class)
 @ExperimentalMaterial3Api
@@ -69,7 +70,7 @@ fun ArtistPlaylists(
     val playlists = remember { mutableStateListOf<Innertube.PlaylistItem>() }
 
     suspend fun fetchPlaylists() {
-        println("ArtistPlaylists: fetching browseId=$browseId params=${params?.take(20)}..")
+        Timber.d("ArtistPlaylists: fetching browseId=$browseId params=${params?.take(20)}..")
         val result = runCatching {
             var currentBrowseId = browseId
             var currentParams = params.takeIf { !it.isNullOrBlank() }
@@ -94,7 +95,7 @@ fun ArtistPlaylists(
                 // Some queries (like specific artist playlists) return a tab with an endpoint instead of inline content
                 val tabEndpoint = tabs.mapNotNull { it.tabRenderer?.endpoint?.browseEndpoint }.firstOrNull()
                 if (tabEndpoint != null) {
-                    println("ArtistPlaylists: following tab endpoint params=${tabEndpoint.params}")
+                    Timber.d("ArtistPlaylists: following tab endpoint params=${tabEndpoint.params}")
                     val originalParams = currentParams
                     currentBrowseId = tabEndpoint.browseId ?: currentBrowseId
                     currentParams = tabEndpoint.params
@@ -135,7 +136,7 @@ fun ArtistPlaylists(
         result.fold(
             onSuccess = { sectionContent ->
                 if (sectionContent == null) {
-                    println("ArtistPlaylists: no section content found in any path!")
+                    Timber.d("ArtistPlaylists: no section content found in any path!")
                     return@fold
                 }
 
@@ -200,17 +201,17 @@ fun ArtistPlaylists(
                     }
 
                     else -> {
-                        println("ArtistPlaylists: no known renderer found in sectionContent")
+                        Timber.d("ArtistPlaylists: no known renderer found in sectionContent")
                         emptyList()
                     }
                 }
 
-                println("ArtistPlaylists: total fetched=${fetched.size}")
+                Timber.d("ArtistPlaylists: total fetched=${fetched.size}")
                 val existing = playlists.toSet()
                 playlists.addAll(fetched.filterNot { it in existing })
             },
             onFailure = {
-                println("ArtistPlaylists: error ${it.message}")
+                Timber.e("ArtistPlaylists: error ${it.message}")
                 Toaster.e(R.string.error_unknown)
             }
         )

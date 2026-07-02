@@ -108,9 +108,9 @@ fun tryMoveDir() {
     val to = File("/path/to/dest")
     val success = moveDir(from.toPath(), to.toPath())
     if (success) {
-        println("File Moved Successfully")
+        Timber.d("File Moved Successfully")
     } else {
-        println("File Moved Failed")
+        Timber.e("File Moved Failed")
     }
 }
  */
@@ -121,7 +121,7 @@ fun tryCopyDir() {
     val to = File("/var/bak/kotlin/")
     try {
         copyDir(from.toPath(), to.toPath())
-        println("Copying succeeded.")
+        Timber.d("Copying succeeded.")
     } catch (ex: IOException) {
         ex.printStackTrace()
     }

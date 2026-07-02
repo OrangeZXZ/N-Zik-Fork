@@ -10,7 +10,7 @@ fun getSignatureTimestampOrNull(
     return NewPipeUtils.getSignatureTimestamp(videoId)
         .onFailure {
             Timber.e("NewPipeUtils getSignatureTimestampOrNull Error while getting signature timestamp ${it.stackTraceToString()}")
-            println("NewPipeUtils getSignatureTimestampOrNull Error while getting signature timestamp ${it.stackTraceToString()}")
+            Timber.e("NewPipeUtils getSignatureTimestampOrNull Error while getting signature timestamp ${it.stackTraceToString()}")
         }
         .getOrNull()
 }
@@ -22,11 +22,11 @@ fun getStreamUrl(
     val streamUrl =  NewPipeUtils.getStreamUrl(format, videoId)
         .onFailure {
             Timber.e("NewPipeUtils getStreamUrlOrNull Error while getting stream url ${it.stackTraceToString()}")
-            println("NewPipeUtils getStreamUrlOrNull Error while getting stream url ${it.stackTraceToString()}")
+            Timber.e("NewPipeUtils getStreamUrlOrNull Error while getting stream url ${it.stackTraceToString()}")
         }
         .getOrNull()
 
-    println("NewPipeUtils getStreamUrlOrNull streamUrl $streamUrl")
+    Timber.d("NewPipeUtils getStreamUrlOrNull streamUrl $streamUrl")
 
     return streamUrl
 }

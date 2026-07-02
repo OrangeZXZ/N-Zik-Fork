@@ -36,6 +36,7 @@ import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.uiRoundnessShape
+import timber.log.Timber
 
 
 @Composable
@@ -94,7 +95,7 @@ fun YoutubePlayer(
 
                 val listener = object : AbstractYouTubePlayerListener() {
                     override fun onReady(youTubePlayer: YouTubePlayer) {
-                        //println("mediaItem youtubePlayer onReady called lastYTVideoSeconds $lastYTVideoSeconds")
+                        //Timber.d("mediaItem youtubePlayer onReady called lastYTVideoSeconds $lastYTVideoSeconds")
                         youTubePlayer.loadVideo(ytVideoId, lastYTVideoSeconds)
                     }
 

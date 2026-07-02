@@ -2,6 +2,7 @@ package app.n_zik.android.core.database.migration
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import timber.log.Timber
 
 class From25To26Migration : Migration(25, 26) {
 
@@ -9,7 +10,7 @@ class From25To26Migration : Migration(25, 26) {
         try {
             db.execSQL("ALTER TABLE Playlist ADD COLUMN isYoutubePlaylist INTEGER NOT NULL DEFAULT 0;")
         } catch (e: Exception) {
-            println("Database From25To26Migration error ${e.stackTraceToString()}")
+            Timber.e("Database From25To26Migration error ${e.stackTraceToString()}")
         }
 
     }

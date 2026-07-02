@@ -53,7 +53,7 @@ private fun initDevelopers( context: Context) {
             .sortedBy { it.username }
     } catch ( e: Exception ) {
         Timber.e( e.stackTraceToString() )
-        println("Contributors initDevelopers Exception: ${e.message}")
+        Timber.e("Contributors initDevelopers Exception: ${e.message}")
         developersList = emptyList()
     }
 }
@@ -89,7 +89,7 @@ private fun initTranslators( context: Context) {
             .sortedBy { it.displayName }
     } catch ( e: Exception ) {
         Timber.e( e.stackTraceToString() )
-        println("Contributors initTranslators Exception: ${e.message}")
+        Timber.e("Contributors initTranslators Exception: ${e.message}")
         translatorsList = emptyList()
     }
 }

@@ -39,6 +39,7 @@ import app.it.fast4x.rimusic.utils.isAtLeastAndroid12
 import app.it.fast4x.rimusic.utils.isAtLeastAndroid7
 import app.it.fast4x.rimusic.utils.isAtLeastAndroid8
 import app.it.fast4x.rimusic.utils.rememberPreference
+import timber.log.Timber
 
 
 private fun logError(throwable: Throwable) = Log.e("PipHandler", "An error occurred", throwable)
@@ -142,7 +143,7 @@ fun isInPip(
         }
     }
 
-    println("isInPIp pip: $pip")
+    Timber.d("isInPIp pip: $pip")
 
     return pip
 }

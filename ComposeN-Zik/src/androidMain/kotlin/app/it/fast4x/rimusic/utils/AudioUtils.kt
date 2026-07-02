@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.RoundingMode
 import kotlin.time.Duration.Companion.seconds
+import timber.log.Timber
 
 var volume = 0f
 
@@ -40,7 +41,7 @@ fun audioFadeOut(player: ExoPlayer, duration: Int, context: Context) {
                     time -= 100
                     volume = (deviceVolume * time) / duration
                     player.volume = volume
-                    //println("mediaItem audioFadeOut: volume $volume $time")
+                    //Timber.d("mediaItem audioFadeOut: volume $volume $time")
                     handler.postDelayed(this, 100)
                 }
             }
@@ -68,7 +69,7 @@ fun audioFadeIn(player: ExoPlayer, duration: Int, context: Context) {
                     //player.volume = volume
                     if (player.volume < volume) {
                         player.volume = volume
-                        //println("mediaItem audioFadeIn: player.volume ${player.volume} volume $volume time $time")
+                        //Timber.d("mediaItem audioFadeIn: player.volume ${player.volume} volume $volume time $time")
                     }
 
                     handler.postDelayed(this, 100)

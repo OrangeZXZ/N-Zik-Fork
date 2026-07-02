@@ -62,6 +62,7 @@ import app.it.fast4x.rimusic.utils.statsfornerdsKey
 import app.it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import kotlinx.coroutines.Dispatchers
 import kotlin.math.roundToInt
+import timber.log.Timber
 
 @SuppressLint("LongLogTag")
 @UnstableApi
@@ -299,7 +300,7 @@ fun StatsForNerds(
                         contentAlignment = Alignment.Center,
                         modifier = modifier.weight(1f)
                     ) {
-                        println("StatsForNerds modern player bitrate: ${format?.bitrate}")
+                        Timber.d("StatsForNerds modern player bitrate: ${format?.bitrate}")
                         BasicText(
                             text = format?.bitrate?.let { stringResource(R.string.bitrate) + " : " + "${it / 1000} kbps" }
                                 ?: (stringResource(R.string.bitrate) + " : " + stringResource(R.string.audio_quality_format_unknown)),
