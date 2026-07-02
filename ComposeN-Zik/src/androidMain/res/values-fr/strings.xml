@@ -1390,10 +1390,10 @@ Volume BAS : titre précédent</string>
   <string name="queue_shuffled">File d\'attente aléatoire (%d titres)</string>
   <string name="playlist_positions_shuffled">%d positions ont été mélangées</string>
   <string name="play_all">Tout lire</string>
-  <string name="syncing_item">Syncing: %1$s</string>
+  <string name="syncing_item">Synchronisation : %1$s</string>
   <string name="syncing_progress">%1$d / %2$d</string>
   <string name="syncing_failed">+ %1$d failed</string>
-  <string name="refreshing_artists">Refreshing %1$d artists</string>
+  <string name="refreshing_artists">Actualisation de %1$d artistes</string>
   <string name="failed_artists">Failed to find %1$d artists, retrying</string>
   <string name="found_all_artists">Found all artists</string>
   <string name="refreshing_albums">Refreshing %1$d albums</string>
@@ -1401,6 +1401,6 @@ Volume BAS : titre précédent</string>
   <string name="found_all_albums">Found all albums</string>
   <string name="refreshing_playlists">Refreshing %1$d playlists</string>
   <string name="failed_playlists">Failed to find %1$d playlists, retrying</string>
-  <string name="found_all_playlists">Found all playlists</string>
-  <string name="already_syncing">Sync already in progress</string>
+  <string name="found_all_playlists">Toutes les playlists ont été trouvées</string>
+  <string name="already_syncing">Synchronisation en cours</string>
 </resources>
