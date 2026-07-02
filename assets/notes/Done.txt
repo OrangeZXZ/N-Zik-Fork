@@ -27,3 +27,4 @@
 - Added localization for sync states and prevented concurrent duplicate syncs with visual toaster error feedback.
 - Fixed auto-saved Albums missing artwork, artist name, and year during playback by extracting available details from MediaItem.
 - Fixed duplicated Artists in the database (caused by YouTube Music using multiple IDs for the same artist) by checking and merging based on exact name match during auto-insertion.
+- Removed UI roundness from the full-screen player bottom sheet to fix background clipping at the top.

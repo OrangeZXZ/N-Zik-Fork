@@ -1119,7 +1119,7 @@ class MainActivity :
                                             shape = uiRoundnessShape()
                                         ) {}
                                     },
-                                    shape = uiRoundnessShape()
+                                    shape = androidx.compose.ui.graphics.RectangleShape
                                 ) {
                                     Player( navController ) { 
                                         showPlayer = false
@@ -1142,7 +1142,7 @@ class MainActivity :
                                         shape = uiRoundnessShape()
                                     ) {}
                                 },
-                                shape = uiRoundnessShape()
+                                shape = androidx.compose.ui.graphics.RectangleShape
                             ) {
                                 youtubePlayer()
                             }
