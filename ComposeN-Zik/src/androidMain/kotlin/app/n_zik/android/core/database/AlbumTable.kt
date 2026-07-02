@@ -440,7 +440,7 @@ interface AlbumTable {
         AlbumSortBy.Songs       -> sortInLibraryBySongsCount()
         AlbumSortBy.Duration    -> sortInLibraryByDuration()
         AlbumSortBy.Custom      -> sortInLibraryByPosition( limit )
-    }.map( sortOrder::applyTo ).take( 4 )
+    }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 }
 

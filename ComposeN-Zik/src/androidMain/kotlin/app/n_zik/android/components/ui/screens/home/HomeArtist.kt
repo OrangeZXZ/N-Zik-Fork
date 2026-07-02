@@ -9,6 +9,7 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -57,9 +58,14 @@ import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import app.it.fast4x.compose.persist.persistList
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.requests.searchPage
+import it.fast4x.innertube.utils.from
 import it.fast4x.innertube.YtMusic
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.colorPalette
+import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.enums.ArtistsType
 import app.it.fast4x.rimusic.enums.FilterBy
 import app.it.fast4x.rimusic.enums.SortOrder
@@ -98,11 +104,16 @@ import app.it.fast4x.rimusic.utils.showFloatingIconKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import app.n_zik.android.components.Sort
 import app.n_zik.android.components.tab.Search
 import app.n_zik.android.components.tab.SongShuffler
+import app.kreate.android.me.knighthat.utils.PropUtils
 import app.n_zik.android.components.menu.artist.LocalArtistItemMenu
+import kotlinx.coroutines.CoroutineScope
+import timber.log.Timber
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -199,16 +210,120 @@ fun HomeArtists(
     val doAutoSync by rememberPreference(autosyncKey, false)
     var justSynced by rememberSaveable { mutableStateOf(!doAutoSync) }
 
+
     var refreshing by remember { mutableStateOf(false) }
-    val refreshScope = rememberCoroutineScope()
 
     fun refresh() {
-        if (refreshing) return
-        refreshScope.launch(Dispatchers.IO) {
+        if (refreshing || HomeSyncState.isSyncingArtists) {
+            app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.already_syncing))
+            return
+        }
+        CoroutineScope(Dispatchers.IO).launch {
             refreshing = true
+            HomeSyncState.isSyncingArtists = true
+            HomeSyncState.artistSyncProgress = 0f
             justSynced = false
-            delay(500)
+            
+            val ytArtists = itemsOnDisplay.filter { it.isYoutubeArtist || it.id.startsWith("UC") }
+            val localArtists = itemsOnDisplay.filterNot { it.isYoutubeArtist || it.id.startsWith("UC") }
+            val totalArtists = ytArtists.size + localArtists.size
+            
+            withContext(Dispatchers.Main) {
+                if (totalArtists > 0) app.kreate.android.me.knighthat.utils.Toaster.i(appContext().getString(R.string.refreshing_artists, totalArtists))
+            }
+            
+            var failedCount = 0
+            HomeSyncState.artistSyncFailed = 0
+            HomeSyncState.artistSyncTotal = totalArtists
+            
+            ytArtists.forEachIndexed { index, artist ->
+                HomeSyncState.artistSyncCurrentIndex = index + 1
+                HomeSyncState.artistSyncCurrentName = artist.name ?: ""
+                HomeSyncState.artistSyncProgress = index.toFloat() / ytArtists.size
+                kotlinx.coroutines.delay((2000L..5000L).random())
+                Timber.d("Refreshing artist: ${artist.name} (id: ${artist.id})")
+                var status = 0 // 0=retry, 1=success
+                for (attempt in 1..3) {
+                    YtMusic.getArtistPage(artist.id).onSuccess { online ->
+                        val onlineArtist = online.artist
+                        Database.asyncTransaction {
+                            artistTable.upsert(Artist(
+                                id = artist.id,
+                                name = PropUtils.retainIfModified(artist.name, onlineArtist.title),
+                                thumbnailUrl = onlineArtist.thumbnail?.url ?: artist.thumbnailUrl,
+                                timestamp = artist.timestamp,
+                                bookmarkedAt = artist.bookmarkedAt,
+                                isYoutubeArtist = artist.isYoutubeArtist,
+                                position = artist.position
+                            ))
+                        }
+                        Timber.d("Successfully refreshed artist: ${artist.name}")
+                        status = 1
+                    }.onFailure {
+                        Timber.e(it, "Failed to refresh artist (attempt $attempt): ${artist.name}")
+                    }
+                    if (status != 0) break
+                }
+                if (status != 1) {
+                    failedCount++
+                    HomeSyncState.artistSyncFailed = failedCount
+                }
+            }
+            
+            localArtists.forEachIndexed { index, artist ->
+                HomeSyncState.artistSyncCurrentIndex = ytArtists.size + index + 1
+                HomeSyncState.artistSyncCurrentName = artist.name ?: ""
+                HomeSyncState.artistSyncProgress = (ytArtists.size + index).toFloat() / totalArtists
+                val query = artist.name?.trim()
+                if (!query.isNullOrBlank()) {
+                    kotlinx.coroutines.delay((2000L..5000L).random())
+                    Timber.d("Searching YouTube for local artist: $query")
+                    var status = 0 // 0=retry, 1=success, 2=not found
+                    for (attempt in 1..3) {
+                        val request = Innertube.searchPage<Innertube.ArtistItem>(
+                            body = SearchBody(query = query, params = Innertube.SearchFilter.Artist.value),
+                            fromMusicShelfRendererContent = { content -> Innertube.ArtistItem.from(content) }
+                        )
+                        if (request == null) {
+                            status = 2
+                            break
+                        }
+                        request.onSuccess { searchResult ->
+                            val bestMatch = searchResult?.items?.firstOrNull()
+                            if (bestMatch != null) {
+                                Database.asyncTransaction {
+                                    artistTable.upsert(artist.copy(
+                                        thumbnailUrl = bestMatch.thumbnail?.url ?: artist.thumbnailUrl
+                                    ))
+                                }
+                                Timber.d("Updated local artist '${artist.name}' with metadata from '${bestMatch.info?.name}'")
+                                status = 1
+                            } else {
+                                status = 2
+                            }
+                        }.onFailure {
+                            Timber.e(it, "Failed to search metadata for local artist (attempt $attempt): $query")
+                        }
+                        if (status != 0) break
+                    }
+                    if (status != 1) {
+                        failedCount++
+                        HomeSyncState.artistSyncFailed = failedCount
+                    }
+                }
+            }
+            
+            withContext(Dispatchers.Main) {
+                if (failedCount > 0) {
+                    app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.failed_artists, failedCount))
+                } else if (totalArtists > 0) {
+                    app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_artists))
+                }
+            }
+            
             refreshing = false
+            HomeSyncState.artistSyncProgress = 1f
+            HomeSyncState.isSyncingArtists = false
         }
     }
 
@@ -282,7 +397,8 @@ fun HomeArtists(
                         key = "separator",
                         span = { GridItemSpan(maxLineSpan) }
                     ) {
-                        Row(
+                        Column {
+                            Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
@@ -345,6 +461,37 @@ fun HomeArtists(
                                     }
                                 }
                             }
+                        }
+                        if (HomeSyncState.isSyncingArtists) {
+                            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
+                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    BasicText(
+                                        text = stringResource(R.string.syncing_item, HomeSyncState.artistSyncCurrentName),
+                                        style = typography.xxs.semiBold.copy(color = colorPalette.textSecondary),
+                                        maxLines = 1,
+                                        modifier = Modifier.weight(1f).padding(end = 8.dp).basicMarquee(iterations = Int.MAX_VALUE)
+                                    )
+                                    Row {
+                                        BasicText(
+                                            text = stringResource(R.string.syncing_progress, HomeSyncState.artistSyncCurrentIndex, HomeSyncState.artistSyncTotal),
+                                            style = typography.xxs.semiBold.copy(color = colorPalette.textSecondary)
+                                        )
+                                        if (HomeSyncState.artistSyncFailed > 0) {
+                                            BasicText(
+                                                text = " " + stringResource(R.string.syncing_failed, HomeSyncState.artistSyncFailed),
+                                                style = typography.xxs.semiBold.copy(color = colorPalette.red)
+                                            )
+                                        }
+                                    }
+                                }
+                                androidx.compose.material3.LinearWavyProgressIndicator(
+                                    progress = { HomeSyncState.artistSyncProgress },
+                                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                                    color = colorPalette.accent,
+                                    trackColor = colorPalette.background2
+                                )
+                            }
+                        }
                         }
                     }
                     items(items = itemsOnDisplay.distinctBy { it.id }, key = { it.id }) { artist ->

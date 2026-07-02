@@ -6,7 +6,11 @@ import app.n_zik.android.uiRoundnessShape
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -57,6 +61,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.YTP_PREFIX
 import app.n_zik.android.colorPalette
@@ -100,11 +105,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import app.kreate.android.me.knighthat.utils.PropUtils
 import app.n_zik.android.components.Sort
 import app.n_zik.android.components.playlist.NewPlaylistDialog
 import app.n_zik.android.components.tab.ImportSongsFromCSV
 import app.n_zik.android.components.tab.Search
 import app.n_zik.android.components.tab.SongShuffler
+import timber.log.Timber
 import it.fast4x.innertube.requests.playlistPage
 import app.kreate.android.me.knighthat.utils.Toaster
 import it.fast4x.innertube.models.bodies.BrowseBody
@@ -119,6 +126,8 @@ import app.n_zik.android.components.dialog.YouTubeLinkImportDialog
 import app.n_zik.android.components.tab.ImportPlaylistsMenu
 import app.n_zik.android.components.tab.ImportSongsFromServices
 import app.n_zik.android.typography
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.withContext
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -283,16 +292,89 @@ fun HomeLibrary(
     val doAutoSync by rememberPreference(autosyncKey, false)
     var justSynced by rememberSaveable { mutableStateOf(!doAutoSync) }
 
+
     var refreshing by remember { mutableStateOf(false) }
-    val refreshScope = rememberCoroutineScope()
 
     fun refresh() {
-        if (refreshing) return
-        refreshScope.launch(Dispatchers.IO) {
+        if (refreshing || HomeSyncState.isSyncingPlaylists) {
+            app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.already_syncing))
+            return
+        }
+        CoroutineScope(Dispatchers.IO).launch {
             refreshing = true
+            HomeSyncState.isSyncingPlaylists = true
+            HomeSyncState.playlistSyncProgress = 0f
             justSynced = false
-            delay(500)
+            
+            val ytPlaylists = itemsOnDisplay.filter { 
+                it.playlist.isYoutubePlaylist || 
+                it.playlist.browseId?.startsWith("VL") == true || 
+                it.playlist.browseId?.startsWith("PL") == true || 
+                it.playlist.browseId?.startsWith("RD") == true || 
+                it.playlist.browseId?.startsWith("OLAK") == true 
+            }
+            
+            withContext(Dispatchers.Main) {
+                if (ytPlaylists.isNotEmpty()) app.kreate.android.me.knighthat.utils.Toaster.i(appContext().getString(R.string.refreshing_playlists, ytPlaylists.size))
+            }
+            
+            var failedCount = 0
+            HomeSyncState.playlistSyncFailed = 0
+            HomeSyncState.playlistSyncTotal = ytPlaylists.size
+            
+            ytPlaylists.forEachIndexed { index, preview ->
+                HomeSyncState.playlistSyncCurrentIndex = index + 1
+                HomeSyncState.playlistSyncCurrentName = preview.playlist.name
+                HomeSyncState.playlistSyncProgress = index.toFloat() / ytPlaylists.size
+                val p = preview.playlist
+                p.browseId?.let { browseId ->
+                    kotlinx.coroutines.delay((2000L..5000L).random())
+                    Timber.d("Refreshing playlist: ${p.name} (browseId: $browseId)")
+                    var status = 0 // 0=retry, 1=success
+                    for (attempt in 1..3) {
+                        val request = Innertube.playlistPage(BrowseBody(browseId = browseId))
+                        if (request == null) {
+                            status = 2
+                            break
+                        }
+                        request.onSuccess { playlistPage ->
+                            Database.asyncTransaction {
+                                playlistTable.update(p.copy(
+                                    name = PropUtils.retainIfModified(p.name, playlistPage.title) ?: p.name
+                                ))
+                                val songs = playlistPage.songsPage?.items?.mapNotNull { it.asSong.copy(totalPlayTimeMs = 1L) }
+                                if (songs != null) {
+                                    songTable.upsert(songs)
+                                    songs.forEach { song ->
+                                        songPlaylistMapTable.map(song.id, p.id)
+                                    }
+                                }
+                            }
+                            Timber.d("Successfully refreshed playlist: ${p.name}")
+                            status = 1
+                        }.onFailure {
+                            Timber.e(it, "Failed to refresh playlist (attempt $attempt): ${p.name}")
+                        }
+                        if (status != 0) break
+                    }
+                    if (status != 1) {
+                        failedCount++
+                        HomeSyncState.playlistSyncFailed = failedCount
+                    }
+                }
+            }
+            
+            withContext(Dispatchers.Main) {
+                if (failedCount > 0) {
+                    app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.failed_playlists, failedCount))
+                } else if (ytPlaylists.isNotEmpty()) {
+                    app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_playlists))
+                }
+            }
+            
             refreshing = false
+            HomeSyncState.playlistSyncProgress = 1f
+            HomeSyncState.isSyncingPlaylists = false
         }
     }
 
@@ -386,7 +468,8 @@ fun HomeLibrary(
                         key = "separator",
                         contentType = 0,
                         span = { GridItemSpan(maxLineSpan) }) {
-                        Row(
+                        Column {
+                            Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
@@ -402,6 +485,37 @@ fun HomeLibrary(
                                     modifier = Modifier.padding(end = 12.dp)
                                 )
                             }
+                        }
+                        if (HomeSyncState.isSyncingPlaylists) {
+                            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
+                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    BasicText(
+                                        text = stringResource(R.string.syncing_item, HomeSyncState.playlistSyncCurrentName),
+                                        style = typography().xxs.semiBold.copy(color = colorPalette().textSecondary),
+                                        maxLines = 1,
+                                        modifier = Modifier.weight(1f).padding(end = 8.dp).basicMarquee(iterations = Int.MAX_VALUE)
+                                    )
+                                    Row {
+                                        BasicText(
+                                            text = stringResource(R.string.syncing_progress, HomeSyncState.playlistSyncCurrentIndex, HomeSyncState.playlistSyncTotal),
+                                            style = typography().xxs.semiBold.copy(color = colorPalette().textSecondary)
+                                        )
+                                        if (HomeSyncState.playlistSyncFailed > 0) {
+                                            BasicText(
+                                                text = " " + stringResource(R.string.syncing_failed, HomeSyncState.playlistSyncFailed),
+                                                style = typography().xxs.semiBold.copy(color = colorPalette().red)
+                                            )
+                                        }
+                                    }
+                                }
+                                androidx.compose.material3.LinearWavyProgressIndicator(
+                                    progress = { HomeSyncState.playlistSyncProgress },
+                                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                                    color = colorPalette().accent,
+                                    trackColor = colorPalette().background2
+                                )
+                            }
+                        }
                         }
                     }
 

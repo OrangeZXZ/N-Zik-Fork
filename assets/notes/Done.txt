@@ -23,3 +23,5 @@
 - ANDROID AUTO Refactored Android Auto package structure into dedicated session, models, and browse sub-packages.
 - Fix Android Auto queue scrolling refresh bug by disabling periodic position updates.
 - CustomColor now updates live without app restart: added customColorKey to SharedPreferences listener and removed restart message in settings
+- Added detailed syncing progress UI in Home pages (Artist, Album, Playlist) displaying current item name with marquee scrolling, progress (current/total), and error counts.
+- Added localization for sync states and prevented concurrent duplicate syncs with visual toaster error feedback.

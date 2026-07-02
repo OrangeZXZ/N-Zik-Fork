@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -110,6 +111,21 @@ import kotlinx.coroutines.runBlocking
 import app.n_zik.android.components.Sort
 import app.n_zik.android.components.tab.Search
 import app.n_zik.android.components.tab.SongShuffler
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.YtMusic
+import it.fast4x.innertube.models.bodies.BrowseBody
+import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.requests.albumPage
+import it.fast4x.innertube.requests.searchPage
+import it.fast4x.innertube.utils.from
+import app.kreate.android.me.knighthat.utils.PropUtils
+import app.it.fast4x.rimusic.utils.parseArtists
+import app.it.fast4x.rimusic.models.SongAlbumMap
+import app.it.fast4x.rimusic.utils.asMediaItem
+import kotlinx.coroutines.CoroutineScope
+import app.n_zik.android.appContext
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -226,16 +242,129 @@ fun HomeAlbums(
     val doAutoSync by rememberPreference(autosyncKey, false)
     var justSynced by rememberSaveable { mutableStateOf(!doAutoSync) }
 
+
     var refreshing by remember { mutableStateOf(false) }
-    val refreshScope = rememberCoroutineScope()
 
     fun refresh() {
-        if (refreshing) return
-        refreshScope.launch(Dispatchers.IO) {
+        if (refreshing || HomeSyncState.isSyncingAlbums) {
+            app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.already_syncing))
+            return
+        }
+        CoroutineScope(Dispatchers.IO).launch {
             refreshing = true
+            HomeSyncState.isSyncingAlbums = true
+            HomeSyncState.albumSyncProgress = 0f
             justSynced = false
-            delay(500)
+            
+            val ytAlbums = itemsOnDisplay.filter { it.isYoutubeAlbum || it.id.startsWith("MPRE") || it.id.startsWith("OLAK") }
+            val localAlbums = itemsOnDisplay.filterNot { it.isYoutubeAlbum || it.id.startsWith("MPRE") || it.id.startsWith("OLAK") }
+            val totalAlbums = ytAlbums.size + localAlbums.size
+
+            withContext(Dispatchers.Main) {
+                if (totalAlbums > 0) app.kreate.android.me.knighthat.utils.Toaster.i(appContext().getString(R.string.refreshing_albums, totalAlbums))
+            }
+            
+            var failedCount = 0
+            HomeSyncState.albumSyncFailed = 0
+            HomeSyncState.albumSyncTotal = totalAlbums
+
+            ytAlbums.forEachIndexed { index, album ->
+                HomeSyncState.albumSyncCurrentIndex = index + 1
+                HomeSyncState.albumSyncCurrentName = album.title ?: ""
+                HomeSyncState.albumSyncProgress = index.toFloat() / ytAlbums.size
+                kotlinx.coroutines.delay((2000L..5000L).random())
+                Timber.d("Refreshing album: ${album.title} (id: ${album.id})")
+                var status = 0 // 0=retry, 1=success
+                for (attempt in 1..3) {
+                    YtMusic.getAlbum(album.id, true).onSuccess { online ->
+                        val onlineAlbum = online.album
+                        val authorsText: String? = onlineAlbum.authors.parseArtists().joinToString(", ")
+                        Database.asyncTransaction {
+                            albumTable.upsert(Album(
+                                id = album.id,
+                                title = PropUtils.retainIfModified(album.title, onlineAlbum.title),
+                                thumbnailUrl = onlineAlbum.thumbnail?.url ?: album.thumbnailUrl,
+                                year = onlineAlbum.year ?: album.year,
+                                authorsText = PropUtils.retainIfModified(album.authorsText, authorsText),
+                                shareUrl = online.url,
+                                timestamp = album.timestamp,
+                                bookmarkedAt = album.bookmarkedAt,
+                                isYoutubeAlbum = album.isYoutubeAlbum,
+                                position = album.position
+                            ))
+                            online.songs.map { it.asMediaItem }.onEach { insertIgnore(it) }
+                                .mapIndexed { pos, mediaItem ->
+                                    SongAlbumMap(songId = mediaItem.mediaId, albumId = album.id, position = pos)
+                                }.also { songAlbumMapTable.upsert(it) }
+                        }
+                        Timber.d("Successfully refreshed album: ${album.title}")
+                        status = 1
+                    }.onFailure {
+                        Timber.e(it, "Failed to refresh album (attempt $attempt): ${album.title}")
+                    }
+                    if (status != 0) break
+                }
+                if (status != 1) {
+                    failedCount++
+                    HomeSyncState.albumSyncFailed = failedCount
+                }
+            }
+            
+            localAlbums.forEachIndexed { index, album ->
+                HomeSyncState.albumSyncCurrentIndex = ytAlbums.size + index + 1
+                HomeSyncState.albumSyncCurrentName = album.title ?: ""
+                HomeSyncState.albumSyncProgress = (ytAlbums.size + index).toFloat() / totalAlbums
+                val query = "${album.title} ${album.authorsText ?: ""}".trim()
+                if (query.isNotBlank()) {
+                    kotlinx.coroutines.delay((2000L..5000L).random())
+                    Timber.d("Searching YouTube for local album: $query")
+                    var status = 0 // 0=retry, 1=success, 2=not found
+                    for (attempt in 1..3) {
+                        val request = Innertube.searchPage<Innertube.AlbumItem>(
+                            body = SearchBody(query = query, params = Innertube.SearchFilter.Album.value),
+                            fromMusicShelfRendererContent = { content -> Innertube.AlbumItem.from(content) }
+                        )
+                        if (request == null) {
+                            status = 2
+                            break
+                        }
+                        request.onSuccess { searchResult ->
+                            val bestMatch = searchResult?.items?.firstOrNull()
+                            if (bestMatch != null) {
+                                Database.asyncTransaction {
+                                    albumTable.upsert(album.copy(
+                                        thumbnailUrl = bestMatch.thumbnail?.url ?: album.thumbnailUrl,
+                                        year = bestMatch.year ?: album.year
+                                    ))
+                                }
+                                Timber.d("Updated local album '${album.title}' with metadata from '${bestMatch.info?.name}'")
+                                status = 1
+                            } else {
+                                status = 2
+                            }
+                        }.onFailure {
+                            Timber.e(it, "Failed to search metadata for local album (attempt $attempt): $query")
+                        }
+                        if (status != 0) break
+                    }
+                    if (status != 1) {
+                        failedCount++
+                        HomeSyncState.albumSyncFailed = failedCount
+                    }
+                }
+            }
+            
+            withContext(Dispatchers.Main) {
+                if (failedCount > 0) {
+                    app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.failed_albums, failedCount))
+                } else if (totalAlbums > 0) {
+                    app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_albums))
+                }
+            }
+            
             refreshing = false
+            HomeSyncState.albumSyncProgress = 1f
+            HomeSyncState.isSyncingAlbums = false
         }
     }
 
@@ -309,7 +438,8 @@ fun HomeAlbums(
                         key = "separator",
                         span = { GridItemSpan(maxLineSpan) }
                     ) {
-                        Row(
+                        Column {
+                            Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
@@ -371,6 +501,37 @@ fun HomeAlbums(
                                     }
                                 }
                             }
+                        }
+                        if (HomeSyncState.isSyncingAlbums) {
+                            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
+                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                    BasicText(
+                                        text = stringResource(R.string.syncing_item, HomeSyncState.albumSyncCurrentName),
+                                        style = typography.xxs.semiBold.copy(color = colorPalette.textSecondary),
+                                        maxLines = 1,
+                                        modifier = Modifier.weight(1f).padding(end = 8.dp).basicMarquee(iterations = Int.MAX_VALUE)
+                                    )
+                                    Row {
+                                        BasicText(
+                                            text = stringResource(R.string.syncing_progress, HomeSyncState.albumSyncCurrentIndex, HomeSyncState.albumSyncTotal),
+                                            style = typography.xxs.semiBold.copy(color = colorPalette.textSecondary)
+                                        )
+                                        if (HomeSyncState.albumSyncFailed > 0) {
+                                            BasicText(
+                                                text = " " + stringResource(R.string.syncing_failed, HomeSyncState.albumSyncFailed),
+                                                style = typography.xxs.semiBold.copy(color = colorPalette.red)
+                                            )
+                                        }
+                                    }
+                                }
+                                androidx.compose.material3.LinearWavyProgressIndicator(
+                                    progress = { HomeSyncState.albumSyncProgress },
+                                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                                    color = colorPalette.accent,
+                                    trackColor = colorPalette.background2
+                                )
+                            }
+                        }
                         }
                     }
                     items(
