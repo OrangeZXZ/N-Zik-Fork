@@ -95,7 +95,6 @@ import timber.log.Timber
 // File-level tag is automatically created from the file name
 class MyClass {
     fun doSomething() {
-        Timber.d("Doing something")
         Timber.tag("MyClass").d("Doing something")
     }
 }
