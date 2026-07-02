@@ -41,6 +41,7 @@ Fixed:
 - Android Auto queue scrolling refresh bug by disabling periodic position updates
 - Auto-saved Albums missing artwork, artist name, and year during playback
 - Duplicated Artists in database by merging based on exact name match during auto-insertion
+- Duplicate white bar drag handle in Home sort order menu
 - Duplicate keys crash in Compose LazyGrids
 - Artist name wipe in Database.upsert(SongItem) — preserve author names with null browse endpoints
 - 'More of [artist]' button crash (navController.navigate from IO thread) and now works for songs without browse IDs

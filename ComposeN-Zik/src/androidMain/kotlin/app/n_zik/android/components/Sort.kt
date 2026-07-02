@@ -83,7 +83,7 @@ open class Sort<T: Enum<T>> (
     override fun onLongClick() = openMenu()
 
     @Composable
-    override fun ListMenu() = ListMenu.Menu {
+    override fun ListMenu() = ListMenu.Menu(showDragHandle = false) {
         // Ignore error "Cannot access 'java. lang. constant. Constable' which is a supertype of 'java. lang. Class'"
         sortBy.javaClass.enumConstants.forEach {
             ListMenu.Entry(
@@ -109,7 +109,7 @@ open class Sort<T: Enum<T>> (
     }
 
     @Composable
-    override fun GridMenu() = GridMenu.Menu {
+    override fun GridMenu() = GridMenu.Menu(showDragHandle = false) {
         items(
             // Ignore error "Cannot access 'java. lang. constant. Constable' which is a supertype of 'java. lang. Class'"
             items = sortBy.javaClass.enumConstants,
