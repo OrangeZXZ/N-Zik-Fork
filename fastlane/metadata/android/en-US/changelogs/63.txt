@@ -50,6 +50,7 @@ Fixed:
 - Bottom floating bar masking content in artist local tab and stats page
 - YTM section matching (Fresh finds, Featured playlists) + standardized section padding
 - Restore original caching guards for YTM API calls
+- Podcasts not showing up in Home and was broken in search
 
 Refactor:
 - Centralized all shuffle operations into Shuffler.kt with toast notifications showing item count
