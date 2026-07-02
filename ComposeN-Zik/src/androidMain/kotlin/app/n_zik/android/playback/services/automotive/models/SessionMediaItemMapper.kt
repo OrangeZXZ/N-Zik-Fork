@@ -1,7 +1,9 @@
-package app.n_zik.android.playback.models
+package app.n_zik.android.playback.services.automotive.models
 
+import app.n_zik.android.playback.services.automotive.session.AutoSessionConstants
+import app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper.drawableUri
+import app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper.browsableMediaItem
 import app.n_zik.android.playback.services.*
-import app.n_zik.android.playback.models.*
 import app.n_zik.android.playback.exceptions.*
 import app.n_zik.android.playback.utils.*
 
@@ -22,9 +24,11 @@ import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.persistentQueueKey
 import androidx.media3.session.MediaConstants.EXTRAS_KEY_IS_EXPLICIT
 import app.n_zik.android.core.coil.thumbnail
+import app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper.browsableMediaItem
+import app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper.drawableUri
 
 @UnstableApi
-object MediaItemMapper {
+object SessionMediaItemMapper {
 
     fun mapArtistToMediaItem(
         parentId: String,
@@ -76,7 +80,7 @@ object MediaItemMapper {
         }
         metadataBuilder.setExtras(extras)
 
-        return if (path.contains(MediaSessionConstants.ID_SEARCH_VIDEOS)) {
+        return if (path.contains(AutoSessionConstants.ID_SEARCH_VIDEOS)) {
             baseItem.buildUpon()
                 .setMediaId("$path/${song.id}")
                 .setMediaMetadata(metadataBuilder.setMediaType(MediaMetadata.MEDIA_TYPE_VIDEO).build())
@@ -103,37 +107,5 @@ object MediaItemMapper {
         return mediaItem.buildUpon().setMediaMetadata(metadataBuilder.build()).build()
     }
 
-    fun browsableMediaItem(
-        id: String,
-        title: String,
-        subtitle: String?,
-        iconUri: Uri?,
-        mediaType: Int = MediaMetadata.MEDIA_TYPE_MUSIC,
-        path: String = ""
-    ): MediaItem {
-        val cleanTitle = cleanPrefix(title)
-        
-        return MediaItem.Builder()
-            .setMediaId(id)
-            .setMediaMetadata(
-                MediaMetadata.Builder()
-                    .setTitle(cleanTitle)
-                    .setSubtitle(subtitle)
-                    .setArtist(subtitle)
-                    .setArtworkUri(iconUri)
-                    .setIsPlayable(false)
-                    .setIsBrowsable(true)
-                    .setMediaType(mediaType)
-                    .build()
-            )
-            .build()
-    }
 
-
-    fun drawableUri(context: Context, @DrawableRes id: Int): Uri = Uri.Builder()
-        .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
-        .authority(context.resources.getResourcePackageName(id))
-        .appendPath(context.resources.getResourceTypeName(id))
-        .appendPath(context.resources.getResourceEntryName(id))
-        .build()
 }

@@ -1,5 +1,6 @@
 package app.it.fast4x.rimusic.utils
 
+import app.n_zik.android.playback.services.automotive.session.AutoSessionConstants
 import android.R.attr.duration
 import app.n_zik.android.core.database.*
 
@@ -205,7 +206,7 @@ val Song.asMediaItem: MediaItem
                         artistsText ?: ""
                     }
                 )
-                .setArtworkUri(thumbnailUrl?.thumbnail(1200)?.toUri() ?: app.n_zik.android.playback.models.MediaItemMapper.drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
+                .setArtworkUri(thumbnailUrl?.thumbnail(1200)?.toUri() ?: app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper.drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
                 .setExtras(
                     bundleOf(
                         "durationText" to durationText,

@@ -1,7 +1,8 @@
-package app.n_zik.android.playback.models
+package app.n_zik.android.playback.services.automotive.session
 
+import app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper
+import app.n_zik.android.playback.services.automotive.models.SessionMediaItemMapper
 import app.n_zik.android.playback.services.*
-import app.n_zik.android.playback.models.*
 import app.n_zik.android.playback.exceptions.*
 import app.n_zik.android.playback.utils.*
 
@@ -14,7 +15,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.SessionCommand
 import app.n_zik.android.R
 
-object MediaSessionConstants {
+object AutoSessionConstants {
     const val ID_QUICK_PICKS = "QUICK_PICKS"
     const val ID_LUCKY_SHUFFLE = "LUCKY_SHUFFLE"
     const val ID_SONG_SHUFFLE = "SONG_SHUFFLE"
@@ -72,7 +73,7 @@ object MediaSessionConstants {
         .setMediaMetadata(
             MediaMetadata.Builder()
                 .setTitle(context.getString(R.string.shuffle))
-                .setArtworkUri(MediaItemMapper.drawableUri(context, R.drawable.random))
+                .setArtworkUri(AutoMediaItemMapper.drawableUri(context, R.drawable.random))
                 .setIsPlayable(true)
                 .setIsBrowsable(false)
                 .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
@@ -86,7 +87,7 @@ object MediaSessionConstants {
         .setMediaMetadata(
             MediaMetadata.Builder()
                 .setTitle(context.getString(R.string.play_all))
-                .setArtworkUri(MediaItemMapper.drawableUri(context, R.drawable.play))
+                .setArtworkUri(AutoMediaItemMapper.drawableUri(context, R.drawable.play))
                 .setIsPlayable(true)
                 .setIsBrowsable(false)
                 .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)

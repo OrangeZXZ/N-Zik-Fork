@@ -1,9 +1,9 @@
 package app.n_zik.android.playback.services
 
+import app.n_zik.android.playback.services.automotive.session.AutoSessionCallback
 import app.n_zik.android.core.database.*
 
 import app.n_zik.android.playback.services.*
-import app.n_zik.android.playback.models.*
 import app.n_zik.android.playback.exceptions.*
 import app.n_zik.android.playback.utils.*
 import app.n_zik.android.utils.artistTextOrDb
@@ -246,8 +246,8 @@ class PlayerServiceModern : MediaLibraryService(),
     private val coroutineScope = CoroutineScope(Dispatchers.IO) + Job()
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var mediaSession: MediaLibrarySession
-    private var mediaLibrarySessionCallback: MediaLibrarySessionCallback =
-        MediaLibrarySessionCallback(this, Database, MyDownloadHelper)
+    private var mediaLibrarySessionCallback: AutoSessionCallback =
+        AutoSessionCallback(this, Database, MyDownloadHelper)
     private var sessionController: MediaController? = null
     lateinit var player: ExoPlayer
     val playerUpdateTrigger = kotlinx.coroutines.flow.MutableStateFlow(0)
@@ -477,6 +477,7 @@ class PlayerServiceModern : MediaLibraryService(),
                         250 * resources.displayMetrics.density.toInt()
                     )
                 )
+                .setPeriodicPositionUpdateEnabled(false)
                 .build()
         
         mediaLibrarySessionCallback.observeRepository(mediaSession)

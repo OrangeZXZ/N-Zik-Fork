@@ -1,5 +1,6 @@
 package app.it.fast4x.rimusic.enums
 
+import app.n_zik.android.playback.services.automotive.session.AutoSessionConstants.CommandSearch
 import android.app.PendingIntent
 import androidx.annotation.DrawableRes
 import androidx.annotation.OptIn
@@ -10,12 +11,12 @@ import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.SessionCommand
 import app.n_zik.android.R
-import app.n_zik.android.playback.models.MediaSessionConstants.CommandSearch
-import app.n_zik.android.playback.models.MediaSessionConstants.CommandStartRadio
-import app.n_zik.android.playback.models.MediaSessionConstants.CommandToggleDownload
-import app.n_zik.android.playback.models.MediaSessionConstants.CommandToggleLike
-import app.n_zik.android.playback.models.MediaSessionConstants.CommandToggleRepeatMode
-import app.n_zik.android.playback.models.MediaSessionConstants.CommandToggleShuffle
+import app.n_zik.android.playback.services.automotive.session.AutoSessionConstants.CommandSearch
+import app.n_zik.android.playback.services.automotive.session.AutoSessionConstants.CommandStartRadio
+import app.n_zik.android.playback.services.automotive.session.AutoSessionConstants.CommandToggleDownload
+import app.n_zik.android.playback.services.automotive.session.AutoSessionConstants.CommandToggleLike
+import app.n_zik.android.playback.services.automotive.session.AutoSessionConstants.CommandToggleRepeatMode
+import app.n_zik.android.playback.services.automotive.session.AutoSessionConstants.CommandToggleShuffle
 import app.n_zik.android.playback.services.PlayerServiceModern
 import app.kreate.android.me.knighthat.enums.TextView
 
