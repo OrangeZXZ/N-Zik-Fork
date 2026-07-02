@@ -602,18 +602,35 @@ val alpha by animateFloatAsState(
 
 All logging must use Timber. The project initializes Timber in `MainApplication`.
 
+Use **tags** to differentiate modules and components. Tags help filter logs by feature area.
+
 ```kotlin
-// Debug logging (development only)
-Timber.d("Loading playlist: %s", playlistId)
+import timber.log.Timber
 
-// Warning (recoverable issues)
-Timber.w("Network request timed out, retrying...")
+// File-level tag is automatically created from the file name
+class MyClass {
+    fun doSomething() {
+        Timber.tag("MyClass").d("Doing something")
+    }
+}
+```
 
-// Error (failures with exceptions)
-Timber.e(exception, "Failed to load song: %s", songId)
+### Tag Convention
 
-// Info (important events)
-Timber.i("Playback started for: %s", song.title)
+Use the class name or module name as the tag:
+
+```kotlin
+// Debug logging with tag
+Timber.tag("PlayerService").d("Loading playlist: %s", playlistId)
+
+// Warning with tag
+Timber.tag("NetworkHelper").w("Request timed out, retrying...")
+
+// Error with tag and exception
+Timber.tag("YtMusic").e(exception, "Failed to load song: %s", songId)
+
+// Info with tag
+Timber.tag("Playback").i("Playback started for: %s", song.title)
 ```
 
 ### What to Log
@@ -636,7 +653,7 @@ Timber.i("Playback started for: %s", song.title)
 println("...")           // NEVER
 Log.d("TAG", "...")      // NEVER
 System.out.print(...)     // NEVER
-e.printStackTrace()       // NEVER - use Timber.e(e, "message")
+e.printStackTrace()       // NEVER - use Timber.tag("TAG").e(e, "message")
 ```
 
 ---
@@ -652,14 +669,14 @@ Use Kotlin's `runCatching` for operations that may fail:
 runCatching {
     riskyOperation()
 }.onFailure { e ->
-    Timber.e(e, "Operation failed")
+    Timber.tag("MyClass").e(e, "Operation failed")
 }
 
 // With transformation
 val result = runCatching {
     parseJson(rawData)
 }.getOrElse { e ->
-    Timber.e(e, "JSON parse failed")
+    Timber.tag("Parser").e(e, "JSON parse failed")
     defaultValue
 }
 
@@ -671,7 +688,7 @@ runCatching {
 }.onSuccess { transformed ->
     updateUI(transformed)
 }.onFailure { e ->
-    Timber.e(e, "Pipeline failed")
+    Timber.tag("DataLoader").e(e, "Pipeline failed")
     showError(e.message)
 }
 ```
