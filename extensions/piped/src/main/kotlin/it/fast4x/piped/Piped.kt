@@ -32,6 +32,7 @@ import it.fast4x.piped.models.authenticatedWith
 import it.fast4x.piped.utils.ProxyPreferences
 import it.fast4x.piped.utils.getProxy
 import it.fast4x.piped.utils.runCatchingCancellable
+import timber.log.Timber
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -166,7 +167,7 @@ object Piped {
             request(session, "user/playlists").body<List<PlaylistPreview>>()
         }
         suspend fun listTest(session: Session) = runCatchingCancellable {
-            println("pipedInfo piped.playlists.listTest: " + request(session, "user/playlists").bodyAsText())
+            Timber.d("Piped: playlists.listTest: %s", request(session, "user/playlists").bodyAsText())
         }
 
         suspend fun create(session: Session, name: String) = runCatchingCancellable {
@@ -215,7 +216,7 @@ object Piped {
                 }.isOk()
             }
         }?.onFailure {
-            println("pipedInfo piped.playlists.add general failed:  ${it.message}")
+            Timber.e(it, "Piped: playlists.add general failed")
         }
 
         suspend fun remove(session: Session, id: UUID, idx: Int) = runCatchingCancellable {
@@ -229,13 +230,13 @@ object Piped {
                 )
             }.isOk()
         }?.onFailure {
-            println("pipedInfo piped.playlists.remove: failed ${it.message}")
+            Timber.e(it, "Piped: playlists.remove failed")
         }
 
         suspend fun songs(session: Session, id: UUID) = runCatchingCancellable {
             request(session, "playlists/$id").body<Playlist>()
         }?.onFailure {
-            println("pipedInfo piped.playlists.songs: failed ${it.message}")
+            Timber.e(it, "Piped: playlists.songs failed")
         }
 
     }

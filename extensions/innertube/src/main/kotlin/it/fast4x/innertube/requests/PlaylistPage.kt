@@ -19,6 +19,7 @@ import it.fast4x.innertube.models.oddElements
 import it.fast4x.innertube.utils.from
 import it.fast4x.innertube.utils.runCatchingCancellable
 import it.fast4x.innertube.utils.runCatchingNonCancellable
+import timber.log.Timber
 
 data class PlaylistPage(
     val playlist: Innertube.PlaylistItem,
@@ -30,7 +31,7 @@ data class PlaylistPage(
 ) {
     companion object {
         fun fromMusicResponsiveListItemRenderer(renderer: MusicResponsiveListItemRenderer): Innertube.SongItem {
-            println("YtMusic getPlaylist PlaylistPage setVideoId ${renderer.playlistItemData?.playlistSetVideoId}")
+            Timber.d("PlaylistPage: fromMusicResponsiveListItemRenderer setVideoId: %s", renderer.playlistItemData?.playlistSetVideoId)
             return Innertube.SongItem(
                 info = Innertube.Info(
                     name = renderer.flexColumns.firstOrNull()
@@ -73,16 +74,6 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatchingCancellable {
         setBody(body)
         //body.context.apply()
     }.body<BrowseResponse>()
-
-//    val songsOld = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
-//        ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
-//        ?.musicPlaylistShelfRenderer?.contents
-//
-//    val songsNew = response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
-//        ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents
-//
-//    println("mediaItem playlistPage songsOld ${songsOld?.size}")
-//    println("mediaItem playlistPage songsNew ${songsNew?.size}")
 
 
     if (response.contents?.twoColumnBrowseResultsRenderer == null) {
@@ -233,38 +224,15 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatchingCancellable {
     }
 
 }?.onFailure {
-    println("mediaItem ERROR IN Innertube playlistpage " + it.message)
+    Timber.e(it, "Innertube: playlistPage error")
 }
 
 suspend fun Innertube.playlistPage(body: ContinuationBody) = runCatchingNonCancellable {
     val call = Innertube.browse(continuation = body.continuation)
     val callResponse = call.bodyAsText()
     val response = call.body<BrowseResponse>()
-//    println("mediaItem playlist completed() ContinuationResponse sectionListContinuation ${response.continuationContents?.sectionListContinuation
-//        ?.contents?.map {
-//            it.musicCarouselShelfRenderer?.contents?.map {
-//                it.musicTwoRowItemRenderer.
-//            }
-//        }}")
-//    println("mediaItem playlist completed() ContinuationResponse musicPlaylistShelfContinuation ${response.continuationContents?.musicPlaylistShelfContinuation
-//        ?.continuations?.map {
-//            it.nextContinuationData
-//        }}")
-//    println("mediaItem playlist completed() ContinuationResponse musicShelfContinuation ${response.continuationContents?.musicShelfContinuation}")
-//    println("mediaItem playlist completed() ContinuationResponse gridContinuation ${response.continuationContents?.gridContinuation}")
-//    val response = client.post(browse) {
-//        setLogin(setLogin = true)
-//        setBody(body)
-//        parameter("continuation", body.continuation)
-//        parameter("ctoken", body.continuation)
-//        parameter("type", "next")
-//        //body.context.apply()
-//    }.body<ContinuationResponse>()
 
-//    println("mediaItem playlist completed() ContinuationResponse ${response.continuationContents?.musicPlaylistShelfContinuation}")
-////    response.continuationContents?.musicPlaylistShelfContinuation?.toSongsPage()
-
-    println("mediaItem playlist completed() ContinuationResponse ${response.continuationContents?.musicShelfContinuation}")
+    Timber.d("PlaylistPage: continuation response musicShelfContinuation: %s", response.continuationContents?.musicShelfContinuation)
     response
         .continuationContents
         ?.musicShelfContinuation
@@ -276,14 +244,6 @@ private fun MusicShelfRenderer?.toSongsPage() = Innertube.ItemsPage(
         ?.contents
         ?.mapNotNull(MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
         ?.mapNotNull(Innertube.SongItem::from),
-        /*
-        ?.also {
-            println("mediaItem MusicShelfRenderer toSongsPage ${it.size}")
-            it.forEach {
-                println("mediaItem MusicShelfRenderer toSongsPage song name ${it.info?.name} videoId ${it.info?.endpoint?.videoId} ")
-            }
-        },
-         */
     continuation = this
         ?.continuations
         ?.firstOrNull()
@@ -295,14 +255,6 @@ private fun BrowseResponse.ContinuationContents.MusicPlaylistShelfContinuation?.
         ?.contents
         ?.mapNotNull(MusicShelfRenderer.Content::musicResponsiveListItemRenderer)
         ?.mapNotNull(Innertube.SongItem::from),
-    /*
-    ?.also {
-        println("mediaItem MusicShelfRenderer toSongsPage ${it.size}")
-        it.forEach {
-            println("mediaItem MusicShelfRenderer toSongsPage song name ${it.info?.name} videoId ${it.info?.endpoint?.videoId} ")
-        }
-    },
-     */
     continuation = this
         ?.continuations
         ?.firstOrNull()

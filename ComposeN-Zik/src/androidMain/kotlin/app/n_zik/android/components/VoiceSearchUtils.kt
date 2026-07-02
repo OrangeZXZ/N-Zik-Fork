@@ -10,9 +10,9 @@ import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
-import android.util.Log
 import androidx.core.content.ContextCompat
 import app.n_zik.android.R
+import timber.log.Timber
 import java.util.Locale
 
 class VoiceSearchUtils(
@@ -31,7 +31,7 @@ class VoiceSearchUtils(
 
     private val recognitionListener = object : RecognitionListener {
         override fun onReadyForSpeech(params: Bundle?) {
-            Log.d("VoiceSearch", "Ready")
+            Timber.d("VoiceSearch: Ready")
             hasReceivedResults = false
             isCancelled = false
             isListening = true
@@ -39,7 +39,7 @@ class VoiceSearchUtils(
         }
 
         override fun onBeginningOfSpeech() {
-            Log.d("VoiceSearch", "Speech detected")
+            Timber.d("VoiceSearch: Speech detected")
             mainHandler.post { onSpeechDetected() }
         }
 
@@ -48,7 +48,7 @@ class VoiceSearchUtils(
         override fun onBufferReceived(buffer: ByteArray?) {}
 
         override fun onEndOfSpeech() {
-            Log.d("VoiceSearch", "End of speech")
+            Timber.d("VoiceSearch: End of speech")
             if (!isCancelled) {
                 mainHandler.post { onListeningStateChanged(false) }
             }
@@ -57,10 +57,10 @@ class VoiceSearchUtils(
 
         override fun onError(error: Int) {
             if (hasReceivedResults || isCancelled) {
-                Log.d("VoiceSearch", "Ignoring error $error after results/cancel")
+                Timber.d("VoiceSearch: Ignoring error %d after results/cancel", error)
                 return
             }
-            Log.e("VoiceSearch", "Error: $error")
+            Timber.e("VoiceSearch: Error: %d", error)
             isListening = false
             mainHandler.post {
                 onListeningStateChanged(false)
@@ -72,13 +72,13 @@ class VoiceSearchUtils(
         }
 
         override fun onResults(results: Bundle?) {
-            Log.d("VoiceSearch", "Results")
+            Timber.d("VoiceSearch: Results")
             hasReceivedResults = true
             isListening = false
             mainHandler.post { onListeningStateChanged(false) }
             val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (!matches.isNullOrEmpty()) {
-                Log.d("VoiceSearch", "Result: ${matches[0]}, Language: ${Locale.getDefault()}")
+                Timber.d("VoiceSearch: Result: %s, Language: %s", matches[0], Locale.getDefault())
                 mainHandler.post { onResult(matches[0]) }
             }
             speechRecognizer?.stopListening()
@@ -119,7 +119,7 @@ class VoiceSearchUtils(
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         }
 
-        Log.d("VoiceSearch", "Starting (auto-detect language)")
+        Timber.d("VoiceSearch: Starting (auto-detect language)")
 
         speechRecognizer?.startListening(intent)
     }
@@ -132,7 +132,7 @@ class VoiceSearchUtils(
             speechRecognizer?.cancel()
             speechRecognizer?.destroy()
         } catch (e: Exception) {
-            Log.e("VoiceSearch", "Error stopping", e)
+            Timber.e(e, "VoiceSearch: Error stopping")
         }
         speechRecognizer = null
     }

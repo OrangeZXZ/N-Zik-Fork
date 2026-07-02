@@ -42,6 +42,7 @@ import app.kreate.android.me.knighthat.utils.Repository
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.core.network.client.NetworkClientFactory
 import okhttp3.Request
+import timber.log.Timber
 import java.net.UnknownHostException
 import java.nio.file.NoSuchFileException
 import kotlin.math.pow
@@ -252,7 +253,7 @@ object Updater {
                     }
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.e(e, "Updater: Error fetching fastlane changelog")
             } finally {
                 isFetchingFastlane = false
             }
@@ -284,7 +285,7 @@ object Updater {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e, "Updater: Error fetching current fastlane changelog")
             // If network fails, try to load from cache
             if (currentFastlaneChangelog.isNullOrBlank()) {
                 loadCachedChangelog()

@@ -267,8 +267,7 @@ fun Queue(
             navController = navController,
             mediaItems = { getSongs().map( Song::asMediaItem ) },
             onFailure = { throwable, preview ->
-                Timber.e( "Failed to add songs to playlist ${preview.playlist.name} on HomeSongs" )
-                throwable.printStackTrace()
+                Timber.e(throwable, "Queue: Failed to add songs to playlist ${preview.playlist.name}")
             },
             finalAction = {
                 // Turn of selector clears the selected list

@@ -123,7 +123,7 @@ fun tryCopyDir() {
         copyDir(from.toPath(), to.toPath())
         Timber.d("Copying succeeded.")
     } catch (ex: IOException) {
-        ex.printStackTrace()
+        Timber.e(ex, "FileUtils: Failed to copy directory")
     }
 }
  */

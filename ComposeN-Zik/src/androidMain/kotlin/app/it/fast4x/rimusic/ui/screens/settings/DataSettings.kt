@@ -28,6 +28,7 @@ import app.n_zik.android.core.database.Database
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.CacheType
+import timber.log.Timber
 import app.it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import app.it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import app.it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
@@ -131,7 +132,7 @@ fun DataSettings() {
                     }
                 }
                 val deleted = java.io.File(context.filesDir, "waveforms").deleteRecursively()
-                android.util.Log.d("NZik_DataSettings", "Waveforms cache deleted (offline songs): $deleted")
+                Timber.d("NZik_DataSettings: Waveforms cache deleted (offline songs): %s", deleted)
                 cleanCacheOfflineSongs = false
                 cacheCleanedCounter++
             }
@@ -159,7 +160,7 @@ fun DataSettings() {
                     }
                 }
                 val deleted = java.io.File(context.filesDir, "waveforms").deleteRecursively()
-                android.util.Log.d("NZik_DataSettings", "Waveforms cache deleted (downloads): $deleted")
+                Timber.d("NZik_DataSettings: Waveforms cache deleted (downloads): %s", deleted)
                 cleanDownloadCache = false
                 cacheCleanedCounter++
             }
@@ -564,7 +565,7 @@ fun DataSettings() {
                                 eventTable.deleteAll()
                             }
                             val deleted = java.io.File(context.filesDir, "waveforms").deleteRecursively()
-                            android.util.Log.d("NZik_DataSettings", "Waveforms cache deleted (history clear): $deleted")
+                            Timber.d("NZik_DataSettings: Waveforms cache deleted (history clear): %s", deleted)
                             Toaster.done()
                         }
                     )

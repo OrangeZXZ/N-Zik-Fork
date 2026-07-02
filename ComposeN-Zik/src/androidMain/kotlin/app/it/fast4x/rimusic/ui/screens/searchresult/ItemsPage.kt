@@ -56,6 +56,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.ui.res.stringResource
 import app.n_zik.android.R
 import kotlinx.coroutines.delay
+import timber.log.Timber
 
 
 @ExperimentalAnimationApi
@@ -114,7 +115,7 @@ inline fun <T : Innertube.Item> ItemsPage(
                         itemsPage = merged
                     }
                 }?.onFailure {
-                    it.printStackTrace()
+                    Timber.e(it, "ItemsPage: Failed to load more items")
                     delay(2000) // Avoid rapid retry on failure
                 }
                 delay(250) // Allow UI to recompose and update layout info
@@ -133,7 +134,7 @@ inline fun <T : Innertube.Item> ItemsPage(
                 } else {
                     itemsPage = it
                 }
-            }?.exceptionOrNull()?.printStackTrace()
+            }?.onFailure { e -> Timber.e(e, "ItemsPage: Failed to load initial items") }
         }
     }
 
@@ -292,7 +293,7 @@ inline fun <T : Innertube.Item> ItemsGridPage(
                         itemsPage = merged
                     }
                 }?.onFailure {
-                    it.printStackTrace()
+                    Timber.e(it, "ItemsPage: Failed to load more items")
                     delay(2000)
                 }
                 delay(250) // Allow UI to recompose and update layout info
@@ -311,7 +312,7 @@ inline fun <T : Innertube.Item> ItemsGridPage(
                 } else {
                     itemsPage = it
                 }
-            }?.exceptionOrNull()?.printStackTrace()
+            }?.onFailure { e -> Timber.e(e, "ItemsPage: Failed to load initial items") }
         }
     }
 

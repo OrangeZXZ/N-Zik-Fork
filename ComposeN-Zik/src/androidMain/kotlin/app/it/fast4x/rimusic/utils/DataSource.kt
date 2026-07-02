@@ -23,6 +23,7 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import app.n_zik.android.playback.exceptions.UnplayableException
 import app.n_zik.android.playback.exceptions.UnknownException
+import timber.log.Timber
 
 
 @UnstableApi
@@ -54,7 +55,7 @@ class CatchingDataSourceFactory(private val parent: DataSource.Factory) : DataSo
         override fun open(dataSpec: DataSpec) = runCatching {
             parent.open(dataSpec)
         }.getOrElse {
-            it.printStackTrace()
+            Timber.e(it, "DataSource: Failed to open data source")
 
             if (it is InvalidResponseCodeException && it.responseCode == 403) throw UnplayableException()
             if (it.cause is InvalidResponseCodeException && (it.cause as InvalidResponseCodeException).responseCode == 403) throw UnplayableException()

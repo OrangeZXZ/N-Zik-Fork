@@ -128,6 +128,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.components.ui.screens.DynamicOrientationLayout
 import app.n_zik.android.components.ui.screens.album.Translate
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @ExperimentalFoundationApi
 @UnstableApi
@@ -401,7 +402,7 @@ fun ArtistDetails(
                                         Language.AUTO
                                     ).translatedText
                                 } catch (e: Exception) {
-                                    e.printStackTrace()
+                                    Timber.e(e, "ArtistDetails: Failed to translate text")
                                 }
                             }
                             translatedText = if (result.toString() == "kotlin.Unit") "" else result.toString()

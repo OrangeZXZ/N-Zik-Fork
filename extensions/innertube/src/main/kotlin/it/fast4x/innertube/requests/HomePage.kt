@@ -7,6 +7,7 @@ import it.fast4x.innertube.models.MusicCarouselShelfRenderer
 import it.fast4x.innertube.models.MusicTwoRowItemRenderer
 import it.fast4x.innertube.models.oddElements
 import kotlinx.serialization.Serializable
+import timber.log.Timber
 
 @Serializable
 data class HomePage(
@@ -47,9 +48,9 @@ data class HomePage(
             private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer?): Innertube.Item? {
                 return when {
                     renderer?.isSong == true -> {
-                        println("getHomePage() fromMusicTwoRowItemRenderer isSong: ${renderer.title?.runs?.firstOrNull()?.text}")
+                        Timber.d("HomePage: fromMusicTwoRowItemRenderer isSong: ${renderer.title?.runs?.firstOrNull()?.text}")
                         val songSubtitleRuns = renderer.subtitle?.runs?.map { "${it.text}(${it.navigationEndpoint?.browseEndpoint != null})" }
-                        println("getHomePage() isSong subtitle runs: $songSubtitleRuns")
+                        Timber.d("HomePage: isSong subtitle runs: $songSubtitleRuns")
                         Innertube.SongItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -73,7 +74,7 @@ data class HomePage(
                     }
 
                     renderer?.isAlbum == true -> {
-                        println("getHomePage() fromMusicTwoRowItemRenderer isAlbum: ${renderer.title?.runs?.firstOrNull()?.text}")
+                        Timber.d("HomePage: fromMusicTwoRowItemRenderer isAlbum: ${renderer.title?.runs?.firstOrNull()?.text}")
                         Innertube.AlbumItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -98,7 +99,7 @@ data class HomePage(
                     }
 
                     renderer?.isPlaylist == true -> {
-                        println("getHomePage() fromMusicTwoRowItemRenderer isPlaylist: ${renderer.title?.runs?.firstOrNull()?.text}")
+                        Timber.d("HomePage: fromMusicTwoRowItemRenderer isPlaylist: ${renderer.title?.runs?.firstOrNull()?.text}")
                         Innertube.PlaylistItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -112,7 +113,7 @@ data class HomePage(
                     }
 
                     renderer?.isArtist == true -> {
-                        println("getHomePage() fromMusicTwoRowItemRenderer isArtist: ${renderer.title?.runs?.firstOrNull()?.text}")
+                        Timber.d("HomePage: fromMusicTwoRowItemRenderer isArtist: ${renderer.title?.runs?.firstOrNull()?.text}")
                         Innertube.ArtistItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -124,9 +125,9 @@ data class HomePage(
                     }
 
                     renderer?.isVideo == true -> {
-                        println("getHomePage() fromMusicTwoRowItemRenderer isVideo: ${renderer.title?.runs?.firstOrNull()?.text}")
+                        Timber.d("HomePage: fromMusicTwoRowItemRenderer isVideo: ${renderer.title?.runs?.firstOrNull()?.text}")
                         val subtitleParts = renderer.subtitle?.splitBySeparator() ?: emptyList()
-                        println("getHomePage() isVideo subtitleParts count=${subtitleParts.size}: $subtitleParts")
+                        Timber.d("HomePage: isVideo subtitleParts count=${subtitleParts.size}: $subtitleParts")
                         Innertube.VideoItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -154,7 +155,7 @@ data class HomePage(
                     }
 
                     else -> {
-                        println("getHomePage() fromMusicTwoRowItemRenderer else renderer: ${renderer}")
+                        Timber.d("HomePage: fromMusicTwoRowItemRenderer else renderer: ${renderer}")
                         null
                     }
                 }

@@ -157,6 +157,7 @@ import dev.rebelonion.translator.Translator
 import app.n_zik.android.components.SongItem
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.playback.utils.Shuffler
+import timber.log.Timber
 
 
 @ExperimentalTextApi
@@ -208,7 +209,7 @@ fun PlaylistSongList(
                                                .fastFilter { !parentalControlEnabled || !it.explicit }
                                                .fastDistinctBy( Innertube.SongItem::key )
                 continuation = onlinePlaylist.songsContinuation
-            }.exceptionOrNull()?.printStackTrace()
+            }.onFailure { e -> Timber.e(e, "PlaylistSongList: Failed to load initial playlist") }
         }
     }
 
@@ -228,7 +229,7 @@ fun PlaylistSongList(
                                                    .fastFilter { !parentalControlEnabled || !it.explicit }
                                                    .fastDistinctBy( Innertube.SongItem::key )
                     continuation = onlinePlaylist.songsContinuation
-                }.exceptionOrNull()?.printStackTrace()
+                }.onFailure { e -> Timber.e(e, "PlaylistSongList: Failed to load more playlist songs") }
             }
     }
 
@@ -887,7 +888,7 @@ fun PlaylistSongList(
                                                 Language.AUTO
                                             ).translatedText
                                         } catch (e: Exception) {
-                                            e.printStackTrace()
+                                            Timber.e(e, "PlaylistSongList: Failed to translate text")
                                         }
                                     }
                                     translatedText = if (result.toString() == "kotlin.Unit") "" else result.toString()

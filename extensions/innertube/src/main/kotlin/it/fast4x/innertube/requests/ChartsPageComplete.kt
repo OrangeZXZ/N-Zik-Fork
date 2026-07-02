@@ -11,6 +11,7 @@ import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.SectionListRenderer
 import it.fast4x.innertube.models.bodies.BrowseBodyWithLocale
 import it.fast4x.innertube.models.bodies.FormData
+import timber.log.Timber
 
 suspend fun Innertube.chartsPageComplete(countryCode: String = "") = runCatching {
     val response = client.post(browse) {
@@ -44,7 +45,7 @@ suspend fun Innertube.chartsPageComplete(countryCode: String = "") = runCatching
     )
 
 }.onFailure {
-    println("mediaItem ERROR IN Innertube chartsPage " + it.stackTraceToString())
+    Timber.e(it, "Innertube: chartsPage error")
 }
 
 fun Innertube.PlaylistItem.Companion.fromComplete(renderer: MusicCarouselShelfRenderer): Innertube.PlaylistItem? {
@@ -218,10 +219,10 @@ fun parseChart(data: SectionListRenderer?): Innertube.ChartsPage? {
                 }
             }
         }
-        println("mediaItem Innertube.chartsPageComplete parseChart listSongItem: ${listSongItem.size} -> $listSongItem")
-        println("mediaItem Innertube.chartsPageComplete parseChart listVideoItem: ${listVideoItem.size} -> $listVideoItem")
-        println("mediaItem Innertube.chartsPageComplete parseChart listArtistItem: ${listArtistItem.size} -> $listArtistItem")
-        println("mediaItem Innertube.chartsPageComplete parseChart listTrendingItem: ${listTrendingItem.size} -> $listTrendingItem")
+        Timber.d("Innertube.chartsPageComplete parseChart listSongItem: %d -> %s", listSongItem.size, listSongItem)
+        Timber.d("Innertube.chartsPageComplete parseChart listVideoItem: %d -> %s", listVideoItem.size, listVideoItem)
+        Timber.d("Innertube.chartsPageComplete parseChart listArtistItem: %d -> %s", listArtistItem.size, listArtistItem)
+        Timber.d("Innertube.chartsPageComplete parseChart listTrendingItem: %d -> %s", listTrendingItem.size, listTrendingItem)
 
         return Innertube.ChartsPage(
             artists = listArtistItem,

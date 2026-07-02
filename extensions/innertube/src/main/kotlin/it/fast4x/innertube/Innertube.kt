@@ -64,6 +64,7 @@ import nl.adaptivity.xmlutil.XmlDeclMode
 import nl.adaptivity.xmlutil.serialization.XML
 import java.net.Proxy
 import java.util.Locale
+import timber.log.Timber
 
 object Innertube {
 
@@ -174,7 +175,7 @@ object Innertube {
                 }.jsonPrimitive.content
                 visitorData = newVisitorData
             }.onFailure {
-                it.printStackTrace()
+                Timber.e(it, "Innertube: ensureVisitorData error")
             }
         }
     }
@@ -594,7 +595,7 @@ object Innertube {
         ytClient: Client,
         playlistId: String,
     ) = client.post(playlistDelete) {
-        println("deleting $playlistId")
+        Timber.d("deleting %s", playlistId)
         setLogin(ytClient, setLogin = true)
         setBody(
             PlaylistDeleteBody(
@@ -934,8 +935,8 @@ object Innertube {
             )
             
             val jsonString = kotlinx.serialization.json.Json { encodeDefaults = true; explicitNulls = false }.encodeToString(PlayerBody.serializer(), bodyObj)
-            println("NZIK_DEBUG_PAYLOAD TargetHost: $targetHost, Client: ${context.client.clientName}")
-            println("NZIK_DEBUG_PAYLOAD Body: $jsonString")
+            Timber.d("NZIK_DEBUG_PAYLOAD TargetHost: %s, Client: %s", targetHost, context.client.clientName)
+            Timber.d("NZIK_DEBUG_PAYLOAD Body: %s", jsonString)
 
             setBody(bodyObj)
         }

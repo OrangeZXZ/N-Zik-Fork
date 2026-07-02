@@ -666,7 +666,7 @@ class MainActivity :
 
                         }
                     } catch (e: Exception) {
-                        e.printStackTrace()
+                        Timber.e(e, "MainActivity: Error loading appearance")
                     }
                 }
             }

@@ -205,8 +205,7 @@ fun AlbumDetails(
         navController,
         { getMediaItems() },
         { throwable, preview ->
-            Timber.e( "Failed to add songs to playlist ${preview.playlist.name} on HomeSongs" )
-            throwable.printStackTrace()
+            Timber.e(throwable, "AlbumDetails: Failed to add songs to playlist ${preview.playlist.name}")
         },
         {
             // Turn of selector clears the selected list
@@ -402,7 +401,7 @@ fun AlbumDetails(
                                             Language.AUTO
                                         ).translatedText
                                     } catch (e: Exception) {
-                                        e.printStackTrace()
+                                        Timber.e(e, "AlbumDetails: Failed to translate text")
                                     }
                                 }
                                 translatedText = if (result.toString() == "kotlin.Unit") "" else result.toString()

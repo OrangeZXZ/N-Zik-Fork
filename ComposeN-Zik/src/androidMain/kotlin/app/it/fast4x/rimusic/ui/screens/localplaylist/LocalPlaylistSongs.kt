@@ -369,7 +369,7 @@ fun LocalPlaylistSongs(
                             wasCancelled = true
                             throw e
                         } catch (e: Exception) {
-                            e.printStackTrace()
+                            Timber.e(e, "LocalPlaylistSongs: Failed to match song to album version")
                         } finally {
                             if (!wasCancelled) songsMatched++
                         }
@@ -471,7 +471,7 @@ fun LocalPlaylistSongs(
                             wasCancelled = true
                             throw e
                         } catch (e: Exception) {
-                            e.printStackTrace()
+                            Timber.e(e, "LocalPlaylistSongs: Failed to match song to album version")
                         } finally {
                             if (!wasCancelled) songsMatched++
                         }
@@ -719,8 +719,7 @@ fun LocalPlaylistSongs(
             getMediaItems()
         },
         { throwable, preview ->
-            Timber.e( "Failed to add songs to playlist ${preview.playlist.name} on LocalPlaylistSongs" )
-            throwable.printStackTrace()
+            Timber.e(throwable, "LocalPlaylistSongs: Failed to add songs to playlist ${preview.playlist.name}")
         },
         {
             // Turn of selector clears the selected list

@@ -9,6 +9,7 @@ import it.fast4x.innertube.models.bodies.FormData
 import it.fast4x.innertube.models.v0624.charts.BrowseChartsResponse0624
 import it.fast4x.innertube.models.v0624.charts.MusicCarouselShelfRenderer
 import it.fast4x.innertube.models.v0624.charts.MusicCarouselShelfRendererContent
+import timber.log.Timber
 
 suspend fun Innertube.chartsPage(countryCode: String = "") = runCatching {
     val response = client.post(browse) {
@@ -51,7 +52,7 @@ suspend fun Innertube.chartsPage(countryCode: String = "") = runCatching {
     )
 
 }.onFailure {
-    println("mediaItem ERROR IN Innertube chartsPage " + it.message)
+    Timber.e(it, "Innertube: chartsPage error")
 }
 
 fun Innertube.PlaylistItem.Companion.from(renderer: MusicCarouselShelfRenderer): Innertube.PlaylistItem? {

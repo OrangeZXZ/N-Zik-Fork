@@ -12,7 +12,6 @@ import androidx.media3.common.Player.REPEAT_MODE_ALL
 import androidx.media3.common.Player.REPEAT_MODE_OFF
 import androidx.media3.common.Player.REPEAT_MODE_ONE
 import androidx.media3.common.Timeline
-import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.DurationInMinutes
@@ -92,11 +91,11 @@ fun Player.shuffleQueue() {
 @SuppressLint("Range")
 @UnstableApi
 fun Player.playAtMedia(mediaItems: List<MediaItem>, mediaId: String) {
-    Log.d("mediaItem-playAtMedia","${mediaItems.size}")
+    Timber.d("mediaItem-playAtMedia: %d", mediaItems.size)
     if (mediaItems.isEmpty()) return
     val itemIndex = findMediaItemIndexById(mediaId)
 
-    Log.d("mediaItem-playAtMedia",itemIndex.toString())
+    Timber.d("mediaItem-playAtMedia: %d", itemIndex)
     setMediaItems(mediaItems, itemIndex, C.TIME_UNSET)
     prepare()
     restoreGlobalVolume()

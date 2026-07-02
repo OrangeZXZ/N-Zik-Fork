@@ -1747,7 +1747,7 @@ class PlayerServiceModern : MediaLibraryService(),
             Timber.e(it.stackTraceToString())
 
         }.onSuccess {
-            Log.d("mediaItem", "QueuePersistentEnabled Saved $persistentQueue")
+            Timber.d("QueuePersistentEnabled Saved %s", persistentQueue)
         }
 
     }

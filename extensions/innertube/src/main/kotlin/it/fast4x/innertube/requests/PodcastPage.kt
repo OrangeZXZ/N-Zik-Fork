@@ -9,26 +9,13 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.v0624.podcasts.BrowsePodcastsResponse0624
 import it.fast4x.innertube.models.v0624.podcasts.MusicShelfContinuation
 import it.fast4x.innertube.models.v0624.podcasts.MusicShelfRendererContent
+import timber.log.Timber
 
 suspend fun Innertube.podcastPage(body: BrowseBody) = runCatching {
     val response = client.post(browse) {
         setBody(body)
         body.context.apply()
     }.body<BrowsePodcastsResponse0624>()
-    //println("mediaItem podcastPage response $response")
-
-    /*
-    println("mediaItem podcastPage response ${
-        response
-            .contents
-            ?.twoColumnBrowseResultsRenderer
-            ?.secondaryContents
-            ?.sectionListRenderer
-            ?.contents?.firstOrNull()
-            ?.musicShelfRenderer
-            ?.contents
-    }")
-     */
 
     val listEpisode = arrayListOf<Innertube.Podcast.EpisodeItem>()
     val thumbnail =
@@ -85,7 +72,7 @@ suspend fun Innertube.podcastPage(body: BrowseBody) = runCatching {
     val data =
         response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer?.contents?.firstOrNull()
             ?.musicShelfRenderer?.contents
-    println("mediaItem podcastPage contents count ${data?.size}")
+    Timber.d("PodcastPage: contents count %d", data?.size)
     parsePodcastData(data, author).let {
         listEpisode.addAll(it)
     }
@@ -103,7 +90,7 @@ suspend fun Innertube.podcastPage(body: BrowseBody) = runCatching {
             ?.nextContinuationData
             ?.continuation
 
-    println("mediaItem podcastPage first continueParam $continueParam")
+    Timber.d("PodcastPage: first continueParam %s", continueParam)
 
     while (continueParam != null) {
         val continueData = browse(
@@ -127,10 +114,9 @@ suspend fun Innertube.podcastPage(body: BrowseBody) = runCatching {
                 ?.nextContinuationData
                 ?.continuation
 
-        println("mediaItem podcastPage other continueParam $continueParam")
+        Timber.d("PodcastPage: other continueParam %s", continueParam)
     }
 
-    //println("mediaItem podcastPage listEpisode ${listEpisode.size}")
     Innertube.Podcast(
         title = title ?: "",
         //author = author ?: Innertube.ArtistItem(info = Innertube.Info(name = "", endpoint = null), thumbnail = null, subscribersCountText = null),
@@ -143,7 +129,7 @@ suspend fun Innertube.podcastPage(body: BrowseBody) = runCatching {
 
 
 }.onFailure {
-    println("mediaItem ERROR IN Innertube podcastsPage " + it.message)
+    Timber.e(it, "Innertube: podcastsPage error")
 }
 
 fun parsePodcastData(
@@ -154,7 +140,6 @@ fun parsePodcastData(
     //if (listContent == null) return emptyList()
     //else {
         val listEpisode: ArrayList<Innertube.Podcast.EpisodeItem> = arrayListOf()
-        //println("mediaItem parsePodcastData listContent size ${listContent?.size}")
         listContent?.forEach { content ->
             listEpisode.add(
                 Innertube.Podcast.EpisodeItem(

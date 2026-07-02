@@ -13,6 +13,7 @@ import it.fast4x.innertube.models.bodies.SearchSuggestionsBody
 import it.fast4x.innertube.models.oddElements
 import it.fast4x.innertube.models.splitBySeparator
 import it.fast4x.innertube.utils.runCatchingNonCancellable
+import timber.log.Timber
 
 suspend fun Innertube.searchSuggestions(body: SearchSuggestionsBody) = runCatchingNonCancellable {
     val response = client.post(searchSuggestions) {
@@ -51,8 +52,8 @@ suspend fun Innertube.searchSuggestionsWithItems(body: SearchSuggestionsBody) = 
             }
         }.orEmpty()
 
-    println("mediaItem Innertube.searchSuggestionsWithItems queries $queries")
-    println("mediaItem Innertube.searchSuggestionsWithItems recommendedItems $recommendedItems")
+    Timber.d("SearchSuggestions: searchSuggestionsWithItems queries $queries")
+    Timber.d("SearchSuggestions: searchSuggestionsWithItems recommendedItems $recommendedItems")
 
     Innertube.SearchSuggestions(
         queries = queries,

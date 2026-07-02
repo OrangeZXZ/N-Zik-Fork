@@ -498,7 +498,7 @@ fun UpdateScreen(navController: NavController) {
                                                 )
                                                 Updater.fetchCurrentFastlaneChangelog()
                                             } catch (e: Exception) {
-                                                e.printStackTrace()
+                                                Timber.e(e, "UpdateScreen: Error fetching update")
                                                 Toaster.w(R.string.update_not_available_yet)
                                             }
                                         }

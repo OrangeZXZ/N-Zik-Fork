@@ -6,6 +6,7 @@ import it.fast4x.innertube.models.MusicResponsiveListItemRenderer
 import it.fast4x.innertube.models.MusicTwoRowItemRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.oddElements
+import timber.log.Timber
 
 data class LibraryPage(
     val items: List<Innertube.Item>,
@@ -14,7 +15,7 @@ data class LibraryPage(
     companion object {
         fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): Innertube.Item? {
             if (renderer.isPlaylist)
-                println("LibraryPage renderer ${renderer.menu?.menuRenderer?.items?.map { it.menuServiceItemRenderer?.text }}")
+                Timber.d("LibraryPage: renderer ${renderer.menu?.menuRenderer?.items?.map { it.menuServiceItemRenderer?.text }}")
             return when {
                 renderer.isAlbum -> Innertube.AlbumItem(
                     info = Innertube.Info(

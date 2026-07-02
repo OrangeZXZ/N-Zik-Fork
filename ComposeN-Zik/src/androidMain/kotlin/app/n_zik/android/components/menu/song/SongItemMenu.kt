@@ -186,8 +186,7 @@ class SongItemMenu private constructor(
             navController = navController,
             mediaItems = { _ -> listOf(song.asMediaItem) },
             onFailure = { throwable, preview ->
-                Timber.e( "Failed to add songs to playlist ${preview.playlist.name} on HomeSongs" )
-                throwable.printStackTrace()
+                Timber.e(throwable, "SongItemMenu: Failed to add songs to playlist ${preview.playlist.name}")
             },
             finalAction = {},
             onDismiss = { openMenu() }

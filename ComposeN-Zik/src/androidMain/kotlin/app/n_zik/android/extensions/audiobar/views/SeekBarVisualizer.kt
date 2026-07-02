@@ -52,6 +52,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import utils.VisualizerHelper
+import timber.log.Timber
 
 private const val waveWidthPercentOfSpaceAvailable = 0.5f
 
@@ -183,7 +184,7 @@ fun SeekBarVisualizer(
                         delay(40) // Poll at 25fps
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Timber.e(e, "SeekBarVisualizer: Failed to capture visualizer waveform")
                 }
             }
         } else if (!localIsPlaying) {

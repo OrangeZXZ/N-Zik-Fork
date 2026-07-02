@@ -16,6 +16,7 @@ import org.schabi.newpipe.extractor.exceptions.ReCaptchaException
 import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager
 import java.io.IOException
 import java.net.Proxy
+import timber.log.Timber
 
 class NewPipeDownloaderImpl(private val clientProvider: () -> OkHttpClient) : Downloader() {
 
@@ -113,10 +114,10 @@ object NewPipeUtils {
             val signatureParam = params["sp"] ?: throw ParsingException("Could not parse cipher signature parameter")
             val url = params["url"]?.let { URLBuilder(it) } ?: throw ParsingException("Could not parse cipher url")
             url.parameters[signatureParam] = YoutubeJavaScriptPlayerManager.deobfuscateSignature(videoId, obfuscatedSignature)
-            print("PLAYERADVANCED decodeSignatureCipher URL $url")
+            Timber.d("NewPipe: decodeSignatureCipher URL $url")
             YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated(videoId, url.toString())
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e, "NewPipe: decodeSignatureCipher error")
             null
         }
 

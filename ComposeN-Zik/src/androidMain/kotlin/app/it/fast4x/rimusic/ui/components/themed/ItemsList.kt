@@ -28,6 +28,7 @@ import app.n_zik.android.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import app.n_zik.android.typography
+import timber.log.Timber
 
 @ExperimentalAnimationApi
 @Composable
@@ -65,7 +66,7 @@ inline fun <T : Innertube.Item> ItemsList(
                     } else {
                         itemsPage += it
                     }
-                }?.exceptionOrNull()?.printStackTrace()
+                }?.onFailure { e -> Timber.e(e, "ItemsList: Failed to load more items") }
             }
     }
 

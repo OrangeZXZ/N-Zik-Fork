@@ -5,6 +5,7 @@ import java.io.FileWriter
 import java.io.PrintWriter
 import java.time.LocalDateTime
 import kotlin.system.exitProcess
+import timber.log.Timber
 
 class CaptureCrash (private val LOG_PATH: String) : Thread.UncaughtExceptionHandler {
 
@@ -33,7 +34,7 @@ class CaptureCrash (private val LOG_PATH: String) : Thread.UncaughtExceptionHand
                 printFullStackTrace(throwable,PrintWriter(writer))
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e, "CaptureCrash: Failed to save crash log")
         }
     }
 

@@ -13,6 +13,7 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.oddElements
 import it.fast4x.innertube.models.splitBySeparator
 import it.fast4x.innertube.utils.PageHelper
+import timber.log.Timber
 
 data class AlbumPage(
     val album: Innertube.AlbumItem,
@@ -88,7 +89,7 @@ data class AlbumPage(
         }
 
         fun getSong(renderer: MusicResponsiveListItemRenderer, album: Innertube.AlbumItem? = null): Innertube.SongItem {
-            println("mediaItem getSong ${renderer.flexColumns.get(1).musicResponsiveListItemFlexColumnRenderer?.text?.runs}")
+            Timber.d("AlbumPage: getSong %s", renderer.flexColumns.get(1).musicResponsiveListItemFlexColumnRenderer?.text?.runs)
             return Innertube.SongItem(
                 info = Info(
                     name = PageHelper.extractRuns(renderer.flexColumns, "MUSIC_VIDEO")
@@ -137,20 +138,13 @@ data class AlbumPage(
 suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { album ->
     album.url?.let { Url(it).parameters["list"] }?.let { playlistId ->
         playlistPage(BrowseBody(browseId = "VL$playlistId"))?.getOrNull()?.let { playlist ->
-            println("mediaItem albumPage pre songsPage ${playlist.songsPage?.items?.size}")
+            Timber.d("AlbumPage: albumPage pre songsPage %d", playlist.songsPage?.items?.size)
             album.copy(songsPage = playlist.songsPage)
         }
     } ?: album
     }
 
     ?.map { album ->
-        //println("mediaItem albumPage post songsPage ${album?.songsPage?.items?.size} des ${album?.description} browseId ${body.browseId}")
-        /*
-        println("mediaItem albumPage post songsPage songs id ${album?.songsPage?.items?.size}")
-        album?.songsPage?.items?.forEach {
-            println("mediaItem albumPage post songsPage song id ${it.info?.endpoint?.videoId} playlistId ")
-        }
-         */
 
         val albumInfo = Innertube.Info(
             name = album.title,
@@ -173,5 +167,5 @@ suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { al
         )
 
     }?.onFailure {
-        println("ERROR IN Innertube albumPage " + it.message)
+        Timber.e(it, "Innertube: albumPage error")
     }

@@ -6,6 +6,7 @@ import io.ktor.client.statement.bodyAsText
 import me.knighthat.common.HttpFetcher
 import me.knighthat.common.HttpFetcher.genMatchAllTld
 import me.knighthat.common.PublicInstances
+import timber.log.Timber
 
 object Piped: PublicInstances() {
 
@@ -24,7 +25,7 @@ object Piped: PublicInstances() {
 
             instances = getDistinctFirstGroup( response, DOMAIN_NO_PATH_REGEX )
         } catch ( e: HttpRequestTimeoutException ) {
-            println( "Failed to fetch Piped instances: ${e.message}" )
+            Timber.e(e, "Failed to fetch Piped instances")
         }
     }
 }
