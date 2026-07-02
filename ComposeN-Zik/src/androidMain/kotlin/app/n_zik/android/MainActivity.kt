@@ -776,7 +776,7 @@ class MainActivity :
                                 Innertube.proxy = proxy
                             }
 
-                            colorPaletteNameKey, colorPaletteModeKey,
+                            colorPaletteNameKey, colorPaletteModeKey, customColorKey,
                             customThemeLight_Background0Key,
                             customThemeLight_Background1Key,
                             customThemeLight_Background2Key,
@@ -839,8 +839,9 @@ class MainActivity :
                                         )
                                     }
                                     if (colorPaletteName == ColorPaletteName.CustomColor) {
+                                        val newCustomColor = sharedPreferences.getInt(customColorKey, Color.Green.hashCode())
                                         colorPalette = dynamicColorPaletteOf(
-                                            Color(customColor),
+                                            Color(newCustomColor),
                                             !lightTheme
                                         )
                                     }

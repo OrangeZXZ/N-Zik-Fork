@@ -917,10 +917,6 @@ fun UiSettings(
                                 onColorSelected = { customColor = it.hashCode() },
                                 modifier = Modifier.padding(start = 25.dp)
                             )
-                            ImportantSettingsDescription(
-                                text = stringResource(R.string.restarting_rimusic_is_required),
-                                modifier = Modifier.padding(start = 25.dp)
-                            )
                         }
                     }
 
