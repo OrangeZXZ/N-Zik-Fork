@@ -1392,15 +1392,15 @@ Volume BAS : titre précédent</string>
   <string name="play_all">Tout lire</string>
   <string name="syncing_item">Synchronisation : %1$s</string>
   <string name="syncing_progress">%1$d / %2$d</string>
-  <string name="syncing_failed">+ %1$d failed</string>
+  <string name="syncing_failed">+ %1$d a échoué</string>
   <string name="refreshing_artists">Actualisation de %1$d artistes</string>
-  <string name="failed_artists">Failed to find %1$d artists, retrying</string>
-  <string name="found_all_artists">Found all artists</string>
-  <string name="refreshing_albums">Refreshing %1$d albums</string>
-  <string name="failed_albums">Failed to find %1$d albums, retrying</string>
-  <string name="found_all_albums">Found all albums</string>
-  <string name="refreshing_playlists">Refreshing %1$d playlists</string>
-  <string name="failed_playlists">Failed to find %1$d playlists, retrying</string>
+  <string name="failed_artists">Impossible de trouver %1$d artistes, nouvelle tentative</string>
+  <string name="found_all_artists">Tous les artistes ont été trouvés</string>
+  <string name="refreshing_albums">Actualisation de %1$d albums</string>
+  <string name="failed_albums">Impossible de trouver %1$d albums, nouvelle tentative</string>
+  <string name="found_all_albums">Tous les albums ont été trouvés</string>
+  <string name="refreshing_playlists">Actualisation de %1$d playlists</string>
+  <string name="failed_playlists">Impossible de trouver %1$d playlists, nouvelle tentative</string>
   <string name="found_all_playlists">Toutes les playlists ont été trouvées</string>
   <string name="already_syncing">Synchronisation en cours</string>
 </resources>
