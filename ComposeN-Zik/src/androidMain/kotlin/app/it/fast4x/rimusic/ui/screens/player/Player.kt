@@ -11,6 +11,7 @@ import app.n_zik.android.utils.artistTextWithFallback
 import app.it.fast4x.rimusic.ui.components.themed.SleepTimerDialog
 import android.annotation.SuppressLint
 import android.graphics.RenderEffect
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
@@ -20,6 +21,7 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -27,9 +29,9 @@ import androidx.compose.foundation.background
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.coil.thumbnail
 import androidx.compose.foundation.clickable
-
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -50,11 +52,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerDefaults
@@ -77,6 +81,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.neverEqualPolicy
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -102,12 +107,17 @@ import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
@@ -253,6 +263,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import app.n_zik.android.components.player.BlurAdjuster
 import app.kreate.android.me.knighthat.utils.Toaster
 import kotlin.Float.Companion.POSITIVE_INFINITY
@@ -2221,33 +2232,163 @@ fun Player(
            }
         }
 
-        CustomModalBottomSheet(
-            showSheet = showQueue,
-            onDismissRequest = { showQueue = false },
-            containerColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background2,
-            contentColor = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background2,
-            modifier = Modifier
-                .fillMaxWidth(),
-            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-            dragHandle = {
-                Surface(
-                    modifier = Modifier.padding(vertical = 0.dp),
-                    color = colorPalette().background0,
-                    shape = app.n_zik.android.uiRoundnessShape()
-                ) {}
-            },
-            shape = androidx.compose.ui.graphics.RectangleShape
-        ) {
-            Queue(
-                navController = navController,
-                onDismiss = {
-                    queueLoopState.value = it
-                    showQueue = false
-                },
-                onDiscoverClick = {
-                    binder.service.nzikRadio.toggleDiscover()
-                }
+        // Inline resizable queue panel
+        val queuePanelHeightFraction = remember { Animatable(0.65f) }
+        var isQueuePanelVisible by remember { mutableStateOf(false) }
+        val queuePanelCoroutineScope = rememberCoroutineScope()
+
+        LaunchedEffect(showQueue) {
+            if (showQueue) {
+                isQueuePanelVisible = true
+                queuePanelHeightFraction.snapTo(0f)
+                queuePanelHeightFraction.animateTo(
+                    targetValue = 0.65f,
+                    animationSpec = spring(dampingRatio = 0.8f, stiffness = 300f)
+                )
+            } else if (isQueuePanelVisible) {
+                queuePanelHeightFraction.animateTo(
+                    targetValue = 0f,
+                    animationSpec = tween(durationMillis = 200, easing = LinearOutSlowInEasing)
+                )
+                isQueuePanelVisible = false
+            }
+        }
+
+        if (isQueuePanelVisible) {
+            BackHandler { showQueue = false }
+
+            val density = LocalDensity.current
+            val screenHeightPx = with(density) { LocalConfiguration.current.screenHeightDp.dp.roundToPx() }
+            val statusBarTopPx = with(density) {
+                WindowInsets.systemBars
+                    .only(WindowInsetsSides.Top)
+                    .asPaddingValues()
+                    .calculateTopPadding()
+                    .roundToPx()
+            }
+            val maxFraction = ((screenHeightPx - statusBarTopPx).toFloat() / screenHeightPx).coerceAtMost(1f)
+
+            val toolbarProgress = ((queuePanelHeightFraction.value - 0.55f) / 0.1f).coerceIn(0f, 1f)
+            val slideDistance = with(density) { 60.dp + Dimensions.miniPlayerHeight }
+            val toolbarOffsetY = with(density) { (1f - toolbarProgress) * slideDistance }
+
+            // Scrim
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { showQueue = false }
             )
+
+            // Queue panel
+            val queuePanelBackground = if (queueType == QueueType.Modern) Color.Transparent else colorPalette().background2
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(queuePanelHeightFraction.value)
+                    .align(Alignment.BottomCenter)
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .background(queuePanelBackground)
+            ) {
+                // Queue content - padding top for drag handle, overscroll to close
+                val overscrollConnection = remember {
+                    object : NestedScrollConnection {
+                        override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
+                            if (available.y > 0) {
+                                val delta = available.y / screenHeightPx
+                                queuePanelCoroutineScope.launch {
+                                    queuePanelHeightFraction.snapTo((queuePanelHeightFraction.value - delta).coerceIn(0f, maxFraction))
+                                }
+                                return available
+                            }
+                            return Offset.Zero
+                        }
+
+                        override suspend fun onPostFling(consumed: androidx.compose.ui.unit.Velocity, available: androidx.compose.ui.unit.Velocity): androidx.compose.ui.unit.Velocity {
+                            if (queuePanelHeightFraction.value < 0.4f) {
+                                showQueue = false
+                            } else {
+                                queuePanelHeightFraction.animateTo(0.65f, spring(dampingRatio = 0.8f, stiffness = 300f))
+                            }
+                            return super.onPostFling(consumed, available)
+                        }
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .padding(top = 48.dp)
+                        .nestedScroll(overscrollConnection)
+                ) {
+                    Queue(
+                        navController = navController,
+                        onDismiss = {
+                            queueLoopState.value = it
+                            showQueue = false
+                        },
+                        onDiscoverClick = {
+                            binder.service.nzikRadio.toggleDiscover()
+                        }
+                    )
+                }
+
+                // Drag handle - overlays at top
+                val handleAlpha = if (queueType == QueueType.Modern) 0.5f else 1f
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .align(Alignment.TopCenter)
+                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                        .background(colorPalette().background0.copy(alpha = handleAlpha))
+                        .pointerInput(Unit) {
+                                detectVerticalDragGestures(
+                                    onDragEnd = {
+                                        queuePanelCoroutineScope.launch {
+                                            val fraction = queuePanelHeightFraction.value
+                                            when {
+                                                fraction > 0.85f -> queuePanelHeightFraction.animateTo(
+                                                    maxFraction,
+                                                    spring(dampingRatio = 0.8f, stiffness = 300f)
+                                                )
+                                                fraction < 0.4f -> showQueue = false
+                                                else -> queuePanelHeightFraction.animateTo(
+                                                    0.65f,
+                                                    spring(dampingRatio = 0.8f, stiffness = 300f)
+                                                )
+                                            }
+                                        }
+                                    },
+                                    onVerticalDrag = { _, dragAmount ->
+                                        queuePanelCoroutineScope.launch {
+                                            val newFraction = (queuePanelHeightFraction.value - dragAmount / screenHeightPx)
+                                                .coerceIn(0.1f, maxFraction)
+                                            queuePanelHeightFraction.snapTo(newFraction)
+                                        }
+                                    }
+                                )
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .width(40.dp)
+                                .height(4.dp)
+                                .clip(RoundedCornerShape(2.dp))
+                                .background(Color.White)
+                        )
+                    }
+
+                    // QueueToolBar at bottom of panel, slides in when panel reaches 65%
+                    QueueToolBar(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter)
+                            .offset(y = toolbarOffsetY)
+                    )
+                }
         }
 
         CustomModalBottomSheet(

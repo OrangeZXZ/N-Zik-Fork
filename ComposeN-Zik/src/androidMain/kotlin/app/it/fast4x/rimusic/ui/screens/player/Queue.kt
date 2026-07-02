@@ -282,6 +282,33 @@ fun Queue(
         exportDialog.Render()
         (deleteDialog as Dialog).Render()
 
+        val showDiscover = rememberPreference( showButtonPlayerDiscoverKey, false ).value
+        val buttonsList = remember(showDiscover) {
+            mutableListOf<Button>().apply {
+                add( locator )
+                add( search )
+                if( showDiscover )
+                    add( discover )
+                add( positionLock )
+                add( repeat )
+                add( shuffle )
+                add( itemSelector )
+                add( deleteDialog )
+                add( addToPlaylist )
+                add( exportDialog )
+            }
+        }
+
+        QueueToolBarState.mediaItemCount = player.mediaItemCount
+        QueueToolBarState.buttons = buttonsList
+        QueueToolBarState.queueArrow = queueArrow
+        QueueToolBarState.onBarClick = { onDismiss( repeat.type ) }
+        QueueToolBarState.isVisible = if (search.isVisible) 1 else 0
+
+        androidx.compose.runtime.DisposableEffect( Unit ) {
+            onDispose { QueueToolBarState.reset() }
+        }
+
         Column {
             val queueType by rememberPreference( queueTypeKey, QueueType.Modern )
             val backgroundAlpha = if( queueType == QueueType.Modern ) .5f else 1f
@@ -454,96 +481,6 @@ fun Queue(
                 modifier = Modifier.fillMaxWidth()
                                    .background( colorPalette().background1 ),
             ) { search.SearchBar( this@Column ) }
-
-            Box(
-                modifier = Modifier.fillMaxWidth()
-                                   .clickable { onDismiss( repeat.type ) }
-                                   .background (colorPalette().background1 )
-                                   .height( 60.dp ) //bottom bar queue
-            ) {
-                if( !isLandscape ) {
-                    // Move mini player up as search bar appears
-                    val miniPlayerOffset = Dimensions.miniPlayerHeight
-                    val searchBarHeight = 96.dp
-                    val yOffset = if( search.isVisible ) -(miniPlayerOffset + searchBarHeight) else -miniPlayerOffset
-
-                    Box(
-                        Modifier.absoluteOffset( 0.dp, yOffset )
-                                .align( Alignment.TopCenter )
-                    ) { MiniPlayer( {}, {} ) }
-                }
-
-                if ( !queueArrow.isEnabled )
-                    Image(
-                        painter = painterResource( R.drawable.horizontal_bold_line_rounded ),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette().text),
-                        modifier = Modifier.absoluteOffset( 0.dp, (-10).dp )
-                                           .align( Alignment.TopCenter )
-                                           .size( 30.dp )
-                    )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.padding( horizontal = 8.dp )
-                                       .fillMaxWidth()
-                ) {
-                    /* Number of songs
-                     *
-                     * Opted out of using [IconInfo] because it has [Modifier#fillMaxWidth]
-                     * which makes it harder to adopt flexible width.
-                     */
-                    Row(
-                        modifier = Modifier.height( TabToolBar.TOOLBAR_ICON_SIZE )
-                                           .wrapContentWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource( R.drawable.musical_notes ),
-                            contentDescription = stringResource(R.string.cd_number_of_songs_in_queue),
-                            tint = colorPalette().text,
-                            modifier = Modifier.padding( end = 2.dp )
-                        )
-                        BasicText(
-                            text = player.mediaItemCount.toString(),
-                            style = TextStyle(
-                                color = colorPalette().text,
-                                fontStyle = typography().l.fontStyle
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-
-                    val showDiscover = rememberPreference( showButtonPlayerDiscoverKey, false ).value
-                    val buttonsList = remember(showDiscover) {
-                        mutableListOf<Button>().apply {
-                            add( locator )
-                            add( search )
-                            if( showDiscover )
-                                add( discover )
-                            add( positionLock )
-                            add( repeat )
-                            add( shuffle )
-                            add( itemSelector )
-                            add( deleteDialog )
-                            add( addToPlaylist )
-                            add( exportDialog )
-                        }
-                    }
-
-                    TabToolBar.Buttons(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.weight( 1f ),
-                        buttons = buttonsList
-                    )
-
-                    if( queueArrow.isEnabled )
-                        queueArrow.ToolBarButton()
-                }
-            }
         }
 
         FloatingActionsContainerWithScrollToTop(
