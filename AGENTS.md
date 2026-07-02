@@ -87,7 +87,20 @@ These rules are non-negotiable and override all other instructions:
 3. **No version bumps** -- version numbers are managed exclusively by the core development team after manual review.
 4. **No markdown/readme edits** unless explicitly asked.
 5. **Ask when uncertain** -- never assume requirements or implementation details without clarification from a human contributor.
-6. **Use Timber** for all logging. Never use `println`, `Log.d`, `System.out`, or any other logging mechanism.
+6. **Use Timber** for all logging. Never use `println`, `Log.d`, `System.out`, or any other logging mechanism, use tags for different modules with timber tags like "Timber.tag("TAG").d("message")". Example of a good logging implementation in a Kotlin file:
+
+```kotlin
+import timber.log.Timber
+
+// File-level tag is automatically created from the file name
+class MyClass {
+    fun doSomething() {
+        Timber.d("Doing something")
+        Timber.tag("MyClass").d("Doing something")
+    }
+}
+```
+
 7. **Prioritize** performance, battery efficiency, and maintainability in all code contributions.
 8. **No force pushes, rebases, or branch deletions** without explicit instructions from a human.
 9. **Follow existing patterns** -- always examine neighboring files and existing code before introducing new patterns.
