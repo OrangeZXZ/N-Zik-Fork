@@ -230,7 +230,10 @@ object Database {
                  ?.let {
                      Album(
                          id = it,
-                         title =  mediaItem.mediaMetadata.albumTitle.toString()
+                         title =  mediaItem.mediaMetadata.albumTitle?.toString(),
+                         thumbnailUrl = mediaItem.mediaMetadata.artworkUri?.toString(),
+                         year = mediaItem.mediaMetadata.releaseYear?.toString(),
+                         authorsText = mediaItem.mediaMetadata.artist?.toString()
                      )
                  }
                  // Passing MediaItem causes infinite loop
@@ -245,10 +248,16 @@ object Database {
         
         if (artistsIds.isNotEmpty()) {
             // Normal case: zip names with IDs
-            artistsNames.zip(artistsIds) { name, id -> Artist(id, name) }
-                        .also( artistTable::insertIgnore )
-                        .map { SongArtistMap(mediaItem.mediaId, it.id) }
-                        .also( songArtistMapTable::insertIgnore )
+            artistsNames.zip(artistsIds).forEach { (name, id) ->
+                val existingArtist = runBlocking { artistTable.findByName(name).first() }
+                val targetArtistId = if (existingArtist != null) {
+                    existingArtist.id
+                } else {
+                    artistTable.insertIgnore(Artist(id, name))
+                    id
+                }
+                songArtistMapTable.insertIgnore(SongArtistMap(mediaItem.mediaId, targetArtistId))
+            }
         } else if (artistsNames.isNotEmpty()) {
             // No browse IDs but we have names: try database by name first
             artistsNames.forEach { name ->
