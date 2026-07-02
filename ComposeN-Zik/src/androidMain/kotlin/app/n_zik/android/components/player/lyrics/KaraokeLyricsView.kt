@@ -3,6 +3,7 @@ package app.n_zik.android.components.player.lyrics
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.*
@@ -544,7 +545,24 @@ fun KaraokeLyricsView(
         val finalFixedCenter = (finalEffectiveVpH * finalMultiplier).toInt()
         Timber.d("CENTER: idx=${primaryActiveIndex+1} vpH=$reMeasuredVpH mult=$finalMultiplier center=$finalFixedCenter lines=$lineCount loader=$hasLoader")
         val scrollIndex = primaryActiveIndex + 1 + (if (hasLoader) 1 else 0)
-        lazyListState.animateScrollToItem(scrollIndex, scrollOffset = -finalFixedCenter)
+        
+        // Smooth scroll Metrolist-style: use animateScrollBy for fluid transitions
+        val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == scrollIndex }
+        if (itemInfo != null) {
+            // Item is visible, animate to the target position (using multiplier for proper positioning)
+            val targetPosition = finalFixedCenter
+            val currentPos = itemInfo.offset + itemInfo.size / 2
+            val offset = currentPos - targetPosition
+            if (kotlin.math.abs(offset) > 10) {
+                lazyListState.animateScrollBy(
+                    value = offset.toFloat(),
+                    animationSpec = tween(durationMillis = 800),
+                )
+            }
+        } else {
+            // Item is not visible, scroll to it first with proper offset
+            lazyListState.scrollToItem(scrollIndex, -finalFixedCenter)
+        }
     }
 
     // Resolve the accent color
