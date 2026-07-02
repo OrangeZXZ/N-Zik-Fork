@@ -2,6 +2,7 @@ package app.n_zik.android.components.menu
 
 import app.n_zik.android.uiRoundnessShape
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -13,9 +14,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
@@ -25,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,21 +45,36 @@ import app.n_zik.android.components.menu.MenuConstants.CONTENT_TOP_PADDING
 object GridMenu {
 
     @Composable
-    fun Menu( content: LazyGridScope.() -> Unit ) {
+    fun Menu( showDragHandle: Boolean = true, content: LazyGridScope.() -> Unit ) {
         val screenHeight = LocalConfiguration.current.screenHeightDp
 
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive( minSize = 120.dp ),
-            contentPadding = PaddingValues(
-                start = CONTENT_HORIZONTAL_PADDING.dp,
-                end = CONTENT_HORIZONTAL_PADDING.dp,
-                top = CONTENT_TOP_PADDING.dp
-                // bottom padding is handled by [Modifier#navigationBarsPadding]
-            ),
-            modifier = Modifier.heightIn( max = (screenHeight * CONTENT_HEIGHT_FRACTION).dp )
-                               .navigationBarsPadding(),
-            content = content
-        )
+        Column(
+            Modifier.heightIn( max = (screenHeight * CONTENT_HEIGHT_FRACTION).dp )
+                       .navigationBarsPadding(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (showDragHandle) {
+                Box(
+                    modifier = Modifier
+                        .padding(top = 18.dp, bottom = 6.dp)
+                        .size(width = 40.dp, height = 4.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(Color.White)
+                )
+            }
+
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive( minSize = 120.dp ),
+                contentPadding = PaddingValues(
+                    start = CONTENT_HORIZONTAL_PADDING.dp,
+                    end = CONTENT_HORIZONTAL_PADDING.dp,
+                    top = CONTENT_TOP_PADDING.dp
+                    // bottom padding is handled by [Modifier#navigationBarsPadding]
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                content = content
+            )
+        }
     }
 
     @Composable

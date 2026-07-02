@@ -14,12 +14,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.ui.Alignment
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable
 import app.n_zik.android.typography
 import app.n_zik.android.colorPalette
@@ -127,11 +128,12 @@ class ImportPlaylistsMenu(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.background( colorPalette().background1 )
                         ) {
-                            androidx.compose.material3.Icon(
-                                imageVector = Icons.Default.KeyboardArrowDown,
-                                contentDescription = stringResource(R.string.cd_arrow_down),
-                                tint = colorPalette().textSecondary,
-                                modifier = Modifier.size( 24.dp )
+                            Box(
+                                modifier = Modifier
+                                    .padding(top = 18.dp, bottom = 6.dp)
+                                    .size(width = 40.dp, height = 4.dp)
+                                    .clip(RoundedCornerShape(2.dp))
+                                    .background(Color.White)
                             )
 
                             BasicText(

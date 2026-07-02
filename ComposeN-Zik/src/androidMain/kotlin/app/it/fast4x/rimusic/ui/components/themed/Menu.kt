@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
@@ -30,7 +33,6 @@ import app.it.fast4x.rimusic.utils.secondary
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import android.content.res.Configuration
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -62,7 +64,17 @@ inline fun Menu(
             .padding(top = 2.dp)
             .padding(vertical = 8.dp)
             .navigationBarsPadding(),
-        content = content
+        horizontalAlignment = Alignment.CenterHorizontally,
+        content = {
+            Box(
+                modifier = Modifier
+                    .padding(top = 18.dp, bottom = 6.dp)
+                    .size(width = 40.dp, height = 4.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(Color.White)
+            )
+            content()
+        }
     )
 }
 
@@ -171,6 +183,21 @@ inline fun <T> LazyMenu(
             .padding(vertical = 8.dp)
             .navigationBarsPadding()
     ) {
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 18.dp, bottom = 6.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(width = 40.dp, height = 4.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(Color.White)
+                )
+            }
+        }
         items(
             count = items.size,
             itemContent = { index ->

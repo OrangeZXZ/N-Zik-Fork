@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -160,13 +160,12 @@ fun VideoOrSongInfoScreen(
                     .background(colorPalette().background1)
             ) {
                 // Arrow down to close
-                Icon(
-                    imageVector = androidx.compose.material.icons.Icons.Default.KeyboardArrowDown,
-                    contentDescription = null,
-                    tint = colorPalette().textSecondary,
+                Box(
                     modifier = Modifier
-                        .padding(top = 10.dp)
-                        .size(24.dp)
+                        .padding(top = 18.dp, bottom = 6.dp)
+                        .size(width = 40.dp, height = 4.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(Color.White)
                         .clickable { onClose() }
                 )
 

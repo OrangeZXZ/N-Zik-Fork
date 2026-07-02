@@ -1,25 +1,21 @@
-# Queue Panel Resizable - DONE
+feat: replace arrow drag handle with white bar in all menus and dialogs
 
-## Summary
-Replaced `CustomModalBottomSheet` for the queue with a custom inline resizable panel.
+Replaced the default KeyboardArrowDown icon with a white bar drag handle
+(40dp x 4dp, RoundedCornerShape(2dp), Color.White) across all menus
+and dialogs, while preserving the resizable queue panel.
 
-## Changes
-
-### New Files
-- `QueueToolBar.kt` — `QueueToolBarState` singleton (mediaItemCount, buttons, queueArrow, onBarClick, isVisible) + `QueueToolBar` composable (MiniPlayer + toolbar buttons)
-
-### Modified Files
-- `Queue.kt` — Removed bottom bar, populates `QueueToolBarState`, `DisposableEffect` to reset state
-- `Player.kt` — Replaced `CustomModalBottomSheet` with inline resizable panel:
-  - `Animatable(0.65f)` for height fraction
-  - Scrim (black 50% alpha, click to dismiss)
-  - Panel with `fillMaxHeight(fraction)`, `align(BottomCenter)`, `clip(RoundedCornerShape(top))`
-  - Drag handle at top (48dp, themed background, white indicator line)
-  - `QueueToolBar` at bottom with slide-in animation
-  - `BackHandler` to dismiss
-  - Entry animation: snap to 0 → animate to 0.65
-  - Close animation: animate to 0 → set `isQueuePanelVisible = false`
-  - Drag logic: >0.85 → expand to maxFraction (status bar aware), <0.4 → close, else → 0.65
-  - `nestedScroll` overscroll at bottom of list → drag panel down to close
-  - Status bar aware max height (doesn't go above status bar)
-  - Theme-aware: Modern (transparent, 50% alpha) / Essential (background2, opaque)
+Changes:
+- Added `showDragHandle` parameter to ListMenu.Menu and GridMenu.Menu
+  (default true for old menus, false for new menus that have their own)
+- Replaced arrow icon in 12 item menus: SongItemMenu, VideoItemMenu,
+  SearchItemMenu, OnlineArtistItemMenu, LocalArtistItemMenu,
+  OnlinePlaylistItemMenu, LocalPlaylistItemMenu, PlayerItemMenu,
+  OnlineAlbumItemMenu, AlbumItemMenu, ImportPlaylistsMenu,
+  VideoOrSongInfoScreen
+- Added white bar to Menu composable (themed/Menu.kt) and LazyMenu
+- Added white bar to ListMenu.Menu and GridMenu.Menu (for old menus)
+- Changed CustomModalBottomSheet default dragHandle to white bar
+- Removed explicit dragHandle from MainActivity menu sheet, AppNavigation,
+  and AccountsSettings (YouTube/Discord login) to use default
+- Player sheets excluded (use invisible Surface dragHandle)
+- Top padding increased from 10dp to 18dp for better spacing

@@ -5,6 +5,7 @@ import app.n_zik.android.core.database.*
 import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,10 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -25,6 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -103,7 +104,7 @@ class SearchItemMenu private constructor(
     override var menuStyle: MenuStyle by styleState
 
     @Composable
-    override fun ListMenu() = ListMenu.Menu {
+    override fun ListMenu() = ListMenu.Menu(showDragHandle = false) {
         buttons.forEach {
             if (it is MenuIcon)
                 it.ListMenuItem()
@@ -111,7 +112,7 @@ class SearchItemMenu private constructor(
     }
 
     @Composable
-    override fun GridMenu() = GridMenu.Menu {
+    override fun GridMenu() = GridMenu.Menu(showDragHandle = false) {
         items(buttons, Button::hashCode) {
             if (it is MenuIcon)
                 it.GridMenuItem()
@@ -275,11 +276,12 @@ class SearchItemMenu private constructor(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.background( colorPalette().background1 )
             ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = stringResource(R.string.cd_arrow_down),
-                    tint = colorPalette().textSecondary,
-                    modifier = Modifier.size( 24.dp )
+                Box(
+                    modifier = Modifier
+                        .padding(top = 18.dp, bottom = 6.dp)
+                        .size(width = 40.dp, height = 4.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(Color.White)
                 )
 
                 SongItem(
