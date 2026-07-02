@@ -382,7 +382,7 @@ fun KaraokeLyricsView(
                     }
                 }
             } catch (e: Exception) {
-                Timber.e("Lyrics sync translation error: ${e.message}")
+                Timber.tag("KaraokeLyricsView").e("sync translation error: ${e.message}")
                 if (translateEnabled) {
                     withContext(Dispatchers.Main) {
                         Toaster.e(R.string.translation_failed)
@@ -543,7 +543,7 @@ fun KaraokeLyricsView(
             finalMultiplier = 0.50f
         }
         val finalFixedCenter = (finalEffectiveVpH * finalMultiplier).toInt()
-        Timber.d("CENTER: idx=${primaryActiveIndex+1} vpH=$reMeasuredVpH mult=$finalMultiplier center=$finalFixedCenter lines=$lineCount loader=$hasLoader")
+        Timber.tag("KaraokeLyricsView").d("CENTER: idx=${primaryActiveIndex+1} vpH=$reMeasuredVpH mult=$finalMultiplier center=$finalFixedCenter lines=$lineCount loader=$hasLoader")
         val scrollIndex = primaryActiveIndex + 1 + (if (hasLoader) 1 else 0)
         
         // Smooth scroll Metrolist-style: use animateScrollBy for fluid transitions

@@ -51,7 +51,7 @@ class ArtistDetailHandler : BrowseHandler {
             val sectionItems = mutableListOf<MediaItem>()
             if (parts.size == 2) {
                 val artistPage = YtMusic.getArtistPage(artistId).getOrNull()
-                Timber.i("AA artist sections: page=${artistPage != null}")
+                Timber.tag("ArtistDetailHandler").i("AA artist sections: page=${artistPage != null}")
                 artistPage?.sections?.forEach { section ->
                     val type = when {
                         section.items.all { it is Innertube.SongItem } -> { sectionItems.add(browsableMediaItem("$parentId/${Uri.encode(section.title)}", section.title, null, drawableUri(context, R.drawable.musical_notes), MediaMetadata.MEDIA_TYPE_FOLDER_MIXED)); "Songs" }
@@ -61,15 +61,15 @@ class ArtistDetailHandler : BrowseHandler {
                         section.items.all { it is Innertube.ArtistItem } -> { sectionItems.add(browsableMediaItem("$parentId/${Uri.encode(section.title)}", section.title, null, drawableUri(context, R.drawable.people), MediaMetadata.MEDIA_TYPE_FOLDER_ARTISTS)); "Artists" }
                         else -> "UNMATCHED"
                     }
-                    Timber.i("AA section: title=\"${section.title}\" items=${section.items.size} firstType=${section.items.firstOrNull()?.let { it::class.simpleName }} type=$type more=${section.moreEndpoint != null}")
+                    Timber.tag("ArtistDetailHandler").i("AA section: title=\"${section.title}\" items=${section.items.size} firstType=${section.items.firstOrNull()?.let { it::class.simpleName }} type=$type more=${section.moreEndpoint != null}")
                 }
             } else {
                 val sectionTitle = Uri.decode(parts[2])
-                Timber.i("AA browsing section: title=\"$sectionTitle\"")
+                Timber.tag("ArtistDetailHandler").i("AA browsing section: title=\"$sectionTitle\"")
                 val artistPage = YtMusic.getArtistPage(artistId).getOrNull()
                 val section = artistPage?.sections?.firstOrNull { it.title == sectionTitle }
                 if (section != null) {
-                    Timber.i("AA section found: items=${section.items.size} more=${section.moreEndpoint?.browseId}")
+                    Timber.tag("ArtistDetailHandler").i("AA section found: items=${section.items.size} more=${section.moreEndpoint?.browseId}")
                     val moreBrowseId = section.moreEndpoint?.browseId
                     val moreParams = section.moreEndpoint?.params
                     if (moreBrowseId != null) {
@@ -91,7 +91,7 @@ class ArtistDetailHandler : BrowseHandler {
                                 sectionContent.musicCarouselShelfRenderer?.contents?.mapNotNull { it.musicTwoRowItemRenderer }?.mapNotNull(ArtistItemsPage.Companion::fromMusicTwoRowItemRenderer)?.forEach { fetched.add(it) }
                                 sectionContent.musicShelfRenderer?.contents?.mapNotNull { it.musicResponsiveListItemRenderer?.let { r -> Innertube.SongItem.from(r) } }?.forEach { fetched.add(it) }
                                 sectionContent.musicPlaylistShelfRenderer?.contents?.mapNotNull { it.musicResponsiveListItemRenderer?.let { r -> Innertube.SongItem.from(r) } }?.forEach { fetched.add(it) }
-                                Timber.i("AA browse section: fetched=${fetched.size} grid=${sectionContent.gridRenderer != null} carousel=${sectionContent.musicCarouselShelfRenderer != null} shelf=${sectionContent.musicShelfRenderer != null} playlistShelf=${sectionContent.musicPlaylistShelfRenderer != null}")
+                                Timber.tag("ArtistDetailHandler").i("AA browse section: fetched=${fetched.size} grid=${sectionContent.gridRenderer != null} carousel=${sectionContent.musicCarouselShelfRenderer != null} shelf=${sectionContent.musicShelfRenderer != null} playlistShelf=${sectionContent.musicPlaylistShelfRenderer != null}")
                                 fetched.distinctBy { it.key }.forEach { item ->
                                     when (item) {
                                         is Innertube.SongItem -> { val song = item.asSong; AutoSearchState.searchedSongs = (AutoSearchState.searchedSongs + song).distinctBy { s -> s.id }; sectionItems.add(SessionMediaItemMapper.mapSongToMediaItem(song, actualParentId)) }
@@ -103,11 +103,11 @@ class ArtistDetailHandler : BrowseHandler {
                                 }
                             }
                         } catch (e: Exception) {
-                            Timber.w(e, "AA browse section failed")
+                            Timber.tag("ArtistDetailHandler").w(e, "AA browse section failed")
                         }
                     }
                     if (sectionItems.isEmpty()) {
-                        Timber.i("AA fallback to section items: ${section.items.size} items")
+                        Timber.tag("ArtistDetailHandler").i("AA fallback to section items: ${section.items.size} items")
                         section.items.forEach { item ->
                             when (item) {
                                 is Innertube.SongItem -> { val song = item.asSong; AutoSearchState.searchedSongs = (AutoSearchState.searchedSongs + song).distinctBy { s -> s.id }; sectionItems.add(SessionMediaItemMapper.mapSongToMediaItem(song, actualParentId)) }
@@ -119,7 +119,7 @@ class ArtistDetailHandler : BrowseHandler {
                         }
                     }
                 } else {
-                    Timber.w("AA section not found for title=\"$sectionTitle\"")
+                    Timber.tag("ArtistDetailHandler").w("AA section not found for title=\"$sectionTitle\"")
                 }
             }
             return sectionItems.distinctBy { it.mediaId }

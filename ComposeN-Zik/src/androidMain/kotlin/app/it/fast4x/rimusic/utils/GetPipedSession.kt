@@ -40,7 +40,7 @@ fun getPipedSession(): PipedSession {
                 pipedSession.token = getString(pipedApiTokenKey, "").toString()
             }
         }.onFailure {
-            Timber.e("GetPipedSession get encryptedPreferences error ${it.stackTraceToString()}")
+            Timber.tag("GetPipedSession").e("get encryptedPreferences error ${it.stackTraceToString()}")
         }
     }
 

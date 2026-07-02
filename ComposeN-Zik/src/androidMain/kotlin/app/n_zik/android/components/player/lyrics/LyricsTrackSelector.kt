@@ -164,7 +164,7 @@ fun LyricsTrackSelector(
                 error = true
             } ?: run { loading = false }
         }.onFailure {
-            Timber.e("Lyrics get error 1 ${it.stackTraceToString()}")
+            Timber.tag("LyricsTrackSelector").e("get error 1 ${it.stackTraceToString()}")
         }
     }
 

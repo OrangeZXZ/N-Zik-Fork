@@ -63,14 +63,14 @@ class BitmapProvider(
                     drawColor(colorProvider(isSystemInDarkMode))
                 }
         }.onFailure {
-            Timber.e("Failed set default bitmap in BitmapProvider ${it.stackTraceToString()}")
+            Timber.tag("BitmapProvider").e("Failed set default bitmap ${it.stackTraceToString()}")
         }
 
         return lastBitmap == null
     }
 
     fun load(uri: Uri?, onDone: (Bitmap) -> Unit) {
-        Timber.d("BitmapProvider load method being called")
+        Timber.tag("BitmapProvider").d("load method being called")
         
         // If URI is null, use the default bitmap
         if (uri == null) {
@@ -102,7 +102,7 @@ class BitmapProvider(
                     onDone(bitmap)
                 }
             } catch (e: Exception) {
-                Timber.e("Failed to load bitmap ${e.stackTraceToString()}")
+                Timber.tag("BitmapProvider").e("Failed to load bitmap ${e.stackTraceToString()}")
                 withContext(Dispatchers.Main) {
                     lastBitmap = null
                     onDone(bitmap)

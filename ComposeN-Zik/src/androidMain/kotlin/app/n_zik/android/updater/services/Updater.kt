@@ -253,7 +253,7 @@ object Updater {
                     }
                 }
             } catch (e: Exception) {
-                Timber.e(e, "Updater: Error fetching fastlane changelog")
+                Timber.tag("Updater").e(e, "Error fetching fastlane changelog")
             } finally {
                 isFetchingFastlane = false
             }
@@ -285,7 +285,7 @@ object Updater {
                 }
             }
         } catch (e: Exception) {
-            Timber.e(e, "Updater: Error fetching current fastlane changelog")
+            Timber.tag("Updater").e(e, "Error fetching current fastlane changelog")
             // If network fails, try to load from cache
             if (currentFastlaneChangelog.isNullOrBlank()) {
                 loadCachedChangelog()

@@ -143,7 +143,7 @@ fun isInPip(
         }
     }
 
-    Timber.d("isInPIp pip: $pip")
+    Timber.tag("PictureInPicture").d("isInPIp pip: $pip")
 
     return pip
 }

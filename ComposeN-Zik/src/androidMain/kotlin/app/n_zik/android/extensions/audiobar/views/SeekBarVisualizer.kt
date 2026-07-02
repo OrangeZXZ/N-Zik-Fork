@@ -184,7 +184,7 @@ fun SeekBarVisualizer(
                         delay(40) // Poll at 25fps
                     }
                 } catch (e: Exception) {
-                    Timber.e(e, "SeekBarVisualizer: Failed to capture visualizer waveform")
+                    Timber.tag("SeekBarVisualizer").e(e, "Failed to capture visualizer waveform")
                 }
             }
         } else if (!localIsPlaying) {

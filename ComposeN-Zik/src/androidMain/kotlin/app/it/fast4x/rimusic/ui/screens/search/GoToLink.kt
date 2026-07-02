@@ -187,7 +187,7 @@ fun GoToLink(
 
                     LaunchedEffect(Unit) {
                         coroutineScope.launch(Dispatchers.Main) {
-                            Timber.d("mediaItem channelId: ${uri.pathSegments}")
+                            Timber.tag("GoToLink").d("channelId: ${uri.pathSegments}")
                             when (val path = uri.pathSegments.firstOrNull()) {
                                 "playlist" -> uri.getQueryParameter("list")?.let { playlistId ->
                                     val browseId = "VL$playlistId"

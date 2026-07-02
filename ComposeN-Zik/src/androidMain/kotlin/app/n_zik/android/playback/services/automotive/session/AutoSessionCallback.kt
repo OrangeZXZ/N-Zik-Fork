@@ -161,7 +161,7 @@ class AutoSessionCallback(
         query: String,
         params: MediaLibraryService.LibraryParams?
     ): ListenableFuture<LibraryResult<Void>> {
-        Timber.d("PlayerServiceModern AutoSessionCallback.onSearch: $query")
+        Timber.tag("AutoSessionCallback").d("onSearch: $query")
         autoBrowseTree.clearCache()
         session.notifySearchResultChanged(browser, query, 0, params)
         return Futures.immediateFuture(LibraryResult.ofVoid(params))
@@ -383,7 +383,7 @@ val allSongs = when (sortBy) {
                     val ytmQuickPicks = if (app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn()) {
                         it.fast4x.innertube.YtMusic.getQuickPicks(setLogin = true).getOrNull()?.map { it.asSong } ?: emptyList()
                     } else emptyList()
-                    Timber.d("Android Auto: Quick picks play list loaded -> trending: ${trending.size}, related: ${relatedSongs.size}, ytb: ${ytmQuickPicks.size}")
+                    Timber.tag("AutoSessionCallback").d("Quick picks play list loaded -> trending: ${trending.size}, related: ${relatedSongs.size}, ytb: ${ytmQuickPicks.size}")
                     queryList = (ytmQuickPicks + trending + relatedSongs).distinctBy { it.id } 
                 }
                 AutoSessionConstants.ID_SEARCH_SONGS -> { songId = paths[2]; queryList = AutoSearchState.searchedSongs }

@@ -83,7 +83,7 @@ fun PlayerError(error: PlaybackException) {
     errorCounter = errorCounter.plus(1)
 
     if (errorCounter < 2) {
-        Timber.e("Playback error: ${error.cause?.cause}")
+        Timber.tag("PlaybackError").e("Playback error: ${error.cause?.cause}")
         
         var httpCode: Int? = null
         var currentCause: Throwable? = error.cause

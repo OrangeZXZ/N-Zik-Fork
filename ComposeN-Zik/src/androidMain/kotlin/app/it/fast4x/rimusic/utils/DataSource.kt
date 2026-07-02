@@ -55,7 +55,7 @@ class CatchingDataSourceFactory(private val parent: DataSource.Factory) : DataSo
         override fun open(dataSpec: DataSpec) = runCatching {
             parent.open(dataSpec)
         }.getOrElse {
-            Timber.e(it, "DataSource: Failed to open data source")
+            Timber.tag("DataSource").e(it, "Failed to open data source")
 
             if (it is InvalidResponseCodeException && it.responseCode == 403) throw UnplayableException()
             if (it.cause is InvalidResponseCodeException && (it.cause as InvalidResponseCodeException).responseCode == 403) throw UnplayableException()

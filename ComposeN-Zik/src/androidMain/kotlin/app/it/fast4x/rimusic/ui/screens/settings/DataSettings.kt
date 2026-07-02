@@ -132,7 +132,7 @@ fun DataSettings() {
                     }
                 }
                 val deleted = java.io.File(context.filesDir, "waveforms").deleteRecursively()
-                Timber.d("NZik_DataSettings: Waveforms cache deleted (offline songs): %s", deleted)
+                Timber.tag("DataSettings").d("Waveforms cache deleted (offline songs): %s", deleted)
                 cleanCacheOfflineSongs = false
                 cacheCleanedCounter++
             }
@@ -160,7 +160,7 @@ fun DataSettings() {
                     }
                 }
                 val deleted = java.io.File(context.filesDir, "waveforms").deleteRecursively()
-                Timber.d("NZik_DataSettings: Waveforms cache deleted (downloads): %s", deleted)
+                Timber.tag("DataSettings").d("Waveforms cache deleted (downloads): %s", deleted)
                 cleanDownloadCache = false
                 cacheCleanedCounter++
             }
@@ -565,7 +565,7 @@ fun DataSettings() {
                                 eventTable.deleteAll()
                             }
                             val deleted = java.io.File(context.filesDir, "waveforms").deleteRecursively()
-                            Timber.d("NZik_DataSettings: Waveforms cache deleted (history clear): %s", deleted)
+                            Timber.tag("DataSettings").d("Waveforms cache deleted (history clear): %s", deleted)
                             Toaster.done()
                         }
                     )

@@ -490,7 +490,7 @@ fun rememberPreference(key: String, defaultValue: List<Song>): MutableState<List
                     Json.decodeFromString<List<Song>>(raw)
                 }
             } catch (e: Exception) {
-                Timber.e("RememberPreference List<Song> Error: ${ e.stackTraceToString() }")
+                Timber.tag("Preferences").e("RememberPreference List<Song> Error: ${ e.stackTraceToString() }")
                 emptyList()
             }
         ) {
@@ -516,7 +516,7 @@ fun rememberPreference(key: String, defaultValue: Song?): MutableState<Song?> {
                     Json.decodeFromString<Song>(raw)
                 }
             } catch (e: Exception) {
-                Timber.e("RememberPreference Song Error: ${ e.stackTraceToString() }")
+                Timber.tag("Preferences").e("RememberPreference Song Error: ${ e.stackTraceToString() }")
                 null
             }
         ) {
@@ -542,7 +542,7 @@ fun rememberPreference(key: String, defaultValue: Innertube.DiscoverPage?): Muta
                     Json.decodeFromString<Innertube.DiscoverPage>(raw)
                 }
             } catch (e: Exception) {
-                Timber.e("RememberPreference DiscoverPage Error: ${ e.stackTraceToString() }")
+                Timber.tag("Preferences").e("RememberPreference DiscoverPage Error: ${ e.stackTraceToString() }")
                 null
             }
         ) {
@@ -568,7 +568,7 @@ fun rememberPreference(key: String, defaultValue: Innertube.ChartsPage?): Mutabl
                     Json.decodeFromString<Innertube.ChartsPage>(raw)
                 }
             } catch (e: Exception) {
-                Timber.e("RememberPreference ChartsPage Error: ${ e.stackTraceToString() }")
+                Timber.tag("Preferences").e("RememberPreference ChartsPage Error: ${ e.stackTraceToString() }")
                 null
             }
         ) {
@@ -594,7 +594,7 @@ fun rememberPreference(key: String, defaultValue: Innertube.RelatedPage?): Mutab
                     Json.decodeFromString<Innertube.RelatedPage>(raw)
                 }
             } catch (e: Exception) {
-                Timber.e("RememberPreference RelatedPage Error: ${ e.stackTraceToString() }")
+                Timber.tag("Preferences").e("RememberPreference RelatedPage Error: ${ e.stackTraceToString() }")
                 null
             }
         ) {
@@ -620,7 +620,7 @@ fun rememberPreference(key: String, defaultValue: HomePage?): MutableState<HomeP
                     Json.decodeFromString<HomePage>(raw)
                 }
             } catch (e: Exception) {
-                Timber.e("RememberPreference HomePage Error: ${ e.stackTraceToString() }")
+                Timber.tag("Preferences").e("RememberPreference HomePage Error: ${ e.stackTraceToString() }")
                 null
             }
         ) {
@@ -824,7 +824,7 @@ fun clearPreference(context: Context, key: String): Unit {
     try {
         context.preferences.edit { remove(key) }
     } catch (e: Exception) {
-        Timber.e("ClearPreference Error: ${e.stackTraceToString()}")
+        Timber.tag("Preferences").e("ClearPreference Error: ${e.stackTraceToString()}")
     }
 }
 

@@ -324,7 +324,7 @@ suspend fun Result<Innertube.ItemsPage<Innertube.SongItem>?>.completed(
     var continuationsList = arrayOf<String>()
     //continuationsList += continuation.orEmpty()
 
-    Timber.d("mediaItem playlist completed() continuation? $continuation")
+    Timber.tag("Utils").d("mediaItem playlist completed() continuation? $continuation")
 
     while (continuation != null && depth++ < maxDepth) {
         val newSongs = Innertube
@@ -355,12 +355,12 @@ suspend fun Result<Innertube.PlaylistOrAlbumPage>.completed(
     val songsPage = runCatching {
         page.songsPage
     }.onFailure {
-        Timber.d("Innertube songsPage PlaylistOrAlbumPage>.completed ${it.stackTraceToString()}")
+        Timber.tag("Utils").d("Innertube songsPage PlaylistOrAlbumPage>.completed ${it.stackTraceToString()}")
     }
     val itemsPage = songsPage.completed(maxDepth).getOrThrow()
     page.copy(songsPage = itemsPage)
 }.onFailure {
-    Timber.d("Innertube PlaylistOrAlbumPage>.completed ${it.stackTraceToString()}")
+    Timber.tag("Utils").d("Innertube PlaylistOrAlbumPage>.completed ${it.stackTraceToString()}")
 }
 
 //@JvmName("completedPlaylist")
@@ -436,7 +436,7 @@ fun getVersionName(): String {
         val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
         return pInfo.versionName ?: ""
     } catch (e: PackageManager.NameNotFoundException) {
-        Timber.e(e, "Utils: Failed to get version name")
+        Timber.tag("Utils").e(e, "Failed to get version name")
     }
     return ""
 }
@@ -448,7 +448,7 @@ fun getLongVersionCode(): Long {
         val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
         return pInfo.longVersionCode
     } catch (e: PackageManager.NameNotFoundException) {
-        Timber.e(e, "Utils: Failed to get long version code")
+        Timber.tag("Utils").e(e, "Failed to get long version code")
     }
     return 0L
 }
@@ -461,7 +461,7 @@ fun getVersionCode(): Int {
         val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
         return pInfo.versionCode
     } catch (e: PackageManager.NameNotFoundException) {
-        Timber.e(e, "Utils: Failed to get version code")
+        Timber.tag("Utils").e(e, "Failed to get version code")
     }
     return 0
 }
@@ -561,13 +561,13 @@ suspend fun addToYtPlaylist(localPlaylistId: Long, position: Int, ytplaylistId: 
                     Toaster.i(R.string.songs_remaining, formatArgs = arrayOf((mediaItems.size - (index + 1) * 50).toString()))
             }
             .onFailure {
-                Timber.e("YtMusic addToPlaylist (list of size ${items.size}) error: ${it.stackTraceToString()}")
+                Timber.tag("Utils").e("YtMusic addToPlaylist (list of size ${items.size}) error: ${it.stackTraceToString()}")
                 if(it is ClientRequestException && it.response.status == HttpStatusCode.BadRequest) {
                     Toaster.w( R.string.adding_yt_to_pl_failed )
                     items.forEach { item ->
                         delay(500)
                         addToPlaylist(ytplaylistId, item.mediaId).onFailure {
-                            Timber.e("YtMusic addToPlaylist (list insert backup) error: ${it.stackTraceToString()}")
+                            Timber.tag("Utils").e("YtMusic addToPlaylist (list insert backup) error: ${it.stackTraceToString()}")
                                 Toaster.e(
                                     appContext().resources.getString(R.string.songs_add_yt_failed)+"${item.mediaMetadata.title} - ${item.mediaMetadata.artist}"
                                 )

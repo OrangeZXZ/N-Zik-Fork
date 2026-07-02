@@ -447,7 +447,7 @@ fun StatisticsPage(
                                         contentDescription = null,
                                         contentScale = ContentScale.Crop,
                                         onError = {error ->
-                                            Timber.e("Failed AsyncImage in PlaylistItem ${error.result.throwable.stackTraceToString()}")
+                                            Timber.tag("StatisticsPage").e("Failed AsyncImage in PlaylistItem ${error.result.throwable.stackTraceToString()}")
                                         }
                                     )
                                 } else {
@@ -471,7 +471,7 @@ fun StatisticsPage(
                                                         .align(alignment)
                                                         .size(playlistThumbnailSizeDp /2),
                                                     onError = {error ->
-                                                        Timber.e("Failed AsyncImage 1 in PlaylistItem ${error.result.throwable.stackTraceToString()}")
+                                                        Timber.tag("StatisticsPage").e("Failed AsyncImage 1 in PlaylistItem ${error.result.throwable.stackTraceToString()}")
                                                     }
                                                 )
                                         }

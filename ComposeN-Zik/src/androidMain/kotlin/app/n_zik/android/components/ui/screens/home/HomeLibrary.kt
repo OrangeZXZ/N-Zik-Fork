@@ -329,7 +329,7 @@ fun HomeLibrary(
                 val p = preview.playlist
                 p.browseId?.let { browseId ->
                     kotlinx.coroutines.delay((2000L..5000L).random())
-                    Timber.d("Refreshing playlist: ${p.name} (browseId: $browseId)")
+                    Timber.tag("HomeLibrary").d("Refreshing playlist: ${p.name} (browseId: $browseId)")
                     var status = 0 // 0=retry, 1=success
                     for (attempt in 1..3) {
                         val request = Innertube.playlistPage(BrowseBody(browseId = browseId))
@@ -350,10 +350,10 @@ fun HomeLibrary(
                                     }
                                 }
                             }
-                            Timber.d("Successfully refreshed playlist: ${p.name}")
+                            Timber.tag("HomeLibrary").d("Successfully refreshed playlist: ${p.name}")
                             status = 1
                         }.onFailure {
-                            Timber.e(it, "Failed to refresh playlist (attempt $attempt): ${p.name}")
+                            Timber.tag("HomeLibrary").e(it, "Failed to refresh playlist (attempt $attempt): ${p.name}")
                         }
                         if (status != 0) break
                     }

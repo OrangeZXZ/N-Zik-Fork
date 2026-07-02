@@ -490,7 +490,7 @@ fun UpdateScreen(navController: NavController) {
                                         ) {
                                             showMenu = false
                                             try {
-                                                Timber.d("Redownload URL: $currentDownloadUrl")
+                                                Timber.tag("UpdateScreen").d("Redownload URL: $currentDownloadUrl")
                                                 UpdateDownloadManager.startDownload(
                                                     context = context,
                                                     apkUrl = currentDownloadUrl,
@@ -498,7 +498,7 @@ fun UpdateScreen(navController: NavController) {
                                                 )
                                                 Updater.fetchCurrentFastlaneChangelog()
                                             } catch (e: Exception) {
-                                                Timber.e(e, "UpdateScreen: Error fetching update")
+                                                Timber.tag("UpdateScreen").e(e, "Error fetching update")
                                                 Toaster.w(R.string.update_not_available_yet)
                                             }
                                         }

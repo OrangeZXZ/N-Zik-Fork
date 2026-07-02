@@ -49,7 +49,7 @@ class QuickPicksBrowseHandler : BrowseHandler {
             it.fast4x.innertube.YtMusic.getQuickPicks(setLogin = true).getOrNull()?.map { it.asSong } ?: emptyList()
         } else emptyList()
         
-        Timber.d("Android Auto: Quick picks loaded -> trending: ${trending.size}, related: ${relatedSongs.size}, ytb: ${ytmQuickPicks.size}")
+        Timber.tag("QuickPicksBrowseHandler").d("Quick picks loaded -> trending: ${trending.size}, related: ${relatedSongs.size}, ytb: ${ytmQuickPicks.size}")
         
         val trendingItems = trending.map { song -> SessionMediaItemMapper.mapSongToMediaItem(song, parentId) }
         val relatedItems = relatedSongs.map { song -> SessionMediaItemMapper.mapSongToMediaItem(song, parentId) }

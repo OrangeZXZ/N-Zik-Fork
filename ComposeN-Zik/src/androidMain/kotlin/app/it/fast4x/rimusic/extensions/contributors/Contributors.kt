@@ -52,8 +52,8 @@ private fun initDevelopers( context: Context) {
         developersList = json.map { GSON.fromJson(it, Developer::class.java) }
             .sortedBy { it.username }
     } catch ( e: Exception ) {
-        Timber.e( e.stackTraceToString() )
-        Timber.e("Contributors initDevelopers Exception: ${e.message}")
+        Timber.tag("Contributors").e(e.stackTraceToString())
+        Timber.tag("Contributors").e("initDevelopers Exception: ${e.message}")
         developersList = emptyList()
     }
 }
@@ -88,8 +88,8 @@ private fun initTranslators( context: Context) {
         translatorsList = json.map { GSON.fromJson(it, Translator::class.java) }
             .sortedBy { it.displayName }
     } catch ( e: Exception ) {
-        Timber.e( e.stackTraceToString() )
-        Timber.e("Contributors initTranslators Exception: ${e.message}")
+        Timber.tag("Contributors").e(e.stackTraceToString())
+        Timber.tag("Contributors").e("initTranslators Exception: ${e.message}")
         translatorsList = emptyList()
     }
 }

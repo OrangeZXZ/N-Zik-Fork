@@ -241,7 +241,7 @@ fun HomeArtists(
                 HomeSyncState.artistSyncCurrentName = artist.name ?: ""
                 HomeSyncState.artistSyncProgress = index.toFloat() / ytArtists.size
                 kotlinx.coroutines.delay((2000L..5000L).random())
-                Timber.d("Refreshing artist: ${artist.name} (id: ${artist.id})")
+                Timber.tag("HomeArtist").d("Refreshing artist: ${artist.name} (id: ${artist.id})")
                 var status = 0 // 0=retry, 1=success
                 for (attempt in 1..3) {
                     YtMusic.getArtistPage(artist.id).onSuccess { online ->
@@ -257,10 +257,10 @@ fun HomeArtists(
                                 position = artist.position
                             ))
                         }
-                        Timber.d("Successfully refreshed artist: ${artist.name}")
+                        Timber.tag("HomeArtist").d("Successfully refreshed artist: ${artist.name}")
                         status = 1
                     }.onFailure {
-                        Timber.e(it, "Failed to refresh artist (attempt $attempt): ${artist.name}")
+                        Timber.tag("HomeArtist").e(it, "Failed to refresh artist (attempt $attempt): ${artist.name}")
                     }
                     if (status != 0) break
                 }
@@ -277,7 +277,7 @@ fun HomeArtists(
                 val query = artist.name?.trim()
                 if (!query.isNullOrBlank()) {
                     kotlinx.coroutines.delay((2000L..5000L).random())
-                    Timber.d("Searching YouTube for local artist: $query")
+                    Timber.tag("HomeArtist").d("Searching YouTube for local artist: $query")
                     var status = 0 // 0=retry, 1=success, 2=not found
                     for (attempt in 1..3) {
                         val request = Innertube.searchPage<Innertube.ArtistItem>(
@@ -296,13 +296,13 @@ fun HomeArtists(
                                         thumbnailUrl = bestMatch.thumbnail?.url ?: artist.thumbnailUrl
                                     ))
                                 }
-                                Timber.d("Updated local artist '${artist.name}' with metadata from '${bestMatch.info?.name}'")
+                                Timber.tag("HomeArtist").d("Updated local artist '${artist.name}' with metadata from '${bestMatch.info?.name}'")
                                 status = 1
                             } else {
                                 status = 2
                             }
                         }.onFailure {
-                            Timber.e(it, "Failed to search metadata for local artist (attempt $attempt): $query")
+                            Timber.tag("HomeArtist").e(it, "Failed to search metadata for local artist (attempt $attempt): $query")
                         }
                         if (status != 0) break
                     }

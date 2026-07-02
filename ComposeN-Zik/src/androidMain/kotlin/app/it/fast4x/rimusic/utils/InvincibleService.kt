@@ -93,7 +93,7 @@ abstract class InvincibleService : Service() {
                                 }
                             )
                     }.onFailure {
-                        Timber.e("Failed startForeground in InvincibleService onReceive ${it.stackTraceToString()}")
+                        Timber.tag("InvincibleService").e("Failed startForeground onReceive ${it.stackTraceToString()}")
                     }
                 }
             }
@@ -136,12 +136,12 @@ abstract class InvincibleService : Service() {
                             }
                         )
                     }.onFailure {
-                        Timber.e("Failed startForeground in InvincibleService run ${it.stackTraceToString()}")
+                        Timber.tag("InvincibleService").e("Failed startForeground run ${it.stackTraceToString()}")
                     }
                     runCatching {
                         stopForeground(false)
                     }.onFailure {
-                        Timber.e("Failed stopForeground in InvincibleService run ${it.stackTraceToString()}")
+                        Timber.tag("InvincibleService").e("Failed stopForeground run ${it.stackTraceToString()}")
                     }
                     handler.postDelayed(this, intervalMs)
                 }

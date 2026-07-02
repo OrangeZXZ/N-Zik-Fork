@@ -10,17 +10,17 @@ class From26To27Migration : Migration(26, 27) {
         try {
             db.execSQL("ALTER TABLE Album ADD COLUMN isYoutubeAlbum INTEGER NOT NULL DEFAULT 0;")
         } catch (e: Exception) {
-            Timber.e("Database From26To27Migration error ${e.stackTraceToString()}")
+            Timber.tag("From26To27Migration").e("Database error ${e.stackTraceToString()}")
         }
         try {
             db.execSQL("ALTER TABLE Artist ADD COLUMN isYoutubeArtist INTEGER NOT NULL DEFAULT 0;")
         } catch (e: Exception) {
-            Timber.e("Database From26To27Migration error ${e.stackTraceToString()}")
+            Timber.tag("From26To27Migration").e("Database error ${e.stackTraceToString()}")
         }
         try {
             db.execSQL("ALTER TABLE SongPlaylistMap ADD COLUMN dateAdded INTEGER NULL;")
         } catch (e: Exception) {
-            Timber.e("Database From26To27Migration error ${e.stackTraceToString()}")
+            Timber.tag("From26To27Migration").e("Database error ${e.stackTraceToString()}")
         }
 
     }

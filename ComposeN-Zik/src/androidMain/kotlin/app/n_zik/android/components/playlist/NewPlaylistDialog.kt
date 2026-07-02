@@ -99,7 +99,7 @@ class NewPlaylistDialog private constructor(
                                isYoutubePlaylist = true,
                                isEditable = true
                            )
-                           Timber.d("Innertube YtMusic createPlaylist: $it")
+                            Timber.tag("NewPlaylistDialog").d("Innertube YtMusic createPlaylist: $it")
                        }
             }
         } else {

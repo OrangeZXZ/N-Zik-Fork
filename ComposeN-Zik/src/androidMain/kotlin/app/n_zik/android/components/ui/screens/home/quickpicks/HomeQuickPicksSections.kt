@@ -199,7 +199,7 @@ fun YtmSectionByTitle(
     val section = matching.first().copy(
         items = items
     )
-    Timber.d("HomeQuickPicks: YTM Section found: $titleOverride (${items.size} items)")
+    Timber.tag("HomeQuickPicksSections").d("YTM Section found: $titleOverride (${items.size} items)")
     YtmSectionItems(
         section = section,
         titleOverride = titleOverride,
@@ -238,7 +238,7 @@ fun NewAlbumsOfYourArtistsSection(
     val menuState = LocalMenuState.current
     if (showNewAlbumsArtists && discoverPageInit != null) {
         if (newReleaseAlbumsFiltered.isNotEmpty() && artists.isNotEmpty()) {
-            Timber.d("HomeQuickPicks: Local New Albums of your Artists found (${newReleaseAlbumsFiltered.size} items)")
+            Timber.tag("HomeQuickPicksSections").d("Local New Albums of your Artists found (${newReleaseAlbumsFiltered.size} items)")
             BasicText(
                 text = stringResource(R.string.new_albums_of_your_artists),
                 style = typography().l.semiBold,
@@ -333,7 +333,7 @@ fun RelatedAlbumsSection(
     if (showRelatedAlbums) {
         val albums = relatedInit?.albums
         if (albums != null) {
-            Timber.d("HomeQuickPicks: Related Section found: Albums (${albums.size} items)")
+            Timber.tag("HomeQuickPicksSections").d("Related Section found: Albums (${albums.size} items)")
             displayedSectionTitles.add("Related albums")
             BasicText(
                 text = stringResource(R.string.related_albums),
@@ -383,7 +383,7 @@ fun SimilarArtistsSection(
     if (showSimilarArtists) {
         val artists = relatedInit?.artists
         if (artists != null) {
-            Timber.d("HomeQuickPicks: Related Section found: Similar Artists (${artists.size} items)")
+            Timber.tag("HomeQuickPicksSections").d("Related Section found: Similar Artists (${artists.size} items)")
             displayedSectionTitles.add("Similar artists")
             BasicText(
                 text = stringResource(R.string.similar_artists),
@@ -428,7 +428,7 @@ fun MonthlyPlaylistsSection(
 ) {
     if (showMonthlyPlaylistInQuickPicks) {
         if (monthlyPlaylists.isNotEmpty()) {
-            Timber.d("HomeQuickPicks: Local Section found: Monthly Playlists (${monthlyPlaylists.size} items)")
+            Timber.tag("HomeQuickPicksSections").d("Local Section found: Monthly Playlists (${monthlyPlaylists.size} items)")
             BasicText(
                 text = stringResource(R.string.monthly_playlists),
                 style = typography().l.semiBold,
@@ -474,7 +474,7 @@ fun MyTopSection(
     val binder = LocalPlayerServiceBinder.current
     if (showMyTopPlaylist) {
         if (myTopSongs.isNotEmpty()) {
-            Timber.d("HomeQuickPicks: Local Section found: My Top (${myTopSongs.size} items)")
+            Timber.tag("HomeQuickPicksSections").d("Local Section found: My Top (${myTopSongs.size} items)")
             BasicText(
                 text = stringResource(R.string.my_playlist_top1),
                 style = typography().l.semiBold,

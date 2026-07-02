@@ -127,12 +127,12 @@ object NetworkClientFactory {
             val response = client.newCall(request).execute()
             val isSuccess = response.isSuccessful
             if (!isSuccess) {
-                Timber.w("validateStreamUrl failed with code ${response.code} for URL: $streamUrl")
+                Timber.tag("NetworkClientFactory").w("validateStreamUrl failed with code ${response.code} for URL: $streamUrl")
             }
             response.close()
             isSuccess
         } catch (e: Exception) {
-            Timber.e(e, "validateStreamUrl exception for URL: $streamUrl")
+            Timber.tag("NetworkClientFactory").e(e, "validateStreamUrl exception for URL: $streamUrl")
             false
         }
     }

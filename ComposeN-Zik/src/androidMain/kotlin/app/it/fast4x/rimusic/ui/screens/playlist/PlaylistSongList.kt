@@ -888,7 +888,7 @@ fun PlaylistSongList(
                                                 Language.AUTO
                                             ).translatedText
                                         } catch (e: Exception) {
-                                            Timber.e(e, "PlaylistSongList: Failed to translate text")
+                                            Timber.tag("PlaylistSongList").e(e, "Failed to translate text")
                                         }
                                     }
                                     translatedText = if (result.toString() == "kotlin.Unit") "" else result.toString()

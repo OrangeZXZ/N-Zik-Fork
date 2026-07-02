@@ -113,9 +113,9 @@ fun TranslateLyricsWithRomanization(
                 outputText?.replace("\\r","\r")?.replace("\\n","\n")
             } catch (e: Exception) {
                 if(isSync){
-                    Timber.e("Lyrics sync translation ${e.stackTraceToString()}")
+                    Timber.tag("LyricsTranslator").e("sync translation ${e.stackTraceToString()}")
                 } else {
-                    Timber.e("Lyrics not sync translation ${e.stackTraceToString()}")
+                    Timber.tag("LyricsTranslator").e("not sync translation ${e.stackTraceToString()}")
                 }
             }
         }

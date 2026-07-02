@@ -139,7 +139,7 @@ class VideoItemMenu private constructor(
             navController = navController,
             mediaItems = { _ -> listOf(song.asMediaItem) },
             onFailure = { throwable, preview ->
-                Timber.e(throwable, "VideoItemMenu: Failed to add songs to playlist ${preview.playlist.name}")
+                Timber.tag("VideoItemMenu").e(throwable, "Failed to add songs to playlist ${preview.playlist.name}")
             },
             finalAction = {},
             onDismiss = { openMenu() }

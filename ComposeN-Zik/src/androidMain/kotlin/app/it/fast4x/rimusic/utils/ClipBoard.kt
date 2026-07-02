@@ -20,7 +20,7 @@ fun textCopyToClipboard(textCopied:String, context: Context) {
     runCatching {
         clipboardManager.setPrimaryClip(ClipData.newPlainText("", textCopied))
     }.onFailure {
-        Timber.e(it.stackTraceToString())
+        Timber.tag("ClipBoard").e(it.stackTraceToString())
         Toaster.e( R.string.failed_to_copy_clipboard )
     }
     // Only show a toast for Android 12 and lower.
@@ -39,12 +39,12 @@ fun textCopyFromClipboard(context: Context): String {
             if (item.text != null) {
                 textCopied = item.text.toString()
             } else {
-                Timber.w("Failed to copy text to clipboard, try again")
+                Timber.tag("ClipBoard").w("Failed to copy text to clipboard, try again")
                 Toaster.e(R.string.failed_to_copy_clipboard)
             }
         }
     }.onFailure {
-        Timber.e(it.stackTraceToString())
+        Timber.tag("ClipBoard").e(it.stackTraceToString())
         Toaster.e( R.string.failed_to_copy_clipboard )
     }
     // Only show a toast for Android 12 and lower.

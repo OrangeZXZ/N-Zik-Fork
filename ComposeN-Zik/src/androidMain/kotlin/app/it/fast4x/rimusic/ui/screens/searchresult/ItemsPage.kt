@@ -115,7 +115,7 @@ inline fun <T : Innertube.Item> ItemsPage(
                         itemsPage = merged
                     }
                 }?.onFailure {
-                    Timber.e(it, "ItemsPage: Failed to load more items")
+                    Timber.tag("ItemsPage").e(it, "Failed to load more items")
                     delay(2000) // Avoid rapid retry on failure
                 }
                 delay(250) // Allow UI to recompose and update layout info
@@ -293,7 +293,7 @@ inline fun <T : Innertube.Item> ItemsGridPage(
                         itemsPage = merged
                     }
                 }?.onFailure {
-                    Timber.e(it, "ItemsPage: Failed to load more items")
+                    Timber.tag("ItemsPage").e(it, "Failed to load more items")
                     delay(2000)
                 }
                 delay(250) // Allow UI to recompose and update layout info

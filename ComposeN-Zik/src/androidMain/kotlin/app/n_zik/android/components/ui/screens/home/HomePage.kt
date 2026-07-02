@@ -90,10 +90,10 @@ fun HomePage(
         runCatching {
             refreshScope.launch(Dispatchers.IO) {}
         }.onFailure {
-            Timber.e("Failed loadData in HomePage ${it.stackTraceToString()}")
+            Timber.tag("HomePage").e("Failed loadData ${it.stackTraceToString()}")
             loadedData = false
         }.onSuccess {
-            Timber.d("Success loadData in HomePage")
+            Timber.tag("HomePage").d("Success loadData")
             loadedData = true
         }
     }

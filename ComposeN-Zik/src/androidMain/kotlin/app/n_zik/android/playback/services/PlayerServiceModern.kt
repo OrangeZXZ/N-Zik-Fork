@@ -309,7 +309,7 @@ class PlayerServiceModern : MediaLibraryService(),
         connectivityJob = coroutineScope.launch {
             NetworkQualityHelper.observeConnection(this@PlayerServiceModern).collect { isAvailable ->
                 isNetworkAvailable.value = isAvailable
-                Timber.d("PlayerServiceModern network status: $isAvailable")
+                Timber.tag("PlayerServiceModern").d("network status: $isAvailable")
                 if (isAvailable && waitingForNetwork.value) {
                     waitingForNetwork.value = false
                     if (player.playWhenReady && player.playbackState != Player.STATE_IDLE) {
@@ -372,7 +372,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 }
             )
         }.onFailure {
-            Timber.e("Failed init bitmap provider in PlayerService ${it.stackTraceToString()}")
+            Timber.tag("PlayerServiceModern").e("Failed init bitmap provider ${it.stackTraceToString()}")
         }
 
         preferences.registerOnSharedPreferenceChangeListener(this)
@@ -513,7 +513,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 finalException: Exception?
             ) = run {
                 if (download.request.id != currentMediaItem.value?.mediaId) return@run
-                Timber.d("PlayerServiceModern onDownloadChanged current song ${currentMediaItem.value?.mediaId} state ${download.state} key ${download.request.id}")
+                Timber.tag("PlayerServiceModern").d("onDownloadChanged current song ${currentMediaItem.value?.mediaId} state ${download.state} key ${download.request.id}")
                 updateDownloadedState()
             }
         }
@@ -596,7 +596,7 @@ class PlayerServiceModern : MediaLibraryService(),
         return try {
             super.onStartCommand(intent, flags, startId)
         } catch (e: Exception) {
-            Timber.e(e, "Failed to start service safely (ForegroundServiceStartNotAllowedException)")
+            Timber.tag("PlayerServiceModern").e(e, "Failed to start service safely (ForegroundServiceStartNotAllowedException)")
             START_NOT_STICKY
         }
     }
@@ -688,7 +688,7 @@ class PlayerServiceModern : MediaLibraryService(),
             try{
                 unregisterReceiver(notificationActionReceiver)
             } catch (e: Exception){
-                Timber.e("PlayerServiceModern onDestroy unregisterReceiver notificationActionReceiver "+e.stackTraceToString())
+                Timber.tag("PlayerServiceModern").e("onDestroy unregisterReceiver notificationActionReceiver "+e.stackTraceToString())
             }
             mediaLibrarySessionCallback.release()
             mediaSession.release()
@@ -707,7 +707,7 @@ class PlayerServiceModern : MediaLibraryService(),
             coroutineScope.cancel()
 
         }.onFailure {
-            Timber.e("Failed onDestroy in PlayerService "+it.stackTraceToString())
+            Timber.tag("PlayerServiceModern").e("Failed onDestroy "+it.stackTraceToString())
         }
         super.onDestroy()
     }
@@ -779,7 +779,7 @@ class PlayerServiceModern : MediaLibraryService(),
         scheduleCrossfade()
 
         val networkQuality = NetworkQualityHelper.getCurrentNetworkQuality(this)
-        Timber.d("PlayerServiceModern: onMediaItemTransition - Current Network Quality for next song: $networkQuality")
+        Timber.tag("PlayerServiceModern").d("onMediaItemTransition - Current Network Quality for next song: $networkQuality")
 
         // Clear recovery counter for the new media item (fresh start)
         mediaItem?.mediaId?.let { recoveryAttempts.remove(it) }
@@ -790,7 +790,7 @@ class PlayerServiceModern : MediaLibraryService(),
             && !preferences.getBoolean(skipMediaOnErrorKey, false)
             && player.playerError != null
         ) {
-            Timber.e("PlayerServiceModern: UNEXPECTED auto-skip detected with skipMediaOnError=OFF! error=${player.playerError?.errorCodeName}")
+            Timber.tag("PlayerServiceModern").e("UNEXPECTED auto-skip detected with skipMediaOnError=OFF! error=${player.playerError?.errorCodeName}")
             Toaster.w(R.string.stream_unexpected_skip)
         }
 
@@ -905,7 +905,7 @@ class PlayerServiceModern : MediaLibraryService(),
             ?: error.cause?.message
             ?: error.cause?.cause?.message
             ?: error.errorCodeName
-        Timber.e("PlayerServiceModern onPlayerError code=${error.errorCode} (${error.errorCodeName}) detail=[$errorDetail] cause=${error.cause} rootCause=${error.cause?.cause}")
+        Timber.tag("PlayerServiceModern").e("onPlayerError code=${error.errorCode} (${error.errorCodeName}) detail=[$errorDetail] cause=${error.cause} rootCause=${error.cause?.cause}")
 
         val playbackConnectionExeptionList = listOf(
             PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED, //primary error code to manage
@@ -951,7 +951,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
             if (attempts < MAX_RECOVERY_ATTEMPTS) {
                 recoveryAttempts[currentMediaId] = attempts + 1
-                Timber.e("PlayerServiceModern onPlayerError attempting recovery ${attempts + 1}/$MAX_RECOVERY_ATTEMPTS for ${error.errorCodeName} cause ${error.cause?.cause}")
+                Timber.tag("PlayerServiceModern").e("onPlayerError attempting recovery ${attempts + 1}/$MAX_RECOVERY_ATTEMPTS for ${error.errorCodeName} cause ${error.cause?.cause}")
 
                 // Invalidate cached stream URL so next resolve fetches a fresh one
                 formatCache.remove(currentMediaId)
@@ -966,7 +966,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 Toaster.w(R.string.stream_error_retrying, formatArgs = arrayOf(errorDetail.take(80)))
                 return
             } else {
-                Timber.e("PlayerServiceModern onPlayerError recovery exhausted ($MAX_RECOVERY_ATTEMPTS attempts) for $currentMediaId")
+                Timber.tag("PlayerServiceModern").e("onPlayerError recovery exhausted ($MAX_RECOVERY_ATTEMPTS attempts) for $currentMediaId")
                 recoveryAttempts.remove(currentMediaId)
                 // Fall through - but if skipMediaOnError is OFF, we still won't skip (handled below) is OFF, we still won't skip (handled below)
             }
@@ -1007,7 +1007,7 @@ class PlayerServiceModern : MediaLibraryService(),
             val isBufferingOrReady = player.playbackState == Player.STATE_BUFFERING || player.playbackState == Player.STATE_READY
             
             if (player.playbackState == Player.STATE_READY && player.playWhenReady && events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED)) {
-                Timber.i("PLAYER_STATUS: PLAYBACK OK - Streaming successfully [${player.currentMediaItem?.mediaMetadata?.title}]")
+                Timber.tag("PlayerServiceModern").i("PLAYBACK OK - Streaming successfully [${player.currentMediaItem?.mediaMetadata?.title}]")
             }
 
             if (isBufferingOrReady && player.playWhenReady) {
@@ -1054,7 +1054,7 @@ class PlayerServiceModern : MediaLibraryService(),
             if (bassBoost == null) bassBoost = BassBoost(0, player.audioSessionId)
             val bassboostLevel =
                 (preferences.getFloat(bassboostLevelKey, 0.5f) * 1000f).toInt().toShort()
-            Timber.d("PlayerServiceModern maybeBassBoost bassboostLevel $bassboostLevel")
+            Timber.tag("PlayerServiceModern").d("maybeBassBoost bassboostLevel $bassboostLevel")
             bassBoost?.enabled = false
             bassBoost?.setStrength(bassboostLevel)
             bassBoost?.enabled = true
@@ -1101,7 +1101,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 loudnessEnhancer = LoudnessEnhancer(player.audioSessionId)
             }
         }.onFailure {
-            Timber.e("PlayerService maybeNormalizeVolume load loudnessEnhancer ${it.stackTraceToString()}")
+            Timber.tag("PlayerServiceModern").e("maybeNormalizeVolume load loudnessEnhancer ${it.stackTraceToString()}")
             return
         }
 
@@ -1129,7 +1129,7 @@ class PlayerServiceModern : MediaLibraryService(),
                                 loudnessEnhancer?.setTargetGain(baseGain.toMb() + volumeBoostLevel.toMb() - loudnessMb)
                                 loudnessEnhancer?.enabled = true
                             } catch (e: Exception) {
-                                Timber.e("PlayerService maybeNormalizeVolume apply targetGain ${e.stackTraceToString()}")
+                                Timber.tag("PlayerServiceModern").e("maybeNormalizeVolume apply targetGain ${e.stackTraceToString()}")
                             }
                         }
             }
@@ -1567,7 +1567,7 @@ class PlayerServiceModern : MediaLibraryService(),
         newPosition: Player.PositionInfo,
         reason: Int
     ) {
-        Timber.d("PlayerServiceModern onPositionDiscontinuity oldPosition ${oldPosition.mediaItemIndex} newPosition ${newPosition.mediaItemIndex} reason $reason")
+        Timber.tag("PlayerServiceModern").d("onPositionDiscontinuity oldPosition ${oldPosition.mediaItemIndex} newPosition ${newPosition.mediaItemIndex} reason $reason")
         
         if (!isInternalCrossfadeSeek && (reason == Player.DISCONTINUITY_REASON_SEEK || reason == Player.DISCONTINUITY_REASON_SEEK_ADJUSTMENT || reason == Player.DISCONTINUITY_REASON_SKIP)) {
             cancelCrossfadeAndReset()
@@ -1606,7 +1606,7 @@ class PlayerServiceModern : MediaLibraryService(),
     private fun maybeSavePlayerQueue() {
 
         if (!isPersistentQueueEnabled) return
-        Timber.d("PlayerServiceModern onCreate savePersistentQueue is enabled")
+        Timber.tag("PlayerServiceModern").d("onCreate savePersistentQueue is enabled")
 
         CoroutineScope(Dispatchers.Main).launch {
             val mediaItems = player.currentTimeline.mediaItems
@@ -1629,7 +1629,7 @@ class PlayerServiceModern : MediaLibraryService(),
                     queueTable.insert( queuedMediaItems )
                 }
 
-                Timber.d("PlayerServiceModern QueuePersistentEnabled Saved queue")
+                Timber.tag("PlayerServiceModern").d("QueuePersistentEnabled Saved queue")
             }
 
         }
@@ -1710,7 +1710,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
         }.onFailure {
             //it.printStackTrace()
-            Timber.e(it.stackTraceToString())
+            Timber.tag("PlayerServiceModern").e(it.stackTraceToString())
         }
 
         //Log.d("mediaItem", "QueuePersistentEnabled Restored ${player.currentTimeline.mediaItems.size}")
@@ -1744,10 +1744,10 @@ class PlayerServiceModern : MediaLibraryService(),
             }
         }.onFailure {
             //it.printStackTrace()
-            Timber.e(it.stackTraceToString())
+            Timber.tag("PlayerServiceModern").e(it.stackTraceToString())
 
         }.onSuccess {
-            Timber.d("QueuePersistentEnabled Saved %s", persistentQueue)
+            Timber.tag("PlayerServiceModern").d("QueuePersistentEnabled Saved %s", persistentQueue)
         }
 
     }
@@ -1800,12 +1800,12 @@ class PlayerServiceModern : MediaLibraryService(),
             kotlin.runCatching {
                 context.stopService(context.intent<MyDownloadService>())
             }.onFailure {
-                Timber.e("Failed NotificationDismissReceiver stopService in PlayerServiceModern (MyDownloadService) ${it.stackTraceToString()}")
+                Timber.tag("PlayerServiceModern").e("NotificationDismissReceiver stopService (MyDownloadService) ${it.stackTraceToString()}")
             }
             kotlin.runCatching {
                 context.stopService(context.intent<PlayerServiceModern>())
             }.onFailure {
-                Timber.e("Failed NotificationDismissReceiver stopService in PlayerServiceModern (PlayerServiceModern) ${it.stackTraceToString()}")
+                Timber.tag("PlayerServiceModern").e("NotificationDismissReceiver stopService (PlayerServiceModern) ${it.stackTraceToString()}")
             }
         }
     }
@@ -2001,7 +2001,7 @@ class PlayerServiceModern : MediaLibraryService(),
             startActivity(Intent(applicationContext, MainActivity::class.java)
                 .setAction(MainActivity.action_search)
                 .setFlags(FLAG_ACTIVITY_NEW_TASK + FLAG_ACTIVITY_CLEAR_TASK))
-            Timber.d("PlayerServiceModern actionSearch")
+            Timber.tag("PlayerServiceModern").d("actionSearch")
         }
     }
 
@@ -2107,7 +2107,7 @@ class PlayerServiceModern : MediaLibraryService(),
                             // Preload cover art to avoid UI lag on switch
                             app.n_zik.android.core.coil.ImageCacheFactory.preloadImage(nextArtworkUri)
                         } catch (e: Exception) {
-                            Timber.e(e, "Crossfade: Failed to preload cover art")
+                            Timber.tag("PlayerServiceModern").e(e, "Crossfade: Failed to preload cover art")
                         }
                     }
                     
@@ -2263,7 +2263,7 @@ class PlayerServiceModern : MediaLibraryService(),
         try {
             mediaSession.player = createForwardingPlayer(player)
         } catch (e: Exception) {
-            Timber.e(e, "Failed to swap player in MediaSession")
+            Timber.tag("PlayerServiceModern").e(e, "Failed to swap player in MediaSession")
         }
 
         nextPlayer.volume = 0f
@@ -2302,7 +2302,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 fadingPlayer?.volume = 0f
                 
             } catch (e: Exception) {
-                Timber.e(e, "Error during crossfade")
+                Timber.tag("PlayerServiceModern").e(e, "Error during crossfade")
             } finally {
                 cleanupCrossfade()
             }

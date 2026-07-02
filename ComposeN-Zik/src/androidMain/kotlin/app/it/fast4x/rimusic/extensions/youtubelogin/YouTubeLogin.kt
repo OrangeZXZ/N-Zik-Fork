@@ -108,14 +108,14 @@ fun YouTubeLogin(
                                     Innertube.visitorData = visitorData
 
                                     Innertube.accountInfo().onSuccess {
-                                        Timber.d("YoutubeLogin onPageFinished accountInfo() $it")
+                                        Timber.tag("YouTubeLogin").d("onPageFinished accountInfo() $it")
                                         accountName = it?.name.orEmpty()
                                         accountEmail = it?.email.orEmpty()
                                         accountChannelHandle = it?.channelHandle.orEmpty()
                                         accountThumbnail = it?.thumbnailUrl.orEmpty()
                                         onLogin(cookie)                                     
                                     }.onFailure {
-                                        Timber.e("YoutubeLogin Error : ${it.stackTraceToString()}")
+                                        Timber.tag("YouTubeLogin").e("Error : ${it.stackTraceToString()}")
                                         hasCompletedLogin = false // Allow retry
                                     }
                                 }

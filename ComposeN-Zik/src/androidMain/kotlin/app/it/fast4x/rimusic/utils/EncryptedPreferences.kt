@@ -46,7 +46,7 @@ val Context.encryptedPreferences: SharedPreferences
     get() = getEncryptedSharedPreferencesResult().onFailure {
         // idea based on https://gist.github.com/rynkowsg/86ebd680a67669dfcece4cc9ec9974df
         run {
-            Timber.w("Cannot retrieve preferences encrypted with current master key. Deleting and recreating.")
+            Timber.tag("EncryptedPreferences").w("Cannot retrieve preferences encrypted with current master key. Deleting and recreating.")
 
             /**
              * can only delete preferences this way on high enough API level.
@@ -57,7 +57,7 @@ val Context.encryptedPreferences: SharedPreferences
                 runCatching {
                     deleteSharedPreferences("secure_preferences")
                 }.onFailure {
-                    Timber.e(it, "Error while deleting encrypted preferences")
+                    Timber.tag("EncryptedPreferences").e(it, "Error while deleting encrypted preferences")
                 }
             }
             return getEncryptedSharedPreferencesResult().getOrThrow()

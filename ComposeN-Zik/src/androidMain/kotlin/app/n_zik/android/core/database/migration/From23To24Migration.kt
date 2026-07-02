@@ -10,7 +10,7 @@ class From23To24Migration : Migration(23, 24) {
         try {
             db.execSQL("ALTER TABLE SongPlaylistMap ADD COLUMN setVideoId TEXT;")
         } catch (e: Exception) {
-            Timber.e("Database From23To24Migration error ${e.stackTraceToString()}")
+            Timber.tag("From23To24Migration").e("Database error ${e.stackTraceToString()}")
         }
 
     }

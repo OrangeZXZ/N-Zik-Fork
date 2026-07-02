@@ -300,7 +300,7 @@ fun StatsForNerds(
                         contentAlignment = Alignment.Center,
                         modifier = modifier.weight(1f)
                     ) {
-                        Timber.d("StatsForNerds modern player bitrate: ${format?.bitrate}")
+                        Timber.tag("StatsForNerds").d("modern player bitrate: ${format?.bitrate}")
                         BasicText(
                             text = format?.bitrate?.let { stringResource(R.string.bitrate) + " : " + "${it / 1000} kbps" }
                                 ?: (stringResource(R.string.bitrate) + " : " + stringResource(R.string.audio_quality_format_unknown)),

@@ -359,7 +359,7 @@ fun Thumbnail(
 
                 androidx.compose.runtime.LaunchedEffect(error) {
                     if (error != null) {
-                        timber.log.Timber.e("Playback error: ${error?.cause?.cause}")
+                        timber.log.Timber.tag("Thumbnail").e("Playback error: ${error?.cause?.cause}")
                         
                         var httpCode: Int? = null
                         var currentCause: Throwable? = error?.cause

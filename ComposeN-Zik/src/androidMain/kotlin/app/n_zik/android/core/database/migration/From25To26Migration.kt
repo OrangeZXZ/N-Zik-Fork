@@ -10,7 +10,7 @@ class From25To26Migration : Migration(25, 26) {
         try {
             db.execSQL("ALTER TABLE Playlist ADD COLUMN isYoutubePlaylist INTEGER NOT NULL DEFAULT 0;")
         } catch (e: Exception) {
-            Timber.e("Database From25To26Migration error ${e.stackTraceToString()}")
+            Timber.tag("From25To26Migration").e("Database error ${e.stackTraceToString()}")
         }
 
     }

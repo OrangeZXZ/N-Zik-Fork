@@ -341,7 +341,7 @@ fun AppNavigation(
                 initialTextInput = text,
                 onViewPlaylist = {},
                 onSearch = { query ->
-                    Timber.d("onSearch: $query")
+                    Timber.tag("AppNavigation").d("onSearch: $query")
 
                     navController.navigate(
                         route = "${NavRoutes.searchResults.name}/${Uri.encode( query )}",

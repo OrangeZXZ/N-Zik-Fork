@@ -125,7 +125,7 @@ fun HomeQuickPicks(
             state.loadedQuickPicks.value = false
             state.loadedData.value = false
             state.loadData()
-            Timber.d("HomeQuickPicks: YouTube login state changed. Data cleared.")
+            Timber.tag("HomeQuickPicks").d("YouTube login state changed. Data cleared.")
         }
     }
 
@@ -195,7 +195,7 @@ fun HomeQuickPicks(
         val finalYtmQuickPicksCount = candidateList.count { song -> state.ytmQuickPicks.value.any { it.id == song.id } && song.id !in mainIds }
         val finalRelatedCount = candidateList.size - finalLocalCount - finalYtmQuickPicksCount
 
-        Timber.d("HomeQuickPicks: Assembling Quick Picks -> Local: $finalLocalCount, YTM Related: $finalRelatedCount, YouTube QuickPicks: $finalYtmQuickPicksCount (Total: ${candidateList.size})")
+        Timber.tag("HomeQuickPicks").d("Assembling Quick Picks -> Local: $finalLocalCount, YTM Related: $finalRelatedCount, YouTube QuickPicks: $finalYtmQuickPicksCount (Total: ${candidateList.size})")
 
         val oldIds = state.recommendations.value.map { it.id }.toSet()
         val newIds = candidateList.map { it.id }.toSet()

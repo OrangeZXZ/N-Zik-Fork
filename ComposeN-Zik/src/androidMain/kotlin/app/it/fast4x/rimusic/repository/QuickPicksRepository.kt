@@ -160,9 +160,9 @@ object QuickPicksRepository {
 
                 lastLoadTime = System.currentTimeMillis()
                 saveToPreferences()
-                Timber.d("Success loadData in QuickPicksRepository")
+                Timber.tag("QuickPicksRepository").d("Success loadData")
             } catch (e: Exception) {
-                Timber.e(e, "Failed to load QuickPicks data")
+                Timber.tag("QuickPicksRepository").e(e, "Failed to load QuickPicks data")
             } finally {
                 _loading.value = false
             }

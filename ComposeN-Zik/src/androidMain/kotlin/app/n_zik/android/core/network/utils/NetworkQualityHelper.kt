@@ -131,7 +131,7 @@ object NetworkQualityHelper {
 
             quality
         } catch (e: Exception) {
-            Timber.e(e, "NetworkQualityHelper: Failed to detect quality")
+            Timber.tag("NetworkQualityHelper").e(e, "Failed to detect quality")
             NetworkQuality.LOW
         }
     }

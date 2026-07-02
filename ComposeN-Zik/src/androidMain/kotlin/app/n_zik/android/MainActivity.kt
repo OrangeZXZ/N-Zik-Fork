@@ -309,7 +309,7 @@ class MainActivity :
         runCatching {
             bindService(intent<PlayerServiceModern>(), serviceConnection, Context.BIND_AUTO_CREATE)
         }.onFailure {
-            Timber.e("MainActivity.onStart bindService ${it.stackTraceToString()}")
+            Timber.tag("MainActivity").e("onStart bindService ${it.stackTraceToString()}")
         }
     }
 
@@ -365,7 +365,7 @@ class MainActivity :
                 Piped.fetchInstances()
                 Invidious.fetchInstances()
             } catch (e: Exception) {
-                Timber.e(e, "MainActivity Error fetching Piped & Invidious instances")
+                Timber.tag("MainActivity").e(e, "Error fetching Piped & Invidious instances")
             }
         }
 
@@ -389,7 +389,7 @@ class MainActivity :
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         pipState.value = isInPictureInPictureMode
-        Timber.d("MainActivity onPictureInPictureModeChanged: $isInPictureInPictureMode")
+        Timber.tag("MainActivity").d("onPictureInPictureModeChanged: $isInPictureInPictureMode")
     }
 
     @Composable
@@ -458,7 +458,7 @@ class MainActivity :
                 it.getBoolean("expandPlayerBottomSheet") || it.getBoolean("fromWidget")
             } ?: false
 
-        Timber.d("MainActivity.onCreate launchedFromNotification: $launchedFromNotification intent ${intent.action}")
+        Timber.tag("MainActivity").d("onCreate launchedFromNotification: $launchedFromNotification intent ${intent.action}")
 
         intentUriData = intent.data ?: intent.getStringExtra(Intent.EXTRA_TEXT)?.toUri()
 
@@ -666,7 +666,7 @@ class MainActivity :
 
                         }
                     } catch (e: Exception) {
-                        Timber.e(e, "MainActivity: Error loading appearance")
+                        Timber.tag("MainActivity").e(e, "Error loading appearance")
                     }
                 }
             }
@@ -746,7 +746,7 @@ class MainActivity :
                             restartActivityKey
                                 -> {
                                 this@MainActivity.recreate()
-                                Timber.d("MainActivity.recreate()")
+                                Timber.tag("MainActivity").d("recreate()")
                             }
 
                             isProxyEnabledKey, proxyHostnameKey, proxyPortKey, proxyModeKey -> {
@@ -1019,7 +1019,7 @@ class MainActivity :
                         }
 
                         CrossfadeContainer(state = pipState.value) { isCurrentInPip ->
-                            Timber.d("MainActivity pipState ${pipState.value} CrossfadeContainer isCurrentInPip $isCurrentInPip ")
+                            Timber.tag("MainActivity").d("pipState ${pipState.value} CrossfadeContainer isCurrentInPip $isCurrentInPip ")
                             val pipModule by rememberPreference(pipModuleKey, PipModule.Cover)
                     if (isCurrentInPip) {
                         Box(
@@ -1262,7 +1262,7 @@ class MainActivity :
                             try {
                                 navController.navigate(route = "${NavRoutes.artist.name}/$channelId")
                             } catch (e: Exception) {
-                                Timber.e("MainActivity.onCreate intentUriData ${e.stackTraceToString()}")
+                                Timber.tag("MainActivity").e("onCreate intentUriData ${e.stackTraceToString()}")
                             }
                         }
 
@@ -1345,7 +1345,7 @@ class MainActivity :
                     ), SensorManager.SENSOR_DELAY_NORMAL
                 )
             }.onFailure {
-                Timber.e("MainActivity.onResume registerListener sensorManager ${it.stackTraceToString()}")
+                Timber.tag("MainActivity").e("onResume registerListener sensorManager ${it.stackTraceToString()}")
             }
         }
         appRunningInBackground = false
@@ -1356,7 +1356,7 @@ class MainActivity :
         runCatching {
             sensorManager?.unregisterListener(sensorListener)
         }.onFailure {
-            Timber.e("MainActivity.onPause unregisterListener sensorListener ${it.stackTraceToString()}")
+            Timber.tag("MainActivity").e("onPause unregisterListener sensorListener ${it.stackTraceToString()}")
         }
         appRunningInBackground = true
     }
@@ -1372,7 +1372,7 @@ class MainActivity :
         runCatching {
             unbindService(serviceConnection)
         }.onFailure {
-            Timber.e("MainActivity.onStop unbindService ${it.stackTraceToString()}")
+            Timber.tag("MainActivity").e("onStop unbindService ${it.stackTraceToString()}")
         }
         super.onStop()
     }
@@ -1388,7 +1388,7 @@ class MainActivity :
             // Close threads
             PlaybackDispatchers.STREAM_RESOLVER.close()
         }.onFailure {
-            Timber.e("MainActivity.onDestroy removeMonetColorsChangedListener ${it.stackTraceToString()}")
+            Timber.tag("MainActivity").e("onDestroy removeMonetColorsChangedListener ${it.stackTraceToString()}")
         }
 
     }

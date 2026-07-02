@@ -232,7 +232,7 @@ fun HomeSongsScreen(navController: NavController ) {
                             wasCancelled = true
                             throw e
                         } catch (e: Exception) {
-                            Timber.e(e, "HomeSongsScreen: Failed to match song to album version")
+                            Timber.tag("HomeSongsScreen").e(e, "Failed to match song to album version")
                         } finally {
                             if (!wasCancelled) songsMatched++
                         }
@@ -318,7 +318,7 @@ fun HomeSongsScreen(navController: NavController ) {
         navController = navController,
         mediaItems = { _ -> getMediaItems() },
         onFailure = { throwable, preview ->
-            Timber.e(throwable, "HomeSongsScreen: Failed to add songs to playlist ${preview.playlist.name}")
+            Timber.tag("HomeSongsScreen").e(throwable, "Failed to add songs to playlist ${preview.playlist.name}")
         },
         finalAction = { itemSelector.isActive = false }
     )

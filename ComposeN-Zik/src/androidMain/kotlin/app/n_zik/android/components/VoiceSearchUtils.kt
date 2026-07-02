@@ -31,7 +31,7 @@ class VoiceSearchUtils(
 
     private val recognitionListener = object : RecognitionListener {
         override fun onReadyForSpeech(params: Bundle?) {
-            Timber.d("VoiceSearch: Ready")
+            Timber.tag("VoiceSearchUtils").d("Ready")
             hasReceivedResults = false
             isCancelled = false
             isListening = true
@@ -39,7 +39,7 @@ class VoiceSearchUtils(
         }
 
         override fun onBeginningOfSpeech() {
-            Timber.d("VoiceSearch: Speech detected")
+            Timber.tag("VoiceSearchUtils").d("Speech detected")
             mainHandler.post { onSpeechDetected() }
         }
 
@@ -48,7 +48,7 @@ class VoiceSearchUtils(
         override fun onBufferReceived(buffer: ByteArray?) {}
 
         override fun onEndOfSpeech() {
-            Timber.d("VoiceSearch: End of speech")
+            Timber.tag("VoiceSearchUtils").d("End of speech")
             if (!isCancelled) {
                 mainHandler.post { onListeningStateChanged(false) }
             }
@@ -57,10 +57,10 @@ class VoiceSearchUtils(
 
         override fun onError(error: Int) {
             if (hasReceivedResults || isCancelled) {
-                Timber.d("VoiceSearch: Ignoring error %d after results/cancel", error)
+                Timber.tag("VoiceSearchUtils").d("Ignoring error %d after results/cancel", error)
                 return
             }
-            Timber.e("VoiceSearch: Error: %d", error)
+            Timber.tag("VoiceSearchUtils").e("Error: %d", error)
             isListening = false
             mainHandler.post {
                 onListeningStateChanged(false)
@@ -72,13 +72,13 @@ class VoiceSearchUtils(
         }
 
         override fun onResults(results: Bundle?) {
-            Timber.d("VoiceSearch: Results")
+            Timber.tag("VoiceSearchUtils").d("Results")
             hasReceivedResults = true
             isListening = false
             mainHandler.post { onListeningStateChanged(false) }
             val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             if (!matches.isNullOrEmpty()) {
-                Timber.d("VoiceSearch: Result: %s, Language: %s", matches[0], Locale.getDefault())
+                Timber.tag("VoiceSearchUtils").d("Result: %s, Language: %s", matches[0], Locale.getDefault())
                 mainHandler.post { onResult(matches[0]) }
             }
             speechRecognizer?.stopListening()
@@ -119,7 +119,7 @@ class VoiceSearchUtils(
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         }
 
-        Timber.d("VoiceSearch: Starting (auto-detect language)")
+        Timber.tag("VoiceSearchUtils").d("Starting (auto-detect language)")
 
         speechRecognizer?.startListening(intent)
     }
@@ -132,7 +132,7 @@ class VoiceSearchUtils(
             speechRecognizer?.cancel()
             speechRecognizer?.destroy()
         } catch (e: Exception) {
-            Timber.e(e, "VoiceSearch: Error stopping")
+            Timber.tag("VoiceSearchUtils").e(e, "Error stopping")
         }
         speechRecognizer = null
     }

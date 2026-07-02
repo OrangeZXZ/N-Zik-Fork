@@ -416,7 +416,7 @@ fun AccountsSettings() {
                                         username = pipedUsername,
                                         password = pipedPassword
                                     )?.onFailure {
-                                        Timber.e( context.getString(R.string.piped_login_failed) + "; " + it.stackTraceToString() )
+                                        Timber.tag("AccountsSettings").e(context.getString(R.string.piped_login_failed) + "; " + it.stackTraceToString())
                                         isLoading = false
                                         Toaster.e( context.getString(R.string.piped_login_failed) )
                                         loadInstances = false
@@ -427,7 +427,7 @@ fun AccountsSettings() {
                                         return@launch
 
                                     Toaster.s( context.getString(R.string.piped_login_successful) )
-                                    Timber.i(context.getString(R.string.piped_login_successful))
+                                    Timber.tag("AccountsSettings").i(context.getString(R.string.piped_login_successful))
 
                                     session.let {
                                         it?.getOrNull()?.token?.let { it1 ->

@@ -209,7 +209,7 @@ fun NextVisualizer() {
                     } catch (e: CancellationException) {
                         throw e
                     } catch (e: Exception) {
-                        Timber.e("Failed to get bitmap in NextVisualizer ${e.stackTraceToString()}")
+                        Timber.tag("NextVisualizer").e("Failed to get bitmap in NextVisualizer ${e.stackTraceToString()}")
                         withContext(Dispatchers.Main) {
                             bitmapCover = APP_ICON_BITMAP
                             circleBitmap = Icon.getCircledBitmap(APP_ICON_BITMAP)
@@ -239,7 +239,7 @@ fun NextVisualizer() {
                                     bitmapCover = APP_ICON_BITMAP
                                     circleBitmap = Icon.getCircledBitmap(APP_ICON_BITMAP)
                                 }
-                                Timber.e("Failed to get bitmap in NextVisualizer ${e.stackTraceToString()}")
+                                Timber.tag("NextVisualizer").e("Failed to get bitmap in NextVisualizer ${e.stackTraceToString()}")
                             }
                         }
                     }

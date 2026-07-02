@@ -28,7 +28,7 @@ fun getDeviceInfo() : DeviceInfo? {
         )
 
     } catch (e: Exception) {
-        Timber.e("Device Info Error: ${e.message}")
+        Timber.tag("GetDeviceInfo").e("Error: ${e.message}")
     }
 
     return null

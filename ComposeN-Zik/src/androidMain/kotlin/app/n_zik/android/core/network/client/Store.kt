@@ -67,7 +67,7 @@ object Store {
                     ghostResponseBody = it.bodyAsText()
                 },
                 onFailure = {
-                    Timber.e(it, "Store: Failed to fetch visitorData")
+                    Timber.tag("Store").e(it, "Failed to fetch visitorData")
                 }
             )
         }

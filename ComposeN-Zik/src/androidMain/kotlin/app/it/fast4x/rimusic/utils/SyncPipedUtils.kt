@@ -37,8 +37,8 @@ fun syncSongsInPipedPlaylist(context: Context,coroutineScope: CoroutineScope, pi
             )
         }.await()?.map {playlist ->
 
-            Timber.d("pipedInfo syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
-            Timber.d("SyncPipedUtils syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
+            Timber.tag("SyncPipedUtils").d("pipedInfo syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
+            Timber.tag("SyncPipedUtils").d("syncSongsInPipedPlaylist playlistId $playlistId songs ${playlist.videos.size}")
 
             Database.playlistTable
                     .findById( playlistId )
@@ -84,7 +84,7 @@ fun ImportPipedPlaylists(){
             async {
                 Piped.playlist.list(session = pipedSession.toApiSession())
             }.await()?.map {
-                Timber.d("SyncPipedUtils ImportPipedPlaylists playlists ${it.size}")
+                Timber.tag("SyncPipedUtils").d("ImportPipedPlaylists playlists ${it.size}")
                 //itemsPiped = it
                 Database.asyncTransaction {
                     it.forEach {
@@ -133,7 +133,7 @@ fun addToPipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedSe
     if (!checkPipedAccount(context, pipedSession)) return
     coroutineScope.launch(Dispatchers.IO) {
             Piped.playlist.add(session = pipedSession, id = id, videos = videos.map { it.toID() })
-            Timber.d("SyncPipedUtils addToPipedPlaylist pipedSession $pipedSession, id $id, videos ${videos.size}")
+            Timber.tag("SyncPipedUtils").d("addToPipedPlaylist pipedSession $pipedSession, id $id, videos ${videos.size}")
     }
 
 }
@@ -142,7 +142,7 @@ fun removeFromPipedPlaylist(context: Context, coroutineScope: CoroutineScope, pi
     if (!checkPipedAccount(context, pipedSession)) return
     coroutineScope.launch(Dispatchers.IO) {
         Piped.playlist.remove(session = pipedSession, id = id, idx = idx)
-        Timber.d("SyncPipedUtils removeFromPipedPlaylist pipedSession $pipedSession, id $id, idx $idx")
+        Timber.tag("SyncPipedUtils").d("removeFromPipedPlaylist pipedSession $pipedSession, id $id, idx $idx")
     }
 
 }
@@ -151,7 +151,7 @@ fun deletePipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedS
     if (!checkPipedAccount(context, pipedSession)) return
     coroutineScope.launch(Dispatchers.IO) {
         Piped.playlist.delete(session = pipedSession, id = id)
-        Timber.d("SyncPipedUtils deletePipedPlaylist pipedSession $pipedSession, id $id")
+        Timber.tag("SyncPipedUtils").d("deletePipedPlaylist pipedSession $pipedSession, id $id")
     }
 
 }
@@ -160,7 +160,7 @@ fun renamePipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedS
     if (!checkPipedAccount(context, pipedSession)) return
     coroutineScope.launch(Dispatchers.IO) {
         Piped.playlist.rename(session = pipedSession, id = id, name = name)
-        Timber.d("SyncPipedUtils renamePipedPlaylist pipedSession $pipedSession, id $id, name $name")
+        Timber.tag("SyncPipedUtils").d("renamePipedPlaylist pipedSession $pipedSession, id $id, name $name")
     }
 
 }
@@ -178,7 +178,7 @@ fun createPipedPlaylist(context: Context, coroutineScope: CoroutineScope, pipedS
             playlistId = Database.playlistTable.insert( playlist)
             browseId = it.id.toString()
         }
-        Timber.d("SyncPipedUtils createPipedPlaylist pipedSession $pipedSession, name $name new playlistId $playlistId browseId $browseId")
+        Timber.tag("SyncPipedUtils").d("createPipedPlaylist pipedSession $pipedSession, name $name new playlistId $playlistId browseId $browseId")
     }
 
     return playlistId
@@ -196,10 +196,10 @@ fun checkPipedAccount(context: Context, pipedSession: Session): Boolean {
     //Timber.d("mediaItem SyncPipedUtils checkPipedAccount isPipedEnabled $isPipedEnabled token ${pipedSession.token}")
     if (isPipedEnabled && pipedSession.token.isEmpty()) {
         Toaster.w( R.string.info_connect_your_piped_account_first )
-        Timber.d("SyncPipedUtils checkPipedAccount Piped account not connected")
+        Timber.tag("SyncPipedUtils").d("checkPipedAccount Piped account not connected")
         return false
     }
-    Timber.d("SyncPipedUtils checkPipedAccount Piped account connected")
+    Timber.tag("SyncPipedUtils").d("checkPipedAccount Piped account connected")
     return true
 }
 

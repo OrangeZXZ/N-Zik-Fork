@@ -27,7 +27,7 @@ fun moveDir(src: Path, dest: Path): Boolean {
         Files.move(src, dest, StandardCopyOption.REPLACE_EXISTING)
         true
     } catch (e: IOException) {
-        Timber.e(e)
+        Timber.tag("FileUtils").e(e)
         false
     }
 }
@@ -49,7 +49,7 @@ fun saveImageToInternalStorage(context: Context, imageUri: Uri, dirPath: String,
 
         // Create a new file in the app's internal storage
         if ( !createDirIfNotExists(context, dirPath)) {
-            Timber.e("Failed to create directory: $dirPath")
+            Timber.tag("FileUtils").e("Failed to create directory: $dirPath")
             return null
         }
         val outputFile = File(context.filesDir, "$dirPath/$thumbnailName")
@@ -67,7 +67,7 @@ fun saveImageToInternalStorage(context: Context, imageUri: Uri, dirPath: String,
         // Return the URI to the saved file in internal storage
         return Uri.fromFile(outputFile)
     } catch (e: IOException) {
-        Timber.e(e)
+        Timber.tag("FileUtils").e(e)
         return null
     }
 }
@@ -148,7 +148,7 @@ fun saveFileToInternalStorage(context: Context, fileName: String, fileContent: S
         val file = File(context.filesDir.resolve("logs"), fileName)
         file.writeText(fileContent)
     } catch (e: IOException) {
-        Timber.e("Failed to save file $fileName to internal storage: $e")
+        Timber.tag("FileUtils").e("Failed to save file $fileName to internal storage: $e")
 
     }
 

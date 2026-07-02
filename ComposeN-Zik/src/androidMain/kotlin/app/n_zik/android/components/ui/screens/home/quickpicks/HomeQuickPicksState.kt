@@ -52,7 +52,7 @@ class HomeQuickPicksState(
     suspend fun loadData() {
         if (loadedData.value && homePageInit.value != null) return
 
-        Timber.d("HomeQuickPicks: Starting loadData...")
+        Timber.tag("HomeQuickPicksState").d("Starting loadData...")
         chartsPageResult.value = Innertube.chartsPageComplete(countryCode = selectedCountryCode.name)
         chartsPageInit.value = chartsPageResult.value?.getOrNull()
 
@@ -72,7 +72,7 @@ class HomeQuickPicksState(
                                         relatedPageResult.value = Innertube.relatedPage(NextBody(videoId = (trending.value?.id ?: "4NRXx6U8ABQ")))
                                     }
                                     loadedQuickPicks.value = true
-                                    Timber.d("HomeQuickPicks: Local data loaded (Trending: ${songs.size})")
+                                    Timber.tag("HomeQuickPicksState").d("Local data loaded (Trending: ${songs.size})")
                                 }
                     PlayEventsType.LastPlayed -> {
                         Database.eventTable
@@ -87,7 +87,7 @@ class HomeQuickPicksState(
                                         relatedPageResult.value = Innertube.relatedPage(NextBody(videoId = (trending.value?.id ?: "4NRXx6U8ABQ")))
                                     }
                                     loadedQuickPicks.value = true
-                                    Timber.d("HomeQuickPicks: Local data loaded (Trending: ${songs.size})")
+                                    Timber.tag("HomeQuickPicksState").d("Local data loaded (Trending: ${songs.size})")
                                 }
                     }
                     PlayEventsType.CasualPlayed -> {
@@ -111,14 +111,14 @@ class HomeQuickPicksState(
 
             discoverPageResult.value = Innertube.discoverPage()
             discoverPageInit.value = discoverPageResult.value?.getOrNull()
-            Timber.d("HomeQuickPicks: YouTube Discovery data loaded")
+            Timber.tag("HomeQuickPicksState").d("YouTube Discovery data loaded")
 
             if (!loadedData.value) {
                 if (isYouTubeLoggedIn()) {
                     YtMusic.getQuickPicks(setLogin = true).onSuccess { items ->
                         if (items.isNotEmpty()) {
                             ytmQuickPicks.value = items.map { it.asSong }
-                            Timber.d("HomeQuickPicks: Lightweight Quick Picks loaded (${items.size} items)")
+                            Timber.tag("HomeQuickPicksState").d("Lightweight Quick Picks loaded (${items.size} items)")
                         }
                     }
                 }
@@ -154,11 +154,11 @@ class HomeQuickPicksState(
                 }
 
                 homePageInit.value = homePageResult.value?.getOrNull()
-                Timber.d("HomeQuickPicks: YouTube Music sections loaded: ${homePageInit.value?.sections?.size ?: 0}")
+                Timber.tag("HomeQuickPicksState").d("YouTube Music sections loaded: ${homePageInit.value?.sections?.size ?: 0}")
             }
 
         }.onFailure {
-            Timber.e("Failed loadData in HomeQuickPicksState ${it.stackTraceToString()}")
+            Timber.tag("HomeQuickPicksState").e("Failed loadData ${it.stackTraceToString()}")
             loadedData.value = false
         }.onSuccess {
             loadedData.value = true

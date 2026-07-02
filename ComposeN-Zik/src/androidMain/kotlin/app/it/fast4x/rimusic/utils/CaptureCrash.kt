@@ -34,7 +34,7 @@ class CaptureCrash (private val LOG_PATH: String) : Thread.UncaughtExceptionHand
                 printFullStackTrace(throwable,PrintWriter(writer))
             }
         } catch (e: Exception) {
-            Timber.e(e, "CaptureCrash: Failed to save crash log")
+            Timber.tag("CaptureCrash").e(e, "Failed to save crash log")
         }
     }
 

@@ -369,7 +369,7 @@ fun LocalPlaylistSongs(
                             wasCancelled = true
                             throw e
                         } catch (e: Exception) {
-                            Timber.e(e, "LocalPlaylistSongs: Failed to match song to album version")
+                            Timber.tag("LocalPlaylistSongs").e(e, "Failed to match song to album version")
                         } finally {
                             if (!wasCancelled) songsMatched++
                         }
@@ -471,7 +471,7 @@ fun LocalPlaylistSongs(
                             wasCancelled = true
                             throw e
                         } catch (e: Exception) {
-                            Timber.e(e, "LocalPlaylistSongs: Failed to match song to album version")
+                            Timber.tag("LocalPlaylistSongs").e(e, "Failed to match song to album version")
                         } finally {
                             if (!wasCancelled) songsMatched++
                         }
@@ -719,7 +719,7 @@ fun LocalPlaylistSongs(
             getMediaItems()
         },
         { throwable, preview ->
-            Timber.e(throwable, "LocalPlaylistSongs: Failed to add songs to playlist ${preview.playlist.name}")
+            Timber.tag("LocalPlaylistSongs").e(throwable, "Failed to add songs to playlist ${preview.playlist.name}")
         },
         {
             // Turn of selector clears the selected list
@@ -1270,7 +1270,7 @@ fun LocalPlaylistSongs(
 
 
                             if (playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
-                                Timber.d("MediaItemMenu LocalPlaylistSongs onSwipeToLeft browseId ${playlist?.browseId}")
+                                Timber.tag("LocalPlaylistSongs").d("onSwipeToLeft browseId ${playlist?.browseId}")
                                 removeFromPipedPlaylist(
                                     context = context,
                                     coroutineScope = coroutineScope,

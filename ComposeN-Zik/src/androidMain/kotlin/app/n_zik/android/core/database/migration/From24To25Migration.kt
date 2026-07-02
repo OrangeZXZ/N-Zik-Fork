@@ -10,7 +10,7 @@ class From24To25Migration : Migration(24, 25) {
         try {
             db.execSQL("ALTER TABLE Playlist ADD COLUMN isEditable INTEGER NOT NULL DEFAULT 0;")
         } catch (e: Exception) {
-            Timber.e("Database From24To25Migration error ${e.stackTraceToString()}")
+            Timber.tag("From24To25Migration").e("Database error ${e.stackTraceToString()}")
         }
 
     }

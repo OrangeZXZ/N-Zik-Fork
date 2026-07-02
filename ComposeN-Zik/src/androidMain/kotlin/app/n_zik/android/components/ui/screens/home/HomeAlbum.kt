@@ -273,7 +273,7 @@ fun HomeAlbums(
                 HomeSyncState.albumSyncCurrentName = album.title ?: ""
                 HomeSyncState.albumSyncProgress = index.toFloat() / ytAlbums.size
                 kotlinx.coroutines.delay((2000L..5000L).random())
-                Timber.d("Refreshing album: ${album.title} (id: ${album.id})")
+                Timber.tag("HomeAlbum").d("Refreshing album: ${album.title} (id: ${album.id})")
                 var status = 0 // 0=retry, 1=success
                 for (attempt in 1..3) {
                     YtMusic.getAlbum(album.id, true).onSuccess { online ->
@@ -297,10 +297,10 @@ fun HomeAlbums(
                                     SongAlbumMap(songId = mediaItem.mediaId, albumId = album.id, position = pos)
                                 }.also { songAlbumMapTable.upsert(it) }
                         }
-                        Timber.d("Successfully refreshed album: ${album.title}")
+                        Timber.tag("HomeAlbum").d("Successfully refreshed album: ${album.title}")
                         status = 1
                     }.onFailure {
-                        Timber.e(it, "Failed to refresh album (attempt $attempt): ${album.title}")
+                        Timber.tag("HomeAlbum").e(it, "Failed to refresh album (attempt $attempt): ${album.title}")
                     }
                     if (status != 0) break
                 }
@@ -317,7 +317,7 @@ fun HomeAlbums(
                 val query = "${album.title} ${album.authorsText ?: ""}".trim()
                 if (query.isNotBlank()) {
                     kotlinx.coroutines.delay((2000L..5000L).random())
-                    Timber.d("Searching YouTube for local album: $query")
+                    Timber.tag("HomeAlbum").d("Searching YouTube for local album: $query")
                     var status = 0 // 0=retry, 1=success, 2=not found
                     for (attempt in 1..3) {
                         val request = Innertube.searchPage<Innertube.AlbumItem>(
@@ -337,13 +337,13 @@ fun HomeAlbums(
                                         year = bestMatch.year ?: album.year
                                     ))
                                 }
-                                Timber.d("Updated local album '${album.title}' with metadata from '${bestMatch.info?.name}'")
+                                Timber.tag("HomeAlbum").d("Updated local album '${album.title}' with metadata from '${bestMatch.info?.name}'")
                                 status = 1
                             } else {
                                 status = 2
                             }
                         }.onFailure {
-                            Timber.e(it, "Failed to search metadata for local album (attempt $attempt): $query")
+                            Timber.tag("HomeAlbum").e(it, "Failed to search metadata for local album (attempt $attempt): $query")
                         }
                         if (status != 0) break
                     }

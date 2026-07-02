@@ -91,11 +91,11 @@ fun Player.shuffleQueue() {
 @SuppressLint("Range")
 @UnstableApi
 fun Player.playAtMedia(mediaItems: List<MediaItem>, mediaId: String) {
-    Timber.d("mediaItem-playAtMedia: %d", mediaItems.size)
+    Timber.tag("Player").d("mediaItem-playAtMedia: %d", mediaItems.size)
     if (mediaItems.isEmpty()) return
     val itemIndex = findMediaItemIndexById(mediaId)
 
-    Timber.d("mediaItem-playAtMedia: %d", itemIndex)
+    Timber.tag("Player").d("mediaItem-playAtMedia: %d", itemIndex)
     setMediaItems(mediaItems, itemIndex, C.TIME_UNSET)
     prepare()
     restoreGlobalVolume()
@@ -140,7 +140,7 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
         val newIndex = if (foundIndex >= 0) {
             foundIndex
         } else {
-            Timber.w("forcePlayAtIndex: target index $mediaItemIndex not found after dedup, falling back to 0")
+            Timber.tag("Player").w("forcePlayAtIndex: target index $mediaItemIndex not found after dedup, falling back to 0")
             0
         }
 
@@ -326,7 +326,7 @@ fun Player.findMediaItemIndexById(mediaId: String): Int {
             }
         } catch (e: Exception) {
             // Index might be out of bounds if queue changed during iteration
-            Timber.e(e, "Error accessing media item at index $i")
+            Timber.tag("Player").e(e, "Error accessing media item at index $i")
             continue
         }
     }
@@ -352,7 +352,7 @@ fun Player.excludeMediaItems(mediaItems: List<MediaItem>, context: Context): Lis
                 Toaster.n( R.string.message_excluded_s_songs, arrayOf( excludedSongs ) )
         }
     }.onFailure {
-        Timber.e(it.message)
+        Timber.tag("Player").e(it.message)
     }
 
     return filteredMediaItems
@@ -374,7 +374,7 @@ fun Player.excludeMediaItem(mediaItem: MediaItem, context: Context): Boolean {
         }
     }.onFailure {
         //it.printStackTrace()
-        Timber.e(it.message)
+        Timber.tag("Player").e(it.message)
         return false
     }
 

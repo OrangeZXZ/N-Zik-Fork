@@ -70,7 +70,7 @@ fun ArtistPlaylists(
     val playlists = remember { mutableStateListOf<Innertube.PlaylistItem>() }
 
     suspend fun fetchPlaylists() {
-        Timber.d("ArtistPlaylists: fetching browseId=$browseId params=${params?.take(20)}..")
+        Timber.tag("ArtistPlaylists").d("fetching browseId=$browseId params=${params?.take(20)}..")
         val result = runCatching {
             var currentBrowseId = browseId
             var currentParams = params.takeIf { !it.isNullOrBlank() }
@@ -95,7 +95,7 @@ fun ArtistPlaylists(
                 // Some queries (like specific artist playlists) return a tab with an endpoint instead of inline content
                 val tabEndpoint = tabs.mapNotNull { it.tabRenderer?.endpoint?.browseEndpoint }.firstOrNull()
                 if (tabEndpoint != null) {
-                    Timber.d("ArtistPlaylists: following tab endpoint params=${tabEndpoint.params}")
+                    Timber.tag("ArtistPlaylists").d("following tab endpoint params=${tabEndpoint.params}")
                     val originalParams = currentParams
                     currentBrowseId = tabEndpoint.browseId ?: currentBrowseId
                     currentParams = tabEndpoint.params
@@ -136,7 +136,7 @@ fun ArtistPlaylists(
         result.fold(
             onSuccess = { sectionContent ->
                 if (sectionContent == null) {
-                    Timber.d("ArtistPlaylists: no section content found in any path!")
+                    Timber.tag("ArtistPlaylists").d("no section content found in any path!")
                     return@fold
                 }
 
@@ -201,17 +201,17 @@ fun ArtistPlaylists(
                     }
 
                     else -> {
-                        Timber.d("ArtistPlaylists: no known renderer found in sectionContent")
+                        Timber.tag("ArtistPlaylists").d("no known renderer found in sectionContent")
                         emptyList()
                     }
                 }
 
-                Timber.d("ArtistPlaylists: total fetched=${fetched.size}")
+                Timber.tag("ArtistPlaylists").d("total fetched=${fetched.size}")
                 val existing = playlists.toSet()
                 playlists.addAll(fetched.filterNot { it in existing })
             },
             onFailure = {
-                Timber.e("ArtistPlaylists: error ${it.message}")
+                Timber.tag("ArtistPlaylists").e("error ${it.message}")
                 Toaster.e(R.string.error_unknown)
             }
         )

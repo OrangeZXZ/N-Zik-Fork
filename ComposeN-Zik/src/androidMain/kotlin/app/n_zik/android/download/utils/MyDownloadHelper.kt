@@ -316,8 +316,8 @@ object MyDownloadHelper {
             context.download<MyDownloadService>(downloadRequest).exceptionOrNull()?.let {
                 if (it is CancellationException) throw it
 
-                Timber.e("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
-                Timber.e("MyDownloadHelper scheduleDownload exception ${it.stackTraceToString()}")
+                Timber.tag("MyDownloadHelper").e("scheduleDownload exception ${it.stackTraceToString()}")
+                Timber.tag("MyDownloadHelper").e("scheduleDownload exception ${it.stackTraceToString()}")
                 Toaster.e(app.n_zik.android.R.string.error_playback_failed)
             }
             downloadSyncedLyrics( mediaItem.asSong )
@@ -333,8 +333,8 @@ object MyDownloadHelper {
             context.removeDownload<MyDownloadService>(mediaItem.mediaId).exceptionOrNull()?.let {
                 if (it is CancellationException) throw it
 
-                Timber.e(it.stackTraceToString())
-                Timber.e("MyDownloadHelper removeDownload exception ${it.stackTraceToString()}")
+                Timber.tag("MyDownloadHelper").e(it.stackTraceToString())
+                Timber.tag("MyDownloadHelper").e("removeDownload exception ${it.stackTraceToString()}")
             }
         }
     }

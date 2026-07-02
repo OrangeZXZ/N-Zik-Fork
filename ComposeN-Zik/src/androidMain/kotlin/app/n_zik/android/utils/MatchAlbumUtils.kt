@@ -63,7 +63,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
 
     if (searchResults.isNullOrEmpty()) {
         val simpleQuery = filteredText(song.cleanTitle())
-        Timber.d("MatchGlobal: fallback query='$simpleQuery'")
+        Timber.tag("MatchAlbumUtils").d("MatchGlobal: fallback query='$simpleQuery'")
         delay(Random.nextLong(2000, 8000))
         val fallbackQuery = runCatching {
             Innertube.searchPage<Innertube.SongItem>(
@@ -218,7 +218,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
 
     if (searchResults.isNullOrEmpty()) {
         val simpleQuery = filteredText(song.cleanTitle())
-        Timber.d("MatchPlaylist: fallback query='$simpleQuery'")
+        Timber.tag("MatchAlbumUtils").d("MatchPlaylist: fallback query='$simpleQuery'")
         delay(Random.nextLong(2000, 8000))
         val fallbackQuery = runCatching {
             Innertube.searchPage<Innertube.SongItem>(

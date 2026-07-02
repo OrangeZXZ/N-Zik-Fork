@@ -96,7 +96,7 @@ class MainApplication : Application(), SingletonImageLoader.Factory {
         
         if (logEnabled) {
             Timber.plant(FileLoggingTree(File(dir, "N-Zik_log.txt")))
-            Timber.d("Log enabled at ${dir.absolutePath}")
+            Timber.tag("MainApplication").d("Log enabled at ${dir.absolutePath}")
         } else {
             Timber.uprootAll()
             Timber.plant(Timber.DebugTree())

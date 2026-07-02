@@ -61,7 +61,7 @@ fun VideoOrSongInfoScreen(
                 info = result.getOrNull()
             }
         } catch (e: Exception) {
-            Timber.e(e, "VideoOrSongInfo exception")
+            Timber.tag("VideoOrSongInfoScreen").e(e, "exception")
         }
         
         // Fetch artists from database

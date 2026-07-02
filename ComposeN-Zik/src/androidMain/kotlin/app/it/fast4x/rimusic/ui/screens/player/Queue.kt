@@ -267,7 +267,7 @@ fun Queue(
             navController = navController,
             mediaItems = { getSongs().map( Song::asMediaItem ) },
             onFailure = { throwable, preview ->
-                Timber.e(throwable, "Queue: Failed to add songs to playlist ${preview.playlist.name}")
+                Timber.tag("Queue").e(throwable, "Failed to add songs to playlist ${preview.playlist.name}")
             },
             finalAction = {
                 // Turn of selector clears the selected list
@@ -418,7 +418,7 @@ fun Queue(
                                             )
                                         } catch (e: IllegalArgumentException) {
                                             // Media item may have already been removed or index is invalid
-                                            Timber.e(e, "Failed to remove media item at index $actualIndex")
+                                            Timber.tag("Queue").e(e, "Failed to remove media item at index $actualIndex")
                                         }
                                     }
                                 },

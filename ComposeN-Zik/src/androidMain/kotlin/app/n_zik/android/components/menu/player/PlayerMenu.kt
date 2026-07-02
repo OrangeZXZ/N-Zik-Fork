@@ -158,7 +158,7 @@ fun AddToPlaylistPlayerMenu(
                 }
             }
             if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
-                Timber.d("BaseMediaItemMenu onAddToPlaylist mediaItem ${mediaItem.mediaId}")
+                Timber.tag("PlayerMenu").d("onAddToPlaylist mediaItem ${mediaItem.mediaId}")
                 addToPipedPlaylist(
                     context = context,
                     coroutineScope = coroutineScope,
@@ -174,7 +174,7 @@ fun AddToPlaylistPlayerMenu(
                 if( position == -1 ) return@asyncTransaction
 
                 if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
-                    Timber.d("MediaItemMenu InPlaylistMediaItemMenu onRemoveFromPlaylist browseId ${playlist.browseId}")
+                    Timber.tag("PlayerMenu").d("onRemoveFromPlaylist browseId ${playlist.browseId}")
                     removeFromPipedPlaylist(
                         context = context,
                         coroutineScope = coroutineScope,

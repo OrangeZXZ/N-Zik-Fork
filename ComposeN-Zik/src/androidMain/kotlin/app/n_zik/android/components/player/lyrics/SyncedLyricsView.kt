@@ -274,7 +274,7 @@ fun SyncedLyricsView(
                     }
                 }
             } catch (e: Exception) {
-                Timber.e("Lyrics sync translation error: ${e.message}")
+                Timber.tag("SyncedLyricsView").e("sync translation error: ${e.message}")
                 if (translateEnabled) {
                     withContext(Dispatchers.Main) {
                         Toaster.e(R.string.translation_failed)

@@ -97,7 +97,7 @@ object UpdateDownloadManager {
         try {
             notificationManager.notify(UPDATE_NOTIFICATION_ID, notificationBuilder.build())
         } catch (e: SecurityException) {
-            Timber.w(e, "Missing POST_NOTIFICATIONS permission")
+            Timber.tag("UpdateDownloadManager").w(e, "Missing POST_NOTIFICATIONS permission")
         }
 
         downloadJob = CoroutineScope(Dispatchers.IO).launch {
@@ -192,7 +192,7 @@ object UpdateDownloadManager {
                     notificationManager.cancel(UPDATE_NOTIFICATION_ID)
                     notificationManager.notify(UPDATE_NOTIFICATION_ID, completedNotification)
                 } catch (e: Exception) {
-                    Timber.e(e, "Failed to show completed notification")
+                    Timber.tag("UpdateDownloadManager").e(e, "Failed to show completed notification")
                 }
 
                 _downloadState.value = DownloadState.Completed(outputFile.absolutePath)
@@ -213,7 +213,7 @@ object UpdateDownloadManager {
                     cleanupTempFiles(context)
                     _downloadState.value = DownloadState.Idle
                 } else {
-                    Timber.e(e, "Update download failed")
+                    Timber.tag("UpdateDownloadManager").e(e, "Update download failed")
                     val failedNotification = NotificationCompat.Builder(context, UPDATE_CHANNEL_ID)
                         .setSmallIcon(R.drawable.update)
                         .setContentTitle(context.getString(R.string.update_download_failed))
@@ -231,7 +231,7 @@ object UpdateDownloadManager {
                 outputStream?.runCatching { close() }
                 activeCall = null
                 cleanupTempFiles(context)
-                Timber.e(e, "Update download failed")
+                Timber.tag("UpdateDownloadManager").e(e, "Update download failed")
                 val failedNotification = NotificationCompat.Builder(context, UPDATE_CHANNEL_ID)
                     .setSmallIcon(R.drawable.update)
                     .setContentTitle(context.getString(R.string.update_download_failed))
@@ -290,7 +290,7 @@ object UpdateDownloadManager {
         try {
             val file = File(filePath)
             if (!file.exists()) {
-                Timber.w("APK file not found at $filePath, skipping install")
+                Timber.tag("UpdateDownloadManager").w("APK file not found at $filePath, skipping install")
                 _downloadState.value = DownloadState.Idle
                 return
             }
@@ -298,7 +298,7 @@ object UpdateDownloadManager {
             val installIntent = getInstallIntent(context, file)
             context.startActivity(installIntent)
         } catch (e: Exception) {
-            Timber.e(e, "Failed to launch APK installer")
+            Timber.tag("UpdateDownloadManager").e(e, "Failed to launch APK installer")
             _downloadState.value = DownloadState.Failed(
                 context.getString(R.string.failed_to_install, e.message ?: "")
             )
@@ -324,7 +324,7 @@ object UpdateDownloadManager {
                 downloadDir.listFiles()?.forEach { it.delete() }
             }
         } catch (e: Exception) {
-            Timber.e(e, "Failed to cleanup temp files")
+            Timber.tag("UpdateDownloadManager").e(e, "Failed to cleanup temp files")
         }
     }
 }
