@@ -457,7 +457,7 @@ fun Queue(
 
             Box(
                 modifier = Modifier.fillMaxWidth()
-                                   .clip(uiRoundnessShape()).clickable { onDismiss( repeat.type ) }
+                                   .clickable { onDismiss( repeat.type ) }
                                    .background (colorPalette().background1 )
                                    .height( 60.dp ) //bottom bar queue
             ) {
