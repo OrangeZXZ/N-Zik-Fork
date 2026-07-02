@@ -87,7 +87,7 @@ val Innertube.Podcast.EpisodeItem.asMediaItem: MediaItem
                 .setTitle(title)
                 .setArtist(author.toString())
                 .setAlbumTitle(title)
-                .setArtworkUri(thumbnail.firstOrNull()?.url?.thumbnail(1200)?.toUri())
+                .setArtworkUri(thumbnail.lastOrNull()?.url?.thumbnail(1200)?.toUri())
                 .setExtras(
                     bundleOf(
                         //"albumId" to album?.endpoint?.browseId,

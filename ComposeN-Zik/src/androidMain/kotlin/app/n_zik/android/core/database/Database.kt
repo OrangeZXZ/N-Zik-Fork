@@ -121,12 +121,22 @@ object Database {
                 newArtistsText.isNullOrBlank() && !dbSong?.artistsText.isNullOrBlank() -> dbSong.artistsText
                 else -> PropUtils.retainIfModified( dbSong?.artistsText, newArtistsText )
             }
+            val newDurationText = song.durationText
+            val finalDurationText = when {
+                newDurationText.isNullOrBlank() && !dbSong?.durationText.isNullOrBlank() -> dbSong.durationText
+                else -> newDurationText
+            }
+            val newThumbnailUrl = song.thumbnailUrl
+            val finalThumbnailUrl = when {
+                newThumbnailUrl.isNullOrBlank() && !dbSong?.thumbnailUrl.isNullOrBlank() -> dbSong.thumbnailUrl
+                else -> PropUtils.retainIfModified( dbSong?.thumbnailUrl, newThumbnailUrl )
+            }
             songTable.upsert(Song(
                 id = song.id,
                 title = finalTitle.orEmpty(),
                 artistsText = finalArtistsText ?: "",
-                durationText = song.durationText,
-                thumbnailUrl = PropUtils.retainIfModified( dbSong?.thumbnailUrl, song.thumbnailUrl ),
+                durationText = finalDurationText,
+                thumbnailUrl = finalThumbnailUrl,
                 likedAt = dbSong?.likedAt,
                 totalPlayTimeMs = dbSong?.totalPlayTimeMs ?: 0,
                 position = dbSong?.position ?: -1
@@ -220,8 +230,22 @@ object Database {
      * this method handles the insertion automatically.
      */
     fun insertIgnore( mediaItem: MediaItem ) {
-        // Insert song
-        songTable.insertIgnore( mediaItem.asSong )
+        // Insert song with merge (preserve existing non-empty fields)
+        val newSong = mediaItem.asSong
+        val dbSong = runBlocking { songTable.findById(newSong.id).first() }
+        val mergedSong = if (dbSong != null) {
+            Song(
+                id = newSong.id,
+                title = newSong.title.ifBlank { dbSong.title },
+                artistsText = if (!newSong.artistsText.isNullOrBlank()) newSong.artistsText else dbSong.artistsText,
+                durationText = if (!newSong.durationText.isNullOrBlank()) newSong.durationText else dbSong.durationText,
+                thumbnailUrl = if (!newSong.thumbnailUrl.isNullOrBlank()) newSong.thumbnailUrl else dbSong.thumbnailUrl,
+                likedAt = dbSong.likedAt,
+                totalPlayTimeMs = dbSong.totalPlayTimeMs,
+                position = dbSong.position
+            )
+        } else newSong
+        songTable.upsert(mergedSong)
 
         // Insert album
         mediaItem.mediaMetadata

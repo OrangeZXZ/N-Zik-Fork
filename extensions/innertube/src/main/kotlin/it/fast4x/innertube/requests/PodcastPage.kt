@@ -159,11 +159,13 @@ fun parsePodcastData(
                             )
                         }
                         ?: emptyList(),
-                    createdDay = content.musicMultiRowListItemRenderer?.subtitle?.runs?.firstOrNull()?.text
-                        ?: "",
-                    durationString = content.musicMultiRowListItemRenderer?.subtitle?.runs?.getOrNull(
-                        1
-                    )?.text ?: "",
+                    createdDay = content.musicMultiRowListItemRenderer?.subtitle?.runs
+                        ?.firstOrNull()?.text ?: "",
+                    durationString = parsePodcastDuration(
+                        content.musicMultiRowListItemRenderer?.playbackProgress
+                            ?.musicPlaybackProgressRenderer?.durationText?.runs
+                            ?.getOrNull(1)?.text ?: ""
+                    ),
                     //videoId = content.musicMultiRowListItemRenderer?.title?.runs?.firstOrNull()?.navigationEndpoint?.browseEndpoint?.browseID ?: "",
                     videoId = content.musicMultiRowListItemRenderer?.onTap?.watchEndpoint?.videoID ?: ""
                     //    ?: "",
@@ -240,12 +242,16 @@ fun parseContinuationPodcastEpisodes(
                             ?.text
                             ?: "",
                     durationString =
-                        content.musicMultiRowListItemRenderer
-                            ?.subtitle
-                            ?.runs
-                            ?.lastOrNull()
-                            ?.text
-                            ?: "",
+                        parsePodcastDuration(
+                            content.musicMultiRowListItemRenderer
+                                ?.playbackProgress
+                                ?.musicPlaybackProgressRenderer
+                                ?.durationText
+                                ?.runs
+                                ?.getOrNull(1)
+                                ?.text
+                                ?: ""
+                        ),
                     videoId =
                         content.musicMultiRowListItemRenderer
                             ?.onTap
@@ -256,5 +262,20 @@ fun parseContinuationPodcastEpisodes(
             )
         }
         return listEpisode
+    }
+}
+
+/**
+ * Parse YouTube podcast duration format to standard format.
+ * Examples: "52 min" -> "52:00", "1 hr 1 min" -> "1:01:00", "1 hr" -> "1:00:00"
+ */
+fun parsePodcastDuration(ytDuration: String): String {
+    val hours = Regex("(\\d+)\\s*hr").find(ytDuration)?.groupValues?.get(1)?.toIntOrNull() ?: 0
+    val minutes = Regex("(\\d+)\\s*min").find(ytDuration)?.groupValues?.get(1)?.toIntOrNull() ?: 0
+
+    return if (hours > 0) {
+        String.format("%d:%02d:00", hours, minutes)
+    } else {
+        String.format("%02d:00", minutes)
     }
 }
