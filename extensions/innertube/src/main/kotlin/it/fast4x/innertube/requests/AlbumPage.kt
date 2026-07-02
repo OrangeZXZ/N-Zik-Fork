@@ -13,7 +13,7 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.oddElements
 import it.fast4x.innertube.models.splitBySeparator
 import it.fast4x.innertube.utils.PageHelper
-import timber.log.Timber
+
 
 data class AlbumPage(
     val album: Innertube.AlbumItem,
@@ -89,7 +89,7 @@ data class AlbumPage(
         }
 
         fun getSong(renderer: MusicResponsiveListItemRenderer, album: Innertube.AlbumItem? = null): Innertube.SongItem {
-            Timber.d("AlbumPage: getSong %s", renderer.flexColumns.get(1).musicResponsiveListItemFlexColumnRenderer?.text?.runs)
+            println("AlbumPage: getSong ${renderer.flexColumns.get(1).musicResponsiveListItemFlexColumnRenderer?.text?.runs}")
             return Innertube.SongItem(
                 info = Info(
                     name = PageHelper.extractRuns(renderer.flexColumns, "MUSIC_VIDEO")
@@ -138,7 +138,7 @@ data class AlbumPage(
 suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { album ->
     album.url?.let { Url(it).parameters["list"] }?.let { playlistId ->
         playlistPage(BrowseBody(browseId = "VL$playlistId"))?.getOrNull()?.let { playlist ->
-            Timber.d("AlbumPage: albumPage pre songsPage %d", playlist.songsPage?.items?.size)
+            println("AlbumPage: albumPage pre songsPage ${playlist.songsPage?.items?.size}")
             album.copy(songsPage = playlist.songsPage)
         }
     } ?: album
@@ -167,5 +167,5 @@ suspend fun Innertube.albumPage(body: BrowseBody) = playlistPage(body)?.map { al
         )
 
     }?.onFailure {
-        Timber.e(it, "Innertube: albumPage error")
+        println("Innertube: albumPage error: ${it.stackTraceToString()}")
     }

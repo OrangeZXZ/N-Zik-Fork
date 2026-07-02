@@ -5,7 +5,7 @@ import it.fast4x.innertube.models.MusicResponsiveListItemRenderer
 import it.fast4x.innertube.models.MusicShelfRenderer
 import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.oddElements
-import timber.log.Timber
+
 
 data class HistoryPage(
     val sections: List<HistorySection>?,
@@ -18,7 +18,7 @@ data class HistoryPage(
     companion object {
         fun fromMusicShelfRenderer(renderer: MusicShelfRenderer): HistorySection {
 
-            Timber.d("HistoryPage: fromMusicShelfRenderer songs: ${renderer.contents?.map {
+            println("HistoryPage: fromMusicShelfRenderer songs: ${renderer.contents?.map {
                 it.musicResponsiveListItemRenderer?.let { it1 ->
                     fromMusicResponsiveListItemRenderer(
                         it1
@@ -39,7 +39,7 @@ data class HistoryPage(
         }
 
         private fun fromMusicResponsiveListItemRenderer(renderer: MusicResponsiveListItemRenderer): Innertube.SongItem {
-            Timber.d("HistoryPage: fromMusicResponsiveListItemRenderer: ${renderer.flexColumns}")
+            println("HistoryPage: fromMusicResponsiveListItemRenderer: ${renderer.flexColumns}")
             return Innertube.SongItem(
                 info = Innertube.Info(
                     name = renderer.flexColumns.firstOrNull()

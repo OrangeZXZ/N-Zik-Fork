@@ -8,7 +8,7 @@ import it.fast4x.innertube.requests.ArtistItemsPage
 import it.fast4x.innertube.requests.PlaylistPage
 import java.io.File
 import java.security.MessageDigest
-import timber.log.Timber
+
 
 @JvmName("getPlaylistCompleted")
 suspend fun Result<PlaylistPage>.completed(): Result<PlaylistPage> = runCatching {
@@ -17,7 +17,7 @@ suspend fun Result<PlaylistPage>.completed(): Result<PlaylistPage> = runCatching
     var continuation = page.songsContinuation
 
 
-    Timber.d("getPlaylist complete PlaylistPage songs: %d continuation: %s", songs.size, continuation)
+    println("getPlaylist complete PlaylistPage songs: ${songs.size} continuation: $continuation")
 
     while (continuation != null) {
         val continuationPage = YtMusic.getPlaylistContinuation(continuation).getOrNull()
@@ -43,7 +43,7 @@ suspend fun Result<ArtistItemsPage>.completed(): Result<ArtistItemsPage> = runCa
     var continuation = page.continuation
 
 
-    Timber.d("getArtistItemsPage complete ArtistItemsPage items: %d continuation: %s", items.size, continuation)
+    println("getArtistItemsPage complete ArtistItemsPage items: ${items.size} continuation: $continuation")
 
     while (continuation != null) {
         val continuationPage = YtMusic.getArtistItemsContinuation(continuation).getOrNull()

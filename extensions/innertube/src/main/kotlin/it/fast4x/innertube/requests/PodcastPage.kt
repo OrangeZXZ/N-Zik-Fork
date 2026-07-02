@@ -9,7 +9,7 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.v0624.podcasts.BrowsePodcastsResponse0624
 import it.fast4x.innertube.models.v0624.podcasts.MusicShelfContinuation
 import it.fast4x.innertube.models.v0624.podcasts.MusicShelfRendererContent
-import timber.log.Timber
+
 
 suspend fun Innertube.podcastPage(body: BrowseBody) = runCatching {
     val response = client.post(browse) {
@@ -72,7 +72,7 @@ suspend fun Innertube.podcastPage(body: BrowseBody) = runCatching {
     val data =
         response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer?.contents?.firstOrNull()
             ?.musicShelfRenderer?.contents
-    Timber.d("PodcastPage: contents count %d", data?.size)
+    println("PodcastPage: contents count ${data?.size}")
     parsePodcastData(data, author).let {
         listEpisode.addAll(it)
     }
@@ -90,7 +90,7 @@ suspend fun Innertube.podcastPage(body: BrowseBody) = runCatching {
             ?.nextContinuationData
             ?.continuation
 
-    Timber.d("PodcastPage: first continueParam %s", continueParam)
+    println("PodcastPage: first continueParam $continueParam")
 
     while (continueParam != null) {
         val continueData = browse(
@@ -114,7 +114,7 @@ suspend fun Innertube.podcastPage(body: BrowseBody) = runCatching {
                 ?.nextContinuationData
                 ?.continuation
 
-        Timber.d("PodcastPage: other continueParam %s", continueParam)
+        println("PodcastPage: other continueParam $continueParam")
     }
 
     Innertube.Podcast(
@@ -129,7 +129,7 @@ suspend fun Innertube.podcastPage(body: BrowseBody) = runCatching {
 
 
 }.onFailure {
-    Timber.e(it, "Innertube: podcastsPage error")
+    println("Innertube: podcastsPage error: ${it.stackTraceToString()}")
 }
 
 fun parsePodcastData(

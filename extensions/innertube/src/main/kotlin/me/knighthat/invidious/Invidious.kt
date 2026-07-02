@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.knighthat.common.HttpFetcher
 import me.knighthat.common.PublicInstances
-import timber.log.Timber
+
 
 object Invidious: PublicInstances() {
 
@@ -59,7 +59,7 @@ object Invidious: PublicInstances() {
 
             instances = getDistinctFirstGroup( response, DOMAIN_NO_PATH_REGEX )
         } catch ( e: HttpRequestTimeoutException ) {
-            Timber.e(e, "Failed to fetch Invidious instances")
+            println("Failed to fetch Invidious instances: ${e.stackTraceToString()}")
         }
     }
 }

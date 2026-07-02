@@ -3,7 +3,7 @@ package it.fast4x.piped.models
 import io.ktor.http.Url
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import timber.log.Timber
+
 import kotlin.time.Duration.Companion.seconds
 
 @Serializable
@@ -55,14 +55,14 @@ data class Playlist(
     ) {
         val cleanTitle: String
             get() = title.split("-", ignoreCase = true).let {
-                Timber.d("PlaylistPreview: %s %s %d", title, it, it.size)
+                println("PlaylistPreview: $title $it ${it.size}")
                 return if (it.size > 1) it[1].trim()
                 else title
             }
 
         val cleanArtists: String
             get() = title.split("-", ignoreCase = true).let {
-                Timber.d("PlaylistPreview: %s %s %d", title, it, it.size)
+                println("PlaylistPreview: $title $it ${it.size}")
                 return if (it.size > 1) it[0].trim()
                 else title
             }

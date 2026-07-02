@@ -27,7 +27,7 @@ import kotlinx.serialization.json.Json
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Proxy
-import timber.log.Timber
+
 
 internal object HttpFetcher {
 
@@ -204,8 +204,8 @@ internal object HttpFetcher {
 
                         // Only accept successful responses
                         if ( response.status == HttpStatusCode.OK ) {
-                            Timber.d("Fetch %s%s returned code: %s:", hostUrl, endpoint, response.status)
-                            Timber.d(response.bodyAsText().replace("\n", ""))
+                            println("Fetch $hostUrl$endpoint returned code: ${response.status}:")
+                            println(response.bodyAsText().replace("\n", ""))
 
                             response.body<T>()
                         } else

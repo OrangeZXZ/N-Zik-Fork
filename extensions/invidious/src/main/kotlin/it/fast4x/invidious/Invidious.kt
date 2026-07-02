@@ -24,7 +24,7 @@ import it.fast4x.invidious.utils.getProxy
 import it.fast4x.invidious.utils.runCatchingCancellable
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import timber.log.Timber
+
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -132,16 +132,16 @@ object Invidious {
     class Api internal constructor() {
 
         suspend fun videos(videoId: String) = runCatchingCancellable {
-            Timber.d("Invidious.api.videos request started")
+            println("Invidious.api.videos request started")
             val url = "${Instances.YEWTU.apiUrl}videos/${videoId}"
-            Timber.d("Invidious.api.videos url: %s", url)
+            println("Invidious.api.videos url: $url")
             val response = client.get(url) {
                 contentType(ContentType.Application.Json)
             }.body<InvidiousResponse>()
-            Timber.d("Invidious.api.videos request finished %s", response)
+            println("Invidious.api.videos request finished $response")
             return@runCatchingCancellable response
         }?.onFailure {
-            Timber.e(it, "Invidious.api.videos request failed")
+            println("Invidious.api.videos request failed: ${it.message}")
         }
 
     }

@@ -15,7 +15,7 @@ import it.fast4x.innertube.utils.findSectionByStrapline
 import it.fast4x.innertube.utils.findSectionByTitle
 import it.fast4x.innertube.utils.from
 import it.fast4x.innertube.utils.runCatchingNonCancellable
-import timber.log.Timber
+
 
 
 
@@ -53,10 +53,10 @@ suspend fun Innertube.relatedPage(body: NextBody) = runCatchingNonCancellable {
         .contents
         ?.sectionListRenderer
 
-    Timber.d("Innertube RelatedPage sectionListRenderer %s", sectionListRenderer
+    println("Innertube RelatedPage sectionListRenderer ${sectionListRenderer
         ?.findSectionByTitle("You might also like")
         ?.musicCarouselShelfRenderer
-        ?.contents)
+        ?.contents}")
 
     Innertube.RelatedPage(
         songs = sectionListRenderer
@@ -86,5 +86,5 @@ suspend fun Innertube.relatedPage(body: NextBody) = runCatchingNonCancellable {
             ?.mapNotNull(Innertube.ArtistItem::from),
     )
 }?.onFailure {
-    Timber.e(it, "Innertube: Failed relatedPage")
+    println("Innertube: Failed relatedPage: ${it.stackTraceToString()}")
 }

@@ -5,11 +5,11 @@ import it.fast4x.innertube.Innertube.getBestQuality
 import it.fast4x.innertube.models.MusicTwoRowItemRenderer
 import it.fast4x.innertube.models.oddElements
 import it.fast4x.innertube.models.splitBySeparator
-import timber.log.Timber
+
 
 object NewReleaseAlbumPage {
     fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer): Innertube.AlbumItem {
-        Timber.d("NewReleaseAlbumPage: fromMusicTwoRowItemRenderer: %s", renderer.navigationEndpoint?.browseEndpoint)
+        println("NewReleaseAlbumPage: fromMusicTwoRowItemRenderer: ${renderer.navigationEndpoint?.browseEndpoint}")
         return Innertube.AlbumItem(
             info = Innertube.Info(
                 name = renderer.title?.runs?.firstOrNull()?.text ?: "",

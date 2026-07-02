@@ -18,7 +18,7 @@ import it.fast4x.innertube.requests.HomePage
 import it.fast4x.innertube.requests.NewReleaseAlbumPage
 import it.fast4x.innertube.requests.PlaylistContinuationPage
 import it.fast4x.innertube.requests.PlaylistPage
-import timber.log.Timber
+
 
 object YtMusic {
 
@@ -27,97 +27,97 @@ object YtMusic {
     suspend fun createPlaylist(title: String) = runCatching {
         Innertube.createPlaylist(Context.DefaultWeb.client, title).body<CreatePlaylistResponse>().playlistId
     }.onFailure {
-        Timber.e(it, "YtMusic: createPlaylist error")
+        println("YtMusic: createPlaylist error: ${it.stackTraceToString()}")
     }
 
     suspend fun deletePlaylist(playlistId: String) = runCatching {
         Innertube.deletePlaylist(Context.DefaultWeb.client, playlistId)
     }.onFailure {
-        Timber.e(it, "YtMusic: deletePlaylist error")
+        println("YtMusic: deletePlaylist error: ${it.stackTraceToString()}")
     }
 
     suspend fun renamePlaylist(playlistId: String, name: String) = runCatching {
         Innertube.renamePlaylist(Context.DefaultWeb.client, playlistId, name)
     }.onFailure {
-        Timber.e(it, "YtMusic: renamePlaylist error")
+        println("YtMusic: renamePlaylist error: ${it.stackTraceToString()}")
     }
 
     suspend fun addToPlaylist(playlistId: String, videoId: String) = runCatching {
         Innertube.addToPlaylist(Context.DefaultWeb.client, playlistId, videoId)
     }.onFailure {
-        Timber.e(it, "YtMusic: addToPlaylist(single) error")
+        println("YtMusic: addToPlaylist(single) error: ${it.stackTraceToString()}")
     }
 
     suspend fun addToPlaylist(playlistId: String, videoIds: List<String>) = runCatching {
         val requestedVideoIds = videoIds.take(PLAYLIST_SIZE_LIMIT)
         val difference = videoIds.size - requestedVideoIds.size
         if (difference > 0) {
-            Timber.w("YtMusic: addToPlaylist warning: only adding (at most) %d ids, (surpassed limit by %d)", PLAYLIST_SIZE_LIMIT, difference)
+            println("YtMusic: addToPlaylist warning: only adding (at most) $PLAYLIST_SIZE_LIMIT ids, (surpassed limit by $difference)")
         }
         Innertube.addToPlaylist(Context.DefaultWeb.client, playlistId, requestedVideoIds)
     }.onFailure {
-        Timber.e(it, "YtMusic: addToPlaylist (list of size %d) error", videoIds.size)
+        println("YtMusic: addToPlaylist (list of size ${videoIds.size}) error: ${it.stackTraceToString()}")
     }
 
     suspend fun removeFromPlaylist(playlistId: String, videoId: String, setVideoId: String? = null) = runCatching {
-        Timber.d("YtMusic: removeFromPlaylist params: playlistId: %s, videoId: %s, setVideoId: %s", playlistId, videoId, setVideoId)
+        println("YtMusic: removeFromPlaylist params: playlistId: $playlistId, videoId: $videoId, setVideoId: $setVideoId")
             Innertube.removeFromPlaylist(Context.DefaultWeb.client, playlistId, videoId, setVideoId)
         }.onFailure {
-            Timber.e(it, "YtMusic: removeFromPlaylist error")
+            println("YtMusic: removeFromPlaylist error: ${it.stackTraceToString()}")
         }
 
     suspend fun addPlaylistToPlaylist(playlistId: String, videoId: String) = runCatching {
         Innertube.addPlaylistToPlaylist(Context.DefaultWeb.client, playlistId, videoId)
     }.onFailure {
-        Timber.e(it, "YtMusic: addPlaylistToPlaylist error")
+        println("YtMusic: addPlaylistToPlaylist error: ${it.stackTraceToString()}")
     }
 
     suspend fun removeFromPlaylist(playlistId: String, videoId: String, setVideoIds: List<String?>) = runCatching {
         Innertube.removeFromPlaylist(Context.DefaultWeb.client, playlistId, videoId, setVideoIds)
     }.onFailure {
-        Timber.e(it, "YtMusic: removeFromPlaylist (list of size %d) error", setVideoIds.size)
+        println("YtMusic: removeFromPlaylist (list of size ${setVideoIds.size}) error: ${it.stackTraceToString()}")
     }
 
     suspend fun subscribeChannel(channelId: String) = runCatching {
-        Timber.d("YtMusic: subscribeChannel channelId: %s", channelId)
+        println("YtMusic: subscribeChannel channelId: $channelId")
         Innertube.subscribeChannel(channelId)
     }.onFailure {
-        Timber.e(it, "YtMusic: subscribeChannel error")
+        println("YtMusic: subscribeChannel error: ${it.stackTraceToString()}")
     }
 
     suspend fun unsubscribeChannel(channelId: String) = runCatching {
-        Timber.d("YtMusic: unsubscribeChannel channelId: %s", channelId)
+        println("YtMusic: unsubscribeChannel channelId: $channelId")
         Innertube.unsubscribeChannel(channelId)
     }.onFailure {
-        Timber.e(it, "YtMusic: unsubscribeChannel error")
+        println("YtMusic: unsubscribeChannel error: ${it.stackTraceToString()}")
     }
 
     suspend fun likePlaylistOrAlbum(playlistId: String) = runCatching {
-        Timber.d("YtMusic: likePlaylistOrAlbum playlistId: %s", playlistId)
+        println("YtMusic: likePlaylistOrAlbum playlistId: $playlistId")
         Innertube.likePlaylistOrAlbum(playlistId)
     }.onFailure {
-        Timber.e(it, "YtMusic: likePlaylistOrAlbum error")
+        println("YtMusic: likePlaylistOrAlbum error: ${it.stackTraceToString()}")
     }
 
     suspend fun removelikePlaylistOrAlbum(playlistId: String) = runCatching {
-        Timber.d("YtMusic: removelikePlaylistOrAlbum playlistId: %s", playlistId)
+        println("YtMusic: removelikePlaylistOrAlbum playlistId: $playlistId")
         Innertube.removelikePlaylistOrAlbum(playlistId)
     }.onFailure {
-        Timber.e(it, "YtMusic: removelikePlaylistOrAlbum error")
+        println("YtMusic: removelikePlaylistOrAlbum error: ${it.stackTraceToString()}")
     }
 
     suspend fun likeVideoOrSong(VideoId: String) = runCatching {
-        Timber.d("YtMusic: likeVideoOrSong VideoId: %s", VideoId)
+        println("YtMusic: likeVideoOrSong VideoId: $VideoId")
         Innertube.likeVideoOrSong(VideoId)
     }.onFailure {
-        Timber.e(it, "YtMusic: likeVideoOrSong error")
+        println("YtMusic: likeVideoOrSong error: ${it.stackTraceToString()}")
     }
 
     suspend fun removelikeVideoOrSong(VideoId: String) = runCatching {
-        Timber.d("YtMusic: removelikeVideoOrSong playlistIdId: %s", VideoId)
+        println("YtMusic: removelikeVideoOrSong playlistIdId: $VideoId")
         Innertube.removelikeVideoOrSong(VideoId)
     }.onFailure {
-        Timber.e(it, "YtMusic: removelikeVideoOrSong error")
+        println("YtMusic: removelikeVideoOrSong error: ${it.stackTraceToString()}")
     }
 
     suspend fun getHomePage(setLogin: Boolean = false): Result<HomePage> = runCatching {
@@ -125,8 +125,8 @@ object YtMusic {
         val hl = "en" // Force English to keep section matching simple in HomeQuickPicks
         var response = Innertube.browse(browseId = "FEmusic_home", setLogin = setLogin, hl = hl).body<BrowseResponse>()
 
-        Timber.d("homePage() response sections: %s", response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
-            ?.tabRenderer?.content?.sectionListRenderer?.contents)
+        println("homePage() response sections: ${response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents}")
 
         val sectionListRender = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
             ?.tabRenderer?.content?.sectionListRenderer
@@ -143,10 +143,10 @@ object YtMusic {
                 HomePage.Section.fromMusicCarouselShelfRenderer(it)
             }.toMutableList()
         while (continuation != null) {
-            Timber.d("gethomePage() continuation before: %s", continuation)
+            println("gethomePage() continuation before: $continuation")
             response = Innertube.browse(continuation = continuation, setLogin = setLogin, hl = "en").body<BrowseResponse>()
             continuation = response.continuationContents?.sectionListContinuation?.continuations?.getContinuation()
-            Timber.d("gethomePage() continuation after: %s", continuation)
+            println("gethomePage() continuation after: $continuation")
 
             sections += response.continuationContents?.sectionListContinuation?.contents
                 ?.mapNotNull { it.musicCarouselShelfRenderer }
@@ -178,8 +178,8 @@ object YtMusic {
         val response = Innertube.browse(browseId = "FEmusic_history", setLogin = setLogin)
             .body<BrowseResponse>()
 
-        Timber.d("getHistory() response sections: %s", response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
-            ?.tabRenderer?.content?.sectionListRenderer?.contents)
+        println("getHistory() response sections: ${response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents}")
 
         HistoryPage(
             sections = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
@@ -312,12 +312,12 @@ object YtMusic {
             }
         }
     }.onFailure {
-        Timber.e(it, "YtMusic: getArtistItemsPage() error")
+        println("YtMusic: getArtistItemsPage() error: ${it.stackTraceToString()}")
     }
 
     suspend fun getPlaylist(playlistId: String): Result<PlaylistPage> = runCatching {
         val playlistIdChecked = if (playlistId.startsWith("VL")) playlistId else "VL$playlistId"
-        Timber.d("YtMusic: getPlaylist playlistId: %s Checked: %s", playlistId, playlistIdChecked)
+        println("YtMusic: getPlaylist playlistId: $playlistId Checked: $playlistIdChecked")
         val response = Innertube.browse(
             browseId = playlistIdChecked,
             setLogin = true
@@ -329,7 +329,7 @@ object YtMusic {
         else
             getPlaylistNewMode(playlistIdChecked, response)
     }.onFailure {
-        Timber.e(it, "YtMusic: getPlaylist error")
+        println("YtMusic: getPlaylist error: ${it.stackTraceToString()}")
     }
 
     private fun getPlaylistPreviousMode(playlistId: String, response: BrowseResponse): PlaylistPage {
@@ -392,7 +392,7 @@ object YtMusic {
             ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
             ?.musicEditablePlaylistDetailHeaderRenderer != null
 
-        Timber.d("getPlaylist new mode editable: %s", isEditable)
+        println("getPlaylist new mode editable: $isEditable")
 
         return PlaylistPage(
             playlist = Innertube.PlaylistItem(
@@ -444,8 +444,8 @@ object YtMusic {
             setLogin = true
         ).body<BrowseResponse>()
 
-        Timber.d("YtMusic: getPlaylistContinuation response: %s", response.onResponseReceivedActions?.firstOrNull()
-            ?.appendContinuationItemsAction?.continuationItems?.lastOrNull()?.continuationItemRenderer?.continuationEndpoint?.continuationCommand?.token)
+        println("YtMusic: getPlaylistContinuation response: ${response.onResponseReceivedActions?.firstOrNull()
+            ?.appendContinuationItemsAction?.continuationItems?.lastOrNull()?.continuationItemRenderer?.continuationEndpoint?.continuationCommand?.token}")
 
 //        response.continuationContents?.musicPlaylistShelfContinuation?.contents?.mapNotNull {
 //            it.musicResponsiveListItemRenderer?.let { it1 ->
@@ -477,7 +477,7 @@ object YtMusic {
         }
 
     }.onFailure {
-        Timber.e(it, "YtMusic: getPlaylistContinuation error")
+        println("YtMusic: getPlaylistContinuation error: ${it.stackTraceToString()}")
     }
 
     suspend fun getArtistItemsContinuation(continuation: String) = runCatching {
@@ -506,7 +506,7 @@ object YtMusic {
         }
 
     }.onFailure {
-        Timber.e(it, "YtMusic: getArtistItemsContinuation error")
+        println("YtMusic: getArtistItemsContinuation error: ${it.stackTraceToString()}")
     }
 
     suspend fun getAlbum(browseId: String, withSongs: Boolean = true): Result<AlbumPage> = runCatching {
@@ -567,7 +567,7 @@ object YtMusic {
         val songs = contents?.mapNotNull {
             it.musicResponsiveListItemRenderer?.let { it1 -> AlbumPage.getSong(it1) }
         }
-        Timber.d("mediaItem getAlbumSongs songs: %s", songs)
+        println("mediaItem getAlbumSongs songs: $songs")
         songs!!
     }
 

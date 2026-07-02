@@ -19,7 +19,7 @@ import it.fast4x.innertube.models.oddElements
 import it.fast4x.innertube.utils.from
 import it.fast4x.innertube.utils.runCatchingCancellable
 import it.fast4x.innertube.utils.runCatchingNonCancellable
-import timber.log.Timber
+
 
 data class PlaylistPage(
     val playlist: Innertube.PlaylistItem,
@@ -31,7 +31,7 @@ data class PlaylistPage(
 ) {
     companion object {
         fun fromMusicResponsiveListItemRenderer(renderer: MusicResponsiveListItemRenderer): Innertube.SongItem {
-            Timber.d("PlaylistPage: fromMusicResponsiveListItemRenderer setVideoId: %s", renderer.playlistItemData?.playlistSetVideoId)
+            println("PlaylistPage: fromMusicResponsiveListItemRenderer setVideoId: ${renderer.playlistItemData?.playlistSetVideoId}")
             return Innertube.SongItem(
                 info = Innertube.Info(
                     name = renderer.flexColumns.firstOrNull()
@@ -224,7 +224,7 @@ suspend fun Innertube.playlistPage(body: BrowseBody) = runCatchingCancellable {
     }
 
 }?.onFailure {
-    Timber.e(it, "Innertube: playlistPage error")
+    println("Innertube: playlistPage error: ${it.stackTraceToString()}")
 }
 
 suspend fun Innertube.playlistPage(body: ContinuationBody) = runCatchingNonCancellable {
@@ -232,7 +232,7 @@ suspend fun Innertube.playlistPage(body: ContinuationBody) = runCatchingNonCance
     val callResponse = call.bodyAsText()
     val response = call.body<BrowseResponse>()
 
-    Timber.d("PlaylistPage: continuation response musicShelfContinuation: %s", response.continuationContents?.musicShelfContinuation)
+    println("PlaylistPage: continuation response musicShelfContinuation: ${response.continuationContents?.musicShelfContinuation}")
     response
         .continuationContents
         ?.musicShelfContinuation

@@ -7,7 +7,7 @@ import it.fast4x.innertube.models.MusicCarouselShelfRenderer
 import it.fast4x.innertube.models.MusicTwoRowItemRenderer
 import it.fast4x.innertube.models.oddElements
 import kotlinx.serialization.Serializable
-import timber.log.Timber
+
 
 @Serializable
 data class HomePage(
@@ -48,9 +48,9 @@ data class HomePage(
             private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer?): Innertube.Item? {
                 return when {
                     renderer?.isSong == true -> {
-                        Timber.d("HomePage: fromMusicTwoRowItemRenderer isSong: ${renderer.title?.runs?.firstOrNull()?.text}")
+                        println("HomePage: fromMusicTwoRowItemRenderer isSong: ${renderer.title?.runs?.firstOrNull()?.text}")
                         val songSubtitleRuns = renderer.subtitle?.runs?.map { "${it.text}(${it.navigationEndpoint?.browseEndpoint != null})" }
-                        Timber.d("HomePage: isSong subtitle runs: $songSubtitleRuns")
+                        println("HomePage: isSong subtitle runs: $songSubtitleRuns")
                         Innertube.SongItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -74,7 +74,7 @@ data class HomePage(
                     }
 
                     renderer?.isAlbum == true -> {
-                        Timber.d("HomePage: fromMusicTwoRowItemRenderer isAlbum: ${renderer.title?.runs?.firstOrNull()?.text}")
+                        println("HomePage: fromMusicTwoRowItemRenderer isAlbum: ${renderer.title?.runs?.firstOrNull()?.text}")
                         Innertube.AlbumItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -99,7 +99,7 @@ data class HomePage(
                     }
 
                     renderer?.isPlaylist == true -> {
-                        Timber.d("HomePage: fromMusicTwoRowItemRenderer isPlaylist: ${renderer.title?.runs?.firstOrNull()?.text}")
+                        println("HomePage: fromMusicTwoRowItemRenderer isPlaylist: ${renderer.title?.runs?.firstOrNull()?.text}")
                         Innertube.PlaylistItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -113,7 +113,7 @@ data class HomePage(
                     }
 
                     renderer?.isArtist == true -> {
-                        Timber.d("HomePage: fromMusicTwoRowItemRenderer isArtist: ${renderer.title?.runs?.firstOrNull()?.text}")
+                        println("HomePage: fromMusicTwoRowItemRenderer isArtist: ${renderer.title?.runs?.firstOrNull()?.text}")
                         Innertube.ArtistItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -125,9 +125,9 @@ data class HomePage(
                     }
 
                     renderer?.isVideo == true -> {
-                        Timber.d("HomePage: fromMusicTwoRowItemRenderer isVideo: ${renderer.title?.runs?.firstOrNull()?.text}")
+                        println("HomePage: fromMusicTwoRowItemRenderer isVideo: ${renderer.title?.runs?.firstOrNull()?.text}")
                         val subtitleParts = renderer.subtitle?.splitBySeparator() ?: emptyList()
-                        Timber.d("HomePage: isVideo subtitleParts count=${subtitleParts.size}: $subtitleParts")
+                        println("HomePage: isVideo subtitleParts count=${subtitleParts.size}: $subtitleParts")
                         Innertube.VideoItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -155,7 +155,7 @@ data class HomePage(
                     }
 
                     else -> {
-                        Timber.d("HomePage: fromMusicTwoRowItemRenderer else renderer: ${renderer}")
+                        println("HomePage: fromMusicTwoRowItemRenderer else renderer: $renderer")
                         null
                     }
                 }
