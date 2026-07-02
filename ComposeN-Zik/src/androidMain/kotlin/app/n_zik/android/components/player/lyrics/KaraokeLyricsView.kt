@@ -429,11 +429,11 @@ fun KaraokeLyricsView(
     // Determine active lines (multiple can be active for overlapping agents)
     val activeLineIndices = remember(currentPositionMs, karaokeLines) {
         val active = mutableSetOf<Int>()
-        var lastPassedIndex = 0
+        var lastPassedNonBgIndex = 0
         for (i in karaokeLines.indices) {
             val line = karaokeLines[i]
             if (line.timeMs > currentPositionMs + 50L) break
-            if (!line.isBackground) lastPassedIndex = i
+            if (!line.isBackground) lastPassedNonBgIndex = i
 
             // Determine line end time
             val lineEndMs = if (line.words.isNotEmpty()) {
@@ -448,15 +448,33 @@ fun KaraokeLyricsView(
             }
         }
         if (active.isEmpty()) {
-            active.add(lastPassedIndex)
+            active.add(lastPassedNonBgIndex)
         }
         active
     }
 
-    // Primary active line for scroll targeting
-    val primaryActiveIndex = activeLineIndices
-        .filter { !karaokeLines[it].isBackground }
-        .maxOrNull() ?: activeLineIndices.maxOrNull() ?: 0
+    // Primary active line for scroll targeting - prefer non-background lines
+    // Track max reached line to never go backwards
+    var maxReachedLineIndex by remember { mutableIntStateOf(0) }
+    val primaryActiveIndex = remember(activeLineIndices, currentPositionMs) {
+        val nonBgActive = activeLineIndices.filter { !karaokeLines[it].isBackground }
+        val currentIndex = if (nonBgActive.isNotEmpty()) {
+            nonBgActive.maxOrNull()!!
+        } else {
+            // No non-background active - find last passed non-background line
+            var lastNonBg = 0
+            for (i in karaokeLines.indices) {
+                if (karaokeLines[i].timeMs > currentPositionMs) break
+                if (!karaokeLines[i].isBackground) lastNonBg = i
+            }
+            lastNonBg
+        }
+        // Never go backwards
+        if (currentIndex > maxReachedLineIndex) {
+            maxReachedLineIndex = currentIndex
+        }
+        maxReachedLineIndex
+    }
 
     val lazyListState = rememberLazyListState()
 
@@ -638,7 +656,6 @@ fun KaraokeLyricsView(
                         scaleX = animateScale
                         scaleY = animateScale
                     }
-                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
                     .clickable(
                         interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
                         indication = if (clickLyricsText) androidx.compose.foundation.LocalIndication.current else null,
@@ -678,6 +695,48 @@ fun KaraokeLyricsView(
                                 }
                                 withStyle(androidx.compose.ui.text.SpanStyle(color = lineAccent.copy(alpha = 0.85f))) {
                                     append(displayedText.substring(safeLen))
+                                }
+                            } else if (line.words.isNotEmpty()) {
+                                // Per-word coloring: smooth fade for active long words
+                                var searchIdx = 0
+                                line.words.forEachIndexed { wordIdx, word ->
+                                    val isActive = currentPositionMs >= word.startMs && currentPositionMs < word.endMs
+                                    val isSung = currentPositionMs >= word.endMs
+                                    val dur = word.endMs - word.startMs
+                                    val isLongWord = dur > 500L
+                                    
+                                    // Append spaces between words
+                                    val wordStartInText = line.text.indexOf(word.text, searchIdx)
+                                    if (wordStartInText > searchIdx) {
+                                        withStyle(androidx.compose.ui.text.SpanStyle(color = lineInactive)) {
+                                            append(line.text.substring(searchIdx, wordStartInText))
+                                        }
+                                    }
+                                    
+                                    // Word itself - smooth fade for long active words
+                                    val wordColor = if (isLongWord) {
+                                        if (isActive) {
+                                            val linearProgress = ((currentPositionMs - word.startMs).toFloat() / dur.coerceAtLeast(1L)).coerceIn(0f, 1f)
+                                            val fadeAlpha = (1f - linearProgress).coerceIn(0f, 1f)
+                                            lineInactive.copy(alpha = fadeAlpha * lineInactive.alpha)
+                                        } else if (isSung) {
+                                            androidx.compose.ui.graphics.Color.Transparent
+                                        } else {
+                                            lineInactive
+                                        }
+                                    } else {
+                                        lineInactive
+                                    }
+                                    withStyle(androidx.compose.ui.text.SpanStyle(color = wordColor)) {
+                                        append(word.text)
+                                    }
+                                    searchIdx = wordStartInText + word.text.length
+                                }
+                                // Remaining text
+                                if (searchIdx < line.text.length) {
+                                    withStyle(androidx.compose.ui.text.SpanStyle(color = lineInactive)) {
+                                        append(line.text.substring(searchIdx))
+                                    }
                                 }
                             } else {
                                 withStyle(androidx.compose.ui.text.SpanStyle(color = lineInactive)) {
@@ -778,42 +837,126 @@ fun KaraokeLyricsView(
                                     val lineEndMs = line.words.maxOfOrNull { it.endMs } ?: (lineStartMs + 2000L)
                                     
                                     if (currentPositionMs >= lineEndMs) {
-                                        this@drawWithContent.drawContent()
+                                        val dur = lineEndMs - lineStartMs
+                                        if (dur > 500L) {
+                                            // Long line: smooth descent with fading oscillation
+                                            val fadeMs = 1200L
+                                            val fadeProgress = ((currentPositionMs - lineEndMs).toFloat() / fadeMs).coerceIn(0f, 1f)
+                                            val fadeFactor = 1f - (fadeProgress * fadeProgress * (3f - 2f * fadeProgress))
+                                            val totalLength = displayedText.length
+                                            val durFactor = (dur / 800f).coerceIn(0.6f, 2f)
+                                            val scaleAmount = 1f + (fadeFactor * 0.04f)
+                                            // Oscillation fades gradually
+                                            val waveAmplitude = fadeFactor * with(density) { (4f * durFactor).dp.toPx() }
+                                            val waveFrequency = (600f / dur.toFloat().coerceAtLeast(100f)).coerceIn(2f, 8f)
+                                            // Rise fades gradually
+                                            val riseAmount = fadeFactor * with(density) { (2.5f * durFactor).dp.toPx() }
+                                            
+                                            drawContext.canvas.save()
+                                            val wordStartBox = layout.getBoundingBox(0)
+                                            val wordEndBox = layout.getBoundingBox(totalLength - 1)
+                                            drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(wordStartBox.left - with(density) { 8.dp.toPx() }, wordStartBox.top - waveAmplitude - riseAmount - with(density) { 8.dp.toPx() }, wordEndBox.right + with(density) { 8.dp.toPx() }, wordEndBox.bottom + waveAmplitude + with(density) { 8.dp.toPx() }))
+                                            
+                                            for (charIdx in 0 until totalLength) {
+                                                val charBox = layout.getBoundingBox(charIdx)
+                                                val charPos = charIdx.toFloat() / totalLength.coerceAtLeast(1)
+                                                // Oscillation continues from where it ended, fading out
+                                                val endPhase = charPos * waveFrequency - waveFrequency * 1.5f
+                                                val wavePhase = endPhase + fadeProgress * 0.5f // slight forward motion
+                                                val charWaveY = kotlin.math.sin(wavePhase).toFloat() * waveAmplitude
+                                                
+                                                val pivotX = charBox.left + charBox.width / 2f
+                                                val pivotY = charBox.bottom
+                                                drawContext.canvas.save()
+                                                drawContext.canvas.translate(pivotX, pivotY + charWaveY - riseAmount)
+                                                drawContext.canvas.scale(scaleAmount, scaleAmount)
+                                                drawContext.canvas.translate(-pivotX, -pivotY)
+                                                drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
+                                                this@drawWithContent.drawContent()
+                                                drawContext.canvas.restore()
+                                            }
+                                            drawContext.canvas.restore()
+                                        } else {
+                                            // Short line: simple draw
+                                            this@drawWithContent.drawContent()
+                                        }
                                     } else if (currentPositionMs > lineStartMs) {
                                         val progress = ((currentPositionMs - lineStartMs).toFloat() / (lineEndMs - lineStartMs).coerceAtLeast(1L)).coerceIn(0f, 1f)
                                         val totalLength = displayedText.length
-                                        val activeCharIdx = (progress * totalLength).toInt().coerceIn(0, totalLength - 1)
+                                        val dur = lineEndMs - lineStartMs
                                         
-                                        if (activeCharIdx > 0) {
-                                            val path = getFastPathForRange(layout, 0, activeCharIdx - 1)
+                                        if (dur > 500L) {
+                                            // Long line: wave effect
+                                            val easedProgress = progress * progress * (3f - 2f * progress)
+                                            val durFactor = (dur / 800f).coerceIn(0.6f, 2f)
+                                            val waveAmplitude = with(density) { (4f * durFactor).dp.toPx() }
+                                            val waveFrequency = (600f / dur.toFloat().coerceAtLeast(100f)).coerceIn(2f, 8f)
+                                            val scaleAmount = 1f + (easedProgress * 0.04f)
+                                            
+                                            // Aggressive rise curve: fast at start, then stabilizes
+                                            val riseCurve = progress * progress // quadratic - rises fast
+                                            val riseAmount = riseCurve * with(density) { (2.5f * durFactor).dp.toPx() }
+                                            
+                                            val wordStartBox = layout.getBoundingBox(0)
+                                            val wordEndBox = layout.getBoundingBox(totalLength - 1)
+                                            
+                                            val fillRight = wordStartBox.left + (wordEndBox.right - wordStartBox.left) * easedProgress
                                             drawContext.canvas.save()
-                                            drawContext.canvas.clipPath(path)
+                                            drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(wordStartBox.left - with(density) { 8.dp.toPx() }, wordStartBox.top - waveAmplitude - riseAmount - with(density) { 8.dp.toPx() }, fillRight + with(density) { 8.dp.toPx() }, wordEndBox.bottom + waveAmplitude + with(density) { 8.dp.toPx() }))
+                                            
+                                            for (charIdx in 0 until totalLength) {
+                                                val charBox = layout.getBoundingBox(charIdx)
+                                                val charPos = charIdx.toFloat() / totalLength.coerceAtLeast(1)
+                                                
+                                                val wavePhase = charPos * waveFrequency - easedProgress * waveFrequency * 1.5f
+                                                val charWaveY = kotlin.math.sin(wavePhase).toFloat() * waveAmplitude
+                                                
+                                                val pivotX = charBox.left + charBox.width / 2f
+                                                val pivotY = charBox.bottom
+                                                
+                                                drawContext.canvas.save()
+                                                drawContext.canvas.translate(pivotX, pivotY + charWaveY - riseAmount)
+                                                drawContext.canvas.scale(scaleAmount, scaleAmount)
+                                                drawContext.canvas.translate(-pivotX, -pivotY)
+                                                drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
+                                                this@drawWithContent.drawContent()
+                                                drawContext.canvas.restore()
+                                            }
+                                            drawContext.canvas.restore()
+                                        } else {
+                                            // Short line: original character-by-character bounce
+                                            val activeCharIdx = (progress * totalLength).toInt().coerceIn(0, totalLength - 1)
+                                            
+                                            if (activeCharIdx > 0) {
+                                                val path = getFastPathForRange(layout, 0, activeCharIdx - 1)
+                                                drawContext.canvas.save()
+                                                drawContext.canvas.clipPath(path)
+                                                this@drawWithContent.drawContent()
+                                                drawContext.canvas.restore()
+                                            }
+                                            
+                                            val charLp = ((progress * totalLength) - activeCharIdx).coerceIn(0f, 1f)
+                                            val ease = { t: Float -> t * t * (3f - 2f * t) }
+                                            val bounceFactor = when {
+                                                charLp < 0.4f -> ease(charLp / 0.4f)
+                                                charLp > 0.6f -> ease((1f - charLp) / 0.4f)
+                                                else -> 1f
+                                            }
+                                            val charBounceY = -bounceFactor * with(density) { 0.8.dp.toPx() }
+                                            val scaleFactor = 1f + (bounceFactor * 0.05f)
+                                            
+                                            val charBox = layout.getBoundingBox(activeCharIdx)
+                                            drawContext.canvas.save()
+                                            val pivotX = charBox.left + charBox.width / 2f
+                                            val pivotY = charBox.bottom
+                                            drawContext.canvas.translate(pivotX, pivotY + charBounceY)
+                                            drawContext.canvas.scale(scaleFactor, scaleFactor)
+                                            drawContext.canvas.translate(-pivotX, -pivotY)
+                                            
+                                            drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
                                             this@drawWithContent.drawContent()
                                             drawContext.canvas.restore()
                                         }
-                                        
-                                        // Active character pop for translated text
-                                        val charLp = ((progress * totalLength) - activeCharIdx).coerceIn(0f, 1f)
-                                        val ease = { t: Float -> t * t * (3f - 2f * t) }
-                                        val bounceFactor = when {
-                                            charLp < 0.4f -> ease(charLp / 0.4f)
-                                            charLp > 0.6f -> ease((1f - charLp) / 0.4f)
-                                            else -> 1f
-                                        }
-                                        val charBounceY = -bounceFactor * with(density) { 0.8.dp.toPx() }
-                                        val scaleFactor = 1f + (bounceFactor * 0.05f)
-                                        
-                                        val charBox = layout.getBoundingBox(activeCharIdx)
-                                        drawContext.canvas.save()
-                                        val pivotX = charBox.left + charBox.width / 2f
-                                        val pivotY = charBox.bottom
-                                        drawContext.canvas.translate(pivotX, pivotY + charBounceY)
-                                        drawContext.canvas.scale(scaleFactor, scaleFactor)
-                                        drawContext.canvas.translate(-pivotX, -pivotY)
-                                        
-                                        drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
-                                        this@drawWithContent.drawContent()
-                                        drawContext.canvas.restore()
                                     }
                                 } else {
                                     line.words.forEach { word ->
@@ -827,53 +970,133 @@ fun KaraokeLyricsView(
                                     val endBox = layout.getBoundingBox(wEndIdx)
                                     
                                     if (isWordSung) {
-                                        // Fully sung word: clipRect to full word bounds
-                                        val path = getFastPathForRange(layout, wStartIdx, wEndIdx)
-                                        drawContext.canvas.save()
-                                        drawContext.canvas.clipPath(path)
-                                        this@drawWithContent.drawContent()
-                                        drawContext.canvas.restore()
+                                        val dur = word.endMs - word.startMs
+                                        if (dur > 500L) {
+                                            // Long word: smooth descent with fading oscillation
+                                            val fadeMs = 1200L
+                                            val fadeProgress = ((currentPositionMs - word.endMs).toFloat() / fadeMs).coerceIn(0f, 1f)
+                                            val fadeFactor = 1f - (fadeProgress * fadeProgress * (3f - 2f * fadeProgress))
+                                            val wordLen = word.text.length
+                                            val durFactor = (dur / 800f).coerceIn(0.6f, 2f)
+                                            val scaleAmount = 1f + (fadeFactor * 0.04f)
+                                            // Oscillation fades gradually
+                                            val waveAmplitude = fadeFactor * with(density) { (4f * durFactor).dp.toPx() }
+                                            val waveFrequency = (600f / dur.toFloat().coerceAtLeast(100f)).coerceIn(2f, 8f)
+                                            // Rise fades gradually
+                                            val riseAmount = fadeFactor * with(density) { (2.5f * durFactor).dp.toPx() }
+                                            
+                                            drawContext.canvas.save()
+                                            drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(startBox.left - with(density) { 8.dp.toPx() }, startBox.top - waveAmplitude - riseAmount - with(density) { 8.dp.toPx() }, endBox.right + with(density) { 8.dp.toPx() }, endBox.bottom + waveAmplitude + with(density) { 8.dp.toPx() }))
+                                            
+                                            for (charIdx in 0 until wordLen) {
+                                                val globalIdx = (word.charStartIndex + charIdx).coerceIn(0, displayedText.length - 1)
+                                                val charBox = layout.getBoundingBox(globalIdx)
+                                                val charPos = charIdx.toFloat() / wordLen.coerceAtLeast(1)
+                                                // Oscillation continues from where it ended, fading out
+                                                val endPhase = charPos * waveFrequency - waveFrequency * 1.5f
+                                                val wavePhase = endPhase + fadeProgress * 0.5f // slight forward motion
+                                                val charWaveY = kotlin.math.sin(wavePhase).toFloat() * waveAmplitude
+                                                
+                                                val pivotX = charBox.left + charBox.width / 2f
+                                                val pivotY = charBox.bottom
+                                                drawContext.canvas.save()
+                                                drawContext.canvas.translate(pivotX, pivotY + charWaveY - riseAmount)
+                                                drawContext.canvas.scale(scaleAmount, scaleAmount)
+                                                drawContext.canvas.translate(-pivotX, -pivotY)
+                                                drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
+                                                this@drawWithContent.drawContent()
+                                                drawContext.canvas.restore()
+                                            }
+                                            drawContext.canvas.restore()
+                                        } else {
+                                            // Short word: simple clip (no wave)
+                                            val path = getFastPathForRange(layout, wStartIdx, wEndIdx)
+                                            drawContext.canvas.save()
+                                            drawContext.canvas.clipPath(path)
+                                            this@drawWithContent.drawContent()
+                                            drawContext.canvas.restore()
+                                        }
                                     } else if (isWordActive) {
                                         val dur = word.endMs - word.startMs
                                         val linearProgress = ((currentPositionMs - word.startMs).toFloat() / dur.coerceAtLeast(1L)).coerceIn(0f, 1f)
-                                        val wordLen = word.text.length
-                                        val activeCharIdxInWord = (linearProgress * wordLen).toInt().coerceAtMost(wordLen - 1)
-                                        val charLp = ((linearProgress * wordLen) - activeCharIdxInWord).coerceIn(0f, 1f)
                                         
-                                        val activeCharGlobalIdx = (word.charStartIndex + activeCharIdxInWord).coerceIn(0, displayedText.length.coerceAtLeast(1) - 1)
-                                        val charBox = layout.getBoundingBox(activeCharGlobalIdx)
-                                        
+                                        if (dur > 500L) {
+                                            // Long word: wave effect
+                                            val easedProgress = linearProgress * linearProgress * (3f - 2f * linearProgress)
+                                            val wordLen = word.text.length
+                                            val durFactor = (dur / 800f).coerceIn(0.6f, 2f)
+                                            val waveAmplitude = with(density) { (4f * durFactor).dp.toPx() }
+                                            val waveFrequency = (600f / dur.toFloat().coerceAtLeast(100f)).coerceIn(2f, 8f)
+                                            val scaleAmount = 1f + (easedProgress * 0.04f)
+                                            
+                                            // Aggressive rise curve: fast at start, then stabilizes
+                                            val riseCurve = linearProgress * linearProgress // quadratic - rises fast
+                                            val riseAmount = riseCurve * with(density) { (2.5f * durFactor).dp.toPx() }
+                                            
+                                            // Fill clip: reveals accent color left-to-right
+                                            val fillRight = startBox.left + (endBox.right - startBox.left) * easedProgress
+                                            drawContext.canvas.save()
+                                            drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(startBox.left - with(density) { 8.dp.toPx() }, startBox.top - waveAmplitude - riseAmount - with(density) { 8.dp.toPx() }, fillRight + with(density) { 8.dp.toPx() }, endBox.bottom + waveAmplitude + with(density) { 8.dp.toPx() }))
+                                            
+                                            // Draw each character with traveling wave
+                                            for (charIdx in 0 until wordLen) {
+                                                val globalIdx = (word.charStartIndex + charIdx).coerceIn(0, displayedText.length - 1)
+                                                val charBox = layout.getBoundingBox(globalIdx)
+                                                val charPos = charIdx.toFloat() / wordLen.coerceAtLeast(1)
+                                                
+                                                val wavePhase = charPos * waveFrequency - linearProgress * waveFrequency * 1.5f
+                                                val charWaveY = kotlin.math.sin(wavePhase).toFloat() * waveAmplitude
+                                                
+                                                val pivotX = charBox.left + charBox.width / 2f
+                                                val pivotY = charBox.bottom
+                                                
+                                                drawContext.canvas.save()
+                                                drawContext.canvas.translate(pivotX, pivotY + charWaveY - riseAmount)
+                                                drawContext.canvas.scale(scaleAmount, scaleAmount)
+                                                drawContext.canvas.translate(-pivotX, -pivotY)
+                                                drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
+                                                this@drawWithContent.drawContent()
+                                                drawContext.canvas.restore()
+                                            }
+                                            drawContext.canvas.restore()
+                                        } else {
+                                            // Short word: original character-by-character bounce
+                                            val wordLen = word.text.length
+                                            val activeCharIdxInWord = (linearProgress * wordLen).toInt().coerceAtMost(wordLen - 1)
+                                            val charLp = ((linearProgress * wordLen) - activeCharIdxInWord).coerceIn(0f, 1f)
+                                            
+                                            val activeCharGlobalIdx = (word.charStartIndex + activeCharIdxInWord).coerceIn(0, displayedText.length.coerceAtLeast(1) - 1)
+                                            val charBox = layout.getBoundingBox(activeCharGlobalIdx)
+                                            
                                             val path = getFastPathForRange(layout, wStartIdx, activeCharGlobalIdx - 1)
                                             drawContext.canvas.save()
                                             drawContext.canvas.clipPath(path)
                                             this@drawWithContent.drawContent()
                                             drawContext.canvas.restore()
-                                        
-                                        // Active character smoothly pops up, holds, and drops
-                                        val ease = { t: Float -> t * t * (3f - 2f * t) }
-                                        val bounceFactor = when {
-                                            charLp < 0.4f -> ease(charLp / 0.4f)
-                                            charLp > 0.6f -> ease((1f - charLp) / 0.4f)
-                                            else -> 1f
+                                            
+                                            val ease = { t: Float -> t * t * (3f - 2f * t) }
+                                            val bounceFactor = when {
+                                                charLp < 0.4f -> ease(charLp / 0.4f)
+                                                charLp > 0.6f -> ease((1f - charLp) / 0.4f)
+                                                else -> 1f
+                                            }
+                                            val charBounceY = -bounceFactor * with(density) { 0.8.dp.toPx() }
+                                            val scaleFactor = 1f + (bounceFactor * 0.05f)
+                                            
+                                            drawContext.canvas.save()
+                                            val pivotX = charBox.left + charBox.width / 2f
+                                            val pivotY = charBox.bottom
+                                            drawContext.canvas.translate(pivotX, pivotY + charBounceY)
+                                            drawContext.canvas.scale(scaleFactor, scaleFactor)
+                                            drawContext.canvas.translate(-pivotX, -pivotY)
+                                            
+                                            drawContext.canvas.save()
+                                            drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
+                                            this@drawWithContent.drawContent()
+                                            drawContext.canvas.restore()
+                                            
+                                            drawContext.canvas.restore()
                                         }
-                                        val charBounceY = -bounceFactor * with(density) { 0.8.dp.toPx() }
-                                        val scaleFactor = 1f + (bounceFactor * 0.05f)
-                                        
-                                        drawContext.canvas.save()
-                                        val pivotX = charBox.left + charBox.width / 2f
-                                        val pivotY = charBox.bottom
-                                        drawContext.canvas.translate(pivotX, pivotY + charBounceY)
-                                        drawContext.canvas.scale(scaleFactor, scaleFactor)
-                                        drawContext.canvas.translate(-pivotX, -pivotY)
-                                        
-                                        // The active character is fully highlighted (glowing) instantly while bouncing
-                                        drawContext.canvas.save()
-                                        drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
-                                        this@drawWithContent.drawContent()
-                                        drawContext.canvas.restore()
-                                        
-                                        
-                                        drawContext.canvas.restore()
                                     }
                                 }
                                 }
