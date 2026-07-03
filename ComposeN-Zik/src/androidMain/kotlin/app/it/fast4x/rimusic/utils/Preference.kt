@@ -12,6 +12,7 @@ import app.it.fast4x.rimusic.enums.PlaylistSortBy
 import app.it.fast4x.rimusic.enums.SongSortBy
 import app.it.fast4x.rimusic.enums.SortOrder
 import app.it.fast4x.rimusic.enums.StatisticsType
+import app.n_zik.android.enums.HistorySortOrder
 
 object Preference {
 
@@ -41,6 +42,7 @@ object Preference {
     val HOME_LIBRARY_PINNED_PLAYLIST_SORT_BY = Key( "HomeLibraryPinnedPlaylistSortBy", PlaylistSortBy.SongCount )
     val HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_BY = Key( "HomeLibraryMonthlyPlaylistSortBy", PlaylistSortBy.SongCount )
     val PLAYLIST_SONGS_SORT_BY = Key( "PlaylistSongsSortBy", PlaylistSongSortBy.Title )
+    val HISTORY_SORT_BY = Key( "HistorySortBy", HistorySortOrder.DATE )
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Sort order">
@@ -63,6 +65,7 @@ object Preference {
     val HOME_LIBRARY_PINNED_PLAYLIST_SORT_ORDER = Key( "HomeLibraryPinnedPlaylistSortOrder", SortOrder.Ascending )
     val HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_ORDER = Key( "HomeLibraryMonthlyPlaylistSortOrder", SortOrder.Ascending )
     val PLAYLIST_SONGS_SORT_ORDER = Key( "PlaylistSongsSortOrder", SortOrder.Ascending )
+    val HISTORY_SORT_ORDER = Key( "HistorySortOrder", SortOrder.Ascending )
     //</editor-fold>
 
     val SEARCH_RESULT_GRID_STATES = Key( "searchResultGridStates", "1111111" )

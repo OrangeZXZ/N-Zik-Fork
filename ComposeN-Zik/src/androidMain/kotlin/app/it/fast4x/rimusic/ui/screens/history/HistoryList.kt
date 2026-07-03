@@ -21,11 +21,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import app.n_zik.android.components.Sort
+import app.it.fast4x.rimusic.utils.Preference
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -72,7 +71,6 @@ import app.it.fast4x.rimusic.utils.disableScrollingTextKey
 import app.it.fast4x.rimusic.utils.enqueue
 import app.it.fast4x.rimusic.utils.forcePlay
 import app.it.fast4x.rimusic.utils.historyTypeKey
-import app.it.fast4x.rimusic.utils.historySortOrderKey
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
@@ -103,19 +101,23 @@ fun HistoryList(
 
     val search = Search(lazyListState)
 
-    var historySortOrder by rememberPreference(historySortOrderKey, HistorySortOrder.DATE)
+    val sort = Sort<HistorySortOrder>(Preference.HISTORY_SORT_BY, Preference.HISTORY_SORT_ORDER)
 
-    val events by remember(historySortOrder, parentalControlEnabled) {
+    val events by remember(sort.sortBy, sort.sortOrder, parentalControlEnabled) {
         Database.eventTable
                 .allWithSong()
                 .distinctUntilChanged()
                 .map { list ->
                     val filtered = list.filter { !parentalControlEnabled || !it.song.title.startsWith( EXPLICIT_PREFIX, true ) }
-                    when (historySortOrder) {
+                    val sorted = when (sort.sortOrder) {
+                        app.it.fast4x.rimusic.enums.SortOrder.Ascending -> filtered
+                        app.it.fast4x.rimusic.enums.SortOrder.Descending -> filtered.reversed()
+                    }
+                    when (sort.sortBy) {
                         HistorySortOrder.DATE -> {
                             val today = java.time.LocalDate.now()
                             val yesterday = today.minusDays(1)
-                            filtered.reversed().groupBy { event ->
+                            sorted.reversed().groupBy { event ->
                                 val eventDate = java.time.Instant.ofEpochMilli(event.event.timestamp)
                                     .atZone(java.time.ZoneId.systemDefault())
                                     .toLocalDate()
@@ -133,10 +135,10 @@ fun HistoryList(
                             }
                         }
                         HistorySortOrder.ALPHABETICAL -> {
-                            filtered.sortedBy { it.song.title }.groupBy { it.song.title.firstOrNull()?.uppercase() ?: "#" }
+                            sorted.sortedBy { it.song.title }.groupBy { it.song.title.firstOrNull()?.uppercase() ?: "#" }
                         }
                         HistorySortOrder.ARTIST -> {
-                            filtered.sortedBy { it.song.artistsText }.groupBy { it.song.artistsText?.split(",")?.first()?.trim() ?: "Unknown" }
+                            sorted.sortedBy { it.song.artistsText }.groupBy { it.song.artistsText?.split(",")?.first()?.trim() ?: "Unknown" }
                         }
                     }
                 }
@@ -190,61 +192,27 @@ fun HistoryList(
                 .padding(start = 12.dp, end = 12.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             ButtonsRow(
                 chips = buttonsList,
                 currentValue = historyType,
-                onValueUpdate = { historyType = it }
+                onValueUpdate = { historyType = it },
+                modifier = Modifier.weight(1f)
             )
-            IconButton(
-                onClick = { search.isVisible = !search.isVisible },
-                modifier = Modifier.padding(start = 8.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.search_circle),
-                    contentDescription = stringResource(R.string.search),
-                    tint = colorPalette().text
-                )
-            }
-            var showSortMenu by remember { mutableStateOf(false) }
-            Box {
                 IconButton(
-                    onClick = { showSortMenu = true }
+                    onClick = { search.isVisible = !search.isVisible }
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.sort_vertical),
-                        contentDescription = stringResource(R.string.sort_by),
+                        painter = painterResource(id = R.drawable.search_circle),
+                        contentDescription = stringResource(R.string.search),
                         tint = colorPalette().text
                     )
                 }
-                DropdownMenu(
-                    expanded = showSortMenu,
-                    onDismissRequest = { showSortMenu = false },
-                    modifier = Modifier.background(colorPalette().background1)
-                ) {
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.date), color = if (historySortOrder == HistorySortOrder.DATE) colorPalette().accent else colorPalette().text) },
-                        onClick = {
-                            historySortOrder = HistorySortOrder.DATE
-                            showSortMenu = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.alphabetical), color = if (historySortOrder == HistorySortOrder.ALPHABETICAL) colorPalette().accent else colorPalette().text) },
-                        onClick = {
-                            historySortOrder = HistorySortOrder.ALPHABETICAL
-                            showSortMenu = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.artist), color = if (historySortOrder == HistorySortOrder.ARTIST) colorPalette().accent else colorPalette().text) },
-                        onClick = {
-                            historySortOrder = HistorySortOrder.ARTIST
-                            showSortMenu = false
-                        }
-                    )
-                }
+                sort.ToolBarButton()
             }
         }
 
