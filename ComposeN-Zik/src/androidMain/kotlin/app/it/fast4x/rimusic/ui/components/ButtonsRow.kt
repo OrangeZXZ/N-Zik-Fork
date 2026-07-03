@@ -29,7 +29,6 @@ fun <E> ButtonsRow(
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
     Row(
         modifier = modifier
-            .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
     ) {
         Spacer(Modifier.width(12.dp))
@@ -67,7 +66,6 @@ fun ButtonsRow(
     val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
     Row(
         modifier = modifier
-            .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
     ) {
         Spacer(Modifier.width(12.dp))
