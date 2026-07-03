@@ -39,3 +39,4 @@
 - fix(shuffle): change default max songs in queue from 500 to Unlimited to allow shuffling all songs
 - style(history): add horizontal padding to date sticky headers so they align with list items
 - style(history): change date sticky header background color to accent color
+- style(history): center the History/YTM buttons and search icon, and change search icon color to white

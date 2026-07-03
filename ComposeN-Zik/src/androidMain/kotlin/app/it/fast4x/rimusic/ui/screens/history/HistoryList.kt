@@ -168,13 +168,13 @@ fun HistoryList(
             modifier = Modifier
                 .padding(start = 12.dp, end = 12.dp)
                 .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
             ButtonsRow(
                 chips = buttonsList,
                 currentValue = historyType,
-                onValueUpdate = { historyType = it },
-                modifier = Modifier.weight(1f)
+                onValueUpdate = { historyType = it }
             )
             IconButton(
                 onClick = { search.isVisible = !search.isVisible },
@@ -183,7 +183,7 @@ fun HistoryList(
                 Icon(
                     painter = painterResource(id = R.drawable.search_circle),
                     contentDescription = stringResource(R.string.search),
-                    tint = colorPalette().favoritesIcon
+                    tint = colorPalette().text
                 )
             }
         }
