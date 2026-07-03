@@ -53,7 +53,7 @@ import app.n_zik.android.LocalPlayerAwareWindowInsets
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.HistoryType
-import app.it.fast4x.rimusic.enums.HistorySortOrder
+import app.n_zik.android.enums.HistorySortOrder
 import app.it.fast4x.rimusic.models.Event
 import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.ui.components.ButtonsRow
