@@ -1123,6 +1123,8 @@ Volume BAS : titre précédent</string>
   <string name="pause_between_songs_description">Ajouter une pause entre les chansons</string>
   <string name="notifications">Notifications</string>
   <string name="playback">Lecture</string>
+  <string name="management">Management</string>
+  <string name="navigation">Navigation</string>
   <string name="player_controls">Commandes du lecteur</string>
   <string name="player_controls_colors">Le lecteur choisit les couleurs</string>
   <string name="theme_color">Couleur du thème</string>
@@ -1281,6 +1283,11 @@ Volume BAS : titre précédent</string>
   <string name="txt_developers_rotation">rotation_développeurs</string>
   <string name="txt_translators_rotation">Rotation des traducteurs</string>
   <string name="txt_lyrics">Paroles</string>
+  <string name="section_lyrics_display">Display</string>
+  <string name="section_lyrics_text_style">Text Style</string>
+  <string name="section_lyrics_behavior">Behavior</string>
+  <string name="section_lyrics_translation">Traduction</string>
+  <string name="section_lyrics_actions">Actions</string>
   <string name="toast_preference_saved">Préférence enregistrée</string>
   <string name="txt_width">width</string>
   <string name="cd_blurred_background">arrière-plan flou</string>
