@@ -21,8 +21,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -50,6 +53,7 @@ import app.n_zik.android.LocalPlayerAwareWindowInsets
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.HistoryType
+import app.it.fast4x.rimusic.enums.HistorySortOrder
 import app.it.fast4x.rimusic.models.Event
 import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.ui.components.ButtonsRow
@@ -68,6 +72,7 @@ import app.it.fast4x.rimusic.utils.disableScrollingTextKey
 import app.it.fast4x.rimusic.utils.enqueue
 import app.it.fast4x.rimusic.utils.forcePlay
 import app.it.fast4x.rimusic.utils.historyTypeKey
+import app.it.fast4x.rimusic.utils.historySortOrderKey
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
@@ -98,27 +103,42 @@ fun HistoryList(
 
     val search = Search(lazyListState)
 
-    val events by remember {
+    var historySortOrder by rememberPreference(historySortOrderKey, HistorySortOrder.DATE)
+
+    val events by remember(historySortOrder, parentalControlEnabled) {
         Database.eventTable
                 .allWithSong()
                 .distinctUntilChanged()
                 .map { list ->
-                    val today = java.time.LocalDate.now()
-                    val yesterday = today.minusDays(1)
-                    list.filter { !parentalControlEnabled || !it.song.title.startsWith( EXPLICIT_PREFIX, true ) }
-                        .reversed()
-                        .groupBy {
-                            val eventDate = java.time.Instant.ofEpochMilli(it.event.timestamp)
-                                .atZone(java.time.ZoneId.systemDefault())
-                                .toLocalDate()
-                            when {
-                                eventDate.isEqual(today) -> context.getString(R.string.today)
-                                eventDate.isEqual(yesterday) -> context.getString(R.string.yesterday)
-                                eventDate.isAfter(today.minusWeeks(1)) -> context.getString(R.string.last_week)
-                                eventDate.isAfter(today.minusWeeks(2)) -> context.getString(R.string.last_week)
-                                else -> SimpleDateFormat("MMM yyyy", Locale.getDefault()).format(Date(it.event.timestamp))
+                    val filtered = list.filter { !parentalControlEnabled || !it.song.title.startsWith( EXPLICIT_PREFIX, true ) }
+                    when (historySortOrder) {
+                        HistorySortOrder.DATE -> {
+                            val today = java.time.LocalDate.now()
+                            val yesterday = today.minusDays(1)
+                            filtered.reversed().groupBy { event ->
+                                val eventDate = java.time.Instant.ofEpochMilli(event.event.timestamp)
+                                    .atZone(java.time.ZoneId.systemDefault())
+                                    .toLocalDate()
+                                val daysBetween = java.time.temporal.ChronoUnit.DAYS.between(eventDate, today)
+                                when {
+                                    eventDate.isEqual(today) -> context.getString(R.string.today)
+                                    eventDate.isEqual(yesterday) -> context.getString(R.string.yesterday)
+                                    daysBetween in 2..7 -> context.getString(R.string.x_days_ago, daysBetween.toInt())
+                                    daysBetween in 8..14 -> context.getString(R.string.last_week)
+                                    eventDate.year == today.year && eventDate.monthValue == today.monthValue -> context.getString(R.string.this_month)
+                                    eventDate.year == today.year -> SimpleDateFormat("MMMM", Locale.getDefault()).format(Date(event.event.timestamp)).replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                                    eventDate.year == today.year - 1 -> context.getString(R.string.last_year)
+                                    else -> SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(Date(event.event.timestamp)).replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+                                }
                             }
                         }
+                        HistorySortOrder.ALPHABETICAL -> {
+                            filtered.sortedBy { it.song.title }.groupBy { it.song.title.firstOrNull()?.uppercase() ?: "#" }
+                        }
+                        HistorySortOrder.ARTIST -> {
+                            filtered.sortedBy { it.song.artistsText }.groupBy { it.song.artistsText?.split(",")?.first()?.trim() ?: "Unknown" }
+                        }
+                    }
                 }
     }.collectAsState( emptyMap(), Dispatchers.IO )
 
@@ -186,6 +206,45 @@ fun HistoryList(
                     contentDescription = stringResource(R.string.search),
                     tint = colorPalette().text
                 )
+            }
+            var showSortMenu by remember { mutableStateOf(false) }
+            Box {
+                IconButton(
+                    onClick = { showSortMenu = true }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.sort_vertical),
+                        contentDescription = stringResource(R.string.sort_by),
+                        tint = colorPalette().text
+                    )
+                }
+                DropdownMenu(
+                    expanded = showSortMenu,
+                    onDismissRequest = { showSortMenu = false },
+                    modifier = Modifier.background(colorPalette().background1)
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.date), color = if (historySortOrder == HistorySortOrder.DATE) colorPalette().accent else colorPalette().text) },
+                        onClick = {
+                            historySortOrder = HistorySortOrder.DATE
+                            showSortMenu = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.alphabetical), color = if (historySortOrder == HistorySortOrder.ALPHABETICAL) colorPalette().accent else colorPalette().text) },
+                        onClick = {
+                            historySortOrder = HistorySortOrder.ALPHABETICAL
+                            showSortMenu = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.artist), color = if (historySortOrder == HistorySortOrder.ARTIST) colorPalette().accent else colorPalette().text) },
+                        onClick = {
+                            historySortOrder = HistorySortOrder.ARTIST
+                            showSortMenu = false
+                        }
+                    )
+                }
             }
         }
 

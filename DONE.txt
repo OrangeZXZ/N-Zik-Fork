@@ -42,3 +42,5 @@
 - style(history): center the History/YTM buttons and search icon, and change search icon color to white
 - fix(history): remove hardcoded fillMaxWidth from ButtonsRow so it doesn't push the search icon off-screen
 - fix(history): remove top WindowInset padding from LazyColumn to eliminate the large gap above the list
+- feat(history): implement fine-grained date grouping (e.g. "x days ago", "this month", "last year") instead of capping at "last week"
+- feat(history): add a sorting dropdown menu (Date, Alphabetical, Artist) next to the search icon
