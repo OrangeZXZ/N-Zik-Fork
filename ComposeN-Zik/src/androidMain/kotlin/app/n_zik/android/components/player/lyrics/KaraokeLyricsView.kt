@@ -524,10 +524,10 @@ fun KaraokeLyricsView(
     // Multiplier based on line count (from the logs - this worked)
     val lineMultiplier = when (lineCount) {
         1 -> 0.45f
-        2 -> 0.42f
-        3 -> 0.44f
-        4 -> 0.42f
-        else -> 0.40f
+        2 -> 0.44f
+        3 -> 0.46f
+        4 -> 0.44f
+        else -> 0.42f
     }
     val multiplier = if (showlyricsthumbnail) lineMultiplier else 0.42f
     val fixedCenter = (effectiveVpH * multiplier).toInt()
