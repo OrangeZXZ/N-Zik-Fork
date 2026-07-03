@@ -41,3 +41,4 @@
 - style(history): change date sticky header background color to accent color
 - style(history): center the History/YTM buttons and search icon, and change search icon color to white
 - fix(history): remove hardcoded fillMaxWidth from ButtonsRow so it doesn't push the search icon off-screen
+- fix(history): remove top WindowInset padding from LazyColumn to eliminate the large gap above the list
