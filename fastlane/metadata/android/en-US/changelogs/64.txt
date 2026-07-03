@@ -8,6 +8,7 @@ Added:
 - Search: long press menus to album, artist, playlist, and video suggestions.
 
 Improved:
+- Increased ImageCacheFactory loader fallback delay from 3s to 10s to prevent premature fallback icons on slow connections.
 - History: date sticky header background color to accent color.
 - History: center the History/YTM buttons and search icon, and change search icon color to white.
 - History: horizontal padding to date sticky headers so they align with list items.

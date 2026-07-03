@@ -311,7 +311,7 @@ object ImageCacheFactory {
         if (currentUrl == null) {
             var showFallback by remember { mutableStateOf(false) }
             LaunchedEffect(Unit) {
-                kotlinx.coroutines.delay(3000L)
+                kotlinx.coroutines.delay(10000L)
                 showFallback = true
             }
             androidx.compose.foundation.Image(
@@ -443,13 +443,21 @@ object ImageCacheFactory {
             )
             .build()
 
+        var showFallback by remember { mutableStateOf(false) }
+        if (currentUrl == null) {
+            LaunchedEffect(Unit) {
+                kotlinx.coroutines.delay(10000L)
+                showFallback = true
+            }
+        }
+
         return rememberAsyncImagePainter(
             model = request,
             imageLoader = LOADER,
             contentScale = contentScale,
             placeholder = painterResource(placeholder ?: R.drawable.loader),
-            error = painterResource(error),
-            fallback = painterResource(fallback),
+            error = painterResource(if (currentUrl == null && !showFallback) R.drawable.loader else error),
+            fallback = painterResource(if (currentUrl == null && !showFallback) R.drawable.loader else fallback),
             onLoading = onLoading,
             onSuccess = onSuccess,
             onError = { state ->
@@ -477,7 +485,7 @@ object ImageCacheFactory {
         if (currentUrl == null) {
             var showFallback by remember { mutableStateOf(false) }
             LaunchedEffect(Unit) {
-                kotlinx.coroutines.delay(3000L)
+                kotlinx.coroutines.delay(10000L)
                 showFallback = true
             }
             androidx.compose.foundation.Image(
@@ -567,7 +575,7 @@ object ImageCacheFactory {
         if (currentUrl == null) {
             var showFallback by remember { mutableStateOf(false) }
             LaunchedEffect(Unit) {
-                kotlinx.coroutines.delay(3000L)
+                kotlinx.coroutines.delay(10000L)
                 showFallback = true
             }
             androidx.compose.foundation.Image(
