@@ -1122,6 +1122,8 @@
   <string name="pause_between_songs_description">Додати паузу між піснями</string>
   <string name="notifications">Сповіщення</string>
   <string name="playback">Відтворення</string>
+  <string name="management">Management</string>
+  <string name="navigation">Navigation</string>
   <string name="player_controls">Керування гравцем</string>
   <string name="player_controls_colors">Гравець керує кольорами</string>
   <string name="theme_color">Колір теми</string>
@@ -1280,6 +1282,11 @@
   <string name="txt_developers_rotation">обертання розробників</string>
   <string name="txt_translators_rotation">переклад_обертання</string>
   <string name="txt_lyrics">Тексти пісень</string>
+  <string name="section_lyrics_display">Display</string>
+  <string name="section_lyrics_text_style">Text Style</string>
+  <string name="section_lyrics_behavior">Behavior</string>
+  <string name="section_lyrics_translation">Переклад</string>
+  <string name="section_lyrics_actions">Actions</string>
   <string name="toast_preference_saved">Налаштування збережено</string>
   <string name="txt_width">width</string>
   <string name="cd_blurred_background">розмитий фон</string>
