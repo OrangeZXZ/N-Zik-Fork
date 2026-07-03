@@ -268,8 +268,9 @@ fun HomeQuickPicks(
                         playEventType = playEventType,
                         onPlayEventTypeChange = { playEventType = it },
                         onDiceClick = {
-                            scope.launch(Dispatchers.IO) {
+                            scope.launch {
                                 isQuickPicksLoading = true
+                                delay(50)
                                 try {
                                     val relatedInit = state.relatedPageResult.value?.getOrNull()
                                     val allItems = listOfNotNull(state.trending.value?.asMediaItem) + (relatedInit?.songs?.map { it.asMediaItem } ?: emptyList())
@@ -280,8 +281,9 @@ fun HomeQuickPicks(
                             }
                         },
                         onPlayAllClick = {
-                            scope.launch(Dispatchers.IO) {
+                            scope.launch {
                                 isQuickPicksLoading = true
+                                delay(50)
                                 try {
                                     binder?.stopRadio()
                                     state.trending.value?.let { binder?.player?.forcePlay(it.asMediaItem) }

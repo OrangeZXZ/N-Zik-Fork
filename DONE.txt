@@ -1,9 +1,38 @@
-fix(home): add loader to Quick Picks shuffle and play all actions
-
-Added a loading state (`isQuickPicksLoading`) to the `HomeQuickPicks` screen and modified `QuickPicksHeader` to display a `CircularProgressIndicator` during asynchronous `shuffle` and `play all` operations, matching the behavior in `ArtistDetails`. This prevents the UI from appearing unresponsive while items are being loaded into the player.
-
-Changes:
-- Added `isQuickPicksLoading` state to `HomeQuickPicks`
-- Wrapped `onDiceClick` and `onPlayAllClick` actions in `scope.launch(Dispatchers.IO)` and toggled the loading state
-- Updated `QuickPicksHeader` to accept `isLoading` parameter
-- Replaced `Title3Actions` in `QuickPicksHeader` with a custom `Row` to conditionally render the loader or the action icons (dice and play)
+- fix(lyrics): limit LyricsSettingsMenu height to 50% of screen
+- refactor(lyrics): add handle bar header to LyricsSettingsMenu
+- chore(lyrics): remove unused imports
+- fix(lyrics): fix lrclib string resource reference
+- fix(lyrics): fix compilation errors in LyricsSettingsMenu
+- refactor(lyrics): rewamp LyricsSettingsMenu with SongItem style
+  - New SongItem-like design with icon, title, subtitle, action
+  - Add missing settings: showlyricsthumbnail, showButtonPlayerLyrics, lyricsCustomColor
+  - Organized into sections: Display Mode, Text Style, Behavior, Translation, Actions
+- fix(karaoke): allow lyrics to go backwards when seeking
+- fix(karaoke): increase 3-4-5 line multipliers
+- fix(karaoke): increase 2 line multiplier to 0.46
+- fix(karaoke): increase 2-3-4 line multipliers again
+- fix(karaoke): increase 2 line multiplier
+- fix(karaoke): increase 3-4 line multipliers again
+- fix(karaoke): increase 3-4 line multipliers more
+- fix(karaoke): further increase line multiplier for 3-4+ lines
+- fix(karaoke): increase line multiplier for 3-4+ lines to prevent lyrics being too high
+- fix(home): improve refresh matching and thumbnail fallback
+  - ImageCacheFactory: show loader for 3s then fallback to ic_launcher_box when URL is null
+  - HomeArtist: verify artist name/ID match before accepting YouTube search results
+  - HomeAlbum: verify album title/ID match before accepting YouTube search results
+  - HomeLibrary: add detailed logging for playlist refresh
+  - Add detailed Timber logs for all refresh operations
+- fix(menu): respect Color.Unspecified in SettingIcon for logo icons (Spotify, RiPlay, NZik, YouTube Music)
+- fix(menu): skip header in ListMenu/GridMenu when title=null and no handle bar
+- fix(menu): fix double header in Sort.kt MenuComponent
+- fix(menu): remove title from all item menus (song, album, artist, playlist, video, player)
+- fix(menu): add header with handle bar to ImportPlaylistsMenu, remove duplicate titles
+- fix(menu): remove Title with chevron_down from YouTube and Discord login webviews
+- fix(accounts): add status bar padding to YouTube and Discord login sheet drag handles
+- fix(accounts): fix Piped instance menu infinite open/close loop by wrapping menuState.display in LaunchedEffect
+- fix(queue): remove top padding from first item in queue
+- fix(player): smooth scrim fade when closing queue panel (alpha follows panel height fraction)
+- feat(search): add long press menus to album, artist, playlist, and video suggestions
+- refactor(search): remove SearchItemMenu, replace with SongItemMenu
+- fix more of in album menu not showing up
+- fix home quick picks loader for dice and play all
