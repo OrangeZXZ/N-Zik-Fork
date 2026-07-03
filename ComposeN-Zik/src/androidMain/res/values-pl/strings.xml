@@ -1122,6 +1122,8 @@
   <string name="pause_between_songs_description">Dodaj pauzę między piosenkami</string>
   <string name="notifications">Powiadomienia</string>
   <string name="playback">Odtwarzanie</string>
+  <string name="management">Management</string>
+  <string name="navigation">Navigation</string>
   <string name="player_controls">Sterowanie graczem</string>
   <string name="player_controls_colors">Odtwarzacz kontroluje kolory</string>
   <string name="theme_color">Kolor motywu</string>
@@ -1280,6 +1282,11 @@
   <string name="txt_developers_rotation">deweloper_rotacja</string>
   <string name="txt_translators_rotation">Tłumacze_rotacja</string>
   <string name="txt_lyrics">Tekst piosenki</string>
+  <string name="section_lyrics_display">Display</string>
+  <string name="section_lyrics_text_style">Text Style</string>
+  <string name="section_lyrics_behavior">Behavior</string>
+  <string name="section_lyrics_translation">Tłumaczenia</string>
+  <string name="section_lyrics_actions">Actions</string>
   <string name="toast_preference_saved">Preferencje zapisane</string>
   <string name="txt_width">width</string>
   <string name="cd_blurred_background">niewyraźne tło</string>
