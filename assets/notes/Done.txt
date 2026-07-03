@@ -1,5 +1,9 @@
 
 ## 2026-07-03
+- refactor(lyrics): rewamp LyricsSettingsMenu with SongItem style
+  - New SongItem-like design with icon, title, subtitle, action
+  - Add missing settings: showlyricsthumbnail, showButtonPlayerLyrics, lyricsCustomColor
+  - Organized into sections: Display Mode, Text Style, Behavior, Translation, Actions
 - fix(karaoke): allow lyrics to go backwards when seeking
 - fix(karaoke): increase 3-4-5 line multipliers
 - fix(karaoke): increase 2 line multiplier to 0.46
