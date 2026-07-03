@@ -1,5 +1,6 @@
 
 ## 2026-07-03
+- fix(karaoke): increase 3-4-5 line multipliers
 - fix(karaoke): increase 2 line multiplier to 0.46
 - fix(karaoke): increase 2-3-4 line multipliers again
 - fix(karaoke): increase 2 line multiplier
