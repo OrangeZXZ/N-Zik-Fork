@@ -455,7 +455,7 @@ fun KaraokeLyricsView(
     }
 
     // Primary active line for scroll targeting - prefer non-background lines
-    // Track max reached line to never go backwards
+    // Track max reached line, but reset when seeking backwards
     var maxReachedLineIndex by remember { mutableIntStateOf(0) }
     val primaryActiveIndex = remember(activeLineIndices, currentPositionMs) {
         val nonBgActive = activeLineIndices.filter { !karaokeLines[it].isBackground }
@@ -470,8 +470,10 @@ fun KaraokeLyricsView(
             }
             lastNonBg
         }
-        // Never go backwards
-        if (currentIndex > maxReachedLineIndex) {
+        // Allow going backwards when seeking (currentIndex is significantly before max)
+        if (currentIndex < maxReachedLineIndex - 1) {
+            maxReachedLineIndex = currentIndex
+        } else if (currentIndex > maxReachedLineIndex) {
             maxReachedLineIndex = currentIndex
         }
         maxReachedLineIndex
