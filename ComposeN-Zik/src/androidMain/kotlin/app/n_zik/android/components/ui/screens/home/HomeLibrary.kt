@@ -327,7 +327,9 @@ fun HomeLibrary(
             HomeSyncState.playlistSyncFailed = 0
             HomeSyncState.playlistSyncTotal = ytPlaylists.size
             
-            ytPlaylists.forEachIndexed { index, preview ->
+            var abortSync = false
+            for ((index, preview) in ytPlaylists.withIndex()) {
+                if (abortSync) break
                 HomeSyncState.playlistSyncCurrentIndex = index + 1
                 HomeSyncState.playlistSyncCurrentName = preview.playlist.name
                 HomeSyncState.playlistSyncProgress = index.toFloat() / ytPlaylists.size
@@ -368,9 +370,16 @@ fun HomeLibrary(
                             Timber.tag("HomeLibrary").d("Successfully refreshed playlist: ${p.name}")
                             status = 1
                         }.onFailure {
-                            Timber.tag("HomeLibrary").e(it, "Failed to refresh playlist (attempt $attempt): ${p.name}")
+                            Timber.tag("HomeLibrary").e(it, "Failed to fetch playlist (attempt $attempt): ${p.name}")
+                            if (it is java.net.UnknownHostException || it is java.net.ConnectException) {
+                                status = 3
+                            }
                         }
                         if (status != 0) break
+                    }
+                    if (status == 3) {
+                        abortSync = true
+                        break
                     }
                     if (status != 1) {
                         failedCount++
@@ -381,7 +390,10 @@ fun HomeLibrary(
             }
             
             withContext(Dispatchers.Main) {
-                if (failedCount > 0) {
+                if (abortSync) {
+                    app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.sync_failed))
+                    HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), "Sync aborted due to network error.", 1003)
+                } else if (failedCount > 0) {
                     HomeSyncState.failedPlaylistsList = failedList
                     val errorMessage = appContext().getString(R.string.failed_playlists, failedCount)
                     val notificationMessage = appContext().getString(R.string.sync_failed_notification_playlists, failedCount)

@@ -274,7 +274,9 @@ fun HomeAlbums(
             HomeSyncState.albumSyncFailed = 0
             HomeSyncState.albumSyncTotal = totalAlbums
 
-            ytAlbums.forEachIndexed { index, album ->
+            var abortSync = false
+            for ((index, album) in ytAlbums.withIndex()) {
+                if (abortSync) break
                 HomeSyncState.albumSyncCurrentIndex = index + 1
                 HomeSyncState.albumSyncCurrentName = album.title ?: ""
                 HomeSyncState.albumSyncProgress = index.toFloat() / ytAlbums.size
@@ -316,8 +318,15 @@ fun HomeAlbums(
                         status = 1
                     }.onFailure {
                         Timber.tag("HomeAlbum").e(it, "Failed to refresh album (attempt $attempt): ${album.title}")
+                        if (it is java.net.UnknownHostException || it is java.net.ConnectException) {
+                            status = 3
+                        }
                     }
                     if (status != 0) break
+                }
+                if (status == 3) {
+                    abortSync = true
+                    break
                 }
                 if (status != 1) {
                     failedCount++
@@ -326,7 +335,8 @@ fun HomeAlbums(
                 }
             }
             
-            localAlbums.forEachIndexed { index, album ->
+            for ((index, album) in localAlbums.withIndex()) {
+                if (abortSync) break
                 HomeSyncState.albumSyncCurrentIndex = ytAlbums.size + index + 1
                 HomeSyncState.albumSyncCurrentName = album.title ?: ""
                 HomeSyncState.albumSyncProgress = (ytAlbums.size + index).toFloat() / totalAlbums
@@ -384,8 +394,15 @@ fun HomeAlbums(
                             }
                         }.onFailure {
                             Timber.tag("HomeAlbum").e(it, "Failed to search metadata for local album (attempt $attempt): $query")
+                            if (it is java.net.UnknownHostException || it is java.net.ConnectException) {
+                                status = 3
+                            }
                         }
                         if (status != 0) break
+                    }
+                    if (status == 3) {
+                        abortSync = true
+                        break
                     }
                     if (status != 1) {
                         failedCount++
@@ -396,7 +413,10 @@ fun HomeAlbums(
             }
             
             withContext(Dispatchers.Main) {
-                if (failedCount > 0) {
+                if (abortSync) {
+                    app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.sync_failed))
+                    HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), "Sync aborted due to network error.", 1002)
+                } else if (failedCount > 0) {
                     HomeSyncState.failedAlbumsList = failedList
                     val errorMessage = appContext().getString(R.string.failed_albums, failedCount)
                     val notificationMessage = appContext().getString(R.string.sync_failed_notification_albums, failedCount)

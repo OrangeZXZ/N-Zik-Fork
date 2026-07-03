@@ -1122,6 +1122,8 @@
   <string name="pause_between_songs_description">Voeg een pauze toe tussen nummers</string>
   <string name="notifications">Notificaties</string>
   <string name="playback">Afspelen</string>
+  <string name="management">Management</string>
+  <string name="navigation">Navigation</string>
   <string name="player_controls">Speler Besturing</string>
   <string name="player_controls_colors">Speler controleert kleuren</string>
   <string name="theme_color">Thema kleur</string>
@@ -1280,6 +1282,11 @@
   <string name="txt_developers_rotation">ontwikkelaars_rotatie</string>
   <string name="txt_translators_rotation">vertalers_rotatie</string>
   <string name="txt_lyrics">Songteksten</string>
+  <string name="section_lyrics_display">Display</string>
+  <string name="section_lyrics_text_style">Text Style</string>
+  <string name="section_lyrics_behavior">Behavior</string>
+  <string name="section_lyrics_translation">Translation</string>
+  <string name="section_lyrics_actions">Actions</string>
   <string name="toast_preference_saved">Voorkeur opgeslagen</string>
   <string name="txt_width">width</string>
   <string name="cd_blurred_background">vervaging_achtergrond</string>
@@ -1402,4 +1409,11 @@
   <string name="failed_playlists">Failed to find %1$d playlists, retrying</string>
   <string name="found_all_playlists">Found all playlists</string>
   <string name="already_syncing">Sync already in progress</string>
+  <string name="x_days_ago">%d days ago</string>
+  <string name="this_month">Deze maand</string>
+  <string name="last_year">Last year</string>
+  <string name="sort_by">Sort by</string>
+  <string name="date">Date</string>
+  <string name="alphabetical">Alphabetical</string>
+  <string name="artist">Artiest</string>
 </resources>

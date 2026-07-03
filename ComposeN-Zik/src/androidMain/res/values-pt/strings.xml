@@ -1122,6 +1122,8 @@
   <string name="pause_between_songs_description">Adicionar uma pausa entre músicas</string>
   <string name="notifications">notificações</string>
   <string name="playback">Reprodução</string>
+  <string name="management">Management</string>
+  <string name="navigation">Navigation</string>
   <string name="player_controls">Controles do Jogador</string>
   <string name="player_controls_colors">Player controla cores</string>
   <string name="theme_color">Cor do tema</string>
@@ -1280,6 +1282,11 @@
   <string name="txt_developers_rotation">rotação_do_desenvolvedores</string>
   <string name="txt_translators_rotation">rotação_de_tradutores</string>
   <string name="txt_lyrics">Letras</string>
+  <string name="section_lyrics_display">Display</string>
+  <string name="section_lyrics_text_style">Text Style</string>
+  <string name="section_lyrics_behavior">Behavior</string>
+  <string name="section_lyrics_translation">Tradução</string>
+  <string name="section_lyrics_actions">Actions</string>
   <string name="toast_preference_saved">Preferência Salva</string>
   <string name="txt_width">width</string>
   <string name="cd_blurred_background">fundo_desfocado</string>
@@ -1402,4 +1409,11 @@
   <string name="failed_playlists">Failed to find %1$d playlists, retrying</string>
   <string name="found_all_playlists">Found all playlists</string>
   <string name="already_syncing">Sync already in progress</string>
+  <string name="x_days_ago">%d days ago</string>
+  <string name="this_month">Mês passado</string>
+  <string name="last_year">Last year</string>
+  <string name="sort_by">Sort by</string>
+  <string name="date">Date</string>
+  <string name="alphabetical">Alphabetical</string>
+  <string name="artist">Artista</string>
 </resources>

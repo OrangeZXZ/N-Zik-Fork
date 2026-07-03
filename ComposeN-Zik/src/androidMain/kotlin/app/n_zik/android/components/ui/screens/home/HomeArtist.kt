@@ -242,7 +242,9 @@ fun HomeArtists(
             HomeSyncState.artistSyncFailed = 0
             HomeSyncState.artistSyncTotal = totalArtists
             
-            ytArtists.forEachIndexed { index, artist ->
+            var abortSync = false
+            for ((index, artist) in ytArtists.withIndex()) {
+                if (abortSync) break
                 HomeSyncState.artistSyncCurrentIndex = index + 1
                 HomeSyncState.artistSyncCurrentName = artist.name ?: ""
                 HomeSyncState.artistSyncProgress = index.toFloat() / ytArtists.size
@@ -276,8 +278,15 @@ fun HomeArtists(
                         status = 1
                     }.onFailure {
                         Timber.tag("HomeArtist").e(it, "Failed to refresh artist (attempt $attempt): ${artist.name}")
+                        if (it is java.net.UnknownHostException || it is java.net.ConnectException) {
+                            status = 3
+                        }
                     }
                     if (status != 0) break
+                }
+                if (status == 3) {
+                    abortSync = true
+                    break
                 }
                 if (status != 1) {
                     failedCount++
@@ -286,7 +295,8 @@ fun HomeArtists(
                 }
             }
             
-            localArtists.forEachIndexed { index, artist ->
+            for ((index, artist) in localArtists.withIndex()) {
+                if (abortSync) break
                 HomeSyncState.artistSyncCurrentIndex = ytArtists.size + index + 1
                 HomeSyncState.artistSyncCurrentName = artist.name ?: ""
                 HomeSyncState.artistSyncProgress = (ytArtists.size + index).toFloat() / totalArtists
@@ -343,8 +353,15 @@ fun HomeArtists(
                             }
                         }.onFailure {
                             Timber.tag("HomeArtist").e(it, "Failed to search metadata for local artist (attempt $attempt): $query")
+                            if (it is java.net.UnknownHostException || it is java.net.ConnectException) {
+                                status = 3
+                            }
                         }
                         if (status != 0) break
+                    }
+                    if (status == 3) {
+                        abortSync = true
+                        break
                     }
                     if (status != 1) {
                         failedCount++
@@ -355,7 +372,10 @@ fun HomeArtists(
             }
             
             withContext(Dispatchers.Main) {
-                if (failedCount > 0) {
+                if (abortSync) {
+                    app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.sync_failed))
+                    HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), "Sync aborted due to network error.", 1001)
+                } else if (failedCount > 0) {
                     HomeSyncState.failedArtistsList = failedList
                     val errorMessage = appContext().getString(R.string.failed_artists, failedCount)
                     val notificationMessage = appContext().getString(R.string.sync_failed_notification_artists, failedCount)
