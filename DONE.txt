@@ -38,3 +38,4 @@
 - fix home quick picks loader for dice and play all
 - fix(shuffle): change default max songs in queue from 500 to Unlimited to allow shuffling all songs
 - style(history): add horizontal padding to date sticky headers so they align with list items
+- style(history): change date sticky header background color to accent color

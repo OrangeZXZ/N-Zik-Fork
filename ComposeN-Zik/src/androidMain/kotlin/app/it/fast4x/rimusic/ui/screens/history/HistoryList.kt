@@ -239,7 +239,7 @@ fun HistoryList(
                                 modifier = Modifier
                                     .padding(horizontal = 12.dp, vertical = 4.dp)
                                     .background(
-                                        color = colorPalette().background3,
+                                        color = colorPalette().accent,
                                         shape = thumbnailShape()
                                     )
                             )
@@ -284,7 +284,7 @@ fun HistoryList(
                                 modifier = Modifier
                                     .padding(horizontal = 12.dp, vertical = 4.dp)
                                     .background(
-                                        color = colorPalette().background3,
+                                        color = colorPalette().accent,
                                         shape = thumbnailShape()
                                     )
                             )
