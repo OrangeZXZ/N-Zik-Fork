@@ -1122,6 +1122,8 @@
   <string name="pause_between_songs_description">إضافة إيقاف مؤقت بين الأغاني</string>
   <string name="notifications">الإشعارات</string>
   <string name="playback">تشغيل</string>
+  <string name="management">Management</string>
+  <string name="navigation">Navigation</string>
   <string name="player_controls">التحكم في اللاعب</string>
   <string name="player_controls_colors">ألوان التحكم في اللاعب</string>
   <string name="theme_color">لون السمة</string>
@@ -1280,6 +1282,11 @@
   <string name="txt_developers_rotation">دوران_المطورين</string>
   <string name="txt_translators_rotation">تدوير المترجمين</string>
   <string name="txt_lyrics">كلمات</string>
+  <string name="section_lyrics_display">Display</string>
+  <string name="section_lyrics_text_style">Text Style</string>
+  <string name="section_lyrics_behavior">Behavior</string>
+  <string name="section_lyrics_translation">Translation</string>
+  <string name="section_lyrics_actions">Actions</string>
   <string name="toast_preference_saved">تم حفظ التفضيل</string>
   <string name="txt_width">width</string>
   <string name="cd_blurred_background">خلفية_ضبابية</string>
