@@ -1,5 +1,6 @@
 
 ## 2026-07-03
+- fix(karaoke): increase line multiplier for 3-4+ lines to prevent lyrics being too high
 - fix(home): improve refresh matching and thumbnail fallback
   - ImageCacheFactory: show loader for 3s then fallback to ic_launcher_box when URL is null
   - HomeArtist: verify artist name/ID match before accepting YouTube search results
