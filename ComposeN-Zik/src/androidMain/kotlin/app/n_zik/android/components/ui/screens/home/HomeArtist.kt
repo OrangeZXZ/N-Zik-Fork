@@ -228,6 +228,10 @@ fun HomeArtists(
             val localArtists = itemsOnDisplay.filterNot { it.isYoutubeArtist || it.id.startsWith("UC") }
             val totalArtists = ytArtists.size + localArtists.size
             
+            Timber.tag("HomeArtist").d("=== REFRESH START === Total: $totalArtists (YT: ${ytArtists.size}, Local: ${localArtists.size})")
+            ytArtists.forEach { Timber.tag("HomeArtist").d("  [YT] id=${it.id} name=${it.name} isYoutube=${it.isYoutubeArtist}") }
+            localArtists.forEach { Timber.tag("HomeArtist").d("  [LOCAL] id=${it.id} name=${it.name}") }
+            
             withContext(Dispatchers.Main) {
                 if (totalArtists > 0) app.kreate.android.me.knighthat.utils.Toaster.i(appContext().getString(R.string.refreshing_artists, totalArtists))
             }
@@ -241,11 +245,12 @@ fun HomeArtists(
                 HomeSyncState.artistSyncCurrentName = artist.name ?: ""
                 HomeSyncState.artistSyncProgress = index.toFloat() / ytArtists.size
                 kotlinx.coroutines.delay((2000L..5000L).random())
-                Timber.tag("HomeArtist").d("Refreshing artist: ${artist.name} (id: ${artist.id})")
+                Timber.tag("HomeArtist").d("[YT] Fetching by ID: ${artist.id} for '${artist.name}'")
                 var status = 0 // 0=retry, 1=success
                 for (attempt in 1..3) {
                     YtMusic.getArtistPage(artist.id).onSuccess { online ->
                         val onlineArtist = online.artist
+                        Timber.tag("HomeArtist").d("[YT] Got response for '${artist.name}': onlineName='${onlineArtist.title}', thumbnail='${onlineArtist.thumbnail?.url}'")
                         Database.asyncTransaction {
                             artistTable.upsert(Artist(
                                 id = artist.id,
@@ -277,7 +282,7 @@ fun HomeArtists(
                 val query = artist.name?.trim()
                 if (!query.isNullOrBlank()) {
                     kotlinx.coroutines.delay((2000L..5000L).random())
-                    Timber.tag("HomeArtist").d("Searching YouTube for local artist: $query")
+                    Timber.tag("HomeArtist").d("[LOCAL] Searching YouTube: query='$query' for artist id=${artist.id}")
                     var status = 0 // 0=retry, 1=success, 2=not found
                     for (attempt in 1..3) {
                         val request = Innertube.searchPage<Innertube.ArtistItem>(
@@ -285,12 +290,27 @@ fun HomeArtists(
                             fromMusicShelfRendererContent = { content -> Innertube.ArtistItem.from(content) }
                         )
                         if (request == null) {
+                            Timber.tag("HomeArtist").d("[LOCAL] Search returned null for '$query'")
                             status = 2
                             break
                         }
                         request.onSuccess { searchResult ->
-                            val bestMatch = searchResult?.items?.firstOrNull()
+                            val resultCount = searchResult?.items?.size ?: 0
+                            Timber.tag("HomeArtist").d("[LOCAL] Search returned $resultCount results for '$query'")
+                            searchResult?.items?.forEachIndexed { i, item ->
+                                Timber.tag("HomeArtist").d("[LOCAL]   Result[$i]: id=${item.key} name='${item.info?.name}' thumbnail='${item.thumbnail?.url}'")
+                            }
+                            val bestMatch = searchResult?.items?.firstOrNull { result ->
+                                val resultId = result.key
+                                val resultName = result.info?.name?.lowercase()?.trim() ?: return@firstOrNull false
+                                val localName = query.lowercase().trim()
+                                val matchById = artist.id.startsWith("UC") && resultId == artist.id
+                                val matchByName = resultName == localName || resultName.contains(localName) || localName.contains(resultName)
+                                Timber.tag("HomeArtist").d("[LOCAL]   Checking result id=$resultId name='${result.info?.name}': matchById=$matchById matchByName=$matchByName")
+                                matchById || matchByName
+                            }
                             if (bestMatch != null) {
+                                Timber.tag("HomeArtist").d("[LOCAL] MATCH FOUND: '${artist.name}' -> '${bestMatch.info?.name}' (id=${bestMatch.key}, thumbnail=${bestMatch.thumbnail?.url})")
                                 Database.asyncTransaction {
                                     artistTable.upsert(artist.copy(
                                         thumbnailUrl = bestMatch.thumbnail?.url ?: artist.thumbnailUrl
@@ -299,6 +319,7 @@ fun HomeArtists(
                                 Timber.tag("HomeArtist").d("Updated local artist '${artist.name}' with metadata from '${bestMatch.info?.name}'")
                                 status = 1
                             } else {
+                                Timber.tag("HomeArtist").d("No matching artist found on YouTube for '${artist.name}'")
                                 status = 2
                             }
                         }.onFailure {
@@ -324,6 +345,7 @@ fun HomeArtists(
             refreshing = false
             HomeSyncState.artistSyncProgress = 1f
             HomeSyncState.isSyncingArtists = false
+            Timber.tag("HomeArtist").d("=== REFRESH END === Total: $totalArtists, Failed: $failedCount")
         }
     }
 

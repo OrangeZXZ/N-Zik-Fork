@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -306,7 +307,21 @@ object ImageCacheFactory {
                 // if (validUrl != null) Timber.tag("ImageCache").d("URL: original=%s, modified=%s", validUrl, modUrl)
             }) 
         }
-        
+
+        if (currentUrl == null) {
+            var showFallback by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) {
+                kotlinx.coroutines.delay(3000L)
+                showFallback = true
+            }
+            androidx.compose.foundation.Image(
+                painter = painterResource(if (showFallback) R.drawable.ic_launcher_box else R.drawable.loader),
+                contentDescription = null,
+                modifier = modifier.fillMaxSize(),
+                contentScale = contentScale
+            )
+            return
+        }
         
         val request = ImageRequest.Builder(appContext())
             .data(currentUrl)
@@ -360,7 +375,7 @@ object ImageCacheFactory {
             modifier = modifier,
             placeholder = painterResource(R.drawable.loader),
             error = painterResource(R.drawable.ic_launcher_box),
-            fallback = painterResource(R.drawable.loader)
+            fallback = painterResource(R.drawable.ic_launcher_box)
         )
     }
 
@@ -434,7 +449,7 @@ object ImageCacheFactory {
             contentScale = contentScale,
             placeholder = painterResource(placeholder ?: R.drawable.loader),
             error = painterResource(error),
-            fallback = painterResource(R.drawable.loader),
+            fallback = painterResource(fallback),
             onLoading = onLoading,
             onSuccess = onSuccess,
             onError = { state ->
@@ -460,9 +475,13 @@ object ImageCacheFactory {
         }
 
         if (currentUrl == null) {
-            // No URL yet (data not available): show static loader
+            var showFallback by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) {
+                kotlinx.coroutines.delay(3000L)
+                showFallback = true
+            }
             androidx.compose.foundation.Image(
-                painter = painterResource(R.drawable.loader),
+                painter = painterResource(if (showFallback) R.drawable.ic_launcher_box else R.drawable.loader),
                 contentDescription = null,
                 modifier = modifier.fillMaxSize(),
                 contentScale = contentScale
@@ -544,6 +563,21 @@ object ImageCacheFactory {
                 //if (validUrl != null) Timber.tag("ImageCache").d("URL: original=%s, modified=%s", validUrl, modUrl)
             }) 
         }
+
+        if (currentUrl == null) {
+            var showFallback by remember { mutableStateOf(false) }
+            LaunchedEffect(Unit) {
+                kotlinx.coroutines.delay(3000L)
+                showFallback = true
+            }
+            androidx.compose.foundation.Image(
+                painter = painterResource(if (showFallback) R.drawable.ic_launcher_box else R.drawable.loader),
+                contentDescription = null,
+                modifier = modifier.fillMaxSize(),
+                contentScale = contentScale
+            )
+            return
+        }
         
         val request = ImageRequest.Builder(appContext())
             .data(currentUrl)
@@ -595,7 +629,7 @@ object ImageCacheFactory {
             modifier = modifier,
             placeholder = painterResource(R.drawable.loader),
             error = painterResource(R.drawable.ic_launcher_box),
-            fallback = painterResource(R.drawable.loader),
+            fallback = painterResource(R.drawable.ic_launcher_box),
             onLoading = onLoading,
             onSuccess = onSuccess,
             onError = { state ->

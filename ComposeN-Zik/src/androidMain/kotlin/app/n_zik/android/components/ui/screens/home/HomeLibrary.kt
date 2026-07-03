@@ -314,6 +314,9 @@ fun HomeLibrary(
                 it.playlist.browseId?.startsWith("OLAK") == true 
             }
             
+            Timber.tag("HomeLibrary").d("=== REFRESH START === Total playlists: ${itemsOnDisplay.size}, YT: ${ytPlaylists.size}")
+            ytPlaylists.forEach { Timber.tag("HomeLibrary").d("  [YT] browseId=${it.playlist.browseId} name=${it.playlist.name} isYoutube=${it.playlist.isYoutubePlaylist}") }
+            
             withContext(Dispatchers.Main) {
                 if (ytPlaylists.isNotEmpty()) app.kreate.android.me.knighthat.utils.Toaster.i(appContext().getString(R.string.refreshing_playlists, ytPlaylists.size))
             }
@@ -329,15 +332,17 @@ fun HomeLibrary(
                 val p = preview.playlist
                 p.browseId?.let { browseId ->
                     kotlinx.coroutines.delay((2000L..5000L).random())
-                    Timber.tag("HomeLibrary").d("Refreshing playlist: ${p.name} (browseId: $browseId)")
+                    Timber.tag("HomeLibrary").d("[YT] Fetching by browseId: $browseId for '${p.name}'")
                     var status = 0 // 0=retry, 1=success
                     for (attempt in 1..3) {
                         val request = Innertube.playlistPage(BrowseBody(browseId = browseId))
                         if (request == null) {
+                            Timber.tag("HomeLibrary").d("[YT] Request returned null for '${p.name}' (browseId: $browseId)")
                             status = 2
                             break
                         }
                         request.onSuccess { playlistPage ->
+                            Timber.tag("HomeLibrary").d("[YT] Got response for '${p.name}': title='${playlistPage.title}', songs=${playlistPage.songsPage?.items?.size ?: 0}")
                             Database.asyncTransaction {
                                 playlistTable.update(p.copy(
                                     name = PropUtils.retainIfModified(p.name, playlistPage.title) ?: p.name
@@ -375,6 +380,7 @@ fun HomeLibrary(
             refreshing = false
             HomeSyncState.playlistSyncProgress = 1f
             HomeSyncState.isSyncingPlaylists = false
+            Timber.tag("HomeLibrary").d("=== REFRESH END === Total: ${ytPlaylists.size}, Failed: $failedCount")
         }
     }
 

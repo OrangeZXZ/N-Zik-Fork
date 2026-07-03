@@ -259,6 +259,10 @@ fun HomeAlbums(
             val ytAlbums = itemsOnDisplay.filter { it.isYoutubeAlbum || it.id.startsWith("MPRE") || it.id.startsWith("OLAK") }
             val localAlbums = itemsOnDisplay.filterNot { it.isYoutubeAlbum || it.id.startsWith("MPRE") || it.id.startsWith("OLAK") }
             val totalAlbums = ytAlbums.size + localAlbums.size
+            
+            Timber.tag("HomeAlbum").d("=== REFRESH START === Total: $totalAlbums (YT: ${ytAlbums.size}, Local: ${localAlbums.size})")
+            ytAlbums.forEach { Timber.tag("HomeAlbum").d("  [YT] id=${it.id} title=${it.title} isYoutube=${it.isYoutubeAlbum}") }
+            localAlbums.forEach { Timber.tag("HomeAlbum").d("  [LOCAL] id=${it.id} title=${it.title} authors=${it.authorsText}") }
 
             withContext(Dispatchers.Main) {
                 if (totalAlbums > 0) app.kreate.android.me.knighthat.utils.Toaster.i(appContext().getString(R.string.refreshing_albums, totalAlbums))
@@ -273,11 +277,12 @@ fun HomeAlbums(
                 HomeSyncState.albumSyncCurrentName = album.title ?: ""
                 HomeSyncState.albumSyncProgress = index.toFloat() / ytAlbums.size
                 kotlinx.coroutines.delay((2000L..5000L).random())
-                Timber.tag("HomeAlbum").d("Refreshing album: ${album.title} (id: ${album.id})")
+                Timber.tag("HomeAlbum").d("[YT] Fetching by ID: ${album.id} for '${album.title}'")
                 var status = 0 // 0=retry, 1=success
                 for (attempt in 1..3) {
                     YtMusic.getAlbum(album.id, true).onSuccess { online ->
                         val onlineAlbum = online.album
+                        Timber.tag("HomeAlbum").d("[YT] Got response for '${album.title}': onlineTitle='${onlineAlbum.title}', thumbnail='${onlineAlbum.thumbnail?.url}', year=${onlineAlbum.year}")
                         val authorsText: String? = onlineAlbum.authors.parseArtists().joinToString(", ")
                         Database.asyncTransaction {
                             albumTable.upsert(Album(
@@ -317,7 +322,7 @@ fun HomeAlbums(
                 val query = "${album.title} ${album.authorsText ?: ""}".trim()
                 if (query.isNotBlank()) {
                     kotlinx.coroutines.delay((2000L..5000L).random())
-                    Timber.tag("HomeAlbum").d("Searching YouTube for local album: $query")
+                    Timber.tag("HomeAlbum").d("[LOCAL] Searching YouTube: query='$query' for album id=${album.id}")
                     var status = 0 // 0=retry, 1=success, 2=not found
                     for (attempt in 1..3) {
                         val request = Innertube.searchPage<Innertube.AlbumItem>(
@@ -325,12 +330,27 @@ fun HomeAlbums(
                             fromMusicShelfRendererContent = { content -> Innertube.AlbumItem.from(content) }
                         )
                         if (request == null) {
+                            Timber.tag("HomeAlbum").d("[LOCAL] Search returned null for '$query'")
                             status = 2
                             break
                         }
                         request.onSuccess { searchResult ->
-                            val bestMatch = searchResult?.items?.firstOrNull()
+                            val resultCount = searchResult?.items?.size ?: 0
+                            Timber.tag("HomeAlbum").d("[LOCAL] Search returned $resultCount results for '$query'")
+                            searchResult?.items?.forEachIndexed { i, item ->
+                                Timber.tag("HomeAlbum").d("[LOCAL]   Result[$i]: id=${item.key} title='${item.info?.name}' year=${item.year} thumbnail='${item.thumbnail?.url}'")
+                            }
+                            val localTitle = album.title?.lowercase()?.trim() ?: ""
+                            val bestMatch = searchResult?.items?.firstOrNull { result ->
+                                val resultId = result.key
+                                val resultTitle = result.info?.name?.lowercase()?.trim() ?: return@firstOrNull false
+                                val matchById = (album.id.startsWith("MPRE") || album.id.startsWith("OLAK")) && resultId == album.id
+                                val matchByTitle = resultTitle == localTitle || resultTitle.contains(localTitle) || localTitle.contains(resultTitle)
+                                Timber.tag("HomeAlbum").d("[LOCAL]   Checking result id=$resultId title='${result.info?.name}': matchById=$matchById matchByTitle=$matchByTitle")
+                                matchById || matchByTitle
+                            }
                             if (bestMatch != null) {
+                                Timber.tag("HomeAlbum").d("[LOCAL] MATCH FOUND: '${album.title}' -> '${bestMatch.info?.name}' (id=${bestMatch.key}, thumbnail=${bestMatch.thumbnail?.url}, year=${bestMatch.year})")
                                 Database.asyncTransaction {
                                     albumTable.upsert(album.copy(
                                         thumbnailUrl = bestMatch.thumbnail?.url ?: album.thumbnailUrl,
@@ -340,6 +360,7 @@ fun HomeAlbums(
                                 Timber.tag("HomeAlbum").d("Updated local album '${album.title}' with metadata from '${bestMatch.info?.name}'")
                                 status = 1
                             } else {
+                                Timber.tag("HomeAlbum").d("No matching album found on YouTube for '${album.title}'")
                                 status = 2
                             }
                         }.onFailure {
@@ -365,6 +386,7 @@ fun HomeAlbums(
             refreshing = false
             HomeSyncState.albumSyncProgress = 1f
             HomeSyncState.isSyncingAlbums = false
+            Timber.tag("HomeAlbum").d("=== REFRESH END === Total: $totalAlbums, Failed: $failedCount")
         }
     }
 
