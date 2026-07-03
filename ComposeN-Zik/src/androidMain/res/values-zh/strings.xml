@@ -1122,6 +1122,8 @@
   <string name="pause_between_songs_description">在歌曲之间添加暂停</string>
   <string name="notifications">通知</string>
   <string name="playback">回放</string>
+  <string name="management">Management</string>
+  <string name="navigation">Navigation</string>
   <string name="player_controls">玩家控制</string>
   <string name="player_controls_colors">玩家控制颜色</string>
   <string name="theme_color">主题颜色</string>
@@ -1280,6 +1282,11 @@
   <string name="txt_developers_rotation">开发者旋转</string>
   <string name="txt_translators_rotation">翻译器旋转</string>
   <string name="txt_lyrics">歌词</string>
+  <string name="section_lyrics_display">Display</string>
+  <string name="section_lyrics_text_style">Text Style</string>
+  <string name="section_lyrics_behavior">Behavior</string>
+  <string name="section_lyrics_translation">翻譯</string>
+  <string name="section_lyrics_actions">Actions</string>
   <string name="toast_preference_saved">首选项已保存</string>
   <string name="txt_width">width</string>
   <string name="cd_blurred_background">模糊背景</string>
@@ -1402,4 +1409,11 @@
   <string name="failed_playlists">Failed to find %1$d playlists, retrying</string>
   <string name="found_all_playlists">Found all playlists</string>
   <string name="already_syncing">Sync already in progress</string>
+  <string name="x_days_ago">%d days ago</string>
+  <string name="this_month">過去一個月</string>
+  <string name="last_year">Last year</string>
+  <string name="sort_by">Sort by</string>
+  <string name="date">Date</string>
+  <string name="alphabetical">Alphabetical</string>
+  <string name="artist">藝人</string>
 </resources>
