@@ -626,7 +626,7 @@ class LyricsSettingsMenu private constructor(
             if (lyricsType == LyricsType.Synced) {
                 item {
                     ActionSettingItem(
-                        title = stringResource(R.string.lrclib_match),
+                        title = stringResource(R.string.pick_from) + " LrcLib.net",
                         icon = R.drawable.search,
                         onClick = {
                             menuState.hide()
