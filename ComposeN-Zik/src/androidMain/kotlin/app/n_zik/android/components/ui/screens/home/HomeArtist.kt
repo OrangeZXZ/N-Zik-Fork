@@ -246,6 +246,14 @@ fun HomeArtists(
                 HomeSyncState.artistSyncCurrentIndex = index + 1
                 HomeSyncState.artistSyncCurrentName = artist.name ?: ""
                 HomeSyncState.artistSyncProgress = index.toFloat() / ytArtists.size
+                HomeSyncState.showSyncNotification(
+                    title = appContext().getString(R.string.sync_notifications),
+                    message = appContext().getString(R.string.sync_progress_artists, index + 1, totalArtists),
+                    notificationId = 1001,
+                    isOngoing = true,
+                    maxProgress = totalArtists,
+                    currentProgress = index + 1
+                )
                 kotlinx.coroutines.delay((2000L..5000L).random())
                 Timber.tag("HomeArtist").d("[YT] Fetching by ID: ${artist.id} for '${artist.name}'")
                 var status = 0 // 0=retry, 1=success
@@ -282,6 +290,14 @@ fun HomeArtists(
                 HomeSyncState.artistSyncCurrentIndex = ytArtists.size + index + 1
                 HomeSyncState.artistSyncCurrentName = artist.name ?: ""
                 HomeSyncState.artistSyncProgress = (ytArtists.size + index).toFloat() / totalArtists
+                HomeSyncState.showSyncNotification(
+                    title = appContext().getString(R.string.sync_notifications),
+                    message = appContext().getString(R.string.sync_progress_artists, ytArtists.size + index + 1, totalArtists),
+                    notificationId = 1001,
+                    isOngoing = true,
+                    maxProgress = totalArtists,
+                    currentProgress = ytArtists.size + index + 1
+                )
                 val query = artist.name?.trim()
                 if (!query.isNullOrBlank()) {
                     kotlinx.coroutines.delay((2000L..5000L).random())
@@ -344,9 +360,16 @@ fun HomeArtists(
                     val errorMessage = appContext().getString(R.string.failed_artists, failedCount)
                     val notificationMessage = appContext().getString(R.string.sync_failed_notification_artists, failedCount)
                     app.kreate.android.me.knighthat.utils.Toaster.e(errorMessage)
-                    HomeSyncState.showSyncFailedNotification(appContext().getString(R.string.sync_failed), notificationMessage, 1001)
+                    HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), notificationMessage, 1001)
                 } else if (totalArtists > 0 && itemsToRefresh == null) {
                     app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_artists))
+                    HomeSyncState.showSyncNotification(
+                        title = appContext().getString(R.string.sync_successful),
+                        message = appContext().getString(R.string.sync_success_notification_artists),
+                        notificationId = 1001
+                    )
+                } else {
+                    HomeSyncState.clearSyncNotification(1001)
                 }
             }
             

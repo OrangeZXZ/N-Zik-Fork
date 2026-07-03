@@ -331,6 +331,14 @@ fun HomeLibrary(
                 HomeSyncState.playlistSyncCurrentIndex = index + 1
                 HomeSyncState.playlistSyncCurrentName = preview.playlist.name
                 HomeSyncState.playlistSyncProgress = index.toFloat() / ytPlaylists.size
+                HomeSyncState.showSyncNotification(
+                    title = appContext().getString(R.string.sync_notifications),
+                    message = appContext().getString(R.string.sync_progress_playlists, index + 1, ytPlaylists.size),
+                    notificationId = 1003,
+                    isOngoing = true,
+                    maxProgress = ytPlaylists.size,
+                    currentProgress = index + 1
+                )
                 val p = preview.playlist
                 p.browseId?.let { browseId ->
                     kotlinx.coroutines.delay((2000L..5000L).random())
@@ -378,9 +386,16 @@ fun HomeLibrary(
                     val errorMessage = appContext().getString(R.string.failed_playlists, failedCount)
                     val notificationMessage = appContext().getString(R.string.sync_failed_notification_playlists, failedCount)
                     app.kreate.android.me.knighthat.utils.Toaster.e(errorMessage)
-                    HomeSyncState.showSyncFailedNotification(appContext().getString(R.string.sync_failed), notificationMessage, 1003)
+                    HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), notificationMessage, 1003)
                 } else if (ytPlaylists.isNotEmpty() && itemsToRefresh == null) {
                     app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_playlists))
+                    HomeSyncState.showSyncNotification(
+                        title = appContext().getString(R.string.sync_successful),
+                        message = appContext().getString(R.string.sync_success_notification_playlists),
+                        notificationId = 1003
+                    )
+                } else {
+                    HomeSyncState.clearSyncNotification(1003)
                 }
             }
             

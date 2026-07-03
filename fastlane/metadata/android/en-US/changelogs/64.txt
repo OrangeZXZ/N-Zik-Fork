@@ -3,11 +3,14 @@ Hotfix:
 - Added background notifications for failed syncs with a clickable intent to reopen the app.
 
 Added:
+- Added real-time progress notifications for Home tabs synchronizations (Artists, Albums, Playlists).
+- Added success notifications for completed synchronizations.
 - History: fine-grained date grouping (e.g. "x days ago", "this month", "last year") instead of capping at "last week".
 - History: sorting dropdown menu (Date, Alphabetical, Artist) next to the search icon.
 - Search: long press menus to album, artist, playlist, and video suggestions.
 
 Improved:
+- Increased ImageCacheFactory loader fallback delay from 3s to 10s to prevent premature fallback icons on slow connections.
 - History: date sticky header background color to accent color.
 - History: center the History/YTM buttons and search icon, and change search icon color to white.
 - History: horizontal padding to date sticky headers so they align with list items.

@@ -37,7 +37,14 @@ object HomeSyncState {
     var playlistSyncFailed by mutableStateOf(0)
     var failedPlaylistsList by mutableStateOf<List<app.it.fast4x.rimusic.models.PlaylistPreview>>(emptyList())
 
-    fun showSyncFailedNotification(title: String, message: String, notificationId: Int = 1001) {
+    fun showSyncNotification(
+        title: String,
+        message: String,
+        notificationId: Int = 1001,
+        isOngoing: Boolean = false,
+        maxProgress: Int = 0,
+        currentProgress: Int = 0
+    ) {
         val notificationManager = appContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         
         val intent = Intent(appContext(), MainActivity::class.java).apply {
@@ -57,9 +64,23 @@ object HomeSyncState {
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setAutoCancel(true)
+            .setAutoCancel(!isOngoing)
+            .setOngoing(isOngoing)
             .setContentIntent(pendingIntent)
             
+        if (isOngoing && maxProgress > 0) {
+            builder.setProgress(maxProgress, currentProgress, false)
+        } else if (isOngoing) {
+            builder.setProgress(0, 0, true)
+        } else {
+            builder.setProgress(0, 0, false)
+        }
+            
         notificationManager.notify(notificationId, builder.build())
+    }
+    
+    fun clearSyncNotification(notificationId: Int) {
+        val notificationManager = appContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(notificationId)
     }
 }
