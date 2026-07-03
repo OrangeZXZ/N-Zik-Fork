@@ -1,21 +1,19 @@
-feat: replace arrow drag handle with white bar in all menus and dialogs
+refactor(menu): consolidate item menus and refine UI details
 
-Replaced the default KeyboardArrowDown icon with a white bar drag handle
-(40dp x 4dp, RoundedCornerShape(2dp), Color.White) across all menus
-and dialogs, while preserving the resizable queue panel.
+Refactored item menus across the app by replacing SearchItemMenu with SongItemMenu
+and removing redundant titles from all item menus. Added long press functionality
+to search suggestions and improved menu rendering details.
 
 Changes:
-- Added `showDragHandle` parameter to ListMenu.Menu and GridMenu.Menu
-  (default true for old menus, false for new menus that have their own)
-- Replaced arrow icon in 12 item menus: SongItemMenu, VideoItemMenu,
-  SearchItemMenu, OnlineArtistItemMenu, LocalArtistItemMenu,
-  OnlinePlaylistItemMenu, LocalPlaylistItemMenu, PlayerItemMenu,
-  OnlineAlbumItemMenu, AlbumItemMenu, ImportPlaylistsMenu,
-  VideoOrSongInfoScreen
-- Added white bar to Menu composable (themed/Menu.kt) and LazyMenu
-- Added white bar to ListMenu.Menu and GridMenu.Menu (for old menus)
-- Changed CustomModalBottomSheet default dragHandle to white bar
-- Removed explicit dragHandle from MainActivity menu sheet, AppNavigation,
-  and AccountsSettings (YouTube/Discord login) to use default
-- Player sheets excluded (use invisible Surface dragHandle)
-- Top padding increased from 10dp to 18dp for better spacing
+- Removed SearchItemMenu in favor of SongItemMenu
+- Added long press menus to album, artist, playlist, and video suggestions
+- Removed titles from song, album, artist, playlist, video, and player item menus
+- Fixed double header in SortMenu
+- Skipped header rendering in ListMenu/GridMenu when title is null and there's no handle bar
+- Respected Color.Unspecified in SettingIcon for logo icons
+- Added header with handle bar to ImportPlaylistsMenu and removed duplicate titles
+- Removed Title with chevron_down from YouTube and Discord login webviews
+- Added status bar padding to YouTube and Discord login sheet drag handles
+- Fixed Piped instance menu infinite open/close loop by using LaunchedEffect
+- Removed top padding from the first item in the queue
+- Smoothed scrim fade when closing the queue panel (alpha follows panel height fraction)

@@ -5,21 +5,23 @@ import app.n_zik.android.gridMenuShape
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,14 +31,17 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.colorPalette
-import app.it.fast4x.rimusic.ui.components.themed.GridMenuItemHeight
 import app.it.fast4x.rimusic.utils.conditional
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.semiBold
+import app.n_zik.android.typography
+import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.components.menu.MenuConstants.CONTENT_HEIGHT_FRACTION
 import app.n_zik.android.components.menu.MenuConstants.CONTENT_HORIZONTAL_PADDING
 import app.n_zik.android.components.menu.MenuConstants.CONTENT_TOP_PADDING
@@ -44,33 +49,61 @@ import app.n_zik.android.components.menu.MenuConstants.CONTENT_TOP_PADDING
 object GridMenu {
 
     @Composable
-    fun Menu( showDragHandle: Boolean = true, content: LazyGridScope.() -> Unit ) {
+    fun Menu( showDragHandle: Boolean = true, title: String? = null, content: LazyGridScope.() -> Unit ) {
         val screenHeight = LocalConfiguration.current.screenHeightDp
+        val hasHeader = showDragHandle || title != null
 
         Column(
             Modifier.heightIn( max = (screenHeight * CONTENT_HEIGHT_FRACTION).dp )
-                       .navigationBarsPadding(),
+                       .fillMaxWidth()
+                       .background(colorPalette().background0),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (showDragHandle) {
-                Box(
+            if (hasHeader) {
+                // Header with handle bar
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .padding(top = 18.dp, bottom = 6.dp)
-                        .size(width = 40.dp, height = 4.dp)
-                        .clip(RoundedCornerShape(2.dp))
-                        .background(Color.White)
-                )
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                        .background(colorPalette().background1)
+                ) {
+                    if (showDragHandle) {
+                        Box(
+                            modifier = Modifier
+                                .padding(top = 18.dp, bottom = 6.dp)
+                                .size(width = 40.dp, height = 4.dp)
+                                .clip(RoundedCornerShape(2.dp))
+                                .background(Color.White)
+                        )
+                    }
+
+                    title?.let {
+                        Text(
+                            text = it,
+                            style = typography().m.copy(color = colorPalette().text),
+                            modifier = Modifier.padding(top = 5.dp, bottom = 10.dp)
+                        )
+                    }
+
+                    HorizontalDivider(Modifier.height(1.dp))
+                }
             }
 
+            // Grid content
             LazyVerticalGrid(
                 columns = GridCells.Adaptive( minSize = 120.dp ),
                 contentPadding = PaddingValues(
                     start = CONTENT_HORIZONTAL_PADDING.dp,
                     end = CONTENT_HORIZONTAL_PADDING.dp,
-                    top = CONTENT_TOP_PADDING.dp
-                    // bottom padding is handled by [Modifier#navigationBarsPadding]
+                    top = CONTENT_TOP_PADDING.dp,
+                    bottom = CONTENT_TOP_PADDING.dp
                 ),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .clip(if (!hasHeader) RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp) else RoundedCornerShape(0.dp))
+                    .background(colorPalette().background0),
                 content = content
             )
         }
@@ -82,44 +115,79 @@ object GridMenu {
         icon: @Composable BoxScope.() -> Unit,
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
+        subtitle: String? = null,
         onClick: () -> Unit = {},
-        onLongClick: () -> Unit = {}
-    ) = Column(
-        modifier = modifier
-            .clip(gridMenuShape())
-            .height(GridMenuItemHeight)
-            .alpha(if (enabled) 1f else 0.5f)
-            .padding(12.dp)
-            .clip(gridMenuShape()).combinedClickable(
-                enabled = enabled,
-                onClick = onClick,
-                onLongClick = onLongClick
-            )
+        onLongClick: () -> Unit = {},
+        trailingContent: @Composable () -> Unit = {}
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth()
-                               .weight( 1f ),
-            contentAlignment = Alignment.Center,
-            content = icon
-        )
-
+        val alpha = if (enabled) 1f else 0.5f
         val isScrollingTextDisabled by rememberPreference( disableScrollingTextKey, false )
-        Text(
-            text = text,
-            overflow = TextOverflow.Ellipsis,
-            color = colorPalette().text,
-            style = MaterialTheme.typography.labelLarge,
-            textAlign = TextAlign.Center,
-            maxLines = 1,
-            modifier = Modifier.fillMaxWidth()
-                               .conditional( !isScrollingTextDisabled ) {
-                                   basicMarquee( iterations = Int.MAX_VALUE )
-                               }
-        )
+
+        Column(
+            modifier = modifier
+                .clip(gridMenuShape())
+                .combinedClickable(
+                    enabled = enabled,
+                    onClick = onClick,
+                    onLongClick = onLongClick
+                )
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            // Icon + trailing content side by side
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                // Icon with accent background
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(
+                            color = colorPalette().accent.copy(alpha = 0.1f),
+                            shape = uiRoundnessShape()
+                        ),
+                    contentAlignment = Alignment.Center,
+                    content = icon
+                )
+
+                // Trailing content next to icon (arrow/toggle)
+                trailingContent()
+            }
+
+            // Text centered
+            Text(
+                text = text,
+                overflow = TextOverflow.Ellipsis,
+                color = colorPalette().text.copy(alpha = alpha),
+                style = typography().xs.semiBold,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)
+                    .conditional( !isScrollingTextDisabled ) {
+                        basicMarquee( iterations = Int.MAX_VALUE )
+                    }
+            )
+
+            // Subtitle
+            subtitle?.let {
+                Text(
+                    text = it,
+                    overflow = TextOverflow.Ellipsis,
+                    color = colorPalette().textSecondary.copy(alpha = alpha),
+                    style = typography().xxs,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .conditional( !isScrollingTextDisabled ) {
+                            basicMarquee( iterations = Int.MAX_VALUE )
+                        }
+                )
+            }
+        }
     }
 }
-
-
-
-
-

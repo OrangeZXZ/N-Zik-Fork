@@ -24,3 +24,15 @@
   - HomeAlbum: verify album title/ID match before accepting YouTube search results
   - HomeLibrary: add detailed logging for playlist refresh
   - Add detailed Timber logs for all refresh operations
+- fix(menu): respect Color.Unspecified in SettingIcon for logo icons (Spotify, RiPlay, NZik, YouTube Music)
+- fix(menu): skip header in ListMenu/GridMenu when title=null and no handle bar
+- fix(menu): fix double header in Sort.kt MenuComponent
+- fix(menu): remove title from all item menus (song, album, artist, playlist, video, player)
+- fix(menu): add header with handle bar to ImportPlaylistsMenu, remove duplicate titles
+- fix(menu): remove Title with chevron_down from YouTube and Discord login webviews
+- fix(accounts): add status bar padding to YouTube and Discord login sheet drag handles
+- fix(accounts): fix Piped instance menu infinite open/close loop by wrapping menuState.display in LaunchedEffect
+- fix(queue): remove top padding from first item in queue
+- fix(player): smooth scrim fade when closing queue panel (alpha follows panel height fraction)
+- feat(search): add long press menus to album, artist, playlist, and video suggestions
+- refactor(search): remove SearchItemMenu, replace with SongItemMenu

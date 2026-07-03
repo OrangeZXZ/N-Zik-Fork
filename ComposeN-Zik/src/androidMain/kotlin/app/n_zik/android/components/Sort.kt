@@ -3,11 +3,11 @@ package app.n_zik.android.components
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -22,10 +22,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
+import app.n_zik.android.uiRoundnessShape
 import app.it.fast4x.rimusic.enums.Drawable
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.enums.SortOrder
-import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.MenuState
 import app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
@@ -35,7 +35,6 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.utils.Preference
 import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.rememberPreference
-import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
 import app.kreate.android.me.knighthat.enums.TextView
@@ -83,22 +82,31 @@ open class Sort<T: Enum<T>> (
     override fun onLongClick() = openMenu()
 
     @Composable
-    override fun ListMenu() = ListMenu.Menu(showDragHandle = false) {
-        // Ignore error "Cannot access 'java. lang. constant. Constable' which is a supertype of 'java. lang. Class'"
-        sortBy.javaClass.enumConstants.forEach {
+    override fun ListMenu() = ListMenu.Menu(title = menuIconTitle) {
+        sortBy.javaClass.enumConstants?.forEach {
             ListMenu.Entry(
                 text = if (it is TextView) it.text else it.name,
                 icon = {
-                    Icon(
-                        painter =
-                            if( it is Drawable )
-                                it.icon
-                            else
-                                painterResource( R.drawable.close ),
-                        contentDescription = it.name,
-                        tint = colorPalette().text,
-                        modifier = Modifier.size( TabToolBar.TOOLBAR_ICON_SIZE )
-                    )
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(
+                                color = colorPalette().accent.copy(alpha = 0.1f),
+                                shape = uiRoundnessShape()
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter =
+                                if( it is Drawable )
+                                    it.icon
+                                else
+                                    painterResource( R.drawable.close ),
+                            contentDescription = it.name,
+                            tint = colorPalette().accent,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
                 },
                 onClick = {
                     menuState.hide()
@@ -109,25 +117,34 @@ open class Sort<T: Enum<T>> (
     }
 
     @Composable
-    override fun GridMenu() = GridMenu.Menu(showDragHandle = false) {
+    override fun GridMenu() = GridMenu.Menu(title = menuIconTitle) {
         items(
-            // Ignore error "Cannot access 'java. lang. constant. Constable' which is a supertype of 'java. lang. Class'"
-            items = sortBy.javaClass.enumConstants,
+            items = sortBy.javaClass.enumConstants ?: emptyArray(),
             key = Enum<T>::ordinal
         ) {
             GridMenu.Entry(
                 text = if (it is TextView) it.text else it.name,
                 icon = {
-                    Icon(
-                        painter =
-                            if( it is Drawable )
-                                it.icon
-                            else
-                                painterResource( R.drawable.close ),
-                        contentDescription = it.name,
-                        tint = colorPalette().text,
-                        modifier = Modifier.size( TabToolBar.TOOLBAR_ICON_SIZE )
-                    )
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(
+                                color = colorPalette().accent.copy(alpha = 0.1f),
+                                shape = uiRoundnessShape()
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter =
+                                if( it is Drawable )
+                                    it.icon
+                                else
+                                    painterResource( R.drawable.close ),
+                            contentDescription = it.name,
+                            tint = colorPalette().accent,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
                 },
                 onClick = {
                     menuState.hide()
@@ -138,27 +155,12 @@ open class Sort<T: Enum<T>> (
     }
 
     @Composable
-    override fun MenuComponent() =
-        app.it.fast4x.rimusic.ui.components.themed.Menu {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding( end = 12.dp )
-            ) {
-                BasicText(
-                    text = menuIconTitle,
-                    style = typography().m.semiBold,
-                    modifier = Modifier.padding(
-                        vertical = 8.dp,
-                        horizontal = 24.dp
-                    )
-                )
-            }
-
-            if( menuStyle == MenuStyle.List )
-                ListMenu()
-            else
-                GridMenu()
-        }
+    override fun MenuComponent() {
+        if( menuStyle == MenuStyle.List )
+            ListMenu()
+        else
+            GridMenu()
+    }
 
     @Composable
     override fun ToolBarButton() {

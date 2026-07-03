@@ -8,29 +8,35 @@ import android.webkit.WebStorage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.webkit.WebChromeClient
+import android.view.View
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import app.n_zik.android.R
-import app.n_zik.android.LocalPlayerAwareWindowInsets
-import app.it.fast4x.rimusic.ui.components.themed.Title
+import app.n_zik.android.colorPalette
+import app.n_zik.android.context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import android.view.View
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.ui.Alignment
-import app.n_zik.android.context
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
     /**
@@ -84,7 +90,6 @@ suspend fun fetchDiscordUser(token: String): Pair<String, String>? = withContext
      * Login to discord and get the token
      */
 @SuppressLint("SetJavaScriptEnabled")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiscordLoginAndGetToken(
     navController: NavController,
@@ -96,18 +101,12 @@ fun DiscordLoginAndGetToken(
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize().windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Title(
-            context().getString(R.string.login_to_discord),
-            icon = R.drawable.chevron_down,
-            onClick = { navController.navigateUp() }
-        )
-
         AndroidView(
             modifier = Modifier
-                .windowInsetsPadding(LocalPlayerAwareWindowInsets.current)
-                .fillMaxSize(),
+                .fillMaxWidth()
+                .weight(1f),
             factory = { context ->
                 WebView(context).apply {
                     layoutParams = ViewGroup.LayoutParams(

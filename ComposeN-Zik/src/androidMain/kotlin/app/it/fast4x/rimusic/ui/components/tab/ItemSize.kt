@@ -1,16 +1,27 @@
 package app.it.fast4x.rimusic.ui.components.tab
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
+import app.n_zik.android.colorPalette
+import app.n_zik.android.uiRoundnessShape
 import app.it.fast4x.rimusic.enums.HomeItemSize
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.MenuState
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import app.it.fast4x.rimusic.ui.components.themed.Menu
-import app.it.fast4x.rimusic.ui.components.themed.MenuEntry
+import app.n_zik.android.components.menu.ListMenu
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
 import app.it.fast4x.rimusic.utils.Preference
 
 class ItemSize private constructor(
@@ -38,10 +49,30 @@ class ItemSize private constructor(
         get() = sizeState.value
 
     @Composable
+    fun SettingIcon(@DrawableRes icon: Int) {
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .background(
+                    color = colorPalette().accent.copy(alpha = 0.1f),
+                    shape = uiRoundnessShape()
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(icon),
+                tint = colorPalette().accent,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+
+    @Composable
     private fun Entry( size: HomeItemSize) {
-        MenuEntry(
-            size.icon,
-            size.text,
+        ListMenu.Entry(
+            text = size.text,
+            icon = { SettingIcon(size.iconId) },
             onClick = {
                 sizeState.value = size
                 menuState.hide()
@@ -51,7 +82,7 @@ class ItemSize private constructor(
 
     override fun onShortClick() {
         menuState.display {
-            Menu {
+            ListMenu.Menu(title = stringResource(R.string.size)) {
                 HomeItemSize.entries.forEach { Entry(it) }
             }
         }

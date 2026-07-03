@@ -2273,10 +2273,11 @@ fun Player(
             val toolbarOffsetY = with(density) { (1f - toolbarProgress) * slideDistance }
 
             // Scrim
+            val scrimAlpha = (queuePanelHeightFraction.value / 0.65f).coerceIn(0f, 1f) * 0.5f
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f))
+                    .background(Color.Black.copy(alpha = scrimAlpha))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null

@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
@@ -33,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
@@ -66,6 +68,7 @@ import app.it.fast4x.rimusic.utils.enqueue
 import app.it.fast4x.rimusic.utils.forcePlay
 import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -123,19 +126,71 @@ class PlayerItemMenu private constructor(
     override var menuStyle: MenuStyle by styleState
 
     @Composable
-    override fun ListMenu() = ListMenu.Menu(showDragHandle = false) {
-        buttons.forEach {
-            if (it is MenuIcon)
-                it.ListMenuItem()
+    override fun ListMenu() = ListMenu.Menu(title = null, showDragHandle = false) {
+        // Section: Information
+        SectionTitle(stringResource(R.string.information))
+        buttons.getOrNull(0)?.let { if (it is MenuIcon) it.ListMenuItem() }
+
+        // Section: Playback
+        SectionTitle(stringResource(R.string.playback))
+        buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
+
+        // Section: Management
+        SectionTitle(stringResource(R.string.management))
+        buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(7)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(8)?.let { if (it is MenuIcon) it.ListMenuItem() }
+
+        // Section: Navigation
+        SectionTitle(stringResource(R.string.navigation))
+        for (i in 9 until (buttons.size - 1)) {
+            buttons.getOrNull(i)?.let { if (it is MenuIcon) it.ListMenuItem() }
         }
+
+        // Actions (equalizer, sleep timer, refetch)
+        buttons.getOrNull(5)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(6)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(buttons.size - 1)?.let { if (it is MenuIcon) it.ListMenuItem() }
     }
 
     @Composable
-    override fun GridMenu() = GridMenu.Menu(showDragHandle = false) {
-        items(buttons, Button::hashCode) {
-            if (it is MenuIcon)
-                it.GridMenuItem()
+    override fun GridMenu() = GridMenu.Menu(title = null, showDragHandle = false) {
+        // Section: Information
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            SectionTitle(stringResource(R.string.information))
         }
+        buttons.getOrNull(0)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+
+        // Section: Playback
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            SectionTitle(stringResource(R.string.playback))
+        }
+        buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+
+        // Section: Management
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            SectionTitle(stringResource(R.string.management))
+        }
+        buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(7)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(8)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+
+        // Section: Navigation
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            SectionTitle(stringResource(R.string.navigation))
+        }
+        for (i in 9 until (buttons.size - 1)) {
+            buttons.getOrNull(i)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        }
+
+        // Actions (equalizer, sleep timer, refetch)
+        buttons.getOrNull(5)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(6)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(buttons.size - 1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
     }
 
     @Composable
@@ -506,6 +561,20 @@ class PlayerItemMenu private constructor(
             else
                 GridMenu()
         }
+    }
+
+    @Composable
+    private fun SectionTitle(title: String) {
+        androidx.compose.foundation.text.BasicText(
+            text = title,
+            style = app.n_zik.android.typography().xxs.semiBold.copy(
+                color = app.n_zik.android.colorPalette().accent,
+                textAlign = TextAlign.Start
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp, horizontal = 4.dp)
+        )
     }
 }
 

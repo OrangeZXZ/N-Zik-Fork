@@ -317,7 +317,7 @@ fun Queue(
                 state = lazyListState,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 contentPadding = windowInsets
-                    .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                    .only(WindowInsetsSides.Horizontal)
                     .add( WindowInsets(bottom = Dimensions.bottomSpacer) )
                     .asPaddingValues(),
                 modifier = Modifier.weight( 1f )

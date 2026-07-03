@@ -52,7 +52,7 @@ class LanguagesListMenu private constructor(
     override var menuStyle: MenuStyle by styleState
 
     @Composable
-    override fun ListMenu() = ListMenu.Menu {
+    override fun ListMenu() = ListMenu.Menu(title = stringResource(R.string.translate_to_other_language)) {
         buttons.forEach {
             if (it is MenuIcon)
                 it.ListMenuItem()
@@ -60,7 +60,7 @@ class LanguagesListMenu private constructor(
     }
 
     @Composable
-    override fun GridMenu() = GridMenu.Menu {
+    override fun GridMenu() = GridMenu.Menu(title = stringResource(R.string.translate_to_other_language)) {
         items(buttons, Button::hashCode) {
             if (it is MenuIcon)
                 it.GridMenuItem()

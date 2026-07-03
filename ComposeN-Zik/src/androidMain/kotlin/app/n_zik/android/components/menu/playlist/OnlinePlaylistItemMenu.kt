@@ -5,6 +5,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -16,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -74,16 +76,54 @@ class OnlinePlaylistItemMenu private constructor(
     override var menuStyle: MenuStyle by styleState
 
     @Composable
-    override fun ListMenu() = ListMenu.Menu(showDragHandle = false) {
-        buttons.forEach {
-            if (it is MenuIcon) it.ListMenuItem()
+    override fun ListMenu() = ListMenu.Menu(title = null, showDragHandle = false) {
+        // Section: Playback
+        SectionTitle(stringResource(R.string.playback))
+        buttons.getOrNull(0)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
+
+        // Section: Management
+        SectionTitle(stringResource(R.string.management))
+        buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(5)?.let { if (it is MenuIcon) it.ListMenuItem() }
+
+        // Section: Navigation
+        if (buttons.size > 6) {
+            SectionTitle(stringResource(R.string.navigation))
+            for (i in 6 until buttons.size) {
+                buttons.getOrNull(i)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            }
         }
     }
 
     @Composable
-    override fun GridMenu() = GridMenu.Menu(showDragHandle = false) {
-        items(buttons, Button::hashCode) {
-            if (it is MenuIcon) it.GridMenuItem()
+    override fun GridMenu() = GridMenu.Menu(title = null, showDragHandle = false) {
+        // Section: Playback
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            SectionTitle(stringResource(R.string.playback))
+        }
+        buttons.getOrNull(0)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+
+        // Section: Management
+        item(span = { GridItemSpan(maxLineSpan) }) {
+            SectionTitle(stringResource(R.string.management))
+        }
+        buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(5)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+
+        // Section: Navigation
+        if (buttons.size > 6) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SectionTitle(stringResource(R.string.navigation))
+            }
+            for (i in 6 until buttons.size) {
+                buttons.getOrNull(i)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            }
         }
     }
 
@@ -376,5 +416,18 @@ class OnlinePlaylistItemMenu private constructor(
                 GridMenu()
         }
     }
-}
 
+    @Composable
+    private fun SectionTitle(title: String) {
+        androidx.compose.foundation.text.BasicText(
+            text = title,
+            style = typography().xxs.semiBold.copy(
+                color = colorPalette().accent,
+                textAlign = TextAlign.Start
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp, horizontal = 4.dp)
+        )
+    }
+}

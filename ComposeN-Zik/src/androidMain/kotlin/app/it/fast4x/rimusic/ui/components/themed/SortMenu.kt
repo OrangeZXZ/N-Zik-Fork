@@ -1,24 +1,22 @@
 package app.it.fast4x.rimusic.ui.components.themed
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onPlaced
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
-import app.it.fast4x.rimusic.utils.semiBold
-import app.n_zik.android.typography
+import app.n_zik.android.colorPalette
+import app.n_zik.android.uiRoundnessShape
+import app.n_zik.android.components.menu.ListMenu
+import androidx.annotation.DrawableRes
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
 
 
 @Composable
@@ -42,41 +40,32 @@ fun SortMenu (
     onDuration: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
-    var height by remember {
-        mutableStateOf(0.dp)
-    }
-    val density = LocalDensity.current
-
-    Menu(
-        modifier = modifier
-            .onPlaced { height = with(density) { it.size.height.toDp() } }
-
-    ) {
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-                .padding(end = 12.dp)
-        ) {
-            if (title != null) {
-                BasicText(
-                    text = title,
-                    style = typography().m.semiBold,
-                    modifier = Modifier
-                        .padding(vertical = 8.dp, horizontal = 24.dp)
-                )
-            }
-        }
-
-        Spacer(
+    @Composable
+    fun SettingIcon(@DrawableRes icon: Int) {
+        Box(
             modifier = Modifier
-                .height(8.dp)
-        )
+                .size(32.dp)
+                .background(
+                    color = colorPalette().accent.copy(alpha = 0.1f),
+                    shape = uiRoundnessShape()
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(icon),
+                tint = colorPalette().accent,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+    
+    ListMenu.Menu(title = title) {
 
         onTitle?.let {
-            MenuEntry(
-                icon = R.drawable.text,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_title),
+                icon = { SettingIcon(R.drawable.text) },
                 onClick = {
                     onDismiss()
                     onTitle()
@@ -84,9 +73,9 @@ fun SortMenu (
             )
         }
         onDatePlayed?.let {
-            MenuEntry(
-                icon = R.drawable.up_right_arrow,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_date_played),
+                icon = { SettingIcon(R.drawable.up_right_arrow) },
                 onClick = {
                     onDismiss()
                     onDatePlayed()
@@ -94,9 +83,9 @@ fun SortMenu (
             )
         }
         onDateLiked?.let {
-            MenuEntry(
-                icon = R.drawable.heart,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_date_liked),
+                icon = { SettingIcon(R.drawable.heart) },
                 onClick = {
                     onDismiss()
                     onDateLiked()
@@ -104,9 +93,9 @@ fun SortMenu (
             )
         }
         onPlayTime?.let {
-            MenuEntry(
-                icon = R.drawable.trending,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_listening_time),
+                icon = { SettingIcon(R.drawable.trending) },
                 onClick = {
                     onDismiss()
                     onPlayTime()
@@ -114,9 +103,9 @@ fun SortMenu (
             )
         }
         onRelativePlayTime?.let {
-            MenuEntry(
-                icon = R.drawable.trending,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_relative_listening_time),
+                icon = { SettingIcon(R.drawable.trending) },
                 onClick = {
                     onDismiss()
                     onRelativePlayTime()
@@ -124,9 +113,9 @@ fun SortMenu (
             )
         }
         onName?.let {
-            MenuEntry(
-                icon = R.drawable.text,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_name),
+                icon = { SettingIcon(R.drawable.text) },
                 onClick = {
                     onDismiss()
                     onName()
@@ -134,9 +123,9 @@ fun SortMenu (
             )
         }
         onSongNumber?.let {
-            MenuEntry(
-                icon = R.drawable.medical,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_songs_number),
+                icon = { SettingIcon(R.drawable.medical) },
                 onClick = {
                     onDismiss()
                     onSongNumber()
@@ -144,9 +133,9 @@ fun SortMenu (
             )
         }
         onPosition?.let {
-            MenuEntry(
-                icon = R.drawable.position,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_position),
+                icon = { SettingIcon(R.drawable.position) },
                 onClick = {
                     onDismiss()
                     onPosition()
@@ -154,9 +143,9 @@ fun SortMenu (
             )
         }
         onArtist?.let {
-            MenuEntry(
-                icon = R.drawable.artist,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_artist),
+                icon = { SettingIcon(R.drawable.artist) },
                 onClick = {
                     onDismiss()
                     onArtist()
@@ -164,9 +153,9 @@ fun SortMenu (
             )
         }
         onAlbum?.let {
-            MenuEntry(
-                icon = R.drawable.album,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_album),
+                icon = { SettingIcon(R.drawable.album) },
                 onClick = {
                     onDismiss()
                     onAlbum()
@@ -174,9 +163,9 @@ fun SortMenu (
             )
         }
         onArtistAndAlbum?.let {
-            MenuEntry(
-                icon = R.drawable.artist,
+            ListMenu.Entry(
                 text = "${stringResource(R.string.sort_artist)}, ${stringResource(R.string.sort_album)}",
+                icon = { SettingIcon(R.drawable.artist) },
                 onClick = {
                     onDismiss()
                     onArtistAndAlbum()
@@ -184,9 +173,9 @@ fun SortMenu (
             )
         }
         onAlbumYear?.let {
-            MenuEntry(
-                icon = R.drawable.calendar,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_album_year),
+                icon = { SettingIcon(R.drawable.calendar) },
                 onClick = {
                     onDismiss()
                     onAlbumYear()
@@ -194,9 +183,9 @@ fun SortMenu (
             )
         }
         onYear?.let {
-            MenuEntry(
-                icon = R.drawable.calendar,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_year),
+                icon = { SettingIcon(R.drawable.calendar) },
                 onClick = {
                     onDismiss()
                     onYear()
@@ -204,9 +193,9 @@ fun SortMenu (
             )
         }
         onDateAdded?.let {
-            MenuEntry(
-                icon = R.drawable.time,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_date_added),
+                icon = { SettingIcon(R.drawable.time) },
                 onClick = {
                     onDismiss()
                     onDateAdded()
@@ -215,9 +204,9 @@ fun SortMenu (
         }
 
         onDuration?.let {
-            MenuEntry(
-                icon = R.drawable.time,
+            ListMenu.Entry(
                 text = stringResource(R.string.sort_duration),
+                icon = { SettingIcon(R.drawable.time) },
                 onClick = {
                     onDismiss()
                     onDuration()
@@ -243,41 +232,32 @@ fun FilterMenu (
     onExplicit: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
-    var height by remember {
-        mutableStateOf(0.dp)
-    }
-    val density = LocalDensity.current
-
-    Menu(
-        modifier = modifier
-            .onPlaced { height = with(density) { it.size.height.toDp() } }
-
-    ) {
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-                .padding(end = 12.dp)
-        ) {
-            if (title != null) {
-                BasicText(
-                    text = title,
-                    style = typography().m.semiBold,
-                    modifier = Modifier
-                        .padding(vertical = 8.dp, horizontal = 24.dp)
-                )
-            }
-        }
-
-        Spacer(
+    @Composable
+    fun SettingIcon(@DrawableRes icon: Int) {
+        Box(
             modifier = Modifier
-                .height(8.dp)
-        )
+                .size(32.dp)
+                .background(
+                    color = colorPalette().accent.copy(alpha = 0.1f),
+                    shape = uiRoundnessShape()
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(icon),
+                tint = colorPalette().accent,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+    
+    ListMenu.Menu(title = title) {
 
         onAll?.let {
-            MenuEntry(
-                icon = R.drawable.musical_notes,
+            ListMenu.Entry(
                 text = stringResource(R.string.all),
+                icon = { SettingIcon(R.drawable.musical_notes) },
                 onClick = {
                     onDismiss()
                     onAll()
@@ -285,9 +265,9 @@ fun FilterMenu (
             )
         }
         onOnlineSongs?.let {
-            MenuEntry(
-                icon = R.drawable.globe,
+            ListMenu.Entry(
                 text = stringResource(R.string.online_songs),
+                icon = { SettingIcon(R.drawable.globe) },
                 onClick = {
                     onDismiss()
                     onOnlineSongs()
@@ -295,9 +275,9 @@ fun FilterMenu (
             )
         }
         onYoutubeLibrary?.let {
-            MenuEntry(
-                icon = R.drawable.ytmusic,
+            ListMenu.Entry(
                 text = stringResource(R.string.ytm_library),
+                icon = { SettingIcon(R.drawable.ytmusic) },
                 onClick = {
                     onDismiss()
                     onYoutubeLibrary()
@@ -306,9 +286,9 @@ fun FilterMenu (
         }
 
         onVideos?.let {
-            MenuEntry(
-                icon = R.drawable.video,
+            ListMenu.Entry(
                 text = stringResource(R.string.videos),
+                icon = { SettingIcon(R.drawable.video) },
                 onClick = {
                     onDismiss()
                     onVideos()
@@ -316,9 +296,9 @@ fun FilterMenu (
             )
         }
         onUnmatched?.let {
-            MenuEntry(
-                icon = R.drawable.alert,
+            ListMenu.Entry(
                 text = stringResource(R.string.unmatched),
+                icon = { SettingIcon(R.drawable.alert) },
                 onClick = {
                     onDismiss()
                     onUnmatched()
@@ -326,9 +306,9 @@ fun FilterMenu (
             )
         }
         onFavorites?.let {
-            MenuEntry(
-                icon = R.drawable.heart,
+            ListMenu.Entry(
                 text = stringResource(R.string.favorites),
+                icon = { SettingIcon(R.drawable.heart) },
                 onClick = {
                     onDismiss()
                     onFavorites()
@@ -336,9 +316,9 @@ fun FilterMenu (
             )
         }
         onLocal?.let {
-            MenuEntry(
-                icon = R.drawable.devices,
+            ListMenu.Entry(
                 text = stringResource(R.string.on_device),
+                icon = { SettingIcon(R.drawable.devices) },
                 onClick = {
                     onDismiss()
                     onLocal()
@@ -346,9 +326,9 @@ fun FilterMenu (
             )
         }
         onDownloaded?.let {
-            MenuEntry(
-                icon = R.drawable.downloaded,
+            ListMenu.Entry(
                 text = stringResource(R.string.downloaded),
+                icon = { SettingIcon(R.drawable.downloaded) },
                 onClick = {
                     onDismiss()
                     onDownloaded()
@@ -356,9 +336,9 @@ fun FilterMenu (
             )
         }
         onCached?.let {
-            MenuEntry(
-                icon = R.drawable.download,
+            ListMenu.Entry(
                 text = stringResource(R.string.cached),
+                icon = { SettingIcon(R.drawable.download) },
                 onClick = {
                     onDismiss()
                     onCached()
@@ -366,9 +346,9 @@ fun FilterMenu (
             )
         }
         onExplicit?.let {
-            MenuEntry(
-                icon = R.drawable.explicit,
+            ListMenu.Entry(
                 text = stringResource(R.string.explicit),
+                icon = { SettingIcon(R.drawable.explicit) },
                 onClick = {
                     onDismiss()
                     onExplicit()

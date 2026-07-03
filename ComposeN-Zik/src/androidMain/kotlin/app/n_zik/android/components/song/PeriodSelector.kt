@@ -1,9 +1,13 @@
 package app.n_zik.android.components.song
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -11,9 +15,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
+import app.n_zik.android.colorPalette
+import app.n_zik.android.uiRoundnessShape
 import app.it.fast4x.rimusic.enums.MaxTopPlaylistItems
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.enums.StatisticsType
@@ -23,8 +30,8 @@ import app.it.fast4x.rimusic.ui.components.MenuState
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
-import app.it.fast4x.rimusic.ui.components.themed.Menu
-import app.it.fast4x.rimusic.ui.components.themed.MenuEntry
+import app.n_zik.android.components.menu.ListMenu
+import androidx.compose.material3.Icon
 import app.it.fast4x.rimusic.utils.MaxTopPlaylistItemsKey
 import app.it.fast4x.rimusic.utils.Preference
 import app.it.fast4x.rimusic.utils.menuStyleKey
@@ -71,31 +78,34 @@ class PeriodSelector private constructor(
     override fun GridMenu() { /* Does nothing */ }
 
     @Composable
+    fun SettingIcon(@DrawableRes icon: Int) {
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .background(
+                    color = colorPalette().accent.copy(alpha = 0.1f),
+                    shape = uiRoundnessShape()
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(icon),
+                tint = colorPalette().accent,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+
+    @Composable
     override fun MenuComponent() {
         val size by rememberPreference( MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10` )
 
-        Menu {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = modifier
-                    .padding(end = 12.dp)
-            ) {
-                BasicText(
-                    text = stringResource( R.string.header_view_top_of, size ),
-                    style = typography().m.semiBold,
-                    modifier = Modifier.padding(
-                        vertical = 8.dp,
-                        horizontal = 24.dp
-                    )
-                )
-            }
-
-            Spacer( Modifier.height( 8.dp ) )
-
+        ListMenu.Menu(title = stringResource( R.string.header_view_top_of, size )) {
             StatisticsType.entries.forEach {
-                MenuEntry(
-                    icon = R.drawable.time,
+                ListMenu.Entry(
                     text = it.text,
+                    icon = { SettingIcon(R.drawable.time) },
                     onClick = {
                         onDismiss( it )
                     }

@@ -4,18 +4,30 @@ import app.n_zik.android.core.database.*
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
@@ -48,27 +60,18 @@ import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.UUID
-
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import app.it.fast4x.rimusic.models.Playlist
 import app.it.fast4x.rimusic.models.PlaylistPreview
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.n_zik.android.colorPalette
+import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.typography
 import app.n_zik.android.components.playlist.NewPlaylistDialog
-import app.it.fast4x.rimusic.ui.components.themed.MenuEntry
-import app.it.fast4x.rimusic.ui.components.themed.Menu
+import app.n_zik.android.components.menu.ListMenu
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.utils.semiBold
+import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import app.it.fast4x.rimusic.enums.PlaylistSortBy
@@ -88,6 +91,26 @@ import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.n_zik.android.components.tab.Search
 import androidx.compose.ui.unit.times
 import app.n_zik.android.components.menu.player.PlayerItemMenu
+
+@Composable
+fun SettingIcon(@DrawableRes icon: Int) {
+    Box(
+        modifier = Modifier
+            .size(32.dp)
+            .background(
+                color = colorPalette().accent.copy(alpha = 0.1f),
+                shape = uiRoundnessShape()
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            tint = colorPalette().accent,
+            contentDescription = null,
+            modifier = Modifier.size(18.dp)
+        )
+    }
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @ExperimentalTextApi
@@ -308,10 +331,7 @@ fun AddToPlaylistItemMenu(
                 !it.playlist.isYoutubePlaylist
     }
 
-    Menu(
-        modifier = Modifier
-            .requiredHeight(0.75*screenHeight)
-    ) {
+    ListMenu.Menu(title = stringResource(R.string.playlists)) {
         val search = Search()
         val title = stringResource(R.string.playlists)
         Row(
@@ -324,7 +344,7 @@ fun AddToPlaylistItemMenu(
             IconButton(
                 onClick = onDismiss,
                 icon = R.drawable.chevron_back,
-                color = colorPalette().textSecondary,
+                color = colorPalette().accent,
                 modifier = Modifier
                     .padding(all = 4.dp)
                     .size(20.dp)
@@ -345,7 +365,7 @@ fun AddToPlaylistItemMenu(
             IconButton(
                 onClick = { newPlaylistDialog.onShortClick() },
                 icon = R.drawable.add_in_playlist,
-                color = colorPalette().text,
+                color = colorPalette().accent,
                 modifier = Modifier
                     .padding(all = 4.dp)
                     .size(24.dp)
@@ -367,10 +387,10 @@ fun AddToPlaylistItemMenu(
 
             onAddToPlaylist.let { onAddToPlaylist ->
                 filteredPinnedPlaylists.forEach { playlistPreview ->
-                    MenuEntry(
-                        icon = R.drawable.add_in_playlist,
+                    ListMenu.Entry(
                         text = cleanPrefix(playlistPreview.playlist.name),
-                        secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                        icon = { SettingIcon(R.drawable.add_in_playlist) },
+                        subtitle = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                         onClick = {
                             onAddToPlaylist(playlistPreview.playlist, playlistPreview.songCount)
                             Toaster.done()
@@ -398,7 +418,7 @@ fun AddToPlaylistItemMenu(
                             }
                             IconButton(
                                 icon = R.drawable.open,
-                                color = colorPalette().text,
+                                color = colorPalette().accent,
                                 onClick = {
                                     if (onGoToPlaylist != null) {
                                         onGoToPlaylist(playlistPreview.playlist.id)
@@ -424,10 +444,10 @@ fun AddToPlaylistItemMenu(
 
             onAddToPlaylist.let { onAddToPlaylist ->
                 filteredYoutubePlaylists.forEach { playlistPreview ->
-                    MenuEntry(
-                        icon = R.drawable.add_in_playlist,
+                    ListMenu.Entry(
                         text = cleanPrefix(playlistPreview.playlist.name),
-                        secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                        icon = { SettingIcon(R.drawable.add_in_playlist) },
+                        subtitle = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                         onClick = {
                             onAddToPlaylist(playlistPreview.playlist, playlistPreview.songCount)
                             Toaster.done()
@@ -436,7 +456,7 @@ fun AddToPlaylistItemMenu(
                         trailingContent = {
                             IconButton(
                                 icon = R.drawable.open,
-                                color = colorPalette().text,
+                                color = colorPalette().accent,
                                 onClick = {
                                     if (onGoToPlaylist != null) {
                                         onGoToPlaylist(playlistPreview.playlist.id)
@@ -462,10 +482,10 @@ fun AddToPlaylistItemMenu(
 
             onAddToPlaylist.let { onAddToPlaylist ->
                 filteredUnpinnedPlaylists.forEach { playlistPreview ->
-                    MenuEntry(
-                        icon = R.drawable.add_in_playlist,
+                    ListMenu.Entry(
                         text = cleanPrefix(playlistPreview.playlist.name),
-                        secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                        icon = { SettingIcon(R.drawable.add_in_playlist) },
+                        subtitle = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                         onClick = {
                             onAddToPlaylist(playlistPreview.playlist, playlistPreview.songCount)
                             Toaster.done()
@@ -483,7 +503,7 @@ fun AddToPlaylistItemMenu(
 
                             IconButton(
                                 icon = R.drawable.open,
-                                color = colorPalette().text,
+                                color = colorPalette().accent,
                                 onClick = {
                                     if (onGoToPlaylist != null) {
                                         onGoToPlaylist(playlistPreview.playlist.id)
@@ -557,10 +577,7 @@ fun AddToPlaylistArtistSongsMenu(
                 !it.playlist.isYoutubePlaylist
     }
 
-    Menu(
-        modifier = Modifier
-            .requiredHeight(0.75*screenHeight)
-    ) {
+    ListMenu.Menu(title = stringResource(R.string.playlists)) {
         val search = Search()
         val title = stringResource(R.string.playlists)
         Row(
@@ -573,7 +590,7 @@ fun AddToPlaylistArtistSongsMenu(
             IconButton(
                 onClick = onDismiss,
                 icon = R.drawable.chevron_back,
-                color = colorPalette().textSecondary,
+                color = colorPalette().accent,
                 modifier = Modifier
                     .padding(all = 4.dp)
                     .size(20.dp)
@@ -594,7 +611,7 @@ fun AddToPlaylistArtistSongsMenu(
             IconButton(
                 onClick = { newPlaylistDialog.onShortClick() },
                 icon = R.drawable.add_in_playlist,
-                color = colorPalette().text,
+                color = colorPalette().accent,
                 modifier = Modifier
                     .padding(all = 4.dp)
                     .size(24.dp)
@@ -616,10 +633,10 @@ fun AddToPlaylistArtistSongsMenu(
 
             onAddToPlaylist.let { onAddToPlaylist ->
                 filteredPinnedPlaylists.forEach { playlistPreview ->
-                    MenuEntry(
-                        icon = R.drawable.add_in_playlist,
+                    ListMenu.Entry(
                         text = cleanPrefix(playlistPreview.playlist.name),
-                        secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                        icon = { SettingIcon(R.drawable.add_in_playlist) },
+                        subtitle = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                         onClick = {
                             onAddToPlaylist(
                                 PlaylistPreview(
@@ -652,7 +669,7 @@ fun AddToPlaylistArtistSongsMenu(
                             }
                             IconButton(
                                 icon = R.drawable.open,
-                                color = colorPalette().text,
+                                color = colorPalette().accent,
                                 onClick = {
                                     if (onGoToPlaylist != null) {
                                         onGoToPlaylist(playlistPreview.playlist.id)
@@ -678,10 +695,10 @@ fun AddToPlaylistArtistSongsMenu(
 
             onAddToPlaylist.let { onAddToPlaylist ->
                 filteredYoutubePlaylists.forEach { playlistPreview ->
-                    MenuEntry(
-                        icon = R.drawable.add_in_playlist,
+                    ListMenu.Entry(
                         text = cleanPrefix(playlistPreview.playlist.name),
-                        secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                        icon = { SettingIcon(R.drawable.add_in_playlist) },
+                        subtitle = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                         onClick = {
                             onAddToPlaylist(
                                 PlaylistPreview(
@@ -695,7 +712,7 @@ fun AddToPlaylistArtistSongsMenu(
                         trailingContent = {
                             IconButton(
                                 icon = R.drawable.open,
-                                color = colorPalette().text,
+                                color = colorPalette().accent,
                                 onClick = {
                                     if (onGoToPlaylist != null) {
                                         onGoToPlaylist(playlistPreview.playlist.id)
@@ -721,10 +738,10 @@ fun AddToPlaylistArtistSongsMenu(
 
             onAddToPlaylist.let { onAddToPlaylist ->
                 filteredUnpinnedPlaylists.forEach { playlistPreview ->
-                    MenuEntry(
-                        icon = R.drawable.add_in_playlist,
+                    ListMenu.Entry(
                         text = cleanPrefix(playlistPreview.playlist.name),
-                        secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                        icon = { SettingIcon(R.drawable.add_in_playlist) },
+                        subtitle = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                         onClick = {
                             onAddToPlaylist(
                                 PlaylistPreview(
@@ -747,7 +764,7 @@ fun AddToPlaylistArtistSongsMenu(
 
                             IconButton(
                                 icon = R.drawable.open,
-                                color = colorPalette().text,
+                                color = colorPalette().accent,
                                 onClick = {
                                     if (onGoToPlaylist != null) {
                                         onGoToPlaylist(playlistPreview.playlist.id)

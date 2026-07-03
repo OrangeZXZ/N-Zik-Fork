@@ -1,7 +1,9 @@
 package app.n_zik.android.components.player.lyrics
 
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -13,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.models.Lyrics
@@ -22,8 +25,9 @@ import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
-import app.it.fast4x.rimusic.ui.components.themed.Menu
-import app.it.fast4x.rimusic.ui.components.themed.MenuEntry
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
+import app.n_zik.android.components.menu.ListMenu
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.uiRoundnessShape
 import it.fast4x.lrclib.LrcLib
@@ -41,6 +45,26 @@ private val trackSelectorTextFieldColors: TextFieldColors
         unfocusedIndicatorColor = colorPalette().text,
         focusedIndicatorColor = colorPalette().text
     )
+
+@Composable
+fun SettingIcon(@DrawableRes icon: Int) {
+    Box(
+        modifier = Modifier
+            .size(32.dp)
+            .background(
+                color = colorPalette().accent.copy(alpha = 0.1f),
+                shape = uiRoundnessShape()
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            tint = colorPalette().accent,
+            contentDescription = null,
+            modifier = Modifier.size(18.dp)
+        )
+    }
+}
 
 @Composable
 fun LyricsTrackSelector(
@@ -91,13 +115,13 @@ fun LyricsTrackSelector(
                             )
                         }
                 if (it.isEmpty()){
-                    menuState.display {
-                        Menu {
-                            MenuEntry(
-                                icon = R.drawable.chevron_back,
+                        menuState.display {
+                        ListMenu.Menu(title = stringResource(R.string.txt_lyrics)) {
+                            ListMenu.Entry(
                                 text = stringResource(R.string.cancel),
-                                onClick = { 
-                                    menuState.hide() 
+                                icon = { SettingIcon(R.drawable.chevron_back) },
+                                onClick = {
+                                    menuState.hide()
                                     onDismiss()
                                 }
                             )
@@ -181,11 +205,11 @@ fun LyricsTrackSelector(
     LaunchedEffect(tracks.size, title, artistName) {
         if (tracks.isNotEmpty()) {
             menuState.display {
-                Menu {
-                    MenuEntry(
-                        icon = R.drawable.chevron_back,
+                ListMenu.Menu(title = stringResource(R.string.txt_lyrics)) {
+                    ListMenu.Entry(
                         text = stringResource(R.string.cancel),
-                        onClick = { 
+                        icon = { SettingIcon(R.drawable.chevron_back) },
+                        onClick = {
                             menuState.hide()
                             onDismiss()
                         }
@@ -229,10 +253,10 @@ fun LyricsTrackSelector(
                         )
                     }
                     tracks.forEach {
-                        MenuEntry(
-                            icon = R.drawable.text,
+                        ListMenu.Entry(
                             text = "${it.artistName} - ${it.trackName}",
-                            secondaryText = "(${stringResource(R.string.sort_duration)} ${
+                            icon = { SettingIcon(R.drawable.text) },
+                            subtitle = "(${stringResource(R.string.sort_duration)} ${
                                 it.duration.seconds.toComponents { minutes, seconds, _ ->
                                     "$minutes:${seconds.toString().padStart(2, '0')}"
                                 }
@@ -252,9 +276,9 @@ fun LyricsTrackSelector(
                             }
                         )
                     }
-                    MenuEntry(
-                        icon = R.drawable.chevron_back,
+                    ListMenu.Entry(
                         text = stringResource(R.string.cancel),
+                        icon = { SettingIcon(R.drawable.chevron_back) },
                         onClick = { 
                             menuState.hide() 
                             onDismiss()

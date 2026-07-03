@@ -4,16 +4,18 @@ import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,7 +34,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -47,6 +48,7 @@ import app.it.fast4x.rimusic.PINNED_PREFIX
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
+import app.n_zik.android.uiRoundnessShape
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.n_zik.android.components.playlist.NewPlaylistDialog
 import app.it.fast4x.rimusic.enums.NavRoutes
@@ -68,7 +70,30 @@ import app.it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import app.n_zik.android.components.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
+import app.n_zik.android.components.menu.ListMenu
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
 
+
+@Composable
+private fun SettingIcon(@DrawableRes icon: Int) {
+    Box(
+        modifier = Modifier
+            .size(32.dp)
+            .background(
+                color = colorPalette().accent.copy(alpha = 0.1f),
+                shape = uiRoundnessShape()
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            tint = colorPalette().accent,
+            contentDescription = null,
+            modifier = Modifier.size(18.dp)
+        )
+    }
+}
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -216,11 +241,7 @@ fun PlaylistsItemMenu(
                 BackHandler {
                     isViewingPlaylists = false
                 }
-                val density = LocalDensity.current
-                Menu(
-                    modifier = modifier
-                        .fillMaxHeight()
-                ) {
+                ListMenu.Menu(title = stringResource(R.string.playlists)) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
@@ -230,7 +251,7 @@ fun PlaylistsItemMenu(
                         IconButton(
                             onClick = { isViewingPlaylists = false },
                             icon = R.drawable.chevron_back,
-                            color = colorPalette().textSecondary,
+                            color = colorPalette().accent,
                             modifier = Modifier
                                 .padding(all = 4.dp)
                                 .size(20.dp)
@@ -238,7 +259,7 @@ fun PlaylistsItemMenu(
                         IconButton(
                             onClick = { search.isVisible = !search.isVisible },
                             icon = R.drawable.search_circle,
-                            color = colorPalette().favoritesIcon,
+                            color = colorPalette().accent,
                             modifier = Modifier
                                 .padding(all = 4.dp)
                                 .size(24.dp)
@@ -252,7 +273,7 @@ fun PlaylistsItemMenu(
                             IconButton(
                                 onClick = { newPlaylistDialog.onShortClick() },
                                 icon = R.drawable.add_in_playlist,
-                                color = colorPalette().text,
+                                color = colorPalette().accent,
                                 modifier = Modifier
                                     .padding(all = 4.dp)
                                     .size(24.dp)
@@ -275,10 +296,10 @@ fun PlaylistsItemMenu(
 
                         onAddToPlaylist?.let { onAddToPlaylist ->
                             filteredPinnedPlaylists.forEach { playlistPreview ->
-                                MenuEntry(
-                                    icon = R.drawable.add_in_playlist,
+                                ListMenu.Entry(
                                     text = cleanPrefix(playlistPreview.playlist.name),
-                                    secondaryText = "${playlistPreview.songCount} " + stringResource(
+                                    icon = { SettingIcon(R.drawable.add_in_playlist) },
+                                    subtitle = "${playlistPreview.songCount} " + stringResource(
                                         R.string.songs
                                     ),
                                     onClick = {
@@ -313,7 +334,7 @@ fun PlaylistsItemMenu(
                                         }
                                         IconButton(
                                             icon = R.drawable.open,
-                                            color = colorPalette().text,
+                                            color = colorPalette().accent,
                                             onClick = {
                                               if (onGoToPlaylist != null) {
                                                     onGoToPlaylist(playlistPreview.playlist.id)
@@ -339,10 +360,10 @@ fun PlaylistsItemMenu(
 
                         onAddToPlaylist?.let { onAddToPlaylist ->
                             filteredYoutubePlaylists.forEach { playlistPreview ->
-                                MenuEntry(
-                                    icon = R.drawable.add_in_playlist,
+                                ListMenu.Entry(
                                     text = cleanPrefix(playlistPreview.playlist.name),
-                                    secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                                    icon = { SettingIcon(R.drawable.add_in_playlist) },
+                                    subtitle = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                                     onClick = {
                                         onAddToPlaylist(
                                             PlaylistPreview(
@@ -356,7 +377,7 @@ fun PlaylistsItemMenu(
                                     trailingContent = {
                                         IconButton(
                                             icon = R.drawable.open,
-                                            color = colorPalette().text,
+                                            color = colorPalette().accent,
                                             onClick = {
                                                 if (onGoToPlaylist != null) {
                                                     onGoToPlaylist(playlistPreview.playlist.id)
@@ -382,10 +403,10 @@ fun PlaylistsItemMenu(
 
                         onAddToPlaylist?.let { onAddToPlaylist ->
                             filteredUnpinnedPlaylists.forEach { playlistPreview ->
-                                MenuEntry(
-                                    icon = R.drawable.add_in_playlist,
+                                ListMenu.Entry(
                                     text = cleanPrefix(playlistPreview.playlist.name),
-                                    secondaryText = "${playlistPreview.songCount} " + stringResource(
+                                    icon = { SettingIcon(R.drawable.add_in_playlist) },
+                                    subtitle = "${playlistPreview.songCount} " + stringResource(
                                         R.string.songs
                                     ),
                                     onClick = {
@@ -410,7 +431,7 @@ fun PlaylistsItemMenu(
 
                                         IconButton(
                                             icon = R.drawable.open,
-                                            color = colorPalette().text,
+                                            color = colorPalette().accent,
                                             onClick = {
                                                 if (onGoToPlaylist != null) {
                                                     onGoToPlaylist(playlistPreview.playlist.id)
@@ -428,16 +449,7 @@ fun PlaylistsItemMenu(
                     }
                 }
             } else {
-                val density = LocalDensity.current
-                Menu(
-                    modifier = modifier
-                        .fillMaxHeight()
-                        //.onPlaced { height = with(density) { it.size.height.toDp()+100.dp } }
-
-//                        .onPlaced {
-//                            height = it.size.height.dp * 0.5f
-//                        }
-                ) {
+                ListMenu.Menu(title = null) {
                     val thumbnailSizeDp = Dimensions.thumbnails.song + 20.dp
                     val thumbnailSizePx = thumbnailSizeDp.px
                     //val thumbnailArtistSizeDp = Dimensions.thumbnails.song + 10.dp
@@ -501,9 +513,9 @@ fun PlaylistsItemMenu(
                     )
 
                     onSelectUnselect?.let { onSelectUnselect ->
-                        MenuEntry(
-                            icon = R.drawable.checked_filled,
+                        ListMenu.Entry(
                             text = "${stringResource(R.string.item_select)}/${stringResource(R.string.item_deselect)}",
+                            icon = { SettingIcon(R.drawable.checked_filled) },
                             onClick = {
                                 onDismiss()
                                 onSelectUnselect()
@@ -511,31 +523,19 @@ fun PlaylistsItemMenu(
                         )
                     }
                     onSelect?.let { onSelect ->
-                        MenuEntry(
-                            icon = R.drawable.checked_filled,
+                        ListMenu.Entry(
                             text = stringResource(R.string.item_select),
+                            icon = { SettingIcon(R.drawable.checked_filled) },
                             onClick = {
                                 onDismiss()
                                 onSelect()
                             }
                         )
                     }
-                    /*
-                onUncheck?.let { onUncheck ->
-                    MenuEntry(
-                        icon = R.drawable.unchecked,
-                        text = stringResource(R.string.item_uncheck),
-                        onClick = {
-                            onDismiss()
-                            onUncheck()
-                        }
-                    )
-                }
-                 */
                     onPlayNext?.let { onPlayNext ->
-                        MenuEntry(
-                            icon = R.drawable.play_skip_forward,
+                        ListMenu.Entry(
                             text = stringResource(R.string.play_next),
+                            icon = { SettingIcon(R.drawable.play_skip_forward) },
                             onClick = {
                                 onDismiss()
                                 onPlayNext()
@@ -543,9 +543,9 @@ fun PlaylistsItemMenu(
                         )
                     }
                     onDeleteSongsNotInLibrary?.let { onDeleteSongsNotInLibrary ->
-                        MenuEntry(
-                            icon = R.drawable.trash,
+                        ListMenu.Entry(
                             text = stringResource(R.string.delete_songs_not_in_library),
+                            icon = { SettingIcon(R.drawable.trash) },
                             onClick = {
                                 onDismiss()
                                 onDeleteSongsNotInLibrary()
@@ -554,9 +554,9 @@ fun PlaylistsItemMenu(
                     }
 
                     onEnqueue?.let { onEnqueue ->
-                        MenuEntry(
-                            icon = R.drawable.enqueue,
+                        ListMenu.Entry(
                             text = stringResource(R.string.enqueue),
+                            icon = { SettingIcon(R.drawable.enqueue) },
                             onClick = {
                                 onDismiss()
                                 onEnqueue()
@@ -565,9 +565,9 @@ fun PlaylistsItemMenu(
                     }
 
                     if (showOnSyncronize) onSyncronize?.let { onSyncronize ->
-                        MenuEntry(
-                            icon = R.drawable.sync,
+                        ListMenu.Entry(
                             text = stringResource(R.string.sync),
+                            icon = { SettingIcon(R.drawable.sync) },
                             onClick = {
                                 onDismiss()
                                 onSyncronize()
@@ -576,9 +576,9 @@ fun PlaylistsItemMenu(
                     }
 
                     if (showLinkUnlink) onLinkUnlink?.let { onLinkUnlink ->
-                        MenuEntry(
-                            icon = R.drawable.link,
+                        ListMenu.Entry(
                             text = if (playlist?.playlist?.isYoutubePlaylist == true) stringResource(R.string.unlink_from_ytm) else stringResource(R.string.unlink_from_yt),
+                            icon = { SettingIcon(R.drawable.link) },
                             onClick = {
                                 onDismiss()
                                 onLinkUnlink()
@@ -587,9 +587,9 @@ fun PlaylistsItemMenu(
                     }
 
                     onImportOnlinePlaylist?.let { onImportOnlinePlaylist ->
-                        MenuEntry(
-                            icon = R.drawable.add_in_playlist,
+                        ListMenu.Entry(
                             text = stringResource(R.string.import_playlist),
+                            icon = { SettingIcon(R.drawable.add_in_playlist) },
                             onClick = {
                                 onDismiss()
                                 onImportOnlinePlaylist()
@@ -598,9 +598,9 @@ fun PlaylistsItemMenu(
                     }
 
                     if (onAddToPreferites != null)
-                        MenuEntry(
-                            icon = R.drawable.heart,
+                        ListMenu.Entry(
                             text = stringResource(R.string.add_to_favorites),
+                            icon = { SettingIcon(R.drawable.heart) },
                             onClick = {
                                 onDismiss()
                                 onAddToPreferites()
@@ -609,9 +609,9 @@ fun PlaylistsItemMenu(
 
                     if (showonAddToPreferitesYoutube) {
                         if (onAddToPreferitesYoutube != null)
-                            MenuEntry(
-                                icon = R.drawable.ytmusic,
+                            ListMenu.Entry(
                                 text = stringResource(R.string.add_rimusic_to_ytm_favorites),
+                                icon = { SettingIcon(R.drawable.ytmusic) },
                                 onClick = {
                                     onDismiss()
                                     onAddToPreferitesYoutube()
@@ -620,9 +620,9 @@ fun PlaylistsItemMenu(
                     }
 
                     if (onAddToPlaylist != null) {
-                        MenuEntry(
-                            icon = R.drawable.add_in_playlist,
+                        ListMenu.Entry(
                             text = stringResource(R.string.add_to_playlist),
+                            icon = { SettingIcon(R.drawable.add_in_playlist) },
                             onClick = { isViewingPlaylists = true },
                             trailingContent = {
                                 Image(
@@ -639,9 +639,9 @@ fun PlaylistsItemMenu(
                     }
 
                     onRename?.let { onRename ->
-                        MenuEntry(
-                            icon = R.drawable.title_edit,
+                        ListMenu.Entry(
                             text = stringResource(R.string.rename),
+                            icon = { SettingIcon(R.drawable.title_edit) },
                             onClick = {
                                 onDismiss()
                                 onRename()
@@ -650,9 +650,9 @@ fun PlaylistsItemMenu(
                     }
 
                     onDelete?.let { onDelete ->
-                        MenuEntry(
-                            icon = R.drawable.trash,
+                        ListMenu.Entry(
                             text = stringResource(R.string.delete),
+                            icon = { SettingIcon(R.drawable.trash) },
                             onClick = {
                                 onDismiss()
                                 onDelete()
@@ -661,9 +661,9 @@ fun PlaylistsItemMenu(
                     }
 
                     onRenumberPositions?.let { onRenumberPositions ->
-                        MenuEntry(
-                            icon = R.drawable.position,
+                        ListMenu.Entry(
                             text = stringResource(R.string.renumber_songs_positions),
+                            icon = { SettingIcon(R.drawable.position) },
                             onClick = {
                                 onDismiss()
                                 onRenumberPositions()
@@ -672,9 +672,9 @@ fun PlaylistsItemMenu(
                     }
 
                     if (showonListenToYT) onListenToYT?.let { onListenToYT ->
-                        MenuEntry(
-                            icon = R.drawable.play,
+                        ListMenu.Entry(
                             text = stringResource(R.string.listen_on_youtube),
+                            icon = { SettingIcon(R.drawable.play) },
                             onClick = {
                                 onDismiss()
                                 onListenToYT()
@@ -683,9 +683,9 @@ fun PlaylistsItemMenu(
                     }
 
                     onExport?.let { onExport ->
-                        MenuEntry(
-                            icon = R.drawable.export_outline,
+                        ListMenu.Entry(
                             text = stringResource(R.string.export_playlist),
+                            icon = { SettingIcon(R.drawable.export_outline) },
                             onClick = {
                                 onDismiss()
                                 onExport()
@@ -694,9 +694,9 @@ fun PlaylistsItemMenu(
                     }
 
                     onImport?.let { onImport ->
-                        MenuEntry(
-                            icon = R.drawable.import_outline,
+                        ListMenu.Entry(
                             text = stringResource(R.string.import_playlist),
+                            icon = { SettingIcon(R.drawable.import_outline) },
                             onClick = {
                                 onDismiss()
                                 onImport()
@@ -704,9 +704,9 @@ fun PlaylistsItemMenu(
                         )
                     }
                     onImportFavorites?.let {
-                        MenuEntry(
-                            icon = R.drawable.import_outline,
+                        ListMenu.Entry(
                             text = stringResource(R.string.import_favorites),
+                            icon = { SettingIcon(R.drawable.import_outline) },
                             onClick = {
                                 onDismiss()
                                 onImportFavorites()
@@ -715,9 +715,9 @@ fun PlaylistsItemMenu(
                     }
 
                     onEditThumbnail?.let {
-                        MenuEntry(
-                            icon = R.drawable.image,
+                        ListMenu.Entry(
                             text = stringResource(R.string.edit_thumbnail),
+                            icon = { SettingIcon(R.drawable.image) },
                             onClick = {
                                 onDismiss()
                                 onEditThumbnail()
@@ -726,9 +726,9 @@ fun PlaylistsItemMenu(
                     }
 
                     onResetThumbnail?.let {
-                        MenuEntry(
-                            icon = R.drawable.image,
+                        ListMenu.Entry(
                             text = stringResource(R.string.reset_thumbnail),
+                            icon = { SettingIcon(R.drawable.image) },
                             onClick = {
                                 onDismiss()
                                 onResetThumbnail()

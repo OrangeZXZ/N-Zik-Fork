@@ -3,6 +3,7 @@ package app.it.fast4x.rimusic.ui.screens.settings
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
 import android.webkit.WebStorage
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -19,6 +20,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -60,6 +64,7 @@ import it.fast4x.piped.models.Session
 import app.n_zik.android.appContext
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.colorPalette
+import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.extensions.discord.DiscordLoginAndGetToken
 import app.n_zik.android.extensions.discord.DiscordPresenceManager
 import app.it.fast4x.rimusic.extensions.youtubelogin.YouTubeLogin
@@ -68,8 +73,9 @@ import app.it.fast4x.rimusic.ui.components.CustomModalBottomSheet
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import app.it.fast4x.rimusic.ui.components.themed.Menu
-import app.it.fast4x.rimusic.ui.components.themed.MenuEntry
+import app.n_zik.android.components.menu.ListMenu
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import app.it.fast4x.rimusic.utils.enableYouTubeLoginKey
@@ -105,6 +111,26 @@ import timber.log.Timber
 import androidx.compose.material3.Text
 import androidx.compose.ui.res.painterResource
 import app.n_zik.android.typography
+
+@Composable
+fun SettingIcon(@DrawableRes icon: Int) {
+    Box(
+        modifier = Modifier
+            .size(32.dp)
+            .background(
+                color = colorPalette().accent.copy(alpha = 0.1f),
+                shape = uiRoundnessShape()
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            tint = colorPalette().accent,
+            contentDescription = null,
+            modifier = Modifier.size(18.dp)
+        )
+    }
+}
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -318,7 +344,17 @@ fun AccountsSettings() {
                                 contentColor = colorPalette().background0,
                                 modifier = Modifier.fillMaxWidth(),
                                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                                shape = app.n_zik.android.uiRoundnessShape()
+                                shape = app.n_zik.android.uiRoundnessShape(),
+                                dragHandle = {
+                                    val statusBarTop = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(top = statusBarTop + 18.dp, bottom = 6.dp)
+                                            .size(width = 40.dp, height = 4.dp)
+                                            .clip(RoundedCornerShape(2.dp))
+                                            .background(Color.White)
+                                    )
+                                }
                             ) {
                                 YouTubeLogin(
                                     onLogin = { cookieRetrieved ->
@@ -444,40 +480,33 @@ fun AccountsSettings() {
                         }
 
                         if (showInstances && instances.isNotEmpty()) {
-                            menuState.display {
-                                Menu {
-                                    MenuEntry(
-                                        icon = R.drawable.chevron_back,
-                                        text = stringResource(R.string.cancel),
-                                        onClick = {
-                                            loadInstances = false
-                                            showInstances = false
-                                            menuState.hide()
+                            LaunchedEffect(showInstances, instances) {
+                                menuState.display {
+                                    ListMenu.Menu(title = stringResource(R.string.piped_change_instance)) {
+                                        instances.forEach {
+                                            ListMenu.Entry(
+                                                text = it.name,
+                                                icon = { SettingIcon(R.drawable.server) },
+                                                subtitle = stringResource(R.string.locations) + ": " + it.locationsFormatted + " " + stringResource(R.string.users) + ": " + it.userCount,
+                                                onClick = {
+                                                    menuState.hide()
+                                                    pipedApiBaseUrl = it.apiBaseUrl.toString()
+                                                    pipedInstanceName = it.name
+                                                    loadInstances = false
+                                                    showInstances = false
+                                                }
+                                            )
                                         }
-                                    )
-                                    instances.forEach {
-                                        MenuEntry(
-                                            icon = R.drawable.server,
-                                            text = it.name,
-                                            secondaryText = stringResource(R.string.locations) + ": " + it.locationsFormatted + " " + stringResource(R.string.users) + ": " + it.userCount,
+                                        ListMenu.Entry(
+                                            text = stringResource(R.string.cancel),
+                                            icon = { SettingIcon(R.drawable.chevron_back) },
                                             onClick = {
-                                                menuState.hide()
-                                                pipedApiBaseUrl = it.apiBaseUrl.toString()
-                                                pipedInstanceName = it.name
                                                 loadInstances = false
                                                 showInstances = false
+                                                menuState.hide()
                                             }
                                         )
                                     }
-                                    MenuEntry(
-                                        icon = R.drawable.chevron_back,
-                                        text = stringResource(R.string.cancel),
-                                        onClick = {
-                                            loadInstances = false
-                                            showInstances = false
-                                            menuState.hide()
-                                        }
-                                    )
                                 }
                             }
                         }
@@ -777,7 +806,17 @@ fun AccountsSettings() {
                                     contentColor = colorPalette().background0,
                                     modifier = Modifier.fillMaxWidth(),
                                     sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                                    shape = app.n_zik.android.uiRoundnessShape()
+                                    shape = app.n_zik.android.uiRoundnessShape(),
+                                    dragHandle = {
+                                        val statusBarTop = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
+                                        Box(
+                                            modifier = Modifier
+                                                .padding(top = statusBarTop + 18.dp, bottom = 6.dp)
+                                                .size(width = 40.dp, height = 4.dp)
+                                                .clip(RoundedCornerShape(2.dp))
+                                                .background(Color.White)
+                                        )
+                                    }
                                 ) {
                                     DiscordLoginAndGetToken(
                                         navController = rememberNavController(),

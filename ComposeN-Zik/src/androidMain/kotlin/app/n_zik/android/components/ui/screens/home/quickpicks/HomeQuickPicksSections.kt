@@ -1,7 +1,9 @@
 package app.n_zik.android.components.ui.screens.home.quickpicks
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
@@ -10,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +29,7 @@ import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.n_zik.android.components.SongItem
+import app.n_zik.android.components.menu.ListMenu
 import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
 import app.n_zik.android.components.menu.artist.OnlineArtistItemMenu
 import app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu
@@ -49,7 +53,6 @@ import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.*
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.requests.HomePage
-import app.it.fast4x.rimusic.ui.components.themed.LazyMenu
 import app.it.fast4x.rimusic.models.PlaylistPreview
 import timber.log.Timber
 
@@ -61,31 +64,52 @@ fun QuickPicksHeader(
     onPlayAllClick: () -> Unit
 ) {
     val menuState = LocalMenuState.current
+    
+    @Composable
+    fun MenuIcon(@DrawableRes icon: Int) {
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .background(
+                    color = colorPalette().accent.copy(alpha = 0.1f),
+                    shape = uiRoundnessShape()
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(icon),
+                tint = colorPalette().accent,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+    
     Column {
         Title3Actions(
             title = stringResource(R.string.tips),
             icon1 = R.drawable.settings,
             onClick1 = {
                 menuState.display {
-                    Menu {
-                        MenuEntry(
-                            icon = R.drawable.chevron_up,
+                    ListMenu.Menu(title = stringResource(R.string.sorting_order)) {
+                        ListMenu.Entry(
+                            icon = { MenuIcon(R.drawable.chevron_up) },
                             text = stringResource(R.string.by_most_played_song),
                             onClick = {
                                 onPlayEventTypeChange(PlayEventsType.MostPlayed)
                                 menuState.hide()
                             }
                         )
-                        MenuEntry(
-                            icon = R.drawable.chevron_down,
+                        ListMenu.Entry(
+                            icon = { MenuIcon(R.drawable.chevron_down) },
                             text = stringResource(R.string.by_last_played_song),
                             onClick = {
                                 onPlayEventTypeChange(PlayEventsType.LastPlayed)
                                 menuState.hide()
                             }
                         )
-                        MenuEntry(
-                            icon = R.drawable.random,
+                        ListMenu.Entry(
+                            icon = { MenuIcon(R.drawable.random) },
                             text = stringResource(R.string.by_casual_played_song),
                             onClick = {
                                 onPlayEventTypeChange(PlayEventsType.CasualPlayed)
@@ -611,15 +635,34 @@ fun ChartsSection(
                     title = "${stringResource(R.string.charts)} (${selectedCountryCode.countryName})",
                     onClick = {
                         menuState.display {
-                            LazyMenu(items = Countries.entries) { country ->
-                                MenuEntry(
-                                    icon = R.drawable.arrow_right,
-                                    text = country.countryName,
-                                    onClick = {
-                                        onCountryChange(country)
-                                        menuState.hide()
-                                    }
-                                )
+                            ListMenu.Menu(title = stringResource(R.string.charts)) {
+                                Countries.entries.forEach { country ->
+                                    ListMenu.Entry(
+                                        icon = {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(32.dp)
+                                                    .background(
+                                                        color = colorPalette().accent.copy(alpha = 0.1f),
+                                                        shape = uiRoundnessShape()
+                                                    ),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Icon(
+                                                    painter = painterResource(R.drawable.arrow_right),
+                                                    tint = colorPalette().accent,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(18.dp)
+                                                )
+                                            }
+                                        },
+                                        text = country.countryName,
+                                        onClick = {
+                                            onCountryChange(country)
+                                            menuState.hide()
+                                        }
+                                    )
+                                }
                             }
                         }
                     },

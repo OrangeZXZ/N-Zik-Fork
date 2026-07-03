@@ -2,8 +2,11 @@ package app.it.fast4x.rimusic.ui.components.themed
 
 import app.n_zik.android.core.database.*
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,6 +30,7 @@ import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.MONTHLY_PREFIX
 import app.it.fast4x.rimusic.PINNED_PREFIX
 import app.n_zik.android.colorPalette
+import app.n_zik.android.uiRoundnessShape
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.PlaylistPreview
@@ -48,6 +52,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.compositeOver
 import app.it.fast4x.rimusic.PIPED_PREFIX
+import app.n_zik.android.components.menu.ListMenu
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
 
 class PlaylistsMenu private constructor(
     private val navController: NavController,
@@ -99,13 +106,33 @@ class PlaylistsMenu private constructor(
     }
 
     @Composable
+    fun SettingIcon(@DrawableRes icon: Int) {
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .background(
+                    color = colorPalette().accent.copy(alpha = 0.1f),
+                    shape = uiRoundnessShape()
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(icon),
+                tint = colorPalette().accent,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+
+    @Composable
     private fun PlaylistCard( playlistPreview: PlaylistPreview ) {
         val playlist = playlistPreview.playlist
 
-        MenuEntry(
-            icon = R.drawable.add_in_playlist,
+        ListMenu.Entry(
             text = playlist.name.substringAfter( PINNED_PREFIX ),
-            secondaryText = "${playlistPreview.songCount} ${stringResource( R.string.songs )}",
+            icon = { SettingIcon(R.drawable.add_in_playlist) },
+            subtitle = "${playlistPreview.songCount} ${stringResource( R.string.songs )}",
             onClick = {
                 onAdd( playlistPreview )
             },
@@ -129,7 +156,7 @@ class PlaylistsMenu private constructor(
                 }
                 IconButton(
                     icon = R.drawable.open,
-                    color = colorPalette().text,
+                    color = colorPalette().accent,
                     onClick = {
                         menuState.hide()
                         navController.navigate(route = "${NavRoutes.localPlaylist.name}/${playlist.id}")
@@ -173,7 +200,7 @@ class PlaylistsMenu private constructor(
         val newPlaylistButton = NewPlaylistDialog()
         newPlaylistButton.Render()
 
-        Menu {
+        ListMenu.Menu(title = stringResource(R.string.playlists)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -183,7 +210,7 @@ class PlaylistsMenu private constructor(
                 IconButton(
                     onClick = { onDismiss?.invoke() ?: menuState.hide() },
                     icon = R.drawable.chevron_back,
-                    color = colorPalette().textSecondary,
+                    color = colorPalette().accent,
                     modifier = Modifier
                         .padding(all = 4.dp)
                         .size(20.dp)
@@ -191,7 +218,7 @@ class PlaylistsMenu private constructor(
                 IconButton(
                     onClick = { search.isVisible = !search.isVisible },
                     icon = R.drawable.search_circle,
-                    color = colorPalette().favoritesIcon,
+                    color = colorPalette().accent,
                     modifier = Modifier
                         .padding(all = 4.dp)
                         .size(24.dp)
@@ -207,8 +234,12 @@ class PlaylistsMenu private constructor(
             if (filteredPinnedPlaylists.isNotEmpty()) {
                 BasicText(
                     text = stringResource(R.string.pinned_playlists),
-                    style = typography().m.semiBold,
-                    modifier = Modifier.padding(start = 20.dp, top = 5.dp)
+                    style = typography().xxs.semiBold.copy(
+                        color = colorPalette().accent
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp, horizontal = 4.dp)
                 )
 
                 filteredPinnedPlaylists.forEach { PlaylistCard(it) }
@@ -217,8 +248,12 @@ class PlaylistsMenu private constructor(
             if (filteredUnpinnedPlaylists.isNotEmpty()) {
                 BasicText(
                     text = stringResource(R.string.playlists),
-                    style = typography().m.semiBold,
-                    modifier = Modifier.padding(start = 20.dp, top = 5.dp)
+                    style = typography().xxs.semiBold.copy(
+                        color = colorPalette().accent
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 12.dp, horizontal = 4.dp)
                 )
 
                 filteredUnpinnedPlaylists.forEach { PlaylistCard(it) }

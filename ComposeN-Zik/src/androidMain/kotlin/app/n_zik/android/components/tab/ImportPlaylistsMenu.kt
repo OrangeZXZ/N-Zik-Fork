@@ -14,16 +14,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.ui.Alignment
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable
 import app.n_zik.android.typography
 import app.n_zik.android.colorPalette
+import app.it.fast4x.rimusic.utils.semiBold
 
 class ImportPlaylistsMenu(
     private val onImportNzik: () -> Unit,
@@ -97,21 +101,21 @@ class ImportPlaylistsMenu(
                         override val iconId: Int = R.drawable.ytmusic
                         override val messageId: Int = R.string.youtube_music
                         @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
-                        @get:Composable override val color: androidx.compose.ui.graphics.Color get() = androidx.compose.ui.graphics.Color.Red
+                        @get:Composable override val color: androidx.compose.ui.graphics.Color get() = androidx.compose.ui.graphics.Color.Unspecified
                         override fun onShortClick() { menuState.hide(); onImportYoutubeLink() }
                         override fun onLongClick() {}
                     }
                 )
 
                 @Composable
-                override fun ListMenu() = app.n_zik.android.components.menu.ListMenu.Menu {
+                override fun ListMenu() = app.n_zik.android.components.menu.ListMenu.Menu(title = null, showDragHandle = false) {
                     buttons.forEach { 
                         if (it is MenuIcon) it.ListMenuItem() 
                     }
                 }
 
                 @Composable
-                override fun GridMenu() = app.n_zik.android.components.menu.GridMenu.Menu {
+                override fun GridMenu() = app.n_zik.android.components.menu.GridMenu.Menu(title = null, showDragHandle = false) {
                     items(buttons, key = app.it.fast4x.rimusic.ui.components.tab.toolbar.Button::hashCode) {
                         if (it is MenuIcon) it.GridMenuItem()
                     }
@@ -139,13 +143,10 @@ class ImportPlaylistsMenu(
                             BasicText(
                                 text = stringResource(R.string.import_playlist),
                                 style = typography().m.copy(color = colorPalette().text),
-                                modifier = Modifier.padding(
-                                    top = 5.dp,
-                                    bottom = 10.dp
-                                )
+                                modifier = Modifier.padding(top = 5.dp, bottom = 10.dp)
                             )
 
-                            androidx.compose.material3.HorizontalDivider( Modifier.height(1.dp) )
+                            HorizontalDivider( Modifier.height(1.dp) )
                         }
 
                         if( menuStyle == app.it.fast4x.rimusic.enums.MenuStyle.List )

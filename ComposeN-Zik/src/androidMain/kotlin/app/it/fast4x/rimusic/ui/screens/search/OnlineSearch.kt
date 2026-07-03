@@ -76,12 +76,19 @@ import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.it.fast4x.rimusic.ui.components.themed.Header
-import app.n_zik.android.components.menu.search.SearchItemMenu
+import app.n_zik.android.components.menu.song.SongItemMenu
+import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
+import app.n_zik.android.components.menu.artist.OnlineArtistItemMenu
+import app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu
+import app.n_zik.android.components.menu.video.VideoItemMenu
 import app.it.fast4x.rimusic.utils.asSong
+import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
 import app.it.fast4x.rimusic.ui.components.themed.TitleMiniSection
 import app.it.fast4x.rimusic.ui.items.AlbumItem
 import app.it.fast4x.rimusic.ui.items.ArtistItem
+import app.it.fast4x.rimusic.ui.items.PlaylistItem
+import app.it.fast4x.rimusic.ui.items.VideoItem
 import app.it.fast4x.rimusic.ui.items.SongItem
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.px
@@ -366,7 +373,7 @@ fun OnlineSearch(
                                                 onLongClick = {
                                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.display {
-                                                        SearchItemMenu(
+                                                        SongItemMenu(
                                                             navController = navController,
                                                             song = mediaItem.asSong
                                                         ).MenuComponent()
@@ -382,37 +389,105 @@ fun OnlineSearch(
                                 }
                             }
                         }
-                        suggestions.recommendedAlbum.let {
+                        suggestions.recommendedAlbum?.let { album ->
                             item{
-                                it?.let { album ->
-                                    AlbumItem(
-                                        yearCentered = false,
-                                        album = album,
-                                        thumbnailSizePx = songThumbnailSizePx,
-                                        thumbnailSizeDp = songThumbnailSizeDp,
-                                        modifier = Modifier
-                                            .clip(uiRoundnessShape()).clickable {
-                                                navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
+                                AlbumItem(
+                                    yearCentered = false,
+                                    album = album,
+                                    thumbnailSizePx = songThumbnailSizePx,
+                                    thumbnailSizeDp = songThumbnailSizeDp,
+                                    modifier = Modifier
+                                        .clip(uiRoundnessShape()).combinedClickable(
+                                            onLongClick = {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.display {
+                                                    OnlineAlbumItemMenu(
+                                                        navController = navController,
+                                                        album = album
+                                                    ).MenuComponent()
+                                                }
                                             },
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
+                                            onClick = {
+                                                navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
+                                            }
+                                        ),
+                                    disableScrollingText = disableScrollingText
+                                )
                             }
                         }
-                        suggestions.recommendedArtist.let {
+                        suggestions.recommendedArtist?.let { artist ->
                             item{
-                                it?.let { artist ->
-                                    ArtistItem(
-                                        artist = artist,
-                                        thumbnailSizePx = songThumbnailSizePx,
-                                        thumbnailSizeDp = songThumbnailSizeDp,
-                                        modifier = Modifier
-                                            .clip(uiRoundnessShape()).clickable {
-                                                navController.navigate(route = "${NavRoutes.artist.name}/${artist.key}")
+                                ArtistItem(
+                                    artist = artist,
+                                    thumbnailSizePx = songThumbnailSizePx,
+                                    thumbnailSizeDp = songThumbnailSizeDp,
+                                    modifier = Modifier
+                                        .clip(uiRoundnessShape()).combinedClickable(
+                                            onLongClick = {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.display {
+                                                    OnlineArtistItemMenu(
+                                                        navController = navController,
+                                                        artist = artist
+                                                    ).MenuComponent()
+                                                }
                                             },
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
+                                            onClick = {
+                                                navController.navigate(route = "${NavRoutes.artist.name}/${artist.key}")
+                                            }
+                                        ),
+                                    disableScrollingText = disableScrollingText
+                                )
+                            }
+                        }
+                        suggestions.recommendedPlaylist?.let { playlist ->
+                            item{
+                                PlaylistItem(
+                                    playlist = playlist,
+                                    thumbnailSizePx = songThumbnailSizePx,
+                                    thumbnailSizeDp = songThumbnailSizeDp,
+                                    modifier = Modifier
+                                        .clip(uiRoundnessShape()).combinedClickable(
+                                            onLongClick = {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.display {
+                                                    OnlinePlaylistItemMenu(
+                                                        navController = navController,
+                                                        playlist = playlist
+                                                    ).MenuComponent()
+                                                }
+                                            },
+                                            onClick = {
+                                                navController.navigate(route = "${NavRoutes.playlist.name}/${playlist.key}")
+                                            }
+                                        ),
+                                    disableScrollingText = disableScrollingText
+                                )
+                            }
+                        }
+                        suggestions.recommendedVideo?.let { video ->
+                            item{
+                                VideoItem(
+                                    video = video,
+                                    thumbnailHeightDp = songThumbnailSizeDp,
+                                    thumbnailWidthDp = songThumbnailSizeDp,
+                                    modifier = Modifier
+                                        .clip(uiRoundnessShape()).combinedClickable(
+                                            onLongClick = {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.display {
+                                                    VideoItemMenu(
+                                                        navController = navController,
+                                                        song = video.asMediaItem.asSong
+                                                    ).MenuComponent()
+                                                }
+                                            },
+                                            onClick = {
+                                                binder?.player?.forcePlay(video.asMediaItem)
+                                            }
+                                        ),
+                                    disableScrollingText = disableScrollingText
+                                )
                             }
                         }
 
@@ -713,7 +788,7 @@ fun OnlineSearch(
                                                 onLongClick = {
                                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                                     menuState.display {
-                                                        SearchItemMenu(
+                                                        SongItemMenu(
                                                             navController = navController,
                                                             song = mediaItem.asSong
                                                         ).MenuComponent()
@@ -729,37 +804,105 @@ fun OnlineSearch(
                                 }
                             }
                         }
-                        suggestions.recommendedAlbum.let {
+                        suggestions.recommendedAlbum?.let { album ->
                             item{
-                                it?.let { album ->
-                                    AlbumItem(
-                                        yearCentered = false,
-                                        album = album,
-                                        thumbnailSizePx = songThumbnailSizePx,
-                                        thumbnailSizeDp = songThumbnailSizeDp,
-                                        modifier = Modifier
-                                            .clip(uiRoundnessShape()).clickable {
-                                                navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
+                                AlbumItem(
+                                    yearCentered = false,
+                                    album = album,
+                                    thumbnailSizePx = songThumbnailSizePx,
+                                    thumbnailSizeDp = songThumbnailSizeDp,
+                                    modifier = Modifier
+                                        .clip(uiRoundnessShape()).combinedClickable(
+                                            onLongClick = {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.display {
+                                                    OnlineAlbumItemMenu(
+                                                        navController = navController,
+                                                        album = album
+                                                    ).MenuComponent()
+                                                }
                                             },
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
+                                            onClick = {
+                                                navController.navigate(route = "${NavRoutes.album.name}/${album.key}")
+                                            }
+                                        ),
+                                    disableScrollingText = disableScrollingText
+                                )
                             }
                         }
-                        suggestions.recommendedArtist.let {
+                        suggestions.recommendedArtist?.let { artist ->
                             item{
-                                it?.let { artist ->
-                                    ArtistItem(
-                                        artist = artist,
-                                        thumbnailSizePx = songThumbnailSizePx,
-                                        thumbnailSizeDp = songThumbnailSizeDp,
-                                        modifier = Modifier
-                                            .clip(uiRoundnessShape()).clickable {
-                                                navController.navigate(route = "${NavRoutes.artist.name}/${artist.key}")
+                                ArtistItem(
+                                    artist = artist,
+                                    thumbnailSizePx = songThumbnailSizePx,
+                                    thumbnailSizeDp = songThumbnailSizeDp,
+                                    modifier = Modifier
+                                        .clip(uiRoundnessShape()).combinedClickable(
+                                            onLongClick = {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.display {
+                                                    OnlineArtistItemMenu(
+                                                        navController = navController,
+                                                        artist = artist
+                                                    ).MenuComponent()
+                                                }
                                             },
-                                        disableScrollingText = disableScrollingText
-                                    )
-                                }
+                                            onClick = {
+                                                navController.navigate(route = "${NavRoutes.artist.name}/${artist.key}")
+                                            }
+                                        ),
+                                    disableScrollingText = disableScrollingText
+                                )
+                            }
+                        }
+                        suggestions.recommendedPlaylist?.let { playlist ->
+                            item{
+                                PlaylistItem(
+                                    playlist = playlist,
+                                    thumbnailSizePx = songThumbnailSizePx,
+                                    thumbnailSizeDp = songThumbnailSizeDp,
+                                    modifier = Modifier
+                                        .clip(uiRoundnessShape()).combinedClickable(
+                                            onLongClick = {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.display {
+                                                    OnlinePlaylistItemMenu(
+                                                        navController = navController,
+                                                        playlist = playlist
+                                                    ).MenuComponent()
+                                                }
+                                            },
+                                            onClick = {
+                                                navController.navigate(route = "${NavRoutes.playlist.name}/${playlist.key}")
+                                            }
+                                        ),
+                                    disableScrollingText = disableScrollingText
+                                )
+                            }
+                        }
+                        suggestions.recommendedVideo?.let { video ->
+                            item{
+                                VideoItem(
+                                    video = video,
+                                    thumbnailHeightDp = songThumbnailSizeDp,
+                                    thumbnailWidthDp = songThumbnailSizeDp,
+                                    modifier = Modifier
+                                        .clip(uiRoundnessShape()).combinedClickable(
+                                            onLongClick = {
+                                                hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                                                menuState.display {
+                                                    VideoItemMenu(
+                                                        navController = navController,
+                                                        song = video.asMediaItem.asSong
+                                                    ).MenuComponent()
+                                                }
+                                            },
+                                            onClick = {
+                                                binder?.player?.forcePlay(video.asMediaItem)
+                                            }
+                                        ),
+                                    disableScrollingText = disableScrollingText
+                                )
                             }
                         }
 

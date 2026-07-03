@@ -4,22 +4,21 @@ import app.n_zik.android.core.database.*
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -49,6 +48,7 @@ import app.it.fast4x.rimusic.PINNED_PREFIX
 import app.it.fast4x.rimusic.PIPED_PREFIX
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
+import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.components.playlist.NewPlaylistDialog
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.enums.NavRoutes
@@ -70,6 +70,31 @@ import app.it.fast4x.rimusic.utils.semiBold
 import kotlinx.coroutines.Dispatchers
 import app.n_zik.android.components.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
+import app.n_zik.android.components.menu.ListMenu
+import app.n_zik.android.components.menu.GridMenu
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+
+@Composable
+private fun SettingIcon(@DrawableRes icon: Int) {
+    Box(
+        modifier = Modifier
+            .size(32.dp)
+            .background(
+                color = colorPalette().accent.copy(alpha = 0.1f),
+                shape = uiRoundnessShape()
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(icon),
+            tint = colorPalette().accent,
+            contentDescription = null,
+            modifier = Modifier.size(18.dp)
+        )
+    }
+}
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -190,11 +215,7 @@ fun PlaylistsItemGridMenu(
                 isViewingPlaylists = false
             }
 
-            Menu(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.7f)
-            ) {
+            ListMenu.Menu(title = stringResource(R.string.playlists)) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -204,7 +225,7 @@ fun PlaylistsItemGridMenu(
                     IconButton(
                         onClick = { isViewingPlaylists = false },
                         icon = R.drawable.chevron_back,
-                        color = colorPalette().textSecondary,
+                        color = colorPalette().accent,
                         modifier = Modifier
                             .padding(all = 4.dp)
                             .size(20.dp)
@@ -212,7 +233,7 @@ fun PlaylistsItemGridMenu(
                     IconButton(
                         onClick = { search.isVisible = !search.isVisible },
                         icon = R.drawable.search_circle,
-                        color = colorPalette().favoritesIcon,
+                        color = colorPalette().accent,
                         modifier = Modifier
                             .padding(all = 4.dp)
                             .size(24.dp)
@@ -226,7 +247,7 @@ fun PlaylistsItemGridMenu(
                         IconButton(
                             onClick = { newPlaylistDialog.onShortClick() },
                             icon = R.drawable.add_in_playlist,
-                            color = colorPalette().text,
+                            color = colorPalette().accent,
                             modifier = Modifier
                                 .padding(all = 4.dp)
                                 .size(24.dp)
@@ -249,10 +270,10 @@ fun PlaylistsItemGridMenu(
 
                     onAddToPlaylist?.let { onAddToPlaylist ->
                         filteredPinnedPlaylists.forEach { playlistPreview ->
-                            MenuEntry(
-                                icon = R.drawable.add_in_playlist,
+                            ListMenu.Entry(
                                 text = cleanPrefix(playlistPreview.playlist.name),
-                                secondaryText = "${playlistPreview.songCount} " + stringResource(
+                                icon = { SettingIcon(R.drawable.add_in_playlist) },
+                                subtitle = "${playlistPreview.songCount} " + stringResource(
                                     R.string.songs
                                 ),
                                 onClick = {
@@ -287,7 +308,7 @@ fun PlaylistsItemGridMenu(
                                     }
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette().text,
+                                        color = colorPalette().accent,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)
@@ -313,10 +334,10 @@ fun PlaylistsItemGridMenu(
 
                     onAddToPlaylist?.let { onAddToPlaylist ->
                         filteredYoutubePlaylists.forEach { playlistPreview ->
-                            MenuEntry(
-                                icon = R.drawable.add_in_playlist,
+                            ListMenu.Entry(
                                 text = cleanPrefix(playlistPreview.playlist.name),
-                                secondaryText = "${playlistPreview.songCount} " + stringResource(R.string.songs),
+                                icon = { SettingIcon(R.drawable.add_in_playlist) },
+                                subtitle = "${playlistPreview.songCount} " + stringResource(R.string.songs),
                                 onClick = {
                                     onAddToPlaylist(
                                         PlaylistPreview(
@@ -330,7 +351,7 @@ fun PlaylistsItemGridMenu(
                                 trailingContent = {
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette().text,
+                                        color = colorPalette().accent,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)
@@ -356,10 +377,10 @@ fun PlaylistsItemGridMenu(
 
                     onAddToPlaylist?.let { onAddToPlaylist ->
                         filteredUnpinnedPlaylists.forEach { playlistPreview ->
-                            MenuEntry(
-                                icon = R.drawable.add_in_playlist,
+                            ListMenu.Entry(
                                 text = cleanPrefix(playlistPreview.playlist.name),
-                                secondaryText = "${playlistPreview.songCount} " + stringResource(
+                                icon = { SettingIcon(R.drawable.add_in_playlist) },
+                                subtitle = "${playlistPreview.songCount} " + stringResource(
                                     R.string.songs
                                 ),
                                 onClick = {
@@ -384,7 +405,7 @@ fun PlaylistsItemGridMenu(
 
                                     IconButton(
                                         icon = R.drawable.open,
-                                        color = colorPalette().text,
+                                        color = colorPalette().accent,
                                         onClick = {
                                             if (onGoToPlaylist != null) {
                                                 onGoToPlaylist(playlistPreview.playlist.id)
@@ -405,15 +426,8 @@ fun PlaylistsItemGridMenu(
             val selectText = "${stringResource(R.string.item_select)}/${stringResource(R.string.item_deselect)}"
             val colorPalette = colorPalette()
 
-            GridMenu(
-                contentPadding = PaddingValues(
-                    start = 8.dp,
-                    top = 8.dp,
-                    end = 8.dp,
-                    bottom = 8.dp + WindowInsets.systemBars.asPaddingValues()
-                        .calculateBottomPadding()
-                ),
-                topContent = {
+            GridMenu.Menu(title = null) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
                     if (playlist != null) {
                         PlaylistItem(
                             playlist = playlist,
@@ -426,253 +440,251 @@ fun PlaylistsItemGridMenu(
                         )
                     }
                 }
-            ) {
 
                 onSelectUnselect?.let { onSelectUnselect ->
-                    GridMenuItem(
-                        icon = R.drawable.checked_filled,
-                        title = R.string.item_select,
-                        titleString = selectText,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onSelectUnselect()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = selectText,
+                            icon = { SettingIcon(R.drawable.checked_filled) },
+                            onClick = {
+                                onDismiss()
+                                onSelectUnselect()
+                            }
+                        )
+                    }
                 }
 
                 onPlayNext?.let { onPlayNext ->
-                    GridMenuItem(
-                        icon = R.drawable.play_skip_forward,
-                        title = R.string.play_next,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onPlayNext()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.play_next),
+                            icon = { SettingIcon(R.drawable.play_skip_forward) },
+                            onClick = {
+                                onDismiss()
+                                onPlayNext()
+                            }
+                        )
+                    }
                 }
 
                 onDeleteSongsNotInLibrary?.let { onDeleteSongsNotInLibrary ->
-                    GridMenuItem(
-                        icon = R.drawable.trash,
-                        title = R.string.delete_songs_not_in_library,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onDeleteSongsNotInLibrary()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.delete_songs_not_in_library),
+                            icon = { SettingIcon(R.drawable.trash) },
+                            onClick = {
+                                onDismiss()
+                                onDeleteSongsNotInLibrary()
+                            }
+                        )
+                    }
                 }
 
                 onEnqueue?.let { onEnqueue ->
-                    GridMenuItem(
-                        icon = R.drawable.enqueue,
-                        title = R.string.enqueue,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onEnqueue()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.enqueue),
+                            icon = { SettingIcon(R.drawable.enqueue) },
+                            onClick = {
+                                onDismiss()
+                                onEnqueue()
+                            }
+                        )
+                    }
                 }
 
                 if (showOnSyncronize) onSyncronize?.let { onSyncronize ->
-                    GridMenuItem(
-                        icon = R.drawable.sync,
-                        title = R.string.sync,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onSyncronize()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.sync),
+                            icon = { SettingIcon(R.drawable.sync) },
+                            onClick = {
+                                onDismiss()
+                                onSyncronize()
+                            }
+                        )
+                    }
                 }
 
                 if (showLinkUnlink) onLinkUnlink?.let { onLinkUnlink ->
-                    GridMenuItem(
-                        icon = R.drawable.link,
-                        title = if (playlist?.playlist?.isYoutubePlaylist == true) R.string.unlink_from_ytm else R.string.unlink_from_yt,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onLinkUnlink()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = if (playlist?.playlist?.isYoutubePlaylist == true) stringResource(R.string.unlink_from_ytm) else stringResource(R.string.unlink_from_yt),
+                            icon = { SettingIcon(R.drawable.link) },
+                            onClick = {
+                                onDismiss()
+                                onLinkUnlink()
+                            }
+                        )
+                    }
                 }
 
                 onImportOnlinePlaylist?.let { onImportOnlinePlaylist ->
-                    GridMenuItem(
-                        icon = R.drawable.add_in_playlist,
-                        title = R.string.import_playlist,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onImportOnlinePlaylist()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.import_playlist),
+                            icon = { SettingIcon(R.drawable.add_in_playlist) },
+                            onClick = {
+                                onDismiss()
+                                onImportOnlinePlaylist()
+                            }
+                        )
+                    }
                 }
 
                 if (onAddToPreferites != null)
-                    GridMenuItem(
-                        icon = R.drawable.heart,
-                        title = R.string.add_to_favorites,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onAddToPreferites()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.add_to_favorites),
+                            icon = { SettingIcon(R.drawable.heart) },
+                            onClick = {
+                                onDismiss()
+                                onAddToPreferites()
+                            }
+                        )
+                    }
 
                 if (showonAddToPreferitesYoutube) {
                     if (onAddToPreferitesYoutube != null)
-                        GridMenuItem(
-                            icon = R.drawable.ytmusic,
-                            title = R.string.add_rimusic_to_ytm_favorites,
-                            colorIcon = colorPalette.text,
-                            colorText = colorPalette.text,
-                            onClick = {
-                                onDismiss()
-                                onAddToPreferitesYoutube()
-                            }
-                        )
+                        item {
+                            GridMenu.Entry(
+                                text = stringResource(R.string.add_rimusic_to_ytm_favorites),
+                                icon = { SettingIcon(R.drawable.ytmusic) },
+                                onClick = {
+                                    onDismiss()
+                                    onAddToPreferitesYoutube()
+                                }
+                            )
+                        }
                 }
 
                 onAddToPlaylist?.let { onAddToPlaylist ->
-                    GridMenuItem(
-                        icon = R.drawable.add_in_playlist,
-                        title = R.string.add_to_playlist,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            isViewingPlaylists = true
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.add_to_playlist),
+                            icon = { SettingIcon(R.drawable.add_in_playlist) },
+                            onClick = {
+                                isViewingPlaylists = true
+                            }
+                        )
+                    }
                 }
 
                 onRename?.let { onRename ->
-                    GridMenuItem(
-                        icon = R.drawable.title_edit,
-                        title = R.string.rename,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onRename()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.rename),
+                            icon = { SettingIcon(R.drawable.title_edit) },
+                            onClick = {
+                                onDismiss()
+                                onRename()
+                            }
+                        )
+                    }
                 }
 
                 onDelete?.let { onDelete ->
-                    GridMenuItem(
-                        icon = R.drawable.trash,
-                        title = R.string.delete,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onDelete()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.delete),
+                            icon = { SettingIcon(R.drawable.trash) },
+                            onClick = {
+                                onDismiss()
+                                onDelete()
+                            }
+                        )
+                    }
                 }
 
                 onRenumberPositions?.let { onRenumberPositions ->
-                    GridMenuItem(
-                        icon = R.drawable.position,
-                        title = R.string.renumber_songs_positions,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onRenumberPositions()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.renumber_songs_positions),
+                            icon = { SettingIcon(R.drawable.position) },
+                            onClick = {
+                                onDismiss()
+                                onRenumberPositions()
+                            }
+                        )
+                    }
                 }
 
                 if (showonListenToYT) onListenToYT?.let { onListenToYT ->
-                    GridMenuItem(
-                        icon = R.drawable.play,
-                        title = R.string.listen_on_youtube,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onListenToYT()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.listen_on_youtube),
+                            icon = { SettingIcon(R.drawable.play) },
+                            onClick = {
+                                onDismiss()
+                                onListenToYT()
+                            }
+                        )
+                    }
                 }
 
                 onExport?.let { onExport ->
-                    GridMenuItem(
-                        icon = R.drawable.export_outline,
-                        title = R.string.export_playlist,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onExport()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.export_playlist),
+                            icon = { SettingIcon(R.drawable.export_outline) },
+                            onClick = {
+                                onDismiss()
+                                onExport()
+                            }
+                        )
+                    }
                 }
 
                 onImport?.let { onImport ->
-                    GridMenuItem(
-                        icon = R.drawable.import_outline,
-                        title = R.string.import_playlist,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onImport()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.import_playlist),
+                            icon = { SettingIcon(R.drawable.import_outline) },
+                            onClick = {
+                                onDismiss()
+                                onImport()
+                            }
+                        )
+                    }
                 }
 
                 onImportFavorites?.let { onImport ->
-                    GridMenuItem(
-                        icon = R.drawable.import_outline,
-                        title = R.string.import_favorites,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onImportFavorites()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.import_favorites),
+                            icon = { SettingIcon(R.drawable.import_outline) },
+                            onClick = {
+                                onDismiss()
+                                onImportFavorites()
+                            }
+                        )
+                    }
                 }
 
                 onEditThumbnail?.let { onEditThumbnail ->
-                    GridMenuItem(
-                        icon = R.drawable.image,
-                        title = R.string.edit_thumbnail,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onEditThumbnail()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.edit_thumbnail),
+                            icon = { SettingIcon(R.drawable.image) },
+                            onClick = {
+                                onDismiss()
+                                onEditThumbnail()
+                            }
+                        )
+                    }
                 }
 
                 onResetThumbnail?.let { onResetThumbnail ->
-                    GridMenuItem(
-                        icon = R.drawable.image,
-                        title = R.string.reset_thumbnail,
-                        colorIcon = colorPalette.text,
-                        colorText = colorPalette.text,
-                        onClick = {
-                            onDismiss()
-                            onResetThumbnail()
-                        }
-                    )
+                    item {
+                        GridMenu.Entry(
+                            text = stringResource(R.string.reset_thumbnail),
+                            icon = { SettingIcon(R.drawable.image) },
+                            onClick = {
+                                onDismiss()
+                                onResetThumbnail()
+                            }
+                        )
+                    }
                 }
             }
 

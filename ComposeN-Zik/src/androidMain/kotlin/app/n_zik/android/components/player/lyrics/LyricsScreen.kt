@@ -34,8 +34,6 @@ import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.n_zik.android.enums.lyrics.LyricsType
 import app.it.fast4x.rimusic.utils.lyricsTypeKey
 import app.it.fast4x.rimusic.ui.components.themed.LyricsSizeDialog
-import app.it.fast4x.rimusic.ui.components.themed.Menu
-import app.it.fast4x.rimusic.ui.components.themed.MenuEntry
 import app.it.fast4x.rimusic.ui.components.themed.TextPlaceholder
 import app.it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import app.it.fast4x.rimusic.ui.styling.Dimensions
