@@ -1,5 +1,8 @@
 
 ## 2026-07-03
+- chore(lyrics): remove unused imports
+- fix(lyrics): fix lrclib string resource reference
+- fix(lyrics): fix compilation errors in LyricsSettingsMenu
 - refactor(lyrics): rewamp LyricsSettingsMenu with SongItem style
   - New SongItem-like design with icon, title, subtitle, action
   - Add missing settings: showlyricsthumbnail, showButtonPlayerLyrics, lyricsCustomColor
