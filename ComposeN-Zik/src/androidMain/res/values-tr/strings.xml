@@ -1122,6 +1122,8 @@
   <string name="pause_between_songs_description">Şarkılar arasında duraklama</string>
   <string name="notifications">Bildirimler</string>
   <string name="playback">Geri oynat</string>
+  <string name="management">Management</string>
+  <string name="navigation">Navigation</string>
   <string name="player_controls">Oynatıcı Kontrolleri</string>
   <string name="player_controls_colors">Oynatıcı kontrolü renkleri</string>
   <string name="theme_color">Tema rengi</string>
@@ -1280,6 +1282,11 @@
   <string name="txt_developers_rotation">developers_rotation</string>
   <string name="txt_translators_rotation">translators_rotation</string>
   <string name="txt_lyrics">Lyrics</string>
+  <string name="section_lyrics_display">Display</string>
+  <string name="section_lyrics_text_style">Text Style</string>
+  <string name="section_lyrics_behavior">Behavior</string>
+  <string name="section_lyrics_translation">Çeviri</string>
+  <string name="section_lyrics_actions">Actions</string>
   <string name="toast_preference_saved">Preference Saved</string>
   <string name="txt_width">width</string>
   <string name="cd_blurred_background">blurred_background</string>
