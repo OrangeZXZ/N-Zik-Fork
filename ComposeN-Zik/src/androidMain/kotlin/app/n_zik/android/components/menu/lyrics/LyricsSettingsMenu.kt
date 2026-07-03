@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -57,6 +59,7 @@ import app.it.fast4x.rimusic.utils.otherLanguageAppKey
 import app.it.fast4x.rimusic.utils.playerEnableLyricsPopupMessageKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.romanizationEnabledKey
+import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showBackgroundLyricsKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerLyricsKey
 import app.it.fast4x.rimusic.utils.showLyricsStateKey
@@ -167,29 +170,34 @@ class LyricsSettingsMenu private constructor(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .fillMaxHeight(0.5f)
                 .background(colorPalette().background0)
         ) {
-            // Header with handle bar and title
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.background(colorPalette().background1)
+            // Handle bar
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp, bottom = 8.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
-                        .padding(top = 18.dp, bottom = 6.dp)
                         .size(width = 40.dp, height = 4.dp)
                         .clip(RoundedCornerShape(2.dp))
-                        .background(Color.White)
+                        .background(colorPalette().textSecondary.copy(alpha = 0.5f))
                 )
-
-                androidx.compose.foundation.text.BasicText(
-                    text = stringResource(R.string.txt_lyrics),
-                    style = typography().m.copy(color = colorPalette().text),
-                    modifier = Modifier.padding(top = 5.dp, bottom = 10.dp)
-                )
-
-                HorizontalDivider(Modifier.height(1.dp))
             }
+
+            // Title
+            androidx.compose.foundation.text.BasicText(
+                text = stringResource(R.string.txt_lyrics),
+                style = typography().m.copy(color = colorPalette().text),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+
+            HorizontalDivider(Modifier.height(1.dp))
 
             // Settings list
             LazyColumn(
