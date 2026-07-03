@@ -36,3 +36,4 @@
 - refactor(search): remove SearchItemMenu, replace with SongItemMenu
 - fix more of in album menu not showing up
 - fix home quick picks loader for dice and play all
+- fix(shuffle): change default max songs in queue from 500 to Unlimited to allow shuffling all songs

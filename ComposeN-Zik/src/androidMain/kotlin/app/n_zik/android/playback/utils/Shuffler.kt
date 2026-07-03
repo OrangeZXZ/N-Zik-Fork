@@ -32,7 +32,7 @@ object Shuffler {
             return
         }
         val max = appContext().preferences
-            .getEnum(maxSongsInQueueKey, MaxSongs.`500`)
+            .getEnum(maxSongsInQueueKey, MaxSongs.Unlimited)
             .toInt()
         val toPlay = mediaItems.shuffled().take(max)
         CoroutineScope(Dispatchers.Main).launch {

@@ -176,7 +176,7 @@ fun GeneralSettings(
     var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.BottomFloating)
     var navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconOnly)
     var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
-    var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
+    var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.Unlimited)
     var crossfadeEnabled by rememberPreference(app.it.fast4x.rimusic.utils.crossfadeEnabledKey, false)
     var crossfadeDuration by rememberPreference(app.it.fast4x.rimusic.utils.crossfadeDurationKey, 3000)
     var crossfadeGapless by rememberPreference(app.it.fast4x.rimusic.utils.crossfadeGaplessKey, false)

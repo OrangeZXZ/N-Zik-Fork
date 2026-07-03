@@ -293,8 +293,8 @@ fun DefaultUiSettings() {
     navigationBarType = NavigationBarType.IconOnly
     var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
     pauseBetweenSongs = PauseBetweenSongs.`0`
-    var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.`500`)
-    maxSongsInQueue = MaxSongs.`500`
+    var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.Unlimited)
+    maxSongsInQueue = MaxSongs.Unlimited
     var showFavoritesPlaylist by rememberPreference(showFavoritesPlaylistKey, true)
     showFavoritesPlaylist = true
 
