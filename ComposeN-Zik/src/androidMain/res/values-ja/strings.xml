@@ -1122,6 +1122,8 @@
   <string name="pause_between_songs_description">曲の間に一時停止を追加</string>
   <string name="notifications">通知</string>
   <string name="playback">再生</string>
+  <string name="management">Management</string>
+  <string name="navigation">Navigation</string>
   <string name="player_controls">プレイヤーコントロール</string>
   <string name="player_controls_colors">プレイヤーが色を制御します</string>
   <string name="theme_color">テーマの色</string>
@@ -1280,6 +1282,11 @@
   <string name="txt_developers_rotation">developers_rotation</string>
   <string name="txt_translators_rotation">translators_rotation</string>
   <string name="txt_lyrics">歌詞</string>
+  <string name="section_lyrics_display">Display</string>
+  <string name="section_lyrics_text_style">Text Style</string>
+  <string name="section_lyrics_behavior">Behavior</string>
+  <string name="section_lyrics_translation">翻訳</string>
+  <string name="section_lyrics_actions">Actions</string>
   <string name="toast_preference_saved">設定を保存しました</string>
   <string name="txt_width">width</string>
   <string name="cd_blurred_background">blurred_background</string>
@@ -1402,4 +1409,11 @@
   <string name="failed_playlists">Failed to find %1$d playlists, retrying</string>
   <string name="found_all_playlists">Found all playlists</string>
   <string name="already_syncing">Sync already in progress</string>
+  <string name="x_days_ago">%d days ago</string>
+  <string name="this_month">今月の</string>
+  <string name="last_year">Last year</string>
+  <string name="sort_by">Sort by</string>
+  <string name="date">Date</string>
+  <string name="alphabetical">Alphabetical</string>
+  <string name="artist">アーティスト</string>
 </resources>

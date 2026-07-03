@@ -1122,6 +1122,8 @@
   <string name="pause_between_songs_description">Přidat pauzu mezi skladbami</string>
   <string name="notifications">Oznámení</string>
   <string name="playback">Přehrát</string>
+  <string name="management">Management</string>
+  <string name="navigation">Navigation</string>
   <string name="player_controls">Ovládání přehrávače</string>
   <string name="player_controls_colors">Barvy ovládání přehrávače</string>
   <string name="theme_color">Barva motivu</string>
@@ -1280,6 +1282,11 @@
   <string name="txt_developers_rotation">Otočení vývojářů</string>
   <string name="txt_translators_rotation">rotace překladatelů</string>
   <string name="txt_lyrics">Texty</string>
+  <string name="section_lyrics_display">Display</string>
+  <string name="section_lyrics_text_style">Text Style</string>
+  <string name="section_lyrics_behavior">Behavior</string>
+  <string name="section_lyrics_translation">Překlad</string>
+  <string name="section_lyrics_actions">Actions</string>
   <string name="toast_preference_saved">Nastavení uloženo</string>
   <string name="txt_width">width</string>
   <string name="cd_blurred_background">rozmazané_pozadí</string>
@@ -1402,4 +1409,11 @@
   <string name="failed_playlists">Failed to find %1$d playlists, retrying</string>
   <string name="found_all_playlists">Found all playlists</string>
   <string name="already_syncing">Sync already in progress</string>
+  <string name="x_days_ago">%d days ago</string>
+  <string name="this_month">Minulý měsíc</string>
+  <string name="last_year">Last year</string>
+  <string name="sort_by">Sort by</string>
+  <string name="date">Date</string>
+  <string name="alphabetical">Alphabetical</string>
+  <string name="artist">Interpret</string>
 </resources>
