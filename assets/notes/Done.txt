@@ -1,0 +1,8 @@
+
+## 2026-07-03
+- fix(home): improve refresh matching and thumbnail fallback
+  - ImageCacheFactory: show loader for 3s then fallback to ic_launcher_box when URL is null
+  - HomeArtist: verify artist name/ID match before accepting YouTube search results
+  - HomeAlbum: verify album title/ID match before accepting YouTube search results
+  - HomeLibrary: add detailed logging for playlist refresh
+  - Add detailed Timber logs for all refresh operations
