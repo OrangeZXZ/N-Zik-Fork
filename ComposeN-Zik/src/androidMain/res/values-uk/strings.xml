@@ -1416,4 +1416,17 @@
   <string name="date">Date</string>
   <string name="alphabetical">Alphabetical</string>
   <string name="artist">Виконавець</string>
+  <string name="sync_failed">Sync failed</string>
+  <string name="retry_sync_failed_items">Do you want to retry syncing the %1$d failed items?</string>
+  <string name="sync_notifications">Sync Notifications</string>
+  <string name="sync_failed_notification_artists">Failed to sync %1$d artists. Go back to the Artists tab to retry.</string>
+  <string name="sync_failed_notification_albums">Failed to sync %1$d albums. Go back to the Albums tab to retry.</string>
+  <string name="sync_failed_notification_playlists">Failed to sync %1$d playlists. Go back to the Playlists tab to retry.</string>
+  <string name="sync_success_notification_artists">Successfully synchronized all artists.</string>
+  <string name="sync_success_notification_albums">Successfully synchronized all albums.</string>
+  <string name="sync_success_notification_playlists">Successfully synchronized all playlists.</string>
+  <string name="sync_progress_artists">Syncing artists... (%1$d/%2$d)</string>
+  <string name="sync_progress_albums">Syncing albums... (%1$d/%2$d)</string>
+  <string name="sync_progress_playlists">Syncing playlists... (%1$d/%2$d)</string>
+  <string name="sync_successful">Sync successful</string>
 </resources>
