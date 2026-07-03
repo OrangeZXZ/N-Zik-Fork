@@ -295,7 +295,7 @@ fun HomeLibrary(
 
     var refreshing by remember { mutableStateOf(false) }
 
-    fun refresh() {
+    fun refresh(itemsToRefresh: List<app.it.fast4x.rimusic.models.PlaylistPreview>? = null) {
         if (refreshing || HomeSyncState.isSyncingPlaylists) {
             app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.already_syncing))
             return
@@ -306,7 +306,8 @@ fun HomeLibrary(
             HomeSyncState.playlistSyncProgress = 0f
             justSynced = false
             
-            val ytPlaylists = itemsOnDisplay.filter { 
+            val targetItems = itemsToRefresh ?: itemsOnDisplay
+            val ytPlaylists = targetItems.filter { 
                 it.playlist.isYoutubePlaylist || 
                 it.playlist.browseId?.startsWith("VL") == true || 
                 it.playlist.browseId?.startsWith("PL") == true || 
@@ -314,7 +315,7 @@ fun HomeLibrary(
                 it.playlist.browseId?.startsWith("OLAK") == true 
             }
             
-            Timber.tag("HomeLibrary").d("=== REFRESH START === Total playlists: ${itemsOnDisplay.size}, YT: ${ytPlaylists.size}")
+            Timber.tag("HomeLibrary").d("=== REFRESH START === Total playlists: ${targetItems.size}, YT: ${ytPlaylists.size}")
             ytPlaylists.forEach { Timber.tag("HomeLibrary").d("  [YT] browseId=${it.playlist.browseId} name=${it.playlist.name} isYoutube=${it.playlist.isYoutubePlaylist}") }
             
             withContext(Dispatchers.Main) {
@@ -322,6 +323,7 @@ fun HomeLibrary(
             }
             
             var failedCount = 0
+            val failedList = mutableListOf<app.it.fast4x.rimusic.models.PlaylistPreview>()
             HomeSyncState.playlistSyncFailed = 0
             HomeSyncState.playlistSyncTotal = ytPlaylists.size
             
@@ -365,14 +367,19 @@ fun HomeLibrary(
                     if (status != 1) {
                         failedCount++
                         HomeSyncState.playlistSyncFailed = failedCount
+                        failedList.add(preview)
                     }
                 }
             }
             
             withContext(Dispatchers.Main) {
                 if (failedCount > 0) {
-                    app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.failed_playlists, failedCount))
-                } else if (ytPlaylists.isNotEmpty()) {
+                    HomeSyncState.failedPlaylistsList = failedList
+                    val errorMessage = appContext().getString(R.string.failed_playlists, failedCount)
+                    val notificationMessage = appContext().getString(R.string.sync_failed_notification_playlists, failedCount)
+                    app.kreate.android.me.knighthat.utils.Toaster.e(errorMessage)
+                    HomeSyncState.showSyncFailedNotification(appContext().getString(R.string.sync_failed), notificationMessage, 1003)
+                } else if (ytPlaylists.isNotEmpty() && itemsToRefresh == null) {
                     app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_playlists))
                 }
             }
@@ -384,9 +391,22 @@ fun HomeLibrary(
         }
     }
 
+    val retryDialog = app.n_zik.android.components.dialog.RetrySyncDialog(
+        failedCount = HomeSyncState.failedPlaylistsList.size,
+        onRetry = { 
+            val items = HomeSyncState.failedPlaylistsList
+            HomeSyncState.failedPlaylistsList = emptyList()
+            refresh(items) 
+        }
+    )
+    retryDialog.Render()
+    LaunchedEffect(HomeSyncState.failedPlaylistsList) {
+        if (HomeSyncState.failedPlaylistsList.isNotEmpty()) retryDialog.showDialog()
+    }
+
     PullToRefreshBox(
         isRefreshing = refreshing,
-        onRefresh = ::refresh
+        onRefresh = { refresh() }
     ) {
         Box(
             modifier = Modifier

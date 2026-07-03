@@ -138,7 +138,17 @@ class MainApplication : Application(), SingletonImageLoader.Factory {
                 setShowBadge(false)
             }
 
-            notificationManager.createNotificationChannels(listOf(playerChannel, sleepTimerChannel, downloadChannel))
+            // Channel for sync
+            val syncChannel = NotificationChannel(
+                "sync_channel_id",
+                applicationContext.getString(R.string.sync),
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                description = applicationContext.getString(R.string.sync_notifications)
+                setShowBadge(false)
+            }
+
+            notificationManager.createNotificationChannels(listOf(playerChannel, sleepTimerChannel, downloadChannel, syncChannel))
         }
     }
 

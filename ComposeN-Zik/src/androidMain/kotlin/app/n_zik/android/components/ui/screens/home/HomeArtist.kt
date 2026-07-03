@@ -213,7 +213,7 @@ fun HomeArtists(
 
     var refreshing by remember { mutableStateOf(false) }
 
-    fun refresh() {
+    fun refresh(itemsToRefresh: List<Artist>? = null) {
         if (refreshing || HomeSyncState.isSyncingArtists) {
             app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.already_syncing))
             return
@@ -224,8 +224,9 @@ fun HomeArtists(
             HomeSyncState.artistSyncProgress = 0f
             justSynced = false
             
-            val ytArtists = itemsOnDisplay.filter { it.isYoutubeArtist || it.id.startsWith("UC") }
-            val localArtists = itemsOnDisplay.filterNot { it.isYoutubeArtist || it.id.startsWith("UC") }
+            val targetItems = itemsToRefresh ?: itemsOnDisplay
+            val ytArtists = targetItems.filter { it.isYoutubeArtist || it.id.startsWith("UC") }
+            val localArtists = targetItems.filterNot { it.isYoutubeArtist || it.id.startsWith("UC") }
             val totalArtists = ytArtists.size + localArtists.size
             
             Timber.tag("HomeArtist").d("=== REFRESH START === Total: $totalArtists (YT: ${ytArtists.size}, Local: ${localArtists.size})")
@@ -237,6 +238,7 @@ fun HomeArtists(
             }
             
             var failedCount = 0
+            val failedList = mutableListOf<Artist>()
             HomeSyncState.artistSyncFailed = 0
             HomeSyncState.artistSyncTotal = totalArtists
             
@@ -272,6 +274,7 @@ fun HomeArtists(
                 if (status != 1) {
                     failedCount++
                     HomeSyncState.artistSyncFailed = failedCount
+                    failedList.add(artist)
                 }
             }
             
@@ -330,14 +333,19 @@ fun HomeArtists(
                     if (status != 1) {
                         failedCount++
                         HomeSyncState.artistSyncFailed = failedCount
+                        failedList.add(artist)
                     }
                 }
             }
             
             withContext(Dispatchers.Main) {
                 if (failedCount > 0) {
-                    app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.failed_artists, failedCount))
-                } else if (totalArtists > 0) {
+                    HomeSyncState.failedArtistsList = failedList
+                    val errorMessage = appContext().getString(R.string.failed_artists, failedCount)
+                    val notificationMessage = appContext().getString(R.string.sync_failed_notification_artists, failedCount)
+                    app.kreate.android.me.knighthat.utils.Toaster.e(errorMessage)
+                    HomeSyncState.showSyncFailedNotification(appContext().getString(R.string.sync_failed), notificationMessage, 1001)
+                } else if (totalArtists > 0 && itemsToRefresh == null) {
                     app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_artists))
                 }
             }
@@ -355,9 +363,22 @@ fun HomeArtists(
                 justSynced = true
     }
 
+    val retryDialog = app.n_zik.android.components.dialog.RetrySyncDialog(
+        failedCount = HomeSyncState.failedArtistsList.size,
+        onRetry = { 
+            val items = HomeSyncState.failedArtistsList
+            HomeSyncState.failedArtistsList = emptyList()
+            refresh(items) 
+        }
+    )
+    retryDialog.Render()
+    LaunchedEffect(HomeSyncState.failedArtistsList) {
+        if (HomeSyncState.failedArtistsList.isNotEmpty()) retryDialog.showDialog()
+    }
+
     PullToRefreshBox(
         isRefreshing = refreshing,
-        onRefresh = ::refresh
+        onRefresh = { refresh() }
     ) {
         Box (
             modifier = Modifier

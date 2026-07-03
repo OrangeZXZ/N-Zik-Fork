@@ -1416,4 +1416,10 @@
 <string name="date">Date</string>
 <string name="alphabetical">Alphabetical</string>
 <string name="artist">Artist</string>
+<string name="sync_failed">Sync failed</string>
+<string name="retry_sync_failed_items">Do you want to retry syncing the %1$d failed items?</string>
+<string name="sync_notifications">Sync Notifications</string>
+<string name="sync_failed_notification_artists">Failed to sync %1$d artists. Go back to the Artists tab to retry.</string>
+<string name="sync_failed_notification_albums">Failed to sync %1$d albums. Go back to the Albums tab to retry.</string>
+<string name="sync_failed_notification_playlists">Failed to sync %1$d playlists. Go back to the Playlists tab to retry.</string>
 </resources>
