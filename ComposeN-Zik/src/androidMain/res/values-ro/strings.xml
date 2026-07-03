@@ -1122,6 +1122,8 @@
   <string name="pause_between_songs_description">Adaugă o pauză între melodii</string>
   <string name="notifications">Notificări</string>
   <string name="playback">Redare</string>
+  <string name="management">Management</string>
+  <string name="navigation">Navigation</string>
   <string name="player_controls">Controale jucător</string>
   <string name="player_controls_colors">Culori pentru controlul jucătorului</string>
   <string name="theme_color">Culoarea temei</string>
@@ -1280,6 +1282,11 @@
   <string name="txt_developers_rotation">dezvoltators_rotație</string>
   <string name="txt_translators_rotation">translators_rotație</string>
   <string name="txt_lyrics">Versuri</string>
+  <string name="section_lyrics_display">Display</string>
+  <string name="section_lyrics_text_style">Text Style</string>
+  <string name="section_lyrics_behavior">Behavior</string>
+  <string name="section_lyrics_translation">Traducere</string>
+  <string name="section_lyrics_actions">Actions</string>
   <string name="toast_preference_saved">Preferințe salvate</string>
   <string name="txt_width">width</string>
   <string name="cd_blurred_background">fundal</string>
