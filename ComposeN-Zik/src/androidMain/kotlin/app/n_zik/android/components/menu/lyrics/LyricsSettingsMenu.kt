@@ -1,22 +1,20 @@
 package app.n_zik.android.components.menu.lyrics
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -27,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,6 +40,7 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import app.it.fast4x.rimusic.ui.styling.Typography
 import app.it.fast4x.rimusic.utils.clickOnLyricsTextKey
 import app.it.fast4x.rimusic.utils.karaokeRespectAgentPositionKey
 import app.it.fast4x.rimusic.utils.landscapeControlsKey
@@ -75,8 +75,8 @@ import app.n_zik.android.enums.lyrics.LyricsFontSize
 import app.n_zik.android.enums.lyrics.LyricsHighlight
 import app.n_zik.android.enums.lyrics.LyricsOutline
 import app.n_zik.android.enums.lyrics.LyricsType
-import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.typography
+import app.n_zik.android.uiRoundnessShape
 
 @UnstableApi
 class LyricsSettingsMenu private constructor(
@@ -128,18 +128,23 @@ class LyricsSettingsMenu private constructor(
     override var menuStyle: MenuStyle by styleState
 
     @Composable
-    override fun ListMenu() = ListMenu.Menu {
-        buttons.forEach {
-            if (it is MenuIcon)
-                it.ListMenuItem()
+    override fun ListMenu() {
+        app.n_zik.android.components.menu.ListMenu.Menu {
+            buttons.forEach {
+                if (it is MenuIcon)
+                    it.ListMenuItem()
+            }
         }
     }
 
     @Composable
-    override fun GridMenu() = GridMenu.Menu {
-        items(buttons, Button::hashCode) {
-            if (it is MenuIcon)
-                it.GridMenuItem()
+    override fun GridMenu() {
+        app.n_zik.android.components.menu.GridMenu.Menu {
+            items(buttons.size, key = { buttons[it].hashCode() }) { index ->
+                val item = buttons[index]
+                if (item is MenuIcon)
+                    item.GridMenuItem()
+            }
         }
     }
 
@@ -151,12 +156,14 @@ class LyricsSettingsMenu private constructor(
                 .background(colorPalette().background0)
         ) {
             if (menuStyle == MenuStyle.List) {
-                ListMenu.Menu {
+                app.n_zik.android.components.menu.ListMenu.Menu {
                     items.forEach { it.ListMenuItem() }
                 }
             } else {
-                GridMenu.Menu {
-                    items(items, key = { it.hashCode() }) { it.GridMenuItem() }
+                app.n_zik.android.components.menu.GridMenu.Menu {
+                    items(items.size, key = { items[it].hashCode() }) { index ->
+                        items[index].GridMenuItem()
+                    }
                 }
             }
         }
@@ -194,17 +201,15 @@ class LyricsSettingsMenu private constructor(
                 .padding(horizontal = 16.dp)
         ) {
             // Section: Display Mode
-            item {
-                SettingsSectionTitle(stringResource(R.string.txt_lyrics))
-            }
+            item { SectionTitle(stringResource(R.string.txt_lyrics)) }
 
-            // Lyrics Type (Karaoke/Synced/Unsynced)
+            // Lyrics Type
             item {
                 EnumSettingItem(
                     title = stringResource(R.string.show),
                     icon = R.drawable.time,
                     selectedValue = lyricsType,
-                    values = enumValues<LyricsType>(),
+                    values = LyricsType.entries.toList(),
                     valueText = { value ->
                         when (value) {
                             LyricsType.Karaoke -> stringResource(R.string.karaoke_lyrics)
@@ -236,7 +241,7 @@ class LyricsSettingsMenu private constructor(
                 )
             }
 
-            // Landscape Controls (only when landscape and no thumbnail)
+            // Landscape Controls
             if (isLandscape && !showlyricsthumbnail) {
                 item {
                     ToggleSettingItem(
@@ -249,9 +254,7 @@ class LyricsSettingsMenu private constructor(
             }
 
             // Section: Text Style
-            item {
-                SettingsSectionTitle(stringResource(R.string.lyrics_size))
-            }
+            item { SectionTitle(stringResource(R.string.lyrics_size)) }
 
             // Font Size
             item {
@@ -259,7 +262,7 @@ class LyricsSettingsMenu private constructor(
                     title = stringResource(R.string.lyrics_size),
                     icon = R.drawable.text,
                     selectedValue = fontSize,
-                    values = enumValues<LyricsFontSize>(),
+                    values = LyricsFontSize.entries.toList(),
                     valueText = { value ->
                         when (value) {
                             LyricsFontSize.Light -> stringResource(R.string.light)
@@ -280,7 +283,7 @@ class LyricsSettingsMenu private constructor(
                                     .clickable { onShowLyricsSizeDialog() },
                                 contentAlignment = Alignment.Center
                             ) {
-                                androidx.compose.foundation.Icon(
+                                Icon(
                                     painter = painterResource(R.drawable.text),
                                     tint = colorPalette().accent,
                                     contentDescription = null,
@@ -298,7 +301,7 @@ class LyricsSettingsMenu private constructor(
                     title = stringResource(R.string.lyricscolor),
                     icon = R.drawable.droplet,
                     selectedValue = lyricsColor,
-                    values = enumValues<LyricsColor>(),
+                    values = LyricsColor.entries.toList(),
                     valueText = { value ->
                         when (value) {
                             LyricsColor.White -> stringResource(R.string.white)
@@ -311,26 +314,31 @@ class LyricsSettingsMenu private constructor(
                 )
             }
 
-            // Custom Color (only when Custom color selected)
+            // Custom Color
             if (lyricsColor == LyricsColor.Custom) {
                 item {
-                    ColorSettingItem(
-                        title = stringResource(R.string.color_custom),
+                    SettingItemRow(
                         icon = R.drawable.droplet,
-                        color = Color(lyricsCustomColor),
-                        onColorSelected = { lyricsCustomColor = it.toArgb() }
+                        title = stringResource(R.string.color_custom),
+                        trailingContent = {
+                            Box(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .background(Color(lyricsCustomColor), shape = uiRoundnessShape())
+                            )
+                        }
                     )
                 }
             }
 
-            // Alignment (not when Karaoke with respect agent)
+            // Alignment
             if (!(lyricsType == LyricsType.Karaoke && karaokeRespectAgentPosition)) {
                 item {
                     EnumSettingItem(
                         title = stringResource(R.string.lyricsalignment),
                         icon = R.drawable.text,
                         selectedValue = lyricsAlignment,
-                        values = enumValues<LyricsAlignment>(),
+                        values = LyricsAlignment.entries.toList(),
                         valueText = { value ->
                             when (value) {
                                 LyricsAlignment.Left -> stringResource(R.string.direction_left)
@@ -343,14 +351,14 @@ class LyricsSettingsMenu private constructor(
                 }
             }
 
-            // Outline (only when !showlyricsthumbnail and Synced)
+            // Outline
             if (!showlyricsthumbnail && lyricsType == LyricsType.Synced) {
                 item {
                     EnumSettingItem(
                         title = stringResource(R.string.lyricsoutline),
                         icon = R.drawable.horizontal_bold_line,
                         selectedValue = lyricsOutline,
-                        values = enumValues<LyricsOutline>().filter {
+                        values = LyricsOutline.entries.filter {
                             it != LyricsOutline.Glow || lyricsType != LyricsType.Unsynced
                         },
                         valueText = { value ->
@@ -368,14 +376,14 @@ class LyricsSettingsMenu private constructor(
                 }
             }
 
-            // Highlight (only when !showlyricsthumbnail)
+            // Highlight
             if (!showlyricsthumbnail) {
                 item {
                     EnumSettingItem(
                         title = stringResource(R.string.highlight),
                         icon = R.drawable.horizontal_bold_line_rounded,
                         selectedValue = lyricsHighlight,
-                        values = enumValues<LyricsHighlight>(),
+                        values = LyricsHighlight.entries.toList(),
                         valueText = { value ->
                             when (value) {
                                 LyricsHighlight.None -> stringResource(R.string.none)
@@ -388,14 +396,14 @@ class LyricsSettingsMenu private constructor(
                 }
             }
 
-            // Background (only when !showlyricsthumbnail)
+            // Background
             if (!showlyricsthumbnail) {
                 item {
                     EnumSettingItem(
                         title = stringResource(R.string.lyricsbackground),
                         icon = R.drawable.droplet,
                         selectedValue = lyricsBackground,
-                        values = enumValues<LyricsBackground>(),
+                        values = LyricsBackground.entries.toList(),
                         valueText = { value ->
                             when (value) {
                                 LyricsBackground.None -> stringResource(R.string.none)
@@ -409,11 +417,9 @@ class LyricsSettingsMenu private constructor(
             }
 
             // Section: Behavior
-            item {
-                SettingsSectionTitle(stringResource(R.string.player_behavior_and_visuals))
-            }
+            item { SectionTitle(stringResource(R.string.player_behavior_and_visuals)) }
 
-            // Toggle Lyrics (thumbnail tap)
+            // Toggle Lyrics
             item {
                 ToggleSettingItem(
                     title = stringResource(R.string.toggle_lyrics),
@@ -445,7 +451,7 @@ class LyricsSettingsMenu private constructor(
                 )
             }
 
-            // Show Background Lyrics (only when showlyricsthumbnail)
+            // Show Background Lyrics
             if (showlyricsthumbnail) {
                 item {
                     ToggleSettingItem(
@@ -467,7 +473,7 @@ class LyricsSettingsMenu private constructor(
                 )
             }
 
-            // Interval Indicator (only when !Unsynced)
+            // Interval Indicator
             if (lyricsType != LyricsType.Unsynced) {
                 item {
                     ToggleSettingItem(
@@ -479,7 +485,7 @@ class LyricsSettingsMenu private constructor(
                 }
             }
 
-            // Size Animate (only when !showlyricsthumbnail and !Unsynced)
+            // Size Animate
             if (!showlyricsthumbnail && lyricsType != LyricsType.Unsynced) {
                 item {
                     ToggleSettingItem(
@@ -502,9 +508,7 @@ class LyricsSettingsMenu private constructor(
             }
 
             // Section: Translation
-            item {
-                SettingsSectionTitle(stringResource(R.string.translate_to))
-            }
+            item { SectionTitle(stringResource(R.string.translate_to)) }
 
             // Translate Toggle
             item {
@@ -553,9 +557,7 @@ class LyricsSettingsMenu private constructor(
             }
 
             // Section: Actions
-            item {
-                SettingsSectionTitle(stringResource(R.string.txt_lyrics))
-            }
+            item { SectionTitle(stringResource(R.string.txt_lyrics)) }
 
             // Edit Lyrics
             item {
@@ -620,7 +622,7 @@ class LyricsSettingsMenu private constructor(
                 )
             }
 
-            // Pick from LrcLib (only when Synced)
+            // Pick from LrcLib
             if (lyricsType == LyricsType.Synced) {
                 item {
                     ActionSettingItem(
@@ -634,18 +636,18 @@ class LyricsSettingsMenu private constructor(
                 }
             }
 
-            // Spacer at bottom
+            // Spacer
             item { Spacer(modifier = Modifier.height(16.dp)) }
         }
     }
 
-    // Helper composables for SongItem-like style
+    // Helper composables
 
     @Composable
-    private fun SettingsSectionTitle(title: String) {
+    private fun SectionTitle(title: String) {
         androidx.compose.foundation.text.BasicText(
             text = title,
-            style = typography().xs.semiBold.copy(color = colorPalette().accent),
+            style = typography().xxs.semiBold.copy(color = colorPalette().accent),
             modifier = Modifier.padding(vertical = 12.dp, horizontal = 4.dp)
         )
     }
@@ -656,7 +658,7 @@ class LyricsSettingsMenu private constructor(
         title: String,
         subtitle: String? = null,
         enabled: Boolean = true,
-        trailingContent: @Composable (RowScope.() -> Unit)? = null,
+        trailingContent: @Composable () -> Unit = {},
         onClick: () -> Unit = {}
     ) {
         val alpha = if (enabled) 1f else 0.5f
@@ -669,7 +671,6 @@ class LyricsSettingsMenu private constructor(
                 .clickable(enabled = enabled, onClick = onClick)
                 .padding(vertical = 10.dp, horizontal = 4.dp)
         ) {
-            // Icon
             Box(
                 modifier = Modifier
                     .size(32.dp)
@@ -679,7 +680,7 @@ class LyricsSettingsMenu private constructor(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                androidx.compose.foundation.Icon(
+                Icon(
                     painter = painterResource(icon),
                     tint = colorPalette().accent.copy(alpha = alpha),
                     contentDescription = null,
@@ -687,10 +688,7 @@ class LyricsSettingsMenu private constructor(
                 )
             }
 
-            // Title + Subtitle
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
+            Column(modifier = Modifier.weight(1f)) {
                 androidx.compose.foundation.text.BasicText(
                     text = title,
                     style = typography().s.semiBold.copy(
@@ -712,7 +710,7 @@ class LyricsSettingsMenu private constructor(
                 }
             }
 
-            trailingContent?.invoke(this)
+            trailingContent()
         }
     }
 
@@ -730,7 +728,7 @@ class LyricsSettingsMenu private constructor(
             subtitle = subtitle,
             onClick = { onCheckedChange(!isChecked) },
             trailingContent = {
-                androidx.compose.foundation.Icon(
+                Icon(
                     painter = painterResource(
                         if (isChecked) R.drawable.checkmark else R.drawable.close
                     ),
@@ -755,7 +753,7 @@ class LyricsSettingsMenu private constructor(
             enabled = enabled,
             onClick = onClick,
             trailingContent = {
-                androidx.compose.foundation.Icon(
+                Icon(
                     painter = painterResource(R.drawable.chevron_forward),
                     tint = colorPalette().textSecondary,
                     contentDescription = null,
@@ -773,7 +771,14 @@ class LyricsSettingsMenu private constructor(
         values: List<T>,
         noinline valueText: @Composable (T) -> String,
         noinline onValueSelected: (T) -> Unit,
-        noinline trailingContent: @Composable (RowScope.() -> Unit)? = null
+        noinline trailingContent: @Composable () -> Unit = {
+            Icon(
+                painter = painterResource(R.drawable.chevron_forward),
+                tint = colorPalette().textSecondary,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp)
+            )
+        }
     ) {
         var isShowingDialog by remember { mutableStateOf(false) }
 
@@ -796,47 +801,7 @@ class LyricsSettingsMenu private constructor(
             title = title,
             subtitle = valueText(selectedValue),
             onClick = { isShowingDialog = true },
-            trailingContent = trailingContent ?: {
-                androidx.compose.foundation.Icon(
-                    painter = painterResource(R.drawable.chevron_forward),
-                    tint = colorPalette().textSecondary,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
-        )
-    }
-
-    @Composable
-    private fun ColorSettingItem(
-        title: String,
-        icon: Int,
-        color: Color,
-        onColorSelected: (Color) -> Unit
-    ) {
-        var isShowingDialog by remember { mutableStateOf(false) }
-
-        if (isShowingDialog) {
-            app.it.fast4x.rimusic.ui.components.themed.ColorPickerDialog(
-                onDismiss = { isShowingDialog = false },
-                onColorSelected = {
-                    onColorSelected(it)
-                    isShowingDialog = false
-                }
-            )
-        }
-
-        SettingItemRow(
-            icon = icon,
-            title = title,
-            onClick = { isShowingDialog = true },
-            trailingContent = {
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .background(color, shape = uiRoundnessShape())
-                )
-            }
+            trailingContent = trailingContent
         )
     }
 }
