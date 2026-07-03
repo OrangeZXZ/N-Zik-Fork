@@ -36,3 +36,4 @@
 - fix(player): smooth scrim fade when closing queue panel (alpha follows panel height fraction)
 - feat(search): add long press menus to album, artist, playlist, and video suggestions
 - refactor(search): remove SearchItemMenu, replace with SongItemMenu
+- fix more of in album menu not showing up

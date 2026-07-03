@@ -142,7 +142,7 @@ class AlbumItemMenu private constructor(
 
         // Section: Navigation
         val navRange = 5 until (buttons.size - 3)
-        if (navRange.first < navRange.last) {
+        if (!navRange.isEmpty()) {
             SectionTitle(stringResource(R.string.navigation))
             for (i in navRange) {
                 buttons.getOrNull(i)?.let { if (it is MenuIcon) it.ListMenuItem() }
@@ -172,7 +172,7 @@ class AlbumItemMenu private constructor(
 
         // Section: Navigation
         val navRange = 5 until (buttons.size - 3)
-        if (navRange.first < navRange.last) {
+        if (!navRange.isEmpty()) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 SectionTitle(stringResource(R.string.navigation))
             }
