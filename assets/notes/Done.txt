@@ -1,5 +1,6 @@
 
 ## 2026-07-03
+- fix(lyrics): limit LyricsSettingsMenu height to 50% of screen
 - refactor(lyrics): add handle bar header to LyricsSettingsMenu
 - chore(lyrics): remove unused imports
 - fix(lyrics): fix lrclib string resource reference
