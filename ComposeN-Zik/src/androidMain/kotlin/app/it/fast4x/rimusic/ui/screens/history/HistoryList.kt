@@ -236,10 +236,12 @@ fun HistoryList(
                         stickyHeader {
                             Title(
                                 title = headerStr,
-                                modifier = Modifier.background(
-                                    color = colorPalette().background3,
-                                    shape = thumbnailShape()
-                                )
+                                modifier = Modifier
+                                    .padding(horizontal = 12.dp, vertical = 4.dp)
+                                    .background(
+                                        color = colorPalette().background3,
+                                        shape = thumbnailShape()
+                                    )
                             )
                         }
 
@@ -279,10 +281,12 @@ fun HistoryList(
                         stickyHeader {
                             Title(
                                 title = section.title,
-                                modifier = Modifier.background(
-                                    color = colorPalette().background3,
-                                    shape = thumbnailShape()
-                                )
+                                modifier = Modifier
+                                    .padding(horizontal = 12.dp, vertical = 4.dp)
+                                    .background(
+                                        color = colorPalette().background3,
+                                        shape = thumbnailShape()
+                                    )
                             )
                         }
 
