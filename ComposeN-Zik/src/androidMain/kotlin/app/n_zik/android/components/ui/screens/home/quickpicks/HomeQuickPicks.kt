@@ -52,6 +52,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.random.Random
 
@@ -212,6 +213,9 @@ fun HomeQuickPicks(
     val showSearchTab by rememberPreference(showSearchTabKey, false)
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
+    val scope = rememberCoroutineScope()
+    var isQuickPicksLoading by remember { mutableStateOf(false) }
+
     var showLoader by remember { mutableStateOf(!state.loadedData.value) }
     LaunchedEffect(state.loadedData.value) {
         if (state.loadedData.value) {
@@ -264,16 +268,31 @@ fun HomeQuickPicks(
                         playEventType = playEventType,
                         onPlayEventTypeChange = { playEventType = it },
                         onDiceClick = {
-                            val relatedInit = state.relatedPageResult.value?.getOrNull()
-                            val allItems = listOfNotNull(state.trending.value?.asMediaItem) + (relatedInit?.songs?.map { it.asMediaItem } ?: emptyList())
-                            binder?.let { Shuffler.play(it, allItems) }
+                            scope.launch(Dispatchers.IO) {
+                                isQuickPicksLoading = true
+                                try {
+                                    val relatedInit = state.relatedPageResult.value?.getOrNull()
+                                    val allItems = listOfNotNull(state.trending.value?.asMediaItem) + (relatedInit?.songs?.map { it.asMediaItem } ?: emptyList())
+                                    binder?.let { Shuffler.play(it, allItems) }
+                                } finally {
+                                    isQuickPicksLoading = false
+                                }
+                            }
                         },
                         onPlayAllClick = {
-                            binder?.stopRadio()
-                            state.trending.value?.let { binder?.player?.forcePlay(it.asMediaItem) }
-                            val relatedInit = state.relatedPageResult.value?.getOrNull()
-                            binder?.player?.addMediaItems(relatedInit?.songs?.map { it.asMediaItem } ?: emptyList())
-                        }
+                            scope.launch(Dispatchers.IO) {
+                                isQuickPicksLoading = true
+                                try {
+                                    binder?.stopRadio()
+                                    state.trending.value?.let { binder?.player?.forcePlay(it.asMediaItem) }
+                                    val relatedInit = state.relatedPageResult.value?.getOrNull()
+                                    binder?.player?.addMediaItems(relatedInit?.songs?.map { it.asMediaItem } ?: emptyList())
+                                } finally {
+                                    isQuickPicksLoading = false
+                                }
+                            }
+                        },
+                        isLoading = isQuickPicksLoading
                     )
 
                     QuickPicksGrid(

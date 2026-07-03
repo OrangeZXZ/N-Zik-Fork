@@ -61,7 +61,8 @@ fun QuickPicksHeader(
     playEventType: PlayEventsType,
     onPlayEventTypeChange: (PlayEventsType) -> Unit,
     onDiceClick: () -> Unit,
-    onPlayAllClick: () -> Unit
+    onPlayAllClick: () -> Unit,
+    isLoading: Boolean = false
 ) {
     val menuState = LocalMenuState.current
     
@@ -86,44 +87,88 @@ fun QuickPicksHeader(
     }
     
     Column {
-        Title3Actions(
-            title = stringResource(R.string.tips),
-            icon1 = R.drawable.settings,
-            onClick1 = {
-                menuState.display {
-                    ListMenu.Menu(title = stringResource(R.string.sorting_order)) {
-                        ListMenu.Entry(
-                            icon = { MenuIcon(R.drawable.chevron_up) },
-                            text = stringResource(R.string.by_most_played_song),
-                            onClick = {
-                                onPlayEventTypeChange(PlayEventsType.MostPlayed)
-                                menuState.hide()
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 12.dp)
+        ) {
+            androidx.compose.material3.Text(
+                text = stringResource(R.string.tips),
+                style = androidx.compose.ui.text.TextStyle(
+                    fontSize = typography().l.semiBold.fontSize,
+                    fontWeight = typography().l.semiBold.fontWeight,
+                    color = colorPalette().text,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Start
+                ),
+                modifier = Modifier.weight(1f)
+            )
+            
+            if (isLoading) {
+                androidx.compose.material3.CircularProgressIndicator(
+                    modifier = Modifier.padding(end = 12.dp).size(24.dp),
+                    strokeWidth = 2.dp,
+                    color = colorPalette().textSecondary
+                )
+            } else {
+                Icon(
+                    painter = painterResource(R.drawable.dice),
+                    contentDescription = null,
+                    tint = colorPalette().text,
+                    modifier = Modifier
+                        .padding(end = 12.dp)
+                        .clip(uiRoundnessShape())
+                        .clickable(onClick = onDiceClick)
+                )
+                Icon(
+                    painter = painterResource(R.drawable.play),
+                    contentDescription = null,
+                    tint = colorPalette().text,
+                    modifier = Modifier
+                        .padding(end = 12.dp)
+                        .clip(uiRoundnessShape())
+                        .clickable(onClick = onPlayAllClick)
+                )
+            }
+            
+            Icon(
+                painter = painterResource(R.drawable.settings),
+                contentDescription = null,
+                tint = colorPalette().text,
+                modifier = Modifier
+                    .clip(uiRoundnessShape())
+                    .clickable {
+                        menuState.display {
+                            ListMenu.Menu(title = stringResource(R.string.sorting_order)) {
+                                ListMenu.Entry(
+                                    icon = { MenuIcon(R.drawable.chevron_up) },
+                                    text = stringResource(R.string.by_most_played_song),
+                                    onClick = {
+                                        onPlayEventTypeChange(PlayEventsType.MostPlayed)
+                                        menuState.hide()
+                                    }
+                                )
+                                ListMenu.Entry(
+                                    icon = { MenuIcon(R.drawable.chevron_down) },
+                                    text = stringResource(R.string.by_last_played_song),
+                                    onClick = {
+                                        onPlayEventTypeChange(PlayEventsType.LastPlayed)
+                                        menuState.hide()
+                                    }
+                                )
+                                ListMenu.Entry(
+                                    icon = { MenuIcon(R.drawable.random) },
+                                    text = stringResource(R.string.by_casual_played_song),
+                                    onClick = {
+                                        onPlayEventTypeChange(PlayEventsType.CasualPlayed)
+                                        menuState.hide()
+                                    }
+                                )
                             }
-                        )
-                        ListMenu.Entry(
-                            icon = { MenuIcon(R.drawable.chevron_down) },
-                            text = stringResource(R.string.by_last_played_song),
-                            onClick = {
-                                onPlayEventTypeChange(PlayEventsType.LastPlayed)
-                                menuState.hide()
-                            }
-                        )
-                        ListMenu.Entry(
-                            icon = { MenuIcon(R.drawable.random) },
-                            text = stringResource(R.string.by_casual_played_song),
-                            onClick = {
-                                onPlayEventTypeChange(PlayEventsType.CasualPlayed)
-                                menuState.hide()
-                            }
-                        )
+                        }
                     }
-                }
-            },
-            icon3 = R.drawable.dice,
-            onClick3 = onDiceClick,
-            icon2 = R.drawable.play,
-            onClick2 = onPlayAllClick
-        )
+            )
+        }
 
         BasicText(
             text = playEventType.text,
