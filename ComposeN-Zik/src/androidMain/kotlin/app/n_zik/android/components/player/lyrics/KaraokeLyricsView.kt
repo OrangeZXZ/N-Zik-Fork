@@ -524,7 +524,7 @@ fun KaraokeLyricsView(
     // Multiplier based on line count (from the logs - this worked)
     val lineMultiplier = when (lineCount) {
         1 -> 0.45f
-        2 -> 0.38f
+        2 -> 0.42f
         3 -> 0.44f
         4 -> 0.42f
         else -> 0.40f
