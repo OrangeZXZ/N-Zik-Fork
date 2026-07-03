@@ -1,5 +1,6 @@
 
 ## 2026-07-03
+- fix(karaoke): increase 3-4 line multipliers more
 - fix(karaoke): further increase line multiplier for 3-4+ lines
 - fix(karaoke): increase line multiplier for 3-4+ lines to prevent lyrics being too high
 - fix(home): improve refresh matching and thumbnail fallback
