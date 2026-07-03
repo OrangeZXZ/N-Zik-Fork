@@ -1122,6 +1122,8 @@
   <string name="pause_between_songs_description">Добавить паузу между песнями</string>
   <string name="notifications">Уведомления</string>
   <string name="playback">Воспроизведение</string>
+  <string name="management">Management</string>
+  <string name="navigation">Navigation</string>
   <string name="player_controls">Управление игроками</string>
   <string name="player_controls_colors">Цвета плеера</string>
   <string name="theme_color">Цвет темы</string>
@@ -1280,6 +1282,11 @@
   <string name="txt_developers_rotation">ротация разработчиков</string>
   <string name="txt_translators_rotation">переводчики_вращения</string>
   <string name="txt_lyrics">Тексты песен</string>
+  <string name="section_lyrics_display">Display</string>
+  <string name="section_lyrics_text_style">Text Style</string>
+  <string name="section_lyrics_behavior">Behavior</string>
+  <string name="section_lyrics_translation">Перевод</string>
+  <string name="section_lyrics_actions">Actions</string>
   <string name="toast_preference_saved">Настройки сохранены</string>
   <string name="txt_width">width</string>
   <string name="cd_blurred_background">размытый фон</string>
