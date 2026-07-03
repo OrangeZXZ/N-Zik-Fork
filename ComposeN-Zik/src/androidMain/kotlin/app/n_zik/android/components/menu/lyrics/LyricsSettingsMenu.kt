@@ -173,31 +173,27 @@ class LyricsSettingsMenu private constructor(
                 .fillMaxHeight(0.5f)
                 .background(colorPalette().background0)
         ) {
-            // Handle bar
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp, bottom = 8.dp),
-                contentAlignment = Alignment.Center
+            // Header with handle bar and title (same as ImportPlaylistsMenu)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.background(colorPalette().background1)
             ) {
                 Box(
                     modifier = Modifier
+                        .padding(top = 18.dp, bottom = 6.dp)
                         .size(width = 40.dp, height = 4.dp)
                         .clip(RoundedCornerShape(2.dp))
-                        .background(colorPalette().textSecondary.copy(alpha = 0.5f))
+                        .background(Color.White)
                 )
+
+                androidx.compose.foundation.text.BasicText(
+                    text = stringResource(R.string.txt_lyrics),
+                    style = typography().m.copy(color = colorPalette().text),
+                    modifier = Modifier.padding(top = 5.dp, bottom = 10.dp)
+                )
+
+                HorizontalDivider(Modifier.height(1.dp))
             }
-
-            // Title
-            androidx.compose.foundation.text.BasicText(
-                text = stringResource(R.string.txt_lyrics),
-                style = typography().m.copy(color = colorPalette().text),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-            )
-
-            HorizontalDivider(Modifier.height(1.dp))
 
             // Settings list
             LazyColumn(
