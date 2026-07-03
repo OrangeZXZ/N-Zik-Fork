@@ -1122,6 +1122,8 @@
   <string name="pause_between_songs_description">Legg til en pause mellom sanger</string>
   <string name="notifications">Varsler</string>
   <string name="playback">Avspilling</string>
+  <string name="management">Management</string>
+  <string name="navigation">Navigation</string>
   <string name="player_controls">Spiller kontroller</string>
   <string name="player_controls_colors">Spilleren kontrollerer farger</string>
   <string name="theme_color">Tema farge</string>
@@ -1280,6 +1282,11 @@
   <string name="txt_developers_rotation">utvikler_rotasjon</string>
   <string name="txt_translators_rotation">translators_rotasjon</string>
   <string name="txt_lyrics">Tekster</string>
+  <string name="section_lyrics_display">Display</string>
+  <string name="section_lyrics_text_style">Text Style</string>
+  <string name="section_lyrics_behavior">Behavior</string>
+  <string name="section_lyrics_translation">Oversettelse</string>
+  <string name="section_lyrics_actions">Actions</string>
   <string name="toast_preference_saved">Preferanse lagret</string>
   <string name="txt_width">width</string>
   <string name="cd_blurred_background">uklar_bakgrunn</string>
