@@ -194,6 +194,10 @@
             </intent-filter>
         </service>
 
+        <service android:name=".components.ui.screens.home.HomeSyncService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"

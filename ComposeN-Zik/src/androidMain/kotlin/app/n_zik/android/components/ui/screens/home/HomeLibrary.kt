@@ -300,121 +300,18 @@ fun HomeLibrary(
             app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.already_syncing))
             return
         }
-        CoroutineScope(Dispatchers.IO).launch {
-            refreshing = true
-            HomeSyncState.isSyncingPlaylists = true
-            HomeSyncState.playlistSyncProgress = 0f
-            justSynced = false
-            
-            val targetItems = itemsToRefresh ?: itemsOnDisplay
-            val ytPlaylists = targetItems.filter { 
-                it.playlist.isYoutubePlaylist || 
-                it.playlist.browseId?.startsWith("VL") == true || 
-                it.playlist.browseId?.startsWith("PL") == true || 
-                it.playlist.browseId?.startsWith("RD") == true || 
-                it.playlist.browseId?.startsWith("OLAK") == true 
-            }
-            
-            Timber.tag("HomeLibrary").d("=== REFRESH START === Total playlists: ${targetItems.size}, YT: ${ytPlaylists.size}")
-            ytPlaylists.forEach { Timber.tag("HomeLibrary").d("  [YT] browseId=${it.playlist.browseId} name=${it.playlist.name} isYoutube=${it.playlist.isYoutubePlaylist}") }
-            
-            withContext(Dispatchers.Main) {
-                if (ytPlaylists.isNotEmpty()) app.kreate.android.me.knighthat.utils.Toaster.i(appContext().getString(R.string.refreshing_playlists, ytPlaylists.size))
-            }
-            
-            var failedCount = 0
-            val failedList = mutableListOf<app.it.fast4x.rimusic.models.PlaylistPreview>()
-            HomeSyncState.playlistSyncFailed = 0
-            HomeSyncState.playlistSyncTotal = ytPlaylists.size
-            
-            var abortSync = false
-            for ((index, preview) in ytPlaylists.withIndex()) {
-                if (abortSync) break
-                HomeSyncState.playlistSyncCurrentIndex = index + 1
-                HomeSyncState.playlistSyncCurrentName = preview.playlist.name
-                HomeSyncState.playlistSyncProgress = index.toFloat() / ytPlaylists.size
-                HomeSyncState.showSyncNotification(
-                    title = appContext().getString(R.string.sync_notifications),
-                    message = appContext().getString(R.string.sync_progress_playlists, index + 1, ytPlaylists.size),
-                    notificationId = 1003,
-                    isOngoing = true,
-                    maxProgress = ytPlaylists.size,
-                    currentProgress = index + 1
-                )
-                val p = preview.playlist
-                p.browseId?.let { browseId ->
-                    kotlinx.coroutines.delay((2000L..5000L).random())
-                    Timber.tag("HomeLibrary").d("[YT] Fetching by browseId: $browseId for '${p.name}'")
-                    var status = 0 // 0=retry, 1=success
-                    for (attempt in 1..3) {
-                        val request = Innertube.playlistPage(BrowseBody(browseId = browseId))
-                        if (request == null) {
-                            Timber.tag("HomeLibrary").d("[YT] Request returned null for '${p.name}' (browseId: $browseId)")
-                            status = 2
-                            break
-                        }
-                        request.onSuccess { playlistPage ->
-                            Timber.tag("HomeLibrary").d("[YT] Got response for '${p.name}': title='${playlistPage.title}', songs=${playlistPage.songsPage?.items?.size ?: 0}")
-                            Database.asyncTransaction {
-                                playlistTable.update(p.copy(
-                                    name = PropUtils.retainIfModified(p.name, playlistPage.title) ?: p.name
-                                ))
-                                val songs = playlistPage.songsPage?.items?.mapNotNull { it.asSong.copy(totalPlayTimeMs = 1L) }
-                                if (songs != null) {
-                                    songTable.upsert(songs)
-                                    songs.forEach { song ->
-                                        songPlaylistMapTable.map(song.id, p.id)
-                                    }
-                                }
-                            }
-                            Timber.tag("HomeLibrary").d("Successfully refreshed playlist: ${p.name}")
-                            status = 1
-                        }.onFailure {
-                            Timber.tag("HomeLibrary").e(it, "Failed to fetch playlist (attempt $attempt): ${p.name}")
-                            if (it is java.net.UnknownHostException || it is java.net.ConnectException) {
-                                status = 3
-                            }
-                        }
-                        if (status != 0) break
-                    }
-                    if (status == 3) {
-                        abortSync = true
-                        break
-                    }
-                    if (status != 1) {
-                        failedCount++
-                        HomeSyncState.playlistSyncFailed = failedCount
-                        failedList.add(preview)
-                    }
-                }
-            }
-            
-            withContext(Dispatchers.Main) {
-                if (abortSync) {
-                    app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.sync_failed))
-                    HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), "Sync aborted due to network error.", 1003)
-                } else if (failedCount > 0) {
-                    HomeSyncState.failedPlaylistsList = failedList
-                    val errorMessage = appContext().getString(R.string.failed_playlists, failedCount)
-                    val notificationMessage = appContext().getString(R.string.sync_failed_notification_playlists, failedCount)
-                    app.kreate.android.me.knighthat.utils.Toaster.e(errorMessage)
-                    HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), notificationMessage, 1003)
-                } else if (ytPlaylists.isNotEmpty() && itemsToRefresh == null) {
-                    app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_playlists))
-                    HomeSyncState.showSyncNotification(
-                        title = appContext().getString(R.string.sync_successful),
-                        message = appContext().getString(R.string.sync_success_notification_playlists),
-                        notificationId = 1003
-                    )
-                } else {
-                    HomeSyncState.clearSyncNotification(1003)
-                }
-            }
-            
-            refreshing = false
-            HomeSyncState.playlistSyncProgress = 1f
-            HomeSyncState.isSyncingPlaylists = false
-            Timber.tag("HomeLibrary").d("=== REFRESH END === Total: ${ytPlaylists.size}, Failed: $failedCount")
+        val targetPlaylists = itemsToRefresh ?: itemsOnDisplay
+        val ids = java.util.ArrayList(targetPlaylists.map { it.playlist.id.toString() })
+        
+        val intent = android.content.Intent(appContext(), HomeSyncService::class.java).apply {
+            action = HomeSyncService.ACTION_SYNC_PLAYLISTS
+            putStringArrayListExtra(HomeSyncService.EXTRA_IDS, ids)
+        }
+        try {
+            androidx.core.content.ContextCompat.startForegroundService(appContext(), intent)
+        } catch (e: Exception) {
+            timber.log.Timber.tag("HomeLibrary").e(e, "Failed to start HomeSyncService")
+            app.kreate.android.me.knighthat.utils.Toaster.e("Failed to start sync service")
         }
     }
 
