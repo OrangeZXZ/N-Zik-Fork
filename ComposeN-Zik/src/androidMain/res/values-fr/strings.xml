@@ -1430,4 +1430,6 @@ Volume BAS : titre précédent</string>
   <string name="sync_progress_albums">Synchronisation des albums... (%1$d/%2$d)</string>
   <string name="sync_progress_playlists">Synchronisation des playlists... (%1$d/%2$d)</string>
   <string name="sync_successful">Synchronisation réussie</string>
+  <string name="sync_no_items">No items to sync</string>
+  <string name="sync_completed_with_errors">Sync completed with errors</string>
 </resources>
