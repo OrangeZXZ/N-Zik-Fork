@@ -95,7 +95,8 @@ class HomeSyncService : Service() {
             } catch (e: Exception) {
                 Timber.e(e, "Sync failed with exception")
             } finally {
-                stopForeground(true)
+                @Suppress("DEPRECATION")
+                stopForeground(false)
                 stopSelf()
             }
         }
