@@ -86,11 +86,12 @@ class HomeSyncService : Service() {
         val ids = intent.getStringArrayListExtra(EXTRA_IDS)
         
         serviceScope.launch {
+            val resultNotificationId = notificationId + 100
             try {
                 when (action) {
-                    ACTION_SYNC_ARTISTS -> syncArtists(ids, notificationId)
-                    ACTION_SYNC_ALBUMS -> syncAlbums(ids, notificationId)
-                    ACTION_SYNC_PLAYLISTS -> syncPlaylists(ids, notificationId)
+                    ACTION_SYNC_ARTISTS -> syncArtists(ids, notificationId, resultNotificationId)
+                    ACTION_SYNC_ALBUMS -> syncAlbums(ids, notificationId, resultNotificationId)
+                    ACTION_SYNC_PLAYLISTS -> syncPlaylists(ids, notificationId, resultNotificationId)
                 }
             } catch (e: Exception) {
                 Timber.e(e, "Sync failed with exception")
@@ -109,7 +110,7 @@ class HomeSyncService : Service() {
         serviceScope.cancel()
     }
     
-    private suspend fun syncArtists(ids: List<String>?, notificationId: Int) {
+    private suspend fun syncArtists(ids: List<String>?, notificationId: Int, resultNotificationId: Int) {
         if (HomeSyncState.isSyncingArtists) return
         HomeSyncState.isSyncingArtists = true
         HomeSyncState.artistSyncProgress = 0f
@@ -264,7 +265,7 @@ class HomeSyncService : Service() {
         withContext(Dispatchers.Main) {
             if (abortSync) {
                 app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.sync_failed))
-                HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), "Sync aborted due to network error.", notificationId)
+                HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), "Sync aborted due to network error.", resultNotificationId)
             } else if (failedCount > 0) {
                 HomeSyncState.failedArtistsList = failedList
                 val errorMessage = appContext().getString(R.string.failed_artists, failedCount)
@@ -273,21 +274,21 @@ class HomeSyncService : Service() {
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_completed_with_errors),
                     message = notificationMessage,
-                    notificationId = notificationId
+                    notificationId = resultNotificationId
                 )
             } else if (totalArtists > 0 && !ids.isNullOrEmpty()) {
                 app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_artists))
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_successful),
                     message = appContext().getString(R.string.sync_success_notification_artists),
-                    notificationId = notificationId
+                    notificationId = resultNotificationId
                 )
             } else if (totalArtists > 0 && ids.isNullOrEmpty()) {
                 app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_artists))
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_successful),
                     message = appContext().getString(R.string.sync_success_notification_artists),
-                    notificationId = notificationId
+                    notificationId = resultNotificationId
                 )
             } else {
                 HomeSyncState.clearSyncNotification(notificationId)
@@ -297,7 +298,7 @@ class HomeSyncService : Service() {
         }
     }
 
-    private suspend fun syncAlbums(ids: List<String>?, notificationId: Int) {
+    private suspend fun syncAlbums(ids: List<String>?, notificationId: Int, resultNotificationId: Int) {
         if (HomeSyncState.isSyncingAlbums) return
         HomeSyncState.isSyncingAlbums = true
         HomeSyncState.albumSyncProgress = 0f
@@ -461,7 +462,7 @@ class HomeSyncService : Service() {
         withContext(Dispatchers.Main) {
             if (abortSync) {
                 app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.sync_failed))
-                HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), "Sync aborted due to network error.", notificationId)
+                HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), "Sync aborted due to network error.", resultNotificationId)
             } else if (failedCount > 0) {
                 HomeSyncState.failedAlbumsList = failedList
                 val errorMessage = appContext().getString(R.string.failed_albums, failedCount)
@@ -470,21 +471,21 @@ class HomeSyncService : Service() {
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_completed_with_errors),
                     message = notificationMessage,
-                    notificationId = notificationId
+                    notificationId = resultNotificationId
                 )
             } else if (totalAlbums > 0 && !ids.isNullOrEmpty()) {
                 app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_albums))
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_successful),
                     message = appContext().getString(R.string.sync_success_notification_albums),
-                    notificationId = notificationId
+                    notificationId = resultNotificationId
                 )
             } else if (totalAlbums > 0 && ids.isNullOrEmpty()) {
                 app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_albums))
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_successful),
                     message = appContext().getString(R.string.sync_success_notification_albums),
-                    notificationId = notificationId
+                    notificationId = resultNotificationId
                 )
             } else {
                 HomeSyncState.clearSyncNotification(notificationId)
@@ -494,7 +495,7 @@ class HomeSyncService : Service() {
         }
     }
     
-    private suspend fun syncPlaylists(ids: List<String>?, notificationId: Int) {
+    private suspend fun syncPlaylists(ids: List<String>?, notificationId: Int, resultNotificationId: Int) {
         if (HomeSyncState.isSyncingPlaylists) return
         HomeSyncState.isSyncingPlaylists = true
         HomeSyncState.playlistSyncProgress = 0f
@@ -593,7 +594,7 @@ class HomeSyncService : Service() {
         withContext(Dispatchers.Main) {
             if (abortSync) {
                 app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.sync_failed))
-                HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), "Sync aborted due to network error.", notificationId)
+                HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), "Sync aborted due to network error.", resultNotificationId)
             } else if (failedCount > 0) {
                 HomeSyncState.failedPlaylistsList = failedList
                 val errorMessage = appContext().getString(R.string.failed_playlists, failedCount)
@@ -602,14 +603,14 @@ class HomeSyncService : Service() {
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_failed),
                     message = notificationMessage,
-                    notificationId = notificationId
+                    notificationId = resultNotificationId
                 )
             } else if (ytPlaylists.isNotEmpty() && ids.isNullOrEmpty()) {
                 app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_playlists))
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_successful),
                     message = appContext().getString(R.string.sync_success_notification_playlists),
-                    notificationId = notificationId
+                    notificationId = resultNotificationId
                 )
             } else {
                 HomeSyncState.clearSyncNotification(notificationId)
