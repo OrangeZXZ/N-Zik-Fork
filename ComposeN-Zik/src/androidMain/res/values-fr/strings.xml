@@ -1423,4 +1423,11 @@ Volume BAS : titre précédent</string>
   <string name="sync_failed_notification_artists">Échec de la synchronisation de %1$d artistes. Retournez dans l\'onglet « Artistes » pour réessayer.</string>
   <string name="sync_failed_notification_albums">Échec de la synchronisation de %1$d albums. Retournez dans l\'onglet « Albums » pour réessayer.</string>
   <string name="sync_failed_notification_playlists">Échec de la synchronisation de %1$d listes de lecture. Retournez dans l\'onglet « Playlists » pour réessayer.</string>
+  <string name="sync_success_notification_artists">Successfully synchronized all artists.</string>
+  <string name="sync_success_notification_albums">Successfully synchronized all albums.</string>
+  <string name="sync_success_notification_playlists">Successfully synchronized all playlists.</string>
+  <string name="sync_progress_artists">Syncing artists... (%1$d/%2$d)</string>
+  <string name="sync_progress_albums">Syncing albums... (%1$d/%2$d)</string>
+  <string name="sync_progress_playlists">Syncing playlists... (%1$d/%2$d)</string>
+  <string name="sync_successful">Sync successful</string>
 </resources>
