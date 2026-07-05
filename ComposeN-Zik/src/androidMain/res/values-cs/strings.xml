@@ -1429,4 +1429,6 @@
   <string name="sync_progress_albums">Syncing albums... (%1$d/%2$d)</string>
   <string name="sync_progress_playlists">Syncing playlists... (%1$d/%2$d)</string>
   <string name="sync_successful">Sync successful</string>
+  <string name="sync_no_items">No items to sync</string>
+  <string name="sync_completed_with_errors">Sync completed with errors</string>
 </resources>
