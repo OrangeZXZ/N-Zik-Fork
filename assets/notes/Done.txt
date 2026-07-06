@@ -51,6 +51,8 @@
   - Removed manual drag handle padding hacks in `AccountsSettings` sheets.
   - Set root Column modifier in `YouTubeLogin` and `Discord` composables to `Modifier.fillMaxSize()` so WebViews take full available sheet height.
   - Replaced hardcoded `700.dp` height constraint in `VideoOrSongInfoScreen` with `Modifier.fillMaxSize()` so the Information menu takes full height.
+- fix(timeline): vz visualizer timeline progress bar doesn't reset on crossfade
+  - Used `rememberUpdatedState` in `AudioWavePill` to ensure `derivedStateOf` reads the latest `progressPercentage` lambda instance from `SeekBarVisualizer` instead of caching the stale initial lambda during crossfade track transitions.
 
 
 ## 2026-07-05

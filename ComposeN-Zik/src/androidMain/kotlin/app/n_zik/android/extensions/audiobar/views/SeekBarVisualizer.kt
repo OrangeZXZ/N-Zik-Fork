@@ -330,8 +330,10 @@ private fun AudioWavePill(
         }
     }
     
+    val currentProgressPercentage by rememberUpdatedState(progressPercentage)
+    
     val hasPlayedThisWave by remember {
-        derivedStateOf { progressPercentage().value * numberOfWaves > waveIndex }
+        derivedStateOf { currentProgressPercentage().value * numberOfWaves > waveIndex }
     }
     Surface(
         shape = CircleShape,
