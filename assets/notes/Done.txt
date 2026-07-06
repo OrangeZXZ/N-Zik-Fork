@@ -50,6 +50,7 @@
   - Removed manual `statusBarHeight` subtraction from `ListMenu` and `GridMenu` height limits, restoring `CONTENT_HEIGHT_FRACTION = 1.0f`.
   - Removed manual drag handle padding hacks in `AccountsSettings` sheets.
   - Set root Column modifier in `YouTubeLogin` and `Discord` composables to `Modifier.fillMaxSize()` so WebViews take full available sheet height.
+  - Replaced hardcoded `700.dp` height constraint in `VideoOrSongInfoScreen` with `Modifier.fillMaxSize()` so the Information menu takes full height.
 
 
 ## 2026-07-05

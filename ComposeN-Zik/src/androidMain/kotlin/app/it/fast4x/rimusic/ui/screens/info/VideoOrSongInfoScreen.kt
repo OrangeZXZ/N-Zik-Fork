@@ -142,8 +142,7 @@ fun VideoOrSongInfoScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(if (isLoading) 300.dp else 700.dp) // Limits the height so it behaves like a bottom sheet
+            .fillMaxSize()
             .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
             .background(colorPalette().background0)
     ) {
