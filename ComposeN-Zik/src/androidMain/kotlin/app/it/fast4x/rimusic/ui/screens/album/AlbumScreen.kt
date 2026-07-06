@@ -103,7 +103,7 @@ fun AlbumScreen(
 
     var alternatives by persistList<Innertube.AlbumItem>( "album/$browseId/alternatives" )
     var description by rememberSaveable { mutableStateOf("") }
-    LaunchedEffect( Unit ) {
+    LaunchedEffect( browseId ) {
         YtMusic.getAlbum( browseId, true )
                .onSuccess { online ->
                    val onlineAlbum = online.album

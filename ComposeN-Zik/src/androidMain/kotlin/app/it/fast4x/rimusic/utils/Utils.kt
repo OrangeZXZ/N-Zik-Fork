@@ -109,7 +109,7 @@ val Innertube.SongItem.asMediaItem: MediaItem
         .setCustomCacheKey(key)
         .setMediaMetadata(
             MediaMetadata.Builder()
-                .setTitle(info?.name)
+                .setTitle((if (explicit) EXPLICIT_PREFIX else "") + (info?.name ?: ""))
                 .setArtist(
                     authors.parseArtists().joinToString(", ")
                         .let { if (explicit) "\uD83C\uDD74 $it" else it }
