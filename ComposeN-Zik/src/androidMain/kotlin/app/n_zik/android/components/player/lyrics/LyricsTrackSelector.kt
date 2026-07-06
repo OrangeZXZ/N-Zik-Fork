@@ -268,8 +268,8 @@ fun LyricsTrackSelector(
                                     lyricsTable.upsert(
                                         Lyrics(
                                             songId = mediaId,
-                                            fixed = lyrics?.fixed,
-                                            synced = it.syncedLyrics.orEmpty()
+                                            type = app.n_zik.android.enums.lyrics.LyricsType.Synced.name,
+                                            data = it.syncedLyrics.orEmpty()
                                         )
                                     )
                                 }

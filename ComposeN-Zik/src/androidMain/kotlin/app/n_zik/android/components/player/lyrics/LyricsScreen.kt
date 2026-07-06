@@ -102,7 +102,7 @@ fun LyricsScreen(
             ensureSongInserted = { ensureSongInserted() }
         )
 
-        val text = if (lyricsType != LyricsType.Unsynced) lyrics?.synced else lyrics?.fixed
+        val text = lyrics?.data
 
         var isError by remember(mediaId, lyricsType) { mutableStateOf(false) }
         var isErrorSync by remember(mediaId, lyricsType) { mutableStateOf(false) }
@@ -622,8 +622,8 @@ fun LyricsScreen(
                                                 lyricsTable.upsert(
                                                     Lyrics(
                                                         songId = mediaId,
-                                                        fixed = if (lyricsType != LyricsType.Unsynced) lyrics?.fixed else null,
-                                                        synced = if (lyricsType != LyricsType.Unsynced) null else lyrics?.synced,
+                                                        type = lyricsType.name,
+                                                        data = null
                                                     )
                                                 )
                                             }

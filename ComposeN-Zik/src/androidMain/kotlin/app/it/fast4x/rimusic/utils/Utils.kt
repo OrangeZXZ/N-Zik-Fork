@@ -503,8 +503,8 @@ fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier
 }
 
 suspend fun downloadSyncedLyrics( song: Song ) {
-    val storedLyrics = Database.lyricsTable.findBySongId( song.id ).first()
-    if( storedLyrics?.synced != null ) return
+    val storedLyrics = Database.lyricsTable.findBySongIdAndType( song.id, app.n_zik.android.enums.lyrics.LyricsType.Synced.name ).first()
+    if( storedLyrics?.data != null ) return
 
     var fetchedLyrics: Lyrics? = null
     LrcLib.lyrics(
@@ -514,8 +514,8 @@ suspend fun downloadSyncedLyrics( song: Song ) {
     )?.onSuccess {
         fetchedLyrics = Lyrics(
             songId = song.id,
-            fixed = storedLyrics?.fixed,
-            synced = it?.text.orEmpty()
+            type = app.n_zik.android.enums.lyrics.LyricsType.Synced.name,
+            data = it?.text.orEmpty()
         )
     }?.onFailure {
         // Try out different source for lyrics
@@ -526,8 +526,8 @@ suspend fun downloadSyncedLyrics( song: Song ) {
         )?.onSuccess {
             fetchedLyrics = Lyrics(
                 songId = song.id,
-                fixed = storedLyrics?.fixed,
-                synced = it?.value.orEmpty()
+                type = app.n_zik.android.enums.lyrics.LyricsType.Synced.name,
+                data = it?.value.orEmpty()
             )
         }
     }

@@ -69,12 +69,21 @@ fun LyricsFetcher(
             onLyricsUpdated(null)
         }
         Database.lyricsTable
-            .findBySongId(mediaId)
-            .collect { currentLyrics ->
+            .findAllBySongId(mediaId)
+            .collect { allLyrics ->
                 val wantSynced = lyricsType != LyricsType.Unsynced
                 val wantKaraoke = lyricsType == LyricsType.Karaoke
-                val hasWordTimings = currentLyrics?.synced?.lines()?.any { it.trim().startsWith("<") && it.contains(":") && it.contains(">") } == true
-                val hasBetterLyricsTags = currentLyrics?.synced?.contains("{agent:") == true
+                
+                val currentLyrics = if (wantKaraoke) {
+                    allLyrics.find { it.type == LyricsType.Karaoke.name } ?: allLyrics.find { it.type == LyricsType.Synced.name }
+                } else if (wantSynced) {
+                    allLyrics.find { it.type == LyricsType.Synced.name }
+                } else {
+                    allLyrics.find { it.type == LyricsType.Unsynced.name }
+                }
+
+                val hasWordTimings = currentLyrics?.data?.lines()?.any { it.trim().startsWith("<") && it.contains(":") && it.contains(">") } == true
+                val hasBetterLyricsTags = currentLyrics?.data?.contains("{agent:") == true
                 val forceFetch = modeSwitchPending.also { modeSwitchPending = false }
 
                 val needKaraokeFetch = wantKaraoke && (forceFetch || (hasBetterLyricsTags && !hasWordTimings) || (!hasWordTimings && globalLastKaraokeAttemptMediaId != mediaId))
@@ -83,7 +92,7 @@ fun LyricsFetcher(
 
 
 
-                if ((wantSynced && currentLyrics?.synced.isNullOrEmpty()) || needKaraokeFetch || needSyncedFetch || needUnsyncedFetch) {
+                if ((wantSynced && currentLyrics?.data.isNullOrEmpty()) || needKaraokeFetch || needSyncedFetch || needUnsyncedFetch) {
 
                     if (needKaraokeFetch) {
                         globalLastKaraokeAttemptMediaId = mediaId
@@ -113,7 +122,7 @@ fun LyricsFetcher(
                                     if (playerEnableLyricsPopupMessage) coroutineScope.launch { Toaster.e(R.string.info_lyrics_not_found_on_s, context.getString(R.string.source_lrclib_unsynced)) }
                                 onErrorUpdated(it?.text?.isNotEmpty() != true)
                                 onCheckedLrcUpdated(true)
-                                Database.asyncTransaction { lyricsTable.upsert(Lyrics(songId = mediaId, fixed = it?.text, synced = currentLyrics?.synced)) }
+                                Database.asyncTransaction { lyricsTable.upsert(Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = it?.text)) }
                                 onLyricsUpdated(currentLyrics)
                                 foundUnsynced = true
                             }?.onFailure {
@@ -142,8 +151,8 @@ fun LyricsFetcher(
                                 if (playerEnableLyricsPopupMessage) Toaster.s(R.string.info_lyrics_found_on_s, context.getString(R.string.source_betterlyrics_synced))
                             onErrorUpdated(false)
                             onCheckedLrcUpdated(true)
-                            Database.asyncTransaction { lyricsTable.upsert(Lyrics(songId = mediaId, fixed = currentLyrics?.fixed, synced = fallbackSynced)) }
-                        } else if (currentLyrics?.synced.isNullOrEmpty() || needSyncedFetch) {
+                            Database.asyncTransaction { lyricsTable.upsert(Lyrics(songId = mediaId, type = LyricsType.Synced.name, data = fallbackSynced)) }
+                        } else if (currentLyrics?.data.isNullOrEmpty() || needSyncedFetch) {
                                 kotlin.runCatching {
                                 LrcLib.lyrics(
                                     artist = artistName ?: "",
@@ -175,11 +184,7 @@ fun LyricsFetcher(
 
                                     Database.asyncTransaction {
                                         lyricsTable.upsert(
-                                            Lyrics(
-                                                songId = mediaId,
-                                                fixed = currentLyrics?.fixed,
-                                                synced = it?.text.orEmpty()
-                                            )
+                                            Lyrics(songId = mediaId, type = LyricsType.Synced.name, data = it?.text.orEmpty())
                                         )
                                     }
                                 }?.onFailure {
@@ -213,11 +218,7 @@ fun LyricsFetcher(
                                                 onCheckedKugouUpdated(true)
                                                 Database.asyncTransaction {
                                                     lyricsTable.upsert(
-                                                        Lyrics(
-                                                            songId = mediaId,
-                                                            fixed = currentLyrics?.fixed,
-                                                            synced = it?.value.orEmpty()
-                                                        )
+                                                        Lyrics(songId = mediaId, type = LyricsType.Synced.name, data = it?.value.orEmpty())
                                                     )
                                                 }
                                             } else {
@@ -250,11 +251,7 @@ fun LyricsFetcher(
                                                             onCheckedLrcUpdated(true)
                                                             Database.asyncTransaction {
                                                                 lyricsTable.upsert(
-                                                                    Lyrics(
-                                                                        songId = mediaId,
-                                                                        fixed = it?.plainText.orEmpty(),
-                                                                        synced = currentLyrics?.synced
-                                                                    )
+                                                                    Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = it?.plainText.orEmpty())
                                                                 )
                                                             }
                                                         } else {
@@ -301,11 +298,7 @@ fun LyricsFetcher(
                                                         onCheckedLrcUpdated(true)
                                                         Database.asyncTransaction {
                                                             lyricsTable.upsert(
-                                                                Lyrics(
-                                                                    songId = mediaId,
-                                                                    fixed = it?.plainText.orEmpty(),
-                                                                    synced = currentLyrics?.synced
-                                                                )
+                                                                Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = it?.plainText.orEmpty())
                                                             )
                                                         }
                                                     } else {
@@ -340,14 +333,14 @@ fun LyricsFetcher(
                                         }
                                     }.onFailure {
                                         Timber.tag(TAG).e("→ KuGou ERROR: ${it.stackTraceToString()}")
-                                        if (!currentLyrics?.synced.isNullOrEmpty()) {
+                                        if (!currentLyrics?.data.isNullOrEmpty()) {
                                             onLyricsUpdated(currentLyrics)
                                         }
                                     }
                                 }
                             }.onFailure {
                                 Timber.tag(TAG).e("→ LrcLib ERROR: ${it.stackTraceToString()}")
-                                if (!currentLyrics?.synced.isNullOrEmpty()) {
+                                if (!currentLyrics?.data.isNullOrEmpty()) {
                                     onLyricsUpdated(currentLyrics)
                                 }
                             }
@@ -377,16 +370,12 @@ fun LyricsFetcher(
 
                                         Database.asyncTransaction {
                                             lyricsTable.upsert(
-                                                Lyrics(
-                                                    songId = mediaId,
-                                                    fixed = currentLyrics?.fixed,
-                                                    synced = ttmlStr
-                                                )
+                                                Lyrics(songId = mediaId, type = LyricsType.Karaoke.name, data = ttmlStr)
                                             )
                                         }
                                     } else {
                                         // BetterLyrics found synced lyrics (no word timings)
-                                        if (!forceFetch && (hasBetterLyricsTags || !currentLyrics?.synced.isNullOrEmpty())) {
+                                        if (!forceFetch && (hasBetterLyricsTags || !currentLyrics?.data.isNullOrEmpty())) {
                                             // Same mode re-fetch, already have synced → warning, keep existing
                                             if (playerEnableLyricsPopupMessage) {
                                                 Toaster.w(R.string.info_karaoke_not_found_showing_sync, context.getString(R.string.source_betterlyrics_karaoke), context.getString(R.string.source_betterlyrics_synced))
@@ -435,12 +424,12 @@ fun LyricsFetcher(
                     }
                     } // end else (not needUnsyncedFetch)
 
-                } else if (!currentLyrics?.synced.isNullOrEmpty() || !currentLyrics?.fixed.isNullOrEmpty()) {
+                } else if (!currentLyrics?.data.isNullOrEmpty()) {
                     // No fetch needed — just update UI with current lyrics
                     onLyricsUpdated(currentLyrics)
                 }
 
-                if (!wantSynced && currentLyrics?.fixed == null && globalLastUnSyncedAttemptMediaId != mediaId) {
+                if (!wantSynced && currentLyrics?.data == null && globalLastUnSyncedAttemptMediaId != mediaId) {
                     globalLastUnSyncedAttemptMediaId = mediaId
                     onErrorUpdated(false)
                     onLyricsUpdated(null)
@@ -466,11 +455,7 @@ fun LyricsFetcher(
                                 foundUnsynced = true
                                 Database.asyncTransaction {
                                     lyricsTable.upsert(
-                                        Lyrics(
-                                            songId = mediaId,
-                                            fixed = it?.plainText.orEmpty(),
-                                            synced = currentLyrics?.synced
-                                        )
+                                        Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = it?.plainText.orEmpty())
                                     )
                                 }
                             }
@@ -519,11 +504,7 @@ fun LyricsFetcher(
                                     if (!fixedLyrics.isNullOrEmpty()) {
                                         Database.asyncTransaction {
                                             lyricsTable.upsert(
-                                                Lyrics(
-                                                    songId = mediaId,
-                                                    fixed = fixedLyrics,
-                                                    synced = currentLyrics?.synced
-                                                )
+                                                Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = fixedLyrics)
                                             )
                                         }
                                     } else {
@@ -579,11 +560,7 @@ private fun tryYouTubeUnsynced(
                     if (!fixedLyrics.isNullOrEmpty()) {
                         app.n_zik.android.core.database.Database.asyncTransaction {
                             lyricsTable.upsert(
-                                Lyrics(
-                                    songId = mediaId,
-                                    fixed = fixedLyrics,
-                                    synced = currentLyrics?.synced
-                                )
+                                Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = fixedLyrics)
                             )
                         }
                     } else {
@@ -592,7 +569,7 @@ private fun tryYouTubeUnsynced(
                 }?.onFailure {
                     onCheckedInnertubeUpdated(true)
                     onErrorUpdated(true)
-                    if (!currentLyrics?.synced.isNullOrEmpty()) {
+                    if (!currentLyrics?.data.isNullOrEmpty()) {
                         onLyricsUpdated(currentLyrics)
                     }
                 }
@@ -600,7 +577,7 @@ private fun tryYouTubeUnsynced(
             Timber.tag(TAG).e("→ YouTube(U) ERROR: ${it.stackTraceToString()}")
             onCheckedInnertubeUpdated(true)
             onErrorUpdated(true)
-            if (!currentLyrics?.synced.isNullOrEmpty()) {
+            if (!currentLyrics?.data.isNullOrEmpty()) {
                 onLyricsUpdated(currentLyrics)
             }
         }

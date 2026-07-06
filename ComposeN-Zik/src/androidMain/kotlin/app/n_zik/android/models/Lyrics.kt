@@ -8,6 +8,7 @@ import app.it.fast4x.rimusic.models.Song
 
 @Immutable
 @Entity(
+    primaryKeys = ["songId", "type"],
     foreignKeys = [
         ForeignKey(
             entity = Song::class,
@@ -18,9 +19,9 @@ import app.it.fast4x.rimusic.models.Song
     ]
 )
 class Lyrics(
-    @PrimaryKey val songId: String,
-    val fixed: String?,
-    val synced: String?,
+    val songId: String,
+    val type: String,
+    val data: String?,
 )
 
 

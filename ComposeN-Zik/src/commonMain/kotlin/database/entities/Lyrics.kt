@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 
 @Immutable
 @Entity(
+    primaryKeys = ["songId", "type"],
     foreignKeys = [
         ForeignKey(
             entity = Song::class,
@@ -17,7 +18,7 @@ import androidx.room.PrimaryKey
     ]
 )
 class Lyrics(
-    @PrimaryKey val songId: String,
-    val fixed: String?,
-    val synced: String?,
+    val songId: String,
+    val type: String,
+    val data: String?,
 )

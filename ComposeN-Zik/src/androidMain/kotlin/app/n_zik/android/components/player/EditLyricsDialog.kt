@@ -42,7 +42,7 @@ class EditLyricsDialog private constructor(
             ensureSongInserted: () -> Unit
         ): EditLyricsDialog {
             val lyrics = getLyrics()
-            val initialText = if (lyricsType != LyricsType.Unsynced) lyrics?.synced else lyrics?.fixed
+            val initialText = lyrics?.data
             
             return EditLyricsDialog(
                 remember { mutableStateOf(false) },
@@ -68,7 +68,7 @@ class EditLyricsDialog private constructor(
     override fun hideDialog() {
         super.hideDialog()
         val lyrics = getLyrics()
-        val text = if (lyricsType != LyricsType.Unsynced) lyrics?.synced else lyrics?.fixed
+        val text = lyrics?.data
         value = TextFieldValue(text ?: "")
     }
 
@@ -101,8 +101,8 @@ class EditLyricsDialog private constructor(
             Database.lyricsTable.upsert(
                 Lyrics(
                     songId = mediaId,
-                    fixed = if (lyricsType != LyricsType.Unsynced) lyrics?.fixed else newValue,
-                    synced = if (lyricsType != LyricsType.Unsynced) newValue else lyrics?.synced,
+                    type = lyricsType.name,
+                    data = newValue
                 )
             )
         }
