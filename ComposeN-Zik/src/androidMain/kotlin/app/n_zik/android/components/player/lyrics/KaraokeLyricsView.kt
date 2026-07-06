@@ -479,7 +479,13 @@ fun KaraokeLyricsView(
         maxReachedLineIndex
     }
 
-    val lazyListState = rememberLazyListState(key1 = text)
+    val lazyListState = rememberLazyListState()
+
+    // Reset scroll position to top when lyrics content changes (mode switch / new song)
+    LaunchedEffect(text) {
+        lazyListState.scrollToItem(0)
+    }
+
 
     val isDragged by lazyListState.interactionSource.collectIsDraggedAsState()
 
