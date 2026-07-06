@@ -63,7 +63,7 @@ interface SongAlbumMapTable {
         FROM SongAlbumMap
         JOIN Song ON id = songId
         WHERE albumId = :albumId
-        ORDER BY position
+        ORDER BY SongAlbumMap.position
         LIMIT :limit
     """)
     fun allSongsOf( albumId: String, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
