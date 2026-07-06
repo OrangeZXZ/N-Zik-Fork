@@ -21,6 +21,9 @@
   - `getBitmapFromUrl` retourne maintenant `Bitmap?` (nullable) au lieu de throw (IllegalArgumentException/IllegalStateException) si l'URI est local (`content://`) ou réseau down.
   - Wrap les appels dans `LyricsScreen` par des `try/catch` pour un fallback fluide
   - Ajustement des retours nullable et throw d'Exception pour le fallback natif dans `Player`, `MiniPlayer`, et `NextVisualizer`
+- fix(album): correctly parse album tracks and clear old cache
+  - Extraction des pistes depuis la réponse album directe (`musicShelfRenderer` dans `secondaryContents`) pour garantir l'ordre original au lieu de fetcher la playlist YouTube générée qui est souvent désordonnée.
+  - Reset / Clear complet des anciennes lignes dans `SongAlbumMapTable` lors de l'ouverture d'un album pour empêcher les pistes fantômes / anciennement écoutées de fausser l'ordre de l'album.
 
 
 ## 2026-07-05
