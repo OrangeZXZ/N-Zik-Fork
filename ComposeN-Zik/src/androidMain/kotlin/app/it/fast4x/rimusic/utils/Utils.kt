@@ -114,7 +114,6 @@ val Innertube.SongItem.asMediaItem: MediaItem
                 .setTitle((if (explicit) EXPLICIT_PREFIX else "") + (info?.name ?: ""))
                 .setArtist(
                     authors.parseArtists().joinToString(", ")
-                        .let { if (explicit) "\uD83C\uDD74 $it" else it }
                 )
                 .setAlbumTitle(album?.name)
                 .setArtworkUri(thumbnail?.url?.toUri())
@@ -202,12 +201,7 @@ val Song.asMediaItem: MediaItem
             MediaMetadata.Builder()
                 .setTitle(cleanPrefix(title))
                 .setArtist(
-                    if (title.startsWith(EXPLICIT_PREFIX, true)) {
-                        val text = artistsText ?: ""
-                        if (text.isEmpty()) "\uD83C\uDD74" else "\uD83C\uDD74 $text"
-                    } else {
-                        artistsText ?: ""
-                    }
+                    artistsText ?: ""
                 )
                 .setArtworkUri(thumbnailUrl?.thumbnail(1200)?.toUri() ?: AutoMediaItemMapper.drawableUri(app.n_zik.android.appContext(), R.drawable.ic_launcher_box))
                 .setExtras(
