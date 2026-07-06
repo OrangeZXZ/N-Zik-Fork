@@ -325,7 +325,9 @@ fun SyncedLyricsView(
     val lineMultiplier = when (lineCount) {
         1 -> 0.40f
         2 -> 0.35f
-        else -> 0.30f
+        3 -> 0.10f
+        4 -> 0.5f
+        else -> 0.2f
     }
     val multiplier = if (showlyricsthumbnail) lineMultiplier else 0.35f
     val fixedCenter = (effectiveVpH * multiplier).toInt()
