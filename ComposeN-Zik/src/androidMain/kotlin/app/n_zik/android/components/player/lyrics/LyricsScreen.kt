@@ -183,11 +183,20 @@ fun LyricsScreen(
 
         LaunchedEffect(mediaMetadata.artworkUri) {
             kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-                bitmapCover = app.it.fast4x.rimusic.utils.getBitmapFromUrl(context, mediaMetadata.artworkUri.toString())
+                bitmapCover = try {
+                    app.it.fast4x.rimusic.utils.getBitmapFromUrl(context, mediaMetadata.artworkUri.toString())
+                } catch (_: Exception) {
+                    // Custom cover (content:// URI) or network failure – fall back to no bitmap
+                    null
+                }
             }
         }
         LaunchedEffect(bitmapCover, lightTheme) {
-            val palette = bitmapCover?.let { app.it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf(it, !lightTheme) }
+            val palette = try {
+                bitmapCover?.let { app.it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf(it, !lightTheme) }
+            } catch (_: Exception) {
+                null
+            }
             dominantColor = palette?.accent?.toArgb() ?: android.graphics.Color.DKGRAY
         }
 
