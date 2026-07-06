@@ -3,6 +3,7 @@ package app.n_zik.android.database
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import app.it.fast4x.rimusic.models.Song
 import app.n_zik.android.core.database.DatabaseInitializer
 import app.n_zik.android.core.database.LyricsTable
 import app.n_zik.android.enums.lyrics.LyricsType
@@ -20,6 +21,8 @@ import org.robolectric.annotation.Config
 /**
  * Tests Room DAO [LyricsTable] using Robolectric (JUnit 4 runner) with an in-memory database.
  * Uses JUnit 4 annotations (@Before / @After) because Robolectric's @RunWith is a JUnit 4 concept.
+ *
+ * Note: Lyrics has a FK to Song → we must insert a Song placeholder before inserting Lyrics.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33])
@@ -42,9 +45,15 @@ class LyricsTableTest {
         db.close()
     }
 
+    /** Insert a minimal Song so that the FK constraint on Lyrics is satisfied. */
+    private fun insertSong(id: String) {
+        db.songTable.upsert(Song.makePlaceholder(id))
+    }
+
     @Test
     fun `upsert and retrieve 3 distinct modes for the same song`() = runBlocking {
         val mediaId = "song_123"
+        insertSong(mediaId)
 
         lyricsDao.upsert(Lyrics(songId = mediaId, type = LyricsType.Karaoke.name, data = "karaoke data"))
         lyricsDao.upsert(Lyrics(songId = mediaId, type = LyricsType.Synced.name, data = "sync data"))
@@ -66,6 +75,7 @@ class LyricsTableTest {
     @Test
     fun `upsert overwrites existing data for the same songId and type`() = runBlocking {
         val mediaId = "song_123"
+        insertSong(mediaId)
 
         lyricsDao.upsert(Lyrics(songId = mediaId, type = LyricsType.Karaoke.name, data = "initial data"))
 
@@ -84,6 +94,9 @@ class LyricsTableTest {
 
     @Test
     fun `findAllBySongId does not return lyrics for other songs`() = runBlocking {
+        insertSong("song_A")
+        insertSong("song_B")
+
         lyricsDao.upsert(Lyrics(songId = "song_A", type = LyricsType.Karaoke.name, data = "A"))
         lyricsDao.upsert(Lyrics(songId = "song_B", type = LyricsType.Karaoke.name, data = "B"))
 
