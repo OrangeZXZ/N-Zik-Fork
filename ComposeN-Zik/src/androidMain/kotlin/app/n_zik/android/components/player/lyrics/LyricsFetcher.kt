@@ -75,22 +75,22 @@ fun LyricsFetcher(
         Database.lyricsTable
             .findAllBySongId(mediaId)
             .collect { allLyrics ->
+                val fetchNeeds = LyricsDecisionMaker.evaluateFetchNeeds(
+                    mediaId = mediaId,
+                    lyricsType = lyricsType,
+                    allLyrics = allLyrics,
+                    globalLastKaraokeAttemptMediaId = globalLastKaraokeAttemptMediaId,
+                    globalLastSyncedAttemptMediaId = globalLastSyncedAttemptMediaId,
+                    globalLastUnSyncedAttemptMediaId = globalLastUnSyncedAttemptMediaId
+                )
+
                 val wantSynced = lyricsType != LyricsType.Unsynced
                 val wantKaraoke = lyricsType == LyricsType.Karaoke
-                
-                val currentLyrics = if (wantKaraoke) {
-                    allLyrics.find { it.type == LyricsType.Karaoke.name } ?: allLyrics.find { it.type == LyricsType.Synced.name }
-                } else if (wantSynced) {
-                    allLyrics.find { it.type == LyricsType.Synced.name }
-                } else {
-                    allLyrics.find { it.type == LyricsType.Unsynced.name }
-                }
 
-                val hasWordTimings = currentLyrics?.data?.lines()?.any { it.trim().startsWith("<") && it.contains(":") && it.contains(">") } == true
-
-                val needKaraokeFetch = wantKaraoke && (!hasWordTimings && globalLastKaraokeAttemptMediaId != mediaId)
-                val needSyncedFetch = lyricsType == LyricsType.Synced && currentLyrics?.data.isNullOrEmpty() && globalLastSyncedAttemptMediaId != mediaId
-                val needUnsyncedFetch = lyricsType == LyricsType.Unsynced && currentLyrics?.data.isNullOrEmpty() && globalLastUnSyncedAttemptMediaId != mediaId
+                val currentLyrics = fetchNeeds.currentLyrics
+                val needKaraokeFetch = fetchNeeds.needKaraokeFetch
+                val needSyncedFetch = fetchNeeds.needSyncedFetch
+                val needUnsyncedFetch = fetchNeeds.needUnsyncedFetch
 
 
 

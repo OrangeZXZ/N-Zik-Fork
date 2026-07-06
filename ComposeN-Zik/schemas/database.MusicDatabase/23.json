@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 23,
-    "identityHash": "6a50f7953298651b6796d214a33a8d88",
+    "identityHash": "1cd562c825dddc8a13e4bfd96770c345",
     "entities": [
       {
         "tableName": "Album",
@@ -218,7 +218,7 @@
       },
       {
         "tableName": "Lyrics",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`songId` TEXT NOT NULL, `fixed` TEXT, `synced` TEXT, PRIMARY KEY(`songId`), FOREIGN KEY(`songId`) REFERENCES `Song`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`songId` TEXT NOT NULL, `type` TEXT NOT NULL, `data` TEXT, PRIMARY KEY(`songId`, `type`), FOREIGN KEY(`songId`) REFERENCES `Song`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "songId",
@@ -227,20 +227,22 @@
             "notNull": true
           },
           {
-            "fieldPath": "fixed",
-            "columnName": "fixed",
-            "affinity": "TEXT"
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
-            "fieldPath": "synced",
-            "columnName": "synced",
+            "fieldPath": "data",
+            "columnName": "data",
             "affinity": "TEXT"
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "songId"
+            "songId",
+            "type"
           ]
         },
         "foreignKeys": [
@@ -592,7 +594,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6a50f7953298651b6796d214a33a8d88')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1cd562c825dddc8a13e4bfd96770c345')"
     ]
   }
 }
