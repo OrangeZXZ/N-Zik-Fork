@@ -1,4 +1,11 @@
 # Done - 2026-07-06
+- feat(home): make Home Quick Picks categories load progressively and asynchronously
+  - Removed global blocking `if (showLoader)` so the UI renders immediately without waiting for all 3 YouTube Music API iterations.
+  - `homePageInit` state is now updated incrementally inside the `repeat(3)` fetch loop in `HomeQuickPicksState.kt`.
+  - Replaced the global `HomeBottomShimmer` with localized placeholder shimmers:
+    - Empty categories (not yet fetched) render a placeholder title and a `LazyRow` of 5 `AlbumItemPlaceholder` shimmers directly in their expected layout position.
+    - Partially loaded categories append 3 shimmers at the end of their horizontal list to indicate more items are still being fetched.
+  - Fixed pull-to-refresh (`refresh()`) to correctly clear `homePageInit`, `discoverPageInit`, and `chartsPageInit` states so the shimmers re-trigger cleanly.
 - fix(like): fix download on like race condition and UI double-tap bug (issue #609)
   - Replaced buggy `Database.asyncQuery` race condition inside `PlayerServiceModern.toggleLike` with synchronous `likedAt` check and direct `MyDownloadHelper.downloadOnLike` call.
   - Eliminated memory leak (`currentSong.collect`) caused every time Like was pressed from the notification.

@@ -308,107 +308,105 @@ fun HomeQuickPicks(
                     )
                 }
 
-                if (showLoader) {
-                    HomeBottomShimmer(albumThumbnailSizeDp, artistThumbnailSizeDp, endPaddingValues)
-                } else {
-                    val displayedSectionTitles = remember { mutableSetOf<String>() }
-                    val ytmSections = state.homePageInit.value?.sections.orEmpty()
+                val displayedSectionTitles = remember { mutableSetOf<String>() }
+                val ytmSections = state.homePageInit.value?.sections.orEmpty()
 
-                    val artistsState = persistList<Artist>("home/quickpicks/local/artists")
-                    val artists by remember { Database.artistTable.sortFollowingByName().distinctUntilChanged() }.collectAsState(artistsState.value, Dispatchers.IO)
-                    LaunchedEffect(artists) { artistsState.value = artists }
+                val artistsState = persistList<Artist>("home/quickpicks/local/artists")
+                val artists by remember { Database.artistTable.sortFollowingByName().distinctUntilChanged() }.collectAsState(artistsState.value, Dispatchers.IO)
+                LaunchedEffect(artists) { artistsState.value = artists }
 
-                    val newReleaseAlbumsFiltered = remember(state.discoverPageInit.value, artists) {
-                        state.discoverPageInit.value?.newReleaseAlbums?.filter { album ->
-                            artists.any { it.name == album.authors?.firstOrNull()?.name }
-                        }.orEmpty()
-                    }
-
-                    val monthlyPlaylistsState = persistList<PlaylistPreview>("home/quickpicks/local/monthlyPlaylists")
-                    val monthlyPlaylists by remember {
-                        Database.playlistTable.allAsPreview().distinctUntilChanged().map { list -> list.filter { it.playlist.name.startsWith(MONTHLY_PREFIX, true) } }
-                    }.collectAsState(monthlyPlaylistsState.value, Dispatchers.IO)
-                    LaunchedEffect(monthlyPlaylists) { monthlyPlaylistsState.value = monthlyPlaylists }
-
-                    val maxTopPlaylistItems by rememberPreference(MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10`)
-                    val myTopSongsState = persistList<Song>("home/quickpicks/local/myTopSongs")
-                    val myTopSongs by remember { Database.eventTable.findSongsMostPlayedBetween(from = 0L, limit = maxTopPlaylistItems.toInt()) }.collectAsState(myTopSongsState.value, Dispatchers.IO)
-                    LaunchedEffect(myTopSongs) { myTopSongsState.value = myTopSongs }
-
-                    // 2. Fresh finds ... to New releases (YTM)
-                    val firstYtmMerged = listOf(
-                        Pair(stringResource(R.string.fresh_finds_old_favorites)) { s: String -> s.contains("Fresh finds", ignoreCase = true) || s.contains("Old favorites", ignoreCase = true) },
-                        Pair(stringResource(R.string.mixed_for_you)) { s: String -> s.contains("Mixed for you", ignoreCase = true) },
-                        Pair(stringResource(R.string.forgotten_favorites)) { s: String -> s.contains("Forgotten favorites", ignoreCase = true) },
-                        Pair(stringResource(R.string.your_daily_discover)) { s: String -> s.contains("Your daily discover", ignoreCase = true) },
-                        Pair(stringResource(R.string.fresh_new_music)) { s: String -> s.contains("Fresh new music", ignoreCase = true) },
-                        Pair(stringResource(R.string.new_releases)) { s: String -> s.contains("New release", ignoreCase = true) && !s.contains("Fresh new music", ignoreCase = true) }
-                    )
-                    firstYtmMerged.forEach { (title, predicate) ->
-                        YtmSectionByTitle(ytmSections, predicate, title, itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles)
-                    }
-
-                    // 3. New albums (Discovery)
-                    NewAlbumsOfYourArtistsSection(state.discoverPageInit.value, artists, newReleaseAlbumsFiltered, rememberPreference(showNewAlbumsArtistsKey, true).value, onAlbumClick, navController, albumThumbnailSizePx, albumThumbnailSizeDp, disableScrollingText, endPaddingValues, sectionTextModifier)
-                    NewAlbumsSection(state.discoverPageInit.value, rememberPreference(showNewAlbumsKey, true).value, onAlbumClick, navController, albumThumbnailSizePx, albumThumbnailSizeDp, disableScrollingText, endPaddingValues, displayedSectionTitles)
-
-                    // 4. Albums for you (YTM)
-                    YtmSectionByTitle(ytmSections, { it.contains("Albums for you", ignoreCase = true) }, stringResource(R.string.albums_for_you), itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles)
-
-                    // 5. Related albums (Related)
-                    RelatedAlbumsSection(state.relatedPageResult.value?.getOrNull(), rememberPreference(showRelatedAlbumsKey, true).value, onAlbumClick, navController, albumThumbnailSizePx, albumThumbnailSizeDp, disableScrollingText, endPaddingValues, sectionTextModifier, displayedSectionTitles)
-
-                    // 6. Monthly Albums (Local)
-                    MonthlyPlaylistsSection(rememberPreference(showMonthlyPlaylistInQuickPicksKey, true).value, monthlyPlaylists, navController, endPaddingValues, playlistThumbnailSizeDp, playlistThumbnailSizePx, disableScrollingText)
-
-                    // 7. Show My Top (Local)
-                    MyTopSection(rememberPreference(showMyTopPlaylistKey, true).value, myTopSongs, navController, endPaddingValues, sectionTextModifier, itemInHorizontalGridWidth)
-
-                    // 8. Similar artists (Related)
-                    SimilarArtistsSection(state.relatedPageResult.value?.getOrNull(), rememberPreference(showSimilarArtistsKey, true).value, onArtistClick, navController, artistThumbnailSizePx, artistThumbnailSizeDp, disableScrollingText, endPaddingValues, sectionTextModifier, displayedSectionTitles)
-
-                    // 9. Today's biggest hits & All hits (YTM)
-                    YtmSectionByTitle(ytmSections, { it.contains("Today's biggest hits", ignoreCase = true) }, stringResource(R.string.todays_biggest_hits), itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles)
-                    YtmSectionByTitle(ytmSections, { it.contains("All hits", ignoreCase = true) }, stringResource(R.string.all_hits), itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles)
-
-                    // 10. Playlists you might like (YTM)
-                    YtmSectionByTitle(ytmSections, { it.contains("Playlist you might like", ignoreCase = true) }, stringResource(R.string.playlists_you_might_like), itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles)
-
-                    // 11. Featured playlists ... to Trending songs for you (YTM)
-                    val secondYtmMerged = listOf(
-                        Pair(stringResource(R.string.featured_playlists_for_you)) { s: String -> s.contains("Featured playlists", ignoreCase = true) },
-                        Pair(stringResource(R.string.trending_community_playlists)) { s: String -> s.contains("Trending community playlists", ignoreCase = true) },
-                        Pair(stringResource(R.string.from_the_community)) { s: String -> s.contains("From the community", ignoreCase = true) },
-                        Pair(stringResource(R.string.trending_songs_for_you)) { s: String -> s.contains("Trending songs for you", ignoreCase = true) }
-                    )
-                    secondYtmMerged.forEach { (title, predicate) ->
-                        YtmSectionByTitle(ytmSections, predicate, title, itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles)
-                    }
-
-                    // 12. Top music videos (YTM)
-                    YtmSectionByTitle(ytmSections, { it.contains("Top music videos", ignoreCase = true) }, stringResource(R.string.top_music_videos), itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles)
-
-                    // 13. Cover and remixes ... to Live performances (YTM)
-                    val thirdYtmMerged = listOf(
-                        Pair(stringResource(R.string.cover_and_remixes)) { s: String -> s.contains("Cover", ignoreCase = true) || s.contains("remix", ignoreCase = true) },
-                        Pair(stringResource(R.string.trending_in_shorts)) { s: String -> s.contains("Trending in Shorts", ignoreCase = true) },
-                        Pair(stringResource(R.string.music_videos_for_you)) { s: String -> s.contains("Music videos for you", ignoreCase = true) },
-                        Pair(stringResource(R.string.live_performances)) { s: String -> s.contains("Live performances", ignoreCase = true) }
-                    )
-                    thirdYtmMerged.forEach { (title, predicate) ->
-                        YtmSectionByTitle(ytmSections, predicate, title, itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles)
-                    }
-
-                    // 14. Moods & Chips (YTM/Discovery)
-                    MoodsSection(state.homePageInit.value, onChipClick, gridsContentPadding, displayedSectionTitles)
-                    MoodsAndGenresSection(rememberPreference(showMoodsAndGenresKey, true).value, state.discoverPageInit.value, onMoodClick, navController, gridsContentPadding, displayedSectionTitles)
-
-                    // 15. Generic YTM Sections
-                    GenericYtmSections(state.homePageInit.value, displayedSectionTitles, itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick)
-
-                    // 16. Charts (Charts)
-                    ChartsSection(rememberPreference(showChartsKey, true).value, state.chartsPageInit.value, selectedCountryCode, { selectedCountryCode = it }, navController, onPlaylistClick, onArtistClick, endPaddingValues, playlistThumbnailSizePx, playlistThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, disableScrollingText, parentalControlEnabled, displayedSectionTitles, itemInHorizontalGridWidth)
+                val newReleaseAlbumsFiltered = remember(state.discoverPageInit.value, artists) {
+                    state.discoverPageInit.value?.newReleaseAlbums?.filter { album ->
+                        artists.any { it.name == album.authors?.firstOrNull()?.name }
+                    }.orEmpty()
                 }
+
+                val monthlyPlaylistsState = persistList<PlaylistPreview>("home/quickpicks/local/monthlyPlaylists")
+                val monthlyPlaylists by remember {
+                    Database.playlistTable.allAsPreview().distinctUntilChanged().map { list -> list.filter { it.playlist.name.startsWith(MONTHLY_PREFIX, true) } }
+                }.collectAsState(monthlyPlaylistsState.value, Dispatchers.IO)
+                LaunchedEffect(monthlyPlaylists) { monthlyPlaylistsState.value = monthlyPlaylists }
+
+                val maxTopPlaylistItems by rememberPreference(MaxTopPlaylistItemsKey, MaxTopPlaylistItems.`10`)
+                val myTopSongsState = persistList<Song>("home/quickpicks/local/myTopSongs")
+                val myTopSongs by remember { Database.eventTable.findSongsMostPlayedBetween(from = 0L, limit = maxTopPlaylistItems.toInt()) }.collectAsState(myTopSongsState.value, Dispatchers.IO)
+                LaunchedEffect(myTopSongs) { myTopSongsState.value = myTopSongs }
+
+                // 2. Fresh finds ... to New releases (YTM)
+                val firstYtmMerged = listOf(
+                    Pair(stringResource(R.string.fresh_finds_old_favorites)) { s: String -> s.contains("Fresh finds", ignoreCase = true) || s.contains("Old favorites", ignoreCase = true) },
+                    Pair(stringResource(R.string.mixed_for_you)) { s: String -> s.contains("Mixed for you", ignoreCase = true) },
+                    Pair(stringResource(R.string.forgotten_favorites)) { s: String -> s.contains("Forgotten favorites", ignoreCase = true) },
+                    Pair(stringResource(R.string.your_daily_discover)) { s: String -> s.contains("Your daily discover", ignoreCase = true) },
+                    Pair(stringResource(R.string.fresh_new_music)) { s: String -> s.contains("Fresh new music", ignoreCase = true) },
+                    Pair(stringResource(R.string.new_releases)) { s: String -> s.contains("New release", ignoreCase = true) && !s.contains("Fresh new music", ignoreCase = true) }
+                )
+                firstYtmMerged.forEach { (title, predicate) ->
+                    YtmSectionByTitle(ytmSections, predicate, title, itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles, isLoading = showLoader)
+                }
+
+                // 3. New albums (Discovery)
+                NewAlbumsOfYourArtistsSection(state.discoverPageInit.value, artists, newReleaseAlbumsFiltered, rememberPreference(showNewAlbumsArtistsKey, true).value, onAlbumClick, navController, albumThumbnailSizePx, albumThumbnailSizeDp, disableScrollingText, endPaddingValues, sectionTextModifier)
+                NewAlbumsSection(state.discoverPageInit.value, rememberPreference(showNewAlbumsKey, true).value, onAlbumClick, navController, albumThumbnailSizePx, albumThumbnailSizeDp, disableScrollingText, endPaddingValues, displayedSectionTitles)
+
+                // 4. Albums for you (YTM)
+                YtmSectionByTitle(ytmSections, { it.contains("Albums for you", ignoreCase = true) }, stringResource(R.string.albums_for_you), itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles, isLoading = showLoader)
+
+                // 5. Related albums (Related)
+                RelatedAlbumsSection(state.relatedPageResult.value?.getOrNull(), rememberPreference(showRelatedAlbumsKey, true).value, onAlbumClick, navController, albumThumbnailSizePx, albumThumbnailSizeDp, disableScrollingText, endPaddingValues, sectionTextModifier, displayedSectionTitles)
+
+                // 6. Monthly Albums (Local)
+                MonthlyPlaylistsSection(rememberPreference(showMonthlyPlaylistInQuickPicksKey, true).value, monthlyPlaylists, navController, endPaddingValues, playlistThumbnailSizeDp, playlistThumbnailSizePx, disableScrollingText)
+
+                // 7. Show My Top (Local)
+                MyTopSection(rememberPreference(showMyTopPlaylistKey, true).value, myTopSongs, navController, endPaddingValues, sectionTextModifier, itemInHorizontalGridWidth)
+
+                // 8. Similar artists (Related)
+                SimilarArtistsSection(state.relatedPageResult.value?.getOrNull(), rememberPreference(showSimilarArtistsKey, true).value, onArtistClick, navController, artistThumbnailSizePx, artistThumbnailSizeDp, disableScrollingText, endPaddingValues, sectionTextModifier, displayedSectionTitles)
+
+                // 9. Today's biggest hits & All hits (YTM)
+                YtmSectionByTitle(ytmSections, { it.contains("Today's biggest hits", ignoreCase = true) }, stringResource(R.string.todays_biggest_hits), itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles, isLoading = showLoader)
+                YtmSectionByTitle(ytmSections, { it.contains("All hits", ignoreCase = true) }, stringResource(R.string.all_hits), itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles, isLoading = showLoader)
+
+                // 10. Playlists you might like (YTM)
+                YtmSectionByTitle(ytmSections, { it.contains("Playlist you might like", ignoreCase = true) }, stringResource(R.string.playlists_you_might_like), itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles, isLoading = showLoader)
+
+                // 11. Featured playlists ... to Trending songs for you (YTM)
+                val secondYtmMerged = listOf(
+                    Pair(stringResource(R.string.featured_playlists_for_you)) { s: String -> s.contains("Featured playlists", ignoreCase = true) },
+                    Pair(stringResource(R.string.trending_community_playlists)) { s: String -> s.contains("Trending community playlists", ignoreCase = true) },
+                    Pair(stringResource(R.string.from_the_community)) { s: String -> s.contains("From the community", ignoreCase = true) },
+                    Pair(stringResource(R.string.trending_songs_for_you)) { s: String -> s.contains("Trending songs for you", ignoreCase = true) }
+                )
+                secondYtmMerged.forEach { (title, predicate) ->
+                    YtmSectionByTitle(ytmSections, predicate, title, itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles, isLoading = showLoader)
+                }
+
+                // 12. Top music videos (YTM)
+                YtmSectionByTitle(ytmSections, { it.contains("Top music videos", ignoreCase = true) }, stringResource(R.string.top_music_videos), itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles, isLoading = showLoader)
+
+                // 13. Cover and remixes ... to Live performances (YTM)
+                val thirdYtmMerged = listOf(
+                    Pair(stringResource(R.string.cover_and_remixes)) { s: String -> s.contains("Cover", ignoreCase = true) || s.contains("remix", ignoreCase = true) },
+                    Pair(stringResource(R.string.trending_in_shorts)) { s: String -> s.contains("Trending in Shorts", ignoreCase = true) },
+                    Pair(stringResource(R.string.music_videos_for_you)) { s: String -> s.contains("Music videos for you", ignoreCase = true) },
+                    Pair(stringResource(R.string.live_performances)) { s: String -> s.contains("Live performances", ignoreCase = true) }
+                )
+                thirdYtmMerged.forEach { (title, predicate) ->
+                    YtmSectionByTitle(ytmSections, predicate, title, itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, displayedSectionTitles, isLoading = showLoader)
+                }
+
+                // 14. Moods & Chips (YTM/Discovery)
+                MoodsSection(state.homePageInit.value, onChipClick, gridsContentPadding, displayedSectionTitles)
+                MoodsAndGenresSection(rememberPreference(showMoodsAndGenresKey, true).value, state.discoverPageInit.value, onMoodClick, navController, gridsContentPadding, displayedSectionTitles)
+
+                // 15. Generic YTM Sections
+                GenericYtmSections(state.homePageInit.value, displayedSectionTitles, itemInHorizontalGridWidth, albumThumbnailSizePx, albumThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, playlistThumbnailSizePx, playlistThumbnailSizeDp, disableScrollingText, endPaddingValues, navController, onAlbumClick, onArtistClick, onPlaylistClick, isLoading = showLoader)
+
+                // 16. Charts (Charts)
+                ChartsSection(rememberPreference(showChartsKey, true).value, state.chartsPageInit.value, selectedCountryCode, { selectedCountryCode = it }, navController, onPlaylistClick, onArtistClick, endPaddingValues, playlistThumbnailSizePx, playlistThumbnailSizeDp, songThumbnailSizePx, songThumbnailSizeDp, disableScrollingText, parentalControlEnabled, displayedSectionTitles, itemInHorizontalGridWidth)
+                
+                // HomeBottomShimmer removed as shimmers are now inline in their respective positions
 
                 if (state.relatedPageResult.value?.exceptionOrNull() != null) {
                     Spacer(modifier = Modifier.height(50.dp))

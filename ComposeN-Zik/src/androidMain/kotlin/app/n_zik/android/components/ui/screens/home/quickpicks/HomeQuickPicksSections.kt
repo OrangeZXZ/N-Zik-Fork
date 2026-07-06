@@ -252,10 +252,29 @@ fun YtmSectionByTitle(
     onAlbumClick: (String) -> Unit,
     onArtistClick: (String) -> Unit,
     onPlaylistClick: (String) -> Unit,
-    displayedSectionTitles: MutableSet<String>
+    displayedSectionTitles: MutableSet<String>,
+    isLoading: Boolean = false
 ) {
     val matching = ytmSections.filter { titlePredicate(it.title) }
     if (matching.isEmpty()) {
+        if (isLoading && titleOverride != null) {
+            Title(
+                title = titleOverride,
+                enableClick = false,
+                onClick = null,
+                verticalPadding = 16.dp
+            )
+            androidx.compose.foundation.lazy.LazyRow(contentPadding = endPaddingValues) {
+                items(5) {
+                    app.it.fast4x.rimusic.ui.components.ShimmerHost {
+                        app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder(
+                            thumbnailSizeDp = albumThumbnailSizeDp,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+                }
+            }
+        }
         return
     }
     
@@ -284,7 +303,8 @@ fun YtmSectionByTitle(
         navController = navController,
         onAlbumClick = onAlbumClick,
         onArtistClick = onArtistClick,
-        onPlaylistClick = onPlaylistClick
+        onPlaylistClick = onPlaylistClick,
+        isLoading = isLoading
     )
 }
 
@@ -866,7 +886,8 @@ fun GenericYtmSections(
     navController: NavController,
     onAlbumClick: (String) -> Unit,
     onArtistClick: (String) -> Unit,
-    onPlaylistClick: (String) -> Unit
+    onPlaylistClick: (String) -> Unit,
+    isLoading: Boolean = false
 ) {
     val binder = LocalPlayerServiceBinder.current
     val menuState = LocalMenuState.current
@@ -945,6 +966,17 @@ fun GenericYtmSections(
                         modifier = Modifier.width(itemInHorizontalGridWidth)
                     )
                 }
+                
+                if (isLoading) {
+                    items(3) {
+                        app.it.fast4x.rimusic.ui.components.ShimmerHost {
+                            app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder(
+                                thumbnailSizeDp = albumThumbnailSizeDp,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
+                    }
+                }
             }
         } else {
             LazyRow(contentPadding = endPaddingValues) {
@@ -1014,11 +1046,22 @@ fun GenericYtmSections(
                                         else
                                             binder?.player?.forcePlay(item.asMediaItem)
                                     },
-                                    onLongClick = { menuState.display { VideoItemMenu(navController = navController, song = item.asSong).MenuComponent() } }
+                                    onLongClick = { menuState.display { app.n_zik.android.components.menu.video.VideoItemMenu(navController = navController, song = item.asSong).MenuComponent() } }
                                 )
                             )
                         }
                         null -> {}
+                    }
+                }
+                
+                if (isLoading) {
+                    items(3) {
+                        app.it.fast4x.rimusic.ui.components.ShimmerHost {
+                            app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder(
+                                thumbnailSizeDp = albumThumbnailSizeDp,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
                     }
                 }
             }

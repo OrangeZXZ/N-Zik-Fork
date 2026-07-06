@@ -149,11 +149,11 @@ class HomeQuickPicksState(
                         cumulativeSections = existingSections + newSections
                         cumulativeChips = (cumulativeChips + (page.chips ?: emptyList())).distinctBy { it.title }
                         homePageResult.value = Result.success(HomePage(sections = cumulativeSections, chips = cumulativeChips))
+                        homePageInit.value = homePageResult.value?.getOrNull()
                     }
                     if (cumulativeSections.size > 15) return@repeat
                 }
 
-                homePageInit.value = homePageResult.value?.getOrNull()
                 Timber.tag("HomeQuickPicksState").d("YouTube Music sections loaded: ${homePageInit.value?.sections?.size ?: 0}")
             }
 
@@ -174,8 +174,11 @@ class HomeQuickPicksState(
         relatedPageResult.value = null
         trending.value = null
         homePageResult.value = null
+        homePageInit.value = null
         discoverPageResult.value = null
+        discoverPageInit.value = null
         chartsPageResult.value = null
+        chartsPageInit.value = null
         scope.launch(Dispatchers.IO) {
             refreshing.value = true
             loadData()

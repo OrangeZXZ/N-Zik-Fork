@@ -119,7 +119,8 @@ fun YtmSectionItems(
     navController: NavController,
     onAlbumClick: (String) -> Unit,
     onArtistClick: (String) -> Unit,
-    onPlaylistClick: (String) -> Unit
+    onPlaylistClick: (String) -> Unit,
+    isLoading: Boolean = false
 ) {
     if (section.items.isNotEmpty() && section.items.firstOrNull()?.key != null) {
         val isSongOnly = section.items.all { item -> item is Innertube.SongItem }
@@ -154,6 +155,17 @@ fun YtmSectionItems(
                         },
                         modifier = Modifier.width(itemInHorizontalGridWidth)
                     )
+                }
+                
+                if (isLoading) {
+                    items(3) {
+                        app.it.fast4x.rimusic.ui.components.ShimmerHost {
+                            app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder(
+                                thumbnailSizeDp = albumThumbnailSizeDp,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
+                    }
                 }
             }
         } else {
@@ -269,6 +281,17 @@ fun YtmSectionItems(
                             )
                         }
                         null -> {}
+                    }
+                }
+                
+                if (isLoading) {
+                    items(3) {
+                        app.it.fast4x.rimusic.ui.components.ShimmerHost {
+                            app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder(
+                                thumbnailSizeDp = albumThumbnailSizeDp,
+                                modifier = Modifier.padding(horizontal = 4.dp)
+                            )
+                        }
                     }
                 }
             }
