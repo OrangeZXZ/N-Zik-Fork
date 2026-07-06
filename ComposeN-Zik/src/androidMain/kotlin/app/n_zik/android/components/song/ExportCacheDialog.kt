@@ -225,7 +225,7 @@ class ExportCacheDialog(
                                         Timber.tag("ExportCache").e(e, "Export copy error")
                                         CoroutineScope(Dispatchers.Main).launch {
                                             isExporting.value = false
-                                            Toaster.e("Export copy error: ${e.message}")
+                                            Toaster.e(R.string.export_copy_error, e.message)
                                         }
                                     } finally {
                                         rawFile.delete()
@@ -238,7 +238,7 @@ class ExportCacheDialog(
                                 Timber.tag("ExportCache").e(exportException, "Media3 Transformer export failed")
                                 CoroutineScope(Dispatchers.Main).launch {
                                     isExporting.value = false
-                                    Toaster.e("Export failed: ${exportException.message}")
+                                    Toaster.e(R.string.export_failed, exportException.message)
                                 }
                                 try { DocumentsContract.deleteDocument(appContext().contentResolver, uri) } catch (_: Exception) {}
                                 rawFile.delete()
@@ -253,7 +253,7 @@ class ExportCacheDialog(
                         } catch (e: Exception) {
                             Timber.tag("ExportCache").e(e, "Media3 Transformer start error")
                             isExporting.value = false
-                            Toaster.e("Export start error: ${e.message}")
+                            Toaster.e(R.string.export_start_error, e.message)
                             rawFile.delete()
                             outFile.delete()
                         }
@@ -263,7 +263,7 @@ class ExportCacheDialog(
                     Timber.tag("ExportCache").e(e, "Export overall error")
                     CoroutineScope(Dispatchers.Main).launch {
                         isExporting.value = false
-                        Toaster.e("Export error: ${e.message}")
+                        Toaster.e(R.string.export_error, e.message)
                     }
                     try { DocumentsContract.deleteDocument(appContext().contentResolver, uri) } catch (_: Exception) {}
                     rawFile.delete()
@@ -273,7 +273,7 @@ class ExportCacheDialog(
                 Timber.tag("ExportCache").e(e, "Export init error")
                 CoroutineScope(Dispatchers.Main).launch {
                     isExporting.value = false
-                    Toaster.e("Export error: ${e.message}")
+                    Toaster.e(R.string.export_error, e.message)
                 }
                 try { DocumentsContract.deleteDocument(appContext().contentResolver, uri) } catch (_: Exception) {}
             }

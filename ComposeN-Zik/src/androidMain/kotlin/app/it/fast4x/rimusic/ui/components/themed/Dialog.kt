@@ -1835,16 +1835,18 @@ fun InProgressDialog(
                 trackColor = colorPalette.background2
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        BasicText(
-            text = "$done / $total",
-            style = TextStyle(
-                textAlign = TextAlign.Center,
-                fontStyle = typography().xs.semiBold.fontStyle,
-                color = colorPalette.text
-            ),
-            overflow = TextOverflow.Ellipsis,
-        )
+        if (total > 0) {
+            Spacer(modifier = Modifier.height(8.dp))
+            BasicText(
+                text = "$done / $total",
+                style = TextStyle(
+                    textAlign = TextAlign.Center,
+                    fontStyle = typography().xs.semiBold.fontStyle,
+                    color = colorPalette.text
+                ),
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
         if (onDismiss != null) {
             Spacer(modifier = Modifier.height(20.dp))
             Button(

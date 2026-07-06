@@ -1,5 +1,9 @@
-
-## 2026-07-06
+# Done - 2026-07-06
+- ExportCacheDialog - Fix loader & hardcoded strings
+  - Fixed InProgressDialog showing "0/0" when total=0 (hides counter text)
+  - Replaced 5 hardcoded Toaster.e() strings with R.string resources
+  - Replaced hardcoded "Exporting..." with stringResource(R.string.exporting)
+  - Added string resources: exporting, export_copy_error, export_failed, export_start_error, export_error
 - fix(home-sync): fix concurrent sync kills + filter logic for YT vs local items
   - Added `activeSyncs` counter to prevent `stopSelf()` from killing concurrent syncs
   - Fix `stopSelf()` placement after try/finally (not inside finally)

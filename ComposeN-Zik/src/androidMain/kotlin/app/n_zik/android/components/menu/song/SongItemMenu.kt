@@ -368,7 +368,7 @@ class SongItemMenu private constructor(
             app.it.fast4x.rimusic.ui.components.themed.InProgressDialog(
                 total = 0,
                 done = 0,
-                text = "Exporting...",
+                text = stringResource(R.string.exporting),
                 onDismiss = null
             )
         }
