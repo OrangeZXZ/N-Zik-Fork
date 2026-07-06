@@ -26,6 +26,14 @@ object WaveformExtractor {
     private val gson = Gson()
     private const val TARGET_SAMPLES = 150 // We want roughly 150 amplitude values for the UI
 
+    fun deleteWaveform(context: Context, mediaId: String) {
+        val waveformDir = File(context.filesDir, "waveforms")
+        val savedFile = File(waveformDir, "$mediaId.json")
+        if (savedFile.exists()) {
+            savedFile.delete()
+        }
+    }
+
     suspend fun getOrExtractWaveform(context: Context, mediaId: String, caches: List<Cache>): List<Int>? {
         return withContext(Dispatchers.IO) {
             // We use filesDir instead of cacheDir so it survives a "Clear Cache" by the user

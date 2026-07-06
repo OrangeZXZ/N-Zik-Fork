@@ -127,6 +127,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
                     Timber.tag("MatchGlobal").d("MERGE: transferred likedAt")
                 }
                 songTable.delete(song)
+                app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext, song.id)
                 mergedCounter?.incrementAndGet()
                 Timber.tag("MatchGlobal").d("MERGED '${song.title}' into '${existingSong.id}'")
                 return@transaction
@@ -137,6 +138,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
             Timber.tag("MatchGlobal").d("BDD: saving ${playlistMappings.size} playlist mappings before delete")
             // Delete old song
             songTable.delete(song)
+            app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext, song.id)
             Timber.tag("MatchGlobal").d("BDD: deleted old song id='${song.id}'")
             // Insert with new YouTube ID and pre-calculated position
             songTable.upsert(newSong.copy(
@@ -182,6 +184,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
                 songArtistMapTable.updateSongId(oldId, notFound.id)
                 eventTable.updateSongId(oldId, notFound.id)
                 songTable.delete(song)
+                app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext, song.id)
                 Timber.tag("MatchGlobal").d("NOT FOUND - shuffled to id='${notFound.id}'")
             }
         }
@@ -316,6 +319,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                     Timber.tag("MatchPlaylist").d("MERGE: transferred likedAt")
                 }
                 songTable.delete(song)
+                app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext, song.id)
                 mergedCounter?.incrementAndGet()
                 Timber.tag("MatchPlaylist").d("MERGED '${song.title}' into '${existingSong.id}'")
                 return@transaction
@@ -324,6 +328,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
             val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
             Timber.tag("MatchPlaylist").d("BDD: saving ${playlistMappings.size} playlist mappings before delete")
             songTable.delete(song)
+            app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext, song.id)
             Timber.tag("MatchPlaylist").d("BDD: deleted old song id='${song.id}'")
             songTable.upsert(newSong.copy(
                 title = PropUtils.retainIfModified(song.title, newSong.title).orEmpty(),

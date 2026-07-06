@@ -125,6 +125,7 @@ class SmartTrash private constructor(
                 songAlbumMapTable.deleteBySongId( song.id )
                 formatTable.deleteBySongId( song.id )
                 songTable.delete( song )
+                app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext, song.id)
             }
             
             // Clean up orphaned artists, albums and empty playlists
