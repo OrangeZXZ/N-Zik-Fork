@@ -59,6 +59,7 @@ import androidx.navigation.NavController
 import app.n_zik.android.R
 import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.cleanPrefix
+import app.it.fast4x.rimusic.stripExplicitEmoji
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ButtonState
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
@@ -337,7 +338,7 @@ fun InfoAlbumAndArtistEssential(
             contentAlignment = Alignment.Center
         ) {
             BasicText(
-                text = artist ?: "",
+                text = cleanPrefix(artist ?: "").stripExplicitEmoji(),
                 style = TextStyle(
                     textAlign = TextAlign.Center,
                     color = if (artistIds?.isEmpty() == true)
@@ -356,7 +357,7 @@ fun InfoAlbumAndArtistEssential(
 
             )
             BasicText(
-                text = artist ?: "",
+                text = cleanPrefix(artist ?: "").stripExplicitEmoji(),
                 style = TextStyle(
                     drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
                     textAlign = TextAlign.Center,

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import app.it.fast4x.rimusic.cleanPrefix
+import app.it.fast4x.rimusic.stripExplicitEmoji
 import app.it.fast4x.rimusic.utils.durationTextToMillis
 import app.it.fast4x.rimusic.utils.setLikeState
 import kotlinx.serialization.Serializable
@@ -53,7 +54,7 @@ data class Song(
 
     fun cleanTitle() = cleanPrefix( this.title )
 
-    fun cleanArtistsText() = cleanPrefix( this.artistsText ?: "" )
+    fun cleanArtistsText() = cleanPrefix( this.artistsText ?: "" ).stripExplicitEmoji()
 
     fun relativePlayTime(): Double {
         val totalPlayTimeMs = durationTextToMillis(this.durationText ?: "")
