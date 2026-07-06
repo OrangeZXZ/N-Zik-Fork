@@ -43,6 +43,7 @@ import coil3.request.SuccessResult
 import coil3.toBitmap
 import android.graphics.Bitmap
 import java.io.ByteArrayOutputStream
+import it.fast4x.innertube.requests.songInfo
 
 class ExportCacheDialog(
     activeState: MutableState<Boolean>,
@@ -98,6 +99,36 @@ class ExportCacheDialog(
                     val album = Database.songAlbumMapTable.findAlbumOf(song.id).first()
                     val trackPosition = Database.songAlbumMapTable.findPositionOf(song.id).first()
                     Timber.tag("ExportCache").i("Album: ${album?.title}, year: ${album?.year}, position: $trackPosition")
+
+                    // Try to fetch song description for extra metadata (offline-safe)
+                    var description: String? = null
+                    try {
+                        val songInfo = it.fast4x.innertube.Innertube.songInfo(song.id)?.getOrNull()
+                        description = songInfo?.description
+                        Timber.tag("ExportCache").i("Fetched description: ${description?.take(200)}")
+                    } catch (e: Exception) {
+                        Timber.tag("ExportCache").w(e, "Failed to fetch song info (offline?)")
+                    }
+
+                    // Parse description for metadata
+                    val composers = mutableListOf<String>()
+                    var publisher: String? = null
+                    var genre: String? = null
+                    description?.lines()?.forEach { line ->
+                        val trimmed = line.trim()
+                        when {
+                            trimmed.startsWith("Composer:", ignoreCase = true) -> {
+                                composers.add(trimmed.removePrefix("Composer:").trim())
+                            }
+                            trimmed.startsWith("℗", ignoreCase = false) || trimmed.startsWith("(P)", ignoreCase = true) -> {
+                                publisher = trimmed.removePrefix("℗").removePrefix("(P)").trim()
+                            }
+                            trimmed.startsWith("Genre:", ignoreCase = true) -> {
+                                genre = trimmed.removePrefix("Genre:").trim()
+                            }
+                        }
+                    }
+                    Timber.tag("ExportCache").i("Parsed: composers=$composers, publisher=$publisher, genre=$genre")
 
                     var artworkData: ByteArray? = null
                     if (!song.thumbnailUrl.isNullOrEmpty()) {
@@ -159,7 +190,13 @@ class ExportCacheDialog(
                                             tag.setField(org.jaudiotagger.tag.FieldKey.ARTIST, song.cleanArtistsText())
                                             album?.title?.let { tag.setField(org.jaudiotagger.tag.FieldKey.ALBUM, it) }
                                             album?.year?.let { tag.setField(org.jaudiotagger.tag.FieldKey.YEAR, it) }
-                                            trackPosition?.let { if (it >= 0) tag.setField(org.jaudiotagger.tag.FieldKey.TRACK, it.toString()) }
+                                            trackPosition?.let { if (it >= 0) tag.setField(org.jaudiotagger.tag.FieldKey.TRACK, (it + 1).toString()) }
+                                            tag.setField(org.jaudiotagger.tag.FieldKey.ENCODER, "Exported from N-Zik")
+                                            publisher?.let { tag.setField(org.jaudiotagger.tag.FieldKey.COPYRIGHT, it) }
+                                            genre?.let { tag.setField(org.jaudiotagger.tag.FieldKey.GENRE, it) }
+                                            if (composers.isNotEmpty()) {
+                                                tag.setField(org.jaudiotagger.tag.FieldKey.COMPOSER, composers.joinToString(", "))
+                                            }
 
                                             if (artworkData != null) {
                                                 val artwork = org.jaudiotagger.tag.images.ArtworkFactory.getNew()
