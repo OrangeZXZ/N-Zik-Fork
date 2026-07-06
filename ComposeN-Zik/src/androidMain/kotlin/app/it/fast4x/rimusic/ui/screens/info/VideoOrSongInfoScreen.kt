@@ -148,7 +148,9 @@ fun VideoOrSongInfoScreen(
     ) {
         if (isLoading) {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Loader()
