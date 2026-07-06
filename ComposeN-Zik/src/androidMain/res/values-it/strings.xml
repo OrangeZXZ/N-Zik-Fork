@@ -1016,6 +1016,11 @@
   <string name="export_cached">Esportazione memorizzata nella cache</string>
   <string name="info_export_cached_or_downloaded_song">Esporta brano memorizzato nella cache o scaricato</string>
   <string name="song_must_be_cached_or_downloaded_to_export">Per esportare il brano è necessario memorizzarlo nella cache o scaricarlo</string>
+  <string name="exporting">Exporting…</string>
+  <string name="export_copy_error">Export copy error: %s</string>
+  <string name="export_failed">Export failed: %s</string>
+  <string name="export_start_error">Export start error: %s</string>
+  <string name="export_error">Export error: %s</string>
   <string name="title_restart_required">Riavvio richiesto</string>
   <string name="restart_dialog_body">Per favore apri di nuovo %s dopo!</string>
   <string name="title_export_settings">Impostazioni di esportazione</string>
