@@ -1,4 +1,8 @@
 # Done - 2026-07-06
+- refactor(visualizer): improve settings menu layout to match lyrics menu
+  - Fixed `BottomSheetMenu` not rendering by adding `.MenuComponent()` call when invoking `VisualizerSettingsMenu`.
+  - Replaced manual rows with `SectionTitle`, `ToggleSettingEntry`, `EnumSettingEntry` helpers copied from `LyricsSettingsMenu` for perfect UI alignment.
+  - Fixed scroll, padding, and `navigationBarsPadding` to match lyrics menu structure.
 - fix(playback): remove playback delay when clicking songs in lists (issue #633)
   - Refactored `forcePlayAtIndex` in `Player.kt` to start playback immediately via `setMediaItems` and `playWhenReady` without blocking the main thread.
   - Moved the network prefetch (`upsertSongInfo`) to run asynchronously *after* playback starts.

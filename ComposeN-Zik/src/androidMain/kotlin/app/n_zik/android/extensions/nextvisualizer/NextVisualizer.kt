@@ -96,7 +96,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import app.it.fast4x.rimusic.ui.components.themed.VisualizerParamsDialog
+import app.n_zik.android.components.menu.visualizer.VisualizerSettingsMenu
+import app.it.fast4x.rimusic.ui.components.LocalMenuState
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -267,13 +268,7 @@ fun NextVisualizer() {
                 showControls = false
             }
             
-            var showVisualizerParamsDialog by remember { mutableStateOf(false) }
-            
-            if (showVisualizerParamsDialog) {
-                VisualizerParamsDialog(
-                    onDismiss = { showVisualizerParamsDialog = false }
-                )
-            }
+            val menuState = LocalMenuState.current
 
             Box(
                 modifier = Modifier
@@ -347,7 +342,9 @@ fun NextVisualizer() {
                     IconButton(
                         onClick = {
                             controlsTimerKey++
-                            showVisualizerParamsDialog = true
+                            menuState.display {
+                                VisualizerSettingsMenu().MenuComponent()
+                            }
                         },
                         icon = R.drawable.settings,
                         color = colorPalette().text,
