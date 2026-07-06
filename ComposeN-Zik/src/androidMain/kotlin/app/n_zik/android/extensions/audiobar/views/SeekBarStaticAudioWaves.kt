@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +60,10 @@ fun SeekBarStaticAudioWaves(
     var amplitudes by remember { mutableStateOf<List<Int>?>(null) }
     var isExtracting by remember { mutableStateOf(false) }
 
-    LaunchedEffect(uiMedia?.id) {
+    val currentSongStateDownload by binder?.service?.currentSongStateDownload?.collectAsState() 
+        ?: mutableStateOf(androidx.media3.exoplayer.offline.Download.STATE_STOPPED)
+
+    LaunchedEffect(uiMedia?.id, currentSongStateDownload) {
         if (uiMedia != null) {
             amplitudes = null // CLEAR previous waveform
             isExtracting = true
