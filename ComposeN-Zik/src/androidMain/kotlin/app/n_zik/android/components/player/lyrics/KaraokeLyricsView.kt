@@ -853,7 +853,17 @@ fun KaraokeLyricsView(
                             ),
                             modifier = Modifier.drawWithContent {
                                 val layout = textLayoutResult ?: return@drawWithContent
-                                
+
+                                // Guard: layout may be stale (computed for a different text) during
+                                // recomposition after a mode switch or translation cache update.
+                                // In that case, skip the animated draw to avoid getBoundingBox() crash.
+                                val layoutTextLength = layout.layoutInput.text.length
+                                val isLayoutStale = layoutTextLength != displayedText.length
+                                if (isLayoutStale) {
+                                    drawContent()
+                                    return@drawWithContent
+                                }
+
                                 if (isTextReplaced) {
                                     val lineStartMs = line.timeMs
                                     val lineEndMs = line.words.maxOfOrNull { it.endMs } ?: (lineStartMs + 2000L)
@@ -985,9 +995,10 @@ fun KaraokeLyricsView(
                                     val isWordActive = currentPositionMs >= word.startMs && currentPositionMs < word.endMs
                                     val isWordSung = currentPositionMs >= word.endMs
                                     
-                                    val wStartIdx = word.charStartIndex.coerceIn(0, displayedText.length.coerceAtLeast(1) - 1)
-                                    val wEndIdx = (word.charStartIndex + word.text.length - 1).coerceIn(0, displayedText.length.coerceAtLeast(1) - 1)
-                                    
+                                    val maxIdx = layoutTextLength.coerceAtLeast(1) - 1
+                                    val wStartIdx = word.charStartIndex.coerceIn(0, maxIdx)
+                                    val wEndIdx = (word.charStartIndex + word.text.length - 1).coerceIn(0, maxIdx)
+
                                     val startBox = layout.getBoundingBox(wStartIdx)
                                     val endBox = layout.getBoundingBox(wEndIdx)
                                     
