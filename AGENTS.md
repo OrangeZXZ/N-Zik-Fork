@@ -104,6 +104,7 @@ class MyClass {
 8. **No force pushes, rebases, or branch deletions** without explicit instructions from a human.
 9. **Follow existing patterns** -- always examine neighboring files and existing code before introducing new patterns.
 10. **Test your changes** -- if you do not test your changes before reporting, you will face reprimands and may be asked to redo your work. Always verify thoroughly.
+11. **Imports** -- the `import` declarations must ALWAYS be placed at the top of the files. It is strictly forbidden to use fully qualified class names (ex: `java.util.List`) in the middle of the code (inline) unless there is an absolute naming conflict impossible to resolve otherwise.
 
 ---
 
