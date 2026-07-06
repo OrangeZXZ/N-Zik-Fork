@@ -1971,18 +1971,16 @@ class PlayerServiceModern : MediaLibraryService(),
             stopSelf()
         }
 
-        @kotlin.OptIn(FlowPreview::class)
         fun toggleLike() {
+            val song = currentSong.value ?: return
+
             Database.asyncTransaction {
-                currentSong.value?.let {
-                    songTable.rotateLikeState( it.id )
-                }.also {
-                    currentSong.debounce(1000).collect(coroutineScope) { updateDefaultNotification() }
-                }
+                songTable.rotateLikeState( song.id )
+                updateDefaultNotification()
             }
 
-            currentSong.value
-                ?.let { MyDownloadHelper.autoDownloadWhenLiked(this@PlayerServiceModern, it.asMediaItem) }
+            val newLikeState = song.likedAt == null
+            MyDownloadHelper.downloadOnLike(song.asMediaItem, newLikeState, this@PlayerServiceModern)
         }
 
         fun toggleDownload() {

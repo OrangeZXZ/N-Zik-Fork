@@ -984,15 +984,13 @@ fun Player(
                 onMaximize = {},
                 onDoubleTap = {
                     val currentMediaItem = binder.player.currentMediaItem
-                    Database.asyncTransaction {
-                        if( !isSongLiked )
-                            currentMediaItem
-                                ?.takeIf { it.mediaId == mediaItem.mediaId }
-                                ?.let {
-                                    insertIgnore( currentMediaItem )
-                                    songTable.toggleLike( currentMediaItem.mediaId )
-                                }
-                    }
+                    currentMediaItem
+                        ?.takeIf { it.mediaId == mediaItem.mediaId }
+                        ?.let { item ->
+                            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                                app.kreate.android.me.knighthat.sync.YouTubeSync.toggleSongLike(context, item)
+                            }
+                        }
                     if (effectRotationEnabled) isRotated = !isRotated
                 },
                 modifier = Modifier

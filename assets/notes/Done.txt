@@ -1,4 +1,8 @@
 # Done - 2026-07-06
+- fix(like): fix download on like race condition and UI double-tap bug (issue #609)
+  - Replaced buggy `Database.asyncQuery` race condition inside `PlayerServiceModern.toggleLike` with synchronous `likedAt` check and direct `MyDownloadHelper.downloadOnLike` call.
+  - Eliminated memory leak (`currentSong.collect`) caused every time Like was pressed from the notification.
+  - Updated `Player.kt` `onDoubleTap` to use `YouTubeSync.toggleSongLike` instead of a manual Database transaction so double-tapping the artwork triggers auto-download correctly.
 - refactor: clean up inline hardcoded imports in project codebase
   - Added Rule 11 to `AGENTS.md` strictly forbidding inline package paths for imports
   - Created `refactor_imports_v2.py` python script that uses targeted regex to safely remove inline packages specific to internal app prefixes (`app.n_zik`, `app.it.fast4x`, `it.fast4x`, etc.), while avoiding collisions with Compose or standard Android classes (like `Color`, `Database`).
