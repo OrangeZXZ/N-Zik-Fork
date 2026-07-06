@@ -1017,11 +1017,11 @@ Volume BAS : titre précédent</string>
   <string name="export_cached">Exporter en cache</string>
   <string name="info_export_cached_or_downloaded_song">Exporter le titre mis en cache ou téléchargé</string>
   <string name="song_must_be_cached_or_downloaded_to_export">Le titre doit être mis en cache ou téléchargé pour être exporté</string>
-  <string name="exporting">Exporting…</string>
-  <string name="export_copy_error">Export copy error: %s</string>
-  <string name="export_failed">Export failed: %s</string>
-  <string name="export_start_error">Export start error: %s</string>
-  <string name="export_error">Export error: %s</string>
+  <string name="exporting">Exportation en cours…</string>
+  <string name="export_copy_error">Erreur lors de l\'exportation de la copie : %s</string>
+  <string name="export_failed">Échec de l\'exportation : %s</string>
+  <string name="export_start_error">Erreur au début de l\'exportation : %s</string>
+  <string name="export_error">Erreur d\'exportation : %s</string>
   <string name="title_restart_required">Redémarrage requis</string>
   <string name="restart_dialog_body">Veuillez rouvrir %s après !</string>
   <string name="title_export_settings">Paramètres d\'exportation</string>
