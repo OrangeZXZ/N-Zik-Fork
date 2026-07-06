@@ -93,20 +93,29 @@ class VisualizerSettingsMenu private constructor(
 
     @Composable
     override fun MenuComponent() {
+        var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
+        var blackBackgroundForVisThumbnail by rememberPreference(blackBackgroundForVisThumbnailKey, true)
+        var showVisualizerButtons by rememberPreference(showVisualizerButtonsKey, true)
+        var showVisualizerStateKeyPref by rememberPreference(showVisualizerStateKey, false)
+        
+        var visualizerLineThickness by rememberPreference(visualizerLineThicknessKey, 6f)
+        var currentVisualizer by rememberPreference(currentVisualizerKey, 0)
+        
+        var visualizerWhiteColorOption by rememberPreference(visualizerWhiteColorOptionKey, VisualizerWhiteColorOption.White)
+        var visualizerCustomColor by rememberPreference(visualizerCustomColorKey, android.graphics.Color.WHITE)
+        var isShowingCustomColorPicker by remember { mutableStateOf(false) }
+
+        if (isShowingCustomColorPicker) {
+            val customColorString = stringResource(R.string.color_custom)
+            DialogColorPicker(onDismiss = { isShowingCustomColorPicker = false }) {
+                visualizerCustomColor = it.toArgb()
+                isShowingCustomColorPicker = false
+                Toaster.n(R.string.info_color_s_applied, customColorString)
+            }
+        }
+
         @Composable
         fun settingsContent() {
-            var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
-            var blackBackgroundForVisThumbnail by rememberPreference(blackBackgroundForVisThumbnailKey, true)
-            var showVisualizerButtons by rememberPreference(showVisualizerButtonsKey, true)
-            var showVisualizerStateKeyPref by rememberPreference(showVisualizerStateKey, false)
-            
-            var visualizerLineThickness by rememberPreference(visualizerLineThicknessKey, 6f)
-            var currentVisualizer by rememberPreference(currentVisualizerKey, 0)
-            
-            var visualizerWhiteColorOption by rememberPreference(visualizerWhiteColorOptionKey, VisualizerWhiteColorOption.White)
-            var visualizerCustomColor by rememberPreference(visualizerCustomColorKey, android.graphics.Color.WHITE)
-            var isShowingCustomColorPicker by remember { mutableStateOf(false) }
-
             // Section Title for General settings
             SectionTitle(stringResource(R.string.visualizer))
 
@@ -127,47 +136,21 @@ class VisualizerSettingsMenu private constructor(
                 onValueSelected = { visualizerWhiteColorOption = it }
             )
             
-            if (isShowingCustomColorPicker) {
-                val customColorString = stringResource(R.string.color_custom)
-                DialogColorPicker(onDismiss = { isShowingCustomColorPicker = false }) {
-                    visualizerCustomColor = it.toArgb()
-                    isShowingCustomColorPicker = false
-                    Toaster.n(R.string.info_color_s_applied, customColorString)
-                }
-            }
-
             AnimatedVisibility(visible = visualizerWhiteColorOption == VisualizerWhiteColorOption.Custom) {
-                if (menuStyle == MenuStyle.List) {
-                    ListMenu.Entry(
-                        text = stringResource(R.string.color_custom),
-                        icon = { SettingIcon(R.drawable.color_palette) },
-                        onClick = { isShowingCustomColorPicker = true },
-                        trailingContent = {
-                            Box(
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .clip(uiRoundnessShape())
-                                    .background(Color(visualizerCustomColor))
-                                    .border(BorderStroke(1.dp, colorPalette().textSecondary.copy(alpha = 0.3f)), uiRoundnessShape())
-                            )
-                        }
-                    )
-                } else {
-                    GridMenu.Entry(
-                        text = stringResource(R.string.color_custom),
-                        icon = { SettingIcon(R.drawable.color_palette) },
-                        onClick = { isShowingCustomColorPicker = true },
-                        trailingContent = {
-                            Box(
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .clip(uiRoundnessShape())
-                                    .background(Color(visualizerCustomColor))
-                                    .border(BorderStroke(1.dp, colorPalette().textSecondary.copy(alpha = 0.3f)), uiRoundnessShape())
-                            )
-                        }
-                    )
-                }
+                ListMenu.Entry(
+                    text = stringResource(R.string.color_custom),
+                    icon = { SettingIcon(R.drawable.color_palette) },
+                    onClick = { isShowingCustomColorPicker = true },
+                    trailingContent = {
+                        Box(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clip(uiRoundnessShape())
+                                .background(Color(visualizerCustomColor))
+                                .border(BorderStroke(1.dp, colorPalette().textSecondary.copy(alpha = 0.3f)), uiRoundnessShape())
+                        )
+                    }
+                )
             }
 
             // Save Visualizer State
@@ -229,6 +212,120 @@ class VisualizerSettingsMenu private constructor(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
+        fun androidx.compose.foundation.lazy.grid.LazyGridScope.settingsGridContent() {
+            item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+                SectionTitle(stringResource(R.string.visualizer))
+            }
+
+            item {
+                EnumSettingEntry(
+                    title = stringResource(R.string.visualizer_white_color_option),
+                    icon = R.drawable.color_palette,
+                    selectedValue = visualizerWhiteColorOption,
+                    values = VisualizerWhiteColorOption.entries.toList(),
+                    valueText = { value ->
+                        stringResource(when(value) { 
+                            VisualizerWhiteColorOption.White -> R.string.color_white
+                            VisualizerWhiteColorOption.Theme -> R.string.bg_colors_background_from_theme
+                            VisualizerWhiteColorOption.Cover -> R.string.bg_colors_background_from_cover
+                            VisualizerWhiteColorOption.Custom -> R.string.color_custom
+                        })
+                    },
+                    onValueSelected = { visualizerWhiteColorOption = it }
+                )
+            }
+            
+            if (visualizerWhiteColorOption == VisualizerWhiteColorOption.Custom) {
+                item {
+                    GridMenu.Entry(
+                        text = stringResource(R.string.color_custom),
+                        icon = { SettingIcon(R.drawable.color_palette) },
+                        onClick = { isShowingCustomColorPicker = true },
+                        trailingContent = {
+                            Box(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clip(uiRoundnessShape())
+                                    .background(Color(visualizerCustomColor))
+                                    .border(BorderStroke(1.dp, colorPalette().textSecondary.copy(alpha = 0.3f)), uiRoundnessShape())
+                            )
+                        }
+                    )
+                }
+            }
+
+            item {
+                ToggleSettingEntry(
+                    title = stringResource(R.string.save_visualizer_state),
+                    icon = R.drawable.bookmark,
+                    isChecked = showVisualizerStateKeyPref,
+                    onCheckedChange = { showVisualizerStateKeyPref = it }
+                )
+            }
+            
+            item {
+                ToggleSettingEntry(
+                    title = stringResource(R.string.showvisthumbnail),
+                    icon = R.drawable.equalizer,
+                    isChecked = showvisthumbnail,
+                    onCheckedChange = { showvisthumbnail = it }
+                )
+            }
+
+            if (showvisthumbnail) {
+                item {
+                    ToggleSettingEntry(
+                        title = stringResource(R.string.black_background_for_visualizer),
+                        icon = R.drawable.images_sharp,
+                        isChecked = blackBackgroundForVisThumbnail,
+                        onCheckedChange = { blackBackgroundForVisThumbnail = it }
+                    )
+                }
+            }
+
+            item {
+                ToggleSettingEntry(
+                    title = stringResource(R.string.show_visualizer_buttons),
+                    icon = R.drawable.menu,
+                    isChecked = showVisualizerButtons,
+                    onCheckedChange = { showVisualizerButtons = it }
+                )
+            }
+            
+            item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+                Column {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    SectionTitle(stringResource(R.string.visualizer_line_thickness))
+                }
+            }
+            
+            item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .alpha(if (currentVisualizer == 0 || currentVisualizer == 1 || currentVisualizer == 21) 1f else 0.5f)
+                        .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    SettingIcon(R.drawable.sound_effect)
+                    Spacer(modifier = Modifier.size(16.dp))
+                    Box(modifier = Modifier.weight(1f)) {
+                        SliderControl(
+                            state = visualizerLineThickness,
+                            onSlide = { if (currentVisualizer == 0 || currentVisualizer == 1 || currentVisualizer == 21) visualizerLineThickness = it },
+                            onSlideComplete = {},
+                            toDisplay = { "%.0f".format(it) },
+                            range = 1f..20f
+                        )
+                    }
+                }
+            }
+            
+            item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+
         if (menuStyle == MenuStyle.List) {
             ListMenu.Menu(title = stringResource(R.string.visualizer)) {
                 Column(
@@ -244,12 +341,14 @@ class VisualizerSettingsMenu private constructor(
             }
         } else {
             GridMenu.Menu(title = stringResource(R.string.visualizer)) {
-                item {
-                    settingsContent()
+                settingsGridContent()
+                item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+                    Spacer(modifier = Modifier.navigationBarsPadding())
                 }
             }
         }
     }
+
 
     // Helper composables
 
