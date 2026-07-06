@@ -532,7 +532,11 @@ object YtMusic {
                 year = response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.subtitle?.runs?.lastOrNull()?.text,
                 thumbnail = response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull(),
             ),
-            songs = if (withSongs) getAlbumSongs(playlistId).getOrThrow() else emptyList(),
+            songs = if (withSongs) {
+                response.contents.twoColumnBrowseResultsRenderer.secondaryContents?.sectionListRenderer?.contents?.firstOrNull()?.musicShelfRenderer?.contents
+                    ?.mapNotNull { it.musicResponsiveListItemRenderer?.let { it1 -> AlbumPage.getSong(it1) } }
+                    ?: getAlbumSongs(playlistId).getOrThrow()
+            } else emptyList(),
             otherVersions = response.contents.twoColumnBrowseResultsRenderer.secondaryContents?.sectionListRenderer?.contents?.getOrNull(
                 1
             )?.musicCarouselShelfRenderer?.contents

@@ -123,6 +123,8 @@ fun AlbumScreen(
                            position = album?.position ?: -1
                        ))
 
+                        songAlbumMapTable.clear(browseId)
+
                         online.songs
                               .map( Innertube.SongItem::asMediaItem )
                               .onEach( ::insertIgnore )
