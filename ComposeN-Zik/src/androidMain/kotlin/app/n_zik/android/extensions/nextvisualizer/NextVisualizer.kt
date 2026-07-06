@@ -96,6 +96,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import app.it.fast4x.rimusic.ui.components.themed.VisualizerParamsDialog
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -269,7 +270,7 @@ fun NextVisualizer() {
             var showVisualizerParamsDialog by remember { mutableStateOf(false) }
             
             if (showVisualizerParamsDialog) {
-                app.it.fast4x.rimusic.ui.components.themed.VisualizerParamsDialog(
+                VisualizerParamsDialog(
                     onDismiss = { showVisualizerParamsDialog = false }
                 )
             }

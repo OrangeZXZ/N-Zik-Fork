@@ -96,6 +96,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.union
 import timber.log.Timber
+import app.n_zik.android.updater.ui.UpdateScreen
 
 fun NavHostController.navigateClean(route: String, context: Context) {
     val disableBackStack = context.preferences.getBoolean(disableNavigationBackStackKey, false)
@@ -502,7 +503,7 @@ fun AppNavigation(
         }
 
         composable(route = NavRoutes.updater.name) {
-            app.n_zik.android.updater.ui.UpdateScreen(navController = navController)
+            UpdateScreen(navController = navController)
         }
     }
     } // end Scaffold

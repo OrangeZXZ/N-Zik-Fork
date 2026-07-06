@@ -23,6 +23,8 @@ import kotlinx.coroutines.flow.first
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 import timber.log.Timber
+import app.it.fast4x.rimusic.models.Artist
+import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
 
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.concurrent.atomic.AtomicInteger? = null) {
@@ -127,7 +129,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
                     Timber.tag("MatchGlobal").d("MERGE: transferred likedAt")
                 }
                 songTable.delete(song)
-                app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+                WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
                 mergedCounter?.incrementAndGet()
                 Timber.tag("MatchGlobal").d("MERGED '${song.title}' into '${existingSong.id}'")
                 return@transaction
@@ -138,7 +140,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
             Timber.tag("MatchGlobal").d("BDD: saving ${playlistMappings.size} playlist mappings before delete")
             // Delete old song
             songTable.delete(song)
-            app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+            WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
             Timber.tag("MatchGlobal").d("BDD: deleted old song id='${song.id}'")
             // Insert with new YouTube ID and pre-calculated position
             songTable.upsert(newSong.copy(
@@ -167,7 +169,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
             }
             bestMatch.authors?.forEach { author ->
                 val browseId = author.endpoint?.browseId ?: return@forEach
-                artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(id = browseId, name = author.name, thumbnailUrl = null))
+                artistTable.insertIgnore(Artist(id = browseId, name = author.name, thumbnailUrl = null))
                 songArtistMapTable.insertIgnore(SongArtistMap(newSong.id, browseId))
             }
             Timber.tag("MatchGlobal").d("DONE '${song.title}' -> '${newSong.id}' (pos=$dbPosition)")
@@ -184,7 +186,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
                 songArtistMapTable.updateSongId(oldId, notFound.id)
                 eventTable.updateSongId(oldId, notFound.id)
                 songTable.delete(song)
-                app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+                WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
                 Timber.tag("MatchGlobal").d("NOT FOUND - shuffled to id='${notFound.id}'")
             }
         }
@@ -319,7 +321,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                     Timber.tag("MatchPlaylist").d("MERGE: transferred likedAt")
                 }
                 songTable.delete(song)
-                app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+                WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
                 mergedCounter?.incrementAndGet()
                 Timber.tag("MatchPlaylist").d("MERGED '${song.title}' into '${existingSong.id}'")
                 return@transaction
@@ -328,7 +330,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
             val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
             Timber.tag("MatchPlaylist").d("BDD: saving ${playlistMappings.size} playlist mappings before delete")
             songTable.delete(song)
-            app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+            WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
             Timber.tag("MatchPlaylist").d("BDD: deleted old song id='${song.id}'")
             songTable.upsert(newSong.copy(
                 title = PropUtils.retainIfModified(song.title, newSong.title).orEmpty(),
@@ -353,7 +355,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
             }
             matchedSong.authors?.forEach { author ->
                 val browseId = author.endpoint?.browseId ?: return@forEach
-                artistTable.insertIgnore(app.it.fast4x.rimusic.models.Artist(id = browseId, name = author.name, thumbnailUrl = null))
+                artistTable.insertIgnore(Artist(id = browseId, name = author.name, thumbnailUrl = null))
                 songArtistMapTable.insertIgnore(SongArtistMap(newSong.id, browseId))
             }
             if (oldPosition != -1) {

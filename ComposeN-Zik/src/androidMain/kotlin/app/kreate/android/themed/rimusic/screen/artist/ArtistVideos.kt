@@ -71,7 +71,7 @@ fun ArtistVideos(
     val thumbnailHeightDp = 72.dp
     val thumbnailWidthDp = 128.dp
 
-    val itemsPage by app.it.fast4x.compose.persist.persist<it.fast4x.innertube.Innertube.ItemsPage<it.fast4x.innertube.Innertube.Item>?>("artist/$browseId/videos")
+    val itemsPage by app.it.fast4x.compose.persist.persist<Innertube.ItemsPage<Innertube.Item>?>("artist/$browseId/videos")
 
     Skeleton(
         navController = navController,

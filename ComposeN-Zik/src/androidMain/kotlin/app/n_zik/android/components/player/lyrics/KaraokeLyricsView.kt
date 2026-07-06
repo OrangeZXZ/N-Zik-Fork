@@ -54,6 +54,7 @@ import dev.rebelonion.translator.Translator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import app.n_zik.android.enums.lyrics.LyricsAlignment
 
 /** Vertical spacing (dp) for header/footer in lyrics views. */
 private val LYRICS_SPACING = 24.dp
@@ -247,7 +248,7 @@ fun KaraokeLyricsView(
     lyricsCustomColor: Int,
     dominantColor: Int,
     lyricsHighlight: LyricsHighlight,
-    lyricsAlignment: app.n_zik.android.enums.lyrics.LyricsAlignment,
+    lyricsAlignment: LyricsAlignment,
     clickLyricsText: Boolean,
     karaokeRespectAgentPosition: Boolean,
     @Suppress("UNUSED_PARAMETER") // Kept for API compatibility; centering now uses viewportHeight
@@ -642,9 +643,9 @@ fun KaraokeLyricsView(
                 karaokeRespectAgentPosition && line.agent == "v1000" -> Alignment.CenterHorizontally
                 karaokeRespectAgentPosition && line.isBackground -> Alignment.CenterHorizontally
                 else -> when (lyricsAlignment) {
-                    app.n_zik.android.enums.lyrics.LyricsAlignment.Left -> Alignment.Start
-                    app.n_zik.android.enums.lyrics.LyricsAlignment.Center -> Alignment.CenterHorizontally
-                    app.n_zik.android.enums.lyrics.LyricsAlignment.Right -> Alignment.End
+                    LyricsAlignment.Left -> Alignment.Start
+                    LyricsAlignment.Center -> Alignment.CenterHorizontally
+                    LyricsAlignment.Right -> Alignment.End
                 }
             }
             val lineTextAlign = when {
@@ -653,9 +654,9 @@ fun KaraokeLyricsView(
                 karaokeRespectAgentPosition && line.agent == "v1000" -> TextAlign.Center
                 karaokeRespectAgentPosition && line.isBackground -> TextAlign.Center
                 else -> when (lyricsAlignment) {
-                    app.n_zik.android.enums.lyrics.LyricsAlignment.Left -> TextAlign.Left
-                    app.n_zik.android.enums.lyrics.LyricsAlignment.Center -> TextAlign.Center
-                    app.n_zik.android.enums.lyrics.LyricsAlignment.Right -> TextAlign.Right
+                    LyricsAlignment.Left -> TextAlign.Left
+                    LyricsAlignment.Center -> TextAlign.Center
+                    LyricsAlignment.Right -> TextAlign.Right
                 }
             }
 

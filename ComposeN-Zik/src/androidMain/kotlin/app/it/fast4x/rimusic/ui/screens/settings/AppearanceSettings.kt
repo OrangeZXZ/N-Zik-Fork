@@ -176,6 +176,9 @@ import app.it.fast4x.rimusic.utils.visualizerEnabledKey
 import app.it.fast4x.rimusic.utils.wallpaperTypeKey
 import app.n_zik.android.components.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
+import app.it.fast4x.rimusic.ui.components.themed.DialogColorPicker
+import app.it.fast4x.rimusic.ui.styling.BoundedCornerSize
+import app.n_zik.android.enums.lyrics.LyricsColor
 
 @Composable
 fun DefaultAppearanceSettings() {
@@ -285,8 +288,8 @@ fun DefaultAppearanceSettings() {
     showRemainingSongTime = true
     var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     clickLyricsText = true
-    var lyricsColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsColorKey, app.n_zik.android.enums.lyrics.LyricsColor.White)
-    lyricsColor = app.n_zik.android.enums.lyrics.LyricsColor.White
+    var lyricsColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsColorKey, LyricsColor.White)
+    lyricsColor = LyricsColor.White
     var lyricsCustomColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsCustomColorKey, android.graphics.Color.WHITE)
     lyricsCustomColor = android.graphics.Color.WHITE
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
@@ -473,7 +476,7 @@ fun AppearanceSettings(
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
     var showSkipTimeButtons by rememberPreference(showSkipTimeButtonsKey, true)
     var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
-    var lyricsColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsColorKey, app.n_zik.android.enums.lyrics.LyricsColor.White)
+    var lyricsColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsColorKey, LyricsColor.White)
     var lyricsCustomColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsCustomColorKey, android.graphics.Color.WHITE)
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
 
@@ -1175,7 +1178,7 @@ fun AppearanceSettings(
                                     steps = 3,
                                     onSlide = { thumbnailSizeLDp = it },
                                     toDisplay = { it.toInt().toString() },
-                                    trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeLDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } } }
+                                    trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeLDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } } }
                                 )
 
                                 androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
@@ -1214,7 +1217,7 @@ fun AppearanceSettings(
                                     steps = 3,
                                     onSlide = { thumbnailSizeDp = it },
                                     toDisplay = { it.toInt().toString() },
-                                    trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } } }
+                                    trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } } }
                                 )
 
                                 androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
@@ -1254,7 +1257,7 @@ fun AppearanceSettings(
                                 steps = 3,
                                 onSlide = { thumbnailRoundnessDp = it },
                                 toDisplay = { it.toInt().toString() },
-                                trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } }
+                                trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } }
                             )
 
                             androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
@@ -1277,22 +1280,22 @@ fun AppearanceSettings(
                     }
                     }
 
-                if (search.inputValue.isBlank() || stringResource(app.n_zik.android.R.string.ui_roundness).contains(
+                if (search.inputValue.isBlank() || stringResource(R.string.ui_roundness).contains(
                         search.inputValue,
                         true
                     )
                 )
-                    if (search.inputValue.isBlank() || stringResource(app.n_zik.android.R.string.ui_roundness).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.ui_roundness).contains(search.inputValue, true)) {
                         SliderSettingsEntry(
-                            icon = app.n_zik.android.R.drawable.ui,
-                            title = stringResource(app.n_zik.android.R.string.ui_roundness),
+                            icon = R.drawable.ui,
+                            title = stringResource(R.string.ui_roundness),
                             text = "",
                             state = uiRoundnessDp,
                             range = 0f..40f,
                             steps = 3,
                             onSlide = { uiRoundnessDp = it },
                             toDisplay = { it.toInt().toString() },
-                            trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(uiRoundnessDp.dp, 0.4f))).border(width = 1.dp, color = colorPalette().accent, shape = androidx.compose.foundation.shape.RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(uiRoundnessDp.dp, 0.4f)))) } },
+                            trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(uiRoundnessDp.dp, 0.4f))).border(width = 1.dp, color = colorPalette().accent, shape = androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(uiRoundnessDp.dp, 0.4f)))) } },
                             modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                         )
 
@@ -1955,10 +1958,10 @@ fun AppearanceSettings(
                             }
                         )
                         if (showColorPicker) {
-                            app.it.fast4x.rimusic.ui.components.themed.DialogColorPicker(onDismiss = { showColorPicker = false }) {
+                            DialogColorPicker(onDismiss = { showColorPicker = false }) {
                                 visualizerCustomColor = it.toArgb()
                                 showColorPicker = false
-                                app.kreate.android.me.knighthat.utils.Toaster.n(R.string.info_color_s_applied, customColorString)
+                                Toaster.n(R.string.info_color_s_applied, customColorString)
                             }
                         }
                     }
@@ -2065,12 +2068,12 @@ fun AppearanceSettings(
                     title = stringResource(R.string.lyricscolor),
                     selectedValue = lyricsColor,
                     onValueSelected = { lyricsColor = it },
-                    valueText = { stringResource(when(it) { app.n_zik.android.enums.lyrics.LyricsColor.White -> R.string.color_white; app.n_zik.android.enums.lyrics.LyricsColor.Thememode -> R.string.bg_colors_background_from_theme; app.n_zik.android.enums.lyrics.LyricsColor.Cover -> R.string.bg_colors_background_from_cover; app.n_zik.android.enums.lyrics.LyricsColor.Custom -> R.string.color_custom }) },
+                    valueText = { stringResource(when(it) { LyricsColor.White -> R.string.color_white; LyricsColor.Thememode -> R.string.bg_colors_background_from_theme; LyricsColor.Cover -> R.string.bg_colors_background_from_cover; LyricsColor.Custom -> R.string.color_custom }) },
                     icon = R.drawable.color_palette
                 )
             }
 
-            AnimatedVisibility(visible = lyricsColor == app.n_zik.android.enums.lyrics.LyricsColor.Custom) {
+            AnimatedVisibility(visible = lyricsColor == LyricsColor.Custom) {
                 var showColorPicker by remember { mutableStateOf(false) }
                 val customColorString = stringResource(R.string.color_custom)
                 OtherSettingsEntry(
@@ -2089,10 +2092,10 @@ fun AppearanceSettings(
                     }
                 )
                 if (showColorPicker) {
-                    app.it.fast4x.rimusic.ui.components.themed.DialogColorPicker(onDismiss = { showColorPicker = false }) {
+                    DialogColorPicker(onDismiss = { showColorPicker = false }) {
                         lyricsCustomColor = it.toArgb()
                         showColorPicker = false
-                        app.kreate.android.me.knighthat.utils.Toaster.n(R.string.info_color_s_applied, customColorString)
+                        Toaster.n(R.string.info_color_s_applied, customColorString)
                     }
                 }
             }

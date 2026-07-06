@@ -52,6 +52,9 @@ import app.n_zik.android.typography
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.launch
 import kotlin.Float.Companion.POSITIVE_INFINITY
+import app.n_zik.android.components.menu.lyrics.LyricsSettingsMenu
+import app.n_zik.android.components.player.lyrics.utils.ShowOffsetDialog
+import dev.rebelonion.translator.Translator
 
 
 @UnstableApi
@@ -149,7 +152,7 @@ fun LyricsScreen(
         }
         val lyricsOffsetState = rememberPreference("lyricsOffset_$mediaId", 0L)
         val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
-        val translator = remember { dev.rebelonion.translator.Translator() }
+        val translator = remember { Translator() }
         val effectRotationEnabled by rememberPreference(effectRotationKey, false)
         var landscapeControls by rememberPreference(landscapeControlsKey, true)
         var jumpPrevious by rememberPreference(jumpPreviousKey,"3")
@@ -165,7 +168,7 @@ fun LyricsScreen(
             )
         }
 
-        val showOffsetDialog = app.n_zik.android.components.player.lyrics.utils.ShowOffsetDialog(mediaId = mediaId)
+        val showOffsetDialog = ShowOffsetDialog(mediaId = mediaId)
         showOffsetDialog.Render()
 
         LaunchedEffect(mediaMetadata.title, mediaMetadata.artist) {
@@ -609,7 +612,7 @@ fun LyricsScreen(
                             interactionSource = remember { MutableInteractionSource() },
                             onClick = {
                                 menuState.display {
-                                    app.n_zik.android.components.menu.lyrics.LyricsSettingsMenu(
+                                    LyricsSettingsMenu(
                                         isLandscape = isLandscape,
                                         translateEnabled = translateEnabledState,
                                         isLyricsNotNull = lyrics != null,

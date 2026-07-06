@@ -101,6 +101,7 @@ import app.n_zik.android.core.database.ext.FormatWithSong
 import it.fast4x.innertube.models.NavigationEndpoint
 import kotlinx.coroutines.flow.Flow
 import app.n_zik.android.playback.services.automotive.browse.AutoBrowseTree
+import app.it.fast4x.rimusic.enums.OnDeviceSongSortBy
 @UnstableApi
 class AutoSessionCallback(
     val context: Context,
@@ -266,55 +267,55 @@ class AutoSessionCallback(
             if (allSongs.isNotEmpty()) return@future MediaSession.MediaItemsWithStartPosition(allSongs.map { song -> SessionMediaItemMapper.mapSongToMediaItem(song) }, 0, 0)
         }
         if (mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONG_SHUFFLE || mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONGS_ALL_SHUFFLE || mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONG_SHUFFLE || mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONGS_ALL_SHUFFLE.replace("_SHUFFLE", "_PLAY_ALL")) {
-            val sortBy = try { context.preferences.getEnum(app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_SORT_BY.key, app.it.fast4x.rimusic.enums.SongSortBy.DateAdded) } catch (e: Exception) { app.it.fast4x.rimusic.enums.SongSortBy.DateAdded }
-val sortOrder = try { context.preferences.getEnum(app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_SORT_ORDER.key, app.it.fast4x.rimusic.enums.SortOrder.Descending) } catch (e: Exception) { app.it.fast4x.rimusic.enums.SortOrder.Descending }
+            val sortBy = try { context.preferences.getEnum(Preference.HOME_SONGS_SORT_BY.key, SongSortBy.DateAdded) } catch (e: Exception) { SongSortBy.DateAdded }
+val sortOrder = try { context.preferences.getEnum(Preference.HOME_SONGS_SORT_ORDER.key, SortOrder.Descending) } catch (e: Exception) { SortOrder.Descending }
 val allSongs = database.songTable.sortAll(sortBy, sortOrder, excludeHidden = true).first().let { if (mediaItems.firstOrNull()?.mediaId?.endsWith("_SHUFFLE") == true) it.shuffled() else it }
             if (allSongs.isNotEmpty()) return@future MediaSession.MediaItemsWithStartPosition(allSongs.map { song -> SessionMediaItemMapper.mapSongToMediaItem(song) }, 0, 0)
         }
         if (mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONGS_FAVORITES_SHUFFLE || mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONGS_FAVORITES_SHUFFLE.replace("_SHUFFLE", "_PLAY_ALL")) {
-            val sortBy = try { context.preferences.getEnum(app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_FAVORITES_SORT_BY.key, app.it.fast4x.rimusic.enums.SongSortBy.DateLiked) } catch (e: Exception) { app.it.fast4x.rimusic.enums.SongSortBy.DateLiked }
-val sortOrder = try { context.preferences.getEnum(app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_FAVORITES_SORT_ORDER.key, app.it.fast4x.rimusic.enums.SortOrder.Descending) } catch (e: Exception) { app.it.fast4x.rimusic.enums.SortOrder.Descending }
+            val sortBy = try { context.preferences.getEnum(Preference.HOME_SONGS_FAVORITES_SORT_BY.key, SongSortBy.DateLiked) } catch (e: Exception) { SongSortBy.DateLiked }
+val sortOrder = try { context.preferences.getEnum(Preference.HOME_SONGS_FAVORITES_SORT_ORDER.key, SortOrder.Descending) } catch (e: Exception) { SortOrder.Descending }
 val allSongs = database.songTable.sortFavorites(sortBy, sortOrder).first().let { if (mediaItems.firstOrNull()?.mediaId?.endsWith("_SHUFFLE") == true) it.shuffled() else it }
             if (allSongs.isNotEmpty()) return@future MediaSession.MediaItemsWithStartPosition(allSongs.map { song -> SessionMediaItemMapper.mapSongToMediaItem(song) }, 0, 0)
         }
         if (mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONGS_DOWNLOADED_SHUFFLE || mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONGS_DOWNLOADED_SHUFFLE.replace("_SHUFFLE", "_PLAY_ALL")) {
     val downloads = downloadHelper.downloads.value
-    val sortBy = try { context.preferences.getEnum(app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_DOWNLOADED_SORT_BY.key, app.it.fast4x.rimusic.enums.SongSortBy.Custom) } catch (e: Exception) { app.it.fast4x.rimusic.enums.SongSortBy.Custom }
-    val sortOrder = try { context.preferences.getEnum(app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_DOWNLOADED_SORT_ORDER.key, app.it.fast4x.rimusic.enums.SortOrder.Descending) } catch (e: Exception) { app.it.fast4x.rimusic.enums.SortOrder.Descending }
+    val sortBy = try { context.preferences.getEnum(Preference.HOME_SONGS_DOWNLOADED_SORT_BY.key, SongSortBy.Custom) } catch (e: Exception) { SongSortBy.Custom }
+    val sortOrder = try { context.preferences.getEnum(Preference.HOME_SONGS_DOWNLOADED_SORT_ORDER.key, SortOrder.Descending) } catch (e: Exception) { SortOrder.Descending }
     val downloadedSongs = database.songTable.all(excludeHidden = false).first().fastFilter { song -> downloads[song.id]?.state == Download.STATE_COMPLETED }
     val allSongs = when (sortBy) {
-        app.it.fast4x.rimusic.enums.SongSortBy.PlayTime -> downloadedSongs.sortedBy { it.totalPlayTimeMs }
-        app.it.fast4x.rimusic.enums.SongSortBy.Title -> downloadedSongs.sortedBy { it.title }
-        app.it.fast4x.rimusic.enums.SongSortBy.DateAdded -> downloadedSongs.sortedBy { downloads[it.id]?.updateTimeMs ?: 0L }
-        app.it.fast4x.rimusic.enums.SongSortBy.Duration -> downloadedSongs.sortedBy { it.durationText }
+        SongSortBy.PlayTime -> downloadedSongs.sortedBy { it.totalPlayTimeMs }
+        SongSortBy.Title -> downloadedSongs.sortedBy { it.title }
+        SongSortBy.DateAdded -> downloadedSongs.sortedBy { downloads[it.id]?.updateTimeMs ?: 0L }
+        SongSortBy.Duration -> downloadedSongs.sortedBy { it.durationText }
         else -> downloadedSongs.sortedBy { downloads[it.id]?.updateTimeMs ?: 0L }
-    }.let { if (sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Descending) it.reversed() else it }.let { if (mediaItems.firstOrNull()?.mediaId?.endsWith("_SHUFFLE") == true) it.shuffled() else it }
+    }.let { if (sortOrder == SortOrder.Descending) it.reversed() else it }.let { if (mediaItems.firstOrNull()?.mediaId?.endsWith("_SHUFFLE") == true) it.shuffled() else it }
             if (allSongs.isNotEmpty()) return@future MediaSession.MediaItemsWithStartPosition(allSongs.map { song -> SessionMediaItemMapper.mapSongToMediaItem(song) }, 0, 0)
         }
         if (mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONGS_ONDEVICE_SHUFFLE || mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONGS_ONDEVICE_SHUFFLE.replace("_SHUFFLE", "_PLAY_ALL")) {
-            val sortBy = try { context.preferences.getEnum(app.it.fast4x.rimusic.utils.Preference.HOME_ON_DEVICE_SONGS_SORT_BY.key, app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Title) } catch (e: Exception) { app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Title }
-val sortOrder = try { context.preferences.getEnum(app.it.fast4x.rimusic.utils.Preference.HOME_ON_DEVICE_SONGS_SORT_ORDER.key, app.it.fast4x.rimusic.enums.SortOrder.Ascending) } catch (e: Exception) { app.it.fast4x.rimusic.enums.SortOrder.Ascending }
+            val sortBy = try { context.preferences.getEnum(Preference.HOME_ON_DEVICE_SONGS_SORT_BY.key, OnDeviceSongSortBy.Title) } catch (e: Exception) { OnDeviceSongSortBy.Title }
+val sortOrder = try { context.preferences.getEnum(Preference.HOME_ON_DEVICE_SONGS_SORT_ORDER.key, SortOrder.Ascending) } catch (e: Exception) { SortOrder.Ascending }
 val onDeviceSongs = database.songTable.allOnDevice().first()
 val allSongs = when (sortBy) {
-    app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Title -> onDeviceSongs.sortedBy { it.title }
-    app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.DateAdded -> onDeviceSongs.sortedByDescending { it.id }
-    app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Artist -> onDeviceSongs.sortedBy { it.artistsText }
-    app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Duration -> onDeviceSongs.sortedBy { app.it.fast4x.rimusic.utils.durationToMillis(it.durationText ?: "0:0") }
+    OnDeviceSongSortBy.Title -> onDeviceSongs.sortedBy { it.title }
+    OnDeviceSongSortBy.DateAdded -> onDeviceSongs.sortedByDescending { it.id }
+    OnDeviceSongSortBy.Artist -> onDeviceSongs.sortedBy { it.artistsText }
+    OnDeviceSongSortBy.Duration -> onDeviceSongs.sortedBy { app.it.fast4x.rimusic.utils.durationToMillis(it.durationText ?: "0:0") }
     else -> onDeviceSongs.sortedBy { it.title }
-}.let { if (sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Descending) it.reversed() else it }.let { if (mediaItems.firstOrNull()?.mediaId?.endsWith("_SHUFFLE") == true) it.shuffled() else it }
+}.let { if (sortOrder == SortOrder.Descending) it.reversed() else it }.let { if (mediaItems.firstOrNull()?.mediaId?.endsWith("_SHUFFLE") == true) it.shuffled() else it }
             if (allSongs.isNotEmpty()) return@future MediaSession.MediaItemsWithStartPosition(allSongs.map { song -> SessionMediaItemMapper.mapSongToMediaItem(song) }, 0, 0)
         }
         if (mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONGS_CACHED_SHUFFLE || mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONGS_CACHED_SHUFFLE.replace("_SHUFFLE", "_PLAY_ALL")) {
-            val sortBy = try { context.preferences.getEnum(app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_OFFLINE_SORT_BY.key, app.it.fast4x.rimusic.enums.SongSortBy.Title) } catch (e: Exception) { app.it.fast4x.rimusic.enums.SongSortBy.Title }
-val sortOrder = try { context.preferences.getEnum(app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_OFFLINE_SORT_ORDER.key, app.it.fast4x.rimusic.enums.SortOrder.Ascending) } catch (e: Exception) { app.it.fast4x.rimusic.enums.SortOrder.Ascending }
+            val sortBy = try { context.preferences.getEnum(Preference.HOME_SONGS_OFFLINE_SORT_BY.key, SongSortBy.Title) } catch (e: Exception) { SongSortBy.Title }
+val sortOrder = try { context.preferences.getEnum(Preference.HOME_SONGS_OFFLINE_SORT_ORDER.key, SortOrder.Ascending) } catch (e: Exception) { SortOrder.Ascending }
 val cachedSongs = database.formatTable.allWithSongs().first().fastFilter { itf -> val contentLength = itf.format.contentLength; contentLength != null && binder.cache.isCached(itf.song.id, 0L, contentLength) }.fastMap { itf -> itf.song }
 val allSongs = when (sortBy) {
-    app.it.fast4x.rimusic.enums.SongSortBy.Title -> cachedSongs.sortedBy { it.title }
-    app.it.fast4x.rimusic.enums.SongSortBy.PlayTime -> cachedSongs.sortedBy { it.totalPlayTimeMs }
-    app.it.fast4x.rimusic.enums.SongSortBy.Duration -> cachedSongs.sortedBy { it.durationText }
-    app.it.fast4x.rimusic.enums.SongSortBy.DateAdded -> cachedSongs // date added offline not tracked properly, return as is
+    SongSortBy.Title -> cachedSongs.sortedBy { it.title }
+    SongSortBy.PlayTime -> cachedSongs.sortedBy { it.totalPlayTimeMs }
+    SongSortBy.Duration -> cachedSongs.sortedBy { it.durationText }
+    SongSortBy.DateAdded -> cachedSongs // date added offline not tracked properly, return as is
     else -> cachedSongs
-}.let { if (sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Descending) it.reversed() else it }.let { if (mediaItems.firstOrNull()?.mediaId?.endsWith("_SHUFFLE") == true) it.shuffled() else it }
+}.let { if (sortOrder == SortOrder.Descending) it.reversed() else it }.let { if (mediaItems.firstOrNull()?.mediaId?.endsWith("_SHUFFLE") == true) it.shuffled() else it }
             if (allSongs.isNotEmpty()) return@future MediaSession.MediaItemsWithStartPosition(allSongs.map { song -> SessionMediaItemMapper.mapSongToMediaItem(song) }, 0, 0)
         }
         if (mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONGS_TOP_SHUFFLE || mediaItems.firstOrNull()?.mediaId == AutoSessionConstants.ID_SONGS_TOP_SHUFFLE.replace("_SHUFFLE", "_PLAY_ALL")) {
@@ -378,10 +379,10 @@ val allSongs = when (sortBy) {
                     songId = paths[1]
                     val trending = database.eventTable.findSongsMostPlayedBetween(from = 0, limit = 500).first()
                     val relatedSongs = if (trending.isNotEmpty()) {
-                        it.fast4x.innertube.Innertube.relatedPage(NextBody(videoId = trending.first().id))?.getOrNull()?.songs?.map { it.asSong } ?: emptyList()
+                        Innertube.relatedPage(NextBody(videoId = trending.first().id))?.getOrNull()?.songs?.map { it.asSong } ?: emptyList()
                     } else emptyList()
                     val ytmQuickPicks = if (app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn()) {
-                        it.fast4x.innertube.YtMusic.getQuickPicks(setLogin = true).getOrNull()?.map { it.asSong } ?: emptyList()
+                        YtMusic.getQuickPicks(setLogin = true).getOrNull()?.map { it.asSong } ?: emptyList()
                     } else emptyList()
                     Timber.tag("AutoSessionCallback").d("Quick picks play list loaded -> trending: ${trending.size}, related: ${relatedSongs.size}, ytb: ${ytmQuickPicks.size}")
                     queryList = (ytmQuickPicks + trending + relatedSongs).distinctBy { it.id } 

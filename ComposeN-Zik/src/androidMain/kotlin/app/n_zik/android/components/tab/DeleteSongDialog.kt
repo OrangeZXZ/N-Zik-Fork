@@ -18,6 +18,7 @@ import app.it.fast4x.rimusic.ui.components.MenuState
 import app.it.fast4x.rimusic.ui.components.themed.DeleteDialog
 import app.kreate.android.me.knighthat.utils.Toaster
 import java.util.Optional
+import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
 
 @UnstableApi
 open class DeleteSongDialog(
@@ -57,7 +58,7 @@ open class DeleteSongDialog(
                 songPlaylistMapTable.deleteBySongId( it.id )
                 formatTable.deleteBySongId( it.id )
                 songTable.delete( it )
-                app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), it.id)
+                WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), it.id)
             }
 
             Toaster.i( R.string.deleted )

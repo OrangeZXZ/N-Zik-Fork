@@ -48,6 +48,7 @@ import androidx.compose.material3.Text
 import app.it.fast4x.rimusic.enums.ContentType
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
+import app.it.fast4x.rimusic.utils.Preference
 
 
 fun String.toBooleanArray(): BooleanArray = this.map { it == '1' }.toBooleanArray()
@@ -81,7 +82,7 @@ fun SearchResultScreen(
     val (filterContentType, onFilterContentTypeChanged) = rememberPreference(app.it.fast4x.rimusic.utils.filterContentTypeKey, ContentType.All)
     val showFilterMenu = remember { mutableStateOf(false) }
 
-    val (gridStatesPref, onGridStatesPrefChanged) = rememberPreference(app.it.fast4x.rimusic.utils.Preference.SEARCH_RESULT_GRID_STATES.key, app.it.fast4x.rimusic.utils.Preference.SEARCH_RESULT_GRID_STATES.default)
+    val (gridStatesPref, onGridStatesPrefChanged) = rememberPreference(Preference.SEARCH_RESULT_GRID_STATES.key, Preference.SEARCH_RESULT_GRID_STATES.default)
     val gridStates = remember(gridStatesPref) { gridStatesPref.toBooleanArray() }
     val useGrid = gridStates[tabIndex]
     val setUseGrid: (Boolean) -> Unit = { newValue ->

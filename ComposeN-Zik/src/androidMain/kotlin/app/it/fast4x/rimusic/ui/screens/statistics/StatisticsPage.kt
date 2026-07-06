@@ -104,6 +104,8 @@ import timber.log.Timber
 import app.it.fast4x.rimusic.utils.addNext
 import app.it.fast4x.rimusic.utils.enqueue
 import app.n_zik.android.core.coil.ImageCacheFactory
+import app.it.fast4x.rimusic.EXPLICIT_PREFIX
+import app.n_zik.android.components.menu.playlist.LocalPlaylistItemMenu
 
 
 @ExperimentalTextApi
@@ -189,7 +191,7 @@ fun StatisticsPage(
             )
             .distinctUntilChanged()
             .map { list -> 
-                list.filter { !parentalControlEnabled || !it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) }
+                list.filter { !parentalControlEnabled || !it.title.startsWith(EXPLICIT_PREFIX, true) }
                     .take(maxStatisticsItems.toInt()) 
             }
     }.collectAsState(emptyList(), Dispatchers.IO)
@@ -322,13 +324,13 @@ fun StatisticsPage(
                                 binder?.player?.enqueue(songs.get(it).asMediaItem)
                             }
                         ) {
-                            app.n_zik.android.components.SongItem(
+                            SongItem(
                                 song = songs[it],
                                 navController = navController,
                                 onClick = {
                                     binder?.stopRadio()
                                     binder?.player?.forcePlayAtIndex(
-                                        songs.map(app.it.fast4x.rimusic.models.Song::asMediaItem),
+                                        songs.map(Song::asMediaItem),
                                         it
                                     )
                                 },
@@ -390,7 +392,7 @@ fun StatisticsPage(
                             UpdateYoutubeAlbum(albums[it].id)
 
                         val songs by remember(albums[it].id) {
-                            app.n_zik.android.core.database.Database.songAlbumMapTable
+                            Database.songAlbumMapTable
                                       .allSongsOf( albums[it].id )
                                       .distinctUntilChanged()
                           }.collectAsState( emptyList(), Dispatchers.IO )
@@ -500,7 +502,7 @@ fun StatisticsPage(
                                     },
                                     onLongClick = {
                                         menuState.display {
-                                            app.n_zik.android.components.menu.playlist.LocalPlaylistItemMenu(
+                                            LocalPlaylistItemMenu(
                                                 navController = navController,
                                                 playlistPreview = playlists[it]
                                             ).MenuComponent()

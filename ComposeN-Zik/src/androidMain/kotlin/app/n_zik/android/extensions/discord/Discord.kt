@@ -38,6 +38,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import timber.log.Timber
+import app.n_zik.android.core.network.client.NetworkClientFactory
 
     /**
      * Get the discord user
@@ -51,7 +52,7 @@ private const val SAMSUNG_USER_AGENT = "Mozilla/5.0 (Linux; Android 14; SM-S921U
      */
 
 suspend fun fetchDiscordUser(token: String): Pair<String, String>? = withContext(Dispatchers.IO) {
-    val client = app.n_zik.android.core.network.client.NetworkClientFactory.getClient()
+    val client = NetworkClientFactory.getClient()
     val request = Request.Builder()
         .url("https://discord.com/api/v9/users/@me")
         .header("Authorization", token)

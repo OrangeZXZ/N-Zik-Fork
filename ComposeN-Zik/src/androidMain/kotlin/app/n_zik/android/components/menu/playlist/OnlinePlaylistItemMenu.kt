@@ -51,6 +51,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import app.it.fast4x.rimusic.enums.NavRoutes
+import app.it.fast4x.rimusic.models.Playlist
+import app.it.fast4x.rimusic.ui.components.themed.Enqueue
+import app.it.fast4x.rimusic.ui.components.themed.PlayNext
+import app.n_zik.android.components.playlist.ImportPlaylistDialog
+import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.tab.DownloadAllSongsDialog
+import app.n_zik.android.core.coil.ImageCacheFactory
+import app.n_zik.android.core.database.Database
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -165,7 +174,7 @@ class OnlinePlaylistItemMenu private constructor(
                 Box(
                     Modifier.size(Dimensions.thumbnails.album / 2)
                 ) {
-                    app.n_zik.android.core.coil.ImageCacheFactory.Thumbnail(
+                    ImageCacheFactory.Thumbnail(
                         thumbnailUrl = thumbnailUrl,
                         modifier = Modifier
                             .size(Dimensions.thumbnails.album / 2)
@@ -252,7 +261,7 @@ class OnlinePlaylistItemMenu private constructor(
             }
         }
 
-        val playNext = app.it.fast4x.rimusic.ui.components.themed.PlayNext {
+        val playNext = PlayNext {
             if (songs == null) {
                 Toaster.w(R.string.opening_url)
             } else if (songs!!.isNotEmpty()) {
@@ -263,7 +272,7 @@ class OnlinePlaylistItemMenu private constructor(
             }
         }
 
-        val enqueue = app.it.fast4x.rimusic.ui.components.themed.Enqueue {
+        val enqueue = Enqueue {
             if (songs == null) {
                 Toaster.w(R.string.opening_url)
             } else if (songs!!.isNotEmpty()) {
@@ -295,7 +304,7 @@ class OnlinePlaylistItemMenu private constructor(
             override fun onLongClick() {}
         }
         
-        val downloadAllDialog = app.n_zik.android.components.tab.DownloadAllSongsDialog { songs ?: emptyList() }
+        val downloadAllDialog = DownloadAllSongsDialog { songs ?: emptyList() }
         val downloadAll = object : MenuIcon by downloadAllDialog, Descriptive by downloadAllDialog, Clickable {
             override fun onShortClick() {
                 if (songs == null) {
@@ -309,7 +318,7 @@ class OnlinePlaylistItemMenu private constructor(
             override fun onLongClick() {}
         }
 
-        val deleteAllDialog = app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog { songs ?: emptyList() }
+        val deleteAllDialog = DeleteAllDownloadedSongsDialog { songs ?: emptyList() }
         val deleteAll = object : MenuIcon by deleteAllDialog, Descriptive by deleteAllDialog, Clickable {
             override fun onShortClick() {
                 if (songs == null) {
@@ -323,17 +332,17 @@ class OnlinePlaylistItemMenu private constructor(
             override fun onLongClick() {}
         }
         
-        val importDialog = app.n_zik.android.components.playlist.ImportPlaylistDialog(
+        val importDialog = ImportPlaylistDialog(
             initialValue = cleanPrefix(playlist.title ?: "")
         ) { text ->
             val scope = CoroutineScope(Dispatchers.IO)
             scope.launch {
-                app.n_zik.android.core.database.Database.asyncTransaction {
-                    val newPlaylist = app.it.fast4x.rimusic.models.Playlist(name = text, browseId = playlist.key)
-                    val playlistId = app.n_zik.android.core.database.Database.playlistTable.insert(newPlaylist)
+                Database.asyncTransaction {
+                    val newPlaylist = Playlist(name = text, browseId = playlist.key)
+                    val playlistId = Database.playlistTable.insert(newPlaylist)
                     songs?.forEach { song ->
-                        app.n_zik.android.core.database.Database.insertIgnore(song.asMediaItem)
-                        app.n_zik.android.core.database.Database.songPlaylistMapTable.map(songId = song.id, playlistId = playlistId)
+                        Database.insertIgnore(song.asMediaItem)
+                        Database.songPlaylistMapTable.map(songId = song.id, playlistId = playlistId)
                     }
                 }
             }
@@ -376,7 +385,7 @@ class OnlinePlaylistItemMenu private constructor(
                     override fun onShortClick() {
                         menuState.hide()
                         val path = "$browseId?params=${playlist.channel?.endpoint?.params.orEmpty()}"
-                        app.it.fast4x.rimusic.enums.NavRoutes.artist.navigateHere(navController, path)
+                        NavRoutes.artist.navigateHere(navController, path)
                     }
                     override fun onLongClick() {}
                 })

@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
+import app.it.fast4x.rimusic.ui.components.navigation.nav.LocalIsManyButtons
 
 open class Button(
     val iconId: Int,
@@ -24,7 +25,7 @@ open class Button(
 
     @Composable
     open fun Draw() {
-        val isMany = app.it.fast4x.rimusic.ui.components.navigation.nav.LocalIsManyButtons.current
+        val isMany = LocalIsManyButtons.current
         val scale = if (isMany) 0.8f else 1f
         val finalSize = size * scale
         val finalWidth = if (forceWidth == Dp.Unspecified) finalSize else forceWidth * scale

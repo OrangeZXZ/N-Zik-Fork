@@ -44,6 +44,7 @@ import coil3.toBitmap
 import android.graphics.Bitmap
 import java.io.ByteArrayOutputStream
 import it.fast4x.innertube.requests.songInfo
+import it.fast4x.innertube.Innertube
 
 class ExportCacheDialog(
     activeState: MutableState<Boolean>,
@@ -103,7 +104,7 @@ class ExportCacheDialog(
                     // Try to fetch song description for extra metadata (offline-safe)
                     var description: String? = null
                     try {
-                        val songInfo = it.fast4x.innertube.Innertube.songInfo(song.id)?.getOrNull()
+                        val songInfo = Innertube.songInfo(song.id)?.getOrNull()
                         description = songInfo?.description
                         Timber.tag("ExportCache").i("Fetched description: ${description?.take(200)}")
                     } catch (e: Exception) {

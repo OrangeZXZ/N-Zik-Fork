@@ -131,6 +131,7 @@ import kotlinx.coroutines.withContext
 import app.it.fast4x.rimusic.utils.ExternalUris
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.playback.utils.Shuffler
+import app.n_zik.android.components.menu.song.SongItemMenu
 
 
 @ExperimentalTextApi
@@ -676,7 +677,7 @@ fun Podcast(
                                 .clip(uiRoundnessShape()).combinedClickable(
                                     onLongClick = {
                                         menuState.display {
-                                            app.n_zik.android.components.menu.song.SongItemMenu(
+                                            SongItemMenu(
                                                 navController = navController,
                                                 song = song.asMediaItem.asSong
                                             ).MenuComponent()

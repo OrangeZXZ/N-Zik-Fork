@@ -70,6 +70,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.sync.YouTubeSync
 import app.n_zik.android.uiRoundnessShape
+import app.n_zik.android.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -123,7 +124,7 @@ fun SwipeableContent(
                         offset < 0 -> swipeToLeftIcon
                         else -> null
                     }
-                    if (iconId == app.n_zik.android.R.drawable.download_progress) {
+                    if (iconId == R.drawable.download_progress) {
                         CircularWavyProgressIndicator(
                             color = colorPalette().accent,
                             trackColor = colorPalette().textDisabled,

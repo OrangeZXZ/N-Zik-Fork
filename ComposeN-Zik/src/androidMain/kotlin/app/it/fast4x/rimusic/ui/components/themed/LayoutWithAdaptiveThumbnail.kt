@@ -89,7 +89,7 @@ fun adaptiveThumbnailContent(
             )
             if (isYoutubePlaylist) {
                 androidx.compose.foundation.Image(
-                    painter = androidx.compose.ui.res.painterResource(app.n_zik.android.R.drawable.ytmusic),
+                    painter = androidx.compose.ui.res.painterResource(R.drawable.ytmusic),
                     colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
                         androidx.compose.ui.graphics.Color.Red.copy(0.75f)
                             .compositeOver(androidx.compose.ui.graphics.Color.White)

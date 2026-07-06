@@ -82,6 +82,9 @@ import app.n_zik.android.components.tab.Search
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import app.it.fast4x.rimusic.enums.SortOrder
+import app.n_zik.android.components.SongItem
+import app.n_zik.android.components.menu.song.SongItemMenu
 
 @kotlin.OptIn(ExperimentalTextApi::class)
 @OptIn(UnstableApi::class)
@@ -110,8 +113,8 @@ fun HistoryList(
                 .map { list ->
                     val filtered = list.filter { !parentalControlEnabled || !it.song.title.startsWith( EXPLICIT_PREFIX, true ) }
                     val sorted = when (sort.sortOrder) {
-                        app.it.fast4x.rimusic.enums.SortOrder.Ascending -> filtered
-                        app.it.fast4x.rimusic.enums.SortOrder.Descending -> filtered.reversed()
+                        SortOrder.Ascending -> filtered
+                        SortOrder.Descending -> filtered.reversed()
                     }
                     when (sort.sortBy) {
                         HistorySortOrder.DATE -> {
@@ -290,7 +293,7 @@ fun HistoryList(
                                     binder?.player?.enqueue(event.song.asMediaItem)
                                 }
                             ) {
-                                app.n_zik.android.components.SongItem(
+                                SongItem(
                                     song = event.song,
                                     navController = navController,
                                     modifier = Modifier,
@@ -338,7 +341,7 @@ fun HistoryList(
                                     binder?.player?.enqueue(mediaItem)
                                 }
                             ) {
-                                app.n_zik.android.components.SongItem(
+                                SongItem(
                                     song = mediaItem.asSong,
                                     navController = navController,
                                     modifier = Modifier,
@@ -348,7 +351,7 @@ fun HistoryList(
                                     },
                                     onLongClick = {
                                         menuState.display {
-                                            app.n_zik.android.components.menu.song.SongItemMenu(
+                                            SongItemMenu(
                                                 navController = navController,
                                                 song = mediaItem.asSong
                                             ).MenuComponent()

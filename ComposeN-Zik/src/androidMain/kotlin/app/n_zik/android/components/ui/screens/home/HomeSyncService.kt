@@ -31,6 +31,7 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import app.it.fast4x.rimusic.utils.asSong
 import app.it.fast4x.rimusic.utils.asMediaItem
 import kotlinx.coroutines.flow.first
+import app.kreate.android.me.knighthat.utils.Toaster
 
 class HomeSyncService : Service() {
 
@@ -139,8 +140,8 @@ class HomeSyncService : Service() {
         Timber.tag("HomeSyncService").d("══════ ARTIST SYNC START ══════ Total: $totalArtists (YT: ${ytArtists.size}, Local/Fallback: ${localArtists.size})")
 
         withContext(Dispatchers.Main) {
-            if (totalArtists > 0) app.kreate.android.me.knighthat.utils.Toaster.i(appContext().getString(R.string.refreshing_artists, totalArtists))
-            if (ids == null && totalArtists == 0) app.kreate.android.me.knighthat.utils.Toaster.w(appContext().getString(R.string.sync_no_items))
+            if (totalArtists > 0) Toaster.i(appContext().getString(R.string.refreshing_artists, totalArtists))
+            if (ids == null && totalArtists == 0) Toaster.w(appContext().getString(R.string.sync_no_items))
         }
         
         if (totalArtists == 0) {
@@ -296,20 +297,20 @@ class HomeSyncService : Service() {
 
         withContext(Dispatchers.Main) {
             if (abortSync) {
-                app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.sync_failed))
+                Toaster.e(appContext().getString(R.string.sync_failed))
                 HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), "Sync aborted due to network error.", resultNotificationId)
             } else if (failedCount > 0) {
                 HomeSyncState.failedArtistsList = failedList
                 val errorMessage = appContext().getString(R.string.failed_artists, failedCount)
                 val notificationMessage = appContext().getString(R.string.sync_failed_notification_artists, failedCount)
-                app.kreate.android.me.knighthat.utils.Toaster.e(errorMessage)
+                Toaster.e(errorMessage)
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_completed_with_errors),
                     message = notificationMessage,
                     notificationId = resultNotificationId
                 )
             } else {
-                app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_artists))
+                Toaster.s(appContext().getString(R.string.found_all_artists))
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_successful),
                     message = appContext().getString(R.string.sync_success_notification_artists),
@@ -339,8 +340,8 @@ class HomeSyncService : Service() {
         Timber.tag("HomeSyncService").d("══════ ALBUM SYNC START ══════ Total: $totalAlbums (YT: ${ytAlbums.size}, Local/Fallback: ${localAlbums.size})")
 
         withContext(Dispatchers.Main) {
-            if (totalAlbums > 0) app.kreate.android.me.knighthat.utils.Toaster.i(appContext().getString(R.string.refreshing_albums, totalAlbums))
-            if (ids == null && totalAlbums == 0) app.kreate.android.me.knighthat.utils.Toaster.w(appContext().getString(R.string.sync_no_items))
+            if (totalAlbums > 0) Toaster.i(appContext().getString(R.string.refreshing_albums, totalAlbums))
+            if (ids == null && totalAlbums == 0) Toaster.w(appContext().getString(R.string.sync_no_items))
         }
 
         if (totalAlbums == 0) {
@@ -531,20 +532,20 @@ class HomeSyncService : Service() {
 
         withContext(Dispatchers.Main) {
             if (abortSync) {
-                app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.sync_failed))
+                Toaster.e(appContext().getString(R.string.sync_failed))
                 HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), "Sync aborted due to network error.", resultNotificationId)
             } else if (failedCount > 0) {
                 HomeSyncState.failedAlbumsList = failedList
                 val errorMessage = appContext().getString(R.string.failed_albums, failedCount)
                 val notificationMessage = appContext().getString(R.string.sync_failed_notification_albums, failedCount)
-                app.kreate.android.me.knighthat.utils.Toaster.e(errorMessage)
+                Toaster.e(errorMessage)
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_completed_with_errors),
                     message = notificationMessage,
                     notificationId = resultNotificationId
                 )
             } else {
-                app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_albums))
+                Toaster.s(appContext().getString(R.string.found_all_albums))
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_successful),
                     message = appContext().getString(R.string.sync_success_notification_albums),
@@ -574,7 +575,7 @@ class HomeSyncService : Service() {
         Timber.tag("HomeSyncService").d("══════ PLAYLIST SYNC START ══════ Total filtered: ${ytPlaylists.size}")
 
         withContext(Dispatchers.Main) {
-            if (ytPlaylists.isNotEmpty()) app.kreate.android.me.knighthat.utils.Toaster.i(appContext().getString(R.string.refreshing_playlists, ytPlaylists.size))
+            if (ytPlaylists.isNotEmpty()) Toaster.i(appContext().getString(R.string.refreshing_playlists, ytPlaylists.size))
         }
 
         if (ytPlaylists.isEmpty()) {
@@ -656,20 +657,20 @@ class HomeSyncService : Service() {
 
         withContext(Dispatchers.Main) {
             if (abortSync) {
-                app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.sync_failed))
+                Toaster.e(appContext().getString(R.string.sync_failed))
                 HomeSyncState.showSyncNotification(appContext().getString(R.string.sync_failed), "Sync aborted due to network error.", resultNotificationId)
             } else if (failedCount > 0) {
                 HomeSyncState.failedPlaylistsList = failedList
                 val errorMessage = appContext().getString(R.string.failed_playlists, failedCount)
                 val notificationMessage = appContext().getString(R.string.sync_failed_notification_playlists, failedCount)
-                app.kreate.android.me.knighthat.utils.Toaster.e(errorMessage)
+                Toaster.e(errorMessage)
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_completed_with_errors),
                     message = notificationMessage,
                     notificationId = resultNotificationId
                 )
             } else {
-                app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_playlists))
+                Toaster.s(appContext().getString(R.string.found_all_playlists))
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_successful),
                     message = appContext().getString(R.string.sync_success_notification_playlists),

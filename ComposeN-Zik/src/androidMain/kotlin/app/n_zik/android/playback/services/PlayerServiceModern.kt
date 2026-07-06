@@ -225,6 +225,13 @@ import android.os.Binder as AndroidBinder
 import androidx.compose.ui.util.fastMap
 import app.it.fast4x.rimusic.utils.isDiscordBrowsingEnabledKey
 import app.it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
+import app.n_zik.android.core.coil.ImageCacheFactory
+import app.n_zik.android.playback.exceptions.ExplicitContentException
+import app.n_zik.android.playback.exceptions.LoginRequiredException
+import app.n_zik.android.playback.exceptions.PlayableFormatNonSupported
+import app.n_zik.android.playback.exceptions.UnmatchedSongException
+import app.n_zik.android.playback.exceptions.UnplayableException
+import app.n_zik.android.playback.exceptions.VideoIdMismatchException
 
 
 const val LOCAL_KEY_PREFIX = "local:"
@@ -924,11 +931,11 @@ class PlayerServiceModern : MediaLibraryService(),
         }
 
         if (error.cause.isFatalCustomException()) {
-            val rootCause = generateSequence<Throwable>(error) { it.cause }.firstOrNull { it is app.n_zik.android.playback.exceptions.ExplicitContentException }
+            val rootCause = generateSequence<Throwable>(error) { it.cause }.firstOrNull { it is ExplicitContentException }
             if (rootCause != null) {
                 Toaster.w(R.string.parental_control_is_enabled)
             }
-            val unmatchedCause = generateSequence<Throwable>(error) { it.cause }.firstOrNull { it is app.n_zik.android.playback.exceptions.UnmatchedSongException }
+            val unmatchedCause = generateSequence<Throwable>(error) { it.cause }.firstOrNull { it is UnmatchedSongException }
             if (unmatchedCause != null) {
                 Toaster.w(R.string.playback_blocked_match_first)
             }
@@ -2105,7 +2112,7 @@ class PlayerServiceModern : MediaLibraryService(),
                     if (nextArtworkUri != null) {
                         try {
                             // Preload cover art to avoid UI lag on switch
-                            app.n_zik.android.core.coil.ImageCacheFactory.preloadImage(nextArtworkUri)
+                            ImageCacheFactory.preloadImage(nextArtworkUri)
                         } catch (e: Exception) {
                             Timber.tag("PlayerServiceModern").e(e, "Crossfade: Failed to preload cover art")
                         }
@@ -2358,11 +2365,11 @@ class PlayerServiceModern : MediaLibraryService(),
 fun Throwable?.isFatalCustomException(): Boolean {
     return generateSequence<Throwable>(this) { it.cause }
         .any {
-            it is app.n_zik.android.playback.exceptions.ExplicitContentException ||
-            it is app.n_zik.android.playback.exceptions.LoginRequiredException ||
-            it is app.n_zik.android.playback.exceptions.PlayableFormatNonSupported ||
-            it is app.n_zik.android.playback.exceptions.UnplayableException ||
-            it is app.n_zik.android.playback.exceptions.VideoIdMismatchException ||
-            it is app.n_zik.android.playback.exceptions.UnmatchedSongException
+            it is ExplicitContentException ||
+            it is LoginRequiredException ||
+            it is PlayableFormatNonSupported ||
+            it is UnplayableException ||
+            it is VideoIdMismatchException ||
+            it is UnmatchedSongException
         }
 }

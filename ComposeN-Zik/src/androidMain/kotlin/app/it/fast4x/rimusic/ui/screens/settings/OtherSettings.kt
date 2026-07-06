@@ -202,7 +202,7 @@ fun OtherSettings() {
                         
                         // Only the dialog, not the old component
                         if (showFolderDialog) {
-                            app.n_zik.android.components.settings.SettingsInputDialog(
+                            SettingsInputDialog(
                                 title = stringResource(R.string.folder_that_will_show_when_you_open_on_device_page),
                                 initialValue = defaultFolder,
                                 placeholder = stringResource(R.string.folder_that_will_show_when_you_open_on_device_page),
@@ -362,7 +362,7 @@ fun OtherSettings() {
                             
                             // Only the dialog, not the old component
                             if (showProxyHostDialog) {
-                                app.n_zik.android.components.settings.SettingsInputDialog(
+                                SettingsInputDialog(
                                     title = stringResource(R.string.proxy_host),
                                     initialValue = proxyHost,
                                     placeholder = stringResource(R.string.proxy_host),
@@ -384,7 +384,7 @@ fun OtherSettings() {
                             
                             // Only the dialog, not the old component
                             if (showProxyPortDialog) {
-                                app.n_zik.android.components.settings.SettingsInputDialog(
+                                SettingsInputDialog(
                                     title = stringResource(R.string.proxy_port),
                                     initialValue = proxyPort.toString(),
                                     placeholder = stringResource(R.string.proxy_port),

@@ -418,7 +418,7 @@ fun GeneralSettings(
                      }
                      
                      if (showJumpPreviousDialog) {
-                         app.n_zik.android.components.settings.SettingsInputDialog(
+                         SettingsInputDialog(
                              title = stringResource(R.string.jump_previous_blank),
                              initialValue = jumpPrevious,
                              placeholder = stringResource(R.string.jump_previous_blank),

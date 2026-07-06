@@ -604,9 +604,9 @@ fun UpdateScreen(navController: NavController) {
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         val stateStr = when(checkUpdateState) {
-                                            app.it.fast4x.rimusic.enums.CheckUpdateState.Enabled -> stringResource(R.string.auto_update_enabled)
-                                            app.it.fast4x.rimusic.enums.CheckUpdateState.Ask -> stringResource(R.string.auto_update_ask)
-                                            app.it.fast4x.rimusic.enums.CheckUpdateState.Disabled -> stringResource(R.string.auto_update_disabled)
+                                            CheckUpdateState.Enabled -> stringResource(R.string.auto_update_enabled)
+                                            CheckUpdateState.Ask -> stringResource(R.string.auto_update_ask)
+                                            CheckUpdateState.Disabled -> stringResource(R.string.auto_update_disabled)
                                         }
                                         BasicText(
                                             text = "${UpdaterConstants.PREFIX_VERSION}$currentVersion • $stateStr",

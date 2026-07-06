@@ -26,6 +26,7 @@ import java.time.Instant
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import app.n_zik.android.core.network.client.NetworkClientFactory
 
 class PoTokenWebView private constructor(
     context: Context,
@@ -309,7 +310,7 @@ class PoTokenWebView private constructor(
                     "x-user-agent" to "grpc-web-javascript/0.1",
                 ).toHeaders())
                 .url(url)
-            val response = app.n_zik.android.core.network.client.NetworkClientFactory.getCachelessClient()
+            val response = NetworkClientFactory.getCachelessClient()
                 .newCall(requestBuilder.build()).execute()
             return@runCatching response.body!!.string()
         }

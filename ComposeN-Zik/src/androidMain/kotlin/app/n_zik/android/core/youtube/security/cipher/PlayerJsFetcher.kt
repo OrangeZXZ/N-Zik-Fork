@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
 import java.io.File
+import app.n_zik.android.core.network.client.NetworkClientFactory
 
 /**
  * Fetches and caches YouTube's player.js for cipher operations.
@@ -21,7 +22,7 @@ object PlayerJsFetcher {
     private const val CACHE_TTL_MS = 6 * 60 * 60 * 1000L // 6 hours
 
     private val httpClient: OkHttpClient
-        get() = app.n_zik.android.core.network.client.NetworkClientFactory.getCachelessClient()
+        get() = NetworkClientFactory.getCachelessClient()
 
     // Regex to extract player hash from iframe_api response
     private val PLAYER_HASH_REGEX = Regex("""\\?/s\\?/player\\?/([a-zA-Z0-9_-]+)\\?/""")

@@ -3,6 +3,7 @@ package app.it.fast4x.rimusic.ui.components.tab.toolbar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import app.n_zik.android.colorPalette
+import app.it.fast4x.rimusic.ui.styling.ColorPalette
 
 /**
  * The [DynamicColor] is a UI component designed to
@@ -17,7 +18,7 @@ interface DynamicColor: Icon {
     /**
      * Second color of this icon.
      *
-     * By default, [app.it.fast4x.rimusic.ui.styling.ColorPalette.textDisabled] is used.
+     * By default, [ColorPalette.textDisabled] is used.
      */
     val secondColor: Color
         @Composable

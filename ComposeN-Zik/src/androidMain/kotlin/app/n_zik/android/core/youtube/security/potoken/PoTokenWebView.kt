@@ -26,6 +26,7 @@ import java.util.Collections
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import app.n_zik.android.core.network.client.NetworkClientFactory
 
 class PoTokenWebView private constructor(
     context: Context,
@@ -329,7 +330,7 @@ class PoTokenWebView private constructor(
         private const val JS_INTERFACE = "PoTokenWebView"
 
         private val httpClient: OkHttpClient
-            get() = app.n_zik.android.core.network.client.NetworkClientFactory.getCachelessClient()
+            get() = NetworkClientFactory.getCachelessClient()
 
         suspend fun getNewPoTokenGenerator(context: Context): PoTokenWebView {
             return withContext(Dispatchers.Main) {

@@ -113,8 +113,8 @@ class AppHeader(
                                 if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
                                     val disableBackStack = context.preferences.getBoolean(app.it.fast4x.rimusic.utils.disableNavigationBackStackKey, false)
                                     if (disableBackStack) {
-                                        navController.navigate(app.it.fast4x.rimusic.enums.NavRoutes.home.name) {
-                                            popUpTo(app.it.fast4x.rimusic.enums.NavRoutes.home.name) { inclusive = true }
+                                        navController.navigate(NavRoutes.home.name) {
+                                            popUpTo(NavRoutes.home.name) { inclusive = true }
                                         }
                                     } else {
                                         navController.popBackStack()

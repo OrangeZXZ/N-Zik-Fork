@@ -11,6 +11,9 @@ import androidx.core.app.NotificationCompat
 import app.n_zik.android.R
 import app.n_zik.android.appContext
 import app.n_zik.android.MainActivity
+import app.it.fast4x.rimusic.models.Album
+import app.it.fast4x.rimusic.models.Artist
+import app.it.fast4x.rimusic.models.PlaylistPreview
 
 object HomeSyncState {
     var isSyncingArtists by mutableStateOf(false)
@@ -19,7 +22,7 @@ object HomeSyncState {
     var artistSyncCurrentIndex by mutableStateOf(0)
     var artistSyncTotal by mutableStateOf(0)
     var artistSyncFailed by mutableStateOf(0)
-    var failedArtistsList by mutableStateOf<List<app.it.fast4x.rimusic.models.Artist>>(emptyList())
+    var failedArtistsList by mutableStateOf<List<Artist>>(emptyList())
 
     var isSyncingAlbums by mutableStateOf(false)
     var albumSyncProgress by mutableStateOf(0f)
@@ -27,7 +30,7 @@ object HomeSyncState {
     var albumSyncCurrentIndex by mutableStateOf(0)
     var albumSyncTotal by mutableStateOf(0)
     var albumSyncFailed by mutableStateOf(0)
-    var failedAlbumsList by mutableStateOf<List<app.it.fast4x.rimusic.models.Album>>(emptyList())
+    var failedAlbumsList by mutableStateOf<List<Album>>(emptyList())
 
     var isSyncingPlaylists by mutableStateOf(false)
     var playlistSyncProgress by mutableStateOf(0f)
@@ -35,7 +38,7 @@ object HomeSyncState {
     var playlistSyncCurrentIndex by mutableStateOf(0)
     var playlistSyncTotal by mutableStateOf(0)
     var playlistSyncFailed by mutableStateOf(0)
-    var failedPlaylistsList by mutableStateOf<List<app.it.fast4x.rimusic.models.PlaylistPreview>>(emptyList())
+    var failedPlaylistsList by mutableStateOf<List<PlaylistPreview>>(emptyList())
 
     fun showSyncNotification(
         title: String,

@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.future
+import app.n_zik.android.R
 
 @UnstableApi
 class CoilBitmapLoader(
@@ -34,7 +35,7 @@ class CoilBitmapLoader(
             var bitmap = ImageCacheFactory.loadBitmap(uri.toString(), allowHardware = false)
             
             if (bitmap == null && (uri.scheme == android.content.ContentResolver.SCHEME_CONTENT || uri.scheme == android.content.ContentResolver.SCHEME_FILE)) {
-                val drawable = ContextCompat.getDrawable(context, app.n_zik.android.R.drawable.ic_launcher_box)
+                val drawable = ContextCompat.getDrawable(context, R.drawable.ic_launcher_box)
                 if (drawable is BitmapDrawable) {
                     bitmap = drawable.bitmap
                 } else if (drawable != null) {

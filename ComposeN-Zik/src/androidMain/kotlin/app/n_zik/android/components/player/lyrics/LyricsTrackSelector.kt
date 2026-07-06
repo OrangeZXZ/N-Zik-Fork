@@ -36,6 +36,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
+import app.n_zik.android.enums.lyrics.LyricsType
 
 private val trackSelectorTextFieldColors: TextFieldColors
     @Composable
@@ -268,7 +269,7 @@ fun LyricsTrackSelector(
                                     lyricsTable.upsert(
                                         Lyrics(
                                             songId = mediaId,
-                                            type = app.n_zik.android.enums.lyrics.LyricsType.Synced.name,
+                                            type = LyricsType.Synced.name,
                                             data = it.syncedLyrics.orEmpty()
                                         )
                                     )

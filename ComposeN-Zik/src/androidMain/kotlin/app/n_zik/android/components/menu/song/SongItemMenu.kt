@@ -89,6 +89,8 @@ import app.n_zik.android.components.tab.Radio
 import app.kreate.android.me.knighthat.sync.YouTubeSync
 import timber.log.Timber
 import java.util.Optional
+import app.it.fast4x.rimusic.ui.components.themed.InProgressDialog
+import app.it.fast4x.rimusic.ui.screens.info.VideoOrSongInfoScreen
 
 @UnstableApi
 @ExperimentalFoundationApi
@@ -230,7 +232,7 @@ class SongItemMenu private constructor(
 
                 override fun onShortClick() {
                     menuState.display {
-                        app.it.fast4x.rimusic.ui.screens.info.VideoOrSongInfoScreen(
+                        VideoOrSongInfoScreen(
                             videoId = song.id,
                             songTitle = song.title,
                             songArtist = song.artistsText ?: "",
@@ -365,7 +367,7 @@ class SongItemMenu private constructor(
         exportCacheDialog.Render()
 
         if (exportCacheDialog.isExporting.value) {
-            app.it.fast4x.rimusic.ui.components.themed.InProgressDialog(
+            InProgressDialog(
                 total = 0,
                 done = 0,
                 text = stringResource(R.string.exporting),

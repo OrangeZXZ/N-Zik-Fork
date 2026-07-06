@@ -33,6 +33,9 @@ import it.fast4x.innertube.requests.songInfo
 import it.fast4x.innertube.utils.from
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
+import app.it.fast4x.rimusic.models.Artist
+import app.it.fast4x.rimusic.models.SongArtistMap
+import app.n_zik.android.core.database.Database
 
 @Composable
 fun VideoOrSongInfoScreen(
@@ -66,7 +69,7 @@ fun VideoOrSongInfoScreen(
         
         // Fetch artists from database
         try {
-            val dbArtists = app.n_zik.android.core.database.Database.artistTable.findBySongId(videoId).first()
+            val dbArtists = Database.artistTable.findBySongId(videoId).first()
             if (dbArtists.isNotEmpty()) {
                 finalArtists = dbArtists.map { it.id to (it.name ?: "") }
             } else if (songArtist.isNotBlank()) {
@@ -80,25 +83,25 @@ fun VideoOrSongInfoScreen(
                 for (name in parsed) {
                     // Try database first
                     var artistId = try {
-                        app.n_zik.android.core.database.Database.artistTable.findByName(name).first()?.id
+                        Database.artistTable.findByName(name).first()?.id
                     } catch (e: Exception) { null }
                     
                     // If not in database, search online
                     if (artistId == null) {
                         try {
-                            val searchResult = it.fast4x.innertube.Innertube.searchPage<it.fast4x.innertube.Innertube.ArtistItem>(
-                                it.fast4x.innertube.models.bodies.SearchBody(query = name, params = it.fast4x.innertube.Innertube.SearchFilter.Artist.value),
-                                { content -> it.fast4x.innertube.Innertube.ArtistItem.from(content) }
+                            val searchResult = Innertube.searchPage<Innertube.ArtistItem>(
+                                SearchBody(query = name, params = Innertube.SearchFilter.Artist.value),
+                                { content -> Innertube.ArtistItem.from(content) }
                             )?.getOrNull()
                             val foundArtist = searchResult?.items?.firstOrNull()
                             if (foundArtist != null) {
                                 artistId = foundArtist.key
                                 // Save to database
-                                app.n_zik.android.core.database.Database.artistTable.insertIgnore(
-                                    app.it.fast4x.rimusic.models.Artist(id = artistId, name = foundArtist.info?.name ?: name)
+                                Database.artistTable.insertIgnore(
+                                    Artist(id = artistId, name = foundArtist.info?.name ?: name)
                                 )
-                                app.n_zik.android.core.database.Database.songArtistMapTable.insertIgnore(
-                                    app.it.fast4x.rimusic.models.SongArtistMap(songId = videoId, artistId = artistId)
+                                Database.songArtistMapTable.insertIgnore(
+                                    SongArtistMap(songId = videoId, artistId = artistId)
                                 )
                             }
                         } catch (e: Exception) { /* Silently fail */ }

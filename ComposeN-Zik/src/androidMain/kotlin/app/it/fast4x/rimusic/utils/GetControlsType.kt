@@ -23,6 +23,7 @@ import app.it.fast4x.rimusic.ui.components.themed.PlaybackParamsDialog
 import app.it.fast4x.rimusic.ui.screens.player.components.controls.ControlsEssential
 import app.it.fast4x.rimusic.ui.screens.player.components.controls.ControlsModern
 import kotlin.math.roundToInt
+import app.it.fast4x.rimusic.ui.styling.ColorPalette
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -34,7 +35,7 @@ fun GetControls(
     likedAt: Long?,
     mediaId: String,
     onBlurScaleChange: (Float) -> Unit,
-    dynamicColorPalette: app.it.fast4x.rimusic.ui.styling.ColorPalette
+    dynamicColorPalette: ColorPalette
 ) {
     val playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Essential)
     val playerPlayButtonType by rememberPreference(

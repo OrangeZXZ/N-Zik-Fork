@@ -80,6 +80,7 @@ import app.n_zik.android.enums.lyrics.LyricsOutline
 import app.n_zik.android.enums.lyrics.LyricsType
 import app.n_zik.android.typography
 import app.n_zik.android.uiRoundnessShape
+import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 
 @UnstableApi
 class LyricsSettingsMenu private constructor(
@@ -1158,7 +1159,7 @@ class LyricsSettingsMenu private constructor(
         var isShowingDialog by remember { mutableStateOf(false) }
 
         if (isShowingDialog) {
-            app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog(
+            ValueSelectorDialog(
                 onDismiss = { isShowingDialog = false },
                 title = title,
                 selectedValue = selectedValue,

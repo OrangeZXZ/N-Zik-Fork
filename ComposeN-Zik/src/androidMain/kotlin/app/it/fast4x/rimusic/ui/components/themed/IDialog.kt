@@ -2,6 +2,7 @@ package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.compose.runtime.Composable
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Dialog
+import app.n_zik.android.components.settings.SettingsInputDialog
 
 interface IDialog: Dialog {
 
@@ -27,7 +28,7 @@ interface IDialog: Dialog {
     override fun Render() {
         if( !isActive ) return
 
-        app.n_zik.android.components.settings.SettingsInputDialog(
+        SettingsInputDialog(
             title = dialogTitle,
             initialValue = value,
             placeholder = placeholder,

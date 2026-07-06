@@ -52,6 +52,12 @@ import kotlinx.coroutines.flow.map
 import app.it.fast4x.rimusic.models.PlaylistPreview
 import app.it.fast4x.rimusic.ui.items.PlaylistItem
 import app.it.fast4x.rimusic.enums.NavRoutes
+import app.it.fast4x.rimusic.models.Song
+import app.it.fast4x.rimusic.ui.components.themed.Enqueue
+import app.it.fast4x.rimusic.ui.components.themed.PlayNext
+import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.tab.DownloadAllSongsDialog
+import app.n_zik.android.core.coil.ImageCacheFactory
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -152,13 +158,13 @@ class LocalPlaylistItemMenu private constructor(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        vertical = app.it.fast4x.rimusic.ui.styling.Dimensions.itemsVerticalPadding,
+                        vertical = Dimensions.itemsVerticalPadding,
                         horizontal = 16.dp
                     )
             ) {
                 // Playlist's thumbnail
                 Box(
-                    Modifier.size(app.it.fast4x.rimusic.ui.styling.Dimensions.thumbnails.album / 2)
+                    Modifier.size(Dimensions.thumbnails.album / 2)
                 ) {
                     val thumbnails by remember {
                         val customThumbnail = app.it.fast4x.rimusic.utils.checkFileExists( context, "thumbnail/playlist_${playlistPreview.playlist.id}" )
@@ -169,42 +175,42 @@ class LocalPlaylistItemMenu private constructor(
                             Database.songPlaylistMapTable
                                     .sortSongsByPlayTime( playlistPreview.playlist.id )
                                     .distinctUntilChanged()
-                                    .map { list: List<app.it.fast4x.rimusic.models.Song> ->
-                                        list.mapNotNull( app.it.fast4x.rimusic.models.Song::thumbnailUrl ).takeLast( 4 )
+                                    .map { list: List<Song> ->
+                                        list.mapNotNull( Song::thumbnailUrl ).takeLast( 4 )
                                     }
                     }.collectAsState( emptyList(), kotlinx.coroutines.Dispatchers.IO )
 
                     if (thumbnails.isEmpty()) {
                         androidx.compose.foundation.Image(
-                            painter = androidx.compose.ui.res.painterResource(app.n_zik.android.R.drawable.library),
+                            painter = androidx.compose.ui.res.painterResource(R.drawable.library),
                             contentDescription = null,
                             colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(colorPalette().textSecondary),
                             modifier = Modifier
                                 .align(Alignment.Center)
-                                .size(app.it.fast4x.rimusic.ui.styling.Dimensions.thumbnails.album / 4)
+                                .size(Dimensions.thumbnails.album / 4)
                         )
                     } else if (thumbnails.size == 1) {
-                        app.n_zik.android.core.coil.ImageCacheFactory.Thumbnail(
+                        ImageCacheFactory.Thumbnail(
                             thumbnailUrl = thumbnails[0],
                             modifier = Modifier
-                                .size(app.it.fast4x.rimusic.ui.styling.Dimensions.thumbnails.album / 2)
+                                .size(Dimensions.thumbnails.album / 2)
                                 .clip(thumbnailShape())
                         )
                     } else {
                         // 4 grid
-                        Row(modifier = Modifier.size(app.it.fast4x.rimusic.ui.styling.Dimensions.thumbnails.album / 2).clip(thumbnailShape())) {
+                        Row(modifier = Modifier.size(Dimensions.thumbnails.album / 2).clip(thumbnailShape())) {
                             Column(modifier = Modifier.weight(1f).fillMaxHeight()) {
-                                app.n_zik.android.core.coil.ImageCacheFactory.Thumbnail(thumbnailUrl = thumbnails[0], modifier = Modifier.weight(1f).fillMaxWidth())
+                                ImageCacheFactory.Thumbnail(thumbnailUrl = thumbnails[0], modifier = Modifier.weight(1f).fillMaxWidth())
                                 if (thumbnails.size > 2) {
-                                    app.n_zik.android.core.coil.ImageCacheFactory.Thumbnail(thumbnailUrl = thumbnails[2], modifier = Modifier.weight(1f).fillMaxWidth())
+                                    ImageCacheFactory.Thumbnail(thumbnailUrl = thumbnails[2], modifier = Modifier.weight(1f).fillMaxWidth())
                                 }
                             }
                             Column(modifier = Modifier.weight(1f).fillMaxHeight()) {
                                 if (thumbnails.size > 1) {
-                                    app.n_zik.android.core.coil.ImageCacheFactory.Thumbnail(thumbnailUrl = thumbnails[1], modifier = Modifier.weight(1f).fillMaxWidth())
+                                    ImageCacheFactory.Thumbnail(thumbnailUrl = thumbnails[1], modifier = Modifier.weight(1f).fillMaxWidth())
                                 }
                                 if (thumbnails.size > 3) {
-                                    app.n_zik.android.core.coil.ImageCacheFactory.Thumbnail(thumbnailUrl = thumbnails[3], modifier = Modifier.weight(1f).fillMaxWidth())
+                                    ImageCacheFactory.Thumbnail(thumbnailUrl = thumbnails[3], modifier = Modifier.weight(1f).fillMaxWidth())
                                 }
                             }
                         }
@@ -235,7 +241,7 @@ class LocalPlaylistItemMenu private constructor(
 
                 // Trailing content
                 IconButton(
-                    icon = app.n_zik.android.R.drawable.open,
+                    icon = R.drawable.open,
                     color = colorPalette().text,
                     onClick = {
                         menuState.hide()
@@ -259,7 +265,7 @@ class LocalPlaylistItemMenu private constructor(
         // Options like Play Next, Enqueue, Rename, Delete...
         var showRenameDialog by remember { mutableStateOf(false) }
         
-        var songs by remember { mutableStateOf<List<app.it.fast4x.rimusic.models.Song>?>(null) }
+        var songs by remember { mutableStateOf<List<Song>?>(null) }
         
         LaunchedEffect(playlistPreview.playlist.id) {
             kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
@@ -267,7 +273,7 @@ class LocalPlaylistItemMenu private constructor(
             }
         }
         
-        val downloadAllDialog = app.n_zik.android.components.tab.DownloadAllSongsDialog { songs ?: emptyList() }
+        val downloadAllDialog = DownloadAllSongsDialog { songs ?: emptyList() }
         val downloadAll = object : MenuIcon by downloadAllDialog, Descriptive by downloadAllDialog, Clickable {
             override fun onShortClick() {
                 if (songs == null) {
@@ -281,7 +287,7 @@ class LocalPlaylistItemMenu private constructor(
             override fun onLongClick() {}
         }
 
-        val deleteAllDialog = app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog { songs ?: emptyList() }
+        val deleteAllDialog = DeleteAllDownloadedSongsDialog { songs ?: emptyList() }
         val deleteAll = object : MenuIcon by deleteAllDialog, Descriptive by deleteAllDialog, Clickable {
             override fun onShortClick() {
                 if (songs == null) {
@@ -297,7 +303,7 @@ class LocalPlaylistItemMenu private constructor(
 
         val renamePlaylist = RenamePlaylistDialog { playlistPreview.playlist }
 
-        val rename = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
+        val rename = object : MenuIcon, Descriptive, Clickable {
             override val iconId: Int = R.drawable.title_edit
             override val messageId: Int = R.string.rename_playlist
             @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
@@ -309,7 +315,7 @@ class LocalPlaylistItemMenu private constructor(
         downloadAllDialog.Render()
         deleteAllDialog.Render()
 
-        val playNext = app.it.fast4x.rimusic.ui.components.themed.PlayNext {
+        val playNext = PlayNext {
             if (songs == null) {
                 Toaster.w(R.string.opening_url)
             } else if (songs!!.isNotEmpty()) {
@@ -320,7 +326,7 @@ class LocalPlaylistItemMenu private constructor(
             }
         }
 
-        val enqueue = app.it.fast4x.rimusic.ui.components.themed.Enqueue {
+        val enqueue = Enqueue {
             if (songs == null) {
                 Toaster.w(R.string.opening_url)
             } else if (songs!!.isNotEmpty()) {

@@ -24,6 +24,8 @@ import kotlin.reflect.KProperty
 import app.n_zik.android.playback.exceptions.UnplayableException
 import app.n_zik.android.playback.exceptions.UnknownException
 import timber.log.Timber
+import app.n_zik.android.core.network.client.NetworkClientFactory
+import it.fast4x.innertube.Innertube
 
 
 @UnstableApi
@@ -87,7 +89,7 @@ val Context.defaultDataSourceFactory
         DefaultHttpDataSource.Factory().setConnectTimeoutMs(16000)
             .setReadTimeoutMs(8000)
             .apply {
-                it.fast4x.innertube.Innertube.cookie?.let {
+                Innertube.cookie?.let {
                     setDefaultRequestProperties(mapOf("Cookie" to it))
                 }
             }
@@ -100,7 +102,7 @@ val Context.okHttpDataSourceFactory
         OkHttpDataSource.Factory { request -> okHttpClient().newCall(request) }
             .apply {
                 val headers = mutableMapOf<String, String>()
-                it.fast4x.innertube.Innertube.cookie?.let {
+                Innertube.cookie?.let {
                     headers["Cookie"] = it
                 }
                 setDefaultRequestProperties(headers)
@@ -108,7 +110,7 @@ val Context.okHttpDataSourceFactory
     )
 
 private fun okHttpClient(): OkHttpClient {
-    return app.n_zik.android.core.network.client.NetworkClientFactory.getCachelessClient()
+    return NetworkClientFactory.getCachelessClient()
 }
 
 

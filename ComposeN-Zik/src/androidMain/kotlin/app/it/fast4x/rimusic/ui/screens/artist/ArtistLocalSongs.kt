@@ -97,6 +97,8 @@ import app.n_zik.android.components.artist.FollowButton
 import app.n_zik.android.playback.utils.Shuffler
 import app.it.fast4x.rimusic.utils.addNext
 import app.n_zik.android.components.SongItem
+import app.it.fast4x.rimusic.models.Artist
+import it.fast4x.innertube.requests.ArtistPage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -107,8 +109,8 @@ import app.n_zik.android.components.SongItem
 @Composable
 fun ArtistLocalSongs(
     navController: NavController,
-    localArtist: app.it.fast4x.rimusic.models.Artist?,
-    artistPage: it.fast4x.innertube.requests.ArtistPage?,
+    localArtist: Artist?,
+    artistPage: ArtistPage?,
     thumbnailPainter: Painter
 ) {
     localArtist ?: return
@@ -551,8 +553,8 @@ fun ArtistLocalSongs(
 
 @Composable
 fun ArtistHeader(
-    localArtist: app.it.fast4x.rimusic.models.Artist,
-    artistPage: it.fast4x.innertube.requests.ArtistPage?,
+    localArtist: Artist,
+    artistPage: ArtistPage?,
     thumbnailPainter: Painter
 ) {
     val context = LocalContext.current

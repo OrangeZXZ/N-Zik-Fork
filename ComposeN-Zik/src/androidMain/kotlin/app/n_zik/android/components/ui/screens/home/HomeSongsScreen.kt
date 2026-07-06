@@ -46,6 +46,13 @@ import it.fast4x.innertube.requests.playlistPage
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
+import app.it.fast4x.rimusic.ui.components.themed.InProgressDialog
+import app.n_zik.android.components.dialog.MatchResultsDialog
+import app.n_zik.android.components.dialog.YouTubeLinkImportDialog
+import app.n_zik.android.components.tab.ImportPlaylistsMenu
+import app.n_zik.android.components.tab.ImportSongsFromServices
+import app.n_zik.android.core.database.ImportSong
+import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
 
 @RequiresApi(Build.VERSION_CODES.O)
 @UnstableApi
@@ -96,12 +103,12 @@ fun HomeSongsScreen(navController: NavController ) {
         val key = if (builtInPlaylist == BuiltInPlaylist.Favorites) Preference.HOME_SONGS_FAVORITES_SORT_BY.key else Preference.HOME_SONGS_SORT_BY.key
         prefs.edit().putString(key, SongSortBy.Custom.name).apply()
     })
-    val importSpotify = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "SPOTIFY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites, onImportComplete = {
+    val importSpotify = ImportSongsFromServices.init(source = "SPOTIFY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites, onImportComplete = {
         val prefs = appContext().preferences
         val key = if (builtInPlaylist == BuiltInPlaylist.Favorites) Preference.HOME_SONGS_FAVORITES_SORT_BY.key else Preference.HOME_SONGS_SORT_BY.key
         prefs.edit().putString(key, SongSortBy.Custom.name).apply()
     })
-    val importRiplay = app.n_zik.android.components.tab.ImportSongsFromServices.init(source = "RIPLAY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites, onImportComplete = {
+    val importRiplay = ImportSongsFromServices.init(source = "RIPLAY_IMPORT_HOMESONGS", likeImported = builtInPlaylist == BuiltInPlaylist.Favorites, onImportComplete = {
         val prefs = appContext().preferences
         val key = if (builtInPlaylist == BuiltInPlaylist.Favorites) Preference.HOME_SONGS_FAVORITES_SORT_BY.key else Preference.HOME_SONGS_SORT_BY.key
         prefs.edit().putString(key, SongSortBy.Custom.name).apply()
@@ -115,7 +122,7 @@ fun HomeSongsScreen(navController: NavController ) {
 
     var showYouTubeLinkDialog by remember { mutableStateOf(false) }
     if (showYouTubeLinkDialog) {
-        app.n_zik.android.components.dialog.YouTubeLinkImportDialog(
+        YouTubeLinkImportDialog(
             onImport = { urlPlaylistId ->
                 coroutineScope.launch(Dispatchers.IO) {
                     val browseId = if (urlPlaylistId.startsWith("VL")) urlPlaylistId else "VL$urlPlaylistId"
@@ -177,7 +184,7 @@ fun HomeSongsScreen(navController: NavController ) {
     }
 
     if (showMatchingProgressDialog) {
-        app.it.fast4x.rimusic.ui.components.themed.InProgressDialog(
+        InProgressDialog(
             total = totalSongsToMatch,
             done = songsMatched,
             text = stringResource(R.string.matching_songs),
@@ -190,7 +197,7 @@ fun HomeSongsScreen(navController: NavController ) {
     }
 
     if (showMatchResultsDialog) {
-        app.n_zik.android.components.dialog.MatchResultsDialog(
+        MatchResultsDialog(
             matched = matchResultsMatched,
             failed = matchResultsFailed,
             merged = matchResultsMerged,
@@ -215,7 +222,7 @@ fun HomeSongsScreen(navController: NavController ) {
                 val unmatched = if (retryMatchMode && retryMatchSongs.isNotEmpty()) {
                     retryMatchSongs
                 } else {
-                    itemsOnDisplayState.filter { (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX) }
+                    itemsOnDisplayState.filter { (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(LOCAL_KEY_PREFIX) }
                 }
                 totalSongsToMatch = unmatched.size
                 songsMatched = 0
@@ -246,10 +253,10 @@ fun HomeSongsScreen(navController: NavController ) {
                     delay(1500)
                     var failedCount = 0
                     val allEntries = Database.importSongTable.getAllEntries()
-                    val failedEntries = mutableListOf<app.n_zik.android.core.database.ImportSong>()
+                    val failedEntries = mutableListOf<ImportSong>()
                     for (entry in allEntries) {
                         val count = Database.songTable.countById(entry.originalId)
-                        val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(app.n_zik.android.playback.services.LOCAL_KEY_PREFIX)
+                        val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(LOCAL_KEY_PREFIX)
                         if (count > 0) {
                             if (isYouTubeId) {
                                 val song = Database.songTable.findById(entry.originalId).first()
@@ -291,7 +298,7 @@ fun HomeSongsScreen(navController: NavController ) {
     }
 
     val importMenu = remember(builtInPlaylist) {
-        app.n_zik.android.components.tab.ImportPlaylistsMenu(
+        ImportPlaylistsMenu(
             onImportNzik = { import.onShortClick() },
             onImportSpotify = { importSpotify.onShortClick() },
             onImportRiplay = { importRiplay.onShortClick() },

@@ -66,6 +66,7 @@ import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import app.n_zik.android.uiRoundnessShape
+import app.n_zik.android.extensions.audiobar.views.SeekBarStaticAudioWaves
 
 const val DURATION_INDICATOR_HEIGHT = 20
 
@@ -238,7 +239,7 @@ fun GetSeekBar(
         }
 
         if (playerTimelineType == PlayerTimelineType.AudioWaves) {
-            app.n_zik.android.extensions.audiobar.views.SeekBarStaticAudioWaves(
+            SeekBarStaticAudioWaves(
                 uiMedia = media,
                 position = scrubbingPosition ?: position(),
                 duration = duration(),

@@ -91,6 +91,7 @@ import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
 import app.n_zik.android.components.album.ChangeAlbumTitleDialog
 import app.n_zik.android.components.album.ChangeAlbumAuthorsDialog
 import app.n_zik.android.components.album.ChangeAlbumCoverDialog
+import app.n_zik.android.components.song.GoToArtist
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -367,7 +368,7 @@ class AlbumItemMenu private constructor(
                 val firstSong = songs.firstOrNull()
                 if (firstSong != null) {
                     if (artistNames.size <= 1) {
-                        add(app.n_zik.android.components.song.GoToArtist(navController, firstSong))
+                        add(GoToArtist(navController, firstSong))
                     } else {
                         artistNames.forEach { artistName ->
                             add(object : MenuIcon, Descriptive, Clickable {
@@ -378,7 +379,7 @@ class AlbumItemMenu private constructor(
                                 override fun onShortClick() {
                                     menuState.hide()
                                     CoroutineScope(Dispatchers.IO).launch {
-                                        it.fast4x.innertube.Innertube.nextPage(it.fast4x.innertube.models.bodies.NextBody(videoId = firstSong.id))
+                                        Innertube.nextPage(NextBody(videoId = firstSong.id))
                                             ?.getOrNull()
                                             ?.itemsPage?.items?.firstOrNull()
                                             ?.authors
@@ -387,7 +388,7 @@ class AlbumItemMenu private constructor(
                                             ?.takeIf { !it.browseId.isNullOrBlank() }
                                             ?.let {
                                                 val path = "${it.browseId}?params=${it.params.orEmpty()}"
-                                                app.it.fast4x.rimusic.enums.NavRoutes.artist.navigateHere(navController, path)
+                                                NavRoutes.artist.navigateHere(navController, path)
                                             }
                                     }
                                 }

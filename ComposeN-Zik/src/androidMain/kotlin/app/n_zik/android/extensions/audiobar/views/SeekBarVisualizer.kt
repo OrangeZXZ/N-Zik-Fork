@@ -53,6 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import utils.VisualizerHelper
 import timber.log.Timber
+import app.n_zik.android.LocalPlayerServiceBinder
 
 private const val waveWidthPercentOfSpaceAvailable = 0.5f
 
@@ -74,7 +75,7 @@ fun SeekBarVisualizer(
         
         var audioSessionId by remember { mutableStateOf(audioSessionIdProvider()) }
         
-        val binder = app.n_zik.android.LocalPlayerServiceBinder.current
+        val binder = LocalPlayerServiceBinder.current
         var localIsPlaying by remember(binder, isPlaying) { mutableStateOf(binder?.player?.isPlaying ?: isPlaying) }
 
         androidx.compose.runtime.DisposableEffect(binder) {

@@ -518,7 +518,7 @@ fun TextDialogSettingEntry(
     //val context = LocalContext.current
 
     if (showDialog) {
-        app.n_zik.android.components.settings.SettingsInputDialog(
+        SettingsInputDialog(
             title = title,
             initialValue = currentText,
             placeholder = title,

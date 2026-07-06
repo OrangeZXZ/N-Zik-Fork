@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.typography
+import app.it.fast4x.rimusic.ui.components.navigation.nav.LocalIsManyButtons
 
 class TextIconButton(
     val text: String,
@@ -32,7 +33,7 @@ class TextIconButton(
 
     @Composable
     override fun Draw() {
-        val isMany = app.it.fast4x.rimusic.ui.components.navigation.nav.LocalIsManyButtons.current
+        val isMany = LocalIsManyButtons.current
         val paddingScale = if (isMany) 0.75f else 1f
 
         Column (

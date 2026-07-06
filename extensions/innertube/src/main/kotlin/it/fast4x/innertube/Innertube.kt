@@ -64,6 +64,7 @@ import nl.adaptivity.xmlutil.XmlDeclMode
 import nl.adaptivity.xmlutil.serialization.XML
 import java.net.Proxy
 import java.util.Locale
+import it.fast4x.innertube.models.SectionListRenderer
 
 
 object Innertube {
@@ -219,7 +220,7 @@ object Innertube {
         val deselectEndpoint: NavigationEndpoint.Endpoint.Browse?,
     ) {
         companion object {
-            fun fromChipCloudChipRenderer(renderer: it.fast4x.innertube.models.SectionListRenderer.Header.ChipCloudRenderer.Chip): Chip? {
+            fun fromChipCloudChipRenderer(renderer: SectionListRenderer.Header.ChipCloudRenderer.Chip): Chip? {
                 return Chip(
                     title = renderer.chipCloudChipRenderer.text?.runs?.firstOrNull()?.text ?: return null,
                     endpoint = renderer.chipCloudChipRenderer.navigationEndpoint?.browseEndpoint,

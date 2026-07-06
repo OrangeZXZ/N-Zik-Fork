@@ -9,6 +9,7 @@ import it.fast4x.innertube.models.bodies.FormData
 import it.fast4x.innertube.models.v0624.charts.BrowseChartsResponse0624
 import it.fast4x.innertube.models.v0624.charts.MusicCarouselShelfRenderer
 import it.fast4x.innertube.models.v0624.charts.MusicCarouselShelfRendererContent
+import it.fast4x.innertube.models.NavigationEndpoint
 
 
 suspend fun Innertube.chartsPage(countryCode: String = "") = runCatching {
@@ -76,7 +77,7 @@ fun Innertube.PlaylistItem.Companion.from(renderer: MusicCarouselShelfRenderer):
     return Innertube.PlaylistItem(
         info = Innertube.Info(
             name = renderer.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.firstOrNull()?.text,
-            endpoint = it.fast4x.innertube.models.NavigationEndpoint.Endpoint.Browse(
+            endpoint = NavigationEndpoint.Endpoint.Browse(
                 browseId = renderer
                     .header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.firstOrNull()?.navigationEndpoint?.browseEndpoint?.browseID,
                /*
@@ -110,7 +111,7 @@ fun Innertube.ArtistItem.Companion.from(renderer: List<MusicCarouselShelfRendere
                 ?.flexColumns?.firstOrNull()
                 ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()
                 ?.text,
-            endpoint = it.fast4x.innertube.models.NavigationEndpoint.Endpoint.Browse(
+            endpoint = NavigationEndpoint.Endpoint.Browse(
                 browseId = renderer.firstOrNull()?.musicResponsiveListItemRenderer
                 ?.navigationEndpoint?.browseEndpoint?.browseID,
                 params = null,

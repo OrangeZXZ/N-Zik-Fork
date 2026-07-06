@@ -85,6 +85,7 @@ import app.n_zik.android.components.tab.Radio
 import app.kreate.android.me.knighthat.sync.YouTubeSync
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
+import app.it.fast4x.rimusic.ui.screens.info.VideoOrSongInfoScreen
 
 @UnstableApi
 @ExperimentalFoundationApi
@@ -327,7 +328,7 @@ class PlayerItemMenu private constructor(
 
                 override fun onShortClick() {
                     menuState.display {
-                        app.it.fast4x.rimusic.ui.screens.info.VideoOrSongInfoScreen(
+                        VideoOrSongInfoScreen(
                             videoId = mediaItem.mediaId,
                             songTitle = song.title,
                             songArtist = song.artistsText ?: "",

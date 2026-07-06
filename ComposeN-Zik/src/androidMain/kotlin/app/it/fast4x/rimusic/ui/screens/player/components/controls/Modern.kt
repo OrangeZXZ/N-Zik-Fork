@@ -93,6 +93,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.sync.YouTubeSync
 import app.n_zik.android.uiRoundnessShape
+import app.it.fast4x.rimusic.ui.styling.ColorPalette
+import app.n_zik.android.enums.PlayerControlsColors
 
 
 @UnstableApi
@@ -391,17 +393,17 @@ fun ControlsModern(
     playerPlayButtonType: PlayerPlayButtonType,
     isGradientBackgroundEnabled: Boolean,
     onShowSpeedPlayerDialog: () -> Unit,
-    dynamicColorPalette: app.it.fast4x.rimusic.ui.styling.ColorPalette
+    dynamicColorPalette: ColorPalette
 ) {
-    val playerControlsColors by rememberPreference(app.it.fast4x.rimusic.utils.playerControlsColorsKey, app.n_zik.android.enums.PlayerControlsColors.Monochrome)
+    val playerControlsColors by rememberPreference(app.it.fast4x.rimusic.utils.playerControlsColorsKey, PlayerControlsColors.Monochrome)
     val controlsColorText = when (playerControlsColors) {
-        app.n_zik.android.enums.PlayerControlsColors.Cover -> dynamicColorPalette.accent
-        app.n_zik.android.enums.PlayerControlsColors.Monochrome -> Color.White
+        PlayerControlsColors.Cover -> dynamicColorPalette.accent
+        PlayerControlsColors.Monochrome -> Color.White
         else -> colorPalette().accent
     }
     val controlsColorAccent = when (playerControlsColors) {
-        app.n_zik.android.enums.PlayerControlsColors.Cover -> dynamicColorPalette.accent
-        app.n_zik.android.enums.PlayerControlsColors.Monochrome -> Color.White
+        PlayerControlsColors.Cover -> dynamicColorPalette.accent
+        PlayerControlsColors.Monochrome -> Color.White
         else -> colorPalette().accent
     }
     var effectRotationEnabled by rememberPreference(effectRotationKey, false)

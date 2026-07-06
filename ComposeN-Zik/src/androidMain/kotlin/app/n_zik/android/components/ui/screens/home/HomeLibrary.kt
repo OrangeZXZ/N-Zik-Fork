@@ -128,6 +128,7 @@ import app.n_zik.android.components.tab.ImportSongsFromServices
 import app.n_zik.android.typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
+import app.n_zik.android.components.dialog.RetrySyncDialog
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -295,9 +296,9 @@ fun HomeLibrary(
 
     var refreshing by remember { mutableStateOf(false) }
 
-    fun refresh(itemsToRefresh: List<app.it.fast4x.rimusic.models.PlaylistPreview>? = null) {
+    fun refresh(itemsToRefresh: List<PlaylistPreview>? = null) {
         if (refreshing || HomeSyncState.isSyncingPlaylists) {
-            app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.already_syncing))
+            Toaster.e(appContext().getString(R.string.already_syncing))
             return
         }
         val targetPlaylists = itemsToRefresh ?: itemsOnDisplay
@@ -311,11 +312,11 @@ fun HomeLibrary(
             androidx.core.content.ContextCompat.startForegroundService(appContext(), intent)
         } catch (e: Exception) {
             timber.log.Timber.tag("HomeLibrary").e(e, "Failed to start HomeSyncService")
-            app.kreate.android.me.knighthat.utils.Toaster.e("Failed to start sync service")
+            Toaster.e("Failed to start sync service")
         }
     }
 
-    val retryDialog = app.n_zik.android.components.dialog.RetrySyncDialog(
+    val retryDialog = RetrySyncDialog(
         failedCount = HomeSyncState.failedPlaylistsList.size,
         onRetry = { 
             val items = HomeSyncState.failedPlaylistsList

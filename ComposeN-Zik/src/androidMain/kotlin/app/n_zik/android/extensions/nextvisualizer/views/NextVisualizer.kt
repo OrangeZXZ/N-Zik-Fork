@@ -48,6 +48,7 @@ import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showvisthumbnailKey
 import app.it.fast4x.rimusic.utils.blackBackgroundForVisThumbnailKey
 import app.it.fast4x.rimusic.utils.visualizerEnabledKey
+import app.n_zik.android.extensions.nextvisualizer.NextVisualizer
 
 @UnstableApi
 @Composable
@@ -145,7 +146,7 @@ fun NextVisualizer(
                         .clip(thumbnailShape())
                         .background(backgroundColor)
                 ) {
-                    app.n_zik.android.extensions.nextvisualizer.NextVisualizer()
+                    NextVisualizer()
                 }
             }
         }

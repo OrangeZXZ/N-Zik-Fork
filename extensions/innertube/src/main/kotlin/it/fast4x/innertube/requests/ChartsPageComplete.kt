@@ -69,7 +69,7 @@ fun Innertube.PlaylistItem.Companion.fromComplete(renderer: MusicCarouselShelfRe
     return Innertube.PlaylistItem(
         info = Innertube.Info(
             name = renderer.header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.firstOrNull()?.text,
-            endpoint = it.fast4x.innertube.models.NavigationEndpoint.Endpoint.Browse(
+            endpoint = NavigationEndpoint.Endpoint.Browse(
                 browseId = renderer
                     .header?.musicCarouselShelfBasicHeaderRenderer?.title?.runs?.firstOrNull()?.navigationEndpoint?.browseEndpoint?.browseId,
                 /*
@@ -104,7 +104,7 @@ fun Innertube.ArtistItem.Companion.fromC(renderer: List<MusicCarouselShelfRender
                     ?.flexColumns?.firstOrNull()
                     ?.musicResponsiveListItemFlexColumnRenderer?.text?.runs?.firstOrNull()
                     ?.text,
-                endpoint = it.fast4x.innertube.models.NavigationEndpoint.Endpoint.Browse(
+                endpoint = NavigationEndpoint.Endpoint.Browse(
                     browseId = renderer.firstOrNull()?.musicResponsiveListItemRenderer
                         ?.navigationEndpoint?.browseEndpoint?.browseId,
                     params = null,

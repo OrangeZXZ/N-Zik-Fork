@@ -7,6 +7,7 @@ import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.getContinuation
 import it.fast4x.innertube.models.oddElements
 import it.fast4x.innertube.utils.from
+import it.fast4x.innertube.models.MusicShelfRenderer
 
 data class ArtistItemsPage(
     val title: String,
@@ -147,7 +148,7 @@ data class ArtistItemsPage(
             }
         }
 
-        fun fromMusicShelfRenderer(renderer: it.fast4x.innertube.models.MusicShelfRenderer, headerTitle: String? = null): ArtistItemsPage? {
+        fun fromMusicShelfRenderer(renderer: MusicShelfRenderer, headerTitle: String? = null): ArtistItemsPage? {
             return ArtistItemsPage(
                 title = renderer.title?.runs?.firstOrNull()?.text ?: headerTitle.orEmpty(),
                 items = renderer.contents?.mapNotNull { content ->

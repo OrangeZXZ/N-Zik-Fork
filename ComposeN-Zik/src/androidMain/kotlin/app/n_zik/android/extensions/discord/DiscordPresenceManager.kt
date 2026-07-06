@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Request
 import timber.log.Timber
+import app.n_zik.android.core.network.client.NetworkClientFactory
 
 
 class DiscordPresenceManager(
@@ -48,7 +49,7 @@ class DiscordPresenceManager(
     private val discordScope = externalScope
     private var refreshJob: Job? = null
     private var debounceJob: Job? = null
-    private val client = app.n_zik.android.core.network.client.NetworkClientFactory.getClientWithTimeout(10L, 10L)
+    private val client = NetworkClientFactory.getClientWithTimeout(10L, 10L)
     private val appStartTime = System.currentTimeMillis()
 
     /**

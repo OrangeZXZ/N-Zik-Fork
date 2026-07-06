@@ -538,14 +538,14 @@ private fun tryYouTubeUnsynced(
                     if (fixedLyrics?.isNotEmpty() == true && playerEnableLyricsPopupMessage) {
                         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
                             Toaster.s(
-                                app.n_zik.android.R.string.info_lyrics_found_on_s,
+                                R.string.info_lyrics_found_on_s,
                                 context.getString(R.string.source_youtube_unsynced)
                             )
                         }
                     } else if (playerEnableLyricsPopupMessage) {
                         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
                             Toaster.e(
-                                app.n_zik.android.R.string.info_lyrics_not_found_on_s,
+                                R.string.info_lyrics_not_found_on_s,
                                 context.getString(R.string.source_youtube_unsynced),
                                 duration = android.widget.Toast.LENGTH_LONG
                             )
@@ -553,7 +553,7 @@ private fun tryYouTubeUnsynced(
                     }
                     onCheckedInnertubeUpdated(true)
                     if (!fixedLyrics.isNullOrEmpty()) {
-                        app.n_zik.android.core.database.Database.asyncTransaction {
+                        Database.asyncTransaction {
                             lyricsTable.upsert(
                                 Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = fixedLyrics)
                             )

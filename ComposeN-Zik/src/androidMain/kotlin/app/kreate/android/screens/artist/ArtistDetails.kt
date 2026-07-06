@@ -129,6 +129,10 @@ import app.n_zik.android.components.ui.screens.DynamicOrientationLayout
 import app.n_zik.android.components.ui.screens.album.Translate
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import app.it.fast4x.rimusic.EXPLICIT_PREFIX
+import app.n_zik.android.components.menu.artist.OnlineArtistItemMenu
+import app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu
+import it.fast4x.innertube.YtMusic
 
 @ExperimentalFoundationApi
 @UnstableApi
@@ -172,7 +176,7 @@ fun ArtistDetails(
                   ?.mapNotNull {
                       (it as? Innertube.SongItem)?.asSong
                   }
-                  ?.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
+                  ?.filter { !parentalControlEnabled || it.title.startsWith(EXPLICIT_PREFIX, true) != true }
                   .orEmpty()
     }
 
@@ -185,7 +189,7 @@ fun ArtistDetails(
             section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null
         }
         if (songsSection != null) {
-            val fetched = it.fast4x.innertube.YtMusic.getPlaylist(songsSection.moreEndpoint!!.browseId!!)
+            val fetched = YtMusic.getPlaylist(songsSection.moreEndpoint!!.browseId!!)
                 .getOrNull()?.songs?.mapNotNull { it.asSong }
             if (!fetched.isNullOrEmpty()) return fetched
         }
@@ -509,15 +513,15 @@ fun ArtistDetails(
                                             try {
                                                 val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
                                                 if (section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null) {
-                                                    it.fast4x.innertube.YtMusic.getPlaylist(section.moreEndpoint!!.browseId!!).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                    YtMusic.getPlaylist(section.moreEndpoint!!.browseId!!).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
                                                 }
                                                 if (allMediaItems.isEmpty()) {
                                                     section.items.forEach { item ->
                                                         when (item) {
                                                             is Innertube.SongItem -> item.asSong?.asMediaItem?.let { allMediaItems.add(it) }
                                                             is Innertube.VideoItem -> allMediaItems.add(item.asMediaItem)
-                                                            is Innertube.AlbumItem -> it.fast4x.innertube.YtMusic.getAlbum(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
-                                                            is Innertube.PlaylistItem -> it.fast4x.innertube.YtMusic.getPlaylist(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                            is Innertube.AlbumItem -> YtMusic.getAlbum(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                            is Innertube.PlaylistItem -> YtMusic.getPlaylist(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
                                                             else -> {}
                                                         }
                                                     }
@@ -526,7 +530,7 @@ fun ArtistDetails(
                                                     binder?.let { Shuffler.play(it, allMediaItems) }
                                                 } else {
                                                     withContext(Dispatchers.Main) {
-                                                        app.kreate.android.me.knighthat.utils.Toaster.e(R.string.no_song_found)
+                                                        Toaster.e(R.string.no_song_found)
                                                     }
                                                 }
                                             } finally {
@@ -548,15 +552,15 @@ fun ArtistDetails(
                                             try {
                                                 val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
                                                 if (section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null) {
-                                                    it.fast4x.innertube.YtMusic.getPlaylist(section.moreEndpoint!!.browseId!!).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                    YtMusic.getPlaylist(section.moreEndpoint!!.browseId!!).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
                                                 }
                                                 if (allMediaItems.isEmpty()) {
                                                     section.items.forEach { item ->
                                                         when (item) {
                                                             is Innertube.SongItem -> item.asSong?.asMediaItem?.let { allMediaItems.add(it) }
                                                             is Innertube.VideoItem -> allMediaItems.add(item.asMediaItem)
-                                                            is Innertube.AlbumItem -> it.fast4x.innertube.YtMusic.getAlbum(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
-                                                            is Innertube.PlaylistItem -> it.fast4x.innertube.YtMusic.getPlaylist(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                            is Innertube.AlbumItem -> YtMusic.getAlbum(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
+                                                            is Innertube.PlaylistItem -> YtMusic.getPlaylist(item.key).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
                                                             else -> {}
                                                         }
                                                     }
@@ -569,7 +573,7 @@ fun ArtistDetails(
                                                     }
                                                 } else {
                                                     withContext(Dispatchers.Main) {
-                                                        app.kreate.android.me.knighthat.utils.Toaster.e(R.string.no_song_found)
+                                                        Toaster.e(R.string.no_song_found)
                                                     }
                                                 }
                                             } finally {
@@ -684,7 +688,7 @@ fun ArtistDetails(
                                     onLongClick = {
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                         menuState.display {
-                                            app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu(
+                                            OnlinePlaylistItemMenu(
                                                 navController = navController,
                                                 playlist = playlist
                                             ).MenuComponent()
@@ -745,7 +749,7 @@ fun ArtistDetails(
                                     onLongClick = {
                                         hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                         menuState.display {
-                                            app.n_zik.android.components.menu.artist.OnlineArtistItemMenu(
+                                            OnlineArtistItemMenu(
                                                 navController = navController,
                                                 artist = artist
                                             ).MenuComponent()

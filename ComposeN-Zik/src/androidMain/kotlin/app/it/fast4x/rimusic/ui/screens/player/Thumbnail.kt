@@ -86,6 +86,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import app.n_zik.android.components.player.lyrics.LyricsScreen
+import app.n_zik.android.playback.exceptions.ExplicitContentException
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -331,7 +333,7 @@ fun Thumbnail(
 
                 //if (!currentWindow.mediaItem.isLocal)
                 if (showlyricsthumbnail)
-                    app.n_zik.android.components.player.lyrics.LyricsScreen(
+                    LyricsScreen(
                         mediaId = currentWindow.mediaItem.mediaId,
                         isDisplayed = isShowingLyrics && error == null,
                         onDismiss = {
@@ -377,22 +379,22 @@ fun Thumbnail(
                             songnotplayabledueserverrestrictionerror
                         else when (error?.cause?.cause) {
                             is java.nio.channels.UnresolvedAddressException, is java.net.UnknownHostException -> networkerror
-                            is app.n_zik.android.playback.exceptions.PlayableFormatNotFoundException -> notfindplayableaudioformaterror
-                            is app.n_zik.android.playback.exceptions.UnplayableException -> originalvideodeletederror
-                            is app.n_zik.android.playback.exceptions.LoginRequiredException -> songnotplayabledueserverrestrictionerror
-                            is app.n_zik.android.playback.exceptions.VideoIdMismatchException -> videoidmismatcherror
-                            is app.n_zik.android.playback.exceptions.PlayableFormatNonSupported -> formatUnsupported
-                            is app.n_zik.android.playback.exceptions.NoInternetException -> nointerneterror
-                            is app.n_zik.android.playback.exceptions.TimeoutException -> timeouterror
-                            is app.n_zik.android.playback.exceptions.ExplicitContentException -> explicterror
-                            is app.n_zik.android.playback.exceptions.UnknownException -> unknownerror
+                            is PlayableFormatNotFoundException -> notfindplayableaudioformaterror
+                            is UnplayableException -> originalvideodeletederror
+                            is LoginRequiredException -> songnotplayabledueserverrestrictionerror
+                            is VideoIdMismatchException -> videoidmismatcherror
+                            is PlayableFormatNonSupported -> formatUnsupported
+                            is NoInternetException -> nointerneterror
+                            is TimeoutException -> timeouterror
+                            is ExplicitContentException -> explicterror
+                            is UnknownException -> unknownerror
                             else -> unknownplaybackerror
                         }
                         
-                        if (error?.cause?.cause is app.n_zik.android.playback.exceptions.ExplicitContentException) {
-                            app.kreate.android.me.knighthat.utils.Toaster.w(specificErrorString)
+                        if (error?.cause?.cause is ExplicitContentException) {
+                            Toaster.w(specificErrorString)
                         } else {
-                            app.kreate.android.me.knighthat.utils.Toaster.e(specificErrorString)
+                            Toaster.e(specificErrorString)
                         }
                     }
                 }

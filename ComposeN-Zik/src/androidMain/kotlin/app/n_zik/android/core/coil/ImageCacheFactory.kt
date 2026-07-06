@@ -43,7 +43,7 @@ import app.it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import app.it.fast4x.rimusic.enums.ImageQualityFormat
 import app.n_zik.android.thumbnailShape
 import app.n_zik.android.core.network.utils.NetworkQualityHelper
-// import app.n_zik.android.core.network.client.GlobalNetworkLogger
+// import GlobalNetworkLogger
 import app.n_zik.android.core.network.models.NetworkQuality as NZikNetworkQuality
 import app.it.fast4x.rimusic.utils.coilCustomDiskCacheKey
 import app.it.fast4x.rimusic.utils.coilDiskCacheMaxSizeKey
@@ -58,6 +58,8 @@ import okio.Path.Companion.toOkioPath
 import java.security.MessageDigest
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
+import app.n_zik.android.core.network.client.GlobalNetworkLogger
+import app.n_zik.android.core.network.client.NetworkClientFactory
 
 @OptIn(ExperimentalCoilApi::class)
 object ImageCacheFactory {
@@ -191,7 +193,7 @@ object ImageCacheFactory {
             .components {
                 add(OkHttpNetworkFetcherFactory(
                     callFactory = { request: okhttp3.Request ->
-                        app.n_zik.android.core.network.client.NetworkClientFactory.getClient().newCall(request)
+                        NetworkClientFactory.getClient().newCall(request)
                     }
                 ))
             }

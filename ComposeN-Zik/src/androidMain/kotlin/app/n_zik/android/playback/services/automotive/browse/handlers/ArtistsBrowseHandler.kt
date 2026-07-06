@@ -16,6 +16,7 @@ import app.n_zik.android.playback.services.PlayerServiceModern
 import app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper.browsableMediaItem
 import app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper.drawableUri
 import kotlinx.coroutines.flow.first
+import app.it.fast4x.rimusic.enums.ArtistSortBy
 
 class ArtistsBrowseHandler : BrowseHandler {
     override fun handles(parentId: String): Boolean = parentId == PlayerServiceModern.ARTIST ||
@@ -39,14 +40,14 @@ class ArtistsBrowseHandler : BrowseHandler {
             }
             AutoSessionConstants.ID_ARTISTS_LIBRARY -> {
                 val shuffleItem = AutoSessionConstants.shuffleItem(context, AutoSessionConstants.ID_ARTISTS_LIBRARY_SHUFFLE)
-                val sortBy = context.preferences.getEnum(Preference.HOME_ARTISTS_LIBRARY_SORT_BY.key, app.it.fast4x.rimusic.enums.ArtistSortBy.Name)
+                val sortBy = context.preferences.getEnum(Preference.HOME_ARTISTS_LIBRARY_SORT_BY.key, ArtistSortBy.Name)
                 val sortOrder = context.preferences.getEnum(Preference.HOME_ARTISTS_LIBRARY_SORT_ORDER.key, SortOrder.Ascending)
                 val artists = database.artistTable.sortInLibrary(sortBy, sortOrder).first().map { artist -> SessionMediaItemMapper.mapArtistToMediaItem(PlayerServiceModern.ARTIST, artist.id, artist.name ?: "", artist.thumbnailUrl) }
                 listOf(shuffleItem) + artists
             }
             AutoSessionConstants.ID_ARTISTS_FAVORITES -> {
                 val shuffleItem = AutoSessionConstants.shuffleItem(context, AutoSessionConstants.ID_ARTISTS_FAVORITES_SHUFFLE)
-                val sortBy = context.preferences.getEnum(Preference.HOME_ARTISTS_FAVORITES_SORT_BY.key, app.it.fast4x.rimusic.enums.ArtistSortBy.Name)
+                val sortBy = context.preferences.getEnum(Preference.HOME_ARTISTS_FAVORITES_SORT_BY.key, ArtistSortBy.Name)
                 val sortOrder = context.preferences.getEnum(Preference.HOME_ARTISTS_FAVORITES_SORT_ORDER.key, SortOrder.Ascending)
                 val artists = database.artistTable.sortFollowing(sortBy, sortOrder).first().map { artist -> SessionMediaItemMapper.mapArtistToMediaItem(PlayerServiceModern.ARTIST, artist.id, artist.name ?: "", artist.thumbnailUrl) }
                 listOf(shuffleItem) + artists

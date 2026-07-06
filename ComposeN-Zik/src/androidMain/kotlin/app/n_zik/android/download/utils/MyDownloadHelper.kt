@@ -69,6 +69,8 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.concurrent.Executors
 import kotlin.io.path.createTempDirectory
+import app.it.fast4x.rimusic.EXPLICIT_PREFIX
+import app.n_zik.android.R
 
 @UnstableApi
 object MyDownloadHelper {
@@ -289,9 +291,9 @@ object MyDownloadHelper {
 
         val parentalControlEnabled = context.preferences.getBoolean(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false)
         if (parentalControlEnabled) {
-            val isExplicit = mediaItem.mediaMetadata.title?.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) == true
+            val isExplicit = mediaItem.mediaMetadata.title?.startsWith(EXPLICIT_PREFIX, true) == true
             if (isExplicit) {
-                Toaster.w(app.n_zik.android.R.string.parental_control_is_enabled)
+                Toaster.w(R.string.parental_control_is_enabled)
                 return
             }
         }
@@ -318,7 +320,7 @@ object MyDownloadHelper {
 
                 Timber.tag("MyDownloadHelper").e("scheduleDownload exception ${it.stackTraceToString()}")
                 Timber.tag("MyDownloadHelper").e("scheduleDownload exception ${it.stackTraceToString()}")
-                Toaster.e(app.n_zik.android.R.string.error_playback_failed)
+                Toaster.e(R.string.error_playback_failed)
             }
             downloadSyncedLyrics( mediaItem.asSong )
             ImageCacheFactory.preloadImage(mediaItem.mediaMetadata.artworkUri.toString())

@@ -22,6 +22,7 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.playlistPage
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import app.it.fast4x.rimusic.enums.OnDeviceSongSortBy
 
 class PlaylistDetailHandler : BrowseHandler {
     override fun handles(parentId: String): Boolean {
@@ -78,14 +79,14 @@ class PlaylistDetailHandler : BrowseHandler {
                 }
             }
             AutoSessionConstants.ID_ONDEVICE -> {
-                val sortBy = context.preferences.getEnum(Preference.HOME_ON_DEVICE_SONGS_SORT_BY.key, app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Title)
+                val sortBy = context.preferences.getEnum(Preference.HOME_ON_DEVICE_SONGS_SORT_BY.key, OnDeviceSongSortBy.Title)
                 val sortOrder = context.preferences.getEnum(Preference.HOME_ON_DEVICE_SONGS_SORT_ORDER.key, SortOrder.Ascending)
                 database.songTable.allOnDevice().map { songs ->
                     when (sortBy) {
-                        app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Title -> songs.sortedBy { it.cleanTitle() }
-                        app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.DateAdded -> songs.sortedByDescending { it.id }
-                        app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Duration -> songs.sortedBy { durationToMillis(it.durationText ?: "0:0") }
-                        app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Artist -> songs.sortedBy { it.cleanArtistsText() }
+                        OnDeviceSongSortBy.Title -> songs.sortedBy { it.cleanTitle() }
+                        OnDeviceSongSortBy.DateAdded -> songs.sortedByDescending { it.id }
+                        OnDeviceSongSortBy.Duration -> songs.sortedBy { durationToMillis(it.durationText ?: "0:0") }
+                        OnDeviceSongSortBy.Artist -> songs.sortedBy { it.cleanArtistsText() }
                         else -> songs.sortedBy { it.cleanTitle() }
                     }.let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
                 }

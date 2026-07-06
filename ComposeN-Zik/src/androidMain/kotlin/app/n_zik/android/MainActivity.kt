@@ -255,6 +255,9 @@ import kotlin.math.sqrt
 import kotlin.system.exitProcess
 import androidx.compose.foundation.shape.RoundedCornerShape
 import org.woheller69.freeDroidWarn.FreeDroidWarn
+import app.it.fast4x.rimusic.ui.styling.BoundedCornerSize
+import app.n_zik.android.core.network.client.NetworkClientFactory
+import app.n_zik.android.extensions.discord.DiscordUiState
 
 @UnstableApi
 class MainActivity :
@@ -479,7 +482,7 @@ class MainActivity :
                 } else null
             } else null
 
-            app.n_zik.android.core.network.client.NetworkClientFactory.configure(
+            NetworkClientFactory.configure(
                 proxy = proxy,
                 cacheDir = this@MainActivity.externalCacheDir ?: this@MainActivity.cacheDir
             )
@@ -516,7 +519,7 @@ class MainActivity :
             val navController = rememberNavController()
             DisposableEffect(navController) {
                 val listener = androidx.navigation.NavController.OnDestinationChangedListener { _, destination, _ ->
-                    app.n_zik.android.extensions.discord.DiscordUiState.currentRoute.value = destination.route
+                    DiscordUiState.currentRoute.value = destination.route
                 }
                 navController.addOnDestinationChangedListener(listener)
                 onDispose {
@@ -580,8 +583,8 @@ class MainActivity :
                                 applyFontPadding,
                                 fontType
                             ),
-                            thumbnailShape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)),
-                            uiRoundnessShape = RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(uiRoundnessDp.dp, 0.4f))
+                            thumbnailShape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)),
+                            uiRoundnessShape = RoundedCornerShape(BoundedCornerSize(uiRoundnessDp.dp, 0.4f))
                         )
                     )
                 }
@@ -773,7 +776,7 @@ class MainActivity :
                                     ProxyPreferences.preference = null
                                 }
                                 
-                                app.n_zik.android.core.network.client.NetworkClientFactory.configure(
+                                NetworkClientFactory.configure(
                                     proxy = proxy,
                                     cacheDir = this@MainActivity.externalCacheDir ?: this@MainActivity.cacheDir
                                 )
@@ -871,14 +874,14 @@ class MainActivity :
                                     sharedPreferences.getFloat(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 12f)
 
                                 appearance = appearance.copy(
-                                    thumbnailShape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))
+                                    thumbnailShape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))
                                 )
                             }
 
                             "uiRoundnessDpKey" -> {
                                 val uiRoundnessDp = sharedPreferences.getFloat(key, 25f)
                                 appearance = appearance.copy(
-                                    uiRoundnessShape = RoundedCornerShape(app.it.fast4x.rimusic.ui.styling.BoundedCornerSize(uiRoundnessDp.dp, 0.4f))
+                                    uiRoundnessShape = RoundedCornerShape(BoundedCornerSize(uiRoundnessDp.dp, 0.4f))
                                 )
                             }
 

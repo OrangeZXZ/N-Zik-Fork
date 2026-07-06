@@ -76,6 +76,9 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import app.it.fast4x.rimusic.enums.SortOrder
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 
 @UnstableApi
 @ExperimentalFoundationApi
@@ -311,8 +314,8 @@ fun HomeSongs(
     }
 
     val localMatchButton = remember {
-        object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon,
-                 app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive {
+        object : MenuIcon,
+                 Descriptive {
             override val iconId: Int = R.drawable.alert
             override val messageId: Int = R.string.match_album_audio_version
             @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
@@ -442,7 +445,7 @@ fun HomeSongs(
                                         modifier = Modifier.padding(start = 8.dp).size(18.dp)
                                     )
                                 }
-                                if( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom && songSort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending )
+                                if( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom && songSort.sortOrder == SortOrder.Ascending )
                                     Box( Modifier.width( 24.dp ) )
                             },
                             thumbnailOverlay = {
@@ -489,7 +492,7 @@ fun HomeSongs(
                         )
                     }
 
-                    if ( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom && songSort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending ) {
+                    if ( builtInPlaylist != BuiltInPlaylist.Top && !positionLock.isLocked() && songSort.sortBy == SongSortBy.Custom && songSort.sortOrder == SortOrder.Ascending ) {
                         Icon(
                             painter = painterResource( R.drawable.reorder ),
                             contentDescription = null,

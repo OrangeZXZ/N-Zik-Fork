@@ -123,6 +123,8 @@ import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import app.it.fast4x.rimusic.ui.components.themed.IconButton
+import app.n_zik.android.enums.PlayerControlsColors
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -208,10 +210,10 @@ fun MiniPlayer(
         }
     }
 
-    val playerControlsColors by rememberPreference(app.it.fast4x.rimusic.utils.playerControlsColorsKey, app.n_zik.android.enums.PlayerControlsColors.Monochrome)
+    val playerControlsColors by rememberPreference(app.it.fast4x.rimusic.utils.playerControlsColorsKey, PlayerControlsColors.Monochrome)
     val controlsColorText = when (playerControlsColors) {
-        app.n_zik.android.enums.PlayerControlsColors.Cover -> dynamicColorPalette.accent
-        app.n_zik.android.enums.PlayerControlsColors.Monochrome -> Color.White
+        PlayerControlsColors.Cover -> dynamicColorPalette.accent
+        PlayerControlsColors.Monochrome -> Color.White
         else -> colorPalette().accent
     }
 
@@ -402,7 +404,7 @@ fun MiniPlayer(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if ( mediaItem.isExplicit )
-                        app.it.fast4x.rimusic.ui.components.themed.IconButton(
+                        IconButton(
                             icon = R.drawable.explicit,
                             color = colorPalette().text,
                             enabled = true,
@@ -442,7 +444,7 @@ fun MiniPlayer(
                     .height(Dimensions.miniPlayerHeight)
             ) {
                if (miniPlayerType == MiniPlayerType.Essential)
-                app.it.fast4x.rimusic.ui.components.themed.IconButton(
+                IconButton(
                     icon = R.drawable.play_skip_back,
                     color = controlsColorText,
                     onClick = {
@@ -492,7 +494,7 @@ fun MiniPlayer(
                     }
                 }
                if (miniPlayerType == MiniPlayerType.Essential)
-                app.it.fast4x.rimusic.ui.components.themed.IconButton(
+                IconButton(
                     icon = R.drawable.play_skip_forward,
                     color = controlsColorText,
                     onClick = {
@@ -505,7 +507,7 @@ fun MiniPlayer(
                         .size(24.dp)
                 )
                 if (miniPlayerType == MiniPlayerType.Modern)
-                 app.it.fast4x.rimusic.ui.components.themed.IconButton(
+                 IconButton(
                      icon = if( isSongLiked ) getLikedIcon() else getUnlikedIcon(),
                      color = colorPalette().favoritesIcon,
                      onClick = ::toggleLike,

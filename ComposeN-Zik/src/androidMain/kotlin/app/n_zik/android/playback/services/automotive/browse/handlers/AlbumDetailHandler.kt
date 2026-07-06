@@ -17,6 +17,11 @@ import app.n_zik.android.playback.services.automotive.models.AutoSearchState
 import it.fast4x.innertube.models.bodies.BrowseBody
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import app.it.fast4x.rimusic.models.Album
+import app.it.fast4x.rimusic.models.SongAlbumMap
+import app.kreate.android.me.knighthat.utils.PropUtils
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.YtMusic
 
 class AlbumDetailHandler : BrowseHandler {
     override fun handles(parentId: String): Boolean {
@@ -37,7 +42,7 @@ class AlbumDetailHandler : BrowseHandler {
         val albumId = parts[1]
         var onlineSongs: List<Song>? = null
         
-        val online = it.fast4x.innertube.YtMusic.getAlbum(albumId, true).getOrNull()
+        val online = YtMusic.getAlbum(albumId, true).getOrNull()
         if (online != null) {
             val onlineAlbum = online.album
             val authorsText: String? = onlineAlbum.authors.parseArtists().joinToString(", ")
@@ -47,12 +52,12 @@ class AlbumDetailHandler : BrowseHandler {
                 val album = database.albumTable.findById(albumId).first()
                 database.asyncTransaction {
                     albumTable.upsert(
-                        app.it.fast4x.rimusic.models.Album(
+                        Album(
                             id = albumId,
-                            title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(album?.title, onlineAlbum.title),
-                            thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(album?.thumbnailUrl, onlineAlbum.thumbnail?.url),
+                            title = PropUtils.retainIfModified(album?.title, onlineAlbum.title),
+                            thumbnailUrl = PropUtils.retainIfModified(album?.thumbnailUrl, onlineAlbum.thumbnail?.url),
                             year = onlineAlbum.year,
-                            authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(album?.authorsText, authorsText),
+                            authorsText = PropUtils.retainIfModified(album?.authorsText, authorsText),
                             shareUrl = online.url,
                             timestamp = album?.timestamp ?: System.currentTimeMillis(),
                             bookmarkedAt = album?.bookmarkedAt,
@@ -63,7 +68,7 @@ class AlbumDetailHandler : BrowseHandler {
 
                     online.songs.map { it.asMediaItem }.onEach { insertIgnore(it) }
                         .mapIndexed { position, mediaItem ->
-                            app.it.fast4x.rimusic.models.SongAlbumMap(
+                            SongAlbumMap(
                                 songId = mediaItem.mediaId,
                                 albumId = albumId,
                                 position = position
@@ -73,7 +78,7 @@ class AlbumDetailHandler : BrowseHandler {
                 }
             }
         } else {
-            val albumPage = it.fast4x.innertube.Innertube.albumPage(BrowseBody(browseId = albumId))?.getOrNull()
+            val albumPage = Innertube.albumPage(BrowseBody(browseId = albumId))?.getOrNull()
             onlineSongs = albumPage?.songsPage?.items?.toList()?.map { item -> item.asSong }
         }
         

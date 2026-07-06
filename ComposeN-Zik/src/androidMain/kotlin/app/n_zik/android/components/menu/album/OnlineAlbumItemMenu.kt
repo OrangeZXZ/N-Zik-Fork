@@ -63,6 +63,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import app.it.fast4x.rimusic.models.SongAlbumMap
+import app.it.fast4x.rimusic.ui.components.themed.Enqueue
+import app.it.fast4x.rimusic.ui.components.themed.PlayNext
+import it.fast4x.innertube.models.bodies.BrowseBody
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -311,15 +315,15 @@ class OnlineAlbumItemMenu private constructor(
 
         LaunchedEffect(album.key) {
             withContext(Dispatchers.IO) {
-                val result = it.fast4x.innertube.Innertube.albumPage(it.fast4x.innertube.models.bodies.BrowseBody(browseId = album.key))?.getOrNull()
+                val result = Innertube.albumPage(BrowseBody(browseId = album.key))?.getOrNull()
                 if (result != null) {
                     displayTitle = result.title.takeIf { !it.isNullOrBlank() } ?: displayTitle
                     displayAuthors = result.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() } ?: displayAuthors
                     displayYear = result.year.takeIf { !it.isNullOrBlank() } ?: displayYear
                     displayThumbnailUrl = result.thumbnail?.url.takeIf { !it.isNullOrBlank() } ?: displayThumbnailUrl
                     songs = result.songsPage?.items?.mapNotNull { it.asSong } ?: emptyList()
-                    app.n_zik.android.core.database.Database.asyncTransaction {
-                        app.n_zik.android.core.database.Database.albumTable.insertIgnore(app.it.fast4x.rimusic.models.Album(
+                    Database.asyncTransaction {
+                        Database.albumTable.insertIgnore(Album(
                             id = album.key,
                             title = displayTitle,
                             thumbnailUrl = displayThumbnailUrl,
@@ -329,9 +333,9 @@ class OnlineAlbumItemMenu private constructor(
                             timestamp = System.currentTimeMillis()
                         ))
                         songs?.forEachIndexed { index, song ->
-                            app.n_zik.android.core.database.Database.insertIgnore(song.asMediaItem)
-                            app.n_zik.android.core.database.Database.songAlbumMapTable.upsert(
-                                listOf(app.it.fast4x.rimusic.models.SongAlbumMap(songId = song.id, albumId = album.key, position = index))
+                            Database.insertIgnore(song.asMediaItem)
+                            Database.songAlbumMapTable.upsert(
+                                listOf(SongAlbumMap(songId = song.id, albumId = album.key, position = index))
                             )
                         }
                     }
@@ -341,7 +345,7 @@ class OnlineAlbumItemMenu private constructor(
             }
         }
 
-        val playNext = app.it.fast4x.rimusic.ui.components.themed.PlayNext {
+        val playNext = PlayNext {
             if (songs == null) {
                 Toaster.w(R.string.opening_url)
             } else if (songs!!.isNotEmpty()) {
@@ -352,7 +356,7 @@ class OnlineAlbumItemMenu private constructor(
             }
         }
 
-        val enqueue = app.it.fast4x.rimusic.ui.components.themed.Enqueue {
+        val enqueue = Enqueue {
             if (songs == null) {
                 Toaster.w(R.string.opening_url)
             } else if (songs!!.isNotEmpty()) {
@@ -432,7 +436,7 @@ class OnlineAlbumItemMenu private constructor(
                         override fun onShortClick() {
                             menuState.hide()
                             val path = "$browseId?params=${artist.endpoint?.params.orEmpty()}"
-                            app.it.fast4x.rimusic.enums.NavRoutes.artist.navigateHere(navController, path)
+                            NavRoutes.artist.navigateHere(navController, path)
                         }
                         override fun onLongClick() {}
                     })

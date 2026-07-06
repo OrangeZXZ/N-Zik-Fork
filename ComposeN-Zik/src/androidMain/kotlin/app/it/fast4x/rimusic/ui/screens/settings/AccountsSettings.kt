@@ -112,6 +112,7 @@ import timber.log.Timber
 import androidx.compose.material3.Text
 import androidx.compose.ui.res.painterResource
 import app.n_zik.android.typography
+import app.n_zik.android.components.settings.SettingsInputDialog
 
 @Composable
 fun SettingIcon(@DrawableRes icon: Int) {
@@ -540,7 +541,7 @@ fun AccountsSettings() {
                                         )
                                         
                                         if (showCustomInstanceDialog) {
-                                            app.n_zik.android.components.settings.SettingsInputDialog(
+                                            SettingsInputDialog(
                                                 title = stringResource(R.string.piped_custom_instance),
                                                 initialValue = pipedApiBaseUrl,
                                                 placeholder = stringResource(R.string.piped_custom_instance),
@@ -574,7 +575,7 @@ fun AccountsSettings() {
                                 )
                                 
                                 if (showUsernameDialog) {
-                                    app.n_zik.android.components.settings.SettingsInputDialog(
+                                    SettingsInputDialog(
                                         title = stringResource(R.string.piped_username),
                                         initialValue = pipedUsername,
                                         placeholder = stringResource(R.string.piped_username),
@@ -596,7 +597,7 @@ fun AccountsSettings() {
                                 )
                                 
                                 if (showPasswordDialog) {
-                                    app.n_zik.android.components.settings.SettingsInputDialog(
+                                    SettingsInputDialog(
                                         title = stringResource(R.string.piped_password),
                                         initialValue = pipedPassword,
                                         placeholder = stringResource(R.string.piped_password),

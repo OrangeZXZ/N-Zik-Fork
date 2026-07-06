@@ -23,6 +23,8 @@ import kotlinx.coroutines.runBlocking
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.ArrayDeque
+import app.n_zik.android.core.database.Database
+import app.n_zik.android.playback.utils.Shuffler
 
 var GlobalVolume: Float = 0.5f
 
@@ -85,7 +87,7 @@ fun Player.seamlessPlay(mediaItem: MediaItem) {
 
 
 fun Player.shuffleQueue() {
-    app.n_zik.android.playback.utils.Shuffler.queue(this)
+    Shuffler.queue(this)
 }
 
 @SuppressLint("Range")
@@ -155,14 +157,14 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
             // Now read the DB to populate the MediaItem.
             val enrichedItem = runCatching {
                 runBlocking {
-                    val dbSong = app.n_zik.android.core.database.Database
+                    val dbSong = Database
                         .songTable.findById(videoId)
                         .first()
                     if (dbSong != null) {
-                        val dbArtists = app.n_zik.android.core.database.Database
+                        val dbArtists = Database
                             .artistTable.findBySongId(videoId)
                             .first()
-                        val dbAlbum = app.n_zik.android.core.database.Database
+                        val dbAlbum = Database
                             .albumTable.findBySongId(videoId)
                             .first()
                         val existing = targetItem.mediaMetadata

@@ -25,6 +25,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import app.n_zik.android.components.ImportFromFile
+import app.it.fast4x.rimusic.EXPLICIT_PREFIX
+import app.n_zik.android.core.database.ImportSong
 
 class ImportSongsFromServices private constructor(
     launcher: ManagedActivityResultLauncher<Array<String>, Uri?>
@@ -80,12 +82,12 @@ class ImportSongsFromServices private constructor(
                             val currentPlaylistId = activePlaylistId
 
                             if (index == 0 && currentPlaylistId != 0L) {
-                                basePosition = app.n_zik.android.core.database.Database.songPlaylistMapTable.getMaxPosition(currentPlaylistId)
+                                basePosition = Database.songPlaylistMapTable.getMaxPosition(currentPlaylistId)
                             }
                             
                             val finalPosition = basePosition + 1 + index
 
-                            app.n_zik.android.core.database.Database.asyncTransaction {
+                            Database.asyncTransaction {
                                 beforeTransaction( index, row, fileName )
 
                                 val song: Song
@@ -94,7 +96,7 @@ class ImportSongsFromServices private constructor(
 
                                 if (isSpotifyFormat) {
                                     spotifyCount++
-                                    val explicitPrefix = if (row["Explicit"] == "true") app.it.fast4x.rimusic.EXPLICIT_PREFIX else ""
+                                    val explicitPrefix = if (row["Explicit"] == "true") EXPLICIT_PREFIX else ""
                                     val mediaId = row["Track URI"]
                                     if (mediaId == null) {
                                         skippedCount++
@@ -184,8 +186,8 @@ class ImportSongsFromServices private constructor(
                                 timber.log.Timber.tag("Import").d("ADDED song '${song.title}' id='${song.id}' duration='${song.durationText}' (isRiplayFormat=$isRiplayFormat)")
 
                                 // Save import position for match system
-                                app.n_zik.android.core.database.Database.importSongTable.insert(
-                                    app.n_zik.android.core.database.ImportSong(
+                                Database.importSongTable.insert(
+                                    ImportSong(
                                         originalId = song.id,
                                         position = finalPosition,
                                         playlistId = currentPlaylistId.takeIf { it > 0L }

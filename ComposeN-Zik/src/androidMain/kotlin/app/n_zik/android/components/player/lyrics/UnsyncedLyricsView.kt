@@ -24,6 +24,7 @@ import app.n_zik.android.enums.lyrics.LyricsOutline
 import app.it.fast4x.rimusic.utils.verticalFadingEdge
 import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
+import app.n_zik.android.components.player.lyrics.utils.HtmlDecoder
 
 /** Vertical spacing (dp) for header/footer in lyrics views. */
 private val LYRICS_SPACING = 24.dp
@@ -53,7 +54,7 @@ fun UnsyncedLyricsView(
     clickLyricsText: Boolean,
     onDismiss: () -> Unit
 ) {
-    val decodedText = remember(text) { app.n_zik.android.components.player.lyrics.utils.HtmlDecoder.decodeHtmlEntities(text) }
+    val decodedText = remember(text) { HtmlDecoder.decodeHtmlEntities(text) }
     var translatedText by remember { mutableStateOf("") }
     
     if (showSecondLine || translateEnabled || romanizationEnabled) {

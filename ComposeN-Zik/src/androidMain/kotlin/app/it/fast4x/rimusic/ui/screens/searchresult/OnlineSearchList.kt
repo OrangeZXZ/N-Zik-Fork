@@ -73,6 +73,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.runtime.remember
 import app.it.fast4x.rimusic.utils.preferences
 import app.it.fast4x.rimusic.utils.showButtonPlayerVideoKey
+import it.fast4x.innertube.models.MusicShelfRenderer
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
@@ -181,7 +182,7 @@ fun OnlineSearchList(
                                     hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                                 } else if (item is Innertube.PlaylistItem) {
                                     menuState.display {
-                                        app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu(
+                                        OnlinePlaylistItemMenu(
                                             navController = navController,
                                             playlist = item
                                         ).MenuComponent()
@@ -378,7 +379,7 @@ private fun getSearchParams(tabIndex: Int): String = when (tabIndex) {
     else -> ""
 }
 
-private fun getItemFrom(tabIndex: Int): (it.fast4x.innertube.models.MusicShelfRenderer.Content) -> Innertube.Item? = when (tabIndex) {
+private fun getItemFrom(tabIndex: Int): (MusicShelfRenderer.Content) -> Innertube.Item? = when (tabIndex) {
     0 -> Innertube.SongItem.Companion::from
     1 -> Innertube.AlbumItem.Companion::from
     2 -> Innertube.ArtistItem.Companion::from

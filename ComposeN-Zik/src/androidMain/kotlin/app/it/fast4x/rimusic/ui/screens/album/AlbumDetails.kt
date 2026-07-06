@@ -126,6 +126,7 @@ import app.n_zik.android.components.ui.screens.album.Translate
 import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
 import timber.log.Timber
+import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -162,7 +163,7 @@ fun AlbumDetails(
     }.collectAsState( emptyList(), Dispatchers.IO )
 
     val items = remember(rawItems, parentalControlEnabled) {
-        rawItems.filter { !parentalControlEnabled || it.title.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) != true }
+        rawItems.filter { !parentalControlEnabled || it.title.startsWith(EXPLICIT_PREFIX, true) != true }
     }
 
     val itemSelector = ItemSelector<Song>()

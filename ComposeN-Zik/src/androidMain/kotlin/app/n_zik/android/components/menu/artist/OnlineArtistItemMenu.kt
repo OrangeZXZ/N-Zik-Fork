@@ -63,6 +63,9 @@ import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.forcePlayAtIndex
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.LocalPlayerServiceBinder
+import app.it.fast4x.rimusic.models.Artist
+import it.fast4x.innertube.YtMusic
+import it.fast4x.innertube.requests.ArtistPage
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -240,13 +243,13 @@ class OnlineArtistItemMenu private constructor(
 
     @Composable
     override fun MenuComponent() {
-        val dbArtist by app.n_zik.android.core.database.Database.artistTable.findById(artist.key).collectAsState(initial = null, context = kotlinx.coroutines.Dispatchers.IO)
+        val dbArtist by Database.artistTable.findById(artist.key).collectAsState(initial = null, context = kotlinx.coroutines.Dispatchers.IO)
 
         var displayTitle by remember { mutableStateOf(artist.info?.name) }
         var displayThumbnailUrl by remember { mutableStateOf(artist.thumbnail?.url) }
 
         val artistProvider = {
-            dbArtist ?: app.it.fast4x.rimusic.models.Artist(
+            dbArtist ?: Artist(
                 id = artist.key,
                 name = displayTitle,
                 thumbnailUrl = displayThumbnailUrl,
@@ -266,17 +269,17 @@ class OnlineArtistItemMenu private constructor(
 
         val binder = LocalPlayerServiceBinder.current
 
-        var artistPage by remember { mutableStateOf<it.fast4x.innertube.requests.ArtistPage?>(null) }
+        var artistPage by remember { mutableStateOf<ArtistPage?>(null) }
         var isFetching by remember { mutableStateOf(true) }
 
         LaunchedEffect(artist.key) {
             withContext(kotlinx.coroutines.Dispatchers.IO) {
-                artistPage = it.fast4x.innertube.YtMusic.getArtistPage(artist.key).getOrNull()
+                artistPage = YtMusic.getArtistPage(artist.key).getOrNull()
             }
             isFetching = false
         }
 
-        val playRadio = object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive, app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable {
+        val playRadio = object : MenuIcon, Descriptive, Clickable {
             override val iconId: Int = R.drawable.radio
             override val color: androidx.compose.ui.graphics.Color
                 @Composable
@@ -309,7 +312,7 @@ class OnlineArtistItemMenu private constructor(
             override fun onLongClick() {}
         }
 
-        buttons = mutableListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>().apply {
+        buttons = mutableListOf<Button>().apply {
             add(playRadio)
             add(changeTitle)
             add(changeCover)

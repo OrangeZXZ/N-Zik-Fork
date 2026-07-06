@@ -126,6 +126,8 @@ import kotlinx.coroutines.CoroutineScope
 import app.n_zik.android.appContext
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import app.kreate.android.me.knighthat.utils.Toaster
+import app.n_zik.android.components.dialog.RetrySyncDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -247,7 +249,7 @@ fun HomeAlbums(
 
     fun refresh(itemsToRefresh: List<Album>? = null) {
         if (refreshing || HomeSyncState.isSyncingAlbums) {
-            app.kreate.android.me.knighthat.utils.Toaster.e(appContext().getString(R.string.already_syncing))
+            Toaster.e(appContext().getString(R.string.already_syncing))
             return
         }
         val targetItems = itemsToRefresh ?: itemsOnDisplay
@@ -261,7 +263,7 @@ fun HomeAlbums(
             androidx.core.content.ContextCompat.startForegroundService(appContext(), intent)
         } catch (e: Exception) {
             timber.log.Timber.tag("HomeAlbum").e(e, "Failed to start HomeSyncService")
-            app.kreate.android.me.knighthat.utils.Toaster.e("Failed to start sync service")
+            Toaster.e("Failed to start sync service")
         }
     }
 
@@ -271,7 +273,7 @@ fun HomeAlbums(
             justSynced = true
     }
 
-    val retryDialog = app.n_zik.android.components.dialog.RetrySyncDialog(
+    val retryDialog = RetrySyncDialog(
         failedCount = HomeSyncState.failedAlbumsList.size,
         onRetry = { 
             val items = HomeSyncState.failedAlbumsList

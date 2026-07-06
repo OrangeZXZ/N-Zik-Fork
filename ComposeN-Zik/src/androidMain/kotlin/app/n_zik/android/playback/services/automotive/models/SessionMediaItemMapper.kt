@@ -26,6 +26,7 @@ import androidx.media3.session.MediaConstants.EXTRAS_KEY_IS_EXPLICIT
 import app.n_zik.android.core.coil.thumbnail
 import app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper.browsableMediaItem
 import app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper.drawableUri
+import app.n_zik.android.R
 
 @UnstableApi
 object SessionMediaItemMapper {
@@ -68,7 +69,7 @@ object SessionMediaItemMapper {
         var metadataBuilder = baseItem.mediaMetadata.buildUpon()
 
         if (song.isLocal) {
-            metadataBuilder.setArtworkUri(drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
+            metadataBuilder.setArtworkUri(drawableUri(app.n_zik.android.appContext(), R.drawable.ic_launcher_box))
         }
 
 

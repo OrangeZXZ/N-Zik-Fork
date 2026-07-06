@@ -73,6 +73,7 @@ import app.it.fast4x.rimusic.ui.items.PlaylistItem
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.px
 import app.it.fast4x.rimusic.utils.conditional
+import it.fast4x.innertube.models.MusicShelfRenderer
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
@@ -212,7 +213,7 @@ fun OnlineSearchGrid(
                             },
                             onLongClick = {
                                 menuState.display {
-                                    app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu(
+                                    OnlinePlaylistItemMenu(
                                         navController = navController,
                                         playlist = item
                                     ).MenuComponent()
@@ -396,7 +397,7 @@ private fun getSearchParams(tabIndex: Int): String = when (tabIndex) {
     else -> ""
 }
 
-private fun getItemFrom(tabIndex: Int): (it.fast4x.innertube.models.MusicShelfRenderer.Content) -> Innertube.Item? = when (tabIndex) {
+private fun getItemFrom(tabIndex: Int): (MusicShelfRenderer.Content) -> Innertube.Item? = when (tabIndex) {
     0 -> Innertube.SongItem.Companion::from
     1 -> Innertube.AlbumItem.Companion::from
     2 -> Innertube.ArtistItem.Companion::from

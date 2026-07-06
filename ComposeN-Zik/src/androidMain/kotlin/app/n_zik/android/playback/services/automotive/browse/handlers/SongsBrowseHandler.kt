@@ -19,6 +19,7 @@ import app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import app.it.fast4x.rimusic.enums.OnDeviceSongSortBy
 
 class SongsBrowseHandler : BrowseHandler {
     override fun handles(parentId: String): Boolean = parentId == PlayerServiceModern.SONG ||
@@ -111,14 +112,14 @@ class SongsBrowseHandler : BrowseHandler {
             }
             AutoSessionConstants.ID_SONGS_ONDEVICE -> {
                 val shuffleItem = AutoSessionConstants.shuffleItem(context, AutoSessionConstants.ID_SONGS_ONDEVICE_SHUFFLE)
-                val sortBy = context.preferences.getEnum(Preference.HOME_ON_DEVICE_SONGS_SORT_BY.key, app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Title)
+                val sortBy = context.preferences.getEnum(Preference.HOME_ON_DEVICE_SONGS_SORT_BY.key, OnDeviceSongSortBy.Title)
                 val sortOrder = context.preferences.getEnum(Preference.HOME_ON_DEVICE_SONGS_SORT_ORDER.key, SortOrder.Ascending)
                 val onDeviceSongs = database.songTable.allOnDevice().first()
                 val songs = when (sortBy) {
-                    app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Title -> onDeviceSongs.sortedBy { it.cleanTitle() }
-                    app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.DateAdded -> onDeviceSongs.sortedByDescending { it.id }
-                    app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Duration -> onDeviceSongs.sortedBy { durationToMillis(it.durationText ?: "0:0") }
-                    app.it.fast4x.rimusic.enums.OnDeviceSongSortBy.Artist -> onDeviceSongs.sortedBy { it.cleanArtistsText() }
+                    OnDeviceSongSortBy.Title -> onDeviceSongs.sortedBy { it.cleanTitle() }
+                    OnDeviceSongSortBy.DateAdded -> onDeviceSongs.sortedByDescending { it.id }
+                    OnDeviceSongSortBy.Duration -> onDeviceSongs.sortedBy { durationToMillis(it.durationText ?: "0:0") }
+                    OnDeviceSongSortBy.Artist -> onDeviceSongs.sortedBy { it.cleanArtistsText() }
                     else -> onDeviceSongs.sortedBy { it.cleanTitle() }
                 }.let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
                 listOf(shuffleItem) + songs.map { song -> SessionMediaItemMapper.mapSongToMediaItem(song, parentId) }

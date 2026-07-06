@@ -60,6 +60,8 @@ import org.jetbrains.annotations.NonBlocking
 import java.net.UnknownHostException
 import io.ktor.client.call.body
 import timber.log.Timber
+import app.it.fast4x.rimusic.EXPLICIT_PREFIX
+import app.it.fast4x.rimusic.LOCAL_KEY_PREFIX
 
 private const val TAG = "StreamResolver"
 private const val CHUNK_LENGTH = 512 * 1024L
@@ -458,12 +460,12 @@ fun DataSpec.process(
     val parentalControlEnabled = appContext().preferences.getBoolean(parentalControlEnabledKey, false)
     if (parentalControlEnabled) {
         val song = Database.songTable.findById(videoId).firstOrNull()
-        if (song?.title?.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) == true) {
+        if (song?.title?.startsWith(EXPLICIT_PREFIX, true) == true) {
             throw ExplicitContentException()
         }
     }
 
-    if (videoId.length != 11 && !videoId.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)) {
+    if (videoId.length != 11 && !videoId.startsWith(LOCAL_KEY_PREFIX)) {
         throw UnmatchedSongException()
     }
 
@@ -536,9 +538,9 @@ fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory {
         val videoId = dataSpec.key ?: dataSpec.uri.toString().substringAfter("watch?v=")
         val parentalControlEnabled = appContext().preferences.getBoolean(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false)
         if (parentalControlEnabled) {
-            val isExplicit = kotlinx.coroutines.runBlocking { Database.songTable.findById(videoId).firstOrNull()?.title?.startsWith(app.it.fast4x.rimusic.EXPLICIT_PREFIX, true) == true }
+            val isExplicit = kotlinx.coroutines.runBlocking { Database.songTable.findById(videoId).firstOrNull()?.title?.startsWith(EXPLICIT_PREFIX, true) == true }
             if (isExplicit) {
-                throw app.n_zik.android.playback.exceptions.ExplicitContentException()
+                throw ExplicitContentException()
             }
         }
         dataSpec.buildUpon().setKey(videoId).build()

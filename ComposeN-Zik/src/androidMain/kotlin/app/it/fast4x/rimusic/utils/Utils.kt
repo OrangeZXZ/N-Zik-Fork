@@ -63,6 +63,8 @@ import java.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import timber.log.Timber
+import app.n_zik.android.enums.lyrics.LyricsType
+import app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper
 
 const val EXPLICIT_BUNDLE_TAG = "is_explicit"
 
@@ -207,7 +209,7 @@ val Song.asMediaItem: MediaItem
                         artistsText ?: ""
                     }
                 )
-                .setArtworkUri(thumbnailUrl?.thumbnail(1200)?.toUri() ?: app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper.drawableUri(app.n_zik.android.appContext(), app.n_zik.android.R.drawable.ic_launcher_box))
+                .setArtworkUri(thumbnailUrl?.thumbnail(1200)?.toUri() ?: AutoMediaItemMapper.drawableUri(app.n_zik.android.appContext(), R.drawable.ic_launcher_box))
                 .setExtras(
                     bundleOf(
                         "durationText" to durationText,
@@ -503,7 +505,7 @@ fun Modifier.conditional(condition : Boolean, modifier : Modifier.() -> Modifier
 }
 
 suspend fun downloadSyncedLyrics( song: Song ) {
-    val storedLyrics = Database.lyricsTable.findBySongIdAndType( song.id, app.n_zik.android.enums.lyrics.LyricsType.Synced.name ).first()
+    val storedLyrics = Database.lyricsTable.findBySongIdAndType( song.id, LyricsType.Synced.name ).first()
     if( storedLyrics?.data != null ) return
 
     var fetchedLyrics: Lyrics? = null
@@ -514,7 +516,7 @@ suspend fun downloadSyncedLyrics( song: Song ) {
     )?.onSuccess {
         fetchedLyrics = Lyrics(
             songId = song.id,
-            type = app.n_zik.android.enums.lyrics.LyricsType.Synced.name,
+            type = LyricsType.Synced.name,
             data = it?.text.orEmpty()
         )
     }?.onFailure {
@@ -526,7 +528,7 @@ suspend fun downloadSyncedLyrics( song: Song ) {
         )?.onSuccess {
             fetchedLyrics = Lyrics(
                 songId = song.id,
-                type = app.n_zik.android.enums.lyrics.LyricsType.Synced.name,
+                type = LyricsType.Synced.name,
                 data = it?.value.orEmpty()
             )
         }

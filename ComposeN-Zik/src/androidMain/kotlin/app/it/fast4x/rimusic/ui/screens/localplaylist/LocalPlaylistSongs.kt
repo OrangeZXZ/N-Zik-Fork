@@ -183,6 +183,19 @@ import app.n_zik.android.playback.utils.Shuffler
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.UUID
+import app.it.fast4x.rimusic.LOCAL_KEY_PREFIX
+import app.it.fast4x.rimusic.enums.SortOrder
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
+import app.it.fast4x.rimusic.ui.components.themed.DefaultDialog
+import app.it.fast4x.rimusic.ui.components.themed.InProgressDialog
+import app.it.fast4x.rimusic.ui.components.themed.InputTextField
+import app.n_zik.android.components.dialog.MatchResultsDialog
+import app.n_zik.android.components.tab.ImportPlaylistsMenu
+import app.n_zik.android.components.tab.ImportSongsFromCSV
+import app.n_zik.android.components.tab.ImportSongsFromServices
+import app.n_zik.android.core.database.ImportSong
 
 
 @KotlinCsvExperimental
@@ -273,7 +286,7 @@ fun LocalPlaylistSongs(
     val search = Search(lazyListState)
 
     if (showGetAlbumVersionDialogue){
-        app.it.fast4x.rimusic.ui.components.themed.InProgressDialog(
+        InProgressDialog(
             total = totalSongsToMatch,
             done = songsMatched,
             text = stringResource(R.string.matching_songs),
@@ -286,7 +299,7 @@ fun LocalPlaylistSongs(
     }
 
     if (showGetAlbumVersionDialogueExt){
-        app.it.fast4x.rimusic.ui.components.themed.InProgressDialog(
+        InProgressDialog(
             total = totalSongsToMatch,
             done = songsMatched,
             text = stringResource(R.string.matching_songs),
@@ -301,7 +314,7 @@ fun LocalPlaylistSongs(
     // continues to completion and shows the results dialog.
 
     if (showConfirmMatchAllDialog) {
-        app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog(
+        ConfirmationDialog(
             text = stringResource(R.string.match_all_confirmation, items.count { it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L) }),
             onDismiss = {
                 showConfirmMatchAllDialog = false
@@ -318,7 +331,7 @@ fun LocalPlaylistSongs(
     }
 
     if (showMatchResultsDialog) {
-        app.n_zik.android.components.dialog.MatchResultsDialog(
+        MatchResultsDialog(
             matched = matchResultsMatched,
             failed = matchResultsFailed,
             merged = matchResultsMerged,
@@ -387,11 +400,11 @@ fun LocalPlaylistSongs(
                     // AND is NOT a valid YouTube ID (Riplay imports may have YouTube IDs as originalId)
                     var failedCount = 0
                     val allEntries = Database.importSongTable.getAllEntries()
-                    val failedEntries = mutableListOf<app.n_zik.android.core.database.ImportSong>()
+                    val failedEntries = mutableListOf<ImportSong>()
                     for (entry in allEntries) {
                         if (entry.playlistId != playlistId) continue
                         val count = Database.songTable.countById(entry.originalId)
-                        val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)
+                        val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(LOCAL_KEY_PREFIX)
                         Timber.tag("MatchPlaylist").d("CLEANUP BDD: originalId='${entry.originalId}' count=$count isYouTubeId=$isYouTubeId")
                         if (count > 0) {
                             if (isYouTubeId) {
@@ -446,7 +459,7 @@ fun LocalPlaylistSongs(
         val unmatched = if (retryMatchMode && retryMatchSongs.isNotEmpty()) {
             retryMatchSongs
         } else {
-            items.filter { (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) }
+            items.filter { (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(LOCAL_KEY_PREFIX) }
         }
         val job = launch(Dispatchers.IO) {
             try {
@@ -489,11 +502,11 @@ fun LocalPlaylistSongs(
                     // AND is NOT a valid YouTube ID (Riplay imports may have YouTube IDs as originalId)
                     var failedCount = 0
                     val allEntries = Database.importSongTable.getAllEntries()
-                    val failedEntries = mutableListOf<app.n_zik.android.core.database.ImportSong>()
+                    val failedEntries = mutableListOf<ImportSong>()
                     for (entry in allEntries) {
                         if (entry.playlistId != playlistId) continue
                         val count = Database.songTable.countById(entry.originalId)
-                        val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)
+                        val isYouTubeId = entry.originalId.length == 11 && !entry.originalId.startsWith(LOCAL_KEY_PREFIX)
                         Timber.tag("MatchPlaylist").d("CLEANUP BDD: originalId='${entry.originalId}' count=$count isYouTubeId=$isYouTubeId")
                         if (count > 0) {
                             if (isYouTubeId) {
@@ -549,10 +562,10 @@ fun LocalPlaylistSongs(
         playlistName = playlist?.name ?: "",
         songs = ::getSongs
     )
-    val importNzikDialog = app.n_zik.android.components.tab.ImportSongsFromCSV(targetPlaylistId = playlistId, onImportComplete = {
+    val importNzikDialog = ImportSongsFromCSV(targetPlaylistId = playlistId, onImportComplete = {
         appContext().preferences.edit().putString("PlaylistSongsSortBy_$playlistId", PlaylistSongSortBy.Custom.name).apply()
     })
-    val importSpotifyDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(
+    val importSpotifyDialog = ImportSongsFromServices.init(
         afterTransaction = { finalPosition, song, _, _ ->
             // Already handled by ImportSongsFromServices internally
         },
@@ -563,7 +576,7 @@ fun LocalPlaylistSongs(
             appContext().preferences.edit().putString("PlaylistSongsSortBy_$playlistId", PlaylistSongSortBy.Custom.name).apply()
         }
     )
-    val importRiplayDialog = app.n_zik.android.components.tab.ImportSongsFromServices.init(
+    val importRiplayDialog = ImportSongsFromServices.init(
         afterTransaction = { finalPosition, song, _, _ ->
         },
         playlistIdForMatch = playlistId,
@@ -576,11 +589,11 @@ fun LocalPlaylistSongs(
 
     var showYouTubeLinkDialog by remember { mutableStateOf(false) }
     if (showYouTubeLinkDialog) {
-        app.it.fast4x.rimusic.ui.components.themed.DefaultDialog(
+        DefaultDialog(
             onDismiss = { showYouTubeLinkDialog = false },
             modifier = Modifier.fillMaxWidth(if (app.it.fast4x.rimusic.utils.isLandscape) 0.3f else 0.8f)
         ) {
-            app.it.fast4x.rimusic.ui.components.themed.InputTextField(
+            InputTextField(
                 onDismiss = { showYouTubeLinkDialog = false },
                 title = stringResource(R.string.import_via_youtube_link),
                 value = "",
@@ -617,14 +630,14 @@ fun LocalPlaylistSongs(
         }
     }
 
-    val importMenu = remember { app.n_zik.android.components.tab.ImportPlaylistsMenu(
+    val importMenu = remember { ImportPlaylistsMenu(
         onImportNzik = { importNzikDialog.onShortClick() },
         onImportSpotify = { importSpotifyDialog.onShortClick() },
         onImportRiplay = { importRiplayDialog.onShortClick() },
         onImportYoutubeLink = { showYouTubeLinkDialog = true }
     ) }
     val matchAlbumButton = remember {
-        object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive {
+        object : MenuIcon, Descriptive {
             override val iconId: Int = R.drawable.alert
             override val messageId: Int = R.string.match_album_audio_version
             @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
@@ -1147,7 +1160,7 @@ fun LocalPlaylistSongs(
 
                 val toolbarButtons = remember { mutableStateListOf<Button>() }
 
-                val hasUnmatchedSongs = remember(items) { items.any { (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX) } }
+                val hasUnmatchedSongs = remember(items) { items.any { (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(LOCAL_KEY_PREFIX) } }
 
                 LaunchedEffect(
                     playlistNotMonthlyType,
@@ -1234,7 +1247,7 @@ fun LocalPlaylistSongs(
                             val isLocal by remember { derivedStateOf { song.asMediaItem.isLocal } }
 
                             // Drag anchor
-                            if ( !positionLock.isLocked() && sort.sortBy == PlaylistSongSortBy.Custom && sort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending ) {
+                            if ( !positionLock.isLocked() && sort.sortBy == PlaylistSongSortBy.Custom && sort.sortOrder == SortOrder.Ascending ) {
                                 Box(
                                     modifier = Modifier.padding( end = 16.dp ) // Accommodate horizontal padding of SongItem
                                                        .size( 24.dp )
@@ -1313,7 +1326,7 @@ fun LocalPlaylistSongs(
                             modifier = Modifier,
 
                             trailingContent = {
-                                if ((song.id.length != 11 || (song.durationText == "00:00" && song.totalPlayTimeMs == 1L)) && !song.id.startsWith(app.it.fast4x.rimusic.LOCAL_KEY_PREFIX)) {
+                                if ((song.id.length != 11 || (song.durationText == "00:00" && song.totalPlayTimeMs == 1L)) && !song.id.startsWith(LOCAL_KEY_PREFIX)) {
                                     androidx.compose.material3.Icon(
                                         painter = androidx.compose.ui.res.painterResource(R.drawable.alert),
                                         contentDescription = stringResource(R.string.unmatched_song),
@@ -1321,7 +1334,7 @@ fun LocalPlaylistSongs(
                                         modifier = Modifier.padding(start = 8.dp).size(18.dp)
                                     )
                                 }
-                                if( !positionLock.isLocked() && sort.sortBy == PlaylistSongSortBy.Custom && sort.sortOrder == app.it.fast4x.rimusic.enums.SortOrder.Ascending )
+                                if( !positionLock.isLocked() && sort.sortBy == PlaylistSongSortBy.Custom && sort.sortOrder == SortOrder.Ascending )
                                     // Create a fake box to store drag anchor and checkbox
                                     Box( Modifier.width( 24.dp ) )
                             },

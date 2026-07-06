@@ -28,6 +28,13 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable
 import app.n_zik.android.typography
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.utils.semiBold
+import app.it.fast4x.rimusic.enums.MenuStyle
+import app.it.fast4x.rimusic.ui.components.LocalMenuState
+import app.it.fast4x.rimusic.ui.components.MenuState
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.Menu
+import app.n_zik.android.components.menu.GridMenu
+import app.n_zik.android.components.menu.ListMenu
 
 class ImportPlaylistsMenu(
     private val onImportNzik: () -> Unit,
@@ -48,7 +55,7 @@ class ImportPlaylistsMenu(
 
     @Composable
     fun Render() {
-        val menuState = app.it.fast4x.rimusic.ui.components.LocalMenuState.current
+        val menuState = LocalMenuState.current
         
         LaunchedEffect(showDialog.value) {
             if (showDialog.value) {
@@ -61,18 +68,18 @@ class ImportPlaylistsMenu(
     }
 
     @Composable
-    private fun ImportOptionsContent(menuState: app.it.fast4x.rimusic.ui.components.MenuState) {
+    private fun ImportOptionsContent(menuState: MenuState) {
         val styleState = app.it.fast4x.rimusic.utils.rememberPreference(
             app.it.fast4x.rimusic.utils.menuStyleKey, 
-            app.it.fast4x.rimusic.enums.MenuStyle.List
+            MenuStyle.List
         )
         
         val menu = androidx.compose.runtime.remember {
-            object : app.it.fast4x.rimusic.ui.components.tab.toolbar.Menu {
+            object : Menu {
                 override val menuState = menuState
-                override var menuStyle: app.it.fast4x.rimusic.enums.MenuStyle by styleState
+                override var menuStyle: MenuStyle by styleState
                 
-                private val buttons: List<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button> = listOf(
+                private val buttons: List<Button> = listOf(
                     object : MenuIcon, Descriptive, Clickable {
                         override val iconId: Int = R.drawable.ic_launcher
                         override val messageId: Int = R.string.import_playlist_nzik
@@ -108,15 +115,15 @@ class ImportPlaylistsMenu(
                 )
 
                 @Composable
-                override fun ListMenu() = app.n_zik.android.components.menu.ListMenu.Menu(title = null, showDragHandle = false) {
+                override fun ListMenu() = ListMenu.Menu(title = null, showDragHandle = false) {
                     buttons.forEach { 
                         if (it is MenuIcon) it.ListMenuItem() 
                     }
                 }
 
                 @Composable
-                override fun GridMenu() = app.n_zik.android.components.menu.GridMenu.Menu(title = null, showDragHandle = false) {
-                    items(buttons, key = app.it.fast4x.rimusic.ui.components.tab.toolbar.Button::hashCode) {
+                override fun GridMenu() = GridMenu.Menu(title = null, showDragHandle = false) {
+                    items(buttons, key = Button::hashCode) {
                         if (it is MenuIcon) it.GridMenuItem()
                     }
                 }
@@ -149,7 +156,7 @@ class ImportPlaylistsMenu(
                             HorizontalDivider( Modifier.height(1.dp) )
                         }
 
-                        if( menuStyle == app.it.fast4x.rimusic.enums.MenuStyle.List )
+                        if( menuStyle == MenuStyle.List )
                             ListMenu()
                         else
                             GridMenu()

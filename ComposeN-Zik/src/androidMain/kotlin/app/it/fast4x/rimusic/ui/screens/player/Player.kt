@@ -270,6 +270,8 @@ import kotlin.Float.Companion.POSITIVE_INFINITY
 import kotlin.math.absoluteValue
 import kotlin.math.sqrt
 import androidx.compose.ui.res.stringResource
+import app.n_zik.android.components.player.lyrics.LyricsScreen
+import app.n_zik.android.playback.services.PlayerServiceModern
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -1278,7 +1280,7 @@ fun Player(
                             .navigationBarsPadding()
                     ){
                         if (!showlyricsthumbnail) {
-                            app.n_zik.android.components.player.lyrics.LyricsScreen(
+                            LyricsScreen(
                                 mediaId = mediaItem.mediaId,
                                 isDisplayed = isShowingLyrics,
                                 onDismiss = {
@@ -2099,7 +2101,7 @@ fun Player(
                             }
                     ) {
                         if (!showlyricsthumbnail)
-                            app.n_zik.android.components.player.lyrics.LyricsScreen(
+                            LyricsScreen(
                                 mediaId = mediaItem.mediaId,
                                 isDisplayed = isShowingLyrics,
                                 onDismiss = {
@@ -2424,7 +2426,7 @@ fun Player(
 @Composable
 @androidx.annotation.OptIn(UnstableApi::class)
 fun PagerState.LaunchedEffectScrollToPage(
-    binder: app.n_zik.android.playback.services.PlayerServiceModern.Binder,
+    binder: PlayerServiceModern.Binder,
     playerUpdateTrigger: Int,
     index: Int,
     appRunningInBackground: Boolean

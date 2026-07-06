@@ -81,6 +81,9 @@ import app.n_zik.android.components.song.ChangeAuthorDialog
 import app.n_zik.android.components.tab.Radio
 import app.kreate.android.me.knighthat.sync.YouTubeSync
 import timber.log.Timber
+import app.it.fast4x.rimusic.enums.NavRoutes
+import app.it.fast4x.rimusic.ui.screens.info.VideoOrSongInfoScreen
+import app.n_zik.android.components.song.GoToArtist
 
 @UnstableApi
 @ExperimentalFoundationApi
@@ -206,7 +209,7 @@ class VideoItemMenu private constructor(
 
                 override fun onShortClick() {
                     menuState.display {
-                        app.it.fast4x.rimusic.ui.screens.info.VideoOrSongInfoScreen(
+                        VideoOrSongInfoScreen(
                             videoId = song.id,
                             songTitle = song.title,
                             songArtist = song.artistsText ?: "",
@@ -244,7 +247,7 @@ class VideoItemMenu private constructor(
         }.collectAsState(emptyList(), Dispatchers.IO)
 
         val goToArtistFallback = remember {
-            app.n_zik.android.components.song.GoToArtist( navController, song )
+            GoToArtist( navController, song )
         }
 
         buttons = mutableListOf<Button>().apply {
@@ -281,11 +284,11 @@ class VideoItemMenu private constructor(
                                         Database.artistTable.findByName(artistName).first()
                                     } catch (_: Exception) { null }
                                     if (dbArtist != null) {
-                                        app.it.fast4x.rimusic.enums.NavRoutes.artist.navigateHere(navController, dbArtist.id)
+                                        NavRoutes.artist.navigateHere(navController, dbArtist.id)
                                         return@launch
                                     }
                                     // Fallback: Innertube nextPage
-                                    it.fast4x.innertube.Innertube.nextPage(it.fast4x.innertube.models.bodies.NextBody(videoId = song.id))
+                                    Innertube.nextPage(NextBody(videoId = song.id))
                                         ?.getOrNull()
                                         ?.itemsPage?.items?.firstOrNull()
                                         ?.authors
@@ -294,7 +297,7 @@ class VideoItemMenu private constructor(
                                         ?.takeIf { !it.browseId.isNullOrBlank() }
                                         ?.let {
                                             val path = "${it.browseId}?params=${it.params.orEmpty()}"
-                                            app.it.fast4x.rimusic.enums.NavRoutes.artist.navigateHere(navController, path)
+                                            NavRoutes.artist.navigateHere(navController, path)
                                         }
                                 }
                             }

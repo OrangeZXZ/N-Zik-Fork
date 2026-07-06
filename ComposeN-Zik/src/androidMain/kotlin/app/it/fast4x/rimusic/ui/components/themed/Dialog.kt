@@ -186,6 +186,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import app.n_zik.android.uiRoundnessShape
+import app.n_zik.android.components.settings.SettingsInputDialog
 
 
 @Composable
@@ -1047,7 +1048,7 @@ inline fun StringListDialog(
     }
 
     if (showStringAddDialog) {
-        app.n_zik.android.components.settings.SettingsInputDialog(
+        SettingsInputDialog(
             title = addTitle,
             initialValue = "",
             placeholder = addPlaceholder,

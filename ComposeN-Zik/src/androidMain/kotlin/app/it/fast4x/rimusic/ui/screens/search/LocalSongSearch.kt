@@ -73,6 +73,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import androidx.compose.ui.res.stringResource
 import app.n_zik.android.R
+import app.n_zik.android.components.menu.song.SongItemMenu
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
@@ -276,7 +277,7 @@ fun LocalSongSearch(
                         .clip(uiRoundnessShape()).combinedClickable(
                             onLongClick = {
                                 menuState.display {
-                                    app.n_zik.android.components.menu.song.SongItemMenu(
+                                    SongItemMenu(
                                         navController = navController,
                                         song = song
                                     ).MenuComponent()

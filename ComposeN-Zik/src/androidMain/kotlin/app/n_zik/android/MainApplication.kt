@@ -33,6 +33,8 @@ import it.fast4x.innertube.utils.ProxyPreferences
 import timber.log.Timber
 import java.io.File
 import java.net.Proxy
+import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.utils.NewPipeDownloaderImpl
 
 class MainApplication : Application(), SingletonImageLoader.Factory {
 
@@ -59,19 +61,19 @@ class MainApplication : Application(), SingletonImageLoader.Factory {
                 proxy = proxy,
                 cacheDir = externalCacheDir ?: cacheDir
             )
-            it.fast4x.innertube.Innertube.proxy = proxy
+            Innertube.proxy = proxy
             
             // Initialize YouTube session identifiers from Datastore
             val savedCookie = preferences.getString(ytCookieKey, "")
             if (!savedCookie.isNullOrBlank()) {
-                it.fast4x.innertube.Innertube.cookie = savedCookie
-                it.fast4x.innertube.Innertube.visitorData = preferences.getString(ytVisitorDataKey, "") ?: ""
-                it.fast4x.innertube.Innertube.dataSyncId = preferences.getString(ytDataSyncIdKey, "")
+                Innertube.cookie = savedCookie
+                Innertube.visitorData = preferences.getString(ytVisitorDataKey, "") ?: ""
+                Innertube.dataSyncId = preferences.getString(ytDataSyncIdKey, "")
             }
 
             runCatching {
                 org.schabi.newpipe.extractor.NewPipe.init(
-                    it.fast4x.innertube.utils.NewPipeDownloaderImpl {
+                    NewPipeDownloaderImpl {
                         NetworkClientFactory.getClient()
                     }
                 )

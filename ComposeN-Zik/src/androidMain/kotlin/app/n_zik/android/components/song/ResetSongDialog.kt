@@ -27,6 +27,7 @@ import app.n_zik.android.components.dialog.CheckboxDialog
 import app.kreate.android.me.knighthat.utils.Toaster
 import org.jetbrains.annotations.Contract
 import java.util.Optional
+import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
 
 @UnstableApi
 class ResetSongDialog private constructor(
@@ -152,7 +153,7 @@ class ResetSongDialog private constructor(
                 if( items.first { it.id == CACHE_CHECKBOX_ID }.selected ) {
                     binder?.cache?.removeResource( song.id )
                     binder?.downloadCache?.removeResource( song.id )
-                    app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+                    WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
                     formatTable.deleteBySongId( song.id )
                     formatTable.updateContentLengthOf( song.id )
                 }

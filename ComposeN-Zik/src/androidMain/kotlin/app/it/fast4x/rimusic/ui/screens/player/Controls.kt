@@ -73,6 +73,7 @@ import app.it.fast4x.rimusic.utils.showthumbnailKey
 import app.it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import app.it.fast4x.rimusic.ui.styling.ColorPalette
 
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
@@ -95,7 +96,7 @@ fun Controls(
     isBuffering: Boolean,
     position: () -> Long,
     duration: () -> Long,
-    dynamicColorPalette: app.it.fast4x.rimusic.ui.styling.ColorPalette,
+    dynamicColorPalette: ColorPalette,
     modifier: Modifier = Modifier
 ) = Controls(
     navController = navController,
@@ -149,7 +150,7 @@ fun Controls(
     position: () -> Long,
     duration: () -> Long,
     isExplicit: Boolean,
-    dynamicColorPalette: app.it.fast4x.rimusic.ui.styling.ColorPalette,
+    dynamicColorPalette: ColorPalette,
     modifier: Modifier = Modifier
 ) {
     val binder = LocalPlayerServiceBinder.current

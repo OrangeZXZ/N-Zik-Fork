@@ -60,6 +60,8 @@ import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import java.text.SimpleDateFormat
 import java.util.*
 import app.n_zik.android.uiRoundnessShape
+import app.it.fast4x.rimusic.enums.NavRoutes
+import app.kreate.android.me.knighthat.utils.Toaster
 
 @ExperimentalAnimationApi
 @Composable
@@ -282,7 +284,7 @@ fun About(navController: androidx.navigation.NavController) {
                              .fillMaxHeight()
                              .run {
                                  if (BuildConfig.IS_AUTOUPDATE) {
-                                     clickable { navController.navigate(app.it.fast4x.rimusic.enums.NavRoutes.updater.name) }
+                                     clickable { navController.navigate(NavRoutes.updater.name) }
                                  } else this
                              }
                              .shadow(
@@ -396,10 +398,10 @@ fun About(navController: androidx.navigation.NavController) {
                                     .height(36.dp)
                                     .clip(uiRoundnessShape()).clickable {
                                         val prefs = app.n_zik.android.appContext().getSharedPreferences("settings", 0)
-                                        val checkBeta = prefs.getBoolean(app.it.fast4x.rimusic.utils.checkBetaUpdatesKey, app.n_zik.android.updater.services.Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == "b")
-                                        app.kreate.android.me.knighthat.utils.Toaster.i(R.string.checking_for_updates)
+                                        val checkBeta = prefs.getBoolean(app.it.fast4x.rimusic.utils.checkBetaUpdatesKey, Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == "b")
+                                        Toaster.i(R.string.checking_for_updates)
                                         Updater.checkForUpdate(isForced = true, checkBetaUpdates = checkBeta, showDialog = false)
-                                        navController.navigate(app.it.fast4x.rimusic.enums.NavRoutes.updater.name)
+                                        navController.navigate(NavRoutes.updater.name)
                                     },
                                 colors = CardDefaults.cardColors(containerColor = colorPalette().accent),
                                 shape = uiRoundnessShape()

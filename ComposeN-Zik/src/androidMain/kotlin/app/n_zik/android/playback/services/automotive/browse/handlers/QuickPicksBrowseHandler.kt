@@ -17,6 +17,7 @@ import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.relatedPage
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
+import it.fast4x.innertube.YtMusic
 
 class QuickPicksBrowseHandler : BrowseHandler {
     override fun handles(parentId: String): Boolean = parentId == AutoSessionConstants.ID_QUICK_PICKS
@@ -46,7 +47,7 @@ class QuickPicksBrowseHandler : BrowseHandler {
             Innertube.relatedPage(NextBody(videoId = trending.first().id))?.getOrNull()?.songs?.map { it.asSong } ?: emptyList()
         } else emptyList()
         val ytmQuickPicks = if (app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn()) {
-            it.fast4x.innertube.YtMusic.getQuickPicks(setLogin = true).getOrNull()?.map { it.asSong } ?: emptyList()
+            YtMusic.getQuickPicks(setLogin = true).getOrNull()?.map { it.asSong } ?: emptyList()
         } else emptyList()
         
         Timber.tag("QuickPicksBrowseHandler").d("Quick picks loaded -> trending: ${trending.size}, related: ${relatedSongs.size}, ytb: ${ytmQuickPicks.size}")

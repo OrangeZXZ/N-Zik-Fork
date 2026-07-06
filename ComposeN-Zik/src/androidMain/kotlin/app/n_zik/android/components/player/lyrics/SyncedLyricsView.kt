@@ -48,6 +48,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import app.n_zik.android.components.player.lyrics.utils.HtmlDecoder
 
 /** Minimum silence duration (ms) between two lines required to show the interval indicator. */
 private const val GAP_THRESHOLD_MS = 4000L
@@ -114,14 +115,14 @@ fun SyncedLyricsView(
 ) {
     val density = LocalDensity.current
     val syncedSentences = remember(text) {
-        val decodedText = app.n_zik.android.components.player.lyrics.utils.HtmlDecoder.decodeHtmlEntities(text)
+        val decodedText = HtmlDecoder.decodeHtmlEntities(text)
         val sentences = parseSyncedSentences(decodedText)
         if (sentences.isEmpty()) onInvalidLrc(true) else onInvalidLrc(false)
         sentences
     }
     val synchronizedLyrics = remember(syncedSentences) {
         val pairs = syncedSentences.map { it.timeMs to it.text }
-        app.n_zik.android.components.player.lyrics.utils.SynchronizedLyrics(pairs) { currentPositionProvider() + 50L }
+        SynchronizedLyrics(pairs) { currentPositionProvider() + 50L }
     }
 
     // Pre-compute gap windows: for each sentence index, the gap to the next sentence (if > threshold)
@@ -380,7 +381,7 @@ if (showBackgroundLyrics && showlyricsthumbnail) modifierBG =
         LyricsColor.White -> Color.White
         LyricsColor.Cover -> Color(dominantColor)
         LyricsColor.Custom -> Color(lyricsCustomColor)
-        LyricsColor.Thememode -> if (showlyricsthumbnail) app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette.text else colorPalette().text
+        LyricsColor.Thememode -> if (showlyricsthumbnail) PureBlackColorPalette.text else colorPalette().text
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

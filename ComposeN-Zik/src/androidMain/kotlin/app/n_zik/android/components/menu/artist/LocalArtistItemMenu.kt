@@ -59,6 +59,8 @@ import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.forcePlayAtIndex
 import app.n_zik.android.components.artist.ChangeArtistTitleDialog
 import app.n_zik.android.components.artist.ChangeArtistCoverDialog
+import app.kreate.android.me.knighthat.utils.Toaster
+import app.n_zik.android.LocalPlayerServiceBinder
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -249,7 +251,7 @@ class LocalArtistItemMenu private constructor(
             }
         }
 
-        val binder = app.n_zik.android.LocalPlayerServiceBinder.current
+        val binder = LocalPlayerServiceBinder.current
         val songs by Database.artistSongs(artist.id).collectAsState(initial = emptyList(), context = Dispatchers.IO)
 
         val playAll = object : MenuIcon, Descriptive, Clickable {
@@ -262,7 +264,7 @@ class LocalArtistItemMenu private constructor(
                     binder?.player?.forcePlayAtIndex(songs.map { it.asMediaItem }, 0)
                     menuState.hide()
                 } else {
-                    app.kreate.android.me.knighthat.utils.Toaster.e(R.string.no_song_found)
+                    Toaster.e(R.string.no_song_found)
                 }
             }
             override fun onLongClick() {}
