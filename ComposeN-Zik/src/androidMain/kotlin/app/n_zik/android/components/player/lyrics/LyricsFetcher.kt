@@ -57,15 +57,19 @@ fun LyricsFetcher(
 ) {
     val context = LocalContext.current
     var previousLyricsType by remember { mutableStateOf(lyricsType) }
-    var modeSwitchPending by remember { mutableStateOf(false) }
+    var previousCheckLyrics by remember { mutableStateOf(checkLyrics) }
     LaunchedEffect(mediaId, lyricsType, checkLyrics) {
-        // Mode switch → reset everything
-        if (lyricsType != previousLyricsType) {
+        if (checkLyrics != previousCheckLyrics) {
             globalLastSyncedAttemptMediaId = null
             globalLastKaraokeAttemptMediaId = null
             globalLastUnSyncedAttemptMediaId = null
+            previousCheckLyrics = checkLyrics
+            onLyricsUpdated(null)
+        }
+        
+        // Mode switch
+        if (lyricsType != previousLyricsType) {
             previousLyricsType = lyricsType
-            modeSwitchPending = true
             onLyricsUpdated(null)
         }
         Database.lyricsTable
@@ -83,12 +87,10 @@ fun LyricsFetcher(
                 }
 
                 val hasWordTimings = currentLyrics?.data?.lines()?.any { it.trim().startsWith("<") && it.contains(":") && it.contains(">") } == true
-                val hasBetterLyricsTags = currentLyrics?.data?.contains("{agent:") == true
-                val forceFetch = modeSwitchPending.also { modeSwitchPending = false }
 
-                val needKaraokeFetch = wantKaraoke && (!hasWordTimings && (forceFetch || globalLastKaraokeAttemptMediaId != mediaId))
-                val needSyncedFetch = lyricsType == LyricsType.Synced && currentLyrics?.data.isNullOrEmpty() && (forceFetch || globalLastSyncedAttemptMediaId != mediaId)
-                val needUnsyncedFetch = lyricsType == LyricsType.Unsynced && currentLyrics?.data.isNullOrEmpty() && (forceFetch || globalLastUnSyncedAttemptMediaId != mediaId)
+                val needKaraokeFetch = wantKaraoke && (!hasWordTimings && globalLastKaraokeAttemptMediaId != mediaId)
+                val needSyncedFetch = lyricsType == LyricsType.Synced && currentLyrics?.data.isNullOrEmpty() && globalLastSyncedAttemptMediaId != mediaId
+                val needUnsyncedFetch = lyricsType == LyricsType.Unsynced && currentLyrics?.data.isNullOrEmpty() && globalLastUnSyncedAttemptMediaId != mediaId
 
 
 
@@ -375,7 +377,7 @@ fun LyricsFetcher(
                                         }
                                     } else {
                                         // BetterLyrics found synced lyrics (no word timings)
-                                        if (!forceFetch && (hasBetterLyricsTags || !currentLyrics?.data.isNullOrEmpty())) {
+                                        if (!currentLyrics?.data.isNullOrEmpty()) {
                                             // Same mode re-fetch, already have synced → warning, keep existing
                                             if (playerEnableLyricsPopupMessage) {
                                                 Toaster.w(R.string.info_karaoke_not_found_showing_sync, context.getString(R.string.source_betterlyrics_karaoke), context.getString(R.string.source_betterlyrics_synced))
