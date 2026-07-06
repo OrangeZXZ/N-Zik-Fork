@@ -102,6 +102,7 @@ class MyDownloadService : DownloadService(
         ) {
             if (download.state == Download.STATE_COMPLETED) {
                 completedCount++
+                app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(context, download.request.id)
                 lastName = Util.fromUtf8Bytes(download.request.data)
             } else if (download.state == Download.STATE_FAILED) {
                 failedCount++
