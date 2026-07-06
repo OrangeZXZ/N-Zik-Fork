@@ -57,7 +57,7 @@ open class DeleteSongDialog(
                 songPlaylistMapTable.deleteBySongId( it.id )
                 formatTable.deleteBySongId( it.id )
                 songTable.delete( it )
-                app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext, it.id)
+                app.n_zik.android.extensions.audiobar.utils.WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), it.id)
             }
 
             Toaster.i( R.string.deleted )
