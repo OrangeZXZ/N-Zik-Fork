@@ -147,14 +147,8 @@ fun LyricsFetcher(
                         }
                     }
 
-                    val fetchLrcLibAndKugou: suspend (betterLyricsFallback: String?) -> Unit = { fallbackSynced ->
-                        // BetterLyrics synced fallback → always store
-                            if (!fallbackSynced.isNullOrEmpty()) {
-                                if (playerEnableLyricsPopupMessage) Toaster.s(R.string.info_lyrics_found_on_s, context.getString(R.string.source_betterlyrics_synced))
-                            onErrorUpdated(false)
-                            onCheckedLrcUpdated(true)
-                            Database.asyncTransaction { lyricsTable.upsert(Lyrics(songId = mediaId, type = LyricsType.Synced.name, data = fallbackSynced)) }
-                        } else if (currentLyrics?.data.isNullOrEmpty() || needSyncedFetch) {
+                    val fetchLrcLibAndKugou: suspend () -> Unit = {
+                        if (currentLyrics?.data.isNullOrEmpty() || needSyncedFetch) {
                                 kotlin.runCatching {
                                 LrcLib.lyrics(
                                     artist = artistName ?: "",
@@ -377,17 +371,16 @@ fun LyricsFetcher(
                                         }
                                     } else {
                                         // BetterLyrics found synced lyrics (no word timings)
-                                        if (!currentLyrics?.data.isNullOrEmpty()) {
-                                            // Same mode re-fetch, already have synced → warning, keep existing
-                                            if (playerEnableLyricsPopupMessage) {
-                                                Toaster.w(R.string.info_karaoke_not_found_showing_sync, context.getString(R.string.source_betterlyrics_karaoke), context.getString(R.string.source_betterlyrics_synced))
-                                            }
-                                        } else {
-                                            // Mode switch or no existing lyrics → store synced
-                                            if (playerEnableLyricsPopupMessage) {
-                                                Toaster.s(R.string.info_lyrics_found_on_s, context.getString(R.string.source_betterlyrics_synced))
-                                            }
-                                            fetchLrcLibAndKugou(ttmlStr)
+                                        if (playerEnableLyricsPopupMessage) {
+                                            Toaster.w(R.string.info_karaoke_not_found_showing_sync, context.getString(R.string.source_betterlyrics_karaoke), context.getString(R.string.source_betterlyrics_synced))
+                                        }
+                                        onErrorUpdated(false)
+                                        onCheckedLrcUpdated(true)
+
+                                        Database.asyncTransaction {
+                                            lyricsTable.upsert(
+                                                Lyrics(songId = mediaId, type = LyricsType.Karaoke.name, data = ttmlStr)
+                                            )
                                         }
                                     }
                                 } else {
@@ -398,7 +391,7 @@ fun LyricsFetcher(
                                             context.getString(R.string.source_betterlyrics_synced)
                                         )
                                     }
-                                    fetchLrcLibAndKugou(null)
+                                    fetchLrcLibAndKugou()
                                 }
                             }.onFailure {
                                 if (playerEnableLyricsPopupMessage) {
@@ -408,7 +401,7 @@ fun LyricsFetcher(
                                         context.getString(R.string.source_betterlyrics_synced)
                                     )
                                 }
-                                fetchLrcLibAndKugou(null)
+                                fetchLrcLibAndKugou()
                             }
                         }.onFailure {
                             Timber.tag(TAG).e("→ BetterLyrics KARAOKE ERROR: ${it.stackTraceToString()}")
@@ -419,10 +412,10 @@ fun LyricsFetcher(
                                     context.getString(R.string.source_betterlyrics_synced)
                                 )
                             }
-                            fetchLrcLibAndKugou(null)
+                            fetchLrcLibAndKugou()
                         }
                     } else {
-                        fetchLrcLibAndKugou(null)
+                        fetchLrcLibAndKugou()
                     }
                     } // end else (not needUnsyncedFetch)
 
