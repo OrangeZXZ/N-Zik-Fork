@@ -25,6 +25,7 @@ import timber.log.Timber
 import java.util.ArrayDeque
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.playback.utils.Shuffler
+import kotlinx.coroutines.withContext
 
 var GlobalVolume: Float = 0.5f
 
@@ -146,13 +147,20 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
             0
         }
 
-        // Pre-fetch full metadata (with browse IDs) before starting playback.
-        // This ensures the UI shows the correct artist names + browse IDs from the start.
+        // Start playback immediately before pre-fetching metadata to avoid UI delays
+        withContext( Dispatchers.Main ) {
+            setMediaItems( cleanedMediaItems, newIndex, C.TIME_UNSET )
+            prepare()
+            restoreGlobalVolume()
+            playWhenReady = true
+        }
+
+        // Pre-fetch full metadata (with browse IDs) asynchronously.
+        // This ensures the UI shows the correct artist names + browse IDs without delaying playback.
         val targetItem = cleanedMediaItems.getOrNull(newIndex)
         if (targetItem != null) {
             val videoId = targetItem.mediaId.substringAfter("/").ifBlank { targetItem.mediaId }
             // Pre-fetch synchronously so the search online completes before we read the DB.
-            // This guarantees the MediaItem is enriched with all browse IDs.
             runCatching { app.n_zik.android.playback.services.upsertSongInfo(videoId) }
             // Now read the DB to populate the MediaItem.
             val enrichedItem = runCatching {
@@ -190,15 +198,19 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
                 }
             }.getOrNull()
             if (enrichedItem != null) {
-                cleanedMediaItems[newIndex] = enrichedItem
+                Timber.tag("PlayerPrefetch").d("Prefetch success! Enriched metadata for: $videoId")
+                withContext(Dispatchers.Main) {
+                    for (i in 0 until mediaItemCount) {
+                        if (getMediaItemAt(i).mediaId == targetItem.mediaId) {
+                            Timber.tag("PlayerPrefetch").d("Replaced mediaItem in queue at index: $i")
+                            replaceMediaItem(i, enrichedItem)
+                            break
+                        }
+                    }
+                }
+            } else {
+                Timber.tag("PlayerPrefetch").w("Prefetch finished, but enrichedItem is null for: $videoId")
             }
-        }
-
-        runBlocking( Dispatchers.Main ) {
-            setMediaItems( cleanedMediaItems, newIndex, C.TIME_UNSET )
-            prepare()
-            restoreGlobalVolume()
-            playWhenReady = true
         }
     }
 }

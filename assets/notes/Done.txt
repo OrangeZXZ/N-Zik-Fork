@@ -1,4 +1,8 @@
 # Done - 2026-07-06
+- fix(playback): remove playback delay when clicking songs in lists (issue #633)
+  - Refactored `forcePlayAtIndex` in `Player.kt` to start playback immediately via `setMediaItems` and `playWhenReady` without blocking the main thread.
+  - Moved the network prefetch (`upsertSongInfo`) to run asynchronously *after* playback starts.
+  - Used ExoPlayer's `replaceMediaItem` to update the currently playing `MediaItem` with the enriched metadata (artist, album, browse IDs) dynamically without interrupting playback.
 - feat(home): make Home Quick Picks categories load progressively and asynchronously
   - Removed global blocking `if (showLoader)` so the UI renders immediately without waiting for all 3 YouTube Music API iterations.
   - `homePageInit` state is now updated incrementally inside the `repeat(3)` fetch loop in `HomeQuickPicksState.kt`.
