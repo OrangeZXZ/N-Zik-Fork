@@ -86,9 +86,9 @@ fun LyricsFetcher(
                 val hasBetterLyricsTags = currentLyrics?.data?.contains("{agent:") == true
                 val forceFetch = modeSwitchPending.also { modeSwitchPending = false }
 
-                val needKaraokeFetch = wantKaraoke && (forceFetch || (hasBetterLyricsTags && !hasWordTimings) || (!hasWordTimings && globalLastKaraokeAttemptMediaId != mediaId))
-                val needSyncedFetch = lyricsType == LyricsType.Synced && (forceFetch || globalLastSyncedAttemptMediaId != mediaId)
-                val needUnsyncedFetch = lyricsType == LyricsType.Unsynced && (forceFetch || globalLastUnSyncedAttemptMediaId != mediaId)
+                val needKaraokeFetch = wantKaraoke && (!hasWordTimings && (forceFetch || globalLastKaraokeAttemptMediaId != mediaId))
+                val needSyncedFetch = lyricsType == LyricsType.Synced && currentLyrics?.data.isNullOrEmpty() && (forceFetch || globalLastSyncedAttemptMediaId != mediaId)
+                val needUnsyncedFetch = lyricsType == LyricsType.Unsynced && currentLyrics?.data.isNullOrEmpty() && (forceFetch || globalLastUnSyncedAttemptMediaId != mediaId)
 
 
 
