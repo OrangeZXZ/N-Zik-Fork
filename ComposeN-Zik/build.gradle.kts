@@ -283,6 +283,7 @@ dependencies {
     testImplementation(libs.room.testing)
     testImplementation(libs.androidx.test.core)
     testRuntimeOnly(libs.junit.platform)
+    testRuntimeOnly(libs.junit.vintage.engine)
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
     implementation(libs.jetbrains.annotations)

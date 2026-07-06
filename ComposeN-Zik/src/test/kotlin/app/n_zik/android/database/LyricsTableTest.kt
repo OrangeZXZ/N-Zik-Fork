@@ -9,14 +9,18 @@ import app.n_zik.android.enums.lyrics.LyricsType
 import app.n_zik.android.models.Lyrics
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.*
+import org.junit.After
+import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
+/**
+ * Tests Room DAO [LyricsTable] using Robolectric (JUnit 4 runner) with an in-memory database.
+ * Uses JUnit 4 annotations (@Before / @After) because Robolectric's @RunWith is a JUnit 4 concept.
+ */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [33])
 class LyricsTableTest {
@@ -24,7 +28,7 @@ class LyricsTableTest {
     private lateinit var db: DatabaseInitializer
     private lateinit var lyricsDao: LyricsTable
 
-    @BeforeEach
+    @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, DatabaseInitializer::class.java)
@@ -33,7 +37,7 @@ class LyricsTableTest {
         lyricsDao = db.lyricsTable
     }
 
-    @AfterEach
+    @After
     fun closeDb() {
         db.close()
     }
@@ -73,6 +77,7 @@ class LyricsTableTest {
         lyrics = lyricsDao.findBySongIdAndType(mediaId, LyricsType.Karaoke.name).first()
         assertEquals("updated data", lyrics?.data)
 
+        // Vérifier qu'il n'y a toujours qu'une seule ligne Karaoke
         val allLyrics = lyricsDao.findAllBySongId(mediaId).first()
         assertEquals(1, allLyrics.size)
     }

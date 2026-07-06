@@ -1,5 +1,20 @@
 
+## 2026-07-06
+- test(lyrics): add unit & Room tests for lyrics refactor
+  - Extrait la logique de décision fetch dans LyricsDecisionMaker.kt
+  - Refactorisé LyricsFetcher pour déléguer à LyricsDecisionMaker
+  - Ajout LyricsDecisionMakerTest (JUnit 5) : karaoke/sync/unsync fetch decisions + fallback BetterLyrics
+  - Ajout LyricsTableTest (Robolectric + Room in-memory) : upsert, overwrite, isolation par song
+  - Ajout dépendances test : robolectric, room-testing, androidx.test:core, junit-vintage-engine dans libs.versions.toml et build.gradle.kts
+- refactor(lyrics): isoler le fallback BetterLyrics Sync dans le slot Karaoke DB
+  - BetterLyrics Sync (fallback) stocké dans la colonne KARAOKE pour ne pas polluer la colonne SYNC
+  - Empêche le re-fetch inutile lors du changement de mode si déjà en cache DB
+  - Fix des erreurs de compilation suite aux ajustements de la logique de refetch
+- refactor(lyrics): 3 tables distinctes en base de données pour Karaoke / Sync / Unsync
+  - Chaque mode a sa propre ligne en DB (plus de mélange dans une seule ligne)
+
 ## 2026-07-05
+
 - fix(home-sync): fix compilation errors in HomeSyncService background refactor
   - Fix browseEndpoint → info.endpoint?.browseId for search result ID extraction
   - Fix YtMusic.getAlbum() return type: access album properties via .album (AlbumPage.album)
