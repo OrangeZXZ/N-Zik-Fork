@@ -12,6 +12,15 @@
   - Fix des erreurs de compilation suite aux ajustements de la logique de refetch
 - refactor(lyrics): 3 tables distinctes en base de données pour Karaoke / Sync / Unsync
   - Chaque mode a sa propre ligne en DB (plus de mélange dans une seule ligne)
+- fix(lyrics): prevent getBoundingBox crash on stale TextLayoutResult (issues #632 #639)
+  - Ajout garde `isLayoutStale` dans `KaraokeLyricsView` pour skip le draw si le texte a changé mais que la recomposition n'est pas encore faite (évite `IllegalArgumentException: offset is out of bounds`)
+  - Clamp des index des mots karaoke à la longueur réelle du layout pour éviter les out of bounds
+- fix(lyrics): reset list scroll state on lyrics type change
+  - Utilisation de `LaunchedEffect(text)` dans `SyncedLyricsView` et `KaraokeLyricsView` pour scroller à 0. L'API `rememberLazyListState(key1=text)` n'existe pas.
+- fix(lyrics): fix crash when opening lyrics with a custom cover
+  - `getBitmapFromUrl` retourne maintenant `Bitmap?` (nullable) au lieu de throw (IllegalArgumentException/IllegalStateException) si l'URI est local (`content://`) ou réseau down.
+  - Wrap les appels dans `LyricsScreen` par des `try/catch` pour un fallback fluide
+  - Ajustement des retours nullable et throw d'Exception pour le fallback natif dans `Player`, `MiniPlayer`, et `NextVisualizer`
 
 
 ## 2026-07-05
