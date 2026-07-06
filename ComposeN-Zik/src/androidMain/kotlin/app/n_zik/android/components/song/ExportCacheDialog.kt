@@ -28,12 +28,28 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import app.n_zik.android.components.ExportToFileDialog
 import app.kreate.android.me.knighthat.utils.Toaster
+import timber.log.Timber
+import androidx.media3.transformer.Transformer
+import androidx.media3.transformer.ExportResult
+import androidx.media3.transformer.ExportException
+import androidx.media3.transformer.Composition
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.MimeTypes
+import java.io.File
+import coil3.SingletonImageLoader
+import coil3.request.ImageRequest
+import coil3.request.SuccessResult
+import coil3.toBitmap
+import android.graphics.Bitmap
+import java.io.ByteArrayOutputStream
 
 class ExportCacheDialog(
     activeState: MutableState<Boolean>,
     valueState: MutableState<TextFieldValue>,
     launcher: ManagedActivityResultLauncher<String, Uri?>,
-    private val getSong: () -> Song
+    private val getSong: () -> Song,
+    val isExporting: MutableState<Boolean> = mutableStateOf(false)
 ) : ExportToFileDialog(valueState, activeState, launcher), MenuIcon, Descriptive {
 
     companion object {
@@ -41,37 +57,189 @@ class ExportCacheDialog(
         private fun onExport(
             uri: Uri,
             binder: PlayerServiceModern.Binder ,
-            song: Song
-        ) = CoroutineScope( Dispatchers.IO ).launch {       // Run in background to prevent UI thread from freezing due to large file.
-            val contentLength =  Database.formatTable.findContentLengthOf( song.id ).first()
+            song: Song,
+            isExporting: MutableState<Boolean>
+        ) = CoroutineScope( Dispatchers.IO ).launch {
+            kotlinx.coroutines.withContext(Dispatchers.Main) { isExporting.value = true }
+            try {
+                Timber.tag("ExportCache").i("onExport triggered for song: ${song.title}")
+                val contentLength =  Database.formatTable.findContentLengthOf( song.id ).first()
 
-            val isCached = binder.cache.isCached( song.id, 0, contentLength )
-            val isDownloaded = binder.downloadCache.isCached( song.id, 0, contentLength )
+                val isCached = binder.cache.isCached( song.id, 0, contentLength )
+                val isDownloaded = binder.downloadCache.isCached( song.id, 0, contentLength )
+                Timber.tag("ExportCache").i("isCached: $isCached, isDownloaded: $isDownloaded, contentLength: $contentLength")
 
-            if( !isCached && !isDownloaded ) {
-                Toaster.i( R.string.song_must_be_cached_or_downloaded_to_export )
+                if( !isCached && !isDownloaded ) {
+                    Toaster.i( R.string.song_must_be_cached_or_downloaded_to_export )
+
+                    try {
+                        // Attempt to delete created file
+                        DocumentsContract.deleteDocument( appContext().contentResolver, uri )
+                    } catch ( _: Exception ) {}
+
+                    kotlinx.coroutines.withContext(Dispatchers.Main) { isExporting.value = false }
+                    return@launch
+                }
+
+                val cacheDir = appContext().cacheDir
+                val rawFile = File(cacheDir, "temp_raw_${System.currentTimeMillis()}.m4a")
+                val outFile = File(cacheDir, "temp_out_${System.currentTimeMillis()}.m4a")
 
                 try {
-                    // Attempt to delete created file
-                    DocumentsContract.deleteDocument( appContext().contentResolver, uri )
-                } catch ( _: Exception ) {}
-
-                return@launch
-            }
-
-            val dataInBytes =
-                (if( isCached ) binder.cache else binder.downloadCache).getCachedSpans( song.id )
-                                                                       .mapNotNull( CacheSpan::file )
-                                                                       .flatMap { it.readBytes().asList() }
-                                                                       .toByteArray()
-
-            appContext().contentResolver
-                        .openOutputStream( uri )
-                        ?.use { outStream ->
-                            outStream.write( dataInBytes )
+                    Timber.tag("ExportCache").i("Creating raw file...")
+                    val spans = (if( isCached ) binder.cache else binder.downloadCache).getCachedSpans( song.id )
+                    rawFile.outputStream().use { outStream ->
+                        spans.mapNotNull(CacheSpan::file).forEach { fileSpan ->
+                            fileSpan.inputStream().use { it.copyTo(outStream) }
                         }
+                    }
+                    Timber.tag("ExportCache").i("Raw file created. Size: ${rawFile.length()} bytes")
 
-            Toaster.done()
+                    val album = Database.songAlbumMapTable.findAlbumOf(song.id).first()
+                    val trackPosition = Database.songAlbumMapTable.findPositionOf(song.id).first()
+                    Timber.tag("ExportCache").i("Album: ${album?.title}, year: ${album?.year}, position: $trackPosition")
+
+                    var artworkData: ByteArray? = null
+                    if (!song.thumbnailUrl.isNullOrEmpty()) {
+                        try {
+                            val request = ImageRequest.Builder(appContext())
+                                .data(song.thumbnailUrl)
+                                .build()
+                            val result = SingletonImageLoader.get(appContext()).execute(request)
+                            if (result is SuccessResult) {
+                                val bitmap = result.image.toBitmap()
+                                val stream = ByteArrayOutputStream()
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
+                                artworkData = stream.toByteArray()
+                            }
+                        } catch (e: Exception) {
+                            Timber.tag("ExportCache").w(e, "Failed to download artwork for export")
+                        }
+                    }
+
+                    val mediaMetadataBuilder = MediaMetadata.Builder()
+                        .setTitle(song.title)
+                        .setArtist(song.cleanArtistsText())
+
+                    album?.title?.let { mediaMetadataBuilder.setAlbumTitle(it) }
+                    album?.year?.toIntOrNull()?.let { mediaMetadataBuilder.setReleaseYear(it) }
+                    trackPosition?.let { if (it >= 0) mediaMetadataBuilder.setTrackNumber(it) }
+
+                    if (artworkData != null) {
+                        mediaMetadataBuilder.setArtworkData(artworkData, MediaMetadata.PICTURE_TYPE_FRONT_COVER)
+                    }
+
+                    val mediaMetadata = mediaMetadataBuilder.build()
+
+                    Timber.tag("ExportCache").i("MediaMetadata built. Starting Transformer on Main thread...")
+
+                    val mediaItem = MediaItem.Builder()
+                        .setUri(Uri.fromFile(rawFile))
+                        .setMediaMetadata(mediaMetadata)
+                        .build()
+
+                    val editedMediaItem = androidx.media3.transformer.EditedMediaItem.Builder(mediaItem).build()
+
+                    kotlinx.coroutines.withContext(Dispatchers.Main) {
+                        Timber.tag("ExportCache").i("Building Transformer...")
+                        val transformer = Transformer.Builder(appContext())
+                            .setAudioMimeType(MimeTypes.AUDIO_AAC)
+                            .build()
+
+                        transformer.addListener(object : Transformer.Listener {
+                            override fun onCompleted(composition: Composition, exportResult: ExportResult) {
+                                Timber.tag("ExportCache").i("Transformer onCompleted! ExportResult: $exportResult")
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    try {
+                                        // 1. Manually write tags with jaudiotagger before copying
+                                        try {
+                                            val audioFile = org.jaudiotagger.audio.AudioFileIO.read(outFile)
+                                            val tag = audioFile.tagOrCreateAndSetDefault
+                                            tag.setField(org.jaudiotagger.tag.FieldKey.TITLE, song.title)
+                                            tag.setField(org.jaudiotagger.tag.FieldKey.ARTIST, song.cleanArtistsText())
+                                            album?.title?.let { tag.setField(org.jaudiotagger.tag.FieldKey.ALBUM, it) }
+                                            album?.year?.let { tag.setField(org.jaudiotagger.tag.FieldKey.YEAR, it) }
+                                            trackPosition?.let { if (it >= 0) tag.setField(org.jaudiotagger.tag.FieldKey.TRACK, it.toString()) }
+
+                                            if (artworkData != null) {
+                                                val artwork = org.jaudiotagger.tag.images.ArtworkFactory.getNew()
+                                                artwork.binaryData = artworkData
+                                                artwork.mimeType = "image/jpeg"
+                                                tag.setField(artwork)
+                                            }
+                                            audioFile.commit()
+                                            Timber.tag("ExportCache").i("jaudiotagger successfully wrote tags!")
+                                        } catch (e: Exception) {
+                                            Timber.tag("ExportCache").e(e, "jaudiotagger failed to write tags")
+                                        }
+
+                                        // 2. Copy the tagged file to the destination SAF URI
+                                        appContext().contentResolver.openOutputStream(uri)?.use { outStream ->
+                                            outFile.inputStream().use { inStream ->
+                                                inStream.copyTo(outStream)
+                                            }
+                                        }
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            Timber.tag("ExportCache").i("Toaster.done() called")
+                                            isExporting.value = false
+                                            Toaster.done()
+                                        }
+                                    } catch (e: Exception) {
+                                        Timber.tag("ExportCache").e(e, "Export copy error")
+                                        CoroutineScope(Dispatchers.Main).launch {
+                                            isExporting.value = false
+                                            Toaster.e("Export copy error: ${e.message}")
+                                        }
+                                    } finally {
+                                        rawFile.delete()
+                                        outFile.delete()
+                                    }
+                                }
+                            }
+
+                            override fun onError(composition: Composition, exportResult: ExportResult, exportException: ExportException) {
+                                Timber.tag("ExportCache").e(exportException, "Media3 Transformer export failed")
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    isExporting.value = false
+                                    Toaster.e("Export failed: ${exportException.message}")
+                                }
+                                try { DocumentsContract.deleteDocument(appContext().contentResolver, uri) } catch (_: Exception) {}
+                                rawFile.delete()
+                                outFile.delete()
+                            }
+                        })
+
+                        try {
+                            Timber.tag("ExportCache").i("Calling transformer.start()...")
+                            transformer.start(editedMediaItem, outFile.absolutePath)
+                            Timber.tag("ExportCache").i("transformer.start() returned successfully.")
+                        } catch (e: Exception) {
+                            Timber.tag("ExportCache").e(e, "Media3 Transformer start error")
+                            isExporting.value = false
+                            Toaster.e("Export start error: ${e.message}")
+                            rawFile.delete()
+                            outFile.delete()
+                        }
+                    }
+
+                } catch (e: Exception) {
+                    Timber.tag("ExportCache").e(e, "Export overall error")
+                    CoroutineScope(Dispatchers.Main).launch {
+                        isExporting.value = false
+                        Toaster.e("Export error: ${e.message}")
+                    }
+                    try { DocumentsContract.deleteDocument(appContext().contentResolver, uri) } catch (_: Exception) {}
+                    rawFile.delete()
+                    outFile.delete()
+                }
+            } catch (e: Exception) {
+                Timber.tag("ExportCache").e(e, "Export init error")
+                CoroutineScope(Dispatchers.Main).launch {
+                    isExporting.value = false
+                    Toaster.e("Export error: ${e.message}")
+                }
+                try { DocumentsContract.deleteDocument(appContext().contentResolver, uri) } catch (_: Exception) {}
+            }
         }
 
         @UnstableApi
@@ -79,7 +247,9 @@ class ExportCacheDialog(
         operator fun invoke(
             binder: PlayerServiceModern.Binder?,
             getSong: () -> Song
-        ): ExportCacheDialog = ExportCacheDialog(
+        ): ExportCacheDialog {
+            val isExporting = remember { mutableStateOf(false) }
+            return ExportCacheDialog(
             remember { mutableStateOf(false) },
             remember( getSong().title ) {
                 mutableStateOf( TextFieldValue("${getSong().title} - ${getSong().cleanArtistsText()}") )
@@ -92,10 +262,12 @@ class ExportCacheDialog(
                 // Same thing with binder
                 binder ?: return@rememberLauncherForActivityResult
 
-                onExport( uri, binder, getSong() )
+                onExport( uri, binder, getSong(), isExporting )
             },
-            getSong
+            getSong,
+            isExporting
         )
+        }
     }
 
     override val extension: String = "m4a"

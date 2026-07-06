@@ -81,6 +81,13 @@ interface SongAlbumMapTable {
     fun findAlbumOf( songId: String, limit: Int = Int.MAX_VALUE ): Flow<Album?>
 
     @Query("""
+        SELECT position FROM SongAlbumMap
+        WHERE songId = :songId
+        LIMIT 1
+    """)
+    fun findPositionOf( songId: String ): Flow<Int?>
+
+    @Query("""
         INSERT OR IGNORE INTO SongAlbumMap ( songId, albumId, position )
         VALUES( 
             :songId,

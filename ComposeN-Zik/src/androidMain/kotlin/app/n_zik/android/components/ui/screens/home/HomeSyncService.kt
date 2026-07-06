@@ -26,13 +26,16 @@ import app.kreate.android.me.knighthat.utils.PropUtils
 import app.it.fast4x.rimusic.models.Artist
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.PlaylistPreview
+import app.it.fast4x.rimusic.models.SongAlbumMap
 import it.fast4x.innertube.models.bodies.BrowseBody
 import app.it.fast4x.rimusic.utils.asSong
+import app.it.fast4x.rimusic.utils.asMediaItem
 import kotlinx.coroutines.flow.first
 
 class HomeSyncService : Service() {
 
     private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private var activeSyncs = 0
 
     companion object {
         const val ACTION_SYNC_ARTISTS = "app.n_zik.android.action.SYNC_ARTISTS"
@@ -60,9 +63,8 @@ class HomeSyncService : Service() {
             isOngoing = true
         )
         
-        val notificationManager = appContext().getSystemService(android.content.Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
         val builder = androidx.core.app.NotificationCompat.Builder(appContext(), "sync_channel_id")
-            .setSmallIcon(R.drawable.sync)
+            .setSmallIcon(R.drawable.ic_launcher)
             .setContentTitle(appContext().getString(R.string.sync_notifications))
             .setContentText("Syncing in background...")
             .setPriority(androidx.core.app.NotificationCompat.PRIORITY_LOW)
@@ -84,7 +86,10 @@ class HomeSyncService : Service() {
         }
 
         val ids = intent.getStringArrayListExtra(EXTRA_IDS)
-        
+
+        activeSyncs++
+        Timber.tag("HomeSyncService").d("Active syncs: $activeSyncs (started $action)")
+
         serviceScope.launch {
             val resultNotificationId = notificationId + 100
             try {
@@ -98,7 +103,13 @@ class HomeSyncService : Service() {
             } finally {
                 @Suppress("DEPRECATION")
                 stopForeground(false)
+            }
+            activeSyncs--
+            Timber.tag("HomeSyncService").d("Active syncs remaining: $activeSyncs")
+            if (activeSyncs <= 0) {
+                activeSyncs = 0
                 stopSelf()
+                Timber.tag("HomeSyncService").d("All syncs finished, stopping service")
             }
         }
         
@@ -109,7 +120,10 @@ class HomeSyncService : Service() {
         super.onDestroy()
         serviceScope.cancel()
     }
-    
+
+    // ═══════════════════════════════════════════════════════════════════
+    //  ARTISTS SYNC
+    // ═══════════════════════════════════════════════════════════════════
     private suspend fun syncArtists(ids: List<String>?, notificationId: Int, resultNotificationId: Int) {
         if (HomeSyncState.isSyncingArtists) return
         HomeSyncState.isSyncingArtists = true
@@ -118,11 +132,11 @@ class HomeSyncService : Service() {
         val allArtists = (Database.artistTable.allFollowing().first() + Database.artistTable.allInLibrary().first()).distinctBy { it.id }
         val targetItems = if (ids.isNullOrEmpty()) allArtists else allArtists.filter { it.id in ids }
 
-        val ytArtists = targetItems.filter { it.isYoutubeArtist || it.id.startsWith("UC") }
-        val localArtists = targetItems.filterNot { it.isYoutubeArtist || it.id.startsWith("UC") }
+        val ytArtists = targetItems.filter { it.isYoutubeArtist && it.id.startsWith("UC") }
+        val localArtists = targetItems.filterNot { it.isYoutubeArtist && it.id.startsWith("UC") }
         val totalArtists = ytArtists.size + localArtists.size
 
-        Timber.tag("HomeSyncService").d("=== REFRESH START === Total: $totalArtists (YT: ${ytArtists.size}, Local: ${localArtists.size})")
+        Timber.tag("HomeSyncService").d("══════ ARTIST SYNC START ══════ Total: $totalArtists (YT: ${ytArtists.size}, Local/Fallback: ${localArtists.size})")
 
         withContext(Dispatchers.Main) {
             if (totalArtists > 0) app.kreate.android.me.knighthat.utils.Toaster.i(appContext().getString(R.string.refreshing_artists, totalArtists))
@@ -138,8 +152,11 @@ class HomeSyncService : Service() {
         val failedList = mutableListOf<Artist>()
         HomeSyncState.artistSyncFailed = 0
         HomeSyncState.artistSyncTotal = totalArtists
+        var successCount = 0
 
         var abortSync = false
+
+        // ── YT Artists: direct fetch by ID ──
         for ((index, artist) in ytArtists.withIndex()) {
             if (abortSync) break
             HomeSyncState.artistSyncCurrentIndex = index + 1
@@ -154,44 +171,38 @@ class HomeSyncService : Service() {
                 currentProgress = index + 1
             )
             kotlinx.coroutines.delay((2000L..5000L).random())
-            Timber.tag("HomeSyncService").d("[YT] Fetching by ID: ${artist.id} for '${artist.name}'")
-            var status = 0 // 0=retry, 1=success
+
+            Timber.tag("HomeSyncService").d("[ARTIST|YT_DIRECT] #${index+1}/${ytArtists.size} id='${artist.id}' name='${artist.name}'")
+
+            var status = 0
             for (attempt in 1..3) {
                 YtMusic.getArtistPage(artist.id).onSuccess { online ->
-                    val onlineArtist = online.artist
-                    Timber.tag("HomeSyncService").d("[YT] Got response for '${artist.name}': onlineName='${onlineArtist.title}', thumbnail='${onlineArtist.thumbnail?.url}'")
+                    val a = online.artist
+                    Timber.tag("HomeSyncService").d("[ARTIST|YT_DIRECT] ✓ name='${a.title}' thumbnail='${a.thumbnail?.url}'")
                     Database.asyncTransaction {
                         Database.artistTable.upsert(Artist(
                             id = artist.id,
-                            name = PropUtils.retainIfModified(artist.name, onlineArtist.title),
-                            thumbnailUrl = onlineArtist.thumbnail?.url ?: artist.thumbnailUrl,
+                            name = PropUtils.retainIfModified(artist.name, a.title),
+                            thumbnailUrl = a.thumbnail?.url ?: artist.thumbnailUrl,
                             timestamp = artist.timestamp,
                             bookmarkedAt = artist.bookmarkedAt,
                             isYoutubeArtist = artist.isYoutubeArtist,
                             position = artist.position
                         ))
                     }
-                    Timber.tag("HomeSyncService").d("Successfully refreshed artist: ${artist.name}")
+                    successCount++
                     status = 1
                 }.onFailure {
-                    Timber.tag("HomeSyncService").e(it, "Failed to refresh artist (attempt $attempt): ${artist.name}")
-                    if (it is java.net.UnknownHostException || it is java.net.ConnectException) {
-                        status = 3
-                    }
+                    Timber.tag("HomeSyncService").e(it, "[ARTIST|YT_DIRECT] ✗ Failed attempt $attempt: ${artist.name}")
+                    if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
                 }
                 if (status != 0) break
             }
-            if (status == 3) {
-                abortSync = true
-                break
-            }
-            if (status != 1) {
-                failedCount++
-                HomeSyncState.artistSyncFailed = failedCount
-                failedList.add(artist)
-            }
+            if (status == 3) { abortSync = true; break }
+            if (status != 1) { failedCount++; HomeSyncState.artistSyncFailed = failedCount; failedList.add(artist) }
         }
 
+        // ── Local Artists: direct fetch or fallback search ──
         for ((index, artist) in localArtists.withIndex()) {
             if (abortSync) break
             HomeSyncState.artistSyncCurrentIndex = ytArtists.size + index + 1
@@ -205,62 +216,83 @@ class HomeSyncService : Service() {
                 maxProgress = totalArtists,
                 currentProgress = ytArtists.size + index + 1
             )
-            val query = artist.name?.trim()
-            if (!query.isNullOrBlank()) {
-                kotlinx.coroutines.delay((2000L..5000L).random())
-                Timber.tag("HomeSyncService").d("[LOCAL] Searching YouTube: query='$query' for artist id=${artist.id}")
-                var status = 0 // 0=retry, 1=success, 2=not found
-                for (attempt in 1..3) {
-                    try {
-                        val searchResult = Innertube.searchPage<Innertube.ArtistItem>(
-                            body = SearchBody(
-                                query = query,
-                                params = Innertube.SearchFilter.Artist.value
-                            ),
-                            fromMusicShelfRendererContent = { content -> Innertube.ArtistItem.from(content) }
-                        )?.getOrNull()
+            kotlinx.coroutines.delay((2000L..5000L).random())
 
+            val hasValidId = artist.id.startsWith("UC")
+            val method = if (hasValidId) "LOCAL_DIRECT" else "FALLBACK_SEARCH"
+            Timber.tag("HomeSyncService").d("[ARTIST|$method] #${ytArtists.size+index+1}/${totalArtists} id='${artist.id}' name='${artist.name}' hasValidId=$hasValidId")
+
+            var status = 0
+            for (attempt in 1..3) {
+                if (hasValidId) {
+                    YtMusic.getArtistPage(artist.id).onSuccess { online ->
+                        val a = online.artist
+                        Timber.tag("HomeSyncService").d("[ARTIST|$method] ✓ name='${a.title}' thumbnail='${a.thumbnail?.url}'")
+                        Database.asyncTransaction {
+                            Database.artistTable.upsert(Artist(
+                                id = artist.id,
+                                name = PropUtils.retainIfModified(artist.name, a.title),
+                                thumbnailUrl = a.thumbnail?.url ?: artist.thumbnailUrl,
+                                timestamp = artist.timestamp,
+                                bookmarkedAt = artist.bookmarkedAt,
+                                isYoutubeArtist = artist.isYoutubeArtist,
+                                position = artist.position
+                            ))
+                        }
+                        successCount++
+                        status = 1
+                    }.onFailure {
+                        Timber.tag("HomeSyncService").e(it, "[ARTIST|$method] ✗ Failed attempt $attempt: ${artist.name}")
+                        if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
+                    }
+                } else {
+                    val query = artist.name?.trim()
+                    if (query.isNullOrBlank()) { status = 2; break }
+                    try {
+                        Timber.tag("HomeSyncService").d("[ARTIST|FALLBACK_SEARCH] Searching YouTube: query='$query'")
+                        val searchResult = Innertube.searchPage<Innertube.ArtistItem>(
+                            body = SearchBody(query = query, params = Innertube.SearchFilter.Artist.value),
+                            fromMusicShelfRendererContent = { Innertube.ArtistItem.from(it) }
+                        )?.getOrNull()
                         val remoteId = searchResult?.items?.firstOrNull()?.info?.endpoint?.browseId
+                        val onlineName = searchResult?.items?.firstOrNull()?.title
                         if (remoteId != null) {
-                            Timber.tag("HomeSyncService").d("[LOCAL] Found matching ID on YouTube: $remoteId for '${artist.name}'")
+                            Timber.tag("HomeSyncService").d("[ARTIST|FALLBACK_SEARCH] ✓ Found: remoteId='$remoteId' onlineName='$onlineName'")
                             YtMusic.getArtistPage(remoteId).onSuccess { online ->
-                                val onlineArtist = online.artist
+                                val a = online.artist
+                                Timber.tag("HomeSyncService").d("[ARTIST|FALLBACK_SEARCH] ✓ Fetched: name='${a.title}' thumbnail='${a.thumbnail?.url}'")
                                 Database.asyncTransaction {
                                     Database.artistTable.upsert(Artist(
                                         id = artist.id,
-                                        name = artist.name,
-                                        thumbnailUrl = onlineArtist.thumbnail?.url ?: artist.thumbnailUrl,
+                                        name = PropUtils.retainIfModified(artist.name, a.title),
+                                        thumbnailUrl = a.thumbnail?.url ?: artist.thumbnailUrl,
                                         timestamp = artist.timestamp,
                                         bookmarkedAt = artist.bookmarkedAt,
                                         isYoutubeArtist = artist.isYoutubeArtist,
                                         position = artist.position
                                     ))
                                 }
+                                successCount++
+                                status = 1
+                            }.onFailure {
+                                if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
                             }
-                            status = 1
                         } else {
-                            Timber.tag("HomeSyncService").d("No matching artist found on YouTube for '${artist.name}'")
+                            Timber.tag("HomeSyncService").d("[ARTIST|FALLBACK_SEARCH] ✗ No match found for '$query'")
                             status = 2
                         }
                     } catch (it: Exception) {
-                        Timber.tag("HomeSyncService").e(it, "Failed to search metadata for local artist (attempt $attempt): $query")
-                        if (it is java.net.UnknownHostException || it is java.net.ConnectException) {
-                            status = 3
-                        }
+                        Timber.tag("HomeSyncService").e(it, "[ARTIST|FALLBACK_SEARCH] ✗ Search failed attempt $attempt: $query")
+                        if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
                     }
-                    if (status != 0) break
                 }
-                if (status == 3) {
-                    abortSync = true
-                    break
-                }
-                if (status != 1) {
-                    failedCount++
-                    HomeSyncState.artistSyncFailed = failedCount
-                    failedList.add(artist)
-                }
+                if (status != 0) break
             }
+            if (status == 3) { abortSync = true; break }
+            if (status != 1) { failedCount++; HomeSyncState.artistSyncFailed = failedCount; failedList.add(artist) }
         }
+
+        Timber.tag("HomeSyncService").d("══════ ARTIST SYNC END ══════ success=$successCount failed=$failedCount total=$totalArtists")
 
         withContext(Dispatchers.Main) {
             if (abortSync) {
@@ -276,28 +308,22 @@ class HomeSyncService : Service() {
                     message = notificationMessage,
                     notificationId = resultNotificationId
                 )
-            } else if (totalArtists > 0 && !ids.isNullOrEmpty()) {
-                app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_artists))
-                HomeSyncState.showSyncNotification(
-                    title = appContext().getString(R.string.sync_successful),
-                    message = appContext().getString(R.string.sync_success_notification_artists),
-                    notificationId = resultNotificationId
-                )
-            } else if (totalArtists > 0 && ids.isNullOrEmpty()) {
-                app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_artists))
-                HomeSyncState.showSyncNotification(
-                    title = appContext().getString(R.string.sync_successful),
-                    message = appContext().getString(R.string.sync_success_notification_artists),
-                    notificationId = resultNotificationId
-                )
             } else {
-                HomeSyncState.clearSyncNotification(notificationId)
+                app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_artists))
+                HomeSyncState.showSyncNotification(
+                    title = appContext().getString(R.string.sync_successful),
+                    message = appContext().getString(R.string.sync_success_notification_artists),
+                    notificationId = resultNotificationId
+                )
             }
             HomeSyncState.isSyncingArtists = false
             HomeSyncState.artistSyncProgress = 1f
         }
     }
 
+    // ═══════════════════════════════════════════════════════════════════
+    //  ALBUMS SYNC
+    // ═══════════════════════════════════════════════════════════════════
     private suspend fun syncAlbums(ids: List<String>?, notificationId: Int, resultNotificationId: Int) {
         if (HomeSyncState.isSyncingAlbums) return
         HomeSyncState.isSyncingAlbums = true
@@ -306,11 +332,11 @@ class HomeSyncService : Service() {
         val allAlbums = Database.albumTable.all().first()
         val targetItems = if (ids.isNullOrEmpty()) allAlbums else allAlbums.filter { it.id in ids }
 
-        val ytAlbums = targetItems.filter { it.isYoutubeAlbum }
-        val localAlbums = targetItems.filterNot { it.isYoutubeAlbum }
+        val ytAlbums = targetItems.filter { it.isYoutubeAlbum && (it.id.startsWith("MPRE") || it.id.startsWith("OLAK")) }
+        val localAlbums = targetItems.filterNot { it.isYoutubeAlbum && (it.id.startsWith("MPRE") || it.id.startsWith("OLAK")) }
         val totalAlbums = ytAlbums.size + localAlbums.size
 
-        Timber.tag("HomeSyncService").d("=== REFRESH START === Total: $totalAlbums (YT: ${ytAlbums.size}, Local: ${localAlbums.size})")
+        Timber.tag("HomeSyncService").d("══════ ALBUM SYNC START ══════ Total: $totalAlbums (YT: ${ytAlbums.size}, Local/Fallback: ${localAlbums.size})")
 
         withContext(Dispatchers.Main) {
             if (totalAlbums > 0) app.kreate.android.me.knighthat.utils.Toaster.i(appContext().getString(R.string.refreshing_albums, totalAlbums))
@@ -326,8 +352,11 @@ class HomeSyncService : Service() {
         val failedList = mutableListOf<Album>()
         HomeSyncState.albumSyncFailed = 0
         HomeSyncState.albumSyncTotal = totalAlbums
+        var successCount = 0
 
         var abortSync = false
+
+        // ── YT Albums: direct fetch by ID ──
         for ((index, album) in ytAlbums.withIndex()) {
             if (abortSync) break
             HomeSyncState.albumSyncCurrentIndex = index + 1
@@ -341,50 +370,50 @@ class HomeSyncService : Service() {
                 maxProgress = totalAlbums,
                 currentProgress = index + 1
             )
-
             kotlinx.coroutines.delay((2000L..5000L).random())
-            Timber.tag("HomeSyncService").d("[YT] Fetching by ID: ${album.id} for '${album.title}'")
 
-            var status = 0 // 0=retry, 1=success
+            Timber.tag("HomeSyncService").d("[ALBUM|YT_DIRECT] #${index+1}/${ytAlbums.size} id='${album.id}' title='${album.title}'")
+
+            var status = 0
             for (attempt in 1..3) {
                 YtMusic.getAlbum(album.id, true).onSuccess { online ->
-                    val onlineAlbum = online.album
-                    Timber.tag("HomeSyncService").d("[YT] Got response for '${album.title}': onlineTitle='${onlineAlbum.title}', thumbnail='${onlineAlbum.thumbnail?.url}'")
+                    val a = online.album
+                    val songCount = online.songs.size
+                    Timber.tag("HomeSyncService").d("[ALBUM|YT_DIRECT] ✓ title='${a.title}' year='${a.year}' authors='${a.authors?.joinToString { it.name.orEmpty() }}' thumbnail='${a.thumbnail?.url}' songs=$songCount url='${online.url}'")
                     Database.asyncTransaction {
                         Database.albumTable.upsert(Album(
                             id = album.id,
-                            title = PropUtils.retainIfModified(album.title, onlineAlbum.title),
-                            year = onlineAlbum.year ?: album.year,
-                            authorsText = onlineAlbum.authors?.joinToString("") { it.name.orEmpty() } ?: album.authorsText,
+                            title = PropUtils.retainIfModified(album.title, a.title),
+                            year = a.year ?: album.year,
+                            authorsText = a.authors?.joinToString(", ") { it.name.orEmpty() } ?: album.authorsText,
                             shareUrl = online.url ?: album.shareUrl,
-                            thumbnailUrl = onlineAlbum.thumbnail?.url ?: album.thumbnailUrl,
+                            thumbnailUrl = a.thumbnail?.url ?: album.thumbnailUrl,
                             timestamp = album.timestamp,
                             bookmarkedAt = album.bookmarkedAt,
                             isYoutubeAlbum = album.isYoutubeAlbum,
                             position = album.position
                         ))
+                        songAlbumMapTable.clear(album.id)
+                        online.songs
+                            .map { it.asMediaItem }
+                            .onEach { Database.insertIgnore(it) }
+                            .mapIndexed { pos, mediaItem ->
+                                SongAlbumMap(songId = mediaItem.mediaId, albumId = album.id, position = pos)
+                            }.also { songAlbumMapTable.upsert(it) }
                     }
-                    Timber.tag("HomeSyncService").d("Successfully refreshed album: ${album.title}")
+                    successCount++
                     status = 1
                 }.onFailure {
-                    Timber.tag("HomeSyncService").e(it, "Failed to refresh album (attempt $attempt): ${album.title}")
-                    if (it is java.net.UnknownHostException || it is java.net.ConnectException) {
-                        status = 3
-                    }
+                    Timber.tag("HomeSyncService").e(it, "[ALBUM|YT_DIRECT] ✗ Failed attempt $attempt: ${album.title}")
+                    if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
                 }
                 if (status != 0) break
             }
-            if (status == 3) {
-                abortSync = true
-                break
-            }
-            if (status != 1) {
-                failedCount++
-                HomeSyncState.albumSyncFailed = failedCount
-                failedList.add(album)
-            }
+            if (status == 3) { abortSync = true; break }
+            if (status != 1) { failedCount++; HomeSyncState.albumSyncFailed = failedCount; failedList.add(album) }
         }
 
+        // ── Local Albums: direct fetch or fallback search ──
         for ((index, album) in localAlbums.withIndex()) {
             if (abortSync) break
             HomeSyncState.albumSyncCurrentIndex = ytAlbums.size + index + 1
@@ -398,66 +427,107 @@ class HomeSyncService : Service() {
                 maxProgress = totalAlbums,
                 currentProgress = ytAlbums.size + index + 1
             )
+            kotlinx.coroutines.delay((2000L..5000L).random())
 
-            val query = album.title?.trim()
-            if (!query.isNullOrBlank()) {
-                kotlinx.coroutines.delay((2000L..5000L).random())
-                Timber.tag("HomeSyncService").d("[LOCAL] Searching YouTube: query='$query' for album id=${album.id}")
-                var status = 0 // 0=retry, 1=success, 2=not found
-                for (attempt in 1..3) {
+            val hasValidId = album.id.startsWith("OLAK") || album.id.startsWith("MPRE")
+            val method = if (hasValidId) "LOCAL_DIRECT" else "FALLBACK_SEARCH"
+            Timber.tag("HomeSyncService").d("[ALBUM|$method] #${ytAlbums.size+index+1}/${totalAlbums} id='${album.id}' title='${album.title}' hasValidId=$hasValidId")
+
+            var status = 0
+            for (attempt in 1..3) {
+                if (hasValidId) {
+                    YtMusic.getAlbum(album.id, true).onSuccess { online ->
+                        val a = online.album
+                        val songCount = online.songs.size
+                        Timber.tag("HomeSyncService").d("[ALBUM|$method] ✓ title='${a.title}' year='${a.year}' authors='${a.authors?.joinToString { it.name.orEmpty() }}' thumbnail='${a.thumbnail?.url}' songs=$songCount url='${online.url}'")
+                        Database.asyncTransaction {
+                            Database.albumTable.upsert(Album(
+                                id = album.id,
+                                title = PropUtils.retainIfModified(album.title, a.title),
+                                year = a.year ?: album.year,
+                                authorsText = a.authors?.joinToString(", ") { it.name.orEmpty() } ?: album.authorsText,
+                                shareUrl = online.url ?: album.shareUrl,
+                                thumbnailUrl = a.thumbnail?.url ?: album.thumbnailUrl,
+                                timestamp = album.timestamp,
+                                bookmarkedAt = album.bookmarkedAt,
+                                isYoutubeAlbum = album.isYoutubeAlbum,
+                                position = album.position
+                            ))
+                            songAlbumMapTable.clear(album.id)
+                            online.songs
+                                .map { it.asMediaItem }
+                                .onEach { Database.insertIgnore(it) }
+                                .mapIndexed { pos, mediaItem ->
+                                    SongAlbumMap(songId = mediaItem.mediaId, albumId = album.id, position = pos)
+                                }.also { songAlbumMapTable.upsert(it) }
+                        }
+                        successCount++
+                        status = 1
+                    }.onFailure {
+                        Timber.tag("HomeSyncService").e(it, "[ALBUM|$method] ✗ Failed attempt $attempt: ${album.title}")
+                        if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
+                    }
+                } else {
+                    val query = album.title?.trim()
+                    if (query.isNullOrBlank()) { status = 2; break }
                     try {
+                        Timber.tag("HomeSyncService").d("[ALBUM|FALLBACK_SEARCH] Searching YouTube: query='$query'")
                         val searchResult = Innertube.searchPage<Innertube.AlbumItem>(
-                            body = SearchBody(
-                                query = query,
-                                params = Innertube.SearchFilter.Album.value
-                            ),
-                            fromMusicShelfRendererContent = { content -> Innertube.AlbumItem.from(content) }
+                            body = SearchBody(query = query, params = Innertube.SearchFilter.Album.value),
+                            fromMusicShelfRendererContent = { Innertube.AlbumItem.from(it) }
                         )?.getOrNull()
-
                         val remoteId = searchResult?.items?.firstOrNull()?.info?.endpoint?.browseId
+                        val onlineTitle = searchResult?.items?.firstOrNull()?.title
+                        val onlineYear = searchResult?.items?.firstOrNull()?.year
+                        val onlineThumbnail = searchResult?.items?.firstOrNull()?.thumbnail?.url
                         if (remoteId != null) {
-                            Timber.tag("HomeSyncService").d("[LOCAL] Found matching ID on YouTube: $remoteId for '${album.title}'")
+                            Timber.tag("HomeSyncService").d("[ALBUM|FALLBACK_SEARCH] ✓ Found: remoteId='$remoteId' onlineTitle='$onlineTitle' year='$onlineYear' thumbnail='$onlineThumbnail'")
                             YtMusic.getAlbum(remoteId, true).onSuccess { online ->
-                                val onlineAlbum = online.album
+                                val a = online.album
+                                val songCount = online.songs.size
+                                Timber.tag("HomeSyncService").d("[ALBUM|FALLBACK_SEARCH] ✓ Fetched: title='${a.title}' year='${a.year}' authors='${a.authors?.joinToString { it.name.orEmpty() }}' songs=$songCount url='${online.url}'")
                                 Database.asyncTransaction {
                                     Database.albumTable.upsert(Album(
                                         id = album.id,
-                                        title = album.title,
-                                        year = onlineAlbum.year ?: album.year,
-                                        authorsText = onlineAlbum.authors?.joinToString("") { it.name.orEmpty() } ?: album.authorsText,
+                                        title = PropUtils.retainIfModified(album.title, a.title),
+                                        year = a.year ?: album.year,
+                                        authorsText = a.authors?.joinToString(", ") { it.name.orEmpty() } ?: album.authorsText,
                                         shareUrl = online.url ?: album.shareUrl,
-                                        thumbnailUrl = onlineAlbum.thumbnail?.url ?: album.thumbnailUrl,
+                                        thumbnailUrl = a.thumbnail?.url ?: album.thumbnailUrl,
                                         timestamp = album.timestamp,
                                         bookmarkedAt = album.bookmarkedAt,
                                         isYoutubeAlbum = album.isYoutubeAlbum,
                                         position = album.position
                                     ))
+                                    songAlbumMapTable.clear(album.id)
+                                    online.songs
+                                        .map { it.asMediaItem }
+                                        .onEach { Database.insertIgnore(it) }
+                                        .mapIndexed { pos, mediaItem ->
+                                            SongAlbumMap(songId = mediaItem.mediaId, albumId = album.id, position = pos)
+                                        }.also { songAlbumMapTable.upsert(it) }
                                 }
+                                successCount++
+                                status = 1
+                            }.onFailure {
+                                if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
                             }
-                            status = 1
                         } else {
-                            Timber.tag("HomeSyncService").d("No matching album found on YouTube for '${album.title}'")
+                            Timber.tag("HomeSyncService").d("[ALBUM|FALLBACK_SEARCH] ✗ No match found for '$query'")
                             status = 2
                         }
                     } catch (it: Exception) {
-                        Timber.tag("HomeSyncService").e(it, "Failed to search metadata for local album (attempt $attempt): $query")
-                        if (it is java.net.UnknownHostException || it is java.net.ConnectException) {
-                            status = 3
-                        }
+                        Timber.tag("HomeSyncService").e(it, "[ALBUM|FALLBACK_SEARCH] ✗ Search failed attempt $attempt: $query")
+                        if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
                     }
-                    if (status != 0) break
                 }
-                if (status == 3) {
-                    abortSync = true
-                    break
-                }
-                if (status != 1) {
-                    failedCount++
-                    HomeSyncState.albumSyncFailed = failedCount
-                    failedList.add(album)
-                }
+                if (status != 0) break
             }
+            if (status == 3) { abortSync = true; break }
+            if (status != 1) { failedCount++; HomeSyncState.albumSyncFailed = failedCount; failedList.add(album) }
         }
+
+        Timber.tag("HomeSyncService").d("══════ ALBUM SYNC END ══════ success=$successCount failed=$failedCount total=$totalAlbums")
 
         withContext(Dispatchers.Main) {
             if (abortSync) {
@@ -473,28 +543,22 @@ class HomeSyncService : Service() {
                     message = notificationMessage,
                     notificationId = resultNotificationId
                 )
-            } else if (totalAlbums > 0 && !ids.isNullOrEmpty()) {
-                app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_albums))
-                HomeSyncState.showSyncNotification(
-                    title = appContext().getString(R.string.sync_successful),
-                    message = appContext().getString(R.string.sync_success_notification_albums),
-                    notificationId = resultNotificationId
-                )
-            } else if (totalAlbums > 0 && ids.isNullOrEmpty()) {
-                app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_albums))
-                HomeSyncState.showSyncNotification(
-                    title = appContext().getString(R.string.sync_successful),
-                    message = appContext().getString(R.string.sync_success_notification_albums),
-                    notificationId = resultNotificationId
-                )
             } else {
-                HomeSyncState.clearSyncNotification(notificationId)
+                app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_albums))
+                HomeSyncState.showSyncNotification(
+                    title = appContext().getString(R.string.sync_successful),
+                    message = appContext().getString(R.string.sync_success_notification_albums),
+                    notificationId = resultNotificationId
+                )
             }
             HomeSyncState.isSyncingAlbums = false
             HomeSyncState.albumSyncProgress = 1f
         }
     }
     
+    // ═══════════════════════════════════════════════════════════════════
+    //  PLAYLISTS SYNC
+    // ═══════════════════════════════════════════════════════════════════
     private suspend fun syncPlaylists(ids: List<String>?, notificationId: Int, resultNotificationId: Int) {
         if (HomeSyncState.isSyncingPlaylists) return
         HomeSyncState.isSyncingPlaylists = true
@@ -504,14 +568,10 @@ class HomeSyncService : Service() {
         val targetPlaylists = if (ids.isNullOrEmpty()) allPlaylistsPreviews else allPlaylistsPreviews.filter { it.playlist.id.toString() in ids }
 
         val ytPlaylists = targetPlaylists.filter { 
-            it.playlist.isYoutubePlaylist || 
-            it.playlist.browseId?.startsWith("VL") == true || 
-            it.playlist.browseId?.startsWith("PL") == true || 
-            it.playlist.browseId?.startsWith("RD") == true || 
-            it.playlist.browseId?.startsWith("OLAK") == true 
+            it.playlist.isYoutubePlaylist && it.playlist.browseId?.startsWith("VL") == true
         }
 
-        Timber.tag("HomeSyncService").d("=== REFRESH START === Total playlists: ${ytPlaylists.size}")
+        Timber.tag("HomeSyncService").d("══════ PLAYLIST SYNC START ══════ Total filtered: ${ytPlaylists.size}")
 
         withContext(Dispatchers.Main) {
             if (ytPlaylists.isNotEmpty()) app.kreate.android.me.knighthat.utils.Toaster.i(appContext().getString(R.string.refreshing_playlists, ytPlaylists.size))
@@ -523,9 +583,11 @@ class HomeSyncService : Service() {
         }
 
         var failedCount = 0
-        val failedList = mutableListOf<app.it.fast4x.rimusic.models.PlaylistPreview>()
+        val failedList = mutableListOf<PlaylistPreview>()
         HomeSyncState.playlistSyncFailed = 0
         HomeSyncState.playlistSyncTotal = ytPlaylists.size
+        var successCount = 0
+        var skippedCount = 0
         
         var abortSync = false
         for ((index, preview) in ytPlaylists.withIndex()) {
@@ -543,27 +605,33 @@ class HomeSyncService : Service() {
             )
             val p = preview.playlist
             val browseId = p.browseId
+
             if (browseId == null || !browseId.startsWith("VL")) {
-                Timber.tag("HomeSyncService").d("Skipping playlist (not a youtube playlist or no browseId): ${p.name}")
+                Timber.tag("HomeSyncService").d("[PLAYLIST|SKIP] '${p.name}' browseId='$browseId' — not a VL playlist, skipping")
+                skippedCount++
                 continue
             }
-            kotlinx.coroutines.delay((2000L..5000L).random())
-            Timber.tag("HomeSyncService").d("[YT] Fetching playlist by browseId: $browseId for '${p.name}'")
 
-            var status = 0 // 0=retry, 1=success
+            kotlinx.coroutines.delay((2000L..5000L).random())
+            Timber.tag("HomeSyncService").d("[PLAYLIST|YT_DIRECT] #${index+1}/${ytPlaylists.size} id=${p.id} browseId='$browseId' name='${p.name}'")
+
+            var status = 0
             for (attempt in 1..3) {
                 val request = Innertube.playlistPage(BrowseBody(browseId = browseId))
                 if (request == null) {
-                    Timber.tag("HomeSyncService").d("[YT] Request returned null for '${p.name}' (browseId: $browseId)")
+                    Timber.tag("HomeSyncService").d("[PLAYLIST|YT_DIRECT] ✗ Request null for '${p.name}'")
                     status = 2
                     break
                 }
                 request.getOrNull()?.let { playlistPage ->
-                    Timber.tag("HomeSyncService").d("[YT] Got response for '${p.name}': title='${playlistPage.title}', songs=${playlistPage.songsPage?.items?.size ?: 0}")
+                    val songCount = playlistPage.songsPage?.items?.size ?: 0
+                    Timber.tag("HomeSyncService").d("[PLAYLIST|YT_DIRECT] ✓ title='${playlistPage.title}' songs=$songCount url='${playlistPage.url}'")
                     Database.asyncTransaction {
                         playlistTable.update(p.copy(
-                            name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(p.name, playlistPage.title) ?: p.name
+                            name = PropUtils.retainIfModified(p.name, playlistPage.title) ?: p.name,
+                            isYoutubePlaylist = true
                         ))
+                        songPlaylistMapTable.clear(p.id)
                         val songs = playlistPage.songsPage?.items?.mapNotNull { it.asSong?.copy(totalPlayTimeMs = 1L) }
                         if (songs != null) {
                             songTable.upsert(songs)
@@ -572,24 +640,19 @@ class HomeSyncService : Service() {
                             }
                         }
                     }
-                    Timber.tag("HomeSyncService").d("Successfully refreshed playlist: ${p.name}")
+                    successCount++
                     status = 1
                 } ?: run {
-                    Timber.tag("HomeSyncService").e("Failed to fetch playlist (attempt $attempt): ${p.name}")
-                    status = 3 // or handle properly
+                    Timber.tag("HomeSyncService").e("[PLAYLIST|YT_DIRECT] ✗ Failed attempt $attempt: ${p.name}")
+                    status = 3
                 }
                 if (status != 0) break
             }
-            if (status == 3) {
-                abortSync = true
-                break
-            }
-            if (status != 1) {
-                failedCount++
-                HomeSyncState.playlistSyncFailed = failedCount
-                failedList.add(preview)
-            }
+            if (status == 3) { abortSync = true; break }
+            if (status != 1) { failedCount++; HomeSyncState.playlistSyncFailed = failedCount; failedList.add(preview) }
         }
+
+        Timber.tag("HomeSyncService").d("══════ PLAYLIST SYNC END ══════ success=$successCount failed=$failedCount skipped=$skippedCount total=${ytPlaylists.size}")
 
         withContext(Dispatchers.Main) {
             if (abortSync) {
@@ -601,19 +664,17 @@ class HomeSyncService : Service() {
                 val notificationMessage = appContext().getString(R.string.sync_failed_notification_playlists, failedCount)
                 app.kreate.android.me.knighthat.utils.Toaster.e(errorMessage)
                 HomeSyncState.showSyncNotification(
-                    title = appContext().getString(R.string.sync_failed),
+                    title = appContext().getString(R.string.sync_completed_with_errors),
                     message = notificationMessage,
                     notificationId = resultNotificationId
                 )
-            } else if (ytPlaylists.isNotEmpty() && ids.isNullOrEmpty()) {
+            } else {
                 app.kreate.android.me.knighthat.utils.Toaster.s(appContext().getString(R.string.found_all_playlists))
                 HomeSyncState.showSyncNotification(
                     title = appContext().getString(R.string.sync_successful),
                     message = appContext().getString(R.string.sync_success_notification_playlists),
                     notificationId = resultNotificationId
                 )
-            } else {
-                HomeSyncState.clearSyncNotification(notificationId)
             }
         }
 

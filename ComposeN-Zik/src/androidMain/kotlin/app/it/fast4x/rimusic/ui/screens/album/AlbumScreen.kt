@@ -121,11 +121,11 @@ fun AlbumScreen(
                            bookmarkedAt = album?.bookmarkedAt,
                            isYoutubeAlbum = album?.isYoutubeAlbum == true,
                            position = album?.position ?: -1
-                       ))
+                        ))
 
-                        songAlbumMapTable.clear(browseId)
+                         songAlbumMapTable.clear(browseId)
 
-                        online.songs
+                         online.songs
                               .map( Innertube.SongItem::asMediaItem )
                               .onEach( ::insertIgnore )
                               .mapIndexed { position, mediaItem ->

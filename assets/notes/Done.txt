@@ -1,5 +1,13 @@
 
 ## 2026-07-06
+- fix(home-sync): fix concurrent sync kills + filter logic for YT vs local items
+  - Added `activeSyncs` counter to prevent `stopSelf()` from killing concurrent syncs
+  - Fix `stopSelf()` placement after try/finally (not inside finally)
+  - Artist/Album/Playlist filters: `flag && id.startsWith(...)` (both conditions required for YT path)
+  - Local path: `hasValidId` → direct fetch by ID (keeps flag false), else → fallback search by name
+  - Playlist sync sets `isYoutubePlaylist = true` on successful sync (logo turns red)
+  - Notification icon changed from `R.drawable.sync` to `R.drawable.ic_launcher`
+  - Added detailed Timber logs: `[TYPE|METHOD]` with ✓/✗, ID, name, thumbnail, songs, URL
 - test(lyrics): add unit & Room tests for lyrics refactor
   - Extrait la logique de décision fetch dans LyricsDecisionMaker.kt
   - Refactorisé LyricsFetcher pour déléguer à LyricsDecisionMaker

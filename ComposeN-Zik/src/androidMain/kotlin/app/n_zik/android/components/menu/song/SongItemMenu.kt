@@ -363,6 +363,15 @@ class SongItemMenu private constructor(
         deleteSongDialog.Render()
         resetDialog.Render()
         exportCacheDialog.Render()
+
+        if (exportCacheDialog.isExporting.value) {
+            app.it.fast4x.rimusic.ui.components.themed.InProgressDialog(
+                total = 0,
+                done = 0,
+                text = "Exporting...",
+                onDismiss = null
+            )
+        }
         //</editor-fold>
 
         Column(

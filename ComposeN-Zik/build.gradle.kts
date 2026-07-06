@@ -261,6 +261,9 @@ dependencies {
     implementation(libs.hypnoticcanvas.shaders)
     implementation(libs.github.jeziellago.compose.markdown)
     implementation(libs.compose.reorderable)
+    implementation(libs.media3.muxer)
+    implementation(libs.media3.transformer)
+    implementation("net.jthink:jaudiotagger:3.0.1")
 
     implementation(libs.room)
     add("kspAndroid", libs.room.compiler)

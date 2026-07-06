@@ -165,6 +165,8 @@ desugaring-nio = { group = "com.android.tools", name = "desugar_jdk_libs_nio", v
 compose-shimmer = { group = "com.valentinilk.shimmer", name = "compose-shimmer", version.ref = "shimmer" }
 compose-reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "composeReorderable" }
 freedroidwarn = { module = "com.github.woheller69:FreeDroidWarn", version.ref = "freedroidwarn" }
+media3-muxer = { group = "androidx.media3", name = "media3-muxer", version.ref = "media3" }
+media3-transformer = { group = "androidx.media3", name = "media3-transformer", version.ref = "media3" }
 
 [plugins]
 # Multiplatform
