@@ -479,7 +479,7 @@ fun KaraokeLyricsView(
         maxReachedLineIndex
     }
 
-    val lazyListState = rememberLazyListState()
+    val lazyListState = rememberLazyListState(key1 = text)
 
     val isDragged by lazyListState.interactionSource.collectIsDraggedAsState()
 

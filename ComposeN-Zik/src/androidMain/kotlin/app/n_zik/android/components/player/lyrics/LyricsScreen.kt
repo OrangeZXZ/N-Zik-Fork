@@ -142,6 +142,11 @@ fun LyricsScreen(
         var customSize = if (isLandscape) lyricsSizeL else lyricsSize
         var showLyricsSizeDialog by rememberSaveable { mutableStateOf(false) }
         var isAutoScrollEnabled by remember { mutableStateOf(true) }
+
+        // Reset auto-scroll whenever the mode changes so lyrics re-center automatically
+        LaunchedEffect(lyricsType) {
+            isAutoScrollEnabled = true
+        }
         val lyricsOffsetState = rememberPreference("lyricsOffset_$mediaId", 0L)
         val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
         val translator = remember { dev.rebelonion.translator.Translator() }
