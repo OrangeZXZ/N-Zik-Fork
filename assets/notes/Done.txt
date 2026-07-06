@@ -40,6 +40,11 @@
 - fix(album): correctly parse album tracks and clear old cache
   - Extraction des pistes depuis la réponse album directe (`musicShelfRenderer` dans `secondaryContents`) pour garantir l'ordre original au lieu de fetcher la playlist YouTube générée qui est souvent désordonnée.
   - Reset / Clear complet des anciennes lignes dans `SongAlbumMapTable` lors de l'ouverture d'un album pour empêcher les pistes fantômes / anciennement écoutées de fausser l'ordre de l'album.
+- fix(ui): prevent modal bottom sheets from drawing behind status bar
+  - `CustomModalBottomSheet` instances (main menu, YouTube login, Discord login) now use `modifier = Modifier.statusBarsPadding()` instead of passing `contentWindowInsets`.
+  - Removed manual `statusBarHeight` subtraction from `ListMenu` and `GridMenu` height limits, restoring `CONTENT_HEIGHT_FRACTION = 1.0f`.
+  - Removed manual drag handle padding hacks in `AccountsSettings` sheets.
+  - Set root Column modifier in `YouTubeLogin` and `Discord` composables to `Modifier.fillMaxSize()` so WebViews take full available sheet height.
 
 
 ## 2026-07-05

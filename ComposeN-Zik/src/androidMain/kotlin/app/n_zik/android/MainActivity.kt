@@ -56,6 +56,7 @@ import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.union
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalRippleConfiguration
@@ -105,6 +106,8 @@ import app.n_zik.android.BuildConfig
 import app.n_zik.android.R
 import app.n_zik.android.playback.utils.PlaybackDispatchers
 import android.graphics.Bitmap
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.ime
 import androidx.palette.graphics.Palette
 import com.kieronquinn.monetcompat.core.MonetActivityAccessException
 import com.kieronquinn.monetcompat.core.MonetCompat
@@ -429,6 +432,7 @@ class MainActivity :
         content()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedBoxWithConstraintsScope")
     @OptIn(
         ExperimentalTextApi::class,
@@ -1152,7 +1156,8 @@ class MainActivity :
                                 showSheet = menuState.isDisplayed,
                                 onDismissRequest = menuState::hide,
                                 containerColor = Color.Transparent,
-                                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                                modifier = Modifier.statusBarsPadding(),
+                                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false),
                                 dragHandle = {
                                     Surface(
                                         modifier = Modifier.padding(vertical = 0.dp),

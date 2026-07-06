@@ -71,7 +71,7 @@ fun YouTubeLogin(
     Column (
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxSize()
     ) {
 
         AndroidView(

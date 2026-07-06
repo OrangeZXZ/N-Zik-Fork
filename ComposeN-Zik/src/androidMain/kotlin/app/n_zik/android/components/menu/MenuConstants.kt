@@ -9,7 +9,7 @@ object MenuConstants {
      *
      * **This value should only be use for content box**
      */
-    const val CONTENT_HEIGHT_FRACTION = .4f
+    const val CONTENT_HEIGHT_FRACTION = 1.0f
 
     const val CONTENT_HORIZONTAL_PADDING = 8
 

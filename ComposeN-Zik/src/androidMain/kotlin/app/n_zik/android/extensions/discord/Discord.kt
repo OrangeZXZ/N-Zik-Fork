@@ -101,7 +101,7 @@ fun DiscordLoginAndGetToken(
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxSize()
     ) {
         AndroidView(
             modifier = Modifier

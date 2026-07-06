@@ -86,6 +86,15 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.transitionEffectKey
 import app.it.fast4x.rimusic.utils.disableNavigationBackStackKey
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.union
 import timber.log.Timber
 
 fun NavHostController.navigateClean(route: String, context: Context) {
@@ -100,6 +109,7 @@ fun NavHostController.navigateClean(route: String, context: Context) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @androidx.annotation.OptIn()
 @OptIn(
     ExperimentalFoundationApi::class,
@@ -128,7 +138,8 @@ fun AppNavigation(
                     navController.popBackStack()
             },
             containerColor = Color.Transparent,
-            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+            modifier = Modifier.statusBarsPadding(),
+            sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false),
             shape = app.n_zik.android.uiRoundnessShape()
         ) {
             content()

@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -342,14 +343,13 @@ fun AccountsSettings() {
                                 },
                                 containerColor = colorPalette().background0,
                                 contentColor = colorPalette().background0,
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth().statusBarsPadding(),
                                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
                                 shape = app.n_zik.android.uiRoundnessShape(),
                                 dragHandle = {
-                                    val statusBarTop = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
                                     Box(
                                         modifier = Modifier
-                                            .padding(top = statusBarTop + 18.dp, bottom = 6.dp)
+                                            .padding(top = 18.dp, bottom = 6.dp)
                                             .size(width = 40.dp, height = 4.dp)
                                             .clip(RoundedCornerShape(2.dp))
                                             .background(Color.White)
@@ -804,14 +804,13 @@ fun AccountsSettings() {
                                     },
                                     containerColor = colorPalette().background0,
                                     contentColor = colorPalette().background0,
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier.fillMaxWidth().statusBarsPadding(),
                                     sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
                                     shape = app.n_zik.android.uiRoundnessShape(),
                                     dragHandle = {
-                                        val statusBarTop = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
                                         Box(
                                             modifier = Modifier
-                                                .padding(top = statusBarTop + 18.dp, bottom = 6.dp)
+                                                .padding(top = 18.dp, bottom = 6.dp)
                                                 .size(width = 40.dp, height = 4.dp)
                                                 .clip(RoundedCornerShape(2.dp))
                                                 .background(Color.White)
