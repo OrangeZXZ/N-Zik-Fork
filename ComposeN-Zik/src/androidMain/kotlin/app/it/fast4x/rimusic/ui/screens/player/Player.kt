@@ -633,7 +633,7 @@ fun Player(
                 val bitmap = getBitmapFromUrl(
                     context,
                     imageUrl
-                )
+                ) ?: throw Exception("Bitmap is null")
 
                 dynamicColorPalette = dynamicColorPaletteOf(
                     bitmap,

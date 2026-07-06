@@ -201,7 +201,7 @@ fun NextVisualizer() {
                         val bitmap = getBitmapFromUrl(
                             context,
                             currentArtworkUri.toString().resize(1000, 1000)
-                        )
+                        ) ?: throw Exception("Bitmap is null")
                         withContext(Dispatchers.Main) {
                             bitmapCover = bitmap
                             circleBitmap = Icon.getCircledBitmap(bitmap)
@@ -227,7 +227,7 @@ fun NextVisualizer() {
                                     context,
                                     mediaItem?.mediaMetadata?.artworkUri.toString()
                                         .resize(1000, 1000)
-                                )
+                                ) ?: throw Exception("Bitmap is null")
                                 withContext(Dispatchers.Main) {
                                     bitmapCover = bitmap
                                     circleBitmap = Icon.getCircledBitmap(bitmap)

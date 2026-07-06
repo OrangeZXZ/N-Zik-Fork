@@ -201,7 +201,7 @@ fun MiniPlayer(
             val bitmap = getBitmapFromUrl(
                 context,
                 imageUrl
-            )
+            ) ?: throw Exception("Bitmap is null")
             dynamicColorPalette = dynamicColorPaletteOf(bitmap, !lightTheme) ?: color
         } catch (e: Exception) {
             dynamicColorPalette = color
