@@ -695,6 +695,7 @@
   <string name="thin_bar">Dünne Leiste</string>
   <string name="buttonzoomout">Animation des Zoom-Buttons</string>
   <string name="thumbnailpause">Thumbnail verkleinern, wenn pausiert</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Als nächstes</string>
   <string name="showtwosongs">Zeige die nächsten zwei Songs in der Warteschlange an</string>
   <string name="showalbumcover">Albumcover anzeigen</string>
