@@ -695,6 +695,7 @@
   <string name="thin_bar">Ohut palkki</string>
   <string name="buttonzoomout">Painikkeen zoom-out -animaatio</string>
   <string name="thumbnailpause">Pienennä pienoiskuva pysäytettynä</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Ylös seuraava</string>
   <string name="showtwosongs">Näytä seuraavat kaksi kappaletta jonossa</string>
   <string name="showalbumcover">Näytä albumin kansi</string>
