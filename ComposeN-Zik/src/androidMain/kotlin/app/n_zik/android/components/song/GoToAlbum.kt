@@ -53,7 +53,7 @@ class GoToAlbum(
         albumId.ifPresentOrElse(
             { NavRoutes.album.navigateHere( navController, it ) },
             {
-                Toaster.n( R.string.looking_up_album_from_the_internet )
+                Toaster.i( R.string.looking_up_album_from_the_internet )
 
                 CoroutineScope( Dispatchers.IO ).launch {
                     val endpoint = Innertube.nextPage(NextBody(videoId = song.id))
@@ -78,17 +78,20 @@ class GoToAlbum(
                         val query = "${song.title} ${song.artistsText ?: ""}".trim()
                         Timber.tag("go_to_album").d("Fallback search query: %s", query)
 
-                        val searchResult = Innertube.searchPage<Innertube.AlbumItem>(
-                            SearchBody(query = query, params = Innertube.SearchFilter.Album.value),
-                            { content -> Innertube.AlbumItem.from(content) }
+                        val searchResult = Innertube.searchPage<Innertube.SongItem>(
+                            SearchBody(query = query, params = Innertube.SearchFilter.Song.value),
+                            { content -> Innertube.SongItem.from(content) }
                         )?.getOrNull()
                         
                         Timber.tag("go_to_album").d("Search result items count: %s", searchResult?.items?.size)
                         
-                        val foundAlbum = searchResult?.items?.firstOrNull()
-                        if (foundAlbum != null && !foundAlbum.key.isNullOrBlank()) {
-                            Timber.tag("go_to_album").d("Found album: %s (ID: %s)", foundAlbum.title, foundAlbum.key)
-                            val path = "${foundAlbum.key}?params=${foundAlbum.info?.endpoint?.params.orEmpty()}"
+                        val foundSong = searchResult?.items?.firstOrNull { it.key == song.id } ?: searchResult?.items?.firstOrNull()
+                        val albumEndpoint = foundSong?.album?.endpoint
+                        
+                        if (albumEndpoint != null && !albumEndpoint.browseId.isNullOrBlank()) {
+                            Timber.tag("go_to_album").d("Found album: %s (ID: %s)", foundSong.album?.name, albumEndpoint.browseId)
+                            val path = "${albumEndpoint.browseId}?params=${albumEndpoint.params.orEmpty()}"
+                            Toaster.s( R.string.album_found_online_verify )
                             NavRoutes.album.navigateHere( navController, path )
                         } else {
                             Timber.tag("go_to_album").e("No album found in fallback search")
