@@ -368,7 +368,7 @@ class AlbumItemMenu private constructor(
                 val firstSong = songs.firstOrNull()
                 if (firstSong != null) {
                     if (artistNames.size <= 1) {
-                        add(GoToArtist(navController, firstSong))
+                        add(GoToArtist(navController, firstSong, menuState))
                     } else {
                         artistNames.forEach { artistName ->
                             add(object : MenuIcon, Descriptive, Clickable {

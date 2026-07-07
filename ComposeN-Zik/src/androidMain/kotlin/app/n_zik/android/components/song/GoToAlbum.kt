@@ -17,6 +17,7 @@ import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import app.it.fast4x.rimusic.ui.components.MenuState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -27,7 +28,8 @@ import java.util.Optional
 
 class GoToAlbum(
     private val navController: NavController,
-    private val song: Song
+    private val song: Song,
+    private val menuState: MenuState
 ): MenuIcon, Descriptive {
 
     override val iconId: Int = R.drawable.album
@@ -50,6 +52,7 @@ class GoToAlbum(
 
 
     override fun onShortClick() {
+        menuState.hide()
         albumId.ifPresentOrElse(
             { NavRoutes.album.navigateHere( navController, it ) },
             {

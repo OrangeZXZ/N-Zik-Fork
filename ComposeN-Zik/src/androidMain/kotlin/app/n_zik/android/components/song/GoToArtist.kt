@@ -15,6 +15,7 @@ import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import app.it.fast4x.rimusic.ui.components.MenuState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -26,6 +27,7 @@ import java.util.Optional
 class GoToArtist(
     private val navController: NavController,
     private val song: Song,
+    private val menuState: MenuState
 ): MenuIcon, Descriptive {
 
     override val iconId: Int = R.drawable.people
@@ -49,6 +51,7 @@ class GoToArtist(
     }
 
     override fun onShortClick() {
+        menuState.hide()
         channelId.ifPresentOrElse(
             { NavRoutes.artist.navigateHere( navController, it ) },
             {

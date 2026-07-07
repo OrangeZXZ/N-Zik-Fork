@@ -268,10 +268,10 @@ class SongItemMenu private constructor(
         }.collectAsState(emptyList(), Dispatchers.IO)
 
         val goToArtistFallback = remember {
-            GoToArtist( navController, song )
+            GoToArtist( navController, song, menuState )
         }
         val goToAlbum = remember {
-            GoToAlbum( navController, song )
+            GoToAlbum( navController, song, menuState )
         }
         val resetDialog = ResetSongDialog( song )
         val exportCacheDialog = ExportCacheDialog( binder ) { song }

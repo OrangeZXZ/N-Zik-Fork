@@ -247,7 +247,7 @@ class VideoItemMenu private constructor(
         }.collectAsState(emptyList(), Dispatchers.IO)
 
         val goToArtistFallback = remember {
-            GoToArtist( navController, song )
+            GoToArtist( navController, song, menuState )
         }
 
         buttons = mutableListOf<Button>().apply {

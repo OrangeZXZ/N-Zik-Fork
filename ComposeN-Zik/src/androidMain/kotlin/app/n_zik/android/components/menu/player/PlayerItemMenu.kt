@@ -211,8 +211,8 @@ class PlayerItemMenu private constructor(
         }.collectAsState(emptyList(), Dispatchers.IO)
 
         // Pre-create GoTo objects to avoid race condition on channelId lookup
-        val goToArtistObj = remember(song) { GoToArtist(navController, song) }
-        val goToAlbumObj = remember(song) { GoToAlbum(navController, song) }
+        val goToArtistObj = remember(song) { GoToArtist(navController, song, menuState) }
+        val goToAlbumObj = remember(song) { GoToAlbum(navController, song, menuState) }
 
         //<editor-fold defaultstate="collapsed" desc="Buttons">
         val renameSong = RenameSongDialog { song }
