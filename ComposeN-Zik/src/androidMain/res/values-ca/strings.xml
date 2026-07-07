@@ -695,6 +695,7 @@
   <string name="thin_bar">Barra fina</string>
   <string name="buttonzoomout">Botó Allunya l\'animació</string>
   <string name="thumbnailpause">Redueix la miniatura quan estigui en pausa</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Amunt següent</string>
   <string name="showtwosongs">Nombre de cançons a la mini cua (1 a 9)</string>
   <string name="showalbumcover">Mostra la portada de l\'àlbum</string>
