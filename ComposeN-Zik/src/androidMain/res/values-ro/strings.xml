@@ -695,6 +695,7 @@
   <string name="thin_bar">Bară subțire</string>
   <string name="buttonzoomout">Animație de micșorare a butonului</string>
   <string name="thumbnailpause">Micșorează miniatura când este pus pe pauză</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Următorul</string>
   <string name="showtwosongs">Afișează următoarele două melodii din coadă</string>
   <string name="showalbumcover">Afișează coperta albumului</string>
