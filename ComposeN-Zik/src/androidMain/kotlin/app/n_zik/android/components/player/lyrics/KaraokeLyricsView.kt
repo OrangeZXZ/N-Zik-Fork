@@ -538,7 +538,13 @@ fun KaraokeLyricsView(
         4 -> 0.46f
         else -> 0.44f
     }
-    val multiplier = if (showlyricsthumbnail) lineMultiplier else 0.42f
+    var multiplier = if (showlyricsthumbnail) lineMultiplier else 0.42f
+    
+    val hasBackgroundBelow = karaokeLines.getOrNull(primaryActiveIndex + 1)?.isBackground == true
+    if (hasBackgroundBelow) {
+        multiplier -= if (showlyricsthumbnail) 0.12f else 0.06f
+    }
+    
     val fixedCenter = (effectiveVpH * multiplier).toInt()
 
     LaunchedEffect(primaryActiveIndex, density, isAutoScrollEnabled, vpH) {

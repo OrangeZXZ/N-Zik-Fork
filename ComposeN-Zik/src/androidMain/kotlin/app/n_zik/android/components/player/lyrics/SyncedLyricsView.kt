@@ -1,6 +1,7 @@
 package app.n_zik.android.components.player.lyrics
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -330,26 +331,30 @@ fun SyncedLyricsView(
     }
     val lineCount = maxOf(trueLineCount, wrappedLines)
     val lineMultiplier = when (lineCount) {
-        1 -> 0.40f
-        2 -> 0.35f
-        3 -> 0.10f
-        4 -> 0.5f
-        else -> 0.2f
+        1 -> 0.45f
+        2 -> 0.46f
+        3 -> 0.48f
+        4 -> 0.40f
+        else -> 0.35f
     }
-    val multiplier = if (showlyricsthumbnail) lineMultiplier else 0.35f
+    val multiplier = if (showlyricsthumbnail) lineMultiplier else 0.42f
     val fixedCenter = (effectiveVpH * multiplier).toInt()
 
     LaunchedEffect(synchronizedLyrics, density, isAutoScrollEnabled, vpH) {
+        synchronizedLyrics.update()
+        
         if (isAutoScrollEnabled) {
-            // Short delay for initial scroll to let layout settle
-            if (synchronizedLyrics.index == 0 || vpH == 0) {
-                kotlinx.coroutines.delay(100)
+            var reMeasuredVpH = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
+            if (reMeasuredVpH == 0) {
+                delay(100)
+                reMeasuredVpH = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
             }
+            val finalEffectiveVpH = if (reMeasuredVpH > 0) reMeasuredVpH else screenHeightPx
+            val finalFixedCenter = (finalEffectiveVpH * multiplier).toInt()
+            
             try {
-                lazyListState.animateScrollToItem(
-                    index = synchronizedLyrics.index + 1,
-                    scrollOffset = -fixedCenter
-                )
+                val targetIndex = synchronizedLyrics.index + 1
+                lazyListState.scrollToItem(targetIndex, -finalFixedCenter)
             } catch (e: kotlinx.coroutines.CancellationException) {
                 if (!isActive) throw e
             }
@@ -359,11 +364,25 @@ fun SyncedLyricsView(
             delay(50)
             if (!synchronizedLyrics.update()) continue
             if (isAutoScrollEnabled) {
+                var reMeasuredVpH = lazyListState.layoutInfo.viewportEndOffset - lazyListState.layoutInfo.viewportStartOffset
+                val finalEffectiveVpH = if (reMeasuredVpH > 0) reMeasuredVpH else screenHeightPx
+                val finalFixedCenter = (finalEffectiveVpH * multiplier).toInt()
+                
                 try {
-                    lazyListState.animateScrollToItem(
-                        index = synchronizedLyrics.index + 1,
-                        scrollOffset = -fixedCenter
-                    )
+                    val targetIndex = synchronizedLyrics.index + 1
+                    val itemInfo = lazyListState.layoutInfo.visibleItemsInfo.firstOrNull { it.index == targetIndex }
+                    if (itemInfo != null) {
+                        val currentPos = itemInfo.offset + itemInfo.size / 2
+                        val offset = currentPos - finalFixedCenter
+                        if (kotlin.math.abs(offset) > 10) {
+                            lazyListState.animateScrollBy(
+                                value = offset.toFloat(),
+                                animationSpec = androidx.compose.animation.core.tween(durationMillis = 800)
+                            )
+                        }
+                    } else {
+                        lazyListState.scrollToItem(targetIndex, -finalFixedCenter)
+                    }
                 } catch (e: kotlinx.coroutines.CancellationException) {
                     if (!isActive) throw e
                 }

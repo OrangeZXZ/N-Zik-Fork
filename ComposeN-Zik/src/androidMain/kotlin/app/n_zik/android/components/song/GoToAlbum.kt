@@ -9,6 +9,9 @@ import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.nextPage
+import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.requests.searchPage
+import it.fast4x.innertube.utils.from
 import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.Song
@@ -53,9 +56,9 @@ class GoToAlbum(
                 Toaster.n( R.string.looking_up_album_from_the_internet )
 
                 CoroutineScope( Dispatchers.IO ).launch {
-                    Innertube.nextPage(NextBody(videoId = song.id))
+                    val endpoint = Innertube.nextPage(NextBody(videoId = song.id))
                              ?.onFailure {
-                                 Timber.tag("go_to_album").e(it)
+                                 Timber.tag("go_to_album").e(it, "nextPage failed")
                                  Toaster.e( R.string.failed_to_fetch_original_property )
                              }
                              ?.getOrNull()
@@ -65,13 +68,35 @@ class GoToAlbum(
                              ?.album
                              ?.endpoint
                              ?.takeIf { !it.browseId.isNullOrBlank() }
-                             ?.let {
-                                 val path = "${it.browseId}?params=${it.params.orEmpty()}"
-                                 NavRoutes.album.navigateHere( navController, path )
-                             }
+
+                    Timber.tag("go_to_album").d("Up Next API album endpoint: %s", endpoint?.browseId)
+
+                    if (endpoint != null) {
+                        val path = "${endpoint.browseId}?params=${endpoint.params.orEmpty()}"
+                        NavRoutes.album.navigateHere( navController, path )
+                    } else {
+                        val query = "${song.title} ${song.artistsText ?: ""}".trim()
+                        Timber.tag("go_to_album").d("Fallback search query: %s", query)
+
+                        val searchResult = Innertube.searchPage<Innertube.AlbumItem>(
+                            SearchBody(query = query, params = Innertube.SearchFilter.Album.value),
+                            { content -> Innertube.AlbumItem.from(content) }
+                        )?.getOrNull()
+                        
+                        Timber.tag("go_to_album").d("Search result items count: %s", searchResult?.items?.size)
+                        
+                        val foundAlbum = searchResult?.items?.firstOrNull()
+                        if (foundAlbum != null && !foundAlbum.key.isNullOrBlank()) {
+                            Timber.tag("go_to_album").d("Found album: %s (ID: %s)", foundAlbum.title, foundAlbum.key)
+                            val path = "${foundAlbum.key}?params=${foundAlbum.info?.endpoint?.params.orEmpty()}"
+                            NavRoutes.album.navigateHere( navController, path )
+                        } else {
+                            Timber.tag("go_to_album").e("No album found in fallback search")
+                            Toaster.e( R.string.failed_to_fetch_album )
+                        }
+                    }
                 }
             }
         )
     }
 }
-
