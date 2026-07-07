@@ -695,6 +695,7 @@
   <string name="thin_bar">Barre fine</string>
   <string name="buttonzoomout">Animation de zoom arrière du bouton</string>
   <string name="thumbnailpause">Réduire la miniature quand c\'est en pause</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Suivant</string>
   <string name="showtwosongs">Nombre de titres dans la mini-file d\'attente (1 à 9)</string>
   <string name="showalbumcover">Afficher la pochette de l\'album</string>
