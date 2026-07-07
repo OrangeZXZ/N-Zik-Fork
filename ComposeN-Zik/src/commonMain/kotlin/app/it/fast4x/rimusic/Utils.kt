@@ -26,9 +26,6 @@ fun cleanPrefix(text: String): String {
     }
     if(i >= splitText.size) return ""
     return splitText.subList(i, splitText.size).joinToString(":")
-}
-
-fun String.stripExplicitEmoji(): String {
-    return this.replace("\uD83C\uDD74", "").trimStart()
+        .replace("\uD83C\uDD74", "").trimStart()
 }
 

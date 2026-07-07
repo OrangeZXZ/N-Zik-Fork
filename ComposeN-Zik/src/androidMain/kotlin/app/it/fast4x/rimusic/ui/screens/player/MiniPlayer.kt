@@ -76,7 +76,6 @@ import app.n_zik.android.R
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.stripExplicitEmoji
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.BackgroundProgress
 import app.it.fast4x.rimusic.enums.MiniPlayerType
@@ -424,7 +423,7 @@ fun MiniPlayer(
                 }
 
                 BasicText(
-                    text = cleanPrefix( mediaItem.artistTextWithFallback() ).stripExplicitEmoji(),
+                    text = cleanPrefix( mediaItem.artistTextWithFallback() ),
                     style = typography().xxs.semiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

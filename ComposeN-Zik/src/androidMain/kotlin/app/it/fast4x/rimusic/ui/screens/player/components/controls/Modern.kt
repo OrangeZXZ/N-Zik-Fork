@@ -55,7 +55,6 @@ import androidx.navigation.NavController
 import app.n_zik.android.R
 import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.cleanPrefix
-import app.it.fast4x.rimusic.stripExplicitEmoji
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.enums.NavRoutes
@@ -344,7 +343,7 @@ fun InfoAlbumAndArtistModern(
 
         ) {
             BasicText(
-                text = cleanPrefix(artist ?: "").stripExplicitEmoji(),
+                text = artist ?: "",
                 style = TextStyle(
                     color = if (albumId == null)
                         /*if (showthumbnail) colorPalette().textDisabled else if (colorPaletteMode == ColorPaletteMode.Light) colorPalette().textDisabled.copy(0.35f).compositeOver(Color.Black) else colorPalette().textDisabled.copy(0.35f).compositeOver(Color.White)
@@ -361,7 +360,7 @@ fun InfoAlbumAndArtistModern(
 
             )
             BasicText(
-                text = cleanPrefix(artist ?: "").stripExplicitEmoji(),
+                text = artist ?: "",
                 style = TextStyle(
                     drawStyle = Stroke(width = 1.5f, join = StrokeJoin.Round),
                     color = if (!textoutline) Color.Transparent else if (colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))) Color.White.copy(0.5f)
