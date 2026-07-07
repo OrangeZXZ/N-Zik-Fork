@@ -77,6 +77,7 @@ import app.it.fast4x.rimusic.utils.showlyricsthumbnailKey
 import app.it.fast4x.rimusic.utils.showvisthumbnailKey
 import app.it.fast4x.rimusic.utils.thumbnailTypeKey
 import app.it.fast4x.rimusic.utils.thumbnailpauseKey
+import app.it.fast4x.rimusic.utils.cropVideoThumbnailsKey
 
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
@@ -231,6 +232,7 @@ fun Thumbnail(
         )
 
         val thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
+        val cropVideoThumbnails by rememberPreference(cropVideoThumbnailsKey, true)
 
         var modifierUiType by remember { mutableStateOf(modifier) }
 
@@ -288,7 +290,7 @@ fun Thumbnail(
                             Image (
                                 painter = coverPainter,
                                 contentDescription = null,
-                                contentScale = ContentScale.Fit,
+                                contentScale = if (cropVideoThumbnails) ContentScale.Crop else ContentScale.Fit,
                                 modifier = Modifier
                                     .pointerInput(Unit) {
                                         detectTapGestures(
@@ -327,7 +329,7 @@ fun Thumbnail(
                                 .fillMaxSize()
                                 .clip(thumbnailShape()),
                             contentDescription = stringResource(R.string.cd_background_image),
-                            contentScale = ContentScale.Fit
+                            contentScale = if (cropVideoThumbnails) ContentScale.Crop else ContentScale.Fit
                         )
                     }
 

@@ -4,6 +4,9 @@
   - Repaired `MediaItem.asSong` to properly reconstruct the `e:` internal prefix if `isExplicit` is true, preventing the database from permanently wiping the badge when a song is liked.
   - Added explicit injection of `\uD83C\uDD74` into `CustomMediaNotificationProvider` and the custom notification builder so the `🅴` emoji displays correctly in the System Notification despite `cleanPrefix` stripping it.
   - Restored the `stripExplicitEmoji()` string extension helper.
+- feat(player): Crop videos thumbnails to 1:1 (Issue #564)
+  - Added option `cropVideoThumbnailsKey` to force 1:1 square crop for thumbnails.
+  - Enabled by default to fix videos fitting weirdly in the 1:1 box.
   
 # Done - 2026-07-06
 - refactor(visualizer): improve settings menu layout to match lyrics menu

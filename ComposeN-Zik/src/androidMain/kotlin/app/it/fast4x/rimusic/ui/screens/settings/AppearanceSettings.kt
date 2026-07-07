@@ -167,6 +167,7 @@ import app.it.fast4x.rimusic.utils.thumbnailSpacingKey
 import app.it.fast4x.rimusic.utils.thumbnailTapEnabledKey
 import app.it.fast4x.rimusic.utils.thumbnailTypeKey
 import app.it.fast4x.rimusic.utils.thumbnailpauseKey
+import app.it.fast4x.rimusic.utils.cropVideoThumbnailsKey
 import app.it.fast4x.rimusic.utils.timelineExpandedKey
 import app.it.fast4x.rimusic.utils.titleExpandedKey
 import app.it.fast4x.rimusic.utils.topPaddingKey
@@ -518,6 +519,7 @@ fun AppearanceSettings(
     var showVisualizerButtons by rememberPreference(showVisualizerButtonsKey, true)
     var buttonzoomout by rememberPreference(buttonzoomoutKey, true)
     var thumbnailpause by rememberPreference(thumbnailpauseKey, true)
+    var cropVideoThumbnails by rememberPreference(cropVideoThumbnailsKey, true)
     var showsongs by rememberPreference(showsongsKey, SongsNumber.`2`)
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
     var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
@@ -1108,6 +1110,17 @@ fun AppearanceSettings(
                                 modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
                             )
                         }
+                        
+                    if (search.inputValue.isBlank() || stringResource(R.string.crop_video_thumbnails).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            icon = R.drawable.images_sharp,
+                            title = stringResource(R.string.crop_video_thumbnails),
+                            text = "",
+                            isChecked = cropVideoThumbnails,
+                            onCheckedChange = { cropVideoThumbnails = it },
+                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                        )
+                    }
 
 
                 }
