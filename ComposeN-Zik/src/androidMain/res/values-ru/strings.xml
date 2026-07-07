@@ -695,6 +695,7 @@
   <string name="thin_bar">Тонкий бар</string>
   <string name="buttonzoomout">Масштабирование кнопок</string>
   <string name="thumbnailpause">Сжать миниатюру во время паузы</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Далее</string>
   <string name="showtwosongs">Показать следующие две песни в очереди</string>
   <string name="showalbumcover">Показать обложку альбома</string>
