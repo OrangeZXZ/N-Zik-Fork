@@ -1366,7 +1366,14 @@ class PlayerServiceModern : MediaLibraryService(),
         } else {
             NotificationCompat.Builder(this)
         }
-            .setContentTitle(cleanPrefix(player.mediaMetadata.title.toString()))
+            .setContentTitle(
+                cleanPrefix(player.mediaMetadata.title.toString()).let {
+                    if (player.currentMediaItem?.mediaMetadata?.extras?.getBoolean("isExplicit") == true ||
+                        player.currentMediaItem?.mediaMetadata?.extras?.getBoolean("androidx.media3.session.EXTRAS_KEY_IS_EXPLICIT") == true) {
+                        "\uD83C\uDD74 $it"
+                    } else it
+                }
+            )
             .setContentText(
                 if (albumText.isNotBlank() && artistText.isNotBlank()) {
                     "$artistText | $albumText"
@@ -1786,8 +1793,13 @@ class PlayerServiceModern : MediaLibraryService(),
     @UnstableApi
     class CustomMediaNotificationProvider(context: Context) : DefaultMediaNotificationProvider(context) {
         override fun getNotificationContentTitle(metadata: MediaMetadata): CharSequence? {
+            val isExplicit = metadata.extras?.getBoolean("isExplicit") == true ||
+                             metadata.extras?.getBoolean("androidx.media3.session.EXTRAS_KEY_IS_EXPLICIT") == true
+            val title = cleanPrefix(metadata.title?.toString() ?: "").let {
+                if (isExplicit) "\uD83C\uDD74 $it" else it
+            }
             val customMetadata = MediaMetadata.Builder()
-                .setTitle(cleanPrefix(metadata.title?.toString() ?: ""))
+                .setTitle(title)
                 .build()
             return super.getNotificationContentTitle(customMetadata)
         }

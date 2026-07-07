@@ -49,6 +49,7 @@ import app.n_zik.android.context
 import app.it.fast4x.rimusic.models.Album
 import app.n_zik.android.models.Lyrics
 import app.it.fast4x.rimusic.models.Song
+import app.it.fast4x.rimusic.stripExplicitEmoji
 import app.n_zik.android.download.utils.MyDownloadHelper
 import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
 import app.n_zik.android.playback.services.isLocal
@@ -111,11 +112,10 @@ val Innertube.SongItem.asMediaItem: MediaItem
         .setCustomCacheKey(key)
         .setMediaMetadata(
             MediaMetadata.Builder()
-                .setTitle(info?.name)
-                .setArtist(
-                    authors.parseArtists().joinToString(", ")
-                        .let { if (explicit) "\uD83C\uDD74 $it" else it }
+                .setTitle(
+                    (if (explicit) "\uD83C\uDD74 " else "") + info?.name
                 )
+                .setArtist(authors.parseArtists().joinToString(", "))
                 .setAlbumTitle(album?.name)
                 .setArtworkUri(thumbnail?.url?.toUri())
                 .setExtras(
@@ -200,15 +200,14 @@ val Song.asMediaItem: MediaItem
     get() = MediaItem.Builder()
         .setMediaMetadata(
             MediaMetadata.Builder()
-                .setTitle(cleanPrefix(title))
-                .setArtist(
+                .setTitle(
                     if (title.startsWith(EXPLICIT_PREFIX, true)) {
-                        val text = artistsText ?: ""
-                        if (text.isEmpty()) "\uD83C\uDD74" else "\uD83C\uDD74 $text"
+                        "\uD83C\uDD74 " + cleanPrefix(title)
                     } else {
-                        artistsText ?: ""
+                        cleanPrefix(title)
                     }
                 )
+                .setArtist(artistsText)
                 .setArtworkUri(thumbnailUrl?.thumbnail(1200)?.toUri() ?: AutoMediaItemMapper.drawableUri(app.n_zik.android.appContext(), R.drawable.ic_launcher_box))
                 .setExtras(
                     bundleOf(
@@ -244,8 +243,8 @@ val Innertube.VideoItem.asSong: Song
 val MediaItem.asSong: Song
     get() = Song (
         id = mediaId.split("/").lastOrNull() ?: mediaId,
-        title = mediaMetadata.title.toString(),
-        artistsText = mediaMetadata.artist.toString(),
+        title = (if (isExplicit) EXPLICIT_PREFIX else "") + mediaMetadata.title.toString(),
+        artistsText = mediaMetadata.artist?.toString()?.stripExplicitEmoji() ?: "",
         durationText = mediaMetadata.extras?.getString("durationText"),
         thumbnailUrl = mediaMetadata.artworkUri.toString()
     )

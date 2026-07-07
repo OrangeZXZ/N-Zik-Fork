@@ -1,3 +1,10 @@
+# Done - 2026-07-07
+- fix(explicit): fully repair explicit badge handling across DB, UI, Notifications and Android Auto
+  - Moved the `🅴` emoji from the Artist string to the Title string in `SongItem.asMediaItem` and `Song.asMediaItem` for better native visibility.
+  - Repaired `MediaItem.asSong` to properly reconstruct the `e:` internal prefix if `isExplicit` is true, preventing the database from permanently wiping the badge when a song is liked.
+  - Added explicit injection of `\uD83C\uDD74` into `CustomMediaNotificationProvider` and the custom notification builder so the `🅴` emoji displays correctly in the System Notification despite `cleanPrefix` stripping it.
+  - Restored the `stripExplicitEmoji()` string extension helper.
+  
 # Done - 2026-07-06
 - refactor(visualizer): improve settings menu layout to match lyrics menu
   - Fixed `BottomSheetMenu` not rendering by adding `.MenuComponent()` call when invoking `VisualizerSettingsMenu`.

@@ -29,3 +29,6 @@ fun cleanPrefix(text: String): String {
         .removePrefix("\uD83C\uDD74 ")
 }
 
+fun String.stripExplicitEmoji(): String {
+    return this.replace("\uD83C\uDD74", "").trimStart()
+}
