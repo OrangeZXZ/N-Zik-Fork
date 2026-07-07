@@ -1,3 +1,9 @@
+# Done - 2026-07-08
+- fix(lyrics): prevent FOREIGN KEY constraint crash on fast lyric APIs (Heisenbug)
+  - Created `saveLyricsSafe` helper in `LyricsFetcher.kt` to catch `SQLiteConstraintException` when saving lyrics.
+  - Implemented a 5-second asynchronous retry delay to allow the background audio player enough time to persist the parent `Song` entity before re-attempting the lyrics insertion.
+  - Replaced all raw `Database.asyncTransaction { lyricsTable.upsert(...) }` calls with `saveLyricsSafe(...)` to gracefully handle the race condition without data loss or application crashes.
+
 # Done - 2026-07-07
 - fix(explicit): fully repair explicit badge handling across DB, UI, Notifications and Android Auto
   - Moved the `🅴` emoji from the Artist string to the Title string in `SongItem.asMediaItem` and `Song.asMediaItem` for better native visibility.

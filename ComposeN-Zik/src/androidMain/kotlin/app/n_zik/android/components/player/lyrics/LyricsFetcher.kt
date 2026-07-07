@@ -124,7 +124,7 @@ fun LyricsFetcher(
                                     if (playerEnableLyricsPopupMessage) coroutineScope.launch { Toaster.e(R.string.info_lyrics_not_found_on_s, context.getString(R.string.source_lrclib_unsynced)) }
                                 onErrorUpdated(it?.text?.isNotEmpty() != true)
                                 onCheckedLrcUpdated(true)
-                                Database.asyncTransaction { lyricsTable.upsert(Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = it?.text)) }
+                                saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = it?.text))
                                 onLyricsUpdated(currentLyrics)
                                 foundUnsynced = true
                             }?.onFailure {
@@ -178,11 +178,7 @@ fun LyricsFetcher(
                                     onErrorUpdated(false)
                                     onCheckedLrcUpdated(true)
 
-                                    Database.asyncTransaction {
-                                        lyricsTable.upsert(
-                                            Lyrics(songId = mediaId, type = LyricsType.Synced.name, data = it?.text.orEmpty())
-                                        )
-                                    }
+                                    saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Synced.name, data = it?.text.orEmpty()))
                                 }?.onFailure {
                                     if (playerEnableLyricsPopupMessage)
                                         coroutineScope.launch {
@@ -212,11 +208,7 @@ fun LyricsFetcher(
                                                     }
                                                 onErrorUpdated(false)
                                                 onCheckedKugouUpdated(true)
-                                                Database.asyncTransaction {
-                                                    lyricsTable.upsert(
-                                                        Lyrics(songId = mediaId, type = LyricsType.Synced.name, data = it?.value.orEmpty())
-                                                    )
-                                                }
+                                                saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Synced.name, data = it?.value.orEmpty()))
                                             } else {
                                                 if (playerEnableLyricsPopupMessage)
                                                     coroutineScope.launch {
@@ -245,11 +237,7 @@ fun LyricsFetcher(
                                                                 }
                                                             onErrorUpdated(false)
                                                             onCheckedLrcUpdated(true)
-                                                            Database.asyncTransaction {
-                                                                lyricsTable.upsert(
-                                                                    Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = it?.plainText.orEmpty())
-                                                                )
-                                                            }
+                                                            saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = it?.plainText.orEmpty()))
                                                         } else {
                                                             onCheckedLrcUpdated(true)
                                                             tryYouTubeUnsynced(mediaId, mediaMetadata, coroutineScope, playerEnableLyricsPopupMessage, onErrorUpdated, onCheckedInnertubeUpdated, onLyricsUpdated, currentLyrics, context)
@@ -292,11 +280,7 @@ fun LyricsFetcher(
                                                             }
                                                         onErrorUpdated(false)
                                                         onCheckedLrcUpdated(true)
-                                                        Database.asyncTransaction {
-                                                            lyricsTable.upsert(
-                                                                Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = it?.plainText.orEmpty())
-                                                            )
-                                                        }
+                                                        saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = it?.plainText.orEmpty()))
                                                     } else {
                                                         onCheckedLrcUpdated(true)
                                                         tryYouTubeUnsynced(mediaId, mediaMetadata, coroutineScope, playerEnableLyricsPopupMessage, onErrorUpdated, onCheckedInnertubeUpdated, onLyricsUpdated, currentLyrics, context)
@@ -364,11 +348,7 @@ fun LyricsFetcher(
                                         onErrorUpdated(false)
                                         onCheckedLrcUpdated(true)
 
-                                        Database.asyncTransaction {
-                                            lyricsTable.upsert(
-                                                Lyrics(songId = mediaId, type = LyricsType.Karaoke.name, data = ttmlStr)
-                                            )
-                                        }
+                                        saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Karaoke.name, data = ttmlStr))
                                     } else {
                                         // BetterLyrics found synced lyrics (no word timings)
                                         if (playerEnableLyricsPopupMessage) {
@@ -377,11 +357,7 @@ fun LyricsFetcher(
                                         onErrorUpdated(false)
                                         onCheckedLrcUpdated(true)
 
-                                        Database.asyncTransaction {
-                                            lyricsTable.upsert(
-                                                Lyrics(songId = mediaId, type = LyricsType.Karaoke.name, data = ttmlStr)
-                                            )
-                                        }
+                                        saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Karaoke.name, data = ttmlStr))
                                     }
                                 } else {
                                     if (playerEnableLyricsPopupMessage) {
@@ -448,11 +424,7 @@ fun LyricsFetcher(
                                         )
                                     }
                                 foundUnsynced = true
-                                Database.asyncTransaction {
-                                    lyricsTable.upsert(
-                                        Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = it?.plainText.orEmpty())
-                                    )
-                                }
+                                saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = it?.plainText.orEmpty()))
                             }
                         }?.onFailure {
                             if (playerEnableLyricsPopupMessage)
@@ -497,11 +469,7 @@ fun LyricsFetcher(
                                         }
                                     }
                                     if (!fixedLyrics.isNullOrEmpty()) {
-                                        Database.asyncTransaction {
-                                            lyricsTable.upsert(
-                                                Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = fixedLyrics)
-                                            )
-                                        }
+                                        saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = fixedLyrics))
                                     } else {
                                         onErrorUpdated(true)
                                     }
@@ -553,11 +521,7 @@ private fun tryYouTubeUnsynced(
                     }
                     onCheckedInnertubeUpdated(true)
                     if (!fixedLyrics.isNullOrEmpty()) {
-                        Database.asyncTransaction {
-                            lyricsTable.upsert(
-                                Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = fixedLyrics)
-                            )
-                        }
+                        saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Unsynced.name, data = fixedLyrics))
                     } else {
                         onErrorUpdated(true)
                     }
@@ -575,6 +539,28 @@ private fun tryYouTubeUnsynced(
             if (!currentLyrics?.data.isNullOrEmpty()) {
                 onLyricsUpdated(currentLyrics)
             }
+        }
+    }
+}
+
+private fun saveLyricsSafe(lyrics: app.n_zik.android.models.Lyrics) {
+    app.n_zik.android.core.database.Database.asyncTransaction {
+        try {
+            lyricsTable.upsert(lyrics)
+        } catch (e: android.database.sqlite.SQLiteConstraintException) {
+            timber.log.Timber.tag("LyricsFetcher").w("Foreign key constraint failed for songId ${lyrics.songId}. Retrying in 5 seconds...")
+            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                kotlinx.coroutines.delay(5000)
+                try {
+                    app.n_zik.android.core.database.Database.asyncTransaction {
+                        lyricsTable.upsert(lyrics)
+                    }
+                } catch (e2: Exception) {
+                    timber.log.Timber.tag("LyricsFetcher").e("Failed to save lyrics even after delay: ${e2.message}")
+                }
+            }
+        } catch (e: Exception) {
+            timber.log.Timber.tag("LyricsFetcher").e("Error saving lyrics: ${e.message}")
         }
     }
 }
