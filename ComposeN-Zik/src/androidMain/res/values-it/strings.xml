@@ -695,6 +695,7 @@
   <string name="thin_bar">Barra sottile</string>
   <string name="buttonzoomout">Animazione zoom pulsanti</string>
   <string name="thumbnailpause">Riduci la miniatura quando in pausa</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">In alto successivo</string>
   <string name="showtwosongs">Mostra i prossimi due brani in coda</string>
   <string name="showalbumcover">Mostra copertina album</string>
