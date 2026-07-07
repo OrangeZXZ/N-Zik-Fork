@@ -695,6 +695,7 @@
   <string name="thin_bar">İnce çubuk</string>
   <string name="buttonzoomout">Düğme uzaklaştırma animasyonu</string>
   <string name="thumbnailpause">Duraklatıldığında küçük resmi küçült</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Sonraki</string>
   <string name="showtwosongs">Sonraki iki şarkıyı göster</string>
   <string name="showalbumcover">Albüm kapağını göster</string>
