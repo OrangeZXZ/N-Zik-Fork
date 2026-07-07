@@ -695,6 +695,7 @@
   <string name="thin_bar">Cienki pasek</string>
   <string name="buttonzoomout">Animacja powiększenia przycisków</string>
   <string name="thumbnailpause">Zmniejsz miniaturę, kiedy wstrzymano</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Następne</string>
   <string name="showtwosongs">Pokaż następne dwie piosenki w kolejce</string>
   <string name="showalbumcover">Pokaż okładkę albumu</string>
