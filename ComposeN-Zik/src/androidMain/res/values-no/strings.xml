@@ -695,6 +695,7 @@
   <string name="thin_bar">Tynn bar</string>
   <string name="buttonzoomout">Knappen zoom-out-animasjon</string>
   <string name="thumbnailpause">Forminsk miniatyrbilde ved pausering</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Opp neste</string>
   <string name="showtwosongs">Vis de to neste sangene i køen</string>
   <string name="showalbumcover">Vis albumomslag</string>
