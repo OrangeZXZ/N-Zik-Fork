@@ -49,8 +49,8 @@ fun UpdateYoutubeArtist(browseId: String) {
                                     Database.artistTable.upsert(
                                         Artist(
                                             id = browseId,
-                                            name = currentArtistPage.name,
-                                            thumbnailUrl = currentArtistPage.thumbnail?.url,
+                                            name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(currentArtist?.name, currentArtistPage.name) ?: currentArtistPage.name,
+                                            thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(currentArtist?.thumbnailUrl, currentArtistPage.thumbnail?.url),
                                             timestamp = System.currentTimeMillis(),
                                             bookmarkedAt = currentArtist?.bookmarkedAt
                                         )
@@ -87,10 +87,10 @@ fun UpdateYoutubeAlbum (browseId: String) {
                                     Database.albumTable.upsert(
                                         Album(
                                             id = browseId,
-                                            title = currentAlbumPage.title,
-                                            thumbnailUrl = currentAlbumPage.thumbnail?.url,
+                                            title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(album?.title, currentAlbumPage.title),
+                                            thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(album?.thumbnailUrl, currentAlbumPage.thumbnail?.url),
                                             year = currentAlbumPage.year,
-                                            authorsText = currentAlbumPage.authors.parseArtists().joinToString(", "),
+                                            authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(album?.authorsText, currentAlbumPage.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() }),
                                             shareUrl = currentAlbumPage.url,
                                             timestamp = System.currentTimeMillis(),
                                             bookmarkedAt = album?.bookmarkedAt

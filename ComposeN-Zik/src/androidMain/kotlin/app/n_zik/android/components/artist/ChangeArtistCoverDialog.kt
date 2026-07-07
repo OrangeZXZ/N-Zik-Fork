@@ -18,6 +18,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.net.Uri
+import androidx.compose.ui.Modifier
+import app.n_zik.android.appContext
+
 class ChangeArtistCoverDialog private constructor(
     activeState: MutableState<Boolean>,
     valueState: MutableState<TextFieldValue>,
@@ -62,5 +75,46 @@ class ChangeArtistCoverDialog private constructor(
             Toaster.done()
         }
         hideDialog()
+    }
+    @Composable
+    override fun DialogBody() {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            super.DialogBody()
+            
+            val context = LocalContext.current
+            val launcher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.GetContent()
+            ) { uri: Uri? ->
+                if (uri != null) {
+                    val artistId = getArtist()?.id ?: return@rememberLauncherForActivityResult
+                    val savedUri = app.it.fast4x.rimusic.utils.saveImageToInternalStorage(context, uri, "app_covers", "cover_$artistId.jpg")
+                    if (savedUri != null) {
+                        value = TextFieldValue(savedUri.toString())
+                    }
+                }
+            }
+            
+            androidx.compose.material3.OutlinedButton(
+                onClick = { launcher.launch("image/*") },
+                modifier = Modifier.fillMaxWidth(),
+                shape = app.n_zik.android.uiRoundnessShape(),
+                colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                    contentColor = app.n_zik.android.colorPalette().text
+                ),
+                border = androidx.compose.foundation.BorderStroke(
+                    1.dp,
+                    app.n_zik.android.colorPalette().textSecondary
+                )
+            ) {
+                androidx.compose.material3.Icon(
+                    painter = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp).padding(end = 8.dp)
+                )
+                androidx.compose.material3.Text(stringResource(R.string.pick_from_gallery))
+            }
+        }
     }
 }

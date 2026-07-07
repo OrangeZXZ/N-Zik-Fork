@@ -341,6 +341,7 @@
 <string name="update_title">Change Title</string>
 <string name="update_authors">Change Authors name</string>
 <string name="update_cover">Change Cover</string>
+<string name="pick_from_gallery">Pick from gallery</string>
 <string name="title">Title</string>
 <string name="authors">Authors</string>
 <string name="cover">Cover</string>

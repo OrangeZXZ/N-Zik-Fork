@@ -235,12 +235,33 @@ object Database {
         val newSong = mediaItem.asSong
         val dbSong = runBlocking { songTable.findById(newSong.id).first() }
         val mergedSong = if (dbSong != null) {
+            val newTitle = newSong.title
+            val finalTitle = when {
+                newTitle.isNullOrBlank() && !dbSong.title.isNullOrBlank() -> dbSong.title
+                else -> PropUtils.retainIfModified(dbSong.title, newTitle)
+            }
+            val newArtistsText = newSong.artistsText
+            val finalArtistsText = when {
+                newArtistsText.isNullOrBlank() && !dbSong.artistsText.isNullOrBlank() -> dbSong.artistsText
+                else -> PropUtils.retainIfModified(dbSong.artistsText, newArtistsText)
+            }
+            val newDurationText = newSong.durationText
+            val finalDurationText = when {
+                newDurationText.isNullOrBlank() && !dbSong.durationText.isNullOrBlank() -> dbSong.durationText
+                else -> newDurationText
+            }
+            val newThumbnailUrl = newSong.thumbnailUrl
+            val finalThumbnailUrl = when {
+                newThumbnailUrl.isNullOrBlank() && !dbSong.thumbnailUrl.isNullOrBlank() -> dbSong.thumbnailUrl
+                else -> PropUtils.retainIfModified(dbSong.thumbnailUrl, newThumbnailUrl)
+            }
+
             Song(
                 id = newSong.id,
-                title = newSong.title.ifBlank { dbSong.title },
-                artistsText = if (!newSong.artistsText.isNullOrBlank()) newSong.artistsText else dbSong.artistsText,
-                durationText = if (!newSong.durationText.isNullOrBlank()) newSong.durationText else dbSong.durationText,
-                thumbnailUrl = if (!newSong.thumbnailUrl.isNullOrBlank()) newSong.thumbnailUrl else dbSong.thumbnailUrl,
+                title = finalTitle.orEmpty(),
+                artistsText = finalArtistsText ?: "",
+                durationText = finalDurationText,
+                thumbnailUrl = finalThumbnailUrl,
                 likedAt = dbSong.likedAt,
                 totalPlayTimeMs = dbSong.totalPlayTimeMs,
                 position = dbSong.position

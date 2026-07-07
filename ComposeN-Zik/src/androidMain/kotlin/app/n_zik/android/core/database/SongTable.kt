@@ -328,6 +328,17 @@ interface SongTable {
     @Query("UPDATE Song SET thumbnailUrl = :thumbnailUrl WHERE id = :songId")
     fun updateCover( songId: String, thumbnailUrl: String ): Int
 
+    @Query("""
+        UPDATE Song
+        SET thumbnailUrl = :thumbnailUrl
+        WHERE id IN (
+            SELECT songId 
+            FROM SongAlbumMap 
+            WHERE albumId = :albumId
+        )
+    """)
+    fun updateCoverForAlbum( albumId: String, thumbnailUrl: String ): Int
+
     @Query("UPDATE Song SET position = :position WHERE id = :songId")
     fun updatePosition( songId: String, position: Int ): Int
 
