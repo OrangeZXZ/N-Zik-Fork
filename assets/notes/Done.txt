@@ -102,3 +102,4 @@
 - fix(lyrics): KaraokeLyricsView scroll offset adjusted when background vocals are present below
 - fix(lyrics): Adjusted line multipliers for 4+ lines in SyncedLyricsView thumbnail mode
 - fix(song): GoToAlbum fallback to searchPage API when nextPage fails to find the album
+- fix(search): remove explicit `e:` prefix in `SearchSuggestions.kt` to fix UI duplication of the explicit badge in the search suggestions list
