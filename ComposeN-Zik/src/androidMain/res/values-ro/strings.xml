@@ -341,6 +341,7 @@
   <string name="update_title">Schimbă titlul</string>
   <string name="update_authors">Schimbă numele autorilor</string>
   <string name="update_cover">Schimbă coperta</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">Titlu</string>
   <string name="authors">Autori</string>
   <string name="cover">Copertă</string>
