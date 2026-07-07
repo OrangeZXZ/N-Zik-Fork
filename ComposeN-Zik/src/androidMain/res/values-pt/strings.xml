@@ -695,6 +695,7 @@
   <string name="thin_bar">Barra fina</string>
   <string name="buttonzoomout">Animação de diminuir zoom do botão</string>
   <string name="thumbnailpause">Diminuir miniatura quando pausado</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">A Seguir</string>
   <string name="showtwosongs">Número de Músicas na Mini Fila(1 a 9)</string>
   <string name="showalbumcover">Mostrar capa do álbum</string>

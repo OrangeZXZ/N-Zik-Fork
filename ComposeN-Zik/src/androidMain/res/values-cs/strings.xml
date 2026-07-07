@@ -695,6 +695,7 @@
   <string name="thin_bar">Tenká lišta</string>
   <string name="buttonzoomout">Animace oddálení tlačítka</string>
   <string name="thumbnailpause">Zmenšit miniaturu při pozastavení</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Další</string>
   <string name="showtwosongs">Zobrazit další dvě skladby ve frontě</string>
   <string name="showalbumcover">Zobrazit obal alba</string>

@@ -695,6 +695,7 @@
   <string name="thin_bar">薄いバー</string>
   <string name="buttonzoomout">ボタンズームアウト時のアニメーション</string>
   <string name="thumbnailpause">停止時にサムネイルを縮小</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">次へ</string>
   <string name="showtwosongs">次の2曲をキューに表示</string>
   <string name="showalbumcover">アルバムカバーを表示</string>

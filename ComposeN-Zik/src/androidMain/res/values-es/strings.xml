@@ -695,6 +695,7 @@
   <string name="thin_bar">Barra fina</string>
   <string name="buttonzoomout">Animación de salida del botón de zoom</string>
   <string name="thumbnailpause">Encoger miniatura al pausar</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">A continuación</string>
   <string name="showtwosongs">Número de canciones en la mini cola (1 al 9)</string>
   <string name="showalbumcover">Mostrar portada del álbum</string>

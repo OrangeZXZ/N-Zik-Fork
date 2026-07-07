@@ -695,6 +695,7 @@
   <string name="thin_bar">Tanak Bar</string>
   <string name="buttonzoomout">Animacija za Udalji Dugme</string>
   <string name="thumbnailpause">Smanji sličicu kada je pauza</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Sledeće</string>
   <string name="showtwosongs">Prikaži Sledeće Dve Pesme u Redosledu</string>
   <string name="showalbumcover">Prikaži Omot Albuma</string>

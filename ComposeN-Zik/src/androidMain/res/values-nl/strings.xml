@@ -695,6 +695,7 @@
   <string name="thin_bar">Dunne balk</string>
   <string name="buttonzoomout">Knop uitzoom-out animatie</string>
   <string name="thumbnailpause">Shrink thumbnail when paused</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Volgende</string>
   <string name="showtwosongs">Toon volgende twee nummers in de wachtrij</string>
   <string name="showalbumcover">Toon albumhoes</string>

@@ -695,6 +695,7 @@
   <string name="thin_bar">Thin Bar</string>
   <string name="buttonzoomout">Button Zoom Out Animation</string>
   <string name="thumbnailpause">暫停時縮小縮圖</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">即將播放</string>
   <string name="showtwosongs">在队列中显示后两首歌曲</string>
   <string name="showalbumcover">顯示專輯封面</string>

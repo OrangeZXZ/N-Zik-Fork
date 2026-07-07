@@ -695,6 +695,7 @@
   <string name="thin_bar">Tynd bjælke</string>
   <string name="buttonzoomout">Zoom ud-animation af knap</string>
   <string name="thumbnailpause">Formindsk miniaturebillede, når på pause</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Næste</string>
   <string name="showtwosongs">Antal sange i mini-køen (1 til 9)</string>
   <string name="showalbumcover">Vis albumcover</string>

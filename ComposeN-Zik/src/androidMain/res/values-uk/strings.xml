@@ -695,6 +695,7 @@
   <string name="thin_bar">Тонка панель</string>
   <string name="buttonzoomout">Анімація масштабування кнопки</string>
   <string name="thumbnailpause">Стиснути Мініатюру Коли На Паузі</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">До наступного</string>
   <string name="showtwosongs">Показати наступні два пісні у черзі</string>
   <string name="showalbumcover">Показати обкладинку альбому</string>

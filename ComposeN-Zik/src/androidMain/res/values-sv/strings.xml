@@ -695,6 +695,7 @@
   <string name="thin_bar">Thin bar</string>
   <string name="buttonzoomout">Button zoom-out animation</string>
   <string name="thumbnailpause">Shrink thumbnail when paused</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Up next</string>
   <string name="showtwosongs">Show Next two Songs in Queue</string>
   <string name="showalbumcover">Show album cover</string>
