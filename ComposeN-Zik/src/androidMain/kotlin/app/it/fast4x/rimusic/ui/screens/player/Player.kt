@@ -160,6 +160,7 @@ import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.AnimatedGradient
+import app.n_zik.android.components.player.animatedM3EBackground
 import app.it.fast4x.rimusic.enums.BackgroundProgress
 import app.it.fast4x.rimusic.enums.CarouselSize
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
@@ -823,7 +824,8 @@ fun Player(
                 }
 
                 when( type ) {
-                    AnimatedGradient.FluidThemeColorGradient, AnimatedGradient.FluidCoverColorGradient -> {
+                    AnimatedGradient.FluidThemeColorGradient, AnimatedGradient.FluidCoverColorGradient,
+                    AnimatedGradient.M3EMorphingTheme, AnimatedGradient.M3EMorphingCover -> {
                         val shaderA = LinearGradientShader(
                             Offset(sizeShader.width / 2f, 0f),
                             Offset(sizeShader.width / 2f, sizeShader.height),
@@ -864,6 +866,20 @@ fun Player(
                                 drawRect(brush = brushMask, blendMode = BlendMode.DstOut)
                                 drawRect(brush = brushB, blendMode = BlendMode.DstAtop)
                             }
+                            
+                        if (type == AnimatedGradient.M3EMorphingTheme || type == AnimatedGradient.M3EMorphingCover) {
+                            val isTheme = type == AnimatedGradient.M3EMorphingTheme
+                            containerModifier = containerModifier.animatedM3EBackground(
+                                animating = binder.player.isPlaying,
+                                D = if (isTheme) colorPalette().background1 else saturate(dominant).darkenBy(),
+                                V = if (isTheme) colorPalette().background2 else saturate(vibrant).darkenBy(),
+                                LV = if (isTheme) dynamicColorPalette.background2 else saturate(lightVibrant).darkenBy(),
+                                DV = if (isTheme) colorPalette().background1 else saturate(darkVibrant).darkenBy(),
+                                M = if (isTheme) dynamicColorPalette.background1 else saturate(muted).darkenBy(),
+                                LM = if (isTheme) dynamicColorPalette.accent else saturate(lightMuted).darkenBy(),
+                                DM = if (isTheme) colorPalette().background2 else saturate(darkMuted).darkenBy()
+                            )
+                        }
                     }
                     AnimatedGradient.Linear -> {
                         containerModifier = containerModifier.animatedGradient(

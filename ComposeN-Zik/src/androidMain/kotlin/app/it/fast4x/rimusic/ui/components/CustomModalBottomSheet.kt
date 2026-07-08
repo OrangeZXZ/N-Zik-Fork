@@ -85,7 +85,7 @@ fun CustomModalBottomSheet(
             val isDark =
                 colorPaletteMode == ColorPaletteMode.Dark || isPicthBlack || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme())
 
-            Column(modifier = Modifier.padding(bottom = bottomPadding)) {
+            Column {
 
                 val view = LocalView.current
                 val colorPalette = colorPalette()

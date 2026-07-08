@@ -47,6 +47,7 @@ kotlin {
             implementation(libs.extractor)
             implementation(libs.nanojson)
             implementation(libs.androidx.webkit)
+            implementation(libs.androidx.graphics.shapes)
             implementation(libs.ktor.okhttp)
             implementation(projects.discordrpc)
             implementation(projects.nextvisualizer)

@@ -12,6 +12,10 @@ enum class AnimatedGradient(
 
     FluidCoverColorGradient( R.string.bg_colors_fluid_gradient_background_from_cover ),
 
+    M3EMorphingTheme( R.string.bg_colors_m3e_morphing_theme ),
+
+    M3EMorphingCover( R.string.bg_colors_m3e_morphing_cover ),
+
     Linear( R.string.linear ),
 
     Mesh( R.string.mesh ),
