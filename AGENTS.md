@@ -1,15 +1,8 @@
 # AI Agent Guidelines for NZik-Folder Workspace
 
+**This document is MANDATORY. Every rule, workflow, and convention must be followed strictly without deviation. No exceptions.**
+
 This document provides comprehensive guidelines for AI agents working on Android/Kotlin projects in this workspace. It covers code standards, build processes, architectural patterns, and workflows to ensure consistent, high-quality contributions.
-
-**This AGENTS.md applies to ALL AI tools used in this project:**
-
-- **opencode** -- CLI AI agent (skills in `.opencode/skills/`)
-- **Claude Code** -- Anthropic's CLI coding agent (skills in `.claude/skills/`)
-- **GitHub Copilot** -- GitHub's AI assistant (uses this AGENTS.md as context)
-- **Antigravity** -- AI coding agent (uses this AGENTS.md as context)
-
-All tools share the same rules, BMAD workflows, and code standards. Skills are synchronized across `.opencode/skills/`, `.claude/skills/`, and `.agent/skills/`.
 
 ---
 
@@ -87,7 +80,8 @@ These rules are non-negotiable and override all other instructions:
 3. **No version bumps** -- version numbers are managed exclusively by the core development team after manual review.
 4. **No markdown/readme edits** unless explicitly asked.
 5. **Ask when uncertain** -- never assume requirements or implementation details without clarification from a human contributor.
-6. **Use Timber** for all logging. Never use `println`, `Log.d`, `System.out`, or any other logging mechanism, use tags for different modules with timber tags like "Timber.tag("TAG").d("message")". Example of a good logging implementation in a Kotlin file:
+6. **License check** -- When using code from any external source (web, documentation, GitHub, StackOverflow, AI generated, etc.), you MUST verify the license before using it. Open-source licenses (MIT, Apache, GPL, etc.) are acceptable. Closed-source or proprietary code is NEVER acceptable. Always cite the source and license in a comment when using external code.
+7. **Use Timber** for all logging. Never use `println`, `Log.d`, `System.out`, or any other logging mechanism, use tags for different modules with timber tags like "Timber.tag("TAG").d("message")". Example of a good logging implementation in a Kotlin file:
 
 ```kotlin
 import timber.log.Timber
@@ -100,12 +94,12 @@ class MyClass {
 }
 ```
 
-7. **Prioritize** performance, battery efficiency, and maintainability in all code contributions.
-8. **No force pushes, rebases, or branch deletions** without explicit instructions from a human.
-9. **Follow existing patterns** -- always examine neighboring files and existing code before introducing new patterns.
-10. **Test your changes** -- if you do not test your changes before reporting, you will face reprimands and may be asked to redo your work. Always verify thoroughly.
-11. **Imports** -- the `import` declarations must ALWAYS be placed at the top of the files. It is strictly forbidden to use fully qualified class names (ex: `java.util.List`) in the middle of the code (inline) unless there is an absolute naming conflict impossible to resolve otherwise.
-12. **Feature request or bug report** -- if you finish a feature request or a bug always provide the link to the feature request or bug, in the git commit message with the actual bug/feature commit. Example:
+8. **Prioritize** performance, battery efficiency, and maintainability in all code contributions.
+9. **No force pushes, rebases, or branch deletions** without explicit instructions from a human.
+10. **Follow existing patterns** -- always examine neighboring files and existing code before introducing new patterns.
+11. **Test your changes** -- if you do not test your changes before reporting, you will face reprimands and may be asked to redo your work. Always verify thoroughly.
+12. **Imports** -- the `import` declarations must ALWAYS be placed at the top of the files. It is strictly forbidden to use fully qualified class names (ex: `java.util.List`) in the middle of the code (inline) unless there is an absolute naming conflict impossible to resolve otherwise.
+13. **Feature request or bug report** -- if you finish a feature request or a bug always provide the link to the feature request or bug, in the git commit message with the actual bug/feature commit. Example:
 
 ```
 feat(audiobar): Refresh Fake Audio Bar (gh-605)
@@ -117,13 +111,16 @@ Issue: Link to the issue
 
 ```
 
-13. **Done.txt** -- When you finish something complete it in Done.txt located in \assets\notes with the commit of the changes.
+14. **Done.txt** -- When the user asks to commit, update Done.txt located in \assets\notes in the same commit as the changes.
 
 ---
 
 ## 2. BMAD Method
 
 This workspace uses the **BMAD Method** (Breakthrough Method of Agile AI-Driven Development) for structured AI-assisted development. BMAD is a framework that breaks down software development into specialized phases, each handled by dedicated AI agents with specific skills. The goal is to ensure consistent, high-quality output by following structured workflows rather than ad-hoc coding.
+
+**Documentation:** https://docs.bmad-method.org/
+**Repository:** https://github.com/bmad-code-org/BMAD-METHOD
 
 ### How BMAD Works
 
@@ -140,199 +137,11 @@ Each phase has dedicated skills that provide step-by-step workflows, templates, 
 
 ### Available Skills
 
-Skills are located in multiple directories (synchronized across tools):
-
-- `.opencode/skills/` -- opencode skills
-- `.claude/skills/` -- Claude Code skills
-- `.agent/skills/` -- Shared agent skills
-
-All directories contain the same skills. Load from the appropriate directory based on your tool.
-
-#### Core Development Skills
-
-| Skill                           | Purpose                                                |
-| ------------------------------- | ------------------------------------------------------ |
-| `bmad-quick-dev`                | Implement features, fix bugs, refactor code directly   |
-| `bmad-dev-story`                | Implement stories following context-filled specs       |
-| `bmad-create-prd`               | Create Product Requirements Documents from scratch     |
-| `bmad-edit-prd`                 | Edit existing PRDs                                     |
-| `bmad-create-architecture`      | Create architecture solution design decisions          |
-| `bmad-create-ux-design`         | Plan UX patterns and design specifications             |
-| `bmad-create-epics-and-stories` | Break requirements into epics and user stories         |
-| `bmad-create-story`             | Create dedicated story files with full context         |
-| `bmad-sprint-planning`          | Generate sprint status tracking from epics             |
-| `bmad-code-review`              | Review code changes adversarially                      |
-| `bmad-checkpoint-preview`       | Human-in-the-loop review of changes                    |
-| `bmad-brainstorming`            | Facilitate interactive brainstorming sessions          |
-| `bmad-correct-course`           | Manage significant changes during sprint execution     |
-| `bmad-retrospective`            | Post-epic review to extract lessons                    |
-| `bmad-distillator`              | Lossless LLM-optimized compression of source documents |
-
-#### Agent Personas
-
-| Skill                    | Purpose                                            |
-| ------------------------ | -------------------------------------------------- |
-| `bmad-agent-pm`          | Product manager for PRD creation and requirements  |
-| `bmad-agent-analyst`     | Strategic business analyst and requirements expert |
-| `bmad-agent-architect`   | System architect and technical design leader       |
-| `bmad-agent-dev`         | Senior software engineer for story execution       |
-| `bmad-agent-tech-writer` | Technical documentation specialist                 |
-| `bmad-agent-ux-designer` | UX designer and UI specialist                      |
-| `bmad-agent-builder`     | Builds, edits or analyzes Agent Skills             |
-
-#### Advanced Elicitation & Problem Solving
-
-| Skill                                    | Purpose                                        |
-| ---------------------------------------- | ---------------------------------------------- |
-| `bmad-advanced-elicitation`              | Push LLM to reconsider, refine, improve output |
-| `bmad-agent-cis-brainstorming-coach`     | Elite brainstorming specialist                 |
-| `bmad-agent-cis-creative-problem-solver` | Master problem solver                          |
-| `bmad-agent-cis-design-thinking-coach`   | Design thinking maestro                        |
-| `bmad-agent-cis-innovation-strategist`   | Disruptive innovation oracle                   |
-| `bmad-agent-cis-presentation-master`     | Visual communication expert                    |
-| `bmad-agent-cis-storyteller`             | Master storyteller                             |
-| `bmad-cis-design-thinking`               | Guide human-centered design processes          |
-| `bmad-cis-innovation-strategy`           | Identify disruption opportunities              |
-| `bmad-cis-problem-solving`               | Apply systematic problem-solving methodologies |
-| `bmad-cis-storytelling`                  | Craft compelling narratives                    |
-
-#### Quality & Review
-
-| Skill                                 | Purpose                                           |
-| ------------------------------------- | ------------------------------------------------- |
-| `bmad-code-review`                    | Review code changes adversarially                 |
-| `bmad-checkpoint-preview`             | Human-in-the-loop review                          |
-| `bmad-check-implementation-readiness` | Validate PRD, UX, Architecture specs are complete |
-| `bmad-review-adversarial-general`     | Cynical review and findings report                |
-| `bmad-review-edge-case-hunter`        | Exhaustive edge-case analysis                     |
-| `bmad-validate-prd`                   | Validate PRD against standards                    |
-| `bmad-editorial-review-prose`         | Clinical copy-editor for communication issues     |
-| `bmad-editorial-review-structure`     | Structural editor for cuts and reorganization     |
-
-#### Research & Analysis
-
-| Skill                           | Purpose                                              |
-| ------------------------------- | ---------------------------------------------------- |
-| `bmad-domain-research`          | Conduct domain and industry research                 |
-| `bmad-market-research`          | Conduct market research on competition and customers |
-| `bmad-technical-research`       | Conduct technical research on technologies           |
-| `bmad-product-brief`            | Create or update product briefs                      |
-| `bmad-prfaq`                    | Working Backwards PRFAQ challenge                    |
-| `bmad-document-project`         | Document brownfield projects for AI context          |
-| `bmad-generate-project-context` | Create project-context.md with AI rules              |
-| `bmad-index-docs`               | Generate or update index.md for docs folder          |
-| `bmad-shard-doc`                | Split large markdown documents into smaller files    |
-
-#### Testing & Quality Assurance
-
-| Skill                        | Purpose                                          |
-| ---------------------------- | ------------------------------------------------ |
-| `bmad-tea`                   | Master Test Architect and Quality Advisor        |
-| `bmad-teach-me-testing`      | Teach testing progressively through sessions     |
-| `bmad-qa`                    | QA agent                                         |
-| `bmad-qa-generate-e2e-tests` | Generate end-to-end automated tests              |
-| `bmad-testarch-atdd`         | Generate red-phase acceptance test scaffolds     |
-| `bmad-testarch-automate`     | Expand test automation coverage                  |
-| `bmad-testarch-ci`           | Scaffold CI/CD quality pipeline                  |
-| `bmad-testarch-framework`    | Initialize test framework                        |
-| `bmad-testarch-nfr`          | Assess NFRs (performance, security, reliability) |
-| `bmad-testarch-test-design`  | Create system-level test plans                   |
-| `bmad-testarch-test-review`  | Review test quality                              |
-| `bmad-testarch-trace`        | Generate traceability matrix                     |
-
-#### Workflow & Planning
-
-| Skill                   | Purpose                                          |
-| ----------------------- | ------------------------------------------------ |
-| `bmad-sprint-planning`  | Generate sprint status tracking                  |
-| `bmad-sprint-status`    | Summarize sprint status and surface risks        |
-| `bmad-correct-course`   | Manage significant changes during sprint         |
-| `bmad-retrospective`    | Post-epic review to extract lessons              |
-| `bmad-help`             | Analyze state and recommend next skills          |
-| `bmad-party-mode`       | Multi-agent group discussions                    |
-| `bmad-customize`        | Author customization overrides for BMAD skills   |
-| `bmad-module-builder`   | Plan, create, and validate BMAD modules          |
-| `bmad-workflow-builder` | Build, convert, and analyze workflows and skills |
-| `bmad-bmb-setup`        | Set up BMad Builder module                       |
-
-#### WDS (Web Design System) Skills
-
-| Skill                                     | Purpose                                       |
-| ----------------------------------------- | --------------------------------------------- |
-| `wds-0-alignment-signoff`                 | Create alignment around idea before starting  |
-| `wds-0-project-setup`                     | Project onboarding and routing                |
-| `wds-1-project-brief`                     | Establish project context                     |
-| `wds-2-trigger-mapping`                   | Map business goals to user psychology         |
-| `wds-3-scenarios`                         | Create UX scenario outlines                   |
-| `wds-4-ux-design`                         | Transform ideas into visual specifications    |
-| `wds-5-agentic-development`               | AI-assisted development and testing           |
-| `wds-6-asset-generation`                  | Generate visual and text assets               |
-| `wds-7-design-system`                     | Create and maintain design system             |
-| `wds-8-product-evolution`                 | Brownfield improvements                       |
-| `wds-agent-freya-ux`                      | Strategic UX designer for WDS                 |
-| `wds-agent-saga-analyst`                  | Strategic business analyst for WDS            |
-| `wds-agent-mimir-builder`                 | Implementation agent for WDS                  |
-| `bmad-wds-acceptance-test`                | Test implementation against specification     |
-| `bmad-wds-acceptance-testing`             | Design and run acceptance tests               |
-| `bmad-wds-agentic-development`            | AI-assisted development, testing, reverse eng |
-| `bmad-wds-alignment-signoff`              | Create alignment before project               |
-| `bmad-wds-analysis`                       | Understand existing codebase                  |
-| `bmad-wds-analyze-product`                | Understand current product state              |
-| `bmad-wds-asset-generation`               | Generate visual and text assets               |
-| `bmad-wds-browse-design-system`           | Generate localhost app for tokens/components  |
-| `bmad-wds-bugfixing`                      | Fix bugs through structured investigation     |
-| `bmad-wds-content-creation`               | Strategic text content generation             |
-| `bmad-wds-create-design-system`           | Build new design system                       |
-| `bmad-wds-deploy`                         | Create PR and deliver improvement             |
-| `bmad-wds-design-solution`                | Sketch and specify update                     |
-| `bmad-wds-design-system`                  | Create, import, browse design system          |
-| `bmad-wds-development`                    | Write production code from specs              |
-| `bmad-wds-edit-components`                | Open components in Figma for editing          |
-| `bmad-wds-evolution`                      | Add features to existing products             |
-| `bmad-wds-figma-integration`              | Code-to-Figma and Figma-to-code workflows     |
-| `bmad-wds-handover`                       | Package testable flows and hand off           |
-| `bmad-wds-icons`                          | Generate icon sets                            |
-| `bmad-wds-images`                         | Generate photos and illustrations             |
-| `bmad-wds-implement`                      | Code the designed improvement                 |
-| `bmad-wds-import-design-system`           | Import existing design system                 |
-| `bmad-wds-Modular Component Architecture` | Three-tier specification system               |
-| `bmad-wds-Object Type Router`             | Intelligent object detection and routing      |
-| `bmad-wds-page-designs`                   | Generate full page compositions               |
-| `bmad-wds-product-evolution`              | Brownfield improvements pipeline              |
-| `bmad-wds-project-brief`                  | Establish project context                     |
-| `bmad-wds-project-setup`                  | Project onboarding                            |
-| `bmad-wds-prototyping`                    | Build interactive prototypes                  |
-| `bmad-wds-reverse-engineering`            | Analyze software to extract specs             |
-| `bmad-wds-scenarios`                      | Create UX scenario outlines                   |
-| `bmad-wds-scenarios-validate`             | Validate scenario outlines                    |
-| `bmad-wds-scope-improvement`              | Create focused scenario for improvement       |
-| `bmad-wds-stitch-generation`              | AI-assisted UI design using Google Stitch     |
-| `bmad-wds-trigger-mapping`                | Map business goals to user psychology         |
-| `bmad-wds-trigger-mapping-validate`       | Validate trigger map documents                |
-| `bmad-wds-ui-elements`                    | Generate UI components                        |
-| `bmad-wds-ux-design`                      | Transform ideas into visual specs             |
-| `bmad-wds-videos`                         | Generate motion content and animations        |
-| `bmad-wds-view-components`                | Preview design system components              |
-| `bmad-wds-wireframes`                     | Generate outline wireframes                   |
-| `bmad-wds-workflow-design-system`         | Define and review design system components    |
-| `bmad-wds-workflow-discuss`               | Creative dialog for page design               |
-| `bmad-wds-workflow-dream`                 | Autonomous scenario flow creation             |
-| `bmad-wds-workflow-sketch`                | Analyze sketches and translate to specs       |
-| `bmad-wds-workflow-specify`               | Create implementation-ready page spec         |
-| `bmad-wds-workflow-suggest`               | Workflow suggestion                           |
-| `bmad-wds-workflow-validate`              | Audit page specifications                     |
-| `bmad-wds-workflow-visual`                | Create visual representations of designs      |
+Skills are located in the project's skill directories. Consult the BMAD documentation (links above) or browse the skill directories to find the appropriate skill for your task.
 
 ### Using Skills
 
-Load a skill when a task matches its description. Skills provide step-by-step workflows, templates, and quality gates. For example:
-
-- User says "create a PRD" -> load `bmad-create-prd`
-- User says "implement this story" -> load `bmad-dev-story`
-- User says "review this code" -> load `bmad-code-review`
-- User says "help me brainstorm" -> load `bmad-brainstorming`
-- User says "run a retrospective" -> load `bmad-retrospective`
-- User says "let's do design thinking" -> load `bmad-cis-design-thinking`
+Load a skill when a task matches its description. Skills provide step-by-step workflows, templates, and quality gates.
 
 ### Reference Projects
 
@@ -880,12 +689,20 @@ When implementing a feature or fixing a bug, follow this process:
 - Check imports and dependencies used in related code
 - Consult reference projects in `docs/` if needed
 
-### Step 3: Plan
+### Step 3: Execute BMAD Skill (MANDATORY)
 
-- Identify which files need to be created or modified
-- Consider the impact on existing functionality
-- Plan for error cases and edge cases
-- Consider performance implications
+**After understanding and exploring, you MUST execute the appropriate BMAD skill.** Read section 2 (BMAD Method) to identify which skill matches the task, then execute it.
+
+BMAD is primordial and must never be deviated from once its workflow is started.
+
+**Rules for BMAD execution:**
+
+- Execute the skill before starting work
+- Follow the skill's workflow step-by-step, in order
+- **NEVER skip steps or optimize the sequence**
+- **NEVER deviate from the skill's instructions once started**
+- Halt at checkpoints and wait for human input as directed by the skill
+- The skill's workflow takes precedence over this section if there's a conflict
 
 ### Step 4: Implement
 
