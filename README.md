@@ -34,7 +34,7 @@
   <img src="assets/stats/download-card.svg" alt="N-Zik Stats" />
   <img src="assets/stats/chart.svg" alt="Download Growth" />
   
- <br> <br>
+ <br><br>
 
 [![Launched on DevGlobe](https://devglobe.app/badges/launched-on-devglobe-dark.svg)](https://devglobe.app/projects/n-zik?utm_source=badge&utm_medium=embed)
 
@@ -46,10 +46,8 @@
 ---
 
 <div align="center">
-
-<img src="https://static.vecteezy.com/system/resources/thumbnails/024/493/268/original/warning-sign-on-red-background-free-video.jpg" width="80%">
-<br>
-<br>
+<br><br>
+<img src="https://static.vecteezy.com/system/resources/thumbnails/024/493/268/original/warning-sign-on-red-background-free-video.jpg" width="30%">
 <br>
 
 <h1>⏳ Only <a href="https://keepandroidopen.org"><img src="https://img.shields.io/badge/J--83-red?style=flat-round&logo=android&logoColor=white" alt="Android Lockdown"/></a> days remaining until Android Lockdown</h1>
@@ -61,7 +59,6 @@ As a **Free and Open Source Software (FOSS)** project, **N‑Zik** and his **dev
 📖 [Learn more](https://keepandroidopen.org) · ✍️ [Sign the petition](https://www.change.org/p/stop-google-from-limiting-apk-file-usage/)
 
 </div>
-<br>
 <br>
 
 <div align="center">
