@@ -316,7 +316,7 @@ class PlayerItemMenu private constructor(
                         // Toast info refresh in progress
                         Toaster.i(R.string.updating_waveform_in_progress)
                         
-                        coroutineScope.launch {
+                        CoroutineScope(Dispatchers.Main).launch {
                             WaveformExtractor.deleteWaveform(mContext, mediaItem.mediaId)
                             // Wait for either the success or error signal before showing the toaster
                             val successFlow = WaveformExtractor.extractionSuccessSignal
