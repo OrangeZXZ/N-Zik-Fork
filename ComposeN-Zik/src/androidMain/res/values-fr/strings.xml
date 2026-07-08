@@ -341,7 +341,7 @@
   <string name="update_title">Mettre à jour le titre</string>
   <string name="update_authors">Mettre à jour les auteurs</string>
   <string name="update_cover">Mettre à jour la pochette</string>
-  <string name="pick_from_gallery">Pick from gallery</string>
+  <string name="pick_from_gallery">Choisissez une photo dans la galerie</string>
   <string name="title">Titre</string>
   <string name="authors">Auteurs</string>
   <string name="cover">Pochette</string>
@@ -1439,4 +1439,5 @@ Volume BAS : titre précédent</string>
   <string name="sync_successful">Synchronisation réussie</string>
   <string name="sync_no_items">Aucun élément à synchroniser</string>
   <string name="sync_completed_with_errors">La synchronisation s\'est terminée avec des erreurs</string>
+  <string name="album_found_online_verify">J\'ai trouvé l\'album en ligne ! Merci de vérifier qu\'il s\'agit bien du bon.</string>
 </resources>

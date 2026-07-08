@@ -341,6 +341,7 @@
   <string name="update_title">更新標題</string>
   <string name="update_authors">更新作者</string>
   <string name="update_cover">更新封面</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">標題</string>
   <string name="authors">作者</string>
   <string name="cover">封面</string>
@@ -1437,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>

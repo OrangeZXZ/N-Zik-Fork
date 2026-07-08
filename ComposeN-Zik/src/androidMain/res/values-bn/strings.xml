@@ -341,6 +341,7 @@
   <string name="update_title">টাইটেল ঠিক করুন</string>
   <string name="update_authors">অথোর ঠিক করুন</string>
   <string name="update_cover">কভার ঠিক করুন</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">টাইটেল</string>
   <string name="authors">অথোর</string>
   <string name="cover">কভার</string>
@@ -1437,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>
