@@ -791,6 +791,7 @@
   <string name="social_telegram_info">Telegramのグループに参加</string>
   <string name="social_github">GitHub</string>
   <string name="update">更新</string>
+  <string name="update_waveform">Update waveform</string>
   <string name="update_song">本当にこの曲を修正しますか？再生時間とキャッシュされたデータは消去されます。\\nこの操作は元に戻せません。</string>
   <string name="player_pause_listen_history_info">統計、履歴、提案に使用される再生イベントを保存しない</string>
   <string name="vertical_widget">縦向きのウィジェット</string>
@@ -1439,4 +1440,8 @@
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
   <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
+  <string name="error_music_not_fully_cached">Music must be fully downloaded or cached to refresh audio waves</string>
+  <string name="updating_waveform_in_progress">Updating waveform in progress…</string>
+  <string name="waveform_updated_successfully">Waveform updated successfully</string>
+  <string name="error_updating_waveform">Error updating waveform</string>
 </resources>

@@ -792,6 +792,7 @@ Volume BAS : titre précédent</string>
   <string name="social_telegram_info">Rejoignez le groupe sur Telegram</string>
   <string name="social_github">GitHub</string>
   <string name="update">Mettre à jour</string>
+  <string name="update_waveform">Mettre à jour la forme d\'onde</string>
   <string name="update_song">Voulez-vous vraiment recharger ce titre ? Son temps de lecture et son cache seront effacés. Cette action est irréversible.</string>
   <string name="player_pause_listen_history_info">Cela ne sauvegarde pas les événements de lecture utilisés pour les statistiques, l\'historique et les suggestions dans la sélection rapide</string>
   <string name="vertical_widget">Widget vertical</string>
@@ -1440,4 +1441,8 @@ Volume BAS : titre précédent</string>
   <string name="sync_no_items">Aucun élément à synchroniser</string>
   <string name="sync_completed_with_errors">La synchronisation s\'est terminée avec des erreurs</string>
   <string name="album_found_online_verify">J\'ai trouvé l\'album en ligne ! Merci de vérifier qu\'il s\'agit bien du bon.</string>
+  <string name="error_music_not_fully_cached">La musique doit être entièrement téléchargée ou mise en cache pour que les ondes sonores s\'actualisent</string>
+  <string name="updating_waveform_in_progress">Mise à jour de la forme d\'onde en cours…</string>
+  <string name="waveform_updated_successfully">La forme d\'onde a été mise à jour avec succès</string>
+  <string name="error_updating_waveform">Erreur lors de la mise à jour de la forme d\'onde</string>
 </resources>

@@ -791,6 +791,7 @@
   <string name="social_telegram_info">Únete al grupo de Telegram</string>
   <string name="social_github">GitHub</string>
   <string name="update">Actualización</string>
+  <string name="update_waveform">Update waveform</string>
   <string name="update_song">¿Seguro que quieres volver a cargar esta canción? El tiempo de reproducción y la caché se eliminarán. Esta acción es irreversible.</string>
   <string name="player_pause_listen_history_info">No guarda los eventos de reproducción utilizados para estadísticas, historial y sugerencias en selecciones rápidas</string>
   <string name="vertical_widget">Widget vertical</string>
@@ -1439,4 +1440,8 @@
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
   <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
+  <string name="error_music_not_fully_cached">Music must be fully downloaded or cached to refresh audio waves</string>
+  <string name="updating_waveform_in_progress">Updating waveform in progress…</string>
+  <string name="waveform_updated_successfully">Waveform updated successfully</string>
+  <string name="error_updating_waveform">Error updating waveform</string>
 </resources>
