@@ -105,6 +105,19 @@ class MyClass {
 9. **Follow existing patterns** -- always examine neighboring files and existing code before introducing new patterns.
 10. **Test your changes** -- if you do not test your changes before reporting, you will face reprimands and may be asked to redo your work. Always verify thoroughly.
 11. **Imports** -- the `import` declarations must ALWAYS be placed at the top of the files. It is strictly forbidden to use fully qualified class names (ex: `java.util.List`) in the middle of the code (inline) unless there is an absolute naming conflict impossible to resolve otherwise.
+12. **Feature request or bug report** -- if you finish a feature request or a bug always provide the link to the feature request or bug, in the git commit message with the actual bug/feature commit. Example:
+
+```
+feat(audiobar): Refresh Fake Audio Bar (gh-605)
+  - Added option to refresh the fake audio bar in the player menu (SeekBarStaticAudioWaves)
+  - Added validation to prevent refreshing if the song is not fully downloaded or cached, with a Toaster error
+  - Removed inline import paths for cleaner code in PlayerItemMenu.kt
+
+Fixes: Link to the issue
+
+```
+
+13. **Done.txt** -- When you finish something complete it in Done.txt located in \assets\notes with the commit of the changes.
 
 ---
 
