@@ -113,7 +113,7 @@ feat(audiobar): Refresh Fake Audio Bar (gh-605)
   - Added validation to prevent refreshing if the song is not fully downloaded or cached, with a Toaster error
   - Removed inline import paths for cleaner code in PlayerItemMenu.kt
 
-Fixes: Link to the issue
+Issue: Link to the issue
 
 ```
 
