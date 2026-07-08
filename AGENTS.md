@@ -1,7 +1,8 @@
 # AI Agent Guidelines for NZik-Folder Workspace
 
 **This document is MANDATORY. Every rule, workflow, and convention must be followed strictly without deviation. No exceptions. READ THE WHOLE FILE BEFORE STARTING.**
-**Gemini i know you respect all the rules carefully, do not forget anything. READ THE WHOLE FILE BEFORE STARTING.**
+**Gemini, I know you respect all the rules carefully, do not forget anything. READ THE WHOLE FILE BEFORE STARTING.**
+**This is not a one-time acknowledgment. Compliance is required for the ENTIRE session, on EVERY single action, not just at the start. A one-time "I have read and understood" message is NOT sufficient and does not count as compliance if the rules are then forgotten or skipped later. See Rule 15 for the mandatory per-action reminder format. If you catch yourself about to skip a step "because it's obvious" or "to save time," that is exactly the moment to stop and re-check this file.**
 
 This document provides comprehensive guidelines for AI agents working on Android/Kotlin projects in this workspace. It covers code standards, build processes, architectural patterns, and workflows to ensure consistent, high-quality contributions.
 
@@ -196,6 +197,10 @@ Issue: Link to the issue
 
 14. **Done.txt** -- When the user asks to commit, update Done.txt located in assets/notes/Done.txt in the same commit as the changes.
 15. **Announce your steps before acting** -- Before making ANY file edit, running ANY command, or executing ANY tool call, you MUST first output a short numbered plan of the concrete steps you are about to take (what file, what change, why). Execute strictly in that order, one step at a time. If a step requires deviating from the announced plan (new information, blocker, error), STOP, explain why, and re-announce the updated plan before continuing. Never silently batch multiple unannounced actions together, and never skip straight to execution "because it's obvious."
+    - **This is not a one-time formality.** A single acknowledgment message at the start of the session ("I have read AGENTS.md and will comply") does NOT satisfy this rule on its own and must never be treated as a substitute for ongoing compliance.
+    - **Persistent reminder required:** before EVERY subsequent tool call, file edit, or command in the session -- not only the first one -- restate in condensed form: `[Step: <current step name>] [Rule: <relevant rule # from this file>]`. This applies equally at message 2 and at message 200 of the same session; context length or session fatigue is never a reason to drop it.
+    - **Checkpoint every 5 actions (or at the start of each new feature/task):** output a short recap of which Core Rules are still active and which step of the Section 13 workflow you are currently on, before continuing.
+    - If you notice you have skipped an announcement, stop immediately, admit it explicitly, and resume only after re-announcing the current step.
 
 ---
 
