@@ -341,6 +341,7 @@
   <string name="update_title">タイトルを変更</string>
   <string name="update_authors">投稿者名を変更</string>
   <string name="update_cover">カバーを変更</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">題名</string>
   <string name="authors">作者</string>
   <string name="cover">カバー</string>
@@ -695,6 +696,7 @@
   <string name="thin_bar">薄いバー</string>
   <string name="buttonzoomout">ボタンズームアウト時のアニメーション</string>
   <string name="thumbnailpause">停止時にサムネイルを縮小</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">次へ</string>
   <string name="showtwosongs">次の2曲をキューに表示</string>
   <string name="showalbumcover">アルバムカバーを表示</string>
@@ -1436,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>

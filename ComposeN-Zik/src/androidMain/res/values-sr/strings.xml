@@ -341,6 +341,7 @@
   <string name="update_title">Ažuriraj Naslov</string>
   <string name="update_authors">Ažuriraj Autore</string>
   <string name="update_cover">Ažuriraj Omot</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">Naslov</string>
   <string name="authors">Autori</string>
   <string name="cover">Omot</string>
@@ -695,6 +696,7 @@
   <string name="thin_bar">Tanak Bar</string>
   <string name="buttonzoomout">Animacija za Udalji Dugme</string>
   <string name="thumbnailpause">Smanji sličicu kada je pauza</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Sledeće</string>
   <string name="showtwosongs">Prikaži Sledeće Dve Pesme u Redosledu</string>
   <string name="showalbumcover">Prikaži Omot Albuma</string>
@@ -1436,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>

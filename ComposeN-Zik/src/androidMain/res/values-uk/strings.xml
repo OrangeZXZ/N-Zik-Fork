@@ -341,6 +341,7 @@
   <string name="update_title">Змінити назву</string>
   <string name="update_authors">Змінити ім\'я автора</string>
   <string name="update_cover">Змінити обкладинку</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">Назва</string>
   <string name="authors">Автори</string>
   <string name="cover">Обкладинка</string>
@@ -695,6 +696,7 @@
   <string name="thin_bar">Тонка панель</string>
   <string name="buttonzoomout">Анімація масштабування кнопки</string>
   <string name="thumbnailpause">Стиснути Мініатюру Коли На Паузі</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">До наступного</string>
   <string name="showtwosongs">Показати наступні два пісні у черзі</string>
   <string name="showalbumcover">Показати обкладинку альбому</string>
@@ -1436,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>

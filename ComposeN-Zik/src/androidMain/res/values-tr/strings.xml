@@ -341,6 +341,7 @@
   <string name="update_title">Başlığı Değiştir</string>
   <string name="update_authors">Yazar adını değiştir</string>
   <string name="update_cover">Kapağı Değiştir</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">Başlık</string>
   <string name="authors">Yazarlar</string>
   <string name="cover">Kapak</string>
@@ -695,6 +696,7 @@
   <string name="thin_bar">İnce çubuk</string>
   <string name="buttonzoomout">Düğme uzaklaştırma animasyonu</string>
   <string name="thumbnailpause">Duraklatıldığında küçük resmi küçült</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Sonraki</string>
   <string name="showtwosongs">Sonraki iki şarkıyı göster</string>
   <string name="showalbumcover">Albüm kapağını göster</string>
@@ -1436,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>

@@ -341,6 +341,7 @@
   <string name="update_title">Verander titel</string>
   <string name="update_authors">Naam auteur wijzigen</string>
   <string name="update_cover">Verander Cover</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">Titel</string>
   <string name="authors">Auteurs</string>
   <string name="cover">Omslag</string>
@@ -695,6 +696,7 @@
   <string name="thin_bar">Dunne balk</string>
   <string name="buttonzoomout">Knop uitzoom-out animatie</string>
   <string name="thumbnailpause">Shrink thumbnail when paused</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Volgende</string>
   <string name="showtwosongs">Toon volgende twee nummers in de wachtrij</string>
   <string name="showalbumcover">Toon albumhoes</string>
@@ -1436,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>

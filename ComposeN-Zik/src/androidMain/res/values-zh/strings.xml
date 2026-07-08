@@ -341,6 +341,7 @@
   <string name="update_title">更新標題</string>
   <string name="update_authors">更新作者</string>
   <string name="update_cover">更新封面</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">標題</string>
   <string name="authors">作者</string>
   <string name="cover">封面</string>
@@ -695,6 +696,7 @@
   <string name="thin_bar">Thin Bar</string>
   <string name="buttonzoomout">Button Zoom Out Animation</string>
   <string name="thumbnailpause">暫停時縮小縮圖</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">即將播放</string>
   <string name="showtwosongs">在队列中显示后两首歌曲</string>
   <string name="showalbumcover">顯示專輯封面</string>
@@ -1436,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>

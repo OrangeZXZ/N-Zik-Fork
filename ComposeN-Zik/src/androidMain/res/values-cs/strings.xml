@@ -341,6 +341,7 @@
   <string name="update_title">Aktualizovat Název</string>
   <string name="update_authors">Aktualizovat Autory</string>
   <string name="update_cover">Aktualizovat Obal</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">Název</string>
   <string name="authors">Autoři</string>
   <string name="cover">Obal</string>
@@ -695,6 +696,7 @@
   <string name="thin_bar">Tenká lišta</string>
   <string name="buttonzoomout">Animace oddálení tlačítka</string>
   <string name="thumbnailpause">Zmenšit miniaturu při pozastavení</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Další</string>
   <string name="showtwosongs">Zobrazit další dvě skladby ve frontě</string>
   <string name="showalbumcover">Zobrazit obal alba</string>
@@ -1436,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>

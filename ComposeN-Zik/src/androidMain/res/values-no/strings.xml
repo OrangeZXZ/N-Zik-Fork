@@ -341,6 +341,7 @@
   <string name="update_title">Endre tittel</string>
   <string name="update_authors">Endre forfatters navn</string>
   <string name="update_cover">Endre forside</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">Tittel</string>
   <string name="authors">Forfattere</string>
   <string name="cover">Omslag</string>
@@ -695,6 +696,7 @@
   <string name="thin_bar">Tynn bar</string>
   <string name="buttonzoomout">Knappen zoom-out-animasjon</string>
   <string name="thumbnailpause">Forminsk miniatyrbilde ved pausering</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Opp neste</string>
   <string name="showtwosongs">Vis de to neste sangene i køen</string>
   <string name="showalbumcover">Vis albumomslag</string>
@@ -1436,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>

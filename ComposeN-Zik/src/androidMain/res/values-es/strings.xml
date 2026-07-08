@@ -341,6 +341,7 @@
   <string name="update_title">Modificar título</string>
   <string name="update_authors">Modificar autores</string>
   <string name="update_cover">Modificar portada</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">Título</string>
   <string name="authors">Autores</string>
   <string name="cover">Portada</string>
@@ -695,6 +696,7 @@
   <string name="thin_bar">Barra fina</string>
   <string name="buttonzoomout">Animación de salida del botón de zoom</string>
   <string name="thumbnailpause">Encoger miniatura al pausar</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">A continuación</string>
   <string name="showtwosongs">Número de canciones en la mini cola (1 al 9)</string>
   <string name="showalbumcover">Mostrar portada del álbum</string>
@@ -1436,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>

@@ -341,6 +341,7 @@
   <string name="update_title">Opdater titel</string>
   <string name="update_authors">Opdater forfattere</string>
   <string name="update_cover">Opdater cover</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">Titel</string>
   <string name="authors">Forfattere</string>
   <string name="cover">Cover</string>
@@ -695,6 +696,7 @@
   <string name="thin_bar">Tynd bjælke</string>
   <string name="buttonzoomout">Zoom ud-animation af knap</string>
   <string name="thumbnailpause">Formindsk miniaturebillede, når på pause</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Næste</string>
   <string name="showtwosongs">Antal sange i mini-køen (1 til 9)</string>
   <string name="showalbumcover">Vis albumcover</string>
@@ -1436,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>

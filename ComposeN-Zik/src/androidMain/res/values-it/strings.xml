@@ -341,6 +341,7 @@
   <string name="update_title">Cambia Titolo</string>
   <string name="update_authors">Cambia nome Autori</string>
   <string name="update_cover">Cambia Copertina</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">Titolo</string>
   <string name="authors">Artisti</string>
   <string name="cover">Copertina</string>
@@ -695,6 +696,7 @@
   <string name="thin_bar">Barra sottile</string>
   <string name="buttonzoomout">Animazione zoom pulsanti</string>
   <string name="thumbnailpause">Riduci la miniatura quando in pausa</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">In alto successivo</string>
   <string name="showtwosongs">Mostra i prossimi due brani in coda</string>
   <string name="showalbumcover">Mostra copertina album</string>
@@ -1436,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>

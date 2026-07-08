@@ -341,6 +341,7 @@
   <string name="update_title">Schimbă titlul</string>
   <string name="update_authors">Schimbă numele autorilor</string>
   <string name="update_cover">Schimbă coperta</string>
+  <string name="pick_from_gallery">Pick from gallery</string>
   <string name="title">Titlu</string>
   <string name="authors">Autori</string>
   <string name="cover">Copertă</string>
@@ -695,6 +696,7 @@
   <string name="thin_bar">Bară subțire</string>
   <string name="buttonzoomout">Animație de micșorare a butonului</string>
   <string name="thumbnailpause">Micșorează miniatura când este pus pe pauză</string>
+  <string name="crop_video_thumbnails">Crop video thumbnails</string>
   <string name="upnext">Următorul</string>
   <string name="showtwosongs">Afișează următoarele două melodii din coadă</string>
   <string name="showalbumcover">Afișează coperta albumului</string>
@@ -1436,4 +1438,5 @@
   <string name="sync_successful">Sync successful</string>
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>
