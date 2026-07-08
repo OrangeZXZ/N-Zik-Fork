@@ -25,7 +25,10 @@ NZik-Folder/
     ComposeN-Zik/                # Main app module (KMP)
       src/
         androidMain/             # Android-specific code
-          kotlin/app/n_zik/android/
+          kotlin/app/
+            n_zik/android/       # ★ NZik custom code (NEW code goes here)
+            it/fast4x/rimusic/   # ⚠ Legacy RiMusic (DO NOT add new files)
+            kreate/android/      # Shared utils (Repository, Toaster, etc.)
         commonMain/              # Shared multiplatform code
           kotlin/database/
         test/                    # Unit tests
@@ -43,7 +46,7 @@ NZik-Folder/
       discordrpc/                # Discord Rich Presence
       nextvisualizer/            # Audio visualizer
     gradle/libs.versions.toml    # Version catalog
-  docs/                          # Reference projects
+  docs/                          # Reference projects (READ ONLY)
     Metrolist-main/
     RiMusic-master/
     Kreate-main/
@@ -53,22 +56,100 @@ NZik-Folder/
   .bmad-loop/                    # BMAD method loop
 ```
 
+### Three Package Trees
+
+The `androidMain/kotlin/app/` directory contains **3 distinct package trees**:
+
+| Package                 | Role                                                          | Size       | Rule                              |
+| ----------------------- | ------------------------------------------------------------- | ---------- | --------------------------------- |
+| `app.n_zik.android`     | **NZik custom code** — all new features, components, services | ~153 files | **★ ALWAYS place new files here** |
+| `app.it.fast4x.rimusic` | **Legacy RiMusic** — base UI, models, enums, utils            | ~230 files | **⚠ READ-ONLY, will be removed**  |
+| `app.kreate.android`    | **Legacy Kreate** — Repository, Toaster, CSV, sync            | ~22 files  | **⚠ READ-ONLY, will be removed**  |
+
+**Future state:** Only `app.n_zik.android` will remain. Both legacy packages are kept for backward compatibility but no new code should be added to them.
+
+### `app.n_zik.android` Structure
+
+```
+app/n_zik/android/
+├── GlobalVars.kt, MainActivity.kt, MainApplication.kt    # Entry points
+├── components/                                             # UI components by domain
+│   ├── album/        # Album-related dialogs & actions
+│   ├── artist/       # Artist-related dialogs & actions
+│   ├── dialog/       # Generic reusable dialogs (Confirm, Input, etc.)
+│   ├── export/       # Export dialogs (database, settings)
+│   ├── import/       # Import logic (database, settings, migration)
+│   ├── menu/         # Context menus by domain (album, artist, player, song, etc.)
+│   ├── player/       # Player UI + lyrics (karaoke, synced, unsynced)
+│   ├── playlist/     # Playlist management dialogs
+│   ├── settings/     # Settings-related components (BugReport, etc.)
+│   ├── song/         # Song-related dialogs & actions
+│   ├── tab/          # Tab-specific components (search, radio, hidden songs, etc.)
+│   └── ui/screens/   # Page-level composables (home, player, album)
+├── core/             # Infrastructure
+│   ├── coil/         # Image loading
+│   ├── database/     # Room tables, DAO, migrations (16 tables, 15 migrations)
+│   ├── network/      # Network client, models, utils
+│   └── youtube/      # YouTube security (cipher, PoToken)
+├── download/         # Download service & helpers
+├── enums/            # NZik-specific enums (lyrics, player controls)
+├── extensions/       # Optional features (audiobar, Discord, games, visualizer)
+├── models/           # NZik-specific models (currently: Lyrics.kt only)
+├── playback/         # ExoPlayer service, stream resolver, automotive (AAOS)
+├── updater/          # In-app update system (models, services, UI)
+├── utils/            # NZik-specific utilities
+└── widget/           # Android home screen widget
+```
+
+### `app.it.fast4x.rimusic` Structure (Legacy)
+
+```
+app/it/fast4x/rimusic/
+├── enums/            # 91 enum files (massive config surface)
+├── extensions/       # Feature modules (audio volume, connectivity, PiP, etc.)
+├── models/           # 19 data models + 1 UI model
+├── repository/       # QuickPicksRepository
+├── ui/
+│   ├── components/   # Reusable UI (BottomSheet, SeekBar, Menu, themed widgets)
+│   ├── items/        # List item composables (Album, Artist, Song, etc.)
+│   ├── screens/      # Screen composables (15 screen domains)
+│   └── styling/      # Theme (colors, typography, dimensions)
+└── utils/            # 61 utility files
+```
+
+### `app.kreate.android` Structure (Shared Utils)
+
+```
+app/kreate/android/
+├── me/knighthat/
+│   ├── utils/        # Repository.kt (GITHUB_API, REPO_URL), Toaster.kt, etc.
+│   ├── sync/         # YouTubeSync.kt
+│   └── enums/        # TextView.kt
+├── screens/          # A few shared screen components
+├── themed/           # Shared themed components
+└── utils/            # CharUtils.kt
+```
+
 ### Key Locations
 
-| What                  | Where to look                                                  |
-| --------------------- | -------------------------------------------------------------- |
-| Main application code | `N-Zik/ComposeN-Zik/src/androidMain/kotlin/app/n_zik/android/` |
-| Shared database code  | `N-Zik/ComposeN-Zik/src/commonMain/kotlin/database/`           |
-| Database entities     | `database/entities/` (commonMain)                              |
-| Database DAO          | `MusicDatabase.kt` (commonMain)                                |
-| Compose UI screens    | Look for `@Composable` functions in screen files               |
-| Player service        | `playback/services/PlayerServiceModern.kt`                     |
-| Extensions (API)      | `N-Zik/extensions/`                                            |
-| Resources             | `N-Zik/ComposeN-Zik/src/androidMain/res/`                      |
-| Strings               | `res/values/strings.xml` (default English only)                |
-| Build config          | `N-Zik/ComposeN-Zik/build.gradle.kts`                          |
-| Dependencies          | `N-Zik/gradle/libs.versions.toml`                              |
-| Tests                 | `N-Zik/ComposeN-Zik/src/test/`                                 |
+| What                  | Where to look                                                                    |
+| --------------------- | -------------------------------------------------------------------------------- |
+| Main application code | `app/n_zik/android/`                                                             |
+| Shared database code  | `commonMain/kotlin/database/`                                                    |
+| Database entities     | `commonMain/kotlin/database/entities/`                                           |
+| Database DAO          | `commonMain/kotlin/database/MusicDatabase.kt`                                    |
+| Database tables       | `app/n_zik/android/core/database/` (16 tables + 15 migrations)                   |
+| Compose UI screens    | `app/n_zik/android/components/ui/screens/` + `app/it/fast4x/rimusic/ui/screens/` |
+| Player service        | `app/n_zik/android/playback/services/PlayerServiceModern.kt`                     |
+| Generic dialogs       | `app/n_zik/android/components/dialog/`                                           |
+| Settings screens      | `app/it/fast4x/rimusic/ui/screens/settings/` (legacy, do NOT add new files)      |
+| Shared utilities      | `app/kreate/android/me/knighthat/utils/` (Repository, Toaster)                   |
+| Extensions (API)      | `N-Zik/extensions/`                                                              |
+| Resources             | `ComposeN-Zik/src/androidMain/res/`                                              |
+| Strings               | `res/values/strings.xml` (default English only)                                  |
+| Build config          | `ComposeN-Zik/build.gradle.kts`                                                  |
+| Dependencies          | `N-Zik/gradle/libs.versions.toml`                                                |
+| Tests                 | `ComposeN-Zik/src/test/`                                                         |
 
 ---
 
@@ -144,6 +225,30 @@ Skills are located in the project's skill directories. Consult the BMAD document
 
 Load a skill when a task matches its description. Skills provide step-by-step workflows, templates, and quality gates.
 
+### Dual Enforcement: AGENTS.md + BMAD
+
+**CRITICAL: Agents MUST follow BOTH this AGENTS.md AND the BMAD method rules IN PARALLEL at all times.**
+
+When a BMAD skill is loaded, its instructions are **additive**, not a replacement. The agent must simultaneously satisfy:
+
+1. **AGENTS.md rules** (this file) — Core rules (section 1), commit conventions (section 4), build verification (section 5), database rules (section 6), UI guidelines (section 7), logging (section 8), error handling (section 9), performance (section 10), testing (section 11), security (section 12), workflow (section 13), communication (section 15), and reference patterns (sections 16-18)
+2. **BMAD skill instructions** — The skill's workflow steps, templates, quality gates, and checkpoints
+
+**If there is a conflict** between AGENTS.md and a BMAD skill, AGENTS.md takes precedence for:
+
+- Core rules (section 1): No commits without human test, license checks, Timber logging, no version bumps
+- Build verification: Must pass `./gradlew :ComposeN-Zik:assembleDebug` before reporting
+- Database rules: Never edit schema without explicit instruction
+- Commit conventions: Follow the project's type(scope) format
+
+BMAD skills take precedence for:
+
+- Workflow ordering and checkpoint halting
+- Skill-specific templates and output formats
+- Phase-specific quality gates
+
+**In practice:** After every BMAD checkpoint, verify that all AGENTS.md core rules (section 1) are still satisfied before proceeding.
+
 ### Reference Projects
 
 The `docs/` folder contains reference implementations from similar projects (Metrolist, RiMusic, Kreate, RiPlay). Consult these for patterns and best practices when implementing features.
@@ -167,6 +272,39 @@ The `docs/` folder contains reference implementations from similar projects (Met
 - Place composables in appropriate screen/component packages
 - Use `internal` visibility for implementation details
 - Prefer `private` over `internal` when scope allows
+
+### File Placement (MANDATORY)
+
+This project has **three package trees**. Always place new files in the correct one:
+
+| Package prefix          | Use for                                             | Rule                         | Example                                                 |
+| ----------------------- | --------------------------------------------------- | ---------------------------- | ------------------------------------------------------- |
+| `app.n_zik.android`     | **All new NZik code** (components, features, utils) | ★ ALWAYS                     | `app.n_zik.android.components.settings.BugReportDialog` |
+| `app.it.fast4x.rimusic` | **Legacy RiMusic** (base UI, models, enums)         | ⚠ READ-ONLY, will be removed | existing `About.kt`, `SettingsScreen.kt`                |
+| `app.kreate.android`    | **Legacy Kreate** (Repository, Toaster, CSV)        | ⚠ READ-ONLY, will be removed | `Repository.kt` (GITHUB_API, REPO_URL)                  |
+
+**Rules:**
+
+1. New files MUST go under `app.n_zik.android.*`. Never create new files under `app.it.fast4x.rimusic.*` or `app.kreate.android.*`.
+2. Both `app.it.fast4x.rimusic` and `app.kreate.android` are legacy — they will be removed eventually. Do NOT add new code there.
+3. When modifying legacy files, keep changes minimal and prefer extracting new logic into `app.n_zik.android` packages.
+
+**Where to place components in `app.n_zik.android`:**
+
+| Component type                 | Location                                           | Example                                       |
+| ------------------------------ | -------------------------------------------------- | --------------------------------------------- |
+| Generic reusable dialogs       | `components/dialog/`                               | `ConfirmDialog.kt`, `TextInputDialog.kt`      |
+| Domain-specific dialogs        | `components.{domain}/`                             | `components/album/ChangeAlbumTitleDialog.kt`  |
+| Domain menus                   | `components/menu.{domain}/`                        | `components/menu/player/PlayerMenu.kt`        |
+| Page-level screens             | `components.ui.screens.{screen}/`                  | `components.ui.screens.home.HomeScreen.kt`    |
+| Player UI + lyrics             | `components/player/` + `components/player/lyrics/` | `LyricsScreen.kt`                             |
+| Settings components            | `components/settings/`                             | `BugReportDialog.kt`                          |
+| Enums                          | `enums/`                                           | `enums/lyrics/LyricsType.kt`                  |
+| Extensions (optional features) | `extensions.{feature}/`                            | `extensions/audiobar/`, `extensions/discord/` |
+| Database tables & migrations   | `core/database/`                                   | `core/database/SongTable.kt`                  |
+| Network layer                  | `core/network/`                                    | `core/network/client/NetworkClientFactory.kt` |
+| Services (player, download)    | `playback/services/`, `download/services/`         | `PlayerServiceModern.kt`                      |
+| Utilities                      | `utils/`                                           | `utils/MediaItemUtils.kt`                     |
 
 ### Imports
 

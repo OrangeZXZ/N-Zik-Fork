@@ -3,6 +3,15 @@
 ## 2026-07-08
 
 ### Added
+- docs(agent): update AGENTS.md with 3-package tree structure, file placement rules, and dual enforcement
+  - Expanded "Project Structure" section with full directory tree for all 3 packages (`app.n_zik.android`, `app.it.fast4x.rimusic`, `app.kreate.android`)
+  - Added "Three Package Trees" table with roles, sizes, and rules for each package
+  - Added detailed `app.n_zik.android` structure breakdown (components, core, playback, etc.)
+  - Added "File Placement (MANDATORY)" section with placement rules and component location table
+  - Added "Dual Enforcement: AGENTS.md + BMAD" section — agents must follow BOTH sets of rules in parallel
+  - Marked both `app.it.fast4x.rimusic` and `app.kreate.android` as legacy (READ-ONLY, will be removed)
+
+### Added
 - feat(audiobar): update waveform ! (gh-605)
   - Renamed "Refresh Fake Audio Bar" to "update waveform !" in `PlayerItemMenu.kt`
   - Reused the logo from the visualizer (playing_indicator)
