@@ -195,6 +195,7 @@ Issue: Link to the issue
 ```
 
 14. **Done.txt** -- When the user asks to commit, update Done.txt located in assets/notes/Done.txt in the same commit as the changes.
+15. **Announce your steps before acting** -- Before making ANY file edit, running ANY command, or executing ANY tool call, you MUST first output a short numbered plan of the concrete steps you are about to take (what file, what change, why). Execute strictly in that order, one step at a time. If a step requires deviating from the announced plan (new information, blocker, error), STOP, explain why, and re-announce the updated plan before continuing. Never silently batch multiple unannounced actions together, and never skip straight to execution "because it's obvious."
 
 ---
 
