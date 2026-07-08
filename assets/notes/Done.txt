@@ -15,6 +15,7 @@
   - Removed inline import paths for cleaner code
 
 ### Fixed
+- fix(menu): reset at 50% without ui lags or buggy animations
 - fix(audiobar): preserve Format on download removal and remove debug logs (`078e7c025c`)
   - Removed `formatTable.deleteBySongId()` from `STATE_REMOVING` in `MyDownloadService` so StatsNerds keeps bitrate/size metadata after download deletion
   - Cleaned up all debug Timber logs across audiobar, menus, and settings
