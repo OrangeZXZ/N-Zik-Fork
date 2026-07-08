@@ -24,7 +24,9 @@ import kotlin.math.pow
 
 object WaveformExtractor {
 
-    val refreshSignal = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    val refreshSignal = MutableSharedFlow<Long>(extraBufferCapacity = 1)
+    val extractionSuccessSignal = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    val extractionErrorSignal = MutableSharedFlow<String>(extraBufferCapacity = 1)
     private val gson = Gson()
     private const val TARGET_SAMPLES = 150 // We want roughly 150 amplitude values for the UI
 
@@ -37,7 +39,7 @@ object WaveformExtractor {
             savedFile.delete()
         }
         Timber.tag("NZik_AudioBar").d("DeleteWaveform: Emit refresh signal for $mediaId")
-        refreshSignal.tryEmit(mediaId)
+        refreshSignal.tryEmit(System.currentTimeMillis())
     }
 
     suspend fun getOrExtractWaveform(context: Context, mediaId: String, caches: List<Cache>): List<Int>? {
@@ -117,6 +119,7 @@ object WaveformExtractor {
                 if (amplitudes.size >= TARGET_SAMPLES - 2) {
                     savedFile.writeText(gson.toJson(amplitudes))
                     Timber.tag("NZik_AudioBar").d("Waveform reconstructed successfully for $mediaId")
+                    extractionSuccessSignal.tryEmit(mediaId)
                     return@withContext amplitudes
                 }
             } catch (e: Exception) {
@@ -125,6 +128,7 @@ object WaveformExtractor {
                 } else {
                     Timber.tag("NZik_AudioBar").e(e, "Native waveform extraction failed for $mediaId")
                 }
+                extractionErrorSignal.tryEmit(mediaId)
             } finally {
                 if (tempFile.exists()) {
                     tempFile.delete()

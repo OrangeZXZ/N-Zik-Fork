@@ -21,6 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.merge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,11 +32,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -130,39 +136,45 @@ class PlayerItemMenu private constructor(
     override var menuStyle: MenuStyle by styleState
 
     @Composable
-    override fun ListMenu() = ListMenu.Menu(title = null, showDragHandle = false) {
-        // Section: Information
-        SectionTitle(stringResource(R.string.information))
+    override fun ListMenu() {
+        val playerTimelineType by rememberPreference(app.it.fast4x.rimusic.utils.playerTimelineTypeKey, app.it.fast4x.rimusic.enums.PlayerTimelineType.Wavy)
+        ListMenu.Menu(title = null, showDragHandle = false) {
+            // Section: Information
+            SectionTitle(stringResource(R.string.information))
         buttons.getOrNull(0)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
         // Section: Playback
         SectionTitle(stringResource(R.string.playback))
-        buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(5)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(6)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(7)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
         // Section: Management
         SectionTitle(stringResource(R.string.management))
-        buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
+            buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        }
         buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
         buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(7)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
         buttons.getOrNull(8)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(9)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(buttons.size - 1)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
         // Section: Navigation
         SectionTitle(stringResource(R.string.navigation))
-        for (i in 9 until (buttons.size - 1)) {
-            buttons.getOrNull(i)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            for (i in 10 until (buttons.size - 1)) {
+                buttons.getOrNull(i)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            }
         }
-
-        // Actions (equalizer, sleep timer, refetch)
-        buttons.getOrNull(5)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(6)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(buttons.size - 1)?.let { if (it is MenuIcon) it.ListMenuItem() }
     }
 
     @Composable
-    override fun GridMenu() = GridMenu.Menu(title = null, showDragHandle = false) {
-        // Section: Information
-        item(span = { GridItemSpan(maxLineSpan) }) {
+    override fun GridMenu() {
+        val playerTimelineType by rememberPreference(app.it.fast4x.rimusic.utils.playerTimelineTypeKey, app.it.fast4x.rimusic.enums.PlayerTimelineType.Wavy)
+        GridMenu.Menu(title = null, showDragHandle = false) {
+            // Section: Information
+            item(span = { GridItemSpan(maxLineSpan) }) {
             SectionTitle(stringResource(R.string.information))
         }
         buttons.getOrNull(0)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
@@ -171,30 +183,32 @@ class PlayerItemMenu private constructor(
         item(span = { GridItemSpan(maxLineSpan) }) {
             SectionTitle(stringResource(R.string.playback))
         }
-        buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(5)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(6)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(7)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
         // Section: Management
         item(span = { GridItemSpan(maxLineSpan) }) {
             SectionTitle(stringResource(R.string.management))
         }
-        buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
+            buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        }
         buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(7)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         buttons.getOrNull(8)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(9)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(buttons.size - 1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
         // Section: Navigation
         item(span = { GridItemSpan(maxLineSpan) }) {
             SectionTitle(stringResource(R.string.navigation))
         }
-        for (i in 9 until (buttons.size - 1)) {
-            buttons.getOrNull(i)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            for (i in 10 until (buttons.size - 1)) {
+                buttons.getOrNull(i)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            }
         }
-
-        // Actions (equalizer, sleep timer, refetch)
-        buttons.getOrNull(5)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(6)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(buttons.size - 1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
     }
 
     @Composable
@@ -203,6 +217,7 @@ class PlayerItemMenu private constructor(
         val uriHandler = LocalUriHandler.current
         val coroutineScope = rememberCoroutineScope()
         val song = remember(mediaItem) { mediaItem.asSong }
+        val playerTimelineType by rememberPreference(app.it.fast4x.rimusic.utils.playerTimelineTypeKey, app.it.fast4x.rimusic.enums.PlayerTimelineType.Wavy)
 
         // Reactively collect Album and Artists (like the old menu)
         val albumData by remember(mediaItem.mediaId) {
@@ -277,31 +292,49 @@ class PlayerItemMenu private constructor(
             }
         }
 
+        val downloadStateMedia = app.it.fast4x.rimusic.utils.getDownloadStateMedia(binder, mediaItem.mediaId)
+        val downloadStateMediaState = rememberUpdatedState(downloadStateMedia)
+
         // Refresh Audio Waves
         val refreshAudioWavesButton = remember {
             object : MenuIcon, Descriptive, Clickable {
-                override val iconId: Int = R.drawable.sync
-                override val messageId: Int = R.string.update
+                override val iconId: Int = R.drawable.playing_indicator
+                override val messageId: Int = R.string.update_waveform
                 @get:Composable
-                override val menuIconTitle: String get() = stringResource(messageId)
+                override val menuIconTitle: String get() = stringResource(R.string.update_waveform)
+                
+                override val modifier: Modifier
+                    get() = Modifier.alpha(
+                        if (downloadStateMediaState.value == app.it.fast4x.rimusic.enums.DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) 0.5f else 1f
+                    )
 
                 override fun onShortClick() {
-                    val caches = listOfNotNull(
-                        binder?.downloadCache ?: MyDownloadHelper.getDownloadCache(mContext),
-                        binder?.cache
-                    )
-                    var isCached = false
-                    for (cache in caches) {
-                        if (cache.getCachedSpans(mediaItem.mediaId).isNotEmpty()) {
-                            isCached = true
-                            break
-                        }
-                    }
-                    
-                    if (!isCached) {
+                    // Check state through rememberUpdatedState which holds the latest composition value
+                    if (downloadStateMediaState.value == app.it.fast4x.rimusic.enums.DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) {
                         Toaster.w(R.string.error_music_not_fully_cached)
                     } else {
-                        WaveformExtractor.deleteWaveform(mContext, mediaItem.mediaId)
+                        // Toast info refresh in progress
+                        Toaster.i(R.string.updating_waveform_in_progress)
+                        
+                        coroutineScope.launch {
+                            WaveformExtractor.deleteWaveform(mContext, mediaItem.mediaId)
+                            // Wait for either the success or error signal before showing the toaster
+                            val successFlow = WaveformExtractor.extractionSuccessSignal
+                                .filter { it == mediaItem.mediaId }
+                                .map { true }
+                            val errorFlow = WaveformExtractor.extractionErrorSignal
+                                .filter { it == mediaItem.mediaId }
+                                .map { false }
+                            
+                            val result = kotlinx.coroutines.withTimeoutOrNull(15000) {
+                                merge(successFlow, errorFlow).first()
+                            }
+                            if (result == true) {
+                                Toaster.s(R.string.waveform_updated_successfully)
+                            } else {
+                                Toaster.e(R.string.error_updating_waveform)
+                            }
+                        }
                         menuState.hide()
                     }
                 }
@@ -381,19 +414,19 @@ class PlayerItemMenu private constructor(
             }
         }
 
-        // Re-order to match screenshot exactly
+        // Re-order to match SongItemMenu layout exactly
         buttons = remember(song, albumData, artistsData) {
             mutableListOf<Button>().apply {
                 add(infoButton)           // 0
-                add(refreshAudioWavesButton)
-                add(renameSong)           // 1
-                add(changeAuthor)         // 2
-                add(changeCover)          // 3
-                add(startRadio)           // 4
-                add(equalizerButton)      // 5
-                add(sleepTimerButton)     // 6
-                add(addToFavorite)        // 7
-                add(addToPlaylist)        // 8
+                add(refreshAudioWavesButton) // 1 (always added, conditionally rendered in ListMenu/GridMenu)
+                add(renameSong)           // 2
+                add(changeAuthor)         // 3
+                add(changeCover)          // 4
+                add(startRadio)           // 5
+                add(equalizerButton)      // 6
+                add(sleepTimerButton)     // 7
+                add(addToFavorite)        // 8
+                add(addToPlaylist)        // 9
                 
                 // Go to Album (Always visible, priority to direct navigation)
                 add(object : MenuIcon, Descriptive, Clickable {

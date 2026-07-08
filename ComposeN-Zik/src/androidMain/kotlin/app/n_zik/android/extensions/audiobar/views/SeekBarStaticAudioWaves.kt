@@ -63,7 +63,7 @@ fun SeekBarStaticAudioWaves(
     val currentSongStateDownload by binder?.service?.currentSongStateDownload?.collectAsState() 
         ?: mutableStateOf(androidx.media3.exoplayer.offline.Download.STATE_STOPPED)
 
-    val refreshSignal by WaveformExtractor.refreshSignal.collectAsState(initial = "")
+    val refreshSignal by WaveformExtractor.refreshSignal.collectAsState(initial = 0L)
 
     LaunchedEffect(uiMedia?.id, currentSongStateDownload, refreshSignal) {
         if (uiMedia != null) {
