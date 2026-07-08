@@ -14,8 +14,10 @@ jobs:
       - name: Calculate days remaining
         id: countdown
         run: |
-          TARGET="2026-09-30"
-          DAYS=$(( ( $(date -d "$TARGET" +%s) - $(date -d "$(date +%Y-%m-%d)" +%s) ) / 86400 ))
+          TARGET="2026-09-30 00:00:00"
+          NOW=$(date +%s)
+          TARGET_EPOCH=$(date -d "$TARGET" +%s)
+          DAYS=$(( (TARGET_EPOCH - NOW) / 86400 ))
           [ $DAYS -lt 0 ] && DAYS=0
           echo "days=$DAYS" >> $GITHUB_OUTPUT
       - name: Update README
