@@ -234,20 +234,22 @@ When a BMAD skill is loaded, its instructions are **additive**, not a replacemen
 1. **AGENTS.md rules** (this file) — Core rules (section 1), commit conventions (section 4), build verification (section 5), database rules (section 6), UI guidelines (section 7), logging (section 8), error handling (section 9), performance (section 10), testing (section 11), security (section 12), workflow (section 13), communication (section 15), and reference patterns (sections 16-18)
 2. **BMAD skill instructions** — The skill's workflow steps, templates, quality gates, and checkpoints
 
-**If there is a conflict** between AGENTS.md and a BMAD skill, AGENTS.md takes precedence for:
+**General precedence rule:** AGENTS.md always takes precedence for anything related to the code produced, security, and the absolute rules in sections 1-12 (commits, license checks, logging, database, build verification, UI, error handling, performance, testing, security). BMAD only drives the _process_: step ordering, output templates, and checkpoint gating. If a BMAD skill's workflow step conflicts with an AGENTS.md rule in sections 1-12 (e.g. a skill step says to commit, skip a test, or touch the schema), **AGENTS.md wins** — skip or adapt that step and flag the conflict to the human contributor instead of silently following the skill.
+
+Non-exhaustive examples where AGENTS.md wins:
 
 - Core rules (section 1): No commits without human test, license checks, Timber logging, no version bumps
 - Build verification: Must pass `./gradlew :ComposeN-Zik:assembleDebug` before reporting
 - Database rules: Never edit schema without explicit instruction
 - Commit conventions: Follow the project's type(scope) format
 
-BMAD skills take precedence for:
+BMAD skills take precedence only for:
 
 - Workflow ordering and checkpoint halting
 - Skill-specific templates and output formats
 - Phase-specific quality gates
 
-**In practice:** After every BMAD checkpoint, verify that all AGENTS.md core rules (section 1) are still satisfied before proceeding.
+**In practice:** After every BMAD checkpoint, verify that all AGENTS.md rules in sections 1-12 are still satisfied before proceeding.
 
 ### Reference Projects
 
@@ -275,13 +277,7 @@ The `docs/` folder contains reference implementations from similar projects (Met
 
 ### File Placement (MANDATORY)
 
-This project has **three package trees**. Always place new files in the correct one:
-
-| Package prefix          | Use for                                             | Rule                         | Example                                                 |
-| ----------------------- | --------------------------------------------------- | ---------------------------- | ------------------------------------------------------- |
-| `app.n_zik.android`     | **All new NZik code** (components, features, utils) | ★ ALWAYS                     | `app.n_zik.android.components.settings.BugReportDialog` |
-| `app.it.fast4x.rimusic` | **Legacy RiMusic** (base UI, models, enums)         | ⚠ READ-ONLY, will be removed | existing `About.kt`, `SettingsScreen.kt`                |
-| `app.kreate.android`    | **Legacy Kreate** (Repository, Toaster, CSV)        | ⚠ READ-ONLY, will be removed | `Repository.kt` (GITHUB_API, REPO_URL)                  |
+This project has **three package trees** — see section 0 ("Three Package Trees") for the full breakdown of roles, sizes, and structure.
 
 **Rules:**
 
