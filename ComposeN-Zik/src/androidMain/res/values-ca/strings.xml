@@ -791,6 +791,7 @@
   <string name="social_telegram_info">Uneix-te al grup a Telegram</string>
   <string name="social_github">GitHub</string>
   <string name="update">Actualitza</string>
+  <string name="update_waveform">Update waveform</string>
   <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
   <string name="player_pause_listen_history_info">No es desen els esdeveniments de reproducció utilitzats per a les estadístiques, l\'historial i els suggeriments en imatges ràpides</string>
   <string name="vertical_widget">Giny vertical</string>
@@ -1439,4 +1440,8 @@
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
   <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
+  <string name="error_music_not_fully_cached">Music must be fully downloaded or cached to refresh audio waves</string>
+  <string name="updating_waveform_in_progress">Updating waveform in progress…</string>
+  <string name="waveform_updated_successfully">Waveform updated successfully</string>
+  <string name="error_updating_waveform">Error updating waveform</string>
 </resources>

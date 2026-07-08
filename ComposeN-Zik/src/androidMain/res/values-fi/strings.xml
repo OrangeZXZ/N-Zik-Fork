@@ -791,6 +791,7 @@
   <string name="social_telegram_info">Liity ryhmään Telegramissa</string>
   <string name="social_github">GitHub</string>
   <string name="update">Päivitä</string>
+  <string name="update_waveform">Update waveform</string>
   <string name="update_song">Haluatko varmasti palauttaa tämän kappaleen? Toistoaika ja välimuistissa olevat tiedot ovat käytössä.\\nTämä toiminto on peruuttamaton.</string>
   <string name="player_pause_listen_history_info">Ei tallenna toiston tapahtumia, joita käytetään tilastoissa, historiassa ja pikavalinnan ehdotuksissa</string>
   <string name="vertical_widget">Pystysuora widgetti</string>
@@ -1439,4 +1440,8 @@
   <string name="sync_no_items">No items to sync</string>
   <string name="sync_completed_with_errors">Sync completed with errors</string>
   <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
+  <string name="error_music_not_fully_cached">Music must be fully downloaded or cached to refresh audio waves</string>
+  <string name="updating_waveform_in_progress">Updating waveform in progress…</string>
+  <string name="waveform_updated_successfully">Waveform updated successfully</string>
+  <string name="error_updating_waveform">Error updating waveform</string>
 </resources>
