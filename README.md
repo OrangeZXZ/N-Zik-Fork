@@ -47,7 +47,7 @@
 
 <div align="center">
 <br><br>
-<img src="assets/design/warning-rounded.png" width="80%">
+<img src="assets/design/warning-rounded.png" width="30%">
 <br>
 
 <h1>⏳ Only <a href="https://keepandroidopen.org"><img src="https://img.shields.io/badge/J--83-red?style=flat-round&logo=android&logoColor=white" alt="Android Lockdown"/></a> days remaining until Android Lockdown</h1>
