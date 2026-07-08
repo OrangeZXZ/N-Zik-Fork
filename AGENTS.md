@@ -198,9 +198,10 @@ Issue: Link to the issue
 14. **Done.txt** -- When the user asks to commit, update Done.txt located in assets/notes/Done.txt in the same commit as the changes.
 15. **Announce your steps before acting** -- Before making ANY file edit, running ANY command, or executing ANY tool call, you MUST first output a short numbered plan of the concrete steps you are about to take (what file, what change, why). Execute strictly in that order, one step at a time. If a step requires deviating from the announced plan (new information, blocker, error), STOP, explain why, and re-announce the updated plan before continuing. Never silently batch multiple unannounced actions together, and never skip straight to execution "because it's obvious."
     - **This is not a one-time formality.** A single acknowledgment message at the start of the session ("I have read AGENTS.md and will comply") does NOT satisfy this rule on its own and must never be treated as a substitute for ongoing compliance.
-    - **Persistent reminder required:** before EVERY subsequent tool call, file edit, or command in the session -- not only the first one -- restate in condensed form: `[Step: <current step name>] [Rule: <relevant rule # from this file>]`. This applies equally at message 2 and at message 200 of the same session; context length or session fatigue is never a reason to drop it.
-    - **Checkpoint every 5 actions (or at the start of each new feature/task):** output a short recap of which Core Rules are still active and which step of the Section 13 workflow you are currently on, before continuing.
-    - If you notice you have skipped an announcement, stop immediately, admit it explicitly, and resume only after re-announcing the current step.
+    - **Token budget matters — keep it SHORT.** The per-action reminder is ONE LINE ONLY: `[Step: <name>] [Rule: <#>]`. No re-explaining, no restating the full plan, no prose paragraphs around it. It goes right before the tool call/edit, nothing more. Violating this by writing long-form reminders wastes tokens and is itself non-compliant.
+    - **Full plans only when they change.** The detailed numbered plan (per the main rule above) is only needed when starting a new task/feature or when deviating from the previous plan -- not repeated on every single action once a plan is already in motion. Between plan changes, the one-line tag is enough.
+    - **Checkpoint only at real milestones:** a short recap of active Core Rules + current Section 13 step is required only at the start of a new feature/task or after a real deviation -- not on a fixed action count. Keep it to 2-3 lines max.
+    - If you notice you have skipped an announcement, stop immediately, admit it in one line, and resume with the one-line tag -- no lengthy apology needed.
 
 ---
 
@@ -825,13 +826,26 @@ When implementing a feature or fixing a bug, follow this process:
 
 ### Step 3: Execute BMAD Skill (MANDATORY)
 
+**⛔ HARD GATE — DO NOT PROCEED WITHOUT THIS STEP.** You are NOT ALLOWED to produce an `implementation_plan.md`, propose an implementation plan, write any code, or move to Step 4 for ANY feature or bug fix until you have:
+
+Read the entire AGENTS.md file and follow its workflow in order.
+
+In particular:
+
+Complete the Understand phase first.
+Ask every required clarification question before continuing.
+Do not start BMAD, load any skill, create an implementation plan, or modify files until all ambiguities are resolved and the required information has been provided by the user.
+Only then continue to the BMAD phase and subsequent steps.
+
+If you catch yourself drafting a plan or touching a file before doing the above, STOP immediately, discard/redo and say so explicitly to the human — do not silently patch it in after the fact.
+
 **After understanding and exploring, you MUST execute the appropriate BMAD skill.** Read section 2 (BMAD Method) to identify which skill matches the task, then execute it.
 
 BMAD is primordial and must never be deviated from once its workflow is started.
 
 **Rules for BMAD execution:**
 
-- **Identify your tool.** ASK the human which IDE/tool they are using. Do NOT assume. Skill directories differ between tools — guessing wrong means loading from the wrong path.
+- **Identify your tool.** ALWAYS ask the human which IDE/tool they are using before loading any BMAD skill. Never infer, detect, guess, or assume the tool from context, file structure, or previous messages.
 - **Locate skills on disk.** Verify the skill file exists before loading. Check BOTH the project directory AND the parent directory — the installer may have been run from the parent. Full reference from BMAD installer `platform-codes.yaml`:
 
 ### Preferred tools (recommended during install)
@@ -903,6 +917,8 @@ Never assume a path — always verify with a file search first.
 - The skill's workflow takes precedence over this section if there's a conflict
 
 ### Step 4: Implement
+
+**Gate check:** before writing any code here, confirm Step 3 was actually done (skill identified, opened, and cited) — not just planned. If it wasn't, go back to Step 3 now.
 
 - Write clean, focused code following all guidelines
 - Follow existing patterns and conventions
