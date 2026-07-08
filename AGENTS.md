@@ -1037,3 +1037,22 @@ fun Song.toMediaItem(): MediaItem = MediaItem.Builder()
 2. Consult reference projects in `docs/`
 3. Ask a human contributor
 4. Never assume requirements
+
+---
+
+## 17. UI & Animations Specifics
+
+### CustomModalBottomSheet and Animations
+When dismissing a `CustomModalBottomSheet` manually from an inner component (e.g., clicking a close chevron instead of swiping down), **always** orchestrate the hide animation before changing the visibility state. Modifying the global boolean (`showSheet = false`) immediately will kill the component from the Composition tree and break the transition.
+
+**Correct Pattern:**
+```kotlin
+coroutineScope.launch {
+    if (sheetState.isVisible) sheetState.hide()
+    showSheet = false // Only update boolean AFTER animation
+}
+```
+**Incorrect Pattern:**
+```kotlin
+onDismiss = { showSheet = false } // Brittle: causes sudden disappearance
+```

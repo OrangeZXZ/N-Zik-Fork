@@ -15,6 +15,10 @@
   - Removed inline import paths for cleaner code
 
 ### Fixed
+- fix(player): resolve missing closing animations on manual dismiss (`9f35d2c8e2`)
+  - Wrapped `showPlayer = false` state changes in a coroutine to allow `sheetState.hide()` to complete first.
+  - Fixes the bug where clicking the chevron down button caused the player to disappear instantly without animation.
+  - Added new Rule 17 to AGENTS.md for `CustomModalBottomSheet` animation guidelines.
 - fix(menu): close menu on navigation
 - fix(lyrics): prevent FOREIGN KEY constraint crash on fast lyric APIs (Heisenbug)
   - Created `saveLyricsSafe` helper in `LyricsFetcher.kt` to catch `SQLiteConstraintException`

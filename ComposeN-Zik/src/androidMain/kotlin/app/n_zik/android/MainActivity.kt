@@ -1071,7 +1071,12 @@ class MainActivity :
                                 miniPlayer = {
                                     MiniPlayer(
                                         showPlayer = { showPlayer = true },
-                                        hidePlayer = { showPlayer = false },
+                                        hidePlayer = {
+                                            coroutineScope.launch {
+                                                if (playerState.isVisible) playerState.hide()
+                                                showPlayer = false
+                                            }
+                                        },
                                         navController = navController
                                     )
                                 },
@@ -1095,8 +1100,11 @@ class MainActivity :
                                         onCurrentSecond = {},
                                         showPlayer = showPlayer,
                                         onSwitchToAudioPlayer = {
-                                            showPlayer = false
-                                            switchToAudioPlayer = true
+                                            coroutineScope.launch {
+                                                if (playerState.isVisible) playerState.hide()
+                                                showPlayer = false
+                                                switchToAudioPlayer = true
+                                            }
                                         }
                                     )
                                 }
@@ -1129,8 +1137,11 @@ class MainActivity :
                                     shape = androidx.compose.ui.graphics.RectangleShape
                                 ) {
                                     Player( navController ) { 
-                                        showPlayer = false
-                                        switchToAudioPlayer = false
+                                        coroutineScope.launch {
+                                            if (playerState.isVisible) playerState.hide()
+                                            showPlayer = false
+                                            switchToAudioPlayer = false
+                                        }
                                     }
                                 }
                             }
