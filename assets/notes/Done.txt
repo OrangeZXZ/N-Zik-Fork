@@ -12,6 +12,10 @@
   - Marked both `app.it.fast4x.rimusic` and `app.kreate.android` as legacy (READ-ONLY, will be removed)
 
 ### Added
+- feat(navigation): Weird blank parts when quiting the settings (gh-565)
+  - Fixed exit directions for SlideVertical and SlideHorizontal so screens move together without separating gaps.
+  - Set popEnterTransition to EnterTransition.None specifically for slide animations to keep the previous screen static, matching Android defaults.
+  - Replaced broken expandIn/shrinkOut layout bounds animations with scaleIn(2.0f)/scaleOut(2.0f) to make Expand a fluid, glitch-free visual inverse of Scale.
 - feat(audiobar): update waveform ! (gh-605)
   - Renamed "Refresh Fake Audio Bar" to "update waveform !" in `PlayerItemMenu.kt`
   - Reused the logo from the visualizer (playing_indicator)

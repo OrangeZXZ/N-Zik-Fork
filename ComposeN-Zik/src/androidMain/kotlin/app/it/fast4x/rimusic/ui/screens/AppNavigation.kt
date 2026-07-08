@@ -157,7 +157,7 @@ fun AppNavigation(
         {
             when (transitionEffect) {
                 TransitionEffect.None -> EnterTransition.None
-                TransitionEffect.Expand -> expandIn(animationSpec = tween(350, easing = LinearOutSlowInEasing), expandFrom = Alignment.TopStart)
+                TransitionEffect.Expand -> scaleIn(animationSpec = tween(350), initialScale = 2.0f)
                 TransitionEffect.Fade -> fadeIn(animationSpec = tween(350))
                 TransitionEffect.Scale -> scaleIn(animationSpec = tween(350))
                 TransitionEffect.SlideVertical -> slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Up)
@@ -168,7 +168,31 @@ fun AppNavigation(
         {
             when (transitionEffect) {
                 TransitionEffect.None -> ExitTransition.None
-                TransitionEffect.Expand -> shrinkOut(animationSpec = tween(350, easing = FastOutSlowInEasing),shrinkTowards = Alignment.TopStart)
+                TransitionEffect.Expand -> scaleOut(animationSpec = tween(350), targetScale = 2.0f)
+                TransitionEffect.Fade -> fadeOut(animationSpec = tween(350))
+                TransitionEffect.Scale -> scaleOut(animationSpec = tween(350))
+                TransitionEffect.SlideVertical -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Up)
+                TransitionEffect.SlideHorizontal -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            }
+        }
+
+    val popEnterTransition: (@JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition) =
+        {
+            when (transitionEffect) {
+                TransitionEffect.None -> EnterTransition.None
+                TransitionEffect.Expand -> scaleIn(animationSpec = tween(350), initialScale = 2.0f)
+                TransitionEffect.Fade -> fadeIn(animationSpec = tween(350))
+                TransitionEffect.Scale -> scaleIn(animationSpec = tween(350))
+                TransitionEffect.SlideVertical -> EnterTransition.None
+                TransitionEffect.SlideHorizontal -> EnterTransition.None
+            }
+        }
+
+    val popExitTransition: (@JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) =
+        {
+            when (transitionEffect) {
+                TransitionEffect.None -> ExitTransition.None
+                TransitionEffect.Expand -> scaleOut(animationSpec = tween(350), targetScale = 2.0f)
                 TransitionEffect.Fade -> fadeOut(animationSpec = tween(350))
                 TransitionEffect.Scale -> scaleOut(animationSpec = tween(350))
                 TransitionEffect.SlideVertical -> slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Down)
@@ -197,8 +221,8 @@ fun AppNavigation(
         startDestination = NavRoutes.home.name,
         enterTransition = enterTransition,
         exitTransition = exitTransition,
-        popEnterTransition = enterTransition,
-        popExitTransition = exitTransition
+        popEnterTransition = popEnterTransition,
+        popExitTransition = popExitTransition
     ) {
         val navigateToPlaylist =
             { browseId: String -> navController.navigateClean("${NavRoutes.playlist.name}/$browseId", context) }
