@@ -1439,4 +1439,5 @@ Volume BAS : titre précédent</string>
   <string name="sync_successful">Synchronisation réussie</string>
   <string name="sync_no_items">Aucun élément à synchroniser</string>
   <string name="sync_completed_with_errors">La synchronisation s\'est terminée avec des erreurs</string>
+  <string name="album_found_online_verify">Album found online! Please verify it\'s the correct one.</string>
 </resources>
