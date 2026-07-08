@@ -86,6 +86,9 @@ import app.kreate.android.me.knighthat.sync.YouTubeSync
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import app.it.fast4x.rimusic.ui.screens.info.VideoOrSongInfoScreen
+import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
+import app.n_zik.android.download.utils.MyDownloadHelper
+
 
 @UnstableApi
 @ExperimentalFoundationApi
@@ -274,6 +277,38 @@ class PlayerItemMenu private constructor(
             }
         }
 
+        // Refresh Audio Waves
+        val refreshAudioWavesButton = remember {
+            object : MenuIcon, Descriptive, Clickable {
+                override val iconId: Int = R.drawable.sync
+                override val messageId: Int = R.string.update
+                @get:Composable
+                override val menuIconTitle: String get() = stringResource(messageId)
+
+                override fun onShortClick() {
+                    val caches = listOfNotNull(
+                        binder?.downloadCache ?: MyDownloadHelper.getDownloadCache(mContext),
+                        binder?.cache
+                    )
+                    var isCached = false
+                    for (cache in caches) {
+                        if (cache.getCachedSpans(mediaItem.mediaId).isNotEmpty()) {
+                            isCached = true
+                            break
+                        }
+                    }
+                    
+                    if (!isCached) {
+                        Toaster.w(R.string.error_music_not_fully_cached)
+                    } else {
+                        WaveformExtractor.deleteWaveform(mContext, mediaItem.mediaId)
+                        menuState.hide()
+                    }
+                }
+                override fun onLongClick() {}
+            }
+        }
+
         // Sleep Timer
         val sleepTimerButton = remember {
             object : MenuIcon, Descriptive, Clickable {
@@ -350,6 +385,7 @@ class PlayerItemMenu private constructor(
         buttons = remember(song, albumData, artistsData) {
             mutableListOf<Button>().apply {
                 add(infoButton)           // 0
+                add(refreshAudioWavesButton)
                 add(renameSong)           // 1
                 add(changeAuthor)         // 2
                 add(changeCover)          // 3

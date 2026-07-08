@@ -14,6 +14,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.MutableSharedFlow
 import androidx.media3.common.C
 import java.io.File
 import java.io.FileOutputStream
@@ -23,15 +24,20 @@ import kotlin.math.pow
 
 object WaveformExtractor {
 
+    val refreshSignal = MutableSharedFlow<String>(extraBufferCapacity = 1)
     private val gson = Gson()
     private const val TARGET_SAMPLES = 150 // We want roughly 150 amplitude values for the UI
 
     fun deleteWaveform(context: Context, mediaId: String) {
+        Timber.tag("NZik_AudioBar").d("Deleting waveform for $mediaId")
         val waveformDir = File(context.filesDir, "waveforms")
         val savedFile = File(waveformDir, "$mediaId.json")
         if (savedFile.exists()) {
+            Timber.tag("NZik_AudioBar").d("DeleteWaveform: $mediaId.json exists")
             savedFile.delete()
         }
+        Timber.tag("NZik_AudioBar").d("DeleteWaveform: Emit refresh signal for $mediaId")
+        refreshSignal.tryEmit(mediaId)
     }
 
     suspend fun getOrExtractWaveform(context: Context, mediaId: String, caches: List<Cache>): List<Int>? {
@@ -110,6 +116,7 @@ object WaveformExtractor {
                 val amplitudes = extractAmplitudesNative(tempFile.absolutePath)
                 if (amplitudes.size >= TARGET_SAMPLES - 2) {
                     savedFile.writeText(gson.toJson(amplitudes))
+                    Timber.tag("NZik_AudioBar").d("Waveform reconstructed successfully for $mediaId")
                     return@withContext amplitudes
                 }
             } catch (e: Exception) {

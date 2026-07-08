@@ -105,3 +105,7 @@
 - fix(lyrics): Adjusted line multipliers for 4+ lines in SyncedLyricsView thumbnail mode
 - fix(song): GoToAlbum fallback to searchPage API when nextPage fails to find the album
 - fix(search): remove explicit `e:` prefix in `SearchSuggestions.kt` to fix UI duplication of the explicit badge in the search suggestions list
+- feat(player): Refresh Fake Audio Bar (gh-605)
+  - Added option to refresh the fake audio bar in the player menu (SeekBarStaticAudioWaves)
+  - Added validation to prevent refreshing if the song is not fully downloaded or cached, with a Toaster error
+  - Removed inline import paths for cleaner code in PlayerItemMenu.kt
