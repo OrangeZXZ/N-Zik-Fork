@@ -690,62 +690,62 @@ BMAD is primordial and must never be deviated from once its workflow is started.
 
 **Rules for BMAD execution:**
 
-- **Identify your tool.** Determine which tool is running. Skill directories differ between tools.
-- **Locate skills on disk.** Verify the skill file exists before loading. Full reference from BMAD installer `platform-codes.yaml`:
+- **Identify your tool.** ASK the human which IDE/tool they are using. Do NOT assume. Skill directories differ between tools — guessing wrong means loading from the wrong path.
+- **Locate skills on disk.** Verify the skill file exists before loading. Check BOTH the project directory AND the parent directory — the installer may have been run from the parent. Full reference from BMAD installer `platform-codes.yaml`:
 
 ### Preferred tools (recommended during install)
 
-| Tool           | Skills dir        | Global dir          | Extra                                                        |
-| -------------- | ----------------- | ------------------- | ------------------------------------------------------------ |
-| Claude Code    | `.claude/skills/` | `~/.claude/skills/` |                                                              |
-| Cursor         | `.agents/skills/` | `~/.agents/skills/` |                                                              |
-| GitHub Copilot | `.agents/skills/` | `~/.agents/skills/` | Commands: `.github/agents/` (.agent.md), filter: agents-only |
-| Codex          | `.agents/skills/` | `~/.codex/skills/`  |                                                              |
+| Tool                  | Skills dir        | Global dir                      | Extra                                                        |
+| --------------------- | ----------------- | ------------------------------- | ------------------------------------------------------------ |
+| OpenCode ⭐           | `.agents/skills/` | `~/.agents/skills/`             | Commands: `.opencode/commands/`                              |
+| Google Antigravity ⭐ | `.agent/skills/`  | `~/.gemini/antigravity/skills/` |                                                              |
+| Claude Code           | `.claude/skills/` | `~/.claude/skills/`             |                                                              |
+| Cursor                | `.agents/skills/` | `~/.agents/skills/`             |                                                              |
+| GitHub Copilot        | `.agents/skills/` | `~/.agents/skills/`             | Commands: `.github/agents/` (.agent.md), filter: agents-only |
+| Codex                 | `.agents/skills/` | `~/.codex/skills/`              |                                                              |
 
 ### All other tools
 
-| Tool               | Skills dir            | Global dir                      | Extra                           |
-| ------------------ | --------------------- | ------------------------------- | ------------------------------- |
-| OpenCode           | `.agents/skills/`     | `~/.agents/skills/`             | Commands: `.opencode/commands/` |
-| AdaL               | `.adal/skills/`       | `~/.adal/skills/`               |                                 |
-| Sourcegraph Amp    | `.agents/skills/`     | `~/.config/agents/skills/`      |                                 |
-| Google Antigravity | `.agent/skills/`      | `~/.gemini/antigravity/skills/` |                                 |
-| Auggie             | `.agents/skills/`     | `~/.agents/skills/`             |                                 |
-| IBM Bob            | `.bob/skills/`        | `~/.bob/skills/`                |                                 |
-| Cline              | `.cline/skills/`      | `~/.cline/skills/`              |                                 |
-| CodeWhale          | `.codewhale/skills/`  | `~/.codewhale/skills/`          |                                 |
-| CodeBuddy          | `.codebuddy/skills/`  | `~/.codebuddy/skills/`          |                                 |
-| Command Code       | `.agents/skills/`     | `~/.agents/skills/`             |                                 |
-| Snowflake Cortex   | `.cortex/skills/`     | `~/.snowflake/cortex/skills/`   |                                 |
-| Crush              | `.agents/skills/`     | `~/.config/agents/skills/`      |                                 |
-| Factory Droid      | `.factory/skills/`    | `~/.factory/skills/`            |                                 |
-| Firebender         | `.firebender/skills/` | `~/.agents/skills/`             |                                 |
-| Gemini CLI         | `.agents/skills/`     | `~/.agents/skills/`             |                                 |
-| Block Goose        | `.agents/skills/`     | `~/.config/agents/skills/`      |                                 |
-| Hermes Agent       | `.agents/skills/`     | `~/.hermes/skills/`             |                                 |
-| iFlow              | `.iflow/skills/`      | `~/.iflow/skills/`              |                                 |
-| Junie              | `.junie/skills/`      | `~/.junie/skills/`              |                                 |
-| KiloCoder          | `.agents/skills/`     | `~/.kilocode/skills/`           |                                 |
-| Kimi Code          | `.agents/skills/`     | `~/.agents/skills/`             |                                 |
-| Kiro               | `.kiro/skills/`       | `~/.kiro/skills/`               |                                 |
-| Kode               | `.kode/skills/`       | `~/.kode/skills/`               |                                 |
-| Mistral Vibe       | `.agents/skills/`     | `~/.vibe/skills/`               |                                 |
-| Mux                | `.agents/skills/`     | `~/.agents/skills/`             |                                 |
-| Neovate            | `.neovate/skills/`    | `~/.neovate/skills/`            |                                 |
-| Ona                | `.ona/skills/`        | —                               |                                 |
-| OpenClaw           | `.agents/skills/`     | `~/.agents/skills/`             |                                 |
-| OpenHands          | `.agents/skills/`     | `~/.agents/skills/`             |                                 |
-| Pi                 | `.agents/skills/`     | `~/.agents/skills/`             |                                 |
-| Pochi              | `.agents/skills/`     | `~/.agents/skills/`             |                                 |
-| Qoder              | `.qoder/skills/`      | `~/.qoder/skills/`              |                                 |
-| QwenCoder          | `.qwen/skills/`       | `~/.qwen/skills/`               |                                 |
-| Replit Agent       | `.agents/skills/`     | —                               |                                 |
-| Roo Code           | `.agents/skills/`     | `~/.agents/skills/`             |                                 |
-| Rovo Dev           | `.agents/skills/`     | `~/.agents/skills/`             |                                 |
-| Trae               | `.trae/skills/`       | —                               |                                 |
-| Warp               | `.agents/skills/`     | `~/.agents/skills/`             |                                 |
-| Windsurf           | `.agents/skills/`     | `~/.agents/skills/`             |                                 |
-| Zencoder           | `.zencoder/skills/`   | `~/.zencoder/skills/`           |                                 |
+| Tool             | Skills dir            | Global dir                    | Extra |
+| ---------------- | --------------------- | ----------------------------- | ----- |
+| AdaL             | `.adal/skills/`       | `~/.adal/skills/`             |       |
+| Sourcegraph Amp  | `.agents/skills/`     | `~/.config/agents/skills/`    |       |
+| Auggie           | `.agents/skills/`     | `~/.agents/skills/`           |       |
+| IBM Bob          | `.bob/skills/`        | `~/.bob/skills/`              |       |
+| Cline            | `.cline/skills/`      | `~/.cline/skills/`            |       |
+| CodeWhale        | `.codewhale/skills/`  | `~/.codewhale/skills/`        |       |
+| CodeBuddy        | `.codebuddy/skills/`  | `~/.codebuddy/skills/`        |       |
+| Command Code     | `.agents/skills/`     | `~/.agents/skills/`           |       |
+| Snowflake Cortex | `.cortex/skills/`     | `~/.snowflake/cortex/skills/` |       |
+| Crush            | `.agents/skills/`     | `~/.config/agents/skills/`    |       |
+| Factory Droid    | `.factory/skills/`    | `~/.factory/skills/`          |       |
+| Firebender       | `.firebender/skills/` | `~/.agents/skills/`           |       |
+| Gemini CLI       | `.agents/skills/`     | `~/.agents/skills/`           |       |
+| Block Goose      | `.agents/skills/`     | `~/.config/agents/skills/`    |       |
+| Hermes Agent     | `.agents/skills/`     | `~/.hermes/skills/`           |       |
+| iFlow            | `.iflow/skills/`      | `~/.iflow/skills/`            |       |
+| Junie            | `.junie/skills/`      | `~/.junie/skills/`            |       |
+| KiloCoder        | `.agents/skills/`     | `~/.kilocode/skills/`         |       |
+| Kimi Code        | `.agents/skills/`     | `~/.agents/skills/`           |       |
+| Kiro             | `.kiro/skills/`       | `~/.kiro/skills/`             |       |
+| Kode             | `.kode/skills/`       | `~/.kode/skills/`             |       |
+| Mistral Vibe     | `.agents/skills/`     | `~/.vibe/skills/`             |       |
+| Mux              | `.agents/skills/`     | `~/.agents/skills/`           |       |
+| Neovate          | `.neovate/skills/`    | `~/.neovate/skills/`          |       |
+| Ona              | `.ona/skills/`        | —                             |       |
+| OpenClaw         | `.agents/skills/`     | `~/.agents/skills/`           |       |
+| OpenHands        | `.agents/skills/`     | `~/.agents/skills/`           |       |
+| Pi               | `.agents/skills/`     | `~/.agents/skills/`           |       |
+| Pochi            | `.agents/skills/`     | `~/.agents/skills/`           |       |
+| Qoder            | `.qoder/skills/`      | `~/.qoder/skills/`            |       |
+| QwenCoder        | `.qwen/skills/`       | `~/.qwen/skills/`             |       |
+| Replit Agent     | `.agents/skills/`     | —                             |       |
+| Roo Code         | `.agents/skills/`     | `~/.agents/skills/`           |       |
+| Rovo Dev         | `.agents/skills/`     | `~/.agents/skills/`           |       |
+| Trae             | `.trae/skills/`       | —                             |       |
+| Warp             | `.agents/skills/`     | `~/.agents/skills/`           |       |
+| Windsurf         | `.agents/skills/`     | `~/.agents/skills/`           |       |
+| Zencoder         | `.zencoder/skills/`   | `~/.zencoder/skills/`         |       |
 
 **Source:** `tools/installer/ide/platform-codes.yaml` from BMAD-METHOD repo.
 **Doc:** https://docs.bmad-method.org/reference/commands/
