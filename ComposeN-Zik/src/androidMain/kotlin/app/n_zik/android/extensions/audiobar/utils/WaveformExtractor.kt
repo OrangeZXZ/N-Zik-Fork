@@ -29,46 +29,58 @@ object WaveformExtractor {
     val extractionErrorSignal = MutableSharedFlow<String>(extraBufferCapacity = 1)
     private val gson = Gson()
     private const val TARGET_SAMPLES = 150 // We want roughly 150 amplitude values for the UI
+    private const val TAG = "NZik_AudioBar"
 
     fun deleteWaveform(context: Context, mediaId: String) {
-        Timber.tag("NZik_AudioBar").d("Deleting waveform for $mediaId")
+        Timber.tag(TAG).d("DELETE [$mediaId] Start deleteWaveform")
         val waveformDir = File(context.filesDir, "waveforms")
         val savedFile = File(waveformDir, "$mediaId.json")
         if (savedFile.exists()) {
-            Timber.tag("NZik_AudioBar").d("DeleteWaveform: $mediaId.json exists")
-            savedFile.delete()
+            val deleted = savedFile.delete()
+            Timber.tag(TAG).d("DELETE [$mediaId] JSON file existed, delete result=$deleted")
+        } else {
+            Timber.tag(TAG).d("DELETE [$mediaId] JSON file did NOT exist, nothing to delete")
         }
-        Timber.tag("NZik_AudioBar").d("DeleteWaveform: Emit refresh signal for $mediaId")
-        refreshSignal.tryEmit(System.currentTimeMillis())
+        val emitted = refreshSignal.tryEmit(System.currentTimeMillis())
+        Timber.tag(TAG).d("DELETE [$mediaId] Emitted refreshSignal, accepted=$emitted")
     }
 
     suspend fun getOrExtractWaveform(context: Context, mediaId: String, caches: List<Cache>): List<Int>? {
+        Timber.tag(TAG).d("EXTRACT [$mediaId] getOrExtractWaveform called, caches=${caches.size}")
         return withContext(Dispatchers.IO) {
             // We use filesDir instead of cacheDir so it survives a "Clear Cache" by the user
             val waveformDir = File(context.filesDir, "waveforms")
             if (!waveformDir.exists()) {
                 waveformDir.mkdirs()
+                Timber.tag(TAG).d("EXTRACT [$mediaId] Created waveforms directory")
             }
 
             val savedFile = File(waveformDir, "$mediaId.json")
 
             // 1. Return from saved file if it exists
             if (savedFile.exists()) {
+                Timber.tag(TAG).d("EXTRACT [$mediaId] Found existing JSON (${savedFile.length()} bytes)")
                 try {
                     val type = object : TypeToken<List<Int>>() {}.type
                     val amplitudes: List<Int> = gson.fromJson(savedFile.readText(), type)
                     if (amplitudes.size >= TARGET_SAMPLES - 2) {
+                        Timber.tag(TAG).d("EXTRACT [$mediaId] Loaded ${amplitudes.size} samples from JSON -> returning cached")
                         return@withContext amplitudes
+                    } else {
+                        Timber.tag(TAG).w("EXTRACT [$mediaId] JSON had only ${amplitudes.size} samples (need ${TARGET_SAMPLES - 2}), will re-extract")
                     }
                 } catch (e: Exception) {
-                    Timber.tag("NZik_AudioBar").e("Failed to read waveform save for $mediaId")
+                    Timber.tag(TAG).e("EXTRACT [$mediaId] Failed to parse JSON: ${e.message}")
                 }
+            } else {
+                Timber.tag(TAG).d("EXTRACT [$mediaId] No JSON file found, will extract from cache")
             }
 
             // Check if the audio file is fully cached
             var validCache: Cache? = null
-            for (cache in caches) {
+            for ((index, cache) in caches.withIndex()) {
                 val spans = cache.getCachedSpans(mediaId)
+                Timber.tag(TAG).d("EXTRACT [$mediaId] Cache[$index] has ${spans.size} spans")
                 if (spans.isNotEmpty()) {
                     validCache = cache
                     break
@@ -76,9 +88,11 @@ object WaveformExtractor {
             }
 
             if (validCache == null) {
+                Timber.tag(TAG).w("EXTRACT [$mediaId] No valid cache found -> returning null")
                 return@withContext null
             }
 
+            Timber.tag(TAG).d("EXTRACT [$mediaId] Found valid cache, starting extraction...")
             val tempFile = File(context.cacheDir, "temp_audio_$mediaId.tmp")
             try {
                 val cacheDataSourceFactory = CacheDataSource.Factory()
@@ -93,48 +107,57 @@ object WaveformExtractor {
                     .build()
 
                 val size = ds.open(spec)
-                if (size <= 0L && size != -1L) { // If it's 0 or some other error (not -1 which means unknown length)
-                    // Wait, if size is -1L, it just means unknown length, we can still read.
-                    // If size == 0L, it's empty.
-                }
+                Timber.tag(TAG).d("EXTRACT [$mediaId] DataSource opened, size=$size bytes")
                 if (size == 0L) {
                     ds.close()
+                    Timber.tag(TAG).w("EXTRACT [$mediaId] DataSource size is 0 -> returning null")
                     return@withContext null
                 }
 
                 val startTime = System.currentTimeMillis()
                 val fos = FileOutputStream(tempFile)
                 val buffer = ByteArray(64 * 1024)
+                var totalBytes = 0L
                 while (true) {
                     val read = ds.read(buffer, 0, buffer.size)
                     if (read <= 0) break
                     fos.write(buffer, 0, read)
+                    totalBytes += read
                 }
                 fos.close()
                 ds.close()
+                val copyTime = System.currentTimeMillis() - startTime
+                Timber.tag(TAG).d("EXTRACT [$mediaId] Copied $totalBytes bytes to temp file in ${copyTime}ms")
                 
                 val extractStartTime = System.currentTimeMillis()
                 // Use native PCM decoding and RMS calculation for a beautiful, accurate waveform
                 val amplitudes = extractAmplitudesNative(tempFile.absolutePath)
+                val extractTime = System.currentTimeMillis() - extractStartTime
+                Timber.tag(TAG).d("EXTRACT [$mediaId] Native extraction got ${amplitudes.size} samples in ${extractTime}ms")
+                
                 if (amplitudes.size >= TARGET_SAMPLES - 2) {
                     savedFile.writeText(gson.toJson(amplitudes))
-                    Timber.tag("NZik_AudioBar").d("Waveform reconstructed successfully for $mediaId")
+                    Timber.tag(TAG).d("EXTRACT [$mediaId] Saved JSON (${savedFile.length()} bytes) -> SUCCESS")
                     extractionSuccessSignal.tryEmit(mediaId)
                     return@withContext amplitudes
+                } else {
+                    Timber.tag(TAG).w("EXTRACT [$mediaId] Only got ${amplitudes.size} samples (need ${TARGET_SAMPLES - 2}), extraction incomplete")
                 }
             } catch (e: Exception) {
                 if (e is java.io.IOException && e.message?.contains("PlaceholderDataSource") == true) {
-                    // Song is not fully cached yet, skip extraction silently
+                    Timber.tag(TAG).d("EXTRACT [$mediaId] PlaceholderDataSource -> song not fully cached yet")
                 } else {
-                    Timber.tag("NZik_AudioBar").e(e, "Native waveform extraction failed for $mediaId")
+                    Timber.tag(TAG).e(e, "EXTRACT [$mediaId] Extraction FAILED: ${e.message}")
                 }
                 extractionErrorSignal.tryEmit(mediaId)
             } finally {
                 if (tempFile.exists()) {
                     tempFile.delete()
+                    Timber.tag(TAG).d("EXTRACT [$mediaId] Cleaned up temp file")
                 }
             }
 
+            Timber.tag(TAG).w("EXTRACT [$mediaId] Returning null (extraction did not produce valid waveform)")
             null
         }
     }

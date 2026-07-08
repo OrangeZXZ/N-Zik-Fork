@@ -318,18 +318,9 @@ class PlayerItemMenu private constructor(
                         
                         CoroutineScope(Dispatchers.Main).launch {
                             WaveformExtractor.deleteWaveform(mContext, mediaItem.mediaId)
-                            // Wait for either the success or error signal before showing the toaster
-                            val successFlow = WaveformExtractor.extractionSuccessSignal
-                                .filter { it == mediaItem.mediaId }
-                                .map { true }
-                            val errorFlow = WaveformExtractor.extractionErrorSignal
-                                .filter { it == mediaItem.mediaId }
-                                .map { false }
-                            
-                            val result = kotlinx.coroutines.withTimeoutOrNull(15000) {
-                                merge(successFlow, errorFlow).first()
-                            }
-                            if (result == true) {
+                            val caches = listOfNotNull(binder.cache, binder.downloadCache)
+                            val result = WaveformExtractor.getOrExtractWaveform(mContext, mediaItem.mediaId, caches)
+                            if (result != null) {
                                 Toaster.s(R.string.waveform_updated_successfully)
                             } else {
                                 Toaster.e(R.string.error_updating_waveform)

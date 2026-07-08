@@ -43,6 +43,16 @@ import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.appContext
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
+import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
+import app.kreate.android.me.knighthat.utils.Toaster
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.withTimeoutOrNull
+import androidx.compose.runtime.rememberUpdatedState
+import app.it.fast4x.rimusic.utils.getDownloadStateMedia
+import app.it.fast4x.rimusic.utils.playerTimelineTypeKey
+import androidx.compose.ui.draw.alpha
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.models.Info
 import app.it.fast4x.rimusic.models.Song
@@ -106,6 +116,7 @@ class VideoItemMenu private constructor(
     }
 
     lateinit var buttons: List<Button>
+    var refreshBtn: Button? = null
     override var menuStyle: MenuStyle by styleState
 
     @Composable
@@ -126,6 +137,7 @@ class VideoItemMenu private constructor(
         buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
         buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
         buttons.getOrNull(7)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        refreshBtn?.let { if (it is MenuIcon) it.ListMenuItem() }
 
         // Section: Navigation
         SectionTitle(stringResource(R.string.navigation))
@@ -158,6 +170,7 @@ class VideoItemMenu private constructor(
         buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         buttons.getOrNull(7)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        refreshBtn?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
         // Section: Navigation
         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -173,6 +186,47 @@ class VideoItemMenu private constructor(
         val context = LocalContext.current
         val uriHandler = LocalUriHandler.current
         val binder = LocalPlayerServiceBinder.current
+
+        val playerTimelineType by rememberPreference(playerTimelineTypeKey, app.it.fast4x.rimusic.enums.PlayerTimelineType.Wavy)
+        val downloadStateMediaState = rememberUpdatedState(
+            binder?.let { getDownloadStateMedia(it, song.id) } ?: app.it.fast4x.rimusic.enums.DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED
+        )
+        
+        refreshBtn = if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
+            remember {
+                object : MenuIcon, Descriptive, Clickable {
+                    override val iconId: Int = R.drawable.playing_indicator
+                    override val messageId: Int = R.string.update_waveform
+                    @get:Composable
+                    override val menuIconTitle: String get() = stringResource(R.string.update_waveform)
+                    
+                    override val modifier: Modifier
+                        get() = Modifier.alpha(
+                            if (downloadStateMediaState.value == app.it.fast4x.rimusic.enums.DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) 0.5f else 1f
+                        )
+
+                    override fun onShortClick() {
+                        if (downloadStateMediaState.value == app.it.fast4x.rimusic.enums.DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) {
+                            Toaster.w(R.string.error_music_not_fully_cached)
+                        } else {
+                            Toaster.i(R.string.updating_waveform_in_progress)
+                            CoroutineScope(Dispatchers.Main).launch {
+                                WaveformExtractor.deleteWaveform(context, song.id)
+                                val caches = listOfNotNull(binder?.cache, binder?.downloadCache)
+                                val result = WaveformExtractor.getOrExtractWaveform(context, song.id, caches)
+                                if (result != null) {
+                                    Toaster.s(R.string.waveform_updated_successfully)
+                                } else {
+                                    Toaster.e(R.string.error_updating_waveform)
+                                }
+                            }
+                            menuState.hide()
+                        }
+                    }
+                    override fun onLongClick() {}
+                }
+            }
+        } else null
 
         //region Buttons
 

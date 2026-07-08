@@ -67,23 +67,23 @@ fun SeekBarStaticAudioWaves(
 
     LaunchedEffect(uiMedia?.id, currentSongStateDownload, refreshSignal) {
         if (uiMedia != null) {
-            amplitudes = null // CLEAR previous waveform
+            amplitudes = null
             isExtracting = true
-            
+
+            var retryRound = 0
             while (amplitudes == null && isActive) {
+                retryRound++
                 var extracted: List<Int>? = null
-                // Fast retries at the beginning
-                for (i in 0..5) { 
+                for (i in 0..5) {
                     extracted = WaveformExtractor.getOrExtractWaveform(context, uiMedia.id, caches)
                     if (extracted != null) break
                     kotlinx.coroutines.delay(500)
                 }
-                
+
                 amplitudes = extracted
                 isExtracting = false
-                
+
                 if (extracted == null) {
-                    // Not fully cached yet. Wait 5 seconds before trying again (in case it's currently downloading/streaming)
                     kotlinx.coroutines.delay(5000)
                 }
             }

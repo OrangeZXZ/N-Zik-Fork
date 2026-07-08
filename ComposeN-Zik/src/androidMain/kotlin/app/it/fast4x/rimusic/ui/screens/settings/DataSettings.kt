@@ -28,7 +28,7 @@ import app.n_zik.android.core.database.Database
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.CacheType
-import timber.log.Timber
+import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
 import app.it.fast4x.rimusic.enums.CoilDiskCacheMaxSize
 import app.it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import app.it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
@@ -127,12 +127,13 @@ fun DataSettings() {
             },
             onConfirm = {
                 binder?.cache?.let { cache ->
-                    cache.keys.forEach { song ->
+                    val keys = cache.keys
+                    keys.forEach { song ->
                         cache.removeResource(song)
                     }
                 }
-                val deleted = java.io.File(context.filesDir, "waveforms").deleteRecursively()
-                Timber.tag("DataSettings").d("Waveforms cache deleted (offline songs): %s", deleted)
+                java.io.File(context.filesDir, "waveforms").deleteRecursively()
+                WaveformExtractor.refreshSignal.tryEmit(System.currentTimeMillis())
                 cleanCacheOfflineSongs = false
                 cacheCleanedCounter++
             }
@@ -147,7 +148,8 @@ fun DataSettings() {
             },
             onConfirm = {
                 binder?.downloadCache?.let { downloadCache ->
-                    downloadCache.keys.forEach { songId ->
+                    val keys = downloadCache.keys
+                    keys.forEach { songId ->
                         downloadCache.removeResource(songId)
 
                         CoroutineScope(Dispatchers.IO).launch {
@@ -155,12 +157,13 @@ fun DataSettings() {
                                 .findById(songId)
                                 .first()
                                 ?.asMediaItem
-                                ?.let { MyDownloadHelper.removeDownload(context, it) }
+                                ?.let {
+                                    MyDownloadHelper.removeDownload(context, it)
+                                }
                         }
                     }
                 }
-                val deleted = java.io.File(context.filesDir, "waveforms").deleteRecursively()
-                Timber.tag("DataSettings").d("Waveforms cache deleted (downloads): %s", deleted)
+                java.io.File(context.filesDir, "waveforms").deleteRecursively()
                 cleanDownloadCache = false
                 cacheCleanedCounter++
             }
@@ -564,8 +567,8 @@ fun DataSettings() {
                             Database.asyncTransaction {
                                 eventTable.deleteAll()
                             }
-                            val deleted = java.io.File(context.filesDir, "waveforms").deleteRecursively()
-                            Timber.tag("DataSettings").d("Waveforms cache deleted (history clear): %s", deleted)
+                            java.io.File(context.filesDir, "waveforms").deleteRecursively()
+                            WaveformExtractor.refreshSignal.tryEmit(System.currentTimeMillis())
                             Toaster.done()
                         }
                     )

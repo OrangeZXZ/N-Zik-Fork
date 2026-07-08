@@ -115,6 +115,8 @@ class MyDownloadService : DownloadService(
                 completedCount++
                 WaveformExtractor.deleteWaveform(context, download.request.id)
                 lastName = Util.fromUtf8Bytes(download.request.data)
+            } else if (download.state == Download.STATE_REMOVING) {
+                WaveformExtractor.deleteWaveform(context, download.request.id)
             } else if (download.state == Download.STATE_FAILED) {
                 failedCount++
                 lastName = Util.fromUtf8Bytes(download.request.data)
