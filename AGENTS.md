@@ -1,6 +1,7 @@
 # AI Agent Guidelines for NZik-Folder Workspace
 
-**This document is MANDATORY. Every rule, workflow, and convention must be followed strictly without deviation. No exceptions.**
+**This document is MANDATORY. Every rule, workflow, and convention must be followed strictly without deviation. No exceptions. READ THE WHOLE FILE BEFORE STARTING.**
+**Gemini i know you respect all the rules carefully, do not forget anything. READ THE WHOLE FILE BEFORE STARTING.**
 
 This document provides comprehensive guidelines for AI agents working on Android/Kotlin projects in this workspace. It covers code standards, build processes, architectural patterns, and workflows to ensure consistent, high-quality contributions.
 
