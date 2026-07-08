@@ -19,6 +19,8 @@
   - Wrapped `showPlayer = false` state changes in a coroutine to allow `sheetState.hide()` to complete first.
   - Fixes the bug where clicking the chevron down button caused the player to disappear instantly without animation.
   - Added new Rule 17 to AGENTS.md for `CustomModalBottomSheet` animation guidelines.
+- fix(player): revert hide() on video-to-audio switch to prevent getting stuck
+  - Switching from Video to Audio leaves the audio sheet state hidden if we force a hide, breaking the toggle.
 - fix(menu): close menu on navigation
 - fix(lyrics): prevent FOREIGN KEY constraint crash on fast lyric APIs (Heisenbug)
   - Created `saveLyricsSafe` helper in `LyricsFetcher.kt` to catch `SQLiteConstraintException`

@@ -1100,11 +1100,8 @@ class MainActivity :
                                         onCurrentSecond = {},
                                         showPlayer = showPlayer,
                                         onSwitchToAudioPlayer = {
-                                            coroutineScope.launch {
-                                                if (playerState.isVisible) playerState.hide()
-                                                showPlayer = false
-                                                switchToAudioPlayer = true
-                                            }
+                                            showPlayer = false
+                                            switchToAudioPlayer = true
                                         }
                                     )
                                 }
