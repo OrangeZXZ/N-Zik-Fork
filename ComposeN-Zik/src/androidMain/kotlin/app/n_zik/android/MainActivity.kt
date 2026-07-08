@@ -75,6 +75,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -1163,12 +1164,15 @@ class MainActivity :
                             }
 
                             val menuState = LocalMenuState.current
+                            val menuSheetState = key(menuState.isDisplayed) {
+                                rememberModalBottomSheetState(skipPartiallyExpanded = false)
+                            }
                             CustomModalBottomSheet(
                                 showSheet = menuState.isDisplayed,
                                 onDismissRequest = menuState::hide,
                                 containerColor = Color.Transparent,
                                 modifier = Modifier.statusBarsPadding(),
-                                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false),
+                                sheetState = menuSheetState,
                                 dragHandle = {
                                     Surface(
                                         modifier = Modifier.padding(vertical = 0.dp),
