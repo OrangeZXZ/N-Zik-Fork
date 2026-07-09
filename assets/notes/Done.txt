@@ -14,6 +14,9 @@
   - `AnimatedM3EBackground.kt` now reads `shakeSensitivityThemeKey` instead of hardcoded 2.2f
 
 ### Fixed
+- fix(queue): prevent queue panel from closing when scrolling to bottom
+  - Changed NestedScrollConnection to only shrink panel on upward overscroll (scrolling to top)
+  - Queue now stays open when scrolling down to the bottom of the list
 - fix(shake): horizontal-only shake detection prevents false triggers from vertical movements
 - fix(settings): overlap between Gradient Type and Theme Shake Sensitivity selectors in Appearance Settings (gh-652)
   - Moved M3E sensitivity selector to its own `AnimatedVisibility` block instead of nested inside the gradient type block
