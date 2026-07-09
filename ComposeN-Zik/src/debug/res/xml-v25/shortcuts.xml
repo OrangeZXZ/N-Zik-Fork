@@ -6,7 +6,7 @@
         android:icon="@drawable/search_black"
         android:shortcutShortLabel="@string/search">
         <intent
-            android:targetClass="app.it.fast4x.rimusic.MainActivity"
+            android:targetClass="app.n_zik.android.MainActivity"
             android:targetPackage="com.nevar.nzik.debug"
             android:action="app.it.fast4x.rimusic.action.search" />
     </shortcut>
@@ -16,7 +16,7 @@
         android:icon="@drawable/album_alt2_black"
         android:shortcutShortLabel="@string/albums">
         <intent
-            android:targetClass="app.it.fast4x.rimusic.MainActivity"
+            android:targetClass="app.n_zik.android.MainActivity"
             android:targetPackage="com.nevar.nzik.debug"
             android:action="app.it.fast4x.rimusic.action.albums" />
     </shortcut>
@@ -26,7 +26,7 @@
             android:icon="@drawable/people_black"
             android:shortcutShortLabel="@string/artists">
         <intent
-                android:targetClass="app.it.fast4x.rimusic.MainActivity"
+                android:targetClass="app.n_zik.android.MainActivity"
                 android:targetPackage="com.nevar.nzik.debug"
                 android:action="app.it.fast4x.rimusic.action.artists" />
     </shortcut>
@@ -36,7 +36,7 @@
         android:icon="@drawable/playlist_black"
         android:shortcutShortLabel="@string/playlists">
         <intent
-            android:targetClass="app.it.fast4x.rimusic.MainActivity"
+            android:targetClass="app.n_zik.android.MainActivity"
             android:targetPackage="com.nevar.nzik.debug"
             android:action="app.it.fast4x.rimusic.action.library" />
     </shortcut>
@@ -46,9 +46,8 @@
         android:icon="@drawable/copy_black"
         android:shortcutShortLabel="@string/copy_crash_log_to_clipboard">
         <intent
-            android:targetClass="app.it.fast4x.rimusic.MainActivity"
+            android:targetClass="app.n_zik.android.MainActivity"
             android:targetPackage="com.nevar.nzik.debug"
             android:action="app.it.fast4x.rimusic.action.copy_crash_log" />
     </shortcut>
 </shortcuts>
-
