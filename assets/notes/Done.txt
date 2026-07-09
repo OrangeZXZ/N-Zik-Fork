@@ -25,6 +25,9 @@
   - Replaced `Modifier.composed {}` with direct Modifier extension
   - Moved effects outside composed scope
   - Fixes player becoming unresponsive when M3E theme is active
+- fix(m3e): explosion now triggers every time the player opens
+  - Replaced static `hasAppLaunched` var with `remember { mutableStateOf(false) }`
+  - Explosion resets when player closes and reopens
 - fix(shake): horizontal-only shake detection prevents false triggers from vertical movements
 - fix(settings): overlap between Gradient Type and Theme Shake Sensitivity selectors in Appearance Settings (gh-652)
   - Moved M3E sensitivity selector to its own `AnimatedVisibility` block instead of nested inside the gradient type block
