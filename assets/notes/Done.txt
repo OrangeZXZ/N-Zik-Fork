@@ -15,7 +15,7 @@
 
 ### Fixed
 - fix(queue): only close queue panel when scrolling up to the top
-  - Changed NestedScrollConnection to only shrink panel on upward overscroll
+  - Changed NestedScrollConnection to only shrink panel on upward overscroll (`available.y < 0`)
   - Queue stays open when scrolling down to the bottom
   - Only closes when scrolling up past the top of the list
 - fix(shake): horizontal-only shake detection prevents false triggers from vertical movements
