@@ -491,6 +491,16 @@
   <string name="direction_bottom_floating">Alt Yüzer</string>
   <string name="event_shake">Sallama hareketi</string>
   <string name="shake_to_change_song">Şarkıyı değiştirmek için sallayın</string>
+  <string name="shake_sensitivity">Shake Sensitivity</string>
+  <string name="shake_sensitivity_very_high">Very High (1.0G)</string>
+  <string name="shake_sensitivity_high">High (2.2G)</string>
+  <string name="shake_sensitivity_medium">Medium (3.5G)</string>
+  <string name="shake_sensitivity_low">Low (5.0G)</string>
+  <string name="shake_sensitivity_theme">Theme Shake Sensitivity</string>
+  <string name="shake_sensitivity_theme_very_high">Very High (1.0G)</string>
+  <string name="shake_sensitivity_theme_high">High (2.2G)</string>
+  <string name="shake_sensitivity_theme_medium">Medium (3.5G)</string>
+  <string name="shake_sensitivity_theme_low">Low (5.0G)</string>
   <string name="history">Geçmiş</string>
   <string name="yesterday">Dün</string>
   <string name="this_week">Bu hafta</string>
@@ -599,6 +609,8 @@
   <string name="info_bookmark_album">Albümü yer imlerine ekle</string>
   <string name="effect_fade_songs">Şarkılarda solma efekti</string>
   <string name="bg_colors_fluid_gradient_background_from_theme">Temadan akışkan geçiş (gradient)</string>
+  <string name="bg_colors_m3e_morphing_theme">Morphing shapes from theme</string>
+  <string name="bg_colors_m3e_morphing_cover">Morphing shapes from cover</string>
   <string name="bg_colors_fluid_gradient_background_from_cover">Şarkı kapağından akışkan geçiş (gradient)</string>
   <string name="show_background_in_lyrics">Şarkı sözü arka plan rengini oynatıcıyla eşleştir</string>
   <string name="bg_colors_blurred_cover_background">Bulanık şarkı kapağı</string>
