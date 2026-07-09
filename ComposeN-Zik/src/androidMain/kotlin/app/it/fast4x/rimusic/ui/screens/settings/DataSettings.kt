@@ -61,6 +61,8 @@ import app.n_zik.android.components.export.ExportSettingsDialog
 import app.n_zik.android.components.import.ImportDatabase
 import app.n_zik.android.components.import.ImportMigration
 import app.n_zik.android.components.import.ImportSettings
+import app.n_zik.android.components.dialog.ExportBackupDialog
+import app.n_zik.android.components.dialog.ImportBackupDialog
 import app.kreate.android.me.knighthat.utils.Toaster
 
 
@@ -430,51 +432,24 @@ fun DataSettings() {
                 title = stringResource(R.string.title_backup_and_restore),
                 icon = R.drawable.server,
                 content = {
-                    val exportDbDialog = ExportDatabaseDialog(context)
+                    ExportBackupDialog.Render()
+                    ImportBackupDialog.Render()
 
                     OtherSettingsEntry(
-                        title = stringResource(R.string.save_to_backup),
-                        text = stringResource(R.string.export_the_database),
+                        title = stringResource(R.string.export_backup),
+                        text = stringResource(R.string.export_backup_description),
                         icon = R.drawable.export_outline,
-                        onClick = exportDbDialog::export
+                        onClick = { ExportBackupDialog.showDialog() }
                     )
-
                     ImportantSettingsDescription(text = stringResource(
                         R.string.personal_preference
                     ))
 
-                    val importDatabase = ImportDatabase(context)
-
                     OtherSettingsEntry(
-                        title = stringResource(R.string.restore_from_backup),
-                        text = stringResource(R.string.import_the_database),
+                        title = stringResource(R.string.import_backup),
+                        text = stringResource(R.string.import_backup_description),
                         icon = R.drawable.import_outline,
-                        onClick = importDatabase::onShortClick
-                    )
-                    ImportantSettingsDescription(text = stringResource(
-                        R.string.existing_data_will_be_overwritten,
-                        context.applicationInfo.nonLocalizedLabel
-                    ))
-
-                    val exportSettingsDialog = ExportSettingsDialog(context)
-
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.title_export_settings),
-                        text = stringResource(R.string.store_settings_in_a_file),
-                        icon = R.drawable.export_outline,
-                        onClick = exportSettingsDialog::export
-                    )
-                    ImportantSettingsDescription(
-                        stringResource(R.string.description_exclude_credentials)
-                    )
-
-                    val importSettings = ImportSettings(context)
-
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.title_import_settings),
-                        text = stringResource(R.string.restore_settings_from_file, stringResource(R.string.title_export_settings)),
-                        icon = R.drawable.import_outline,
-                        onClick = importSettings::onShortClick
+                        onClick = { ImportBackupDialog.showDialog() }
                     )
                     ImportantSettingsDescription(text = stringResource(
                         R.string.existing_data_will_be_overwritten,

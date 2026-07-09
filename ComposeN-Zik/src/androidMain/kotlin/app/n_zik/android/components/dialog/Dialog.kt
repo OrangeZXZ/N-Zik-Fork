@@ -124,8 +124,9 @@ interface Dialog {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box(
-                        Modifier.padding( bottom = 8.dp )
-                                .fillMaxWidth( .9f )
+                        Modifier.padding( bottom = 4.dp )
+                                .fillMaxWidth( .9f ),
+                        contentAlignment = Alignment.Center
                     ) {
                         BasicText(
                             text = dialogTitle,

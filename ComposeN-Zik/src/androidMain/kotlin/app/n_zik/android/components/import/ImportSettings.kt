@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import app.n_zik.android.components.ImportFromFile
 import app.n_zik.android.components.dialog.RestartAppDialog
+import timber.log.Timber
 import java.io.InputStream
 
 class ImportSettings private constructor(
@@ -21,25 +22,28 @@ class ImportSettings private constructor(
 ): ImportFromFile(launcher) {
 
     companion object {
-        fun onImport( context: Context, inStream: InputStream ) =
-            csvReader().readAllWithHeader( inStream )
-                       .fastForEach { row -> // Experimental, revert back to [forEach] if needed
-                           val type = row["Type"] ?: ""
-                           val key = row["Key"] ?: ""
-                           val value = row["Value"] ?: ""
+        fun onImport( context: Context, inStream: InputStream ) {
+            Timber.tag("ImportSettings").d("Starting settings import...")
+            val rows = csvReader().readAllWithHeader( inStream )
+            Timber.tag("ImportSettings").d("Read ${rows.size} rows from CSV")
+            rows.fastForEach { row ->
+                val type = row["Type"] ?: ""
+                val key = row["Key"] ?: ""
+                val value = row["Value"] ?: ""
+                Timber.tag("ImportSettings").d("Processing row: type=$type, key=$key")
 
-                           val editor = context.preferences.edit()
-                           when( type.lowercase() ) {
-                               "string" -> editor.putString( key, value )
-                               "int" -> editor.putInt( key, value.toInt() )
-                               "long" -> editor.putLong( key, value.toLong() )
-                               "float" -> editor.putFloat( key, value.toFloat() )
-                               "boolean" -> editor.putBoolean( key, value.toBoolean() )
-                           }
-                           // Important! No action is allowed during this process to
-                           // prevent race-condition. [commit] blocks thread until it's done
-                           editor.commit()
-                       }
+                val editor = context.preferences.edit()
+                when( type.lowercase() ) {
+                    "string" -> editor.putString( key, value )
+                    "int" -> editor.putInt( key, value.toInt() )
+                    "long" -> editor.putLong( key, value.toLong() )
+                    "float" -> editor.putFloat( key, value.toFloat() )
+                    "boolean" -> editor.putBoolean( key, value.toBoolean() )
+                }
+                editor.commit()
+            }
+            Timber.tag("ImportSettings").d("Settings import complete")
+        }
 
         @Composable
         operator fun invoke( context: Context ): ImportSettings =
@@ -47,19 +51,21 @@ class ImportSettings private constructor(
                 rememberLauncherForActivityResult(
                     ActivityResultContracts.OpenDocument()
                 ) { uri ->
-                    // [uri] must be non-null (meaning path exists) in order to work
+                    Timber.tag("ImportSettings").d("File picker callback received, uri: $uri")
                     uri ?: return@rememberLauncherForActivityResult
 
-                    // Run in background to prevent UI thread
-                    // from freezing due to large file.
                     CoroutineScope(Dispatchers.IO).launch {
-                        context.contentResolver
-                               .openInputStream( uri )
-                               ?.use { inStream ->         // Use [use] because it closes stream on exit
-                                   onImport( context, inStream )
-                               }
+                        try {
+                            context.contentResolver
+                                   .openInputStream( uri )
+                                   ?.use { inStream ->
+                                       onImport( context, inStream )
+                                   } ?: Timber.tag("ImportSettings").w("Failed to open input stream")
 
-                        RestartAppDialog.showDialog()
+                            RestartAppDialog.showDialog()
+                        } catch (e: Exception) {
+                            Timber.tag("ImportSettings").e(e, "Import failed")
+                        }
                     }
                 }
             )
@@ -72,5 +78,3 @@ class ImportSettings private constructor(
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 }
-
-

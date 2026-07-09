@@ -67,6 +67,7 @@ import app.it.fast4x.rimusic.enums.ThumbnailType
 import app.it.fast4x.rimusic.enums.WallpaperType
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.AppearancePresetDialog
+import app.n_zik.android.components.dialog.PlayerActionBarSettingsDialog
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.RestartPlayerService
@@ -630,6 +631,7 @@ fun AppearanceSettings(
         val searchCtx_0_3 = search.inputValue.isBlank() || stringResource(R.string.timeline_and_controls).contains(search.inputValue, true) || stringResource(R.string.timelinesize).contains(search.inputValue, true) || stringResource(R.string.pinfo_type).contains(search.inputValue, true) || stringResource(R.string.pinfo_album_and_artist_name).contains(search.inputValue, true) || stringResource(R.string.pinfo_show_icons).contains(search.inputValue, true) || stringResource(R.string.miniplayertype).contains(search.inputValue, true) || stringResource(R.string.player_swap_controls_with_timeline).contains(search.inputValue, true) || stringResource(R.string.timeline).contains(search.inputValue, true) || stringResource(R.string.transparentbar).contains(search.inputValue, true) || stringResource(R.string.pcontrols_type).contains(search.inputValue, true) || stringResource(R.string.play_button).contains(search.inputValue, true) || stringResource(R.string.buttonzoomout).contains(search.inputValue, true) || stringResource(R.string.icon_like_button).contains(search.inputValue, true)
         val searchCtx_0_4 = search.inputValue.isBlank() || stringResource(R.string.colors_and_background).contains(search.inputValue, true) || stringResource(R.string.background_colors).contains(search.inputValue, true) || stringResource(R.string.gradienttype).contains(search.inputValue, true) || stringResource(R.string.blackgradient).contains(search.inputValue, true) || stringResource(R.string.albumCoverRotation).contains(search.inputValue, true) || stringResource(R.string.bottomgradient).contains(search.inputValue, true) || stringResource(R.string.textoutline).contains(search.inputValue, true) || stringResource(R.string.show_total_time_of_queue).contains(search.inputValue, true) || stringResource(R.string.show_remaining_song_time).contains(search.inputValue, true) || stringResource(R.string.shake_sensitivity_theme).contains(search.inputValue, true)
         val searchCtx_0_5 = search.inputValue.isBlank() || stringResource(R.string.player_behavior_and_visuals).contains(search.inputValue, true) || stringResource(R.string.show_next_songs_in_player).contains(search.inputValue, true) || stringResource(R.string.showtwosongs).contains(search.inputValue, true) || stringResource(R.string.songs_number_to_show).contains(search.inputValue, true) || stringResource(R.string.showalbumcover).contains(search.inputValue, true) || stringResource(R.string.disable_scrolling_text).contains(search.inputValue, true) || stringResource(R.string.scrolling_text_is_used_for_long_texts).contains(search.inputValue, true) || stringResource(R.string.player_rotating_buttons).contains(search.inputValue, true) || stringResource(R.string.player_enable_rotation_buttons).contains(search.inputValue, true) || stringResource(R.string.toggle_lyrics).contains(search.inputValue, true) || stringResource(R.string.by_tapping_on_the_thumbnail).contains(search.inputValue, true) || stringResource(R.string.click_lyrics_text).contains(search.inputValue, true) || stringResource(R.string.save_lyrics_state).contains(search.inputValue, true) || stringResource(R.string.save_lyrics_state_description).contains(search.inputValue, true) || stringResource(R.string.show_background_in_lyrics).contains(search.inputValue, true) || stringResource(R.string.player_enable_lyrics_popup_message).contains(search.inputValue, true) || stringResource(R.string.background_progress_bar).contains(search.inputValue, true) || stringResource(R.string.visualizer).contains(search.inputValue, true) || stringResource(R.string.save_visualizer_state).contains(search.inputValue, true) || stringResource(R.string.save_visualizer_state_description).contains(search.inputValue, true) || stringResource(R.string.require_mic_permission).contains(search.inputValue, true)
+        PlayerActionBarSettingsDialog.Render()
         Column {
         AnimatedVisibility(
             visible = searchCtx_0_1,
@@ -2254,201 +2256,17 @@ fun AppearanceSettings(
                 )
             }
 
-        if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_video_button).contains(
+        if (search.inputValue.isBlank() || stringResource(R.string.player_action_bar_buttons).contains(
                 search.inputValue,
                 true
             )
         )
-            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_video_button).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.video,
-                    title = stringResource(R.string.action_bar_show_video_button),
-                    text = "",
-                    isChecked = showButtonPlayerVideo,
-                    onCheckedChange = { showButtonPlayerVideo = it }
-                )
-            }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_discover_button).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_discover_button).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.discover,
-                    title = stringResource(R.string.action_bar_show_discover_button),
-                    text = "",
-                    isChecked = showButtonPlayerDiscover,
-                    onCheckedChange = { showButtonPlayerDiscover = it }
-                )
-            }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_download_button).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_download_button).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.download,
-                    title = stringResource(R.string.action_bar_show_download_button),
-                    text = "",
-                    isChecked = showButtonPlayerDownload,
-                    onCheckedChange = { showButtonPlayerDownload = it }
-                )
-            }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_add_to_playlist_button).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_add_to_playlist_button).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.playlist,
-                    title = stringResource(R.string.action_bar_show_add_to_playlist_button),
-                    text = "",
-                    isChecked = showButtonPlayerAddToPlaylist,
-                    onCheckedChange = { showButtonPlayerAddToPlaylist = it }
-                )
-            }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_loop_button).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_loop_button).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.refresh,
-                    title = stringResource(R.string.action_bar_show_loop_button),
-                    text = "",
-                    isChecked = showButtonPlayerLoop,
-                    onCheckedChange = { showButtonPlayerLoop = it }
-                )
-            }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_shuffle_button).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_shuffle_button).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.shuffle,
-                    title = stringResource(R.string.action_bar_show_shuffle_button),
-                    text = "",
-                    isChecked = showButtonPlayerShuffle,
-                    onCheckedChange = { showButtonPlayerShuffle = it }
-                )
-            }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_lyrics_button).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_lyrics_button).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.song_lyrics,
-                    title = stringResource(R.string.action_bar_show_lyrics_button),
-                    text = "",
-                    isChecked = showButtonPlayerLyrics,
-                    onCheckedChange = { showButtonPlayerLyrics = it }
-                )
-            }
-        if (!isLandscape || !showthumbnail) {
-            if (!showlyricsthumbnail) {
-                if (search.inputValue.isBlank() || stringResource(R.string.expandedplayer).contains(
-                        search.inputValue,
-                        true
-                    )
-                )
-                    if (search.inputValue.isBlank() || stringResource(R.string.expandedplayer).contains(search.inputValue, true)) {
-                        OtherSwitchSettingEntry(
-                    icon = R.drawable.maximize,
-                            title = stringResource(R.string.expandedplayer),
-                            text = "",
-                            isChecked = expandedplayertoggle,
-                            onCheckedChange = { expandedplayertoggle = it }
-                        )
-                    }
-            }
-        }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_sleep_timer_button).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_sleep_timer_button).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.time,
-                    title = stringResource(R.string.action_bar_show_sleep_timer_button),
-                    text = "",
-                    isChecked = showButtonPlayerSleepTimer,
-                    onCheckedChange = { showButtonPlayerSleepTimer = it }
-                )
-            }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.show_equalizer).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.show_equalizer).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.sound_effect,
-                    title = stringResource(R.string.show_equalizer),
-                    text = "",
-                    isChecked = showButtonPlayerSystemEqualizer,
-                    onCheckedChange = { showButtonPlayerSystemEqualizer = it }
-                )
-            }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_arrow_button_to_open_queue).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_arrow_button_to_open_queue).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.arrow_forward,
-                    title = stringResource(R.string.action_bar_show_arrow_button_to_open_queue),
-                    text = "",
-                    isChecked = showButtonPlayerArrow,
-                    onCheckedChange = { showButtonPlayerArrow = it }
-                )
-            }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_start_radio_button).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_start_radio_button).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.radio,
-                    title = stringResource(R.string.action_bar_show_start_radio_button),
-                    text = "",
-                    isChecked = showButtonPlayerStartradio,
-                    onCheckedChange = { showButtonPlayerStartradio = it }
-                )
-            }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_menu_button).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.action_bar_show_menu_button).contains(search.inputValue, true)) {
-                OtherSwitchSettingEntry(
-                    icon = R.drawable.burger,
-                    title = stringResource(R.string.action_bar_show_menu_button),
-                    text = "",
-                    isChecked = showButtonPlayerMenu,
-                    onCheckedChange = { showButtonPlayerMenu = it }
+            if (search.inputValue.isBlank() || stringResource(R.string.player_action_bar_buttons).contains(search.inputValue, true)) {
+                OtherSettingsEntry(
+                    icon = R.drawable.ellipsis_vertical,
+                    title = stringResource(R.string.player_action_bar_buttons),
+                    text = stringResource(R.string.player_action_bar_buttons_description),
+                    onClick = { PlayerActionBarSettingsDialog.showDialog() }
                 )
             }
 

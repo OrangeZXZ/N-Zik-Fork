@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import app.n_zik.android.components.ImportFromFile
 import app.n_zik.android.components.dialog.RestartAppDialog
+import timber.log.Timber
 import java.io.FileOutputStream
 
 class ImportDatabase private constructor(
@@ -27,29 +28,33 @@ class ImportDatabase private constructor(
                 rememberLauncherForActivityResult(
                     ActivityResultContracts.OpenDocument()
                 ) { uri ->
-                    // [uri] must be non-null (meaning path exists) in order to work
+                    Timber.tag("ImportDatabase").d("File picker callback received, uri: $uri")
                     uri ?: return@rememberLauncherForActivityResult
 
-                    /*
-                        WAL [Database#checkpoint] shouldn't be running inside a `query` or `transaction` block
-                        because it requires all commits to be finalized and written to
-                        base file.
-                     */
                     CoroutineScope( Dispatchers.IO ).launch {
-                        Database.checkpoint()
-                        Database.close()
+                        try {
+                            Timber.tag("ImportDatabase").d("Starting database import...")
+                            Database.checkpoint()
+                            Timber.tag("ImportDatabase").d("Database checkpoint done")
+                            Database.close()
+                            Timber.tag("ImportDatabase").d("Database closed")
 
-                        context.applicationContext
-                               .contentResolver
-                               .openInputStream(uri)
-                               ?.use { inStream ->
-                                   val dbFile = context.getDatabasePath( Database.FILE_NAME )
-                                   FileOutputStream( dbFile ).use { outStream ->
-                                       inStream.copyTo(outStream)
-                                   }
-                               }
+                            context.applicationContext
+                                   .contentResolver
+                                   .openInputStream(uri)
+                                   ?.use { inStream ->
+                                       val dbFile = context.getDatabasePath( Database.FILE_NAME )
+                                       Timber.tag("ImportDatabase").d("Copying database to: ${dbFile.absolutePath}")
+                                       FileOutputStream( dbFile ).use { outStream ->
+                                           val bytes = inStream.copyTo(outStream)
+                                           Timber.tag("ImportDatabase").d("Import complete, bytes written: $bytes")
+                                       }
+                                   } ?: Timber.tag("ImportDatabase").w("Failed to open input stream")
 
-                        RestartAppDialog.showDialog()
+                            RestartAppDialog.showDialog()
+                        } catch (e: Exception) {
+                            Timber.tag("ImportDatabase").e(e, "Import failed")
+                        }
                     }
                 }
             )
@@ -61,5 +66,3 @@ class ImportDatabase private constructor(
         "application/octet-stream"
     )
 }
-
-

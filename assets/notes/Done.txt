@@ -3,6 +3,45 @@
 ## 2026-07-09
 
 ### Added
+- feat(settings): create generic ToggleListDialog with drag reorder support
+  - Created `ToggleListDialog.kt` in `components/dialog/` — reusable toggle list with drag-to-reorder
+  - Generic type parameter `T` for any item type
+  - Supports optional subtitle, icon, and drag reorder via `ReorderableLazyListState`
+  - Used by PlayerActionBarSettingsDialog, QuickPicksContentSettingsDialog, LibraryVisibilitySettingsDialog
+- feat(settings): create PlayerActionBarSettingsDialog for action bar button visibility
+  - Created `PlayerActionBarSettingsDialog.kt` — 13 toggleable buttons for player action bar
+  - Saves button order as JSON array in `buttonOrderKey` preference
+  - Updated `ActionBar.kt` to read saved order and render buttons in custom sequence
+  - Updated `AppearanceSettings.kt` to show dialog entry instead of individual toggles
+- feat(settings): create QuickPicksContentSettingsDialog for quick picks section toggles
+  - Created `QuickPicksContentSettingsDialog.kt` — 9 toggles for home quick picks sections
+  - Each toggle controls visibility of a specific quick picks category on home screen
+  - Updated `AIRecommendationSettings.kt` to show dialog entry instead of individual toggles
+- feat(settings): create LibraryVisibilitySettingsDialog for library playlist visibility
+  - Created `LibraryVisibilitySettingsDialog.kt` — 6 toggles for library playlist types
+  - Controls which playlists appear in the library tab
+  - Updated `UiSettings.kt` to show dialog entry instead of individual toggles
+- feat(settings): create ExportBackupDialog for unified export
+  - Created `ExportBackupDialog.kt` — radio buttons for Database, Settings, or Both
+  - Accent-colored export button at bottom, scrollable content
+  - Replaces separate export database/settings entries in DataSettings
+- feat(settings): create ImportBackupDialog for unified import
+  - Created `ImportBackupDialog.kt` — same pattern as ExportBackupDialog
+  - Radio buttons for Database, Settings, or Both
+  - Accent-colored import button at bottom, scrollable content
+- feat(settings): create CopyLogsDialog for debug log copying
+  - Created `CopyLogsDialog.kt` — radio buttons for Debug, Crash, or Both logs
+  - Only visible when `logDebugEnabled` is true
+  - Replaces separate copy log entries in OtherSettings
+- feat(settings): update ExportDatabaseDialog and ExportSettingsDialog with ISO date format
+  - Changed file naming to ISO format (yyyy-MM-dd) for better file manager sorting
+  - Added Timber logging for export operations
+  - Added `TimeDateUtils` import for proper date formatting
+- feat(settings): update ImportDatabase and ImportSettings with logging
+  - Added Timber logging for import operations
+  - Added `ImportFromFile.kt` logging for file picker launches
+
+### Added
 - feat(shake): restrict shake detection to horizontal axis (X) and add sensitivity settings
   - Created `ShakeSensitivity` enum (VeryHigh 1.0G, High 2.2G, Medium 3.5G, Low 5.0G) for track switching
   - Created `ShakeSensitivityTheme` enum with same range for M3E background explosion
