@@ -38,6 +38,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import app.it.fast4x.rimusic.utils.preferences
 import app.it.fast4x.rimusic.utils.getEnum
@@ -250,7 +251,7 @@ fun Modifier.animatedM3EBackground(
         }
     }
 
-    return this.drawWithCache {
+    this.drawWithCache {
         val width = size.width
         val height = size.height
         val minDim = minOf(width, height)
