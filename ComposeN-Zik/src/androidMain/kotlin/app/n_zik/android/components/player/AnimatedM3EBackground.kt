@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
@@ -53,7 +54,7 @@ fun Modifier.animatedM3EBackground(
     M: Color,
     LM: Color,
     DM: Color
-): Modifier {
+): Modifier = composed {
     val accumulatedTime = remember { mutableFloatStateOf(0f) }
 
     val visibilityProgress by animateFloatAsState(

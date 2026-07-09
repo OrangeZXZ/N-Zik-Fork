@@ -2311,6 +2311,7 @@ fun Player(
                     .background(queuePanelBackground)
             ) {
                 // Queue content - padding top for drag handle, overscroll to close
+                val canScrollUp = remember { mutableStateOf(true) }
                 val overscrollConnection = remember {
                     object : NestedScrollConnection {
                         override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
@@ -2335,7 +2336,6 @@ fun Player(
                         }
                     }
                 }
-                val canScrollUp = remember { mutableStateOf(true) }
                 Box(
                     modifier = Modifier
                         .padding(top = 48.dp)
