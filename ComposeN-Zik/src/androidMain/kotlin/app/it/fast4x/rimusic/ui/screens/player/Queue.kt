@@ -133,6 +133,7 @@ fun Queue(
     onDismiss: (QueueLoopType) -> Unit,
     onDiscoverClick: () -> Unit,
     canScrollUp: androidx.compose.runtime.MutableState<Boolean> = androidx.compose.runtime.mutableStateOf(true),
+    canScrollDown: androidx.compose.runtime.MutableState<Boolean> = androidx.compose.runtime.mutableStateOf(true),
 ) {
     // Essentials
     val context = LocalContext.current
@@ -318,6 +319,8 @@ fun Queue(
             LaunchedEffect(lazyListState) {
                 snapshotFlow { lazyListState.canScrollBackward }
                     .collect { canScrollUp.value = it }
+                snapshotFlow { lazyListState.canScrollForward }
+                    .collect { canScrollDown.value = it }
             }
 
             LazyColumn(

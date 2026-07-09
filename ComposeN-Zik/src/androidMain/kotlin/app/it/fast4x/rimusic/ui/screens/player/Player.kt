@@ -2312,11 +2312,12 @@ fun Player(
             ) {
                 // Queue content - padding top for drag handle, overscroll to close
                 val canScrollUp = remember { mutableStateOf(true) }
+                val canScrollDown = remember { mutableStateOf(true) }
                 val overscrollConnection = remember {
                     object : NestedScrollConnection {
                         override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
-                            // Only shrink panel when at the top of the list and scrolling up
-                            if (available.y > 0 && !canScrollUp.value) {
+                            // Only shrink panel when at the very top (can't scroll up anymore) and scrolling up
+                            if (available.y > 0 && !canScrollUp.value && !canScrollDown.value) {
                                 val delta = available.y / screenHeightPx
                                 queuePanelCoroutineScope.launch {
                                     queuePanelHeightFraction.snapTo((queuePanelHeightFraction.value - delta).coerceIn(0f, maxFraction))
@@ -2350,7 +2351,8 @@ fun Player(
                         onDiscoverClick = {
                             binder.service.nzikRadio.toggleDiscover()
                         },
-                        canScrollUp = canScrollUp
+                        canScrollUp = canScrollUp,
+                        canScrollDown = canScrollDown
                     )
                 }
 
