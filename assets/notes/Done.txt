@@ -49,6 +49,10 @@
   - Added 100.dp Spacer in `ListMenu.kt` scrollable content
   - Added 100.dp bottom padding in `GridMenu.kt` contentPadding
   - Removed per-menu spacers from `PlayerItemMenu.kt` (now handled globally)
+- fix(queue): resolve dynamic color wipe out, update repeat button reactivity, fix AnimatedM3EBackground rendering error
+  - Refactored `SettingIcon` to distinguish between standard buttons and `DynamicColor` buttons
+  - Overrode `ToolBarButton` in `Repeat` and `ItemSelector` to ensure Compose tracks state reads correctly
+  - Optimized `AnimatedM3EBackground` and moved drawing objects outside the `@Composable` scope to fix cache drawing errors
 
 ## 2026-07-08
 
