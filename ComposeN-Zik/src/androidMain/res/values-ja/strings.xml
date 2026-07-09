@@ -491,6 +491,16 @@
   <string name="direction_bottom_floating">下部のフローティング</string>
   <string name="event_shake">シェイクジェスチャー</string>
   <string name="shake_to_change_song">端末を振って曲を変える</string>
+  <string name="shake_sensitivity">Shake Sensitivity</string>
+  <string name="shake_sensitivity_very_high">Very High (1.0G)</string>
+  <string name="shake_sensitivity_high">High (2.2G)</string>
+  <string name="shake_sensitivity_medium">Medium (3.5G)</string>
+  <string name="shake_sensitivity_low">Low (5.0G)</string>
+  <string name="shake_sensitivity_theme">Theme Shake Sensitivity</string>
+  <string name="shake_sensitivity_theme_very_high">Very High (1.0G)</string>
+  <string name="shake_sensitivity_theme_high">High (2.2G)</string>
+  <string name="shake_sensitivity_theme_medium">Medium (3.5G)</string>
+  <string name="shake_sensitivity_theme_low">Low (5.0G)</string>
   <string name="history">履歴</string>
   <string name="yesterday">昨日</string>
   <string name="this_week">今週</string>
@@ -599,6 +609,8 @@
   <string name="info_bookmark_album">アルバムをブックマーク</string>
   <string name="effect_fade_songs">フェードの楽曲効果</string>
   <string name="bg_colors_fluid_gradient_background_from_theme">テーマからの流体グラデーション（グラデーション）</string>
+  <string name="bg_colors_m3e_morphing_theme">Morphing shapes from theme</string>
+  <string name="bg_colors_m3e_morphing_cover">Morphing shapes from cover</string>
   <string name="bg_colors_fluid_gradient_background_from_cover">曲の表紙からの流体グラデーション。</string>
   <string name="show_background_in_lyrics">歌詞の背景色をプレイヤーと一致させる</string>
   <string name="bg_colors_blurred_cover_background">ぼやけた曲のカバー</string>
