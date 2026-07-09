@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-07-09
+
+### Added
+- feat(shake): restrict shake detection to horizontal axis (X) and add sensitivity settings
+  - Created `ShakeSensitivity` enum (VeryHigh 1.0G, High 2.2G, Medium 3.5G, Low 5.0G) for track switching
+  - Created `ShakeSensitivityTheme` enum with same range for M3E background explosion
+  - Modified `MainActivity.kt` sensor listener to only use `event.values[0]` (X axis) instead of 3D acceleration
+  - Replaced old low-pass filter logic with simple `abs(gX) > threshold` check
+  - Added `shakeSensitivityKey` and `shakeSensitivityThemeKey` in `Preferences.kt`
+  - Added sensitivity selector in General Settings under "Shake to change song" toggle
+  - Added "Theme Shake Sensitivity" selector in Appearance Settings (visible only when M3E gradient is selected) (gh-652)
+  - `AnimatedM3EBackground.kt` now reads `shakeSensitivityThemeKey` instead of hardcoded 2.2f
+
+### Fixed
+- fix(shake): horizontal-only shake detection prevents false triggers from vertical movements
+- fix(settings): overlap between Gradient Type and Theme Shake Sensitivity selectors in Appearance Settings (gh-652)
+  - Moved M3E sensitivity selector to its own `AnimatedVisibility` block instead of nested inside the gradient type block
+
+### Changed
+- perf(m3e): soften M3E background explosion animations (gh-652)
+  - Reduced shake burst from 4.0f to 1.2f
+  - Reduced startup/song-change explosion from 3.5f to 1.0f
+  - Reduced velocity cap from 4.0f max to 2.0f max for gentler movement
+
 ## 2026-07-08
 
 ### Added

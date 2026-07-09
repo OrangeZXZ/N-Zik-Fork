@@ -45,6 +45,10 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.DisposableEffect
+import app.it.fast4x.rimusic.utils.preferences
+import app.it.fast4x.rimusic.utils.getEnum
+import app.it.fast4x.rimusic.utils.shakeSensitivityThemeKey
+import app.n_zik.android.enums.ShakeSensitivityTheme
 
 private var hasAppLaunched = false
 
@@ -121,19 +125,18 @@ fun Modifier.animatedM3EBackground(
             override fun onSensorChanged(event: SensorEvent?) {
                 event?.let {
                     val x = it.values[0]
-                    val y = it.values[1]
-                    val z = it.values[2]
                     
                     val gX = x / SensorManager.GRAVITY_EARTH
+                    val sensitivity = context.preferences.getEnum(shakeSensitivityThemeKey, ShakeSensitivityTheme.High)
                     
                     // Trigger only on strong left-to-right shake (X axis)
-                    if (abs(gX) > 2.2f) { // 2.2G horizontal force
+                    if (abs(gX) > sensitivity.thresholdG) {
                         val now = System.currentTimeMillis()
                         if (now - lastShakeTime > 1000) { // 1 second cooldown
                             lastShakeTime = now
                             shapes.forEach { shape ->
-                                shape.vx += (Random.nextFloat() - 0.5f) * 4.0f // Moderate burst
-                                shape.vy += (Random.nextFloat() - 0.5f) * 4.0f
+                                shape.vx += (Random.nextFloat() - 0.5f) * 1.2f
+                                shape.vy += (Random.nextFloat() - 0.5f) * 1.2f
                             }
                         }
                     }
@@ -156,8 +159,8 @@ fun Modifier.animatedM3EBackground(
         if (!hasAppLaunched) {
             hasAppLaunched = true
             shapes.forEach { shape ->
-                shape.vx += (Random.nextFloat() - 0.5f) * 3.5f
-                shape.vy += (Random.nextFloat() - 0.5f) * 3.5f
+                shape.vx += (Random.nextFloat() - 0.5f) * 1.0f
+                shape.vy += (Random.nextFloat() - 0.5f) * 1.0f
             }
         } else if (lastLocalColor.value != currentColor) {
             lastLocalColor.value = currentColor
@@ -165,8 +168,8 @@ fun Modifier.animatedM3EBackground(
             // This prevents explosions caused by async album color loading!
             if (now - mountTime > 800) {
                 shapes.forEach { shape ->
-                    shape.vx += (Random.nextFloat() - 0.5f) * 3.5f
-                    shape.vy += (Random.nextFloat() - 0.5f) * 3.5f
+                    shape.vx += (Random.nextFloat() - 0.5f) * 1.0f
+                    shape.vy += (Random.nextFloat() - 0.5f) * 1.0f
                 }
             }
         }
@@ -216,8 +219,8 @@ fun Modifier.animatedM3EBackground(
                     
                     // Cap maximum velocity to prevent excessive boosting
                     val speedSq = shape1.vx * shape1.vx + shape1.vy * shape1.vy
-                    if (speedSq > 16.0f) { // MAX_SPEED = 4.0f
-                        val scale = 4.0f / sqrt(speedSq)
+                    if (speedSq > 4.0f) { // MAX_SPEED = 2.0f
+                        val scale = 2.0f / sqrt(speedSq)
                         shape1.vx *= scale
                         shape1.vy *= scale
                     }
