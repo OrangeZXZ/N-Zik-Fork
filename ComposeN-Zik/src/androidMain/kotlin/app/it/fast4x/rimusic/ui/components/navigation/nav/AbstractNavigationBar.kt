@@ -35,10 +35,16 @@ abstract class AbstractNavigationBar(
     @ReadOnlyComposable
     @Composable
     internal open fun BackButton(): NavigationButton {
+        val disableBackStack by app.it.fast4x.rimusic.utils.rememberPreference(app.it.fast4x.rimusic.utils.disableNavigationBackStackKey, false)
         val button = NavigationButton( navController, R.drawable.chevron_back, colorPalette().favoritesIcon )
         button.clickEvent {
-            if ( navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED )
-                navController.popBackStack()
+            if ( navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED ) {
+                if (disableBackStack) {
+                    navController.popBackStack(app.it.fast4x.rimusic.enums.NavRoutes.home.name, inclusive = false)
+                } else {
+                    navController.popBackStack()
+                }
+            }
         }
         return button
     }

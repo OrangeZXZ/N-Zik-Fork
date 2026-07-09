@@ -205,9 +205,7 @@ fun AppNavigation(
     val isHome = currentEntry?.destination?.route?.startsWith(NavRoutes.home.name) ?: true
 
     androidx.activity.compose.BackHandler(enabled = disableBackStack && !isHome) {
-        navController.navigate(NavRoutes.home.name) {
-            popUpTo(NavRoutes.home.name) { inclusive = true }
-        }
+        navController.popBackStack(NavRoutes.home.name, inclusive = false)
     }
 
     Scaffold(
