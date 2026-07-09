@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
@@ -213,13 +214,21 @@ private fun SeekBarContent(
                 .fillMaxWidth(fraction)
                 .height(amplitude())
                 .align(Alignment.CenterStart)) {
-            drawPath(
-                wavePath(size.copy(height = size.height * 2), progress),
-                color,
-                style = Stroke(width = 15f)
-                //style = Stroke(width = 10f)
-                //style = Stroke(width = 5f)
-            )
+            clipRect(
+                left = -50f, 
+                right = size.width, 
+                top = -50f, 
+                bottom = size.height + 50f
+            ) {
+                drawPath(
+                    wavePath(size.copy(height = size.height * 2), progress),
+                    color,
+                    style = Stroke(
+                        width = 15f,
+                        cap = androidx.compose.ui.graphics.StrokeCap.Round
+                    )
+                )
+            }
         }
     }
 }
@@ -231,9 +240,6 @@ private fun wavePath(size: Size, progress: Float): Path {
         var currentX = 0f
         while (currentX < size.width) {
             lineTo(currentX, yFromX(currentX))
-            lineTo(currentX-5, yFromX(currentX)-5)
-           // lineTo(yFromX(currentX),0f)
-            //lineTo(0f, yFromX(currentX)-50f)
             currentX += 1
         }
     }

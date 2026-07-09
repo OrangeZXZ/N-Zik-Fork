@@ -13,6 +13,9 @@
   - Added "Theme Shake Sensitivity" selector in Appearance Settings (visible only when M3E gradient is selected) (gh-652)
   - `AnimatedM3EBackground.kt` now reads `shakeSensitivityThemeKey` instead of hardcoded 2.2f
 - feat (AnimatedM3EBackground): Added aa brand new gradient type called Morphing (gh-652)
+- feat(ui): Added StrokeCap.Round to the wavy timeline progress path so its start is rounded
+  - Clipped the right end of the wavy timeline so the round stroke cap doesn't stick out past the scrubber
+  - Fixed clipRect compilation error
 
 ### Fixed
 - fix(queue): only close queue panel when scrolling up to the top
