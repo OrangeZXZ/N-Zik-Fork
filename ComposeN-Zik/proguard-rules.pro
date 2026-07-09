@@ -129,3 +129,7 @@
 -dontwarn jdk.dynalink.support.ChainedCallSite
 -dontwarn okhttp3.internal.Util
 -dontwarn com.google.re2j.**
+
+## Rules for org.jaudiotagger (references Java AWT/ImageIO not available on Android)
+-dontwarn java.awt.**
+-dontwarn javax.imageio.**
