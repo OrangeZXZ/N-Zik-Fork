@@ -53,6 +53,9 @@
   - Refactored `SettingIcon` to distinguish between standard buttons and `DynamicColor` buttons
   - Overrode `ToolBarButton` in `Repeat` and `ItemSelector` to ensure Compose tracks state reads correctly
   - Optimized `AnimatedM3EBackground` and moved drawing objects outside the `@Composable` scope to fix cache drawing errors
+- fix(navigation): make 'Go back to home directly' setting work correctly
+  - Replaced `navController.navigate(home) { popUpTo(home) { inclusive = true } }` with `navController.popBackStack(home, inclusive = false)` to prevent destroying the home node
+  - Updated visual `BackButton` in navigation bar to also respect the `disableNavigationBackStackKey` setting
 
 ## 2026-07-08
 
