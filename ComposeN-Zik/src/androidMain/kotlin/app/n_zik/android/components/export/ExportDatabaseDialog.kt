@@ -8,20 +8,14 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import app.n_zik.android.BuildConfig
-import app.n_zik.android.R
 import app.n_zik.android.core.database.Database
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import app.n_zik.android.components.ExportToFileDialog
-import app.kreate.android.me.knighthat.utils.TimeDateUtils
+import timber.log.Timber
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.io.FileInputStream
 
 class ExportDatabaseDialog private constructor(
@@ -34,27 +28,36 @@ class ExportDatabaseDialog private constructor(
                 rememberLauncherForActivityResult(
                     ActivityResultContracts.CreateDocument("application/vnd.sqlite3")
                 ) { uri ->
+                    Timber.tag("ExportDatabaseDialog").d("File picker callback received, uri: $uri")
                     uri ?: return@rememberLauncherForActivityResult
                     CoroutineScope(Dispatchers.IO).launch {
-                        Database.checkpoint()
-                        context.applicationContext
-                            .contentResolver
-                            .openOutputStream(uri)
-                            ?.use { outStream ->
-                                val dbFile = context.getDatabasePath(Database.FILE_NAME)
-                                FileInputStream(dbFile).use { inStream ->
-                                    inStream.copyTo(outStream)
-                                }
-                            }
+                        try {
+                            Timber.tag("ExportDatabaseDialog").d("Starting database export...")
+                            Database.checkpoint()
+                            Timber.tag("ExportDatabaseDialog").d("Database checkpoint done")
+                            context.applicationContext
+                                .contentResolver
+                                .openOutputStream(uri)
+                                ?.use { outStream ->
+                                    val dbFile = context.getDatabasePath(Database.FILE_NAME)
+                                    Timber.tag("ExportDatabaseDialog").d("Copying database from: ${dbFile.absolutePath}")
+                                    FileInputStream(dbFile).use { inStream ->
+                                        val bytes = inStream.copyTo(outStream)
+                                        Timber.tag("ExportDatabaseDialog").d("Export complete, bytes written: $bytes")
+                                    }
+                                } ?: Timber.tag("ExportDatabaseDialog").w("Failed to open output stream")
+                        } catch (e: Exception) {
+                            Timber.tag("ExportDatabaseDialog").e(e, "Export failed")
+                        }
                     }
                 }
             )
     }
 
     fun export() {
-        val fileName = "${BuildConfig.APP_NAME}_database_${TimeDateUtils.localizedDateNoDelimiter()}_${TimeDateUtils.timeNoDelimiter()}"
+        val date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val fileName = "${BuildConfig.APP_NAME} $date Database"
+        Timber.tag("ExportDatabaseDialog").d("Launching file picker with name: $fileName.sqlite")
         launcher.launch("$fileName.sqlite")
     }
 }
-
-

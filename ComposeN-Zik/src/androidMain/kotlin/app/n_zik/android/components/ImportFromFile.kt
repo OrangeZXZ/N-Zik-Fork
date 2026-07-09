@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
 import app.n_zik.android.R
 import app.kreate.android.me.knighthat.utils.Toaster
+import timber.log.Timber
 
 abstract class ImportFromFile(
     private val launcher: ManagedActivityResultLauncher<Array<String>, Uri?>
@@ -13,10 +14,11 @@ abstract class ImportFromFile(
 
     fun onShortClick() {
         try {
+            Timber.tag("ImportFromFile").d("Launching file picker with mimes: ${supportedMimes.joinToString()}")
             launcher.launch( supportedMimes )
-        } catch ( _: ActivityNotFoundException ) {
+        } catch ( e: ActivityNotFoundException ) {
+            Timber.tag("ImportFromFile").e(e, "No app found to handle file picker")
             Toaster.e( R.string.info_not_find_app_open_doc )
         }
     }
 }
-

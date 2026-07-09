@@ -46,6 +46,7 @@ import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.components.themed.StringListDialog
 import app.n_zik.android.components.settings.SettingsInputDialog
 import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
+import app.n_zik.android.components.dialog.CopyLogsDialog
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.defaultFolderKey
 import app.it.fast4x.rimusic.utils.extraspaceKey
@@ -440,8 +441,7 @@ fun OtherSettings() {
                 title = stringResource(R.string.debug),
                 icon = R.drawable.bugs,
                 content = {
-                    var text by remember { mutableStateOf(null as String?) }
-                    val noLogAvailable = stringResource(R.string.no_log_available)
+                    CopyLogsDialog.Render()
 
                     OtherSwitchSettingEntry(
                         title = stringResource(R.string.enable_log_debug),
@@ -465,37 +465,14 @@ fun OtherSettings() {
                     
                     ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
                     
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.copy_log_to_clipboard),
-                        text = "",
-                        icon = R.drawable.copy,
-                        onClick = {
-                            val file = File(context.filesDir.resolve("logs"), "N-Zik_log.txt")
-                            if (file.exists()) {
-                                text = file.readText()
-                                text?.let {
-                                    textCopyToClipboard(it, context)
-                                }
-                            } else
-                                Toaster.w(noLogAvailable)
-                        }
-                    )
-                    
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.copy_crash_log_to_clipboard),
-                        text = "",
-                        icon = R.drawable.copy,
-                        onClick = {
-                            val file = File(context.filesDir.resolve("logs"), "N-Zik_crash_log.txt")
-                            if (file.exists()) {
-                                text = file.readText()
-                                text?.let {
-                                    textCopyToClipboard(it, context)
-                                }
-                            } else
-                                Toaster.w(noLogAvailable)
-                        }
-                    )
+                    if (logDebugEnabled) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.copy_logs),
+                            text = stringResource(R.string.copy_logs_description),
+                            icon = R.drawable.copy,
+                            onClick = { CopyLogsDialog.showDialog() }
+                        )
+                    }
                 }
             )
         }

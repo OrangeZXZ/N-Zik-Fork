@@ -208,6 +208,7 @@ import app.it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import app.it.fast4x.rimusic.utils.visualizerEnabledKey
 import app.it.fast4x.rimusic.utils.volumeNormalizationKey
 import app.n_zik.android.components.dialog.RestartAppDialog
+import app.n_zik.android.components.dialog.LibraryVisibilitySettingsDialog
 import app.n_zik.android.components.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.it.fast4x.rimusic.enums.SearchDisplayOrder
@@ -722,6 +723,9 @@ fun UiSettings(
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
+
+        LibraryVisibilitySettingsDialog.Render()
+
         HeaderWithIcon(
             title = stringResource(R.string.user_interface),
             iconId = R.drawable.ic_launcher_monochrome,
@@ -1552,59 +1556,14 @@ fun UiSettings(
                 title = stringResource(R.string.library),
                 icon = R.drawable.library,
                 content = {
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.favorites)}".contains(search.inputValue,true))
-                        OtherSwitchSettingEntry(
-                            title = "${stringResource(R.string.show)} ${stringResource(R.string.favorites)}",
-                            text = "",
-                            isChecked = showFavoritesPlaylist,
-                            onCheckedChange = { showFavoritesPlaylist = it },
-                            icon = R.drawable.heart
+                    if (search.inputValue.isBlank() || stringResource(R.string.library_visibility).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.library_visibility),
+                            text = stringResource(R.string.library_visibility_description),
+                            onClick = { LibraryVisibilitySettingsDialog.showDialog() },
+                            icon = R.drawable.library
                         )
-
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.cached)}".contains(search.inputValue,true))
-                        OtherSwitchSettingEntry(
-                            title = "${stringResource(R.string.show)} ${stringResource(R.string.cached)}",
-                            text = "",
-                            isChecked = showCachedPlaylist,
-                            onCheckedChange = { showCachedPlaylist = it },
-                            icon = R.drawable.server
-                        )
-
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}".contains(search.inputValue,true))
-                        OtherSwitchSettingEntry(
-                            title = "${stringResource(R.string.show)} ${stringResource(R.string.downloaded)}",
-                            text = "",
-                            isChecked = showDownloadedPlaylist,
-                            onCheckedChange = { showDownloadedPlaylist = it },
-                            icon = R.drawable.downloaded
-                        )
-
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.on_device)}".contains(search.inputValue,true))
-                        OtherSwitchSettingEntry(
-                            title = "${stringResource(R.string.show)} ${stringResource(R.string.on_device)}",
-                            text = "",
-                            isChecked = showOnDevicePlaylist,
-                            onCheckedChange = { showOnDevicePlaylist = it },
-                            icon = R.drawable.folder
-                        )
-
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.piped_playlists)}".contains(search.inputValue,true))
-                        OtherSwitchSettingEntry(
-                            title = "${stringResource(R.string.show)} ${stringResource(R.string.piped_playlists)}",
-                            text = "",
-                            isChecked = showPipedPlaylists,
-                            onCheckedChange = { showPipedPlaylists = it },
-                            icon = R.drawable.piped_logo
-                        )
-
-                    if (search.inputValue.isBlank() || "${stringResource(R.string.show)} ${stringResource(R.string.pinned_playlists)}".contains(search.inputValue,true))
-                        OtherSwitchSettingEntry(
-                            title = "${stringResource(R.string.show)} ${stringResource(R.string.pinned_playlists)}",
-                            text = "",
-                            isChecked = showPinnedPlaylists,
-                            onCheckedChange = { showPinnedPlaylists = it },
-                            icon = R.drawable.pin_filled
-                        )
+                    }
                 }
             )
         }
