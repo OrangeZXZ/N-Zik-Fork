@@ -23,7 +23,13 @@ interface MenuIcon: Icon {
     @Composable
     private fun SettingIcon() {
         val useOriginalColors = color == Color.Unspecified
-        val iconColor = if (useOriginalColors) Color.Unspecified else colorPalette().accent
+        
+        val iconColor = if (this is DynamicColor) {
+            if (isFirstColor) colorPalette().accent else colorPalette().textDisabled
+        } else {
+            if (useOriginalColors) Color.Unspecified else colorPalette().accent
+        }
+        
         Box(
             modifier = Modifier
                 .size(32.dp)
@@ -38,7 +44,7 @@ interface MenuIcon: Icon {
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                painter = painterResource(iconId),
+                painter = icon,
                 tint = iconColor,
                 contentDescription = null,
                 modifier = Modifier.size(18.dp)

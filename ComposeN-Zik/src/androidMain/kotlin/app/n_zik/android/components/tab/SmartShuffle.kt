@@ -19,12 +19,17 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.utils.isRecommendationEnabledKey
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.DynamicColor
 
 class SmartShuffle private constructor(
     private val isRecommendationEnabled: () -> Boolean,
     private val isRecommendationsLoading: () -> Boolean,
     private val onToggleRecommendation: () -> Unit
-): MenuIcon, Descriptive {
+): MenuIcon, Descriptive, DynamicColor {
+
+    override var isFirstColor: Boolean
+        get() = isRecommendationEnabled()
+        set(value) {}
 
     companion object {
         @Composable

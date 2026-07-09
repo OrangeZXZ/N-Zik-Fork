@@ -33,10 +33,10 @@ class ItemSelector<E> private constructor(
 
     private val selected: ArrayList<E> = ArrayList()
 
-    var isActive: Boolean = activeState.value
+    var isActive: Boolean
+        get() = activeState.value
         set(value) {
             activeState.value = value
-            field = value
 
             if( !value )
                 selected.clear()
@@ -52,6 +52,18 @@ class ItemSelector<E> private constructor(
     override val size: Int
         // Use getter to make sure the value is up-to-date
         get() = selected.size
+
+    @Composable
+    override fun ToolBarButton() {
+        app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar.Icon(
+            icon,
+            color,
+            app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar.TOOLBAR_ICON_SIZE,
+            true,
+            androidx.compose.ui.Modifier,
+            this::onShortClick
+        )
+    }
 
     override fun onShortClick() {
         menuState.hide()

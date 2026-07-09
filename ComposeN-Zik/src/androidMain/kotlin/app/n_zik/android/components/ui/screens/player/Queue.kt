@@ -66,10 +66,10 @@ class Repeat private constructor(
         )
     }
 
-    var type: QueueLoopType = typeState.value
+    var type: QueueLoopType
+        get() = typeState.value
         private set(value) {
             typeState.value = value
-            field = value
         }
 
     override val iconId: Int = -1   // Unused
@@ -80,6 +80,18 @@ class Repeat private constructor(
     override val icon: Painter
         @Composable
         get() = painterResource( type.iconId )
+
+    @Composable
+    override fun ToolBarButton() {
+        app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar.Icon(
+            icon,
+            color,
+            app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar.TOOLBAR_ICON_SIZE,
+            true,
+            androidx.compose.ui.Modifier,
+            this::onShortClick
+        )
+    }
 
     override fun onShortClick() { type = type.next() }
 }

@@ -231,8 +231,6 @@ fun Modifier.animatedM3EBackground(
         }
     }
 
-    val time = accumulatedTime.floatValue
-
     val sequenceMorphs = remember {
         val morphPolygons = listOf(
             RoundedPolygon.star(numVerticesPerRadius = 5, innerRadius = 0.5f, rounding = CornerRounding(0.2f)),
@@ -283,7 +281,11 @@ fun Modifier.animatedM3EBackground(
             composePath
         }
 
+        val cachedMatrix = AndroidMatrix()
+        val cachedPath = AndroidPath()
+
         onDrawBehind {
+            val time = accumulatedTime.floatValue
             if (visibilityProgress <= 0.01f) return@onDrawBehind
 
             shapes.forEach { shape ->
@@ -315,12 +317,12 @@ fun Modifier.animatedM3EBackground(
 
                         val morph = sequenceMorphs[morphIndex]
 
-                        val androidPath = AndroidPath()
-                        val legacyPath = morph.toPath(easedProgress, androidPath)
+                        cachedPath.rewind()
+                        val legacyPath = morph.toPath(easedProgress, cachedPath)
 
-                        val matrix = AndroidMatrix()
-                        matrix.setScale(minDim, minDim)
-                        legacyPath.transform(matrix)
+                        cachedMatrix.reset()
+                        cachedMatrix.setScale(minDim, minDim)
+                        legacyPath.transform(cachedMatrix)
                         legacyPath.asComposePath()
                     } else {
                         basePaths[shape.type % basePaths.size]
