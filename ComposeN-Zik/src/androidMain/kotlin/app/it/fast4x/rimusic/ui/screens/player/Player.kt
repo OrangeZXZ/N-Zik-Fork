@@ -2311,36 +2311,9 @@ fun Player(
                     .background(queuePanelBackground)
             ) {
                 // Queue content - padding top for drag handle, overscroll to close
-                val canScrollUp = remember { mutableStateOf(true) }
-                val canScrollDown = remember { mutableStateOf(true) }
-                val overscrollConnection = remember {
-                    object : NestedScrollConnection {
-                        override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
-                            // Only shrink panel when at the very top (can't scroll up anymore) and scrolling up
-                            if (available.y > 0 && !canScrollUp.value && !canScrollDown.value) {
-                                val delta = available.y / screenHeightPx
-                                queuePanelCoroutineScope.launch {
-                                    queuePanelHeightFraction.snapTo((queuePanelHeightFraction.value - delta).coerceIn(0f, maxFraction))
-                                }
-                                return available
-                            }
-                            return Offset.Zero
-                        }
-
-                        override suspend fun onPostFling(consumed: androidx.compose.ui.unit.Velocity, available: androidx.compose.ui.unit.Velocity): androidx.compose.ui.unit.Velocity {
-                            if (queuePanelHeightFraction.value < 0.4f) {
-                                showQueue = false
-                            } else {
-                                queuePanelHeightFraction.animateTo(0.65f, spring(dampingRatio = 0.8f, stiffness = 300f))
-                            }
-                            return super.onPostFling(consumed, available)
-                        }
-                    }
-                }
                 Box(
                     modifier = Modifier
                         .padding(top = 48.dp)
-                        .nestedScroll(overscrollConnection)
                 ) {
                     Queue(
                         navController = navController,
@@ -2350,9 +2323,7 @@ fun Player(
                         },
                         onDiscoverClick = {
                             binder.service.nzikRadio.toggleDiscover()
-                        },
-                        canScrollUp = canScrollUp,
-                        canScrollDown = canScrollDown
+                        }
                     )
                 }
 
