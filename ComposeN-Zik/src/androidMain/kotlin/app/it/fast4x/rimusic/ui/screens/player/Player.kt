@@ -2314,9 +2314,9 @@ fun Player(
                 val overscrollConnection = remember {
                     object : NestedScrollConnection {
                         override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
-                            // Only shrink panel when scrolling UP past the top of the list
-                            if (available.y < 0) {
-                                val delta = -available.y / screenHeightPx
+                            // Shrink panel on downward overscroll (scrolling to bottom of list)
+                            if (available.y > 0) {
+                                val delta = available.y / screenHeightPx
                                 queuePanelCoroutineScope.launch {
                                     queuePanelHeightFraction.snapTo((queuePanelHeightFraction.value - delta).coerceIn(0f, maxFraction))
                                 }
