@@ -18,6 +18,13 @@
   - Changed NestedScrollConnection to only shrink panel on upward overscroll (`available.y < 0`)
   - Queue stays open when scrolling down to the bottom
   - Only closes when scrolling up past the top of the list
+- fix(queue): prevent queue panel from shrinking at bottom of list
+  - Added `canScrollUp` state to Queue to expose scroll position
+  - OverscrollConnection now checks if at top of list before shrinking panel
+- refactor(m3e): remove composed modifier to fix player touch blocking (gh-652)
+  - Replaced `Modifier.composed {}` with direct Modifier extension
+  - Moved effects outside composed scope
+  - Fixes player becoming unresponsive when M3E theme is active
 - fix(shake): horizontal-only shake detection prevents false triggers from vertical movements
 - fix(settings): overlap between Gradient Type and Theme Shake Sensitivity selectors in Appearance Settings (gh-652)
   - Moved M3E sensitivity selector to its own `AnimatedVisibility` block instead of nested inside the gradient type block
