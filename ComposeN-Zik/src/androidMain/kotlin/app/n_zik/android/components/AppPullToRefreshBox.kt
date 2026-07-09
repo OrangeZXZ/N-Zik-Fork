@@ -9,6 +9,7 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import app.it.fast4x.rimusic.ui.styling.LocalAppearance
 
 @Composable
@@ -32,7 +33,7 @@ fun AppPullToRefreshBox(
                 isRefreshing = isRefreshing,
                 modifier = Modifier.align(Alignment.TopCenter),
                 containerColor = colorPalette.accent,
-                color = colorPalette.background0
+                color = if (colorPalette.isDark) Color.White else Color.Black
             )
         },
         content = content
