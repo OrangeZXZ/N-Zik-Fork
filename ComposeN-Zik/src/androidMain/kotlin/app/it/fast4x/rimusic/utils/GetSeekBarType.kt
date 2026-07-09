@@ -110,7 +110,7 @@ fun GetSeekBar(
                     color = colorPalette().collapsedPlayerProgressBar
                 )
             }
-        }
+        } else {
 
         if (playerTimelineType != PlayerTimelineType.Default
             && playerTimelineType != PlayerTimelineType.Wavy
@@ -278,8 +278,7 @@ fun GetSeekBar(
                 backgroundColor = colorPalette().textSecondary,
                 shape = uiRoundnessShape()
             )
-
-
+        }
     }
 
     Spacer( modifier = Modifier.height( 8.dp ) )

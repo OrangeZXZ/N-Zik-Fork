@@ -18,6 +18,9 @@
   - Fixed clipRect compilation error
 
 ### Fixed
+- fix(ui): Fixed wavy timeline and scrubber jumping to the end during loading by preventing NaN fraction calculations
+- fix(ui): Fixed all seekbars displaying underneath the loading indicator during initial buffering by wrapping them in an else block
+- fix(ui): Fixed wavy timeline jumping to the end during initial buffering by using duration() instead of media.duration
 - fix(queue): only close queue panel when scrolling up to the top
   - Changed NestedScrollConnection to only shrink panel on upward overscroll (`available.y < 0`)
   - Queue stays open when scrolling down to the bottom
