@@ -46,6 +46,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -314,7 +315,10 @@ fun Queue(
             val backgroundAlpha = if( queueType == QueueType.Modern ) .5f else 1f
             val itemBackground = if ( queueType == QueueType.Modern ) androidx.compose.ui.graphics.Color.Transparent else colorPalette().background0
 
-            androidx.compose.runtime.derivedStateOf { lazyListState.canScrollBackward }.value.let { canScrollUp.value = it }
+            LaunchedEffect(lazyListState) {
+                snapshotFlow { lazyListState.canScrollBackward }
+                    .collect { canScrollUp.value = it }
+            }
 
             LazyColumn(
                 state = lazyListState,
