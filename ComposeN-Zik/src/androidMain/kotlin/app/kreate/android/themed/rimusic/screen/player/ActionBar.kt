@@ -195,7 +195,7 @@ fun BoxScope.ActionBar(
     var isShowingLyrics by showLyricsState
 
     Row(
-        modifier = Modifier.padding( if( isLandscape ) WindowInsets.navigationBars.asPaddingValues() else PaddingValues() )
+        modifier = Modifier.padding( WindowInsets.navigationBars.asPaddingValues() )
                            .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
                            .requiredHeight(if (showNextSongsInPlayer && (showLyricsThumbnail || (!isShowingLyrics || miniQueueExpanded))) 90.dp else 50.dp)
                            .fillMaxWidth(if (isLandscape) 0.8f else 1f)

@@ -51,6 +51,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
@@ -2306,9 +2307,10 @@ fun Player(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(queuePanelHeightFraction.value)
+                    .background(queuePanelBackground)
+                    .padding(WindowInsets.navigationBars.asPaddingValues())
                     .align(Alignment.BottomCenter)
                     .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                    .background(queuePanelBackground)
             ) {
                 // Queue content - padding top for drag handle, overscroll to close
                 Box(
@@ -2382,6 +2384,19 @@ fun Player(
                             .offset(y = toolbarOffsetY)
                     )
                 }
+
+        }
+
+        // Nav bar background for queue
+        if (isQueuePanelVisible) {
+            val navBarHeight = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(navBarHeight)
+                    .align(Alignment.BottomCenter)
+                    .background(colorPalette().background1)
+            )
         }
 
         CustomModalBottomSheet(

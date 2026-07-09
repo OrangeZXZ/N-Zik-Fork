@@ -64,8 +64,6 @@ fun CustomModalBottomSheet(
     contentWindowInsets: @Composable () -> WindowInsets = { WindowInsets.ime },
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val bottomPadding = if(isLandscape) 0.dp else WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-
     if (showSheet) {
 
         ModalBottomSheet(
@@ -85,7 +83,7 @@ fun CustomModalBottomSheet(
             val isDark =
                 colorPaletteMode == ColorPaletteMode.Dark || isPicthBlack || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme())
 
-            Column(modifier = Modifier.padding(bottom = bottomPadding)) {
+            Column {
 
                 val view = LocalView.current
                 val colorPalette = colorPalette()
@@ -99,6 +97,7 @@ fun CustomModalBottomSheet(
                             window.addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                                 window.statusBarColor = android.graphics.Color.TRANSPARENT
+                                window.navigationBarColor = android.graphics.Color.TRANSPARENT
                             }
 
                             val insetsController = WindowCompat.getInsetsController(window, view)
