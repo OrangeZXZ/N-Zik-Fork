@@ -131,6 +131,7 @@ fun Queue(
     navController: NavController,
     onDismiss: (QueueLoopType) -> Unit,
     onDiscoverClick: () -> Unit,
+    canScrollUp: androidx.compose.runtime.MutableState<Boolean> = androidx.compose.runtime.mutableStateOf(true),
 ) {
     // Essentials
     val context = LocalContext.current
@@ -312,6 +313,8 @@ fun Queue(
             val queueType by rememberPreference( queueTypeKey, QueueType.Modern )
             val backgroundAlpha = if( queueType == QueueType.Modern ) .5f else 1f
             val itemBackground = if ( queueType == QueueType.Modern ) androidx.compose.ui.graphics.Color.Transparent else colorPalette().background0
+
+            androidx.compose.runtime.derivedStateOf { lazyListState.canScrollBackward }.value.let { canScrollUp.value = it }
 
             LazyColumn(
                 state = lazyListState,
