@@ -1,3 +1,4 @@
+@file:Suppress("OPT_IN_USAGE", "OPT_IN_USAGE_ERROR")
 package app.n_zik.android.components.ui.screens.home
 
 import app.n_zik.android.uiRoundnessShape
@@ -286,7 +287,7 @@ fun HomeAlbums(
         if (HomeSyncState.failedAlbumsList.isNotEmpty()) retryDialog.showDialog()
     }
 
-    PullToRefreshBox(
+    app.n_zik.android.components.AppPullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = { refresh() }
     ) {

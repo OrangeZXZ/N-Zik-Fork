@@ -1,3 +1,4 @@
+@file:Suppress("OPT_IN_USAGE", "OPT_IN_USAGE_ERROR")
 package app.n_zik.android.components.ui.screens.home
 
 import androidx.compose.ui.draw.clip
@@ -39,6 +40,7 @@ import app.it.fast4x.rimusic.enums.ArtistSortBy
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -254,7 +256,8 @@ fun HomeArtists(
         if (HomeSyncState.failedArtistsList.isNotEmpty()) retryDialog.showDialog()
     }
 
-    PullToRefreshBox(
+    @OptIn(ExperimentalMaterial3Api::class)
+    app.n_zik.android.components.AppPullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = { refresh() }
     ) {

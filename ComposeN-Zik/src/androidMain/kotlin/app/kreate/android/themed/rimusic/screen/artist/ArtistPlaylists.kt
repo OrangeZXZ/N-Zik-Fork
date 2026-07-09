@@ -1,3 +1,4 @@
+@file:Suppress("OPT_IN_USAGE", "OPT_IN_USAGE_ERROR")
 package app.kreate.android.themed.rimusic.screen.artist
 
 import androidx.annotation.OptIn
@@ -236,7 +237,7 @@ fun ArtistPlaylists(
                 Loader()
             }
         } else {
-            PullToRefreshBox(
+            app.n_zik.android.components.AppPullToRefreshBox(
                 isRefreshing = isRefreshing,
                 onRefresh = {
                     isRefreshing = true

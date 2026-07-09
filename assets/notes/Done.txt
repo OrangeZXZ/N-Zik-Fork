@@ -34,6 +34,11 @@
   - Moved M3E sensitivity selector to its own `AnimatedVisibility` block instead of nested inside the gradient type block
 
 ### Changed
+- feat(ui): refactored all Pull-To-Refresh indicators to use the new Material 3 Expressive Loader
+  - Centralized pull-to-refresh logic in AppPullToRefreshBox
+  - Replaced PullToRefreshBox with AppPullToRefreshBox in all Home and Artist screens
+  - Dynamic loading indicator colors based on the current theme (Light, Dark, AMOLED) using colorPalette.accent and colorPalette.background0
+
 - perf(m3e): soften M3E background explosion animations (gh-652)
   - Reduced shake burst from 4.0f to 1.2f
   - Reduced startup/song-change explosion from 3.5f to 1.0f

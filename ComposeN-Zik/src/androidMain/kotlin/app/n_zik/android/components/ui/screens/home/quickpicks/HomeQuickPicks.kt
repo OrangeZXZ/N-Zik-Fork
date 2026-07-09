@@ -1,3 +1,4 @@
+@file:Suppress("OPT_IN_USAGE", "OPT_IN_USAGE_ERROR")
 package app.n_zik.android.components.ui.screens.home.quickpicks
 
 import android.annotation.SuppressLint
@@ -226,7 +227,7 @@ fun HomeQuickPicks(
         }
     }
 
-    PullToRefreshBox(
+    app.n_zik.android.components.AppPullToRefreshBox(
         isRefreshing = state.refreshing.value,
         onRefresh = { state.refresh() }
     ) {

@@ -1,3 +1,4 @@
+@file:Suppress("OPT_IN_USAGE", "OPT_IN_USAGE_ERROR")
 package app.kreate.android.themed.rimusic.screen.artist
 
 import androidx.compose.ui.draw.clip
@@ -118,7 +119,7 @@ fun ArtistAlbums(
                 Loader()
             }
         } else {
-            PullToRefreshBox(
+            app.n_zik.android.components.AppPullToRefreshBox(
                 isRefreshing = isRefreshing,
                 onRefresh = {
                     isRefreshing = true

@@ -1,3 +1,4 @@
+@file:Suppress("OPT_IN_USAGE", "OPT_IN_USAGE_ERROR")
 package app.n_zik.android.components.ui.screens.home
 
 import android.annotation.SuppressLint
@@ -145,7 +146,7 @@ fun HomePage(
         }
     }
 
-    PullToRefreshBox(
+    app.n_zik.android.components.AppPullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = ::refresh
     ) {

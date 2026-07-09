@@ -1,3 +1,4 @@
+@file:Suppress("OPT_IN_USAGE", "OPT_IN_USAGE_ERROR")
 package app.n_zik.android.components.ui.screens.home
 
 import androidx.compose.ui.draw.clip
@@ -329,7 +330,7 @@ fun HomeLibrary(
         if (HomeSyncState.failedPlaylistsList.isNotEmpty()) retryDialog.showDialog()
     }
 
-    PullToRefreshBox(
+    app.n_zik.android.components.AppPullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = { refresh() }
     ) {
