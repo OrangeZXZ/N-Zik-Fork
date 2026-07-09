@@ -12,6 +12,7 @@
   - Added sensitivity selector in General Settings under "Shake to change song" toggle
   - Added "Theme Shake Sensitivity" selector in Appearance Settings (visible only when M3E gradient is selected) (gh-652)
   - `AnimatedM3EBackground.kt` now reads `shakeSensitivityThemeKey` instead of hardcoded 2.2f
+- feat (AnimatedM3EBackground): Added aa brand new gradient type called Morphing (gh-652)
 
 ### Fixed
 - fix(queue): only close queue panel when scrolling up to the top
