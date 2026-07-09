@@ -219,4 +219,10 @@
   - Removed `songCount`/`duration` params not present in the `Album` entity
   - Added null safety on `it.name` with `.orEmpty()` in `joinToString`
   - Fixed `playlist.id` Long → String conversion for `putStringArrayListExtra`
-  - Added missing string resources: `sync_no_items`, `sync_completed_with_errors`
+- Removed bottom scaffoldPadding from main content Box in Skeleton.kt to allow content to flow edge-to-edge behind the navigation bar
+- Matched Scaffold containerColor to background1 for non-floating bottom navigation bar
+- fix(ui): navigation bar edge-to-edge and color matching
+  - Made app content draw edge-to-edge behind the bottom navigation bar by ignoring bottom scaffoldPadding
+  - Matched Scaffold containerColor to background1 for non-floating bottom navigation bar
+  - Applied uiRoundnessShape() to the non-floating bottom navigation bar background
+  - Changed windowBackground to black in themes.xml to prevent purple flash on startup

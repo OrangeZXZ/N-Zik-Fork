@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.graphics.Color
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.NavigationBarType
 import app.it.fast4x.rimusic.ui.components.navigation.nav.AbstractNavigationBar
@@ -120,19 +121,33 @@ fun Skeleton(
 
         Scaffold(
             modifier = modifier,
-            containerColor = colorPalette().background0,
+            containerColor = Color.Transparent,
             topBar = appHeader,
             contentWindowInsets = currentInsets,
             bottomBar = {
-                if ( NavigationBarPosition.Bottom.isCurrent() )
-                    navigationBar.Draw()
+                if ( NavigationBarPosition.Bottom.isCurrent() ) {
+                    if (!isFloating) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(colorPalette().background1, app.n_zik.android.uiRoundnessShape())
+                        ) {
+                            navigationBar.Draw()
+                        }
+                    } else {
+                        navigationBar.Draw()
+                    }
+                }
             }
         ) { scaffoldPadding ->
             Box(Modifier.fillMaxSize()) {
                 // Main Content Area (Now fills screen behind floating UI)
                 Box(
                     Modifier
-                        .padding(scaffoldPadding)
+                        .padding(
+                            top = scaffoldPadding.calculateTopPadding(),
+                            bottom = if (NavigationBarPosition.Bottom.isCurrent() && !isFloating) scaffoldPadding.calculateBottomPadding() else 0.dp
+                        )
                         .fillMaxSize()
                 ) {
                     Row(
