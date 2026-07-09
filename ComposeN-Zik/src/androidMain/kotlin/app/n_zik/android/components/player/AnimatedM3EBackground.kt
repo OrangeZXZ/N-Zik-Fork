@@ -43,8 +43,6 @@ import app.it.fast4x.rimusic.utils.getEnum
 import app.it.fast4x.rimusic.utils.shakeSensitivityThemeKey
 import app.n_zik.android.enums.ShakeSensitivityTheme
 
-private var hasAppLaunched = false
-
 @OptIn(UnstableApi::class)
 fun Modifier.animatedM3EBackground(
     animating: Boolean,
@@ -142,13 +140,14 @@ fun Modifier.animatedM3EBackground(
 
     val lastLocalColor = remember { androidx.compose.runtime.mutableStateOf(V.value) }
     val mountTime = remember { System.currentTimeMillis() }
+    val hasExploded = remember { mutableStateOf(false) }
 
     // Explosion on song change (colors change) and startup
     LaunchedEffect(V) {
         val currentColor = V.value
         val now = System.currentTimeMillis()
-        if (!hasAppLaunched) {
-            hasAppLaunched = true
+        if (!hasExploded.value) {
+            hasExploded.value = true
             shapes.forEach { shape ->
                 shape.vx += (Random.nextFloat() - 0.5f) * 1.0f
                 shape.vy += (Random.nextFloat() - 0.5f) * 1.0f
