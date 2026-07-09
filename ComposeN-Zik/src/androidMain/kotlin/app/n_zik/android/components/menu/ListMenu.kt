@@ -100,8 +100,10 @@ object ListMenu {
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    content = content
-                )
+                ) {
+                    content()
+                    Spacer(modifier = Modifier.height(100.dp))
+                }
             }
         )
     }

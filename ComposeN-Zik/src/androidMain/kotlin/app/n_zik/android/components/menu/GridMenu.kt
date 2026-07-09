@@ -97,7 +97,7 @@ object GridMenu {
                     start = CONTENT_HORIZONTAL_PADDING.dp,
                     end = CONTENT_HORIZONTAL_PADDING.dp,
                     top = CONTENT_TOP_PADDING.dp,
-                    bottom = CONTENT_TOP_PADDING.dp
+                    bottom = 100.dp
                 ),
                 modifier = Modifier
                     .fillMaxWidth()

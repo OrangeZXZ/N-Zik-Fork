@@ -38,6 +38,17 @@
   - Reduced shake burst from 4.0f to 1.2f
   - Reduced startup/song-change explosion from 3.5f to 1.0f
   - Reduced velocity cap from 4.0f max to 2.0f max for gentler movement
+- fix(player): remove navigation bar background and fix padding across player, queue, and menus
+  - Made navigation bar transparent in `CustomModalBottomSheet.kt`
+  - Removed `bottomPadding` from `CustomModalBottomSheet` Column
+  - Added `navigationBarsPadding` to `ActionBar` for both portrait and landscape
+  - Added nav bar background Box for queue panel area
+  - Added 100.dp spacer at bottom of `PlayerItemMenu` ListMenu and GridMenu
+  - QueueToolBar uses `background1` color
+- fix(menus): add bottom spacer to all menus for navigation bar clearance
+  - Added 100.dp Spacer in `ListMenu.kt` scrollable content
+  - Added 100.dp bottom padding in `GridMenu.kt` contentPadding
+  - Removed per-menu spacers from `PlayerItemMenu.kt` (now handled globally)
 
 ## 2026-07-08
 
