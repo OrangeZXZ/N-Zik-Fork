@@ -204,8 +204,30 @@ fun AppNavigation(
     val currentEntry by navController.currentBackStackEntryAsState()
     val isHome = currentEntry?.destination?.route?.startsWith(NavRoutes.home.name) ?: true
 
-    androidx.activity.compose.BackHandler(enabled = disableBackStack && !isHome) {
-        navController.popBackStack(NavRoutes.home.name, inclusive = false)
+    val backDispatcher = androidx.activity.compose.LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+
+    val backCallback = androidx.compose.runtime.remember {
+        object : androidx.activity.OnBackPressedCallback(false) {
+            override fun handleOnBackPressed() {
+                navController.popBackStack(NavRoutes.home.name, inclusive = false)
+            }
+        }
+    }
+    
+    backCallback.isEnabled = disableBackStack && !isHome
+
+    androidx.compose.runtime.LaunchedEffect(currentEntry, disableBackStack) {
+        if (disableBackStack && !isHome) {
+            backCallback.remove()
+            backDispatcher?.addCallback(lifecycleOwner, backCallback)
+        } else {
+            backCallback.remove()
+        }
+    }
+
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner, backDispatcher) {
+        onDispose { backCallback.remove() }
     }
 
     Scaffold(
