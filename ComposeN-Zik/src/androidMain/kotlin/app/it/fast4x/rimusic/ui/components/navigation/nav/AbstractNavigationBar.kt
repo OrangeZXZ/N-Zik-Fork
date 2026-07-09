@@ -10,6 +10,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,7 +33,6 @@ abstract class AbstractNavigationBar(
 ) {
     internal val buttonList: MutableList<@Composable () -> Unit> = mutableListOf()
 
-    @ReadOnlyComposable
     @Composable
     internal open fun BackButton(): NavigationButton {
         val disableBackStack by app.it.fast4x.rimusic.utils.rememberPreference(app.it.fast4x.rimusic.utils.disableNavigationBackStackKey, false)
