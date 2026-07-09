@@ -228,6 +228,8 @@ import app.it.fast4x.rimusic.utils.restartActivityKey
 import app.it.fast4x.rimusic.utils.hideStatusBarKey
 import app.it.fast4x.rimusic.utils.setDefaultPalette
 import app.it.fast4x.rimusic.utils.shakeEventEnabledKey
+import app.it.fast4x.rimusic.utils.shakeSensitivityKey
+import app.n_zik.android.enums.ShakeSensitivity
 import app.it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import app.it.fast4x.rimusic.utils.showSearchTabKey
 import app.it.fast4x.rimusic.utils.showTotalTimeQueueKey
@@ -252,7 +254,7 @@ import timber.log.Timber
 import java.net.Proxy
 import java.util.Locale
 import java.util.Objects
-import kotlin.math.sqrt
+
 import kotlin.system.exitProcess
 import androidx.compose.foundation.shape.RoundedCornerShape
 import org.woheller69.freeDroidWarn.FreeDroidWarn
@@ -288,10 +290,7 @@ class MainActivity :
     override val persistMap = PersistMap()
 
     private var sensorManager: SensorManager? = null
-    private var acceleration = 0f
-    private var currentAcceleration = 0f
-    private var lastAcceleration = 0f
-    private var shakeCounter = 0
+    private var lastShakeTime = 0L
 
     private var _monet: MonetCompat? by mutableStateOf(null)
     private val monet get() = _monet ?: throw MonetActivityAccessException()
@@ -1324,30 +1323,17 @@ class MainActivity :
         override fun onSensorChanged(event: SensorEvent) {
 
             if (preferences.getBoolean(shakeEventEnabledKey, false)) {
-                // Fetching x,y,z values
+                val sensitivity = preferences.getEnum(shakeSensitivityKey, ShakeSensitivity.High)
                 val x = event.values[0]
-                val y = event.values[1]
-                val z = event.values[2]
-                lastAcceleration = currentAcceleration
+                val gX = x / SensorManager.GRAVITY_EARTH
 
-                // Getting current accelerations
-                // with the help of fetched x,y,z values
-                currentAcceleration = sqrt((x * x + y * y + z * z).toDouble()).toFloat()
-                val delta: Float = currentAcceleration - lastAcceleration
-                acceleration = acceleration * 0.9f + delta
-
-                // Display a Toast message if
-                // acceleration value is over 12
-                if (acceleration > 12) {
-                    shakeCounter++
-                    //Toast.makeText(applicationContext, "Shake event detected", Toast.LENGTH_SHORT).show()
+                if (kotlin.math.abs(gX) > sensitivity.thresholdG) {
+                    val now = System.currentTimeMillis()
+                    if (now - lastShakeTime > 1000) {
+                        lastShakeTime = now
+                        binder?.player?.playNext()
+                    }
                 }
-                if (shakeCounter >= 1) {
-                    //Toast.makeText(applicationContext, "Shaked $shakeCounter times", Toast.LENGTH_SHORT).show()
-                    shakeCounter = 0
-                    binder?.player?.playNext()
-                }
-
             }
 
         }
