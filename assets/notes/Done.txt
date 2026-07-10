@@ -1,3 +1,7 @@
+## Default Animated Gradient changed to M3EMorphingCover
+- Changed default animated gradient from FluidCoverColorGradient to M3EMorphingCover for new installations
+- Updated in MainActivity.kt and Player.kt rememberPreference calls
+
 ## Fix Cipher Deobfuscation Cancellation Buffering Loop
 - Fixed JobCancellationException in StreamResolver.process() caused by ExoPlayer thread interruption during media item transitions
 - Added invokeOnCancellation handlers in CipherWebView for sigContinuation, nContinuation, and initContinuation to prevent stale continuation references

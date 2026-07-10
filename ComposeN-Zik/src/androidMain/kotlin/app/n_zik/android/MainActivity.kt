@@ -529,7 +529,7 @@ class MainActivity :
             }
             var showPlayer by rememberSaveable { mutableStateOf(false) }
             var switchToAudioPlayer by rememberSaveable { mutableStateOf(false) }
-            var animatedGradient by rememberPreference(animatedGradientKey, AnimatedGradient.FluidCoverColorGradient)
+            var animatedGradient by rememberPreference(animatedGradientKey, AnimatedGradient.M3EMorphingCover)
             var customColor by rememberPreference(customColorKey, Color.Green.hashCode())
             val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
 

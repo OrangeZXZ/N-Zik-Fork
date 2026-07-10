@@ -317,7 +317,7 @@ fun Player(
     val fadingedge by rememberPreference( fadingedgeKey, false )
     val colorPaletteMode by rememberPreference( colorPaletteModeKey, ColorPaletteMode.Dark )
     val playerBackgroundColors by rememberPreference( playerBackgroundColorsKey, PlayerBackgroundColors.AnimatedGradient )
-    val animatedGradient by rememberPreference( animatedGradientKey, AnimatedGradient.FluidCoverColorGradient )
+    val animatedGradient by rememberPreference( animatedGradientKey, AnimatedGradient.M3EMorphingCover )
     val thumbnailTapEnabled by rememberPreference( thumbnailTapEnabledKey, true )
     val showTopActionsBar by rememberPreference( showTopActionsBarKey, true )
     val blackgradient by rememberPreference( blackgradientKey, false )
