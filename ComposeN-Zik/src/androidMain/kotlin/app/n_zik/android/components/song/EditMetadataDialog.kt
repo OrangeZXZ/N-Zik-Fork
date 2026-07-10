@@ -4,9 +4,11 @@ import android.content.ContentUris
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -76,6 +78,11 @@ class EditMetadataDialog private constructor(
     private var isLoading by mutableStateOf(false)
     private var filePath: String? = null
     private var coverArtBytes: ByteArray? = null
+
+    private var writePermissionLauncher: androidx.activity.result.ActivityResultLauncher<androidx.activity.result.IntentSenderRequest>? = null
+    private var pendingTempFile: File? = null
+    private var pendingMediaStoreUri: Uri? = null
+    private var pendingSong: Song? = null
 
     override val iconId: Int = R.drawable.cover_edit
     override val messageId: Int = R.string.edit_metadata
@@ -205,6 +212,15 @@ class EditMetadataDialog private constructor(
             }
         }
 
+        val writePermLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartIntentSenderForResult()
+        ) { result ->
+            if (result.resultCode == android.app.Activity.RESULT_OK) {
+                performWriteToMediaStore(context)
+            }
+        }
+        writePermissionLauncher = writePermLauncher
+
         LaunchedEffect(isActive) {
             if (!isActive || song == null) return@LaunchedEffect
             isLoading = true
@@ -231,17 +247,29 @@ class EditMetadataDialog private constructor(
             if (isLoading) {
                 Text(stringResource(R.string.metadata_loading), modifier = Modifier.fillMaxWidth().padding(8.dp))
             } else {
-                val logicalOrder = listOf(
-                    "COVERART", "TITLE", "ARTIST", "ALBUM", "GENRE", "DATE", "DAY", "YEAR", "TRACK",
-                    "DISC_NUMBER", "ALBUM_ARTIST", "COMPOSER", "COPYRIGHT", "COMMENT",
-                    "ENCODER", "BPM", "ISRC", "PUBLISHER", "LYRICIST", "CONDUCTOR", "REMIXER"
+                val displayOrder = listOf(
+                    "TITLE", "ARTIST", "ALBUM", "GENRE", "DATE", "DAY", "YEAR", "TRACK", "TRACKNUMBER",
+                    "DISCNUMBER", "DISC_NUMBER", "TPOS", "ALBUM_ARTIST", "ALBUMARTIST", "COMPOSER", "TCOM",
+                    "COPYRIGHT", "TCOP", "COMMENT", "COMM",
+                    "ENCODER", "TENC", "ENCODEDBY", "BPM", "TBPM", "ISRC", "TSRC",
+                    "LABEL", "PUBLISHER", "TPUB", "LYRICIST", "TEXT", "CONDUCTOR", "TPE3",
+                    "REMIXER", "TPE4",
+                    "COMPILATION", "TEMPO", "RATING", "GROUPING", "LYRICS", "USLT", "MOVEMENT"
                 )
-                val sorted = fields.sortedBy { field ->
-                    val idx = logicalOrder.indexOf(field.key)
-                    if (idx >= 0) idx else logicalOrder.size + fields.indexOf(field)
+                val sortedFields = remember(fields) {
+                    fields.sortedBy { f ->
+                        when {
+                            f.isCoverArt -> -2
+                            f.value.text.isNotBlank() -> {
+                                val idx = displayOrder.indexOf(f.key)
+                                if (idx >= 0) idx else displayOrder.indexOf(labelFromKey(f.key)).let { if (it >= 0) it else Int.MAX_VALUE }
+                            }
+                            else -> Int.MAX_VALUE - 1
+                        }
+                    }
                 }
-                sorted.forEach { field ->
-                    val index = fields.indexOf(field)
+                sortedFields.forEach { field ->
+                    val index = fields.indexOfFirst { it.key == field.key }
                     if (field.isCoverArt) {
                         CoverArtField(
                             coverBytes = coverArtBytes,
@@ -350,13 +378,26 @@ class EditMetadataDialog private constructor(
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun saveToFile() {
         val path = filePath ?: run { Toaster.e("Cannot resolve file path"); return }
         val song = getSong() ?: return
 
         CoroutineScope(Dispatchers.IO).launch {
+            val context = app.n_zik.android.appContext()
+            val cacheDir = context.cacheDir
+            val originalFile = File(path)
+            val ext = originalFile.extension
+            val tempFile = File(cacheDir, "edit_meta_${song.id.hashCode()}.$ext")
+            val mediaStoreId = song.id.substringAfter(LOCAL_KEY_PREFIX).toLongOrNull()
+            val mediaStoreUri = mediaStoreId?.let {
+                ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, it)
+            }
+
             try {
-                val audioFile = AudioFileIO.read(File(path))
+                File(path).copyTo(tempFile, overwrite = true)
+
+                val audioFile = AudioFileIO.read(tempFile)
                 val tag = audioFile.tagOrCreateAndSetDefault
 
                 val keysToDelete = mutableListOf<FieldKey>()
@@ -384,20 +425,71 @@ class EditMetadataDialog private constructor(
 
                 audioFile.commit()
 
-                Database.asyncTransaction {
-                    songTable.insertIgnore(song)
-                    val newTitle = fields.firstOrNull { it.key == "TITLE" }?.value?.text?.trim() ?: ""
-                    val newArtist = fields.firstOrNull { it.key == "ARTIST" }?.value?.text?.trim() ?: ""
-                    if (newTitle.isNotEmpty()) songTable.updateTitle(song.id, "$MODIFIED_PREFIX$newTitle")
-                    if (newArtist.isNotEmpty()) songTable.updateArtists(song.id, "$MODIFIED_PREFIX$newArtist")
+                if (mediaStoreUri != null) {
+                    try {
+                        context.contentResolver.openOutputStream(mediaStoreUri)?.use { out ->
+                            tempFile.inputStream().use { inp -> inp.copyTo(out) }
+                        }
+                        onWriteSuccess(song, tempFile)
+                    } catch (e: android.app.RecoverableSecurityException) {
+                        pendingTempFile = tempFile
+                        pendingMediaStoreUri = mediaStoreUri
+                        pendingSong = song
+                        withContext(Dispatchers.Main) {
+                            writePermissionLauncher?.launch(
+                                androidx.activity.result.IntentSenderRequest.Builder(e.userAction.actionIntent.intentSender).build()
+                            )
+                        }
+                    }
+                } else {
+                    originalFile.outputStream().use { out ->
+                        tempFile.inputStream().use { inp -> inp.copyTo(out) }
+                    }
+                    onWriteSuccess(song, tempFile)
                 }
-
-                withContext(Dispatchers.Main) { Toaster.done(); hideDialog() }
             } catch (e: Exception) {
                 Timber.tag("EditMetadata").e(e, "Failed to write tags")
+                tempFile.delete()
                 withContext(Dispatchers.Main) { Toaster.e("Failed to save: ${e.message}") }
             }
         }
+    }
+
+    private fun performWriteToMediaStore(context: android.content.Context) {
+        val tempFile = pendingTempFile ?: return
+        val uri = pendingMediaStoreUri ?: return
+        val song = pendingSong ?: return
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                context.contentResolver.openOutputStream(uri)?.use { out ->
+                    tempFile.inputStream().use { inp -> inp.copyTo(out) }
+                }
+                onWriteSuccess(song, tempFile)
+            } catch (e: Exception) {
+                Timber.tag("EditMetadata").e(e, "Failed to write after permission")
+                tempFile.delete()
+                withContext(Dispatchers.Main) { Toaster.e("Failed to save: ${e.message}") }
+            } finally {
+                pendingTempFile = null
+                pendingMediaStoreUri = null
+                pendingSong = null
+            }
+        }
+    }
+
+    private suspend fun onWriteSuccess(song: Song, tempFile: File) {
+        tempFile.delete()
+
+        Database.asyncTransaction {
+            songTable.insertIgnore(song)
+            val newTitle = fields.firstOrNull { it.key == "TITLE" }?.value?.text?.trim() ?: ""
+            val newArtist = fields.firstOrNull { it.key == "ARTIST" }?.value?.text?.trim() ?: ""
+            if (newTitle.isNotEmpty()) songTable.updateTitle(song.id, "$MODIFIED_PREFIX$newTitle")
+            if (newArtist.isNotEmpty()) songTable.updateArtists(song.id, "$MODIFIED_PREFIX$newArtist")
+        }
+
+        withContext(Dispatchers.Main) { Toaster.done(); hideDialog() }
     }
 
     private data class ReadResult(
@@ -502,6 +594,31 @@ class EditMetadataDialog private constructor(
     ) {
         val mp4Tag = tag as? org.jaudiotagger.tag.mp4.Mp4Tag
         if (mp4Tag != null) {
+            val mp4KeyMap = Mp4FieldKey.entries.associateBy { it.name }
+
+            val logicalOrder = listOf(
+                "TITLE", "ARTIST", "ALBUM", "GENRE", "DAY", "TRACK",
+                "DISCNUMBER", "ALBUM_ARTIST", "COMPOSER", "COPYRIGHT", "COMMENT",
+                "ENCODER", "BPM", "ISRC", "LABEL", "LYRICIST", "CONDUCTOR", "REMIXER",
+                "COMPILATION", "TEMPO", "RATING", "GROUPING", "LYRICS", "MOVEMENT"
+            )
+
+            for (key in logicalOrder) {
+                val mp4Key = mp4KeyMap[key] ?: continue
+                if (mp4Key == Mp4FieldKey.ARTWORK) continue
+                val atomId = mp4Key.fieldName
+                if (mp4Key.name in seen || atomId in seen) continue
+
+                try {
+                    val value = mp4Tag.getFirst(mp4Key)?.trim()
+                    seen += mp4Key.name
+                    seen += atomId
+                    if (!value.isNullOrEmpty()) {
+                        result.add(EditableField(mp4Key.name, atomId, TextFieldValue(value), true))
+                    }
+                } catch (_: Exception) { }
+            }
+
             for (mp4Key in Mp4FieldKey.entries) {
                 if (mp4Key == Mp4FieldKey.ARTWORK) continue
                 val atomId = mp4Key.fieldName

@@ -6,6 +6,9 @@
 - Compact cover art layout (56dp image + pick button)
 - All standard fields shown even if empty (user can fill in missing metadata)
 - Translated field labels via string resources
+- UI-only sorting with derivedStateOf (filled fields first by displayOrder, empty last)
+- Fixed genre sorting: case-insensitive match via labelFromKey(rawId).uppercase()
+- Fixed IndexOutOfBoundsException: indexOfFirst with stable key instead of indexOf
 
 ## Delete Button for Local Songs
 - Hidden for local songs in both SongItemMenu and PlayerItemMenu
