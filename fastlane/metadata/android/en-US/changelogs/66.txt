@@ -8,6 +8,7 @@ Changed:
 - Dialog files reorganized into categorized subdirectories (album, artist, menu, player, playlist, settings, song, tab)
 
 Fixed:
+- Fixed crash on minified build caused by R8 bytecode verification error (VerifyError on kotlin.math.MathKt and GlanceThemeKt)
 - Fixed infinite buffering caused by missing timeout in cipher deobfuscation (stream never falling back to other clients)
 - Fixed cipher deobfuscation cancellation buffering loop
 - Fixed long click on Rectangular play button not opening playback settings in Modern controls

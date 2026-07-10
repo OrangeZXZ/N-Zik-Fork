@@ -4,6 +4,37 @@
 
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
+## Kotlin stdlib protection against R8 optimization issues
+# Prevent R8 from incorrectly optimizing kotlin.math classes (causes VerifyError)
+-keep class kotlin.math.** { *; }
+
+# Keep Kotlin metadata for reflection
+-keep class kotlin.Metadata { *; }
+-keep class kotlin.reflect.** { *; }
+-dontwarn kotlin.reflect.**
+
+# Keep coroutine volatile fields to prevent AtomicFieldUpdater issues
+-keepclassmembers class kotlinx.coroutines.** {
+    volatile <fields>;
+}
+-keepclassmembers class kotlin.coroutines.SafeContinuation {
+    volatile <fields>;
+}
+
+# Room database protection
+-keep class * extends androidx.room.RoomDatabase { <init>(); }
+-keep class * extends androidx.room.RoomDatabase { *; }
+-keep @androidx.room.Entity class *
+-keep @androidx.room.Dao class *
+
+# Glance widgets protection (prevents VerifyError on GlanceThemeKt)
+-keep class androidx.glance.** { *; }
+-dontwarn androidx.glance.**
+
+# JSON protection (prevents JSONException inheritance issues)
+-keep class org.json.** { *; }
+-dontwarn org.json.**
+
 -if @kotlinx.serialization.Serializable class **
 -keepclassmembers class <1> {
     static <1>$Companion Companion;
