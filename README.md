@@ -50,7 +50,7 @@
 <img src="assets/design/warning-rounded.png" width="50%">
 <br>
 
-<h1>⏳ Only <a href="https://keepandroidopen.org"><img src="https://img.shields.io/badge/J--82-red?style=flat-round&logo=android&logoColor=white" alt="Android Lockdown"/></a> days remaining until Android Lockdown</h1>
+<h1>⏳ Only <a href="https://keepandroidopen.org"><img src="https://img.shields.io/badge/J--81-red?style=flat-round&logo=android&logoColor=white" alt="Android Lockdown"/></a> days remaining until Android Lockdown</h1>
 
 Starting in **September 2026**, Google will require **identity verification for all Android developers**, including those distributing applications **outside of Google Play**.
 
