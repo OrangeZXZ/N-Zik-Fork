@@ -2,6 +2,17 @@
 
 ## 2026-07-11
 
+### fix(player): Fix infinite buffering caused by missing cipher timeout
+- Root cause: CipherWebView.deobfuscateSignature() and transformN() had no timeout, causing coroutine to hang forever when JS silently fails
+- Added RequestSlot<T> pattern with requestId to prevent stale callback races (aligned with Metrolist)
+- Added withTimeout(15s) on deobfuscateSignature() and transformN()
+- Added failAsRendererGone() and throwIfDead() for proper dead WebView handling
+- Added CipherRendererGoneException for renderer death detection
+- Updated JS callbacks to pass requestId for stale-result guard
+- Fixed withinWindow() usage for cooldowns in PlayerConfigStore
+- File: CipherWebView.kt (full rewrite aligned on Metrolist)
+- File: PlayerConfigStore.kt (cooldown fix)
+
 ### feat(player): Transform PlaybackParamsDialog to menu
 - Created PlaybackSettingsMenu.kt in app.n_zik.android.components.menu.player
 - Menu with sliders for: speed, pitch, duration, volume, blur, bass boost, loudness, volume boost

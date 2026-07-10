@@ -64,9 +64,9 @@ object PlayerConfigStore {
     @Volatile
     private var lastRejectionAttemptMs = 0L
 
-    internal fun forcedCooldownActive(now: Long) = now - lastForcedAttemptMs < FORCE_REFRESH_COOLDOWN_MS
+    internal fun forcedCooldownActive(now: Long) = withinWindow(now, lastForcedAttemptMs, FORCE_REFRESH_COOLDOWN_MS)
 
-    internal fun rejectionCooldownActive(now: Long) = now - lastRejectionAttemptMs < FORCE_REFRESH_COOLDOWN_MS
+    internal fun rejectionCooldownActive(now: Long) = withinWindow(now, lastRejectionAttemptMs, FORCE_REFRESH_COOLDOWN_MS)
 
     /**
      * Clock-safe window check: true when [stampMs] is within [windowMs] of [now].
