@@ -995,15 +995,7 @@ class LyricsSettingsMenu private constructor(
         // Show menu based on style preference
         if (menuStyle == MenuStyle.List) {
             ListMenu.Menu(title = stringResource(R.string.txt_lyrics)) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState())
-                        .padding(vertical = 8.dp)
-                ) {
-                    settingsContent()
-                }
+                settingsContent()
             }
         } else {
             GridMenu.Menu(title = stringResource(R.string.txt_lyrics)) {

@@ -38,6 +38,14 @@ private var globalLastKaraokeAttemptMediaId: String? = null
 private var globalLastSyncedAttemptMediaId: String? = null
 private var globalLastUnSyncedAttemptMediaId: String? = null
 
+fun resetGlobalAttemptForType(type: LyricsType) {
+    when (type) {
+        LyricsType.Karaoke -> globalLastKaraokeAttemptMediaId = null
+        LyricsType.Synced -> globalLastSyncedAttemptMediaId = null
+        LyricsType.Unsynced -> globalLastUnSyncedAttemptMediaId = null
+    }
+}
+
 @Composable
 fun LyricsFetcher(
     mediaId: String,

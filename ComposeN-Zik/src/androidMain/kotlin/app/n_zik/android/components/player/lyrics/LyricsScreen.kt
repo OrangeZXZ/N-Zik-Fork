@@ -411,6 +411,7 @@ fun LyricsScreen(
                                 checkedLyricsLrc = false
                                 checkedLyricsKugou = false
                                 checkedLyricsInnertube = false
+                                resetGlobalAttemptForType(lyricsType)
                                 checkLyrics = !checkLyrics
                             },
                             modifier = Modifier
@@ -635,6 +636,7 @@ fun LyricsScreen(
                                             }
                                         },
                                         onFetchLyricsAgain = {
+                                            resetGlobalAttemptForType(lyricsType)
                                             Database.asyncTransaction {
                                                 lyricsTable.upsert(
                                                     Lyrics(

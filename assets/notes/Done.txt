@@ -71,3 +71,12 @@
 - Added stream client settings in OtherSettings
 - Added From30To31Migration for new schema
 - Updated Format entity with additional fields
+
+## Fix: Refetch Lyrics Only Selected Type
+- Added resetGlobalAttemptForType() in LyricsFetcher.kt to selectively reset one lyrics type's global attempt ID
+- onFetchLyricsAgain now calls resetGlobalAttemptForType before nullifying data (was missing, causing fetch to be skipped)
+- Refresh button in "no lyrics found" section now resets only the current lyrics type instead of all three
+
+## Fix: LyricsSettingsMenu Layout
+- Removed redundant Column wrapper with verticalScroll/weight in ListMenu path
+- ListMenu.Menu already provides its own scrollable content area with proper height constraints
