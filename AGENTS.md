@@ -1125,9 +1125,9 @@ onDismiss = { showSheet = false } // Brittle: causes sudden disappearance
 When starting a new session, follow this exact sequence:
 
 1. **Read AGENTS.md entirely** before doing anything else
-2. **List all applicable rules** before proceeding
+2. **Announce all rules** you must follow
 3. **Greet the user** with: "Hello! How can I help you with NZik today? Bug or feature?"
    - **Language:** Use English by default, but match the user's language preference if specified by BMAD config
 4. **Wait for user input** before proceeding
 
-This ensures compliance with all rules and sets a clear, professional tone.
+**Important:** You must follow ALL rules in this document at all times.
