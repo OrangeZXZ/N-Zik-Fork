@@ -1,8 +1,12 @@
 # BMAD Technical Reference
 
-This file contains the complete technical structure of BMAD extracted from the installer source (`tools/installer/`). **Consult this when unsure about file locations, naming, or config resolution.**
+**IMPORTANT: Read this file before starting any task. NEVER skip this rule. Do it twice if you have to.**
 
-**IMPORTANT: Read this file when executing BMAD skills.**
+**This document is MANDATORY. Every rule, workflow, and convention must be followed strictly without deviation. No exceptions. READ THE WHOLE FILE BEFORE STARTING.**
+
+**This is not a one-time acknowledgment. Compliance is required for the ENTIRE session, on EVERY single action, not just at the start. A one-time "I have read and understood" message is NOT sufficient and does not count as compliance if the rules are then forgotten or skipped later. See Rule 15 in "AGENTS.md" for the mandatory per-action reminder format. If you catch yourself about to skip a step "because it's obvious" or "to save time," that is exactly the moment to stop and re-check this file don't forgot any rule, never do any exception.**
+
+This file contains the complete technical structure of BMAD extracted from the installer source (`tools/installer/`). **Consult this when unsure about file locations, naming, or config resolution.**
 
 ---
 
@@ -276,3 +280,11 @@ During updates, the installer:
 4. Preserves `_bmad/custom/` directory and `*.user.toml` files
 5. Preserves `memory/` and `_memory/` directories (agent runtime state)
 6. Does NOT treat `config.yaml` files as modified (they're regenerated each install)
+
+## FINAL REMINDER
+
+**IMPORTANT: Read this file when executing BMAD skills.**
+
+**This document is MANDATORY. Every rule, workflow, and convention must be followed strictly without deviation. No exceptions. READ THE WHOLE FILE BEFORE STARTING.**
+**Gemini, I know you respect all the rules carefully, do not forget anything. READ THE WHOLE FILE BEFORE STARTING.**
+**This is not a one-time acknowledgment. Compliance is required for the ENTIRE session, on EVERY single action, not just at the start. A one-time "I have read and understood" message is NOT sufficient and does not count as compliance if the rules are then forgotten or skipped later. See Rule 15 in "AGENTS.md" for the mandatory per-action reminder format. If you catch yourself about to skip a step "because it's obvious" or "to save time," that is exactly the moment to stop and re-check this file don't forgot any rule, never do any exception.**

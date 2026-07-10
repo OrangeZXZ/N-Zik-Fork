@@ -1,10 +1,21 @@
 # AI Agent Guidelines for NZik-Folder Workspace
 
+**IMPORTANT: Read this file before starting any task. NEVER skip this rule. Do it twice if you have to.**
+
 **This document is MANDATORY. Every rule, workflow, and convention must be followed strictly without deviation. No exceptions. READ THE WHOLE FILE BEFORE STARTING.**
-**Gemini, I know you respect all the rules carefully, do not forget anything. READ THE WHOLE FILE BEFORE STARTING.**
-**This is not a one-time acknowledgment. Compliance is required for the ENTIRE session, on EVERY single action, not just at the start. A one-time "I have read and understood" message is NOT sufficient and does not count as compliance if the rules are then forgotten or skipped later. See Rule 15 for the mandatory per-action reminder format. If you catch yourself about to skip a step "because it's obvious" or "to save time," that is exactly the moment to stop and re-check this file.**
+
+**This is not a one-time acknowledgment. Compliance is required for the ENTIRE session, on EVERY single action, not just at the start. A one-time "I have read and understood" message is NOT sufficient and does not count as compliance if the rules are then forgotten or skipped later. See Rule 15 for the mandatory per-action reminder format. If you catch yourself about to skip a step "because it's obvious" or "to save time," that is exactly the moment to stop and re-check this file don't forgot any rule, never do any exception.**
 
 This document provides comprehensive guidelines for AI agents working on Android/Kotlin projects in this workspace. It covers code standards, build processes, architectural patterns, and workflows to ensure consistent, high-quality contributions.
+
+When starting a new session, follow this exact sequence:
+
+1. **Read AGENTS.md entirely** before doing anything else
+2. **Read BMAD.md** for technical reference
+3. **Language:** use English as default but match what the user write in, after bmad load use the BMAD config language setting.
+4. **Announce ALL rules** you must follow (every single rule from all sections)
+5. **Greet the user** with: "Hello! How can I help you with NZik today? Bug or feature?"
+6. **Wait for user input**
 
 ---
 
@@ -1118,23 +1129,19 @@ coroutineScope.launch {
 onDismiss = { showSheet = false } // Brittle: causes sudden disappearance
 ```
 
----
+## FINAL REMINDER
 
-## 19. Session Start Protocol
+**IMPORTANT: Read this file before starting any task. NEVER skip this rule. Do it twice if you have to.**
+
+**This document is MANDATORY. Every rule, workflow, and convention must be followed strictly without deviation. No exceptions. READ THE WHOLE FILE BEFORE STARTING.**
+
+**This is not a one-time acknowledgment. Compliance is required for the ENTIRE session, on EVERY single action, not just at the start. A one-time "I have read and understood" message is NOT sufficient and does not count as compliance if the rules are then forgotten or skipped later. See Rule 15 for the mandatory per-action reminder format. If you catch yourself about to skip a step "because it's obvious" or "to save time," that is exactly the moment to stop and re-check this file don't forgot any rule, never do any exception.**
 
 When starting a new session, follow this exact sequence:
 
 1. **Read AGENTS.md entirely** before doing anything else
-2. **Read BMAD.md** for technical reference
-3. **Announce all rules** you must follow
-4. **Greet the user** with: "Hello! How can I help you with NZik today? Bug or feature?"
-   - **Language:** Match the user's language preference as specified by BMAD config. If not specified, use English.
-5. **Wait for user input** before proceeding
-
----
-
-## FINAL REMINDER
-
-**This document is MANDATORY. Every rule, workflow, and convention must be followed strictly without deviation. No exceptions. READ THE WHOLE FILE BEFORE STARTING.**
-
-**This is not a one-time acknowledgment. Compliance is required for the ENTIRE session, on EVERY single action, not just at the start. A one-time "I have read and understood" message is NOT sufficient and does not count as compliance if the rules are then forgotten or skipped later. See Rule 15 for the mandatory per-action reminder format. If you catch yourself about to skip a step "because it's obvious" or "to save time," that is exactly the moment to stop and re-check this file.**
+2. **Read BMAD.md** before doing anything else
+3. **Language:** use English as default but match what the user write in, after bmad load use the BMAD config language setting.
+4. **Announce ALL rules** you must follow (every single rule from all sections)
+5. **Greet the user** with: "Hello! How can I help you with NZik today? Bug or feature?"
+6. **Wait for user input**
