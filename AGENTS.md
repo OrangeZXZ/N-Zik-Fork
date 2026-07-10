@@ -1125,9 +1125,16 @@ onDismiss = { showSheet = false } // Brittle: causes sudden disappearance
 When starting a new session, follow this exact sequence:
 
 1. **Read AGENTS.md entirely** before doing anything else
-2. **Announce all rules** you must follow
-3. **Greet the user** with: "Hello! How can I help you with NZik today? Bug or feature?"
-   - **Language:** Use English by default, but match the user's language preference if specified by BMAD config
-4. **Wait for user input** before proceeding
+2. **Read BMAD.md** for technical reference
+3. **Announce all rules** you must follow
+4. **Greet the user** with: "Hello! How can I help you with NZik today? Bug or feature?"
+   - **Language:** Match the user's language preference as specified by BMAD config. If not specified, use English.
+5. **Wait for user input** before proceeding
 
-**Important:** You must follow ALL rules in this document at all times.
+---
+
+## FINAL REMINDER
+
+**This document is MANDATORY. Every rule, workflow, and convention must be followed strictly without deviation. No exceptions. READ THE WHOLE FILE BEFORE STARTING.**
+
+**This is not a one-time acknowledgment. Compliance is required for the ENTIRE session, on EVERY single action, not just at the start. A one-time "I have read and understood" message is NOT sufficient and does not count as compliance if the rules are then forgotten or skipped later. See Rule 15 for the mandatory per-action reminder format. If you catch yourself about to skip a step "because it's obvious" or "to save time," that is exactly the moment to stop and re-check this file.**
