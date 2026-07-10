@@ -656,7 +656,7 @@ fun Player(
                 darkMuted = palette.getDarkMutedColor(dynamicColorPalette.accent.toArgb())
 
             } catch (e: Exception) {
-                dynamicColorPalette = color
+                dynamicColorPalette = dynamicColorPaletteOf(Color(0.54509807f, 0.36078432f, 0.9647059f), !lightTheme)
 
             }
         }

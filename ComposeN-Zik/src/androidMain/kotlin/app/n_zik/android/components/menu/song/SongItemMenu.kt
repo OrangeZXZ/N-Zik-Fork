@@ -89,6 +89,7 @@ import app.it.fast4x.rimusic.utils.forcePlay
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.components.song.ChangeAuthorDialog
 import app.n_zik.android.components.song.ChangeCoverDialog
+import app.n_zik.android.components.song.EditMetadataDialog
 import app.n_zik.android.components.song.ExportCacheDialog
 import app.n_zik.android.components.song.GoToAlbum
 import app.n_zik.android.components.song.GoToArtist
@@ -134,30 +135,44 @@ class SongItemMenu private constructor(
         SectionTitle(stringResource(R.string.information))
         buttons.getOrNull(0)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
-        // Section: Playback
-        SectionTitle(stringResource(R.string.playback))
-        buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(5)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(6)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        if (song.isLocal) {
+            // Local songs: editMetadata at index 1
+            // Section: Management
+            SectionTitle(stringResource(R.string.management))
+            buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
-        // Section: Management
-        SectionTitle(stringResource(R.string.management))
-        buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(7)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(8)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        refreshBtn?.let { if (it is MenuIcon) it.ListMenuItem() }
+            // Section: Playback
+            SectionTitle(stringResource(R.string.playback))
+            buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(5)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(6)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            refreshBtn?.let { if (it is MenuIcon) it.ListMenuItem() }
 
-        // Section: Navigation
-        if( !song.isLocal ) {
-            SectionTitle(stringResource(R.string.navigation))
-            for (i in 9 until buttons.size) {
+            // Delete/Export at the end
+            for (i in 7 until buttons.size) {
                 buttons.getOrNull(i)?.let { if (it is MenuIcon) it.ListMenuItem() }
             }
-        }
-        // Delete/Export at the end
-        if (song.isLocal) {
+        } else {
+            // Remote songs: renameSong(1), changeAuthor(2), changeCover(3)
+            // Section: Playback
+            SectionTitle(stringResource(R.string.playback))
+            buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(5)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(6)?.let { if (it is MenuIcon) it.ListMenuItem() }
+
+            // Section: Management
+            SectionTitle(stringResource(R.string.management))
+            buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(7)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(8)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            refreshBtn?.let { if (it is MenuIcon) it.ListMenuItem() }
+
+            // Section: Navigation
+            SectionTitle(stringResource(R.string.navigation))
             for (i in 9 until buttons.size) {
                 buttons.getOrNull(i)?.let { if (it is MenuIcon) it.ListMenuItem() }
             }
@@ -172,36 +187,54 @@ class SongItemMenu private constructor(
         }
         buttons.getOrNull(0)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
-        // Section: Playback
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            SectionTitle(stringResource(R.string.playback))
-        }
-        buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(5)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(6)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        if (song.isLocal) {
+            // Local songs: editMetadata at index 1
+            // Section: Management
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SectionTitle(stringResource(R.string.management))
+            }
+            buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
-        // Section: Management
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            SectionTitle(stringResource(R.string.management))
-        }
-        buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(7)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(8)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        refreshBtn?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            // Section: Playback
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SectionTitle(stringResource(R.string.playback))
+            }
+            buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(5)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(6)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            refreshBtn?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
-        // Section: Navigation
-        if( !song.isLocal ) {
+            // Delete/Export at the end
+            for (i in 7 until buttons.size) {
+                buttons.getOrNull(i)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            }
+        } else {
+            // Remote songs: renameSong(1), changeAuthor(2), changeCover(3)
+            // Section: Playback
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SectionTitle(stringResource(R.string.playback))
+            }
+            buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(5)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(6)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+
+            // Section: Management
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SectionTitle(stringResource(R.string.management))
+            }
+            buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(7)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(8)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            refreshBtn?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+
+            // Section: Navigation
             item(span = { GridItemSpan(maxLineSpan) }) {
                 SectionTitle(stringResource(R.string.navigation))
             }
-            for (i in 9 until buttons.size) {
-                buttons.getOrNull(i)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-            }
-        }
-        // Delete/Export at the end
-        if (song.isLocal) {
             for (i in 9 until buttons.size) {
                 buttons.getOrNull(i)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
             }
@@ -266,6 +299,7 @@ class SongItemMenu private constructor(
         val renameSong = RenameSongDialog{ song }
         val changeAuthor = ChangeAuthorDialog{ song }
         val changeCover = ChangeCoverDialog{ song }
+        val editMetadata = EditMetadataDialog{ song }
         val startRadio = Radio { listOf(song) }
         val playNext = PlayNext {
             binder?.player?.addNext( listOf(song.asMediaItem), appContext() )
@@ -334,9 +368,13 @@ class SongItemMenu private constructor(
 
         buttons = mutableListOf<Button>().apply {
             add( infoButton )
-            add( renameSong )
-            add( changeAuthor )
-            add( changeCover )
+            if (song.isLocal) {
+                add( editMetadata )
+            } else {
+                add( renameSong )
+                add( changeAuthor )
+                add( changeCover )
+            }
             add( startRadio )
             add( playNext )
             add( enqueue )
@@ -409,16 +447,24 @@ class SongItemMenu private constructor(
                 }
                 add( resetDialog )
             }
-            add( deleteSongDialog )
+            if (!song.isLocal) {
+                add( deleteSongDialog )
+            }
             add( exportCacheDialog )
         }
         //</editor-fold>
 
         //<editor-fold desc="Dialog renders">
-        renameSong.Render()
-        changeAuthor.Render()
-        changeCover.Render()
-        deleteSongDialog.Render()
+        if (song.isLocal) {
+            editMetadata.Render()
+        } else {
+            renameSong.Render()
+            changeAuthor.Render()
+            changeCover.Render()
+        }
+        if (!song.isLocal) {
+            deleteSongDialog.Render()
+        }
         resetDialog.Render()
         exportCacheDialog.Render()
 

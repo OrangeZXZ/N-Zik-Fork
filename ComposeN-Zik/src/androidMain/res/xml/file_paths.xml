@@ -3,4 +3,7 @@
     <external-files-path
         name="nzik_updates"
         path="Download/nzik_updates/" />
+    <files-path
+        name="app_covers"
+        path="app_covers/" />
 </paths>

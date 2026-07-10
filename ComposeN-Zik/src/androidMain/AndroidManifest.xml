@@ -226,6 +226,11 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <provider
+            android:name="app.n_zik.android.playback.services.ArtworkContentProvider"
+            android:authorities="app.n_zik.android.artwork"
+            android:exported="true" />
+
     </application>
 </manifest>
 

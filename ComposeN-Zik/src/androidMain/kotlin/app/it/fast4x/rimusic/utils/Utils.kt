@@ -43,6 +43,7 @@ import androidx.media3.session.MediaConstants.EXTRAS_KEY_IS_EXPLICIT
 import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import app.it.fast4x.rimusic.hasExplicitPrefix
 import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.context
@@ -197,39 +198,95 @@ val Innertube.VideoItem.asMediaItem: MediaItem
 
 val Song.asMediaItem: MediaItem
     @UnstableApi
-    get() = MediaItem.Builder()
-        .setMediaMetadata(
-            MediaMetadata.Builder()
-                .setTitle(
-                    if (title.startsWith(EXPLICIT_PREFIX, true)) {
-                        "\uD83C\uDD74 " + cleanPrefix(title)
-                    } else {
-                        cleanPrefix(title)
+    get() {
+        val cleanedTitle = if (title.hasExplicitPrefix()) {
+            "\uD83C\uDD74 " + cleanPrefix(title)
+        } else {
+            cleanPrefix(title)
+        }
+        val cleanedArtist = cleanPrefix(artistsText ?: "")
+        val cleanedThumbnail = thumbnailUrl?.let { cleanPrefix(it) }
+        val artworkUri = cleanedThumbnail?.thumbnail(1200)?.toUri() ?: AutoMediaItemMapper.drawableUri(app.n_zik.android.appContext(), R.drawable.ic_launcher_box)
+
+        val metadataBuilder = MediaMetadata.Builder()
+            .setTitle(cleanedTitle)
+            .setArtist(cleanedArtist)
+            .setArtworkUri(artworkUri)
+            .setExtras(
+                bundleOf(
+                    "durationText" to durationText,
+                    EXPLICIT_BUNDLE_TAG to title.hasExplicitPrefix(),
+                    EXTRAS_KEY_IS_EXPLICIT to title.hasExplicitPrefix(),
+                    "isCoverModified" to (thumbnailUrl?.startsWith(MODIFIED_PREFIX, true) == true),
+                    "isTitleModified" to (title.startsWith(MODIFIED_PREFIX, true) == true),
+                    "isArtistModified" to (artistsText?.startsWith(MODIFIED_PREFIX, true) == true)
+                )
+            )
+            .setIsPlayable(true)
+            .setIsBrowsable(false)
+            .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
+
+        // For local file:// URIs, set content:// via ArtworkContentProvider + artworkData for AA
+        if (artworkUri.scheme == android.content.ContentResolver.SCHEME_FILE) {
+            try {
+                val path = artworkUri.path
+                if (path != null) {
+                    val file = java.io.File(path)
+                    if (file.exists()) {
+                        // Set content:// URI via exported ArtworkContentProvider (AA requires exported)
+                        val contentUri = android.net.Uri.Builder()
+                            .scheme(android.content.ContentResolver.SCHEME_CONTENT)
+                            .authority(app.n_zik.android.playback.services.ArtworkContentProvider.AUTHORITY)
+                            .appendPath(id)
+                            .build()
+                        metadataBuilder.setArtworkUri(contentUri)
+                        // artworkData for AA (queue, list, player)
+                        var bitmap = android.graphics.BitmapFactory.decodeFile(path)
+                        if (bitmap != null) {
+                            // Apply EXIF rotation
+                            try {
+                                val exif = android.media.ExifInterface(path)
+                                val orientation = exif.getAttributeInt(android.media.ExifInterface.TAG_ORIENTATION, android.media.ExifInterface.ORIENTATION_NORMAL)
+                                val rotation = when (orientation) {
+                                    android.media.ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+                                    android.media.ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+                                    android.media.ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+                                    else -> 0f
+                                }
+                                if (rotation != 0f) {
+                                    val matrix = android.graphics.Matrix().apply { postRotate(rotation) }
+                                    val rotated = android.graphics.Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                                    if (rotated !== bitmap) { bitmap.recycle(); bitmap = rotated }
+                                }
+                            } catch (_: Exception) {}
+                            // Center crop to square
+                            val size = minOf(bitmap.width, bitmap.height)
+                            val x = (bitmap.width - size) / 2
+                            val y = (bitmap.height - size) / 2
+                            val cropped = android.graphics.Bitmap.createBitmap(bitmap, x, y, size, size)
+                            if (cropped !== bitmap) bitmap.recycle()
+                            val stream = java.io.ByteArrayOutputStream()
+                            cropped.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, stream)
+                            cropped.recycle()
+                            metadataBuilder.setArtworkData(stream.toByteArray(), MediaMetadata.PICTURE_TYPE_ILLUSTRATION)
+                        }
                     }
-                )
-                .setArtist(artistsText)
-                .setArtworkUri(thumbnailUrl?.thumbnail(1200)?.toUri() ?: AutoMediaItemMapper.drawableUri(app.n_zik.android.appContext(), R.drawable.ic_launcher_box))
-                .setExtras(
-                    bundleOf(
-                        "durationText" to durationText,
-                        EXPLICIT_BUNDLE_TAG to title.startsWith( EXPLICIT_PREFIX, true ),
-                        EXTRAS_KEY_IS_EXPLICIT to title.startsWith( EXPLICIT_PREFIX, true )
-                    )
-                )
-                .setIsPlayable(true)
-                .setIsBrowsable(false)
-                .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
-                .build()
-        )
-        .setMediaId(id)
-        .setUri(
-            if (isLocal) ContentUris.withAppendedId(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                id.substringAfter(LOCAL_KEY_PREFIX).toLong()
-            ) else id.toUri()
-        )
-        .setCustomCacheKey(id)
-        .build()
+                }
+            } catch (_: Exception) {}
+        }
+
+        return MediaItem.Builder()
+            .setMediaMetadata(metadataBuilder.build())
+            .setMediaId(id)
+            .setUri(
+                if (isLocal) ContentUris.withAppendedId(
+                    MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                    id.substringAfter(LOCAL_KEY_PREFIX).toLong()
+                ) else id.toUri()
+            )
+            .setCustomCacheKey(id)
+            .build()
+    }
 
 val Innertube.VideoItem.asSong: Song
     get() = Song (
@@ -243,10 +300,16 @@ val Innertube.VideoItem.asSong: Song
 val MediaItem.asSong: Song
     get() = Song (
         id = mediaId.split("/").lastOrNull() ?: mediaId,
-        title = (if (isExplicit) EXPLICIT_PREFIX else "") + mediaMetadata.title.toString(),
-        artistsText = mediaMetadata.artist?.toString()?.stripExplicitEmoji() ?: "",
+        title = (if (mediaMetadata.extras?.getBoolean("isTitleModified") == true) MODIFIED_PREFIX else "") + (if (isExplicit) EXPLICIT_PREFIX else "") + mediaMetadata.title.toString(),
+        artistsText = (if (mediaMetadata.extras?.getBoolean("isArtistModified") == true) MODIFIED_PREFIX else "") + (mediaMetadata.artist?.toString()?.stripExplicitEmoji() ?: ""),
         durationText = mediaMetadata.extras?.getString("durationText"),
-        thumbnailUrl = mediaMetadata.artworkUri.toString()
+        thumbnailUrl = mediaMetadata.artworkUri?.toString()?.let { artworkStr ->
+            if (artworkStr != "null") {
+                (if (mediaMetadata.extras?.getBoolean("isCoverModified") == true) MODIFIED_PREFIX else "") + artworkStr
+            } else {
+                null
+            }
+        }
     )
 
 val MediaItem.cleaned: MediaItem

@@ -1,5 +1,7 @@
 package app.n_zik.android.components.tab
 
+import android.content.ContentUris
+import android.provider.MediaStore
 import app.n_zik.android.core.database.*
 
 import androidx.compose.runtime.Composable
@@ -12,11 +14,15 @@ import app.n_zik.android.R
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.models.Song
+import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
 import app.n_zik.android.playback.services.PlayerServiceModern
+import app.n_zik.android.playback.services.isLocal
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.MenuState
 import app.it.fast4x.rimusic.ui.components.themed.DeleteDialog
 import app.kreate.android.me.knighthat.utils.Toaster
+import timber.log.Timber
+import java.io.File
 import java.util.Optional
 import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
 
@@ -43,28 +49,59 @@ open class DeleteSongDialog(
         get() = stringResource( R.string.delete_song )
 
     override fun onDismiss() {
-        // Always override current value with empty Optional
-        // to prevent unwanted outcomes
         song = Optional.empty()
         super.onDismiss()
     }
 
     override fun onConfirm() {
-        song.ifPresent {
+        song.ifPresent { s ->
             Database.asyncTransaction {
                 menuState.hide()
-                binder?.cache?.removeResource( it.id )
-                binder?.downloadCache?.removeResource( it.id )
-                songPlaylistMapTable.deleteBySongId( it.id )
-                formatTable.deleteBySongId( it.id )
-                songTable.delete( it )
-                WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), it.id)
+                binder?.cache?.removeResource( s.id )
+                binder?.downloadCache?.removeResource( s.id )
+                songPlaylistMapTable.deleteBySongId( s.id )
+                formatTable.deleteBySongId( s.id )
+                songTable.delete( s )
+                WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), s.id)
+            }
+
+            if (s.isLocal) {
+                deleteLocalFile(s)
             }
 
             Toaster.i( R.string.deleted )
         }
 
         onDismiss()
+    }
+
+    private fun deleteLocalFile(song: Song) {
+        try {
+            val mediaStoreId = song.id.substringAfter(LOCAL_KEY_PREFIX).toLongOrNull() ?: return
+            val context = app.n_zik.android.appContext()
+
+            val uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mediaStoreId)
+
+            var resolvedPath: String? = null
+            context.contentResolver.query(
+                uri, arrayOf(MediaStore.Audio.Media.DATA), null, null, null
+            )?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    resolvedPath = cursor.getString(0)
+                }
+            }
+
+            val path = resolvedPath
+            if (path != null) {
+                val deleted = File(path).delete()
+                Timber.tag("DeleteSongDialog").d("File.delete(%s) = %s", path, deleted)
+            }
+
+            val rowsDeleted = context.contentResolver.delete(uri, null, null)
+            Timber.tag("DeleteSongDialog").d("MediaStore.delete rows=%d for: %s", rowsDeleted, song.title)
+        } catch (e: Exception) {
+            Timber.tag("DeleteSongDialog").e(e, "Failed to delete local file: %s", song.title)
+        }
     }
 }
 

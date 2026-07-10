@@ -8,6 +8,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
+import app.it.fast4x.rimusic.hasExplicitPrefix
 import java.io.Serializable
 
 data class PersistentQueue(
@@ -32,12 +33,21 @@ val PersistentSong.asMediaItem: MediaItem
     get() = MediaItem.Builder()
         .setMediaMetadata(
             MediaMetadata.Builder()
-                .setTitle(title)
-                .setArtist(artistsText)
-                .setArtworkUri(thumbnailUrl?.toUri())
+                .setTitle(
+                    if (title.hasExplicitPrefix()) {
+                        "\uD83C\uDD74 " + app.it.fast4x.rimusic.cleanPrefix(title)
+                    } else {
+                        app.it.fast4x.rimusic.cleanPrefix(title)
+                    }
+                )
+                .setArtist(artistsText?.let { app.it.fast4x.rimusic.cleanPrefix(it) })
+                .setArtworkUri(thumbnailUrl?.let { app.it.fast4x.rimusic.cleanPrefix(it) }?.toUri())
                 .setExtras(
                     bundleOf(
-                        "durationText" to durationText
+                        "durationText" to durationText,
+                        "isCoverModified" to (thumbnailUrl?.startsWith(app.it.fast4x.rimusic.MODIFIED_PREFIX, true) == true),
+                        "isTitleModified" to (title.startsWith(app.it.fast4x.rimusic.MODIFIED_PREFIX, true)),
+                        "isArtistModified" to (artistsText?.startsWith(app.it.fast4x.rimusic.MODIFIED_PREFIX, true) == true)
                     )
                 )
                 .build()

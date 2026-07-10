@@ -29,6 +29,21 @@ fun cleanPrefix(text: String): String {
         .removePrefix("\uD83C\uDD74 ")
 }
 
+fun String.hasExplicitPrefix(): Boolean {
+    val splitText = this.split(":")
+    var i = 0
+    while (i < splitText.size-1) {
+        val prefix = "${splitText[i]}:"
+        if (prefix == EXPLICIT_PREFIX) return true
+        if (prefix !in listOf(PINNED_PREFIX, MODIFIED_PREFIX, MONTHLY_PREFIX, PIPED_PREFIX,
+                EXPLICIT_PREFIX, LOCAL_KEY_PREFIX, YTP_PREFIX)) {
+            break
+        }
+        i++
+    }
+    return false
+}
+
 fun String.stripExplicitEmoji(): String {
     return this.replace("\uD83C\uDD74", "").trimStart()
 }

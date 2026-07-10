@@ -515,6 +515,7 @@ class MainActivity :
 //            if (internetConnected) downloadHelper.resumeDownloads(this)
 
             val coroutineScope = rememberCoroutineScope()
+            val paletteJob = remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
             val isSystemInDarkTheme = isSystemInDarkTheme()
             val navController = rememberNavController()
             DisposableEffect(navController) {
@@ -609,8 +610,8 @@ class MainActivity :
                     return
                 }
 
-                // If the URL is null or empty, return to the default palette with violet accent
-                if (url.isNullOrEmpty()) {
+                // If the URL is null, empty, or the default fallback icon, use violet accent
+                if (url.isNullOrEmpty() || url.contains("ic_launcher_box")) {
                     val colorPaletteMode = preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.Dark)
                     val isPicthBlack = colorPaletteMode == ColorPaletteMode.PitchBlack
                     val isDark = colorPaletteMode == ColorPaletteMode.Dark || isPicthBlack || (colorPaletteMode == ColorPaletteMode.System && isSystemInDarkTheme)
@@ -634,7 +635,8 @@ class MainActivity :
 
                 val colorPaletteMode =
                     preferences.getEnum(colorPaletteModeKey, ColorPaletteMode.Dark)
-                coroutineScope.launch(Dispatchers.IO) {
+                paletteJob.value?.cancel()
+                paletteJob.value = coroutineScope.launch(Dispatchers.IO) {
                     try {
                         val bitmap: Bitmap? = ImageCacheFactory.loadBitmap(url, allowHardware = false)
 
@@ -651,7 +653,8 @@ class MainActivity :
                                 .generate()
 
 
-                            dynamicColorPaletteOf(bitmap, isDark)?.let { paletteResult ->
+                            val paletteResult = dynamicColorPaletteOf(bitmap, isDark)
+                            if (paletteResult != null) {
                                 withContext(Dispatchers.Main) {
                                     val finalPalette = if (!isPicthBlack) paletteResult else paletteResult.copy(
                                         isDark = true,
@@ -669,8 +672,35 @@ class MainActivity :
                                     )
                                     appearance = newAppearance
                                 }
+                            } else {
+                                withContext(Dispatchers.Main) {
+                                    val defaultColorPalette = dynamicColorPaletteOf(Color(0.54509807f, 0.36078432f, 0.9647059f), isDark)
+                                    setSystemBarAppearance(defaultColorPalette.isDark)
+                                    appearance = appearance.copy(
+                                        colorPalette = if (!isPicthBlack) defaultColorPalette else defaultColorPalette.copy(
+                                            background0 = Color.Black, background1 = Color.Black,
+                                            background2 = Color.Black, background3 = Color.Black, background4 = Color.Black,
+                                        ),
+                                        typography = appearance.typography.copy(defaultColorPalette.text)
+                                    )
+                                }
                             }
-
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                val violetAccent = Color(0.54509807f, 0.36078432f, 0.9647059f)
+                                val defaultColorPalette = dynamicColorPaletteOf(violetAccent, isDark)
+                                setSystemBarAppearance(defaultColorPalette.isDark)
+                                appearance = appearance.copy(
+                                    colorPalette = if (!isPicthBlack) defaultColorPalette else defaultColorPalette.copy(
+                                        background0 = Color.Black,
+                                        background1 = Color.Black,
+                                        background2 = Color.Black,
+                                        background3 = Color.Black,
+                                        background4 = Color.Black,
+                                    ),
+                                    typography = appearance.typography.copy(defaultColorPalette.text)
+                                )
+                            }
                         }
                     } catch (e: Exception) {
                         Timber.tag("MainActivity").e(e, "Error loading appearance")

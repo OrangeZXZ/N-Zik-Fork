@@ -188,7 +188,7 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
                                 existing.buildUpon()
                                     .setArtist(
                                         if (dbSong.artistsText.isNullOrBlank()) existing.artist?.toString()
-                                        else dbSong.artistsText
+                                        else app.it.fast4x.rimusic.cleanPrefix(dbSong.artistsText!!)
                                     )
                                     .setExtras(bundle)
                                     .build()

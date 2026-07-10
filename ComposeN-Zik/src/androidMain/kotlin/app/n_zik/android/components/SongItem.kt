@@ -57,6 +57,7 @@ import androidx.navigation.NavController
 import app.n_zik.android.R
 import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
+import app.it.fast4x.rimusic.hasExplicitPrefix
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
@@ -80,7 +81,7 @@ import app.it.fast4x.rimusic.utils.disableScrollingTextKey
 import app.it.fast4x.rimusic.utils.downloadedStateMedia
 import app.it.fast4x.rimusic.utils.getDownloadState
 import app.it.fast4x.rimusic.utils.getLikedIcon
-import app.it.fast4x.rimusic.utils.isNowPlaying
+import app.it.fast4x.rimusic.utils.currentMediaItemIdAsState
 import app.it.fast4x.rimusic.utils.medium
 import app.it.fast4x.rimusic.utils.playlistindicatorKey
 import app.it.fast4x.rimusic.utils.rememberPreference
@@ -191,7 +192,8 @@ fun SongItem(
     val hapticFeedback = LocalHapticFeedback.current
 
     val colorPalette = colorPalette()
-    val isPlaying = binder?.player?.isNowPlaying( song.id ) ?: false
+    val currentMediaId by (binder?.player?.currentMediaItemIdAsState() ?: remember { mutableStateOf<String?>(null) })
+    val isPlaying = currentMediaId == song.id
 
     val dbSong by remember(song.id) {
         Database.songTable.findById(song.id)
@@ -236,9 +238,13 @@ fun SongItem(
                     ImageCacheFactory.isImageCached(displaySong.thumbnailUrl)
                 }
                 
+                val isCustomImage = displaySong.thumbnailUrl?.let {
+                    it.startsWith("file://") || it.contains("app_covers") || it.startsWith(app.it.fast4x.rimusic.MODIFIED_PREFIX)
+                } == true
+
                 ImageCacheFactory.Thumbnail(
                     thumbnailUrl = displaySong.thumbnailUrl,
-                    contentScale = ContentScale.FillHeight
+                    contentScale = if (isCustomImage) ContentScale.Crop else ContentScale.FillHeight
                 )
             }
 
@@ -290,7 +296,7 @@ fun SongItem(
                         }.ToolBarButton()
                 }
 
-                if( displaySong.title.startsWith(EXPLICIT_PREFIX) )
+                if( displaySong.title.hasExplicitPrefix() )
                     object: SongIndicator {
                         override val iconId: Int = R.drawable.explicit
                     }.ToolBarButton()

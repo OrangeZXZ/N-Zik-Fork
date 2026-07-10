@@ -1525,8 +1525,8 @@ class PlayerServiceModern : MediaLibraryService(),
     @MainThread
     fun updateWidgets() {
         val status = Triple(
-            binder.player.mediaMetadata.title.toString(),
-            binder.player.mediaMetadata.artist.toString(),
+            cleanPrefix(binder.player.mediaMetadata.title.toString()),
+            cleanPrefix(binder.player.mediaMetadata.artist.toString()),
             binder.player.isPlaying
         )
 
@@ -1805,11 +1805,11 @@ class PlayerServiceModern : MediaLibraryService(),
         }
 
         override fun getNotificationContentText(metadata: MediaMetadata): CharSequence? {
-            val customMetadata = MediaMetadata.Builder()
-                .setArtist(cleanPrefix(metadata.artist?.toString() ?: ""))
-                .setAlbumTitle(cleanPrefix(metadata.albumTitle?.toString() ?: ""))
-                .build()
-            return super.getNotificationContentText(customMetadata)
+            val cleaned = cleanPrefix(metadata.artist?.toString() ?: "")
+            if (cleaned.isNotBlank() && cleaned != "null") return cleaned
+            val albumCleaned = cleanPrefix(metadata.albumTitle?.toString() ?: "")
+            if (albumCleaned.isNotBlank() && albumCleaned != "null") return albumCleaned
+            return null
         }
     }
 

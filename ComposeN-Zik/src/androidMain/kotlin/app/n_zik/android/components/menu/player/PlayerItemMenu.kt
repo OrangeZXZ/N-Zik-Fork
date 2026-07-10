@@ -56,6 +56,7 @@ import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.Info
 import app.n_zik.android.playback.services.PlayerServiceModern
+import app.n_zik.android.playback.services.isLocal
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.MenuState
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
@@ -65,6 +66,7 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
+import app.it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import app.it.fast4x.rimusic.ui.components.themed.PlaylistsMenu
 import app.it.fast4x.rimusic.ui.components.themed.ListenOnDialog
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
@@ -83,11 +85,15 @@ import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
 import app.n_zik.android.components.song.ChangeAuthorDialog
 import app.n_zik.android.components.song.ChangeCoverDialog
+import app.n_zik.android.components.song.EditMetadataDialog
 import app.n_zik.android.components.song.GoToAlbum
 import app.n_zik.android.components.song.GoToArtist
+import app.n_zik.android.components.song.ExportCacheDialog
 import app.n_zik.android.components.song.RenameSongDialog
+import app.n_zik.android.components.tab.DeleteSongDialog
 import app.n_zik.android.components.tab.LikeComponent
 import app.n_zik.android.components.tab.Radio
+import java.util.Optional
 import app.kreate.android.me.knighthat.sync.YouTubeSync
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
@@ -137,40 +143,59 @@ class PlayerItemMenu private constructor(
 
     @Composable
     override fun ListMenu() {
+        val song = remember(mediaItem) { mediaItem.asSong }
         val playerTimelineType by rememberPreference(app.it.fast4x.rimusic.utils.playerTimelineTypeKey, app.it.fast4x.rimusic.enums.PlayerTimelineType.Wavy)
         ListMenu.Menu(title = null, showDragHandle = false) {
             // Section: Information
             SectionTitle(stringResource(R.string.information))
         buttons.getOrNull(0)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
-        // Section: Playback
-        SectionTitle(stringResource(R.string.playback))
-        buttons.getOrNull(5)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(6)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(7)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        if (song.isLocal) {
+            // Local songs: 0=info, 1=waves, 2=editMetadata, 3=equalizer, 4=sleep, 5=fav, 6=playlist, 7+=delete/export
+            SectionTitle(stringResource(R.string.management))
+            buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
-        // Section: Management
-        SectionTitle(stringResource(R.string.management))
-        if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
-            buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        }
-        buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(8)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(9)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        buttons.getOrNull(buttons.size - 1)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            SectionTitle(stringResource(R.string.playback))
+            if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
+                buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            }
+            buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(5)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(6)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
-        // Section: Navigation
-        SectionTitle(stringResource(R.string.navigation))
-            for (i in 10 until (buttons.size - 1)) {
+            for (i in 7 until buttons.size) {
                 buttons.getOrNull(i)?.let { if (it is MenuIcon) it.ListMenuItem() }
             }
+        } else {
+            // Remote songs: 0=info, 1=waves, 2=rename, 3=author, 4=cover, 5=radio, 6=equalizer, 7=sleep, 8=fav, 9=playlist, 10=refetch, 11+=nav
+            SectionTitle(stringResource(R.string.playback))
+            buttons.getOrNull(5)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(6)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(7)?.let { if (it is MenuIcon) it.ListMenuItem() }
+
+            SectionTitle(stringResource(R.string.management))
+            if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
+                buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            }
+            buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(8)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(9)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(10)?.let { if (it is MenuIcon) it.ListMenuItem() }
+
+            SectionTitle(stringResource(R.string.navigation))
+            for (i in 11 until buttons.size) {
+                buttons.getOrNull(i)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            }
+        }
         }
     }
 
     @Composable
     override fun GridMenu() {
+        val song = remember(mediaItem) { mediaItem.asSong }
         val playerTimelineType by rememberPreference(app.it.fast4x.rimusic.utils.playerTimelineTypeKey, app.it.fast4x.rimusic.enums.PlayerTimelineType.Wavy)
         GridMenu.Menu(title = null, showDragHandle = false) {
             // Section: Information
@@ -179,35 +204,54 @@ class PlayerItemMenu private constructor(
         }
         buttons.getOrNull(0)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
-        // Section: Playback
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            SectionTitle(stringResource(R.string.playback))
-        }
-        buttons.getOrNull(5)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(6)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(7)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        if (song.isLocal) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SectionTitle(stringResource(R.string.management))
+            }
+            buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
-        // Section: Management
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            SectionTitle(stringResource(R.string.management))
-        }
-        if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
-            buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        }
-        buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(8)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(9)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        buttons.getOrNull(buttons.size - 1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SectionTitle(stringResource(R.string.playback))
+            }
+            if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
+                buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            }
+            buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(5)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(6)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
-        // Section: Navigation
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            SectionTitle(stringResource(R.string.navigation))
-        }
-            for (i in 10 until (buttons.size - 1)) {
+            for (i in 7 until buttons.size) {
                 buttons.getOrNull(i)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
             }
+        } else {
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SectionTitle(stringResource(R.string.playback))
+            }
+            buttons.getOrNull(5)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(6)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(7)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SectionTitle(stringResource(R.string.management))
+            }
+            if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
+                buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            }
+            buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(8)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(9)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(10)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SectionTitle(stringResource(R.string.navigation))
+            }
+            for (i in 11 until buttons.size) {
+                buttons.getOrNull(i)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            }
+        }
         }
     }
 
@@ -236,6 +280,7 @@ class PlayerItemMenu private constructor(
         val renameSong = RenameSongDialog { song }
         val changeAuthor = ChangeAuthorDialog { song }
         val changeCover = ChangeCoverDialog { song }
+        val editMetadata = EditMetadataDialog { song }
         val startRadio = Radio { listOf(song) }
         val addToFavorite = LikeComponent { listOf(song) }
         
@@ -405,123 +450,154 @@ class PlayerItemMenu private constructor(
             }
         }
 
+        val deleteSongDialog = DeleteSongDialog().apply {
+            this.song = Optional.of(this@PlayerItemMenu.mediaItem.asSong)
+        }
+        val exportCacheDialog = ExportCacheDialog(binder) { song }
+
         // Re-order to match SongItemMenu layout exactly
         buttons = remember(song, albumData, artistsData) {
             mutableListOf<Button>().apply {
                 add(infoButton)           // 0
-                add(refreshAudioWavesButton) // 1 (always added, conditionally rendered in ListMenu/GridMenu)
-                add(renameSong)           // 2
-                add(changeAuthor)         // 3
-                add(changeCover)          // 4
-                add(startRadio)           // 5
-                add(equalizerButton)      // 6
-                add(sleepTimerButton)     // 7
-                add(addToFavorite)        // 8
-                add(addToPlaylist)        // 9
-                
-                // Go to Album (Always visible, priority to direct navigation)
-                add(object : MenuIcon, Descriptive, Clickable {
-                    override val iconId: Int = R.drawable.album
-                    override val messageId: Int = R.string.go_to_album
-                    @get:Composable
-                    override val menuIconTitle: String get() = stringResource(messageId)
-                    
-                    override fun onShortClick() {
-                        val albumId = albumData?.id
-                        if (!albumId.isNullOrBlank()) {
-                            onDismiss()
-                            onClosePlayer()
-                            navController.navigate(NavRoutes.album.name + "/$albumId")
-                        } else if (song.title.isNotBlank()) {
-                            onDismiss()
-                            onClosePlayer()
-                            goToAlbumObj.onShortClick()
-                        } else {
-                            Toaster.w(R.string.album_not_found)
-                        }
-                    }
-                    
-                    override fun onLongClick() {}
-                })
-                
-                // Go to Artist (Always visible)
-                if (artistsData.isEmpty()) {
-                    // No DB data: split artistsText to create per-artist buttons
-                    val artistNames = song.artistsText
-                        ?.split(",", "&")
-                        ?.map { it.trim() }
-                        ?.filter { it.isNotBlank() }
-                        ?: emptyList()
+                add(refreshAudioWavesButton) // 1
 
-                    if (artistNames.size <= 1) {
-                        // Single artist - use GoToArtist fallback with Innertube lookup
-                        add(object : MenuIcon, Descriptive, Clickable {
-                            override val iconId: Int = R.drawable.people
-                            override val messageId: Int = R.string.artists
-                            @get:Composable
-                            override val menuIconTitle: String get() = stringResource(R.string.more_of) + " ${song.cleanArtistsText()}"
-                            override fun onShortClick() {
-                                menuState.hide()
+                if (song.isLocal) {
+                    // Local songs: editMetadata, then player controls, then favorites/playlist, then export
+                    add(editMetadata)        // 2
+                    add(equalizerButton)     // 3
+                    add(sleepTimerButton)    // 4
+                    add(addToFavorite)       // 5
+                    add(addToPlaylist)       // 6
+                    add(exportCacheDialog)
+                } else {
+                    // Remote songs
+                    add(renameSong)          // 2
+                    add(changeAuthor)        // 3
+                    add(changeCover)         // 4
+                    add(startRadio)          // 5
+                    add(equalizerButton)     // 6
+                    add(sleepTimerButton)    // 7
+                    add(addToFavorite)       // 8
+                    add(addToPlaylist)       // 9
+                    add(refetchButton)       // 10
+
+                    // Go to Album
+                    add(object : MenuIcon, Descriptive, Clickable {
+                        override val iconId: Int = R.drawable.album
+                        override val messageId: Int = R.string.go_to_album
+                        @get:Composable
+                        override val menuIconTitle: String get() = stringResource(messageId)
+
+                        override fun onShortClick() {
+                            val albumId = albumData?.id
+                            if (!albumId.isNullOrBlank()) {
+                                onDismiss()
                                 onClosePlayer()
-                                goToArtistObj.onShortClick()
+                                navController.navigate(NavRoutes.album.name + "/$albumId")
+                            } else if (song.title.isNotBlank()) {
+                                onDismiss()
+                                onClosePlayer()
+                                goToAlbumObj.onShortClick()
+                            } else {
+                                Toaster.w(R.string.album_not_found)
                             }
-                            override fun onLongClick() {}
-                        })
-                    } else {
-                        artistNames.forEach { artistName ->
+                        }
+
+                        override fun onLongClick() {}
+                    })
+
+                    // Go to Artist
+                    if (artistsData.isEmpty()) {
+                        val artistNames = song.artistsText
+                            ?.split(",", "&")
+                            ?.map { it.trim() }
+                            ?.filter { it.isNotBlank() }
+                            ?: emptyList()
+
+                        if (artistNames.size <= 1) {
                             add(object : MenuIcon, Descriptive, Clickable {
                                 override val iconId: Int = R.drawable.people
                                 override val messageId: Int = R.string.artists
                                 @get:Composable
-                                override val menuIconTitle: String get() = stringResource(R.string.more_of) + " $artistName"
+                                override val menuIconTitle: String get() = stringResource(R.string.more_of) + " ${song.cleanArtistsText()}"
                                 override fun onShortClick() {
                                     menuState.hide()
                                     onClosePlayer()
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        Innertube.nextPage(NextBody(videoId = song.id))
-                                            ?.getOrNull()
-                                            ?.itemsPage?.items?.firstOrNull()
-                                            ?.authors
-                                            ?.find { it.name?.equals(artistName, ignoreCase = true) == true }
-                                            ?.endpoint
-                                            ?.takeIf { !it.browseId.isNullOrBlank() }
-                                            ?.let {
-                                                val path = "${it.browseId}?params=${it.params.orEmpty()}"
-                                                NavRoutes.artist.navigateHere(navController, path)
-                                            }
+                                    goToArtistObj.onShortClick()
+                                }
+                                override fun onLongClick() {}
+                            })
+                        } else {
+                            artistNames.forEach { artistName ->
+                                add(object : MenuIcon, Descriptive, Clickable {
+                                    override val iconId: Int = R.drawable.people
+                                    override val messageId: Int = R.string.artists
+                                    @get:Composable
+                                    override val menuIconTitle: String get() = stringResource(R.string.more_of) + " $artistName"
+                                    override fun onShortClick() {
+                                        menuState.hide()
+                                        onClosePlayer()
+                                        CoroutineScope(Dispatchers.IO).launch {
+                                            Innertube.nextPage(NextBody(videoId = song.id))
+                                                ?.getOrNull()
+                                                ?.itemsPage?.items?.firstOrNull()
+                                                ?.authors
+                                                ?.find { it.name?.equals(artistName, ignoreCase = true) == true }
+                                                ?.endpoint
+                                                ?.takeIf { !it.browseId.isNullOrBlank() }
+                                                ?.let {
+                                                    val path = "${it.browseId}?params=${it.params.orEmpty()}"
+                                                    NavRoutes.artist.navigateHere(navController, path)
+                                                }
+                                        }
                                     }
+                                    override fun onLongClick() {}
+                                })
+                            }
+                        }
+                    } else {
+                        artistsData.forEach { artist ->
+                            add(object : MenuIcon, Descriptive, Clickable {
+                                override val iconId: Int = R.drawable.people
+                                override val messageId: Int = R.string.artists
+                                @get:Composable
+                                override val menuIconTitle: String get() = stringResource(R.string.more_of) + " ${artist.name ?: ""}"
+                                override fun onShortClick() {
+                                    menuState.hide()
+                                    onClosePlayer()
+                                    navController.navigate("${NavRoutes.artist.name}/${artist.id}")
                                 }
                                 override fun onLongClick() {}
                             })
                         }
                     }
-                } else {
-                    artistsData.forEach { artist ->
-                        add(object : MenuIcon, Descriptive, Clickable {
-                            override val iconId: Int = R.drawable.people
-                            override val messageId: Int = R.string.artists
-                            @get:Composable
-                            override val menuIconTitle: String get() = stringResource(R.string.more_of) + " ${artist.name ?: ""}"
-                            override fun onShortClick() {
-                                menuState.hide()
-                                onClosePlayer()
-                                navController.navigate("${NavRoutes.artist.name}/${artist.id}")
-                            }
-                            override fun onLongClick() {}
-                        })
-                    }
-                }
 
-                add(listenOnButton)       // 10
-                add(refetchButton)        // 11
+                    add(listenOnButton)
+                    add(deleteSongDialog)
+                }
             }
         }
         //</editor-fold>
 
         //<editor-fold desc="Dialog renders">
-        renameSong.Render()
-        changeAuthor.Render()
-        changeCover.Render()
+        if (song.isLocal) {
+            editMetadata.Render()
+            exportCacheDialog.Render()
+
+            if (exportCacheDialog.isExporting.value) {
+                InProgressDialog(
+                    total = 0,
+                    done = 0,
+                    text = stringResource(R.string.exporting),
+                    onDismiss = null
+                )
+            }
+        } else {
+            renameSong.Render()
+            changeAuthor.Render()
+            changeCover.Render()
+            deleteSongDialog.Render()
+        }
         
         if (showRefetchDialog) {
             ConfirmationDialog(

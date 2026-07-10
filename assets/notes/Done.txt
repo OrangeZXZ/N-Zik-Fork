@@ -1,0 +1,33 @@
+## EditMetadataDialog - Metadata Editor for On-Device Songs
+- New centralized metadata editor dialog for local songs (reads/writes directly to audio files)
+- Uses jaudiotagger with Mp4FieldKey for proper MP4 atom reading (©day, ©wrt, cprt, etc.)
+- MMR (MediaMetadataRetriever) fallback for non-MP4 files only
+- Logical field ordering: Cover, Title, Artist, Album, Genre, Year, Track, Disc, Album Artist, Composer, Copyright, Comment, Encoder, BPM, ISRC, Publisher, Lyricist, Conductor, Remixer
+- Compact cover art layout (56dp image + pick button)
+- All standard fields shown even if empty (user can fill in missing metadata)
+- Translated field labels via string resources
+
+## Delete Button for Local Songs
+- Hidden for local songs in both SongItemMenu and PlayerItemMenu
+- Still available for remote/online songs
+
+## PlayerItemMenu - Fixed & Refactored
+- Removed extra closing brace that caused build failure
+- Added missing imports (DeleteSongDialog, ExportCacheDialog, Optional, InProgressDialog)
+- Added dialog definitions and Render() calls
+- Refetch/Update button moved to Management section for remote songs
+
+## Pull-to-Refresh in OnDeviceSongs
+- Added AppPullToRefreshBox wrapping LazyColumn
+- refreshKey triggers re-collection of songs
+
+## Other Fixes
+- Artist "modified:" prefix stripped in Player, PlayerServiceModern, AutoMediaItemMapper, MediaItemUtils
+- Explicit checkbox reset in RenameSongDialog via LaunchedEffect
+- Custom covers in AA via ArtworkContentProvider
+- On-device artwork in AA via mapSongToMediaItem
+- Gradient background stuck colors fixed in Player.kt
+- EXIF rotation + center crop for cover images
+- Coil cache cleared on cover change in ChangeCoverDialog
+- ContentScale.Crop for custom images in SongItem and MiniPlayer
+- CurrentMediaItemIdAsState reactive helper for on-device tab selection

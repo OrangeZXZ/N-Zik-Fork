@@ -66,6 +66,7 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.showFoldersOnDeviceKey
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onEach
+import app.n_zik.android.components.AppPullToRefreshBox
 import app.n_zik.android.components.FolderItem
 import app.n_zik.android.components.SongItem
 import app.n_zik.android.components.Sort
@@ -102,6 +103,7 @@ fun OnDeviceSong(
     var currentPath by remember( songsOnDevice.values ) {
         mutableStateOf( PathUtils.findCommonPath( songsOnDevice.values ) )
     }
+    var refreshKey by remember { mutableStateOf(0) }
 
     //<editor-fold defaultstate="collapsed" desc="Permission handler">
     val permission = rememberSaveable {
@@ -132,7 +134,7 @@ fun OnDeviceSong(
 
     val odSort = Sort( HOME_ON_DEVICE_SONGS_SORT_BY, HOME_ON_DEVICE_SONGS_SORT_ORDER)
 
-    LaunchedEffect( isPermissionGranted, odSort.sortBy, odSort.sortOrder ) {
+    LaunchedEffect( isPermissionGranted, odSort.sortBy, odSort.sortOrder, refreshKey ) {
         if( !isPermissionGranted ) return@LaunchedEffect
 
         context.getLocalSongs( odSort.sortBy, odSort.sortOrder )
@@ -220,6 +222,11 @@ fun OnDeviceSong(
             }
         }
 
+    AppPullToRefreshBox(
+        isRefreshing = false,
+        onRefresh = { refreshKey++ },
+        modifier = Modifier.fillMaxSize()
+    ) {
     LazyColumn(
         state = lazyListState,
         userScrollEnabled = songsOnDevice.isNotEmpty(),
@@ -290,6 +297,7 @@ fun OnDeviceSong(
                 )
             }
         }
+    }
     }
 }
 

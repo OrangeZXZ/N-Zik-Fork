@@ -27,7 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.net.Uri
-import app.n_zik.android.appContext
+import app.n_zik.android.core.coil.ImageCacheFactory
 
 class ChangeCoverDialog private constructor(
     activeState: MutableState<Boolean>,
@@ -88,9 +88,21 @@ class ChangeCoverDialog private constructor(
             ) { uri: Uri? ->
                 if (uri != null) {
                     val songId = getSong()?.id ?: return@rememberLauncherForActivityResult
+                    // Delete old cached file before saving new one
+                    val oldFile = java.io.File(context.filesDir, "app_covers/cover_$songId.jpg")
+                    val oldUrl = oldFile.absolutePath
+                    if (oldFile.exists()) oldFile.delete()
+
                     val savedUri = app.it.fast4x.rimusic.utils.saveImageToInternalStorage(context, uri, "app_covers", "cover_$songId.jpg")
                     if (savedUri != null) {
-                        value = TextFieldValue(savedUri.toString())
+                        // Clear Coil cache for this specific file URL only
+                        val fileUrl = savedUri.toString()
+                        ImageCacheFactory.clearCacheForKey(fileUrl, ImageCacheFactory.NetworkQuality.HIGH)
+                        ImageCacheFactory.clearCacheForKey(fileUrl, ImageCacheFactory.NetworkQuality.LOW)
+                        // Also clear with the absolute path format
+                        ImageCacheFactory.clearCacheForKey(oldUrl, ImageCacheFactory.NetworkQuality.HIGH)
+                        ImageCacheFactory.clearCacheForKey(oldUrl, ImageCacheFactory.NetworkQuality.LOW)
+                        value = TextFieldValue(fileUrl)
                     }
                 }
             }

@@ -384,9 +384,14 @@ fun MiniPlayer(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.height( Dimensions.miniPlayerHeight )
             ) {
+                val artworkUrl = mediaItem.mediaMetadata.artworkUri?.toString()
+                val isCustomImage = artworkUrl?.let {
+                    it.startsWith("file://") || it.contains("app_covers") || it.startsWith("modified:")
+                } == true
+
                 ImageCacheFactory.Thumbnail(
-                    thumbnailUrl = mediaItem.mediaMetadata.artworkUri?.toString(),
-                    contentScale = ContentScale.FillHeight,
+                    thumbnailUrl = artworkUrl,
+                    contentScale = if (isCustomImage) ContentScale.Crop else ContentScale.FillHeight,
                     modifier = Modifier.clip( thumbnailShape() )
                                        .size( 48.dp )
                 )

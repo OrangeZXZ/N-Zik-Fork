@@ -121,6 +121,23 @@ fun rememberEqualizerLauncher(
     }
 }
 @Composable
+fun Player.currentMediaItemIdAsState(key1: Any? = null): State<String?> {
+    val state = remember(key1) {
+        mutableStateOf(currentMediaItem?.mediaId)
+    }
+
+    DisposableListener(key1) {
+        object : Player.Listener {
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                state.value = mediaItem?.mediaId
+            }
+        }
+    }
+
+    return state
+}
+
+@Composable
 fun Player.playbackStateState(key1: Any? = null): State<Int> {
     val state = remember(key1) {
         mutableStateOf(playbackState)

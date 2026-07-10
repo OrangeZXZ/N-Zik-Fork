@@ -15,13 +15,13 @@ import kotlinx.coroutines.runBlocking
 
 @Composable
 fun MediaItem.artistTextWithFallback(): String {
-    val artist = mediaMetadata.artist?.toString() ?: ""
+    val artist = app.it.fast4x.rimusic.cleanPrefix(mediaMetadata.artist?.toString() ?: "")
     if (artist.isNotBlank() && artist != "null") return artist
     val dbSong by remember(mediaId) {
         Database.songTable.findById(mediaId)
     }.collectAsState(null, Dispatchers.IO)
     val dbText = dbSong?.artistsText
-    if (!dbText.isNullOrBlank() && dbText != "null") return dbText
+    if (!dbText.isNullOrBlank() && dbText != "null") return app.it.fast4x.rimusic.cleanPrefix(dbText)
     return artist
 }
 
@@ -51,12 +51,12 @@ fun MediaItem.albumIdWithFallback(): String? {
 // ─── Non-Composable fallbacks (for services, notifications, etc.) ───
 
 fun MediaItem.artistTextOrDb(): String {
-    val artist = mediaMetadata.artist?.toString() ?: ""
+    val artist = app.it.fast4x.rimusic.cleanPrefix(mediaMetadata.artist?.toString() ?: "")
     if (artist.isNotBlank() && artist != "null") return artist
     val dbText = runBlocking {
         Database.songTable.findById(mediaId).first()?.artistsText
     }
-    if (!dbText.isNullOrBlank() && dbText != "null") return dbText
+    if (!dbText.isNullOrBlank() && dbText != "null") return app.it.fast4x.rimusic.cleanPrefix(dbText)
     return artist
 }
 
