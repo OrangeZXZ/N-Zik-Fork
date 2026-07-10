@@ -1,3 +1,5 @@
+@file:OptIn(UnstableApi::class)
+
 package app.it.fast4x.rimusic.utils
 
 import androidx.annotation.OptIn
@@ -19,13 +21,14 @@ import app.it.fast4x.rimusic.enums.PlayerBackgroundColors
 import app.it.fast4x.rimusic.enums.PlayerControlsType
 import app.it.fast4x.rimusic.enums.PlayerPlayButtonType
 import app.n_zik.android.playback.services.PlayerServiceModern
-import app.it.fast4x.rimusic.ui.components.themed.PlaybackParamsDialog
+import app.n_zik.android.components.menu.player.PlaybackSettingsMenu
+import app.it.fast4x.rimusic.enums.MenuStyle
+import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.screens.player.components.controls.ControlsEssential
 import app.it.fast4x.rimusic.ui.screens.player.components.controls.ControlsModern
 import kotlin.math.roundToInt
 import app.it.fast4x.rimusic.ui.styling.ColorPalette
 
-@OptIn(UnstableApi::class)
 @Composable
 fun GetControls(
     binder: PlayerServiceModern.Binder,
@@ -59,20 +62,16 @@ fun GetControls(
     var playbackDuration by rememberPreference(playbackDurationKey, 0f)
     var setPlaybackDuration by remember { mutableStateOf(false) }
 
-    var showSpeedPlayerDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
+    val menuState = LocalMenuState.current
+    val menuStyle = rememberPreference(menuStyleKey, MenuStyle.List)
 
-    if (showSpeedPlayerDialog) {
-        PlaybackParamsDialog(
-            onDismiss = { showSpeedPlayerDialog = false },
-            speedValue = { playbackSpeed = it },
-            pitchValue = {},
-            durationValue = {
-                playbackDuration = it
-                setPlaybackDuration = true
-            },
-            scaleValue = onBlurScaleChange
+    val playbackSettingsMenu = remember(binder, menuState, menuStyle) {
+        PlaybackSettingsMenu.create(
+            binder = binder,
+            menuState = menuState,
+            styleState = menuStyle,
+            onDismiss = { menuState.hide() },
+            onBlurScaleChange = onBlurScaleChange
         )
     }
 
@@ -100,7 +99,7 @@ fun GetControls(
                 mediaId = mediaId,
                 playerPlayButtonType = playerPlayButtonType,
                 isGradientBackgroundEnabled = isGradientBackgroundEnabled,
-                onShowSpeedPlayerDialog = { showSpeedPlayerDialog = true },
+                onShowSpeedPlayerDialog = { menuState.display { playbackSettingsMenu.MenuComponent() } },
                 dynamicColorPalette = dynamicColorPalette
             )
 
@@ -113,7 +112,7 @@ fun GetControls(
                 isBuffering = isBuffering,
                 playerPlayButtonType = playerPlayButtonType,
                 isGradientBackgroundEnabled = isGradientBackgroundEnabled,
-                onShowSpeedPlayerDialog = { showSpeedPlayerDialog = true },
+                onShowSpeedPlayerDialog = { menuState.display { playbackSettingsMenu.MenuComponent() } },
                 dynamicColorPalette = dynamicColorPalette
             )
     }

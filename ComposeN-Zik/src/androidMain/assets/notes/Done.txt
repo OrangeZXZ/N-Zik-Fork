@@ -1,0 +1,12 @@
+# Done
+
+## 2026-07-11
+
+### feat(player): Transform PlaybackParamsDialog to menu
+- Created PlaybackSettingsMenu.kt in app.n_zik.android.components.menu.player
+- Menu with sliders for: speed, pitch, duration, volume, blur, bass boost, loudness, volume boost
+- List mode: inline sliders
+- Grid mode: items that open SliderDialog (like LyricsSettingsMenu)
+- Fixed default volume to 100% (1.0f)
+- Removed PlaybackParamsDialog from Dialog.kt
+- Works for both Essential and Modern controls
