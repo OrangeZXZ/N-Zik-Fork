@@ -42,3 +42,15 @@
 - Updated all package declarations to match new locations
 - Updated all imports across the entire codebase (100+ files)
 - Renamed "import" folder to "backup" to avoid Kotlin keyword conflict
+
+## Quality Logging Enhancement
+- Added image quality tracking in PlayerServiceModern (imageQualityFormat property + preference listener)
+- Enhanced onMediaItemTransition log to show Network bandwidth, Audio quality, and Image quality
+- Log shows effective quality when Auto is selected (e.g., "Auto→HIGH")
+- Uses Info level (NZik_Network tag) for visibility in logcat
+
+## Metrolist Comparison Analysis
+- Stream: Quasi-identical (14 clients, PoToken, cipher, self-healing). NZik has Medium preset extra.
+- Download: Equivalent architecture (ExoDownloadService, dual cache, auto-download on like)
+- Dependencies: Aligned and up-to-date. NZik uses newer versions (Kotlin 2.4.0, Ktor 3.5.1, Coil 3.5.0)
+- Parental Control: Functional but different approach (NZik uses title prefix vs Metrolist uses explicit boolean from API badge)

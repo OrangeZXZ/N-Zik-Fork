@@ -93,6 +93,7 @@ import app.it.fast4x.rimusic.repository.QuickPicksRepository
 import app.n_zik.android.R
 import app.n_zik.android.playback.services.createDataSourceFactory
 import app.n_zik.android.playback.services.formatCache
+import app.n_zik.android.playback.services.markWebRemixFailed
 import app.n_zik.android.widget.Widget
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.MoreExecutors
@@ -105,6 +106,7 @@ import app.n_zik.android.MainActivity
 import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.cleanPrefix
 import app.it.fast4x.rimusic.enums.AudioQualityFormat
+import app.it.fast4x.rimusic.enums.ImageQualityFormat
 import app.it.fast4x.rimusic.enums.DurationInMilliseconds
 import app.it.fast4x.rimusic.enums.ExoPlayerCacheLocation
 import app.it.fast4x.rimusic.enums.ExoPlayerDiskCacheMaxSize
@@ -133,6 +135,7 @@ import app.it.fast4x.rimusic.utils.TimerJob
 import app.it.fast4x.rimusic.utils.activityPendingIntent
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.audioQualityFormatKey
+import app.it.fast4x.rimusic.utils.imageQualityFormatKey
 import app.it.fast4x.rimusic.utils.audioReverbPresetKey
 import app.it.fast4x.rimusic.utils.autoLoadSongsInQueueKey
 import app.it.fast4x.rimusic.utils.bassboostEnabledKey
@@ -232,6 +235,8 @@ import app.n_zik.android.playback.exceptions.PlayableFormatNonSupported
 import app.n_zik.android.playback.exceptions.UnmatchedSongException
 import app.n_zik.android.playback.exceptions.UnplayableException
 import app.n_zik.android.playback.exceptions.VideoIdMismatchException
+import app.it.fast4x.rimusic.EXPLICIT_PREFIX
+import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 
 
 const val LOCAL_KEY_PREFIX = "local:"
@@ -283,6 +288,7 @@ class PlayerServiceModern : MediaLibraryService(),
     private var showDownloadButton = true
 
     lateinit var audioQualityFormat: AudioQualityFormat
+    lateinit var imageQualityFormat: ImageQualityFormat
     lateinit var sleepTimer: SleepTimer
     private var timerJob: TimerJob? = null
     lateinit var nzikRadio: NZikRadio
@@ -387,7 +393,8 @@ class PlayerServiceModern : MediaLibraryService(),
         isPersistentQueueEnabled = preferences.getBoolean(persistentQueueKey, false)
 
         audioQualityFormat = preferences.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
-        Timber.tag("NZik_Network").i("PlayerServiceModern: Initialized with Audio Quality: $audioQualityFormat")
+        imageQualityFormat = preferences.getEnum(imageQualityFormatKey, ImageQualityFormat.Auto)
+        Timber.tag("NZik_Network").i("PlayerServiceModern: Initialized with Audio Quality: $audioQualityFormat, Image Quality: $imageQualityFormat")
 
         showLikeButton = preferences.getBoolean(showLikeButtonBackgroundPlayerKey, true)
         showDownloadButton = preferences.getBoolean(showDownloadButtonBackgroundPlayerKey, true)
@@ -746,11 +753,16 @@ class PlayerServiceModern : MediaLibraryService(),
             audioQualityFormatKey -> {
                 audioQualityFormat = sharedPreferences?.getEnum(audioQualityFormatKey, AudioQualityFormat.Auto)
                     ?: AudioQualityFormat.Auto
-                Timber.tag("NZik_Network").i("PlayerServiceModern: Preference CHANGED to: $audioQualityFormat")
+                Timber.tag("NZik_Network").i("PlayerServiceModern: Audio Quality CHANGED to: $audioQualityFormat")
                 
                 // Force update UI and internal state
                 updateDefaultNotification()
                 updateWidgets()
+            }
+            imageQualityFormatKey -> {
+                imageQualityFormat = sharedPreferences?.getEnum(imageQualityFormatKey, ImageQualityFormat.Auto)
+                    ?: ImageQualityFormat.Auto
+                Timber.tag("NZik_Network").i("PlayerServiceModern: Image Quality CHANGED to: $imageQualityFormat")
             }
         }
     }
@@ -786,7 +798,9 @@ class PlayerServiceModern : MediaLibraryService(),
         scheduleCrossfade()
 
         val networkQuality = NetworkQualityHelper.getCurrentNetworkQuality(this)
-        Timber.tag("PlayerServiceModern").d("onMediaItemTransition - Current Network Quality for next song: $networkQuality")
+        val effectiveAudio = if (audioQualityFormat == AudioQualityFormat.Auto) "Auto→$networkQuality" else audioQualityFormat.name
+        val effectiveImage = if (imageQualityFormat == ImageQualityFormat.Auto) "Auto→$networkQuality" else imageQualityFormat.name
+        Timber.tag("NZik_Network").i("onMediaItemTransition - Network: $networkQuality | Audio: $effectiveAudio | Image: $effectiveImage")
 
         // Clear recovery counter for the new media item (fresh start)
         mediaItem?.mediaId?.let { recoveryAttempts.remove(it) }
@@ -962,6 +976,11 @@ class PlayerServiceModern : MediaLibraryService(),
 
                 // Invalidate cached stream URL so next resolve fetches a fresh one
                 formatCache.remove(currentMediaId)
+
+                // Mark WEB_REMIX as failed for this videoId so next resolve skips HEAD validation
+                if (error.errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS) {
+                    markWebRemixFailed(currentMediaId)
+                }
 
                 // Save playWhenReady BEFORE pausing - pause() clears it
                 val wasPlaying = player.playWhenReady
@@ -1660,6 +1679,8 @@ class PlayerServiceModern : MediaLibraryService(),
     private fun maybeRestorePlayerQueue() {
         if (!isPersistentQueueEnabled) return
 
+        val parentalControlEnabled = preferences.getBoolean(parentalControlEnabledKey, false)
+
         Database.asyncQuery {
             val queuedSong = runBlocking {
                 queueTable.all().first()
@@ -1667,11 +1688,18 @@ class PlayerServiceModern : MediaLibraryService(),
 
             if (queuedSong.isEmpty()) return@asyncQuery
 
-            val index = queuedSong.indexOfFirst { it.position != null }.coerceAtLeast(0)
+            // Filter explicit content if parental control is enabled
+            val filteredQueuedSong = if (parentalControlEnabled) {
+                queuedSong.filter { !(it.mediaItem.mediaMetadata.title?.startsWith(EXPLICIT_PREFIX, true) ?: false) }
+            } else queuedSong
+
+            if (filteredQueuedSong.isEmpty()) return@asyncQuery
+
+            val index = filteredQueuedSong.indexOfFirst { it.position != null }.coerceAtLeast(0)
 
             runBlocking(Dispatchers.Main) {
                 player.setMediaItems(
-                    queuedSong.map { mediaItem ->
+                    filteredQueuedSong.map { mediaItem ->
                         mediaItem.mediaItem.buildUpon()
                             .setUri(mediaItem.mediaItem.mediaId)
                             .setCustomCacheKey(mediaItem.mediaItem.mediaId)
@@ -1680,7 +1708,7 @@ class PlayerServiceModern : MediaLibraryService(),
                             }
                     },
                     index,
-                    queuedSong[index].position ?: C.TIME_UNSET
+                    filteredQueuedSong[index].position ?: C.TIME_UNSET
                 )
                 player.prepare()
             }
@@ -1695,6 +1723,8 @@ class PlayerServiceModern : MediaLibraryService(),
         //if (!isPersistentQueueEnabled) return
         //Log.d("mediaItem", "QueuePersistentEnabled Restore Initial")
 
+        val parentalControlEnabled = preferences.getBoolean(parentalControlEnabledKey, false)
+
         runCatching {
             filesDir.resolve("persistentQueue.data").inputStream().use { fis ->
                 ObjectInputStream(fis).use { oos ->
@@ -1704,9 +1734,17 @@ class PlayerServiceModern : MediaLibraryService(),
         }.onSuccess { queue ->
             //Log.d("mediaItem", "QueuePersistentEnabled Restored queue $queue")
             //Log.d("mediaItem", "QueuePersistentEnabled Restored ${queue.songMediaItems.size}")
+
+            // Filter explicit content if parental control is enabled
+            val filteredItems = if (parentalControlEnabled) {
+                queue.songMediaItems.filter { !(it.asMediaItem.mediaMetadata.title?.startsWith(EXPLICIT_PREFIX, true) ?: false) }
+            } else queue.songMediaItems
+
+            if (filteredItems.isEmpty()) return@onSuccess
+
             runBlocking(Dispatchers.Main) {
                 player.setMediaItems(
-                    queue.songMediaItems.map { song ->
+                    filteredItems.map { song ->
                         song.asMediaItem.buildUpon()
                             .setUri(song.asMediaItem.mediaId)
                             .setCustomCacheKey(song.asMediaItem.mediaId)
@@ -1714,7 +1752,7 @@ class PlayerServiceModern : MediaLibraryService(),
                                 mediaMetadata.extras?.putBoolean("isFromPersistentQueue", true)
                             }
                     },
-                    queue.mediaItemIndex,
+                    queue.mediaItemIndex.coerceAtMost(filteredItems.size - 1),
                     queue.position
                 )
 
