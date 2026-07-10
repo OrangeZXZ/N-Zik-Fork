@@ -1,6 +1,8 @@
 package app.it.fast4x.rimusic.ui.components.themed
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
@@ -21,9 +23,11 @@ import androidx.compose.ui.unit.dp
 import app.it.fast4x.rimusic.utils.doubleShadowDrop
 import app.n_zik.android.uiRoundnessShape
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CustomElevatedButton(
     onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null,
     backgroundColor: Color,
     modifier: Modifier = Modifier,
     shape: Shape = uiRoundnessShape(),
@@ -48,11 +52,22 @@ fun CustomElevatedButton(
             //.background(Color(0xFF010203), shape)
             .background(backgroundColor, shape)
             .clip(shape)
-            .clickable(
-                interactionSource = interSource,
-                indication = androidx.compose.material3.ripple(),
-                onClick = onClick
-            ),
+            .let {
+                if (onLongClick != null) {
+                    it.combinedClickable(
+                        interactionSource = interSource,
+                        indication = androidx.compose.material3.ripple(),
+                        onClick = onClick,
+                        onLongClick = onLongClick
+                    )
+                } else {
+                    it.clickable(
+                        interactionSource = interSource,
+                        indication = androidx.compose.material3.ripple(),
+                        onClick = onClick
+                    )
+                }
+            },
         contentAlignment = Alignment.Center,
         content = content
     )

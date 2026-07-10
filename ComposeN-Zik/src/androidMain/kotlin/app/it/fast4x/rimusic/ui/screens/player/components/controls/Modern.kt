@@ -526,6 +526,7 @@ fun ControlsModern(
                   }
                   if (effectRotationEnabled) isRotated = !isRotated
               },
+              onLongClick = onShowSpeedPlayerDialog,
               modifier = Modifier
                   .doubleShadowDrop(uiRoundnessShape(), 4.dp, 8.dp)
                   .clip(uiRoundnessShape())

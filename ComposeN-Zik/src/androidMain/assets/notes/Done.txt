@@ -10,3 +10,7 @@
 - Fixed default volume to 100% (1.0f)
 - Removed PlaybackParamsDialog from Dialog.kt
 - Works for both Essential and Modern controls
+
+### fix(player): Fix long click on Rectangular play button in Modern controls
+- Added onLongClick support to CustomElevatedButton
+- Rectangular/Default/Square buttons now open playback settings menu on long click
