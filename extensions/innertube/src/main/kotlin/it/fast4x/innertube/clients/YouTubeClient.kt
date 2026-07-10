@@ -14,7 +14,7 @@ data class YouTubeClient(
     val osVersion: String? = null,
     val deviceMake: String? = null,
     val deviceModel: String? = null,
-    val androidSdkVersion: Int? = null,
+    val androidSdkVersion: String? = null,
     val referer: String? = null,
     val xClientName: Int? = null,
     val isEmbedded: Boolean = false,
@@ -64,7 +64,7 @@ data class YouTubeClient(
             osVersion = "14",
             deviceMake = "Google",
             deviceModel = "Pixel 8 Pro",
-            androidSdkVersion = 34,
+            androidSdkVersion = "34",
             xClientName = 21,
             loginSupported = true,
             useSignatureTimestamp = true,
@@ -107,6 +107,17 @@ data class YouTubeClient(
             useSignatureTimestamp = true,
         )
 
+        val ANDROID_NO_SDK = YouTubeClient(
+            clientName = "ANDROID",
+            clientVersion = "21.03.38",
+            api_key = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
+            clientId = "3",
+            userAgent = "com.google.android.youtube/21.03.38 (Linux; U; Android 14) gzip",
+            xClientName = 3,
+            loginSupported = false,
+            useSignatureTimestamp = false,
+        )
+
         val WEB = YouTubeClient(
             clientName = "WEB",
             clientVersion = "2.20260213.00.00",
@@ -132,7 +143,7 @@ data class YouTubeClient(
             osName = "Android",
             deviceMake = "Oculus",
             deviceModel = "Quest 3",
-            androidSdkVersion = 32,
+            androidSdkVersion = "32",
             clientName = "ANDROID_VR",
             clientVersion = "1.43.32",
             api_key = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
@@ -147,7 +158,7 @@ data class YouTubeClient(
             osName = "Android",
             deviceMake = "Oculus",
             deviceModel = "Quest 3",
-            androidSdkVersion = 32,
+            androidSdkVersion = "32",
             clientName = "ANDROID_VR",
             clientVersion = "1.61.48",
             api_key = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
@@ -167,7 +178,7 @@ data class YouTubeClient(
             osVersion = "15",
             deviceMake = "Google",
             deviceModel = "Pixel 9 Pro Fold",
-            androidSdkVersion = 35,
+            androidSdkVersion = "35",
             xClientName = 14,
             loginSupported = true,
             useSignatureTimestamp = true,
@@ -188,7 +199,7 @@ data class YouTubeClient(
             osName = "Android",
             deviceMake = "Oculus",
             deviceModel = "Quest 3",
-            androidSdkVersion = 32,
+            androidSdkVersion = "32",
             clientName = "ANDROID_VR",
             clientVersion = "1.61.48",
             api_key = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
@@ -206,6 +217,9 @@ data class YouTubeClient(
             userAgent = USER_AGENT_WEB,
             xClientName = 62,
             loginSupported = true,
+            loginRequired = true,
+            useSignatureTimestamp = true,
+            useWebPoTokens = true,
         )
 
         val IOS = YouTubeClient(
@@ -218,6 +232,21 @@ data class YouTubeClient(
             deviceMake = "Apple",
             deviceModel = "iPhone16,2",
             xClientName = 5,
+            loginSupported = false,
+            useSignatureTimestamp = false,
+        )
+
+        val VISIONOS = YouTubeClient(
+            clientName = "VISIONOS",
+            clientVersion = "0.1",
+            api_key = "AIzaSyB-63vPrdThhKuerbB2N_l7Kwwcxj6yUAc",
+            clientId = "101",
+            userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15",
+            osName = "visionOS",
+            osVersion = "1.3.21O771",
+            deviceMake = "Apple",
+            deviceModel = "RealityDevice14,1",
+            xClientName = 101,
             loginSupported = false,
             useSignatureTimestamp = false,
         )

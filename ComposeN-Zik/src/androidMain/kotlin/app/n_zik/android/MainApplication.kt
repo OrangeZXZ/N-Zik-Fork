@@ -18,7 +18,10 @@ import app.it.fast4x.rimusic.utils.CaptureCrash
 import app.it.fast4x.rimusic.utils.FileLoggingTree
 import app.it.fast4x.rimusic.utils.logDebugEnabledKey
 import app.it.fast4x.rimusic.utils.preferences
+import app.n_zik.android.core.network.client.Store
 import app.n_zik.android.core.security.cipher.CipherDeobfuscator
+import app.n_zik.android.core.security.cipher.PlayerConfigStore
+import app.n_zik.android.core.security.cipher.PlayerDatesStore
 import app.it.fast4x.rimusic.utils.isProxyEnabledKey
 import app.it.fast4x.rimusic.utils.proxyHostnameKey
 import app.it.fast4x.rimusic.utils.proxyModeKey
@@ -33,8 +36,13 @@ import it.fast4x.innertube.utils.ProxyPreferences
 import timber.log.Timber
 import java.io.File
 import java.net.Proxy
+import app.n_zik.android.playback.services.prewarmPoToken
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.utils.NewPipeDownloaderImpl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class MainApplication : Application(), SingletonImageLoader.Factory {
 
@@ -42,6 +50,29 @@ class MainApplication : Application(), SingletonImageLoader.Factory {
         super.onCreate()
         Dependencies.init(this)
         CipherDeobfuscator.initialize(this)
+        PlayerConfigStore.initialize(this)
+        PlayerConfigStore.scheduleStartupRefresh()
+        PlayerDatesStore.initialize(this)
+
+        // Prewarm cipher and PoToken in background to reduce first-play latency
+        // Matches Metrolist's approach: staggered delays + wait for visitorData
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            // Warm cipher WebView after 1.5s (no session needed)
+            kotlinx.coroutines.delay(1500)
+            runCatching { CipherDeobfuscator.prewarm() }
+                .onFailure { Timber.tag("MainApplication").w(it, "Cipher prewarm skipped") }
+        }
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            // Warm PoToken after 2.5s, but wait for visitorData first (max 12s)
+            kotlinx.coroutines.delay(2500)
+            var waitedMs = 0
+            while (Store.getIosVisitorData().isNullOrBlank() && waitedMs < 12_000) {
+                kotlinx.coroutines.delay(500)
+                waitedMs += 500
+            }
+            runCatching { prewarmPoToken() }
+                .onFailure { Timber.tag("MainApplication").w(it, "PoToken prewarm skipped") }
+        }
 
         val oldPolicy = StrictMode.allowThreadDiskReads()
         try {

@@ -71,6 +71,7 @@ import java.util.concurrent.Executors
 import kotlin.io.path.createTempDirectory
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.n_zik.android.R
+import kotlinx.coroutines.cancel
 
 @UnstableApi
 object MyDownloadHelper {
@@ -96,6 +97,9 @@ object MyDownloadHelper {
     private lateinit var downloadNotificationHelper: DownloadNotificationHelper
     private lateinit var downloadManager: DownloadManager
     lateinit var audioQualityFormat: AudioQualityFormat
+
+    // URL cache with expiry: videoId -> (url, expiryTimestamp)
+    internal val songUrlCache = HashMap<String, Pair<String, Long>>()
 
 
     var downloads = MutableStateFlow<Map<String, Download>>(emptyMap())
@@ -402,6 +406,15 @@ object MyDownloadHelper {
             removeDownload( context, song.asMediaItem )
         else if( !isDownloaded )
             addDownload( context, song.asMediaItem )
+    }
+
+    /**
+     * Cancel the coroutine scope and shut down the executor.
+     * Call this when the download system is being torn down.
+     */
+    fun release() {
+        coroutineScope.cancel()
+        executor.shutdown()
     }
 }
 

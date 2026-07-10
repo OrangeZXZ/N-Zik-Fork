@@ -3,8 +3,10 @@ package app.n_zik.android.core.security.cipher
 import android.content.Context
 import android.webkit.ConsoleMessage
 import android.webkit.JavascriptInterface
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -47,6 +49,13 @@ class CipherWebView private constructor(
     var usingHardcodedMode: Boolean = false
         private set
 
+    /**
+     * Set when the renderer died. Callers check this to recreate immediately.
+     */
+    @Volatile
+    var isDead: Boolean = false
+        private set
+
     init {
         Timber.tag(TAG).d("Initializing CipherWebView...")
         Timber.tag(TAG).d("  sigInfo: name=${sigInfo?.name}, constantArg=${sigInfo?.constantArg}, hardcoded=${sigInfo?.isHardcoded}")
@@ -85,6 +94,17 @@ class CipherWebView private constructor(
             }
         }
 
+        webView.webViewClient = object : WebViewClient() {
+            @androidx.annotation.RequiresApi(android.os.Build.VERSION_CODES.O)
+            override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+                val didCrash = runCatching { detail.didCrash() }.getOrNull()
+                Timber.tag(TAG).e("Cipher WebView render process gone (didCrash=$didCrash)")
+                isDead = true
+                // Consume the event so the framework doesn't kill the app process.
+                return true
+            }
+        }
+
         Timber.tag(TAG).d("WebView settings configured")
     }
 
@@ -103,7 +123,12 @@ class CipherWebView private constructor(
         usingHardcodedMode = isHardcoded
 
         val exports = buildList {
-            if (sigFuncName != null) {
+            val sigJsExpr = sigInfo?.jsExpression
+            if (sigJsExpr != null) {
+                val expr = sigJsExpr.replace("INPUT", "sig")
+                Timber.tag(TAG).d("Sig: expression-based export: $expr")
+                add("window._cipherSigFunc = function(sig) { try { return $expr; } catch(e) { return null; } };")
+            } else if (sigFuncName != null) {
                 val sigConstArgs = sigInfo.constantArgs
                 val preprocessFunc = sigInfo.preprocessFunc
                 val preprocessArgs = sigInfo.preprocessArgs
@@ -128,7 +153,12 @@ class CipherWebView private constructor(
                     add("window._cipherSigFunc = typeof $sigFuncName !== 'undefined' ? $sigFuncName : null;")
                 }
             }
-            if (nFuncName != null) {
+            val nJsExpr = nFuncInfo?.jsExpression
+            if (nJsExpr != null) {
+                val expr = nJsExpr.replace("INPUT", "n")
+                Timber.tag(TAG).d("N: expression-based export: ${expr.take(80)}")
+                add("window._nTransformFunc = function(n) { try { return $expr; } catch(e) { return n; } };")
+            } else if (nFuncName != null) {
                 val nConstArgs = nFuncInfo.constantArgs
                 if (!nConstArgs.isNullOrEmpty()) {
                     // Generate wrapper function for n-functions that require constant args

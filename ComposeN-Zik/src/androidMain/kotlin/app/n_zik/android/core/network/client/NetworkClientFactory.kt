@@ -110,7 +110,7 @@ object NetworkClientFactory {
         }
     }
 
-    fun validateStreamUrl(streamUrl: String, userAgent: String? = null): Boolean {
+    fun validateStreamUrl(streamUrl: String, userAgent: String? = null, cookie: String? = null): Boolean {
         return try {
             val client = getClientWithTimeout(3, 3)
                 
@@ -120,6 +120,9 @@ object NetworkClientFactory {
                 
             if (userAgent != null) {
                 builder.header("User-Agent", userAgent)
+            }
+            if (cookie != null) {
+                builder.header("Cookie", cookie)
             }
                 
             val request = builder.build()

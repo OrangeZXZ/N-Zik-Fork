@@ -14,11 +14,23 @@ import org.schabi.newpipe.extractor.downloader.Response
 import org.schabi.newpipe.extractor.exceptions.ParsingException
 import org.schabi.newpipe.extractor.exceptions.ReCaptchaException
 import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager
+import org.schabi.newpipe.extractor.stream.StreamInfo
 import java.io.IOException
 import java.net.Proxy
 
 
 class NewPipeDownloaderImpl(private val clientProvider: () -> OkHttpClient) : Downloader() {
+
+    private fun normalizeResponseBody(url: String, body: String?): String? {
+        if (!url.contains("returnyoutubedislikeapi.com", ignoreCase = true)) {
+            return body
+        }
+        val trimmed = body?.trimStart().orEmpty()
+        if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+            return body
+        }
+        return "{\"likes\":0,\"dislikes\":0,\"viewCount\":0}"
+    }
 
     @Throws(IOException::class, ReCaptchaException::class)
     override fun execute(request: Request): Response {
@@ -51,7 +63,7 @@ class NewPipeDownloaderImpl(private val clientProvider: () -> OkHttpClient) : Do
             throw ReCaptchaException("reCaptcha Challenge requested", url)
         }
 
-        val responseBodyToReturn = response.body?.string()
+        val responseBodyToReturn = normalizeResponseBody(url, response.body?.string())
 
         val latestUrl = response.request.url.toString()
         return Response(
@@ -120,5 +132,50 @@ object NewPipeUtils {
             println("NewPipe: decodeSignatureCipher error: ${e.stackTraceToString()}")
             null
         }
+
+    /**
+     * Fetch full stream info via NewPipe extractor and return itag-to-URL pairs.
+     * Used as a last-resort fallback when all clients fail to provide a working stream URL.
+     */
+    fun newPipePlayer(videoId: String): List<Pair<Int, String>> {
+        return try {
+            val streamInfo = StreamInfo.getInfo(
+                NewPipe.getService(0),
+                "https://www.youtube.com/watch?v=$videoId",
+            )
+            val streamsList = streamInfo.audioStreams + streamInfo.videoStreams + streamInfo.videoOnlyStreams
+            streamsList.mapNotNull {
+                (it.itagItem?.id ?: return@mapNotNull null) to it.content
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    /**
+     * Enrich a PlayerResponse with NewPipe stream URLs by matching itags.
+     * Returns null if NewPipe has no streams or the response is not OK.
+     */
+    fun enrichWithNewPipe(videoId: String, response: PlayerResponse): PlayerResponse? {
+        if (response.playabilityStatus?.status != "OK") return null
+
+        val streamsList = newPipePlayer(videoId)
+        if (streamsList.isEmpty()) return null
+
+        return response.copy(
+            streamingData = response.streamingData?.copy(
+                formats = response.streamingData?.formats?.map { format ->
+                    format.copy(
+                        url = streamsList.find { it.first == format.itag }?.second ?: format.url,
+                    )
+                },
+                adaptiveFormats = response.streamingData?.adaptiveFormats?.map { adaptiveFormat ->
+                    adaptiveFormat.copy(
+                        url = streamsList.find { it.first == adaptiveFormat.itag }?.second ?: adaptiveFormat.url,
+                    )
+                },
+            ),
+        )
+    }
 
 }

@@ -26,7 +26,8 @@ data class PlayerResponse(
     ) {
         @Serializable
         data class AudioConfig(
-            val loudnessDb: Float?
+            val loudnessDb: Float?,
+            val perceptualLoudnessDb: Float?
         ) {
             // For music clients only
             val normalizedLoudnessDb: Float?
@@ -117,9 +118,12 @@ data class PlayerResponse(
             val loudnessDb: Double?,
             val lastModified: Long?,
             val signatureCipher: String?,
+            val cipher: String?,
         ) {
             val isAudio: Boolean
                 get() = width == null
+            val isOriginal: Boolean
+                get() = contentLength != null && contentLength > 0
         }
     }
 

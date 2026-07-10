@@ -9,6 +9,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -33,6 +36,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
@@ -46,6 +50,9 @@ import app.it.fast4x.rimusic.enums.PlayerBackgroundColors
 import app.it.fast4x.rimusic.enums.PlayerType
 import app.it.fast4x.rimusic.models.Format
 import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
+import app.n_zik.android.playback.services.playbackDataCache
+import app.n_zik.android.core.security.cipher.CipherDeobfuscator
+import app.n_zik.android.core.security.cipher.PlayerDatesStore
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.styling.onOverlay
@@ -150,60 +157,152 @@ fun StatsForNerds(
                 .fillMaxSize()
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                verticalAlignment = Alignment.Top,
                 modifier = Modifier
                     .align(Alignment.Center)
+                    .wrapContentSize(Alignment.Center)
                     .padding(all = 16.dp)
             ) {
-                Column(horizontalAlignment = Alignment.End) {
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.widthIn(max = 100.dp)
+                ) {
                     BasicText(
                         text = stringResource(R.string.id),
-                        style = typography().xs.medium.color(colorPalette().onOverlay)
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                     )
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
                         BasicText(
                             text = stringResource(R.string.itag),
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
                         BasicText(
                             text = stringResource(R.string.quality),
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
                     }
                     BasicText(
                         text = stringResource(R.string.bitrate),
-                        style = typography().xs.medium.color(colorPalette().onOverlay)
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                     )
                     BasicText(
                         text = stringResource(R.string.size),
-                        style = typography().xs.medium.color(colorPalette().onOverlay)
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                     )
 
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == true)
                         BasicText(
                             text = stringResource(R.string.cached),
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
 
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
                         BasicText(
                             text = if (downloadCachedBytes == 0L) stringResource(R.string.cached)
                             else stringResource(R.string.downloaded),
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
 
                         BasicText(
                             text = stringResource(R.string.loudness),
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                        BasicText(
+                            text = stringResource(R.string.codec),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                        BasicText(
+                            text = stringResource(R.string.sample_rate),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                        BasicText(
+                            text = stringResource(R.string.channels),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                        BasicText(
+                            text = stringResource(R.string.perceptual_loudness),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                    }
+                    BasicText(
+                        text = stringResource(R.string.stream_client),
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                    )
+                    if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
+                        BasicText(
+                            text = stringResource(R.string.player_hash),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                        BasicText(
+                            text = stringResource(R.string.cipher_since),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                        BasicText(
+                            text = stringResource(R.string.volume),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
                     }
                 }
 
-                Column {
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.wrapContentSize()
+                ) {
                     BasicText(
                         text = mediaId,
                         maxLines = 1,
-                        style = typography().xs.medium.color(colorPalette().onOverlay)
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                     )
 
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
@@ -211,35 +310,43 @@ fun StatsForNerds(
                             text = format?.itag?.toString()
                                 ?: stringResource(R.string.audio_quality_format_unknown),
                             maxLines = 1,
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
                         BasicText(
                             text = getQuality(format!!),
                             maxLines = 1,
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
                     }
                     BasicText(
                         text = format?.bitrate?.let { "${it / 1000} kbps" } ?: stringResource(R.string.audio_quality_format_unknown),
                         maxLines = 1,
-                        style = typography().xs.medium.color(colorPalette().onOverlay)
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                     )
-                    // Value for "Size" label
                     BasicText(
                         text = format?.contentLength?.let { 
                             if (it > 0) Formatter.formatShortFileSize(context, it) 
                             else stringResource(R.string.audio_quality_format_unknown)
                         } ?: stringResource(R.string.audio_quality_format_unknown),
                         maxLines = 1,
-                        style = typography().xs.medium.color(colorPalette().onOverlay)
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                     )
 
-                    // Value for "Cached/Downloaded" label
                     if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == true) {
                          BasicText(
                             text = "100%",
                             maxLines = 1,
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
                     }
 
@@ -255,14 +362,87 @@ fun StatsForNerds(
                                 } ?: "")
                             },
                             maxLines = 1,
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
 
-                        // Value for "Loudness" label
                         BasicText(
                             text = format?.loudnessDb?.let { "%.2f dB".format(it) } ?: stringResource(R.string.audio_quality_format_unknown),
                             maxLines = 1,
-                            style = typography().xs.medium.color(colorPalette().onOverlay)
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                        BasicText(
+                            text = format?.codecs ?: stringResource(R.string.audio_quality_format_unknown),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                        BasicText(
+                            text = format?.sampleRate?.let { "${it / 1000} kHz" } ?: stringResource(R.string.audio_quality_format_unknown),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                        BasicText(
+                            text = format?.audioChannels?.let {
+                                when (it) {
+                                    1 -> "Mono"
+                                    2 -> "Stereo"
+                                    else -> "$it ch"
+                                }
+                            } ?: stringResource(R.string.audio_quality_format_unknown),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                        BasicText(
+                            text = format?.perceptualLoudnessDb?.let { "%.2f dB".format(it) } ?: stringResource(R.string.audio_quality_format_unknown),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                    }
+                    BasicText(
+                        text = if (downloadCachedBytes != 0L) {
+                            stringResource(R.string.downloaded)
+                        } else if (cachedBytes > 0) {
+                            stringResource(R.string.cached) + " : " + (playbackDataCache[cleanMediaId]?.streamClient ?: stringResource(R.string.audio_quality_format_unknown))
+                        } else {
+                            playbackDataCache[cleanMediaId]?.streamClient ?: stringResource(R.string.audio_quality_format_unknown)
+                        },
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                    )
+                    if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
+                        BasicText(
+                            text = CipherDeobfuscator.lastUsedPlayerHash ?: stringResource(R.string.audio_quality_format_unknown),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                        BasicText(
+                            text = CipherDeobfuscator.lastUsedPlayerHash?.let { PlayerDatesStore.get(it) } ?: stringResource(R.string.audio_quality_format_unknown),
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                        )
+                        BasicText(
+                            text = "${(binder.player.volume * 100).roundToInt()}%",
+                            maxLines = 1,
+                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
+                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
                     }
                 }
@@ -291,7 +471,8 @@ fun StatsForNerds(
                             BasicText(
                                 text = stringResource(R.string.quality) + " : " + getQuality(format!!),
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                overflow = TextOverflow.Visible,
                                 style = typography().xs.medium.color(colorPalette().text)
                             )
                         }
@@ -305,7 +486,8 @@ fun StatsForNerds(
                             text = format?.bitrate?.let { stringResource(R.string.bitrate) + " : " + "${it / 1000} kbps" }
                                 ?: (stringResource(R.string.bitrate) + " : " + stringResource(R.string.audio_quality_format_unknown)),
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
                             style = typography().xs.medium.color(colorPalette().text)
                         )
                     }
@@ -318,7 +500,8 @@ fun StatsForNerds(
                                 ?.let {stringResource(R.string.size) + " : " + Formatter.formatShortFileSize(context,it)}
                                 ?: (stringResource(R.string.size) + " : " + stringResource(R.string.audio_quality_format_unknown)),
                             maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                            overflow = TextOverflow.Visible,
                             style = typography().xs.medium.color(colorPalette().text)
                         )
                     }
@@ -338,6 +521,7 @@ fun StatsForNerds(
                 }
                 AnimatedVisibility(visible = statsfornerdsfull) {
                   Column {
+                      // Row 1: ID + itag
                       Row(
                           verticalAlignment = Alignment.CenterVertically,
                           horizontalArrangement = Arrangement.Center,
@@ -353,6 +537,8 @@ fun StatsForNerds(
                               BasicText(
                                   text = stringResource(R.string.id) + " : " + mediaId,
                                   maxLines = 1,
+                                  modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                  overflow = TextOverflow.Visible,
                                   style = typography().xs.medium.color(colorPalette().text)
                               )
                           }
@@ -362,16 +548,16 @@ fun StatsForNerds(
                                   modifier = modifier.weight(1f)
                               ) {
                                   BasicText(
-                                      text = (stringResource(R.string.itag) + " : " + format?.itag?.toString())
-                                          ?: (stringResource(R.string.itag) + " : " + stringResource(
-                                              R.string.audio_quality_format_unknown
-                                          )),
+                                      text = stringResource(R.string.itag) + " : " + (format?.itag?.toString() ?: stringResource(R.string.audio_quality_format_unknown)),
                                       maxLines = 1,
+                                      modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                      overflow = TextOverflow.Visible,
                                       style = typography().xs.medium.color(colorPalette().text)
                                   )
                               }
                           }
                       }
+                      // Row 2: Cached/Downloaded + Loudness
                       Row(
                           verticalAlignment = Alignment.CenterVertically,
                           horizontalArrangement = Arrangement.Center,
@@ -388,6 +574,8 @@ fun StatsForNerds(
                                   BasicText(
                                       text = stringResource(R.string.cached) + " : " + "100%",
                                       maxLines = 1,
+                                      modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                      overflow = TextOverflow.Visible,
                                       style = typography().xs.medium.color(colorPalette().text)
                                   )
                               }
@@ -398,23 +586,13 @@ fun StatsForNerds(
                                   modifier = modifier.weight(1f)
                               ) {
                                   BasicText(
-                                      text =  if (downloadCachedBytes == 0L)
-                                                  stringResource(R.string.cached) + " : " + Formatter.formatShortFileSize(
-                                                      context,
-                                                      cachedBytes
-                                                  )
-                                                  + format?.contentLength?.let {
-                                                          " (${(cachedBytes.toFloat() / it * 100).roundToInt()}%)"
-                                                  }
-                                          else stringResource(R.string.downloaded) + " : " + Formatter.formatShortFileSize(
-                                                  context,
-                                                  downloadCachedBytes
-                                              )
-                                          + format?.contentLength?.let {
-                                               " (${(downloadCachedBytes.toFloat() / it * 100).roundToInt()}%)"
-                                          }
-                                      ,
+                                      text = if (downloadCachedBytes == 0L)
+                                          stringResource(R.string.cached) + " : " + Formatter.formatShortFileSize(context, cachedBytes) + format?.contentLength?.let { if (it > 0) " (${(cachedBytes.toFloat() / it * 100).roundToInt()}%)" else "" }
+                                      else
+                                          stringResource(R.string.downloaded) + " : " + Formatter.formatShortFileSize(context, downloadCachedBytes) + format?.contentLength?.let { if (it > 0) " (${(downloadCachedBytes.toFloat() / it * 100).roundToInt()}%)" else "" },
                                       maxLines = 1,
+                                      modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                      overflow = TextOverflow.Visible,
                                       style = typography().xs.medium.color(colorPalette().text)
                                   )
                               }
@@ -423,19 +601,156 @@ fun StatsForNerds(
                                   modifier = modifier.weight(1f)
                               ) {
                                   BasicText(
-                                      text = format?.loudnessDb?.let {
-                                          stringResource(R.string.loudness) + " : " + "%.2f dB".format(
-                                              it
-                                          )
-                                      }
-                                          ?: (stringResource(R.string.loudness) + " : " + stringResource(
-                                              R.string.audio_quality_format_unknown
-                                          )),
+                                      text = stringResource(R.string.loudness) + " : " + (format?.loudnessDb?.let { "%.2f dB".format(it) } ?: stringResource(R.string.audio_quality_format_unknown)),
                                       maxLines = 1,
+                                      modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                      overflow = TextOverflow.Visible,
                                       style = typography().xs.medium.color(colorPalette().text)
                                   )
                               }
                           }
+                      }
+                      // Row 3: Codec + Sample Rate + Channels + Perceptual Loudness
+                      if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
+                          Row(
+                              verticalAlignment = Alignment.CenterVertically,
+                              horizontalArrangement = Arrangement.Center,
+                              modifier = modifier
+                                  .background(colorPalette().background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
+                                  .padding(vertical = 5.dp)
+                                  .fillMaxWidth(if (isLandscape) 0.8f else 1f)
+                          ) {
+                               Box(
+                                   contentAlignment = Alignment.Center,
+                                   modifier = modifier.weight(1f)
+                               ) {
+                                    BasicText(
+                                        text = stringResource(R.string.codec) + " : " + (format?.codecs ?: stringResource(R.string.audio_quality_format_unknown)),
+                                        maxLines = 1,
+                                        modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                        overflow = TextOverflow.Visible,
+                                        style = typography().xs.medium.color(colorPalette().text)
+                                    )
+                               }
+                               Box(
+                                   contentAlignment = Alignment.Center,
+                                   modifier = modifier.weight(1f)
+                               ) {
+                                    BasicText(
+                                        text = stringResource(R.string.sample_rate) + " : " + (format?.sampleRate?.let { "${it / 1000} kHz" } ?: stringResource(R.string.audio_quality_format_unknown)),
+                                        maxLines = 1,
+                                        modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                        overflow = TextOverflow.Visible,
+                                        style = typography().xs.medium.color(colorPalette().text)
+                                    )
+                               }
+                               Box(
+                                   contentAlignment = Alignment.Center,
+                                   modifier = modifier.weight(1f)
+                               ) {
+                                    BasicText(
+                                        text = stringResource(R.string.channels) + " : " + (format?.audioChannels?.let {
+                                            when (it) {
+                                                1 -> "Mono"
+                                                2 -> "Stereo"
+                                                else -> "$it ch"
+                                            }
+                                        } ?: stringResource(R.string.audio_quality_format_unknown)),
+                                        maxLines = 1,
+                                        modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                        overflow = TextOverflow.Visible,
+                                        style = typography().xs.medium.color(colorPalette().text)
+                                    )
+                               }
+                               Box(
+                                   contentAlignment = Alignment.Center,
+                                   modifier = modifier.weight(1f)
+                               ) {
+                                    BasicText(
+                                        text = stringResource(R.string.perceptual_loudness) + " : " + (format?.perceptualLoudnessDb?.let { "%.2f dB".format(it) } ?: stringResource(R.string.audio_quality_format_unknown)),
+                                        maxLines = 1,
+                                        modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                        overflow = TextOverflow.Visible,
+                                        style = typography().xs.medium.color(colorPalette().text)
+                                    )
+                               }
+                           }
+                           // Row 4: Stream Client
+                           Row(
+                               verticalAlignment = Alignment.CenterVertically,
+                               horizontalArrangement = Arrangement.Center,
+                               modifier = modifier
+                                   .background(colorPalette().background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
+                                   .padding(vertical = 5.dp)
+                                   .fillMaxWidth(if (isLandscape) 0.8f else 1f)
+                           ) {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = modifier.weight(1f)
+                                ) {
+                                     BasicText(
+                                         text = stringResource(R.string.stream_client) + " : " + if (downloadCachedBytes != 0L) {
+                                             stringResource(R.string.downloaded)
+                                         } else if (cachedBytes > 0) {
+                                             stringResource(R.string.cached) + " : " + (playbackDataCache[cleanMediaId]?.streamClient ?: stringResource(R.string.audio_quality_format_unknown))
+                                         } else {
+                                             playbackDataCache[cleanMediaId]?.streamClient ?: stringResource(R.string.audio_quality_format_unknown)
+                                         },
+                                         maxLines = 1,
+                                         modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                         overflow = TextOverflow.Visible,
+                                         style = typography().xs.medium.color(colorPalette().text)
+                                     )
+                                }
+                           }
+                           // Row 5: Player Hash + Cipher Since + Volume
+                           if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
+                           Row(
+                               verticalAlignment = Alignment.CenterVertically,
+                               horizontalArrangement = Arrangement.Center,
+                               modifier = modifier
+                                   .background(colorPalette().background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
+                                   .padding(vertical = 5.dp)
+                                   .fillMaxWidth(if (isLandscape) 0.8f else 1f)
+                           ) {
+                               Box(
+                                   contentAlignment = Alignment.Center,
+                                   modifier = modifier.weight(1f)
+                               ) {
+                                    BasicText(
+                                        text = stringResource(R.string.player_hash) + " : " + (CipherDeobfuscator.lastUsedPlayerHash ?: stringResource(R.string.audio_quality_format_unknown)),
+                                        maxLines = 1,
+                                        modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                        overflow = TextOverflow.Visible,
+                                        style = typography().xs.medium.color(colorPalette().text)
+                                    )
+                               }
+                               Box(
+                                   contentAlignment = Alignment.Center,
+                                   modifier = modifier.weight(1f)
+                               ) {
+                                    BasicText(
+                                        text = stringResource(R.string.cipher_since) + " : " + (CipherDeobfuscator.lastUsedPlayerHash?.let { PlayerDatesStore.get(it) } ?: stringResource(R.string.audio_quality_format_unknown)),
+                                        maxLines = 1,
+                                        modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                        overflow = TextOverflow.Visible,
+                                        style = typography().xs.medium.color(colorPalette().text)
+                                    )
+                               }
+                               Box(
+                                   contentAlignment = Alignment.Center,
+                                   modifier = modifier.weight(1f)
+                               ) {
+                                    BasicText(
+                                        text = stringResource(R.string.volume) + " : " + "${(binder.player.volume * 100).roundToInt()}%",
+                                        maxLines = 1,
+                                        modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
+                                        overflow = TextOverflow.Visible,
+                                        style = typography().xs.medium.color(colorPalette().text)
+                                    )
+                               }
+                           }
+                       }
                       }
                   }
                 }

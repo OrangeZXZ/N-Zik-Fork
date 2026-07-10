@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 23,
-    "identityHash": "1cd562c825dddc8a13e4bfd96770c345",
+    "identityHash": "dcc6ba38a984b7189384000d35cb7a0a",
     "entities": [
       {
         "tableName": "Album",
@@ -157,7 +157,7 @@
       },
       {
         "tableName": "Format",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`songId` TEXT NOT NULL, `itag` INTEGER, `mimeType` TEXT, `bitrate` INTEGER, `contentLength` INTEGER, `lastModified` INTEGER, `loudnessDb` REAL, PRIMARY KEY(`songId`), FOREIGN KEY(`songId`) REFERENCES `Song`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`songId` TEXT NOT NULL, `itag` INTEGER, `mimeType` TEXT, `bitrate` INTEGER, `contentLength` INTEGER, `lastModified` INTEGER, `loudnessDb` REAL, `codecs` TEXT, `sampleRate` INTEGER, `perceptualLoudnessDb` REAL, `audioChannels` INTEGER, `playbackUrl` TEXT, PRIMARY KEY(`songId`), FOREIGN KEY(`songId`) REFERENCES `Song`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "songId",
@@ -194,6 +194,31 @@
             "fieldPath": "loudnessDb",
             "columnName": "loudnessDb",
             "affinity": "REAL"
+          },
+          {
+            "fieldPath": "codecs",
+            "columnName": "codecs",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sampleRate",
+            "columnName": "sampleRate",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "perceptualLoudnessDb",
+            "columnName": "perceptualLoudnessDb",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "audioChannels",
+            "columnName": "audioChannels",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "playbackUrl",
+            "columnName": "playbackUrl",
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -594,7 +619,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1cd562c825dddc8a13e4bfd96770c345')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dcc6ba38a984b7189384000d35cb7a0a')"
     ]
   }
 }
