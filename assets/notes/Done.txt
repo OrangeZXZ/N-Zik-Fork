@@ -54,3 +54,20 @@
 - Download: Equivalent architecture (ExoDownloadService, dual cache, auto-download on like)
 - Dependencies: Aligned and up-to-date. NZik uses newer versions (Kotlin 2.4.0, Ktor 3.5.1, Coil 3.5.0)
 - Parental Control: Functional but different approach (NZik uses title prefix vs Metrolist uses explicit boolean from API badge)
+
+## Stream/Cipher Architecture Alignment with Metrolist
+- Enhanced StreamResolver with improved client fallback chain (14 clients)
+- Added PlaybackData cache for metadata access (loudness, videoDetails, tracking)
+- Added HIGH-quality best-fallback tracking across clients
+- Improved age-restriction handling with early WEB_CREATOR skip
+- Added stream client settings dialog for enabling/disabling individual clients
+- Added PlayerConfigStore with bundled + remote player_configs.json
+- Added PlayerConfigParser for extracting sig/n functions from player.js
+- Added RendererRecoveryPolicy for WebView renderer OOM handling
+- Enhanced CipherDeobfuscator with configEpoch self-healing
+- Enhanced PoTokenWebView with dual token system (playerRequest + streamingData)
+- Added PlayerDatesStore for player hash date tracking
+- Enhanced StatsForNerds with detailed stream/format information
+- Added stream client settings in OtherSettings
+- Added From30To31Migration for new schema
+- Updated Format entity with additional fields
