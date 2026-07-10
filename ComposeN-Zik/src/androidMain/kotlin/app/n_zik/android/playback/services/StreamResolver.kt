@@ -61,11 +61,13 @@ import app.it.fast4x.rimusic.utils.streamClientWebEnabledKey
 import app.it.fast4x.rimusic.utils.streamClientWebCreatorEnabledKey
 import app.it.fast4x.rimusic.utils.streamClientMobileEnabledKey
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.io.IOException
 import kotlinx.serialization.json.Json
 import org.jetbrains.annotations.Blocking
 import org.jetbrains.annotations.NonBlocking
@@ -870,53 +872,69 @@ fun DataSpec.process(
     videoId: String,
     audioQualityFormat: AudioQualityFormat,
     connectionMetered: Boolean
-): DataSpec = runBlocking(Dispatchers.IO) {
-    val isLoggedIn = !Innertube.cookie.isNullOrBlank() && Innertube.cookie?.contains("SAPISID") == true
-    Timber.tag(TAG).d("Resolving stream for videoId=$videoId, isLoggedIn=$isLoggedIn")
+): DataSpec {
+    // runBlocking is necessary because ExoPlayer's ResolvingDataSource expects a synchronous return.
+    // We catch CancellationException (caused by thread interruption during media item transitions)
+    // and re-throw as IOException so ExoPlayer treats it as a recoverable error.
+    return try {
+        runBlocking(Dispatchers.IO) {
+            val isLoggedIn = !Innertube.cookie.isNullOrBlank() && Innertube.cookie?.contains("SAPISID") == true
+            Timber.tag(TAG).d("Resolving stream for videoId=$videoId, isLoggedIn=$isLoggedIn")
 
-    val parentalControlEnabled = appContext().preferences.getBoolean(parentalControlEnabledKey, false)
-    if (parentalControlEnabled) {
-        val song = Database.songTable.findById(videoId).firstOrNull()
-        if (song?.title?.startsWith(EXPLICIT_PREFIX, true) == true) {
-            throw ExplicitContentException()
+            val parentalControlEnabled = appContext().preferences.getBoolean(parentalControlEnabledKey, false)
+            if (parentalControlEnabled) {
+                val song = Database.songTable.findById(videoId).firstOrNull()
+                if (song?.title?.startsWith(EXPLICIT_PREFIX, true) == true) {
+                    throw ExplicitContentException()
+                }
+            }
+
+            if (videoId.length != 11 && !videoId.startsWith(LOCAL_KEY_PREFIX)) {
+                throw UnmatchedSongException()
+            }
+
+            var formatUri = formatCache[videoId]
+
+            if (formatUri != null) {
+                val expireTime = formatUri.getQueryParameter("expire")?.toLongOrNull()?.times(1000)
+                val isExpired = expireTime != null && System.currentTimeMillis() >= expireTime - 30_000
+                val isUnknownMetadata = formatUri.getQueryParameter("range") == "0-1000000"
+
+                if (isExpired || isUnknownMetadata) {
+                    Timber.tag(TAG).d("formatCache entry invalid (expired=$isExpired, unknownMetadata=$isUnknownMetadata), removing for $videoId")
+                    formatCache.remove(videoId)
+                    formatUri = null
+                }
+            }
+
+            if (formatUri == null) {
+                formatUri = resolveStreamUri(videoId, audioQualityFormat, connectionMetered)
+                formatCache[videoId] = formatUri
+            }
+
+            val newHeaders = mutableMapOf<String, String>()
+            newHeaders.putAll(httpRequestHeaders)
+
+            // DO NOT ADD Cookie or X-Goog-Visitor-Id here!
+            // ExoPlayer sends these headers to the googlevideo.com CDN, which will reject them with 403 Forbidden.
+            // The stream URL itself contains all necessary authentication tokens (sig, expire, id).
+
+            buildUpon()
+                .setUri(formatUri)
+                .setHttpRequestHeaders(newHeaders)
+                .setUriPositionOffset(uriPositionOffset)
+                .build()
         }
-    }
-
-    if (videoId.length != 11 && !videoId.startsWith(LOCAL_KEY_PREFIX)) {
-        throw UnmatchedSongException()
-    }
-
-    var formatUri = formatCache[videoId]
-
-    if (formatUri != null) {
-        val expireTime = formatUri.getQueryParameter("expire")?.toLongOrNull()?.times(1000)
-        val isExpired = expireTime != null && System.currentTimeMillis() >= expireTime - 30_000
-        val isUnknownMetadata = formatUri.getQueryParameter("range") == "0-1000000"
-
-        if (isExpired || isUnknownMetadata) {
-            Timber.tag(TAG).d("formatCache entry invalid (expired=$isExpired, unknownMetadata=$isUnknownMetadata), removing for $videoId")
-            formatCache.remove(videoId)
-            formatUri = null
+    } catch (e: CancellationException) {
+        if (e.cause is InterruptedException) {
+            // ExoPlayer interrupted the thread during a media item transition.
+            // Re-throw as IOException so ExoPlayer handles it as a recoverable load error.
+            Timber.tag(TAG).w("Stream resolution interrupted for $videoId (media item transition)")
+            throw IOException("Stream resolution interrupted for $videoId", e)
         }
+        // Genuine coroutine cancellation — propagate as-is
+        throw e
     }
-
-    if (formatUri == null) {
-        formatUri = resolveStreamUri(videoId, audioQualityFormat, connectionMetered)
-        formatCache[videoId] = formatUri
-    }
-
-    val newHeaders = mutableMapOf<String, String>()
-    newHeaders.putAll(httpRequestHeaders)
-
-    // DO NOT ADD Cookie or X-Goog-Visitor-Id here!
-    // ExoPlayer sends these headers to the googlevideo.com CDN, which will reject them with 403 Forbidden.
-    // The stream URL itself contains all necessary authentication tokens (sig, expire, id).
-
-    buildUpon()
-        .setUri(formatUri)
-        .setHttpRequestHeaders(newHeaders)
-        .setUriPositionOffset(uriPositionOffset)
-        .build()
 }
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     // DataSource factories (ExoPlayer integration)

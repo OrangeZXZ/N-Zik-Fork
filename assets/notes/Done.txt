@@ -1,3 +1,10 @@
+## Fix Cipher Deobfuscation Cancellation Buffering Loop
+- Fixed JobCancellationException in StreamResolver.process() caused by ExoPlayer thread interruption during media item transitions
+- Added invokeOnCancellation handlers in CipherWebView for sigContinuation, nContinuation, and initContinuation to prevent stale continuation references
+- Added @Volatile to sigContinuation and nContinuation fields for thread safety between Main and JS threads
+- Narrowed CancellationException catch in process() to only handle InterruptedException-derived cancellations, preserving genuine coroutine cancellation propagation
+- Added CancellationException and IOException imports to StreamResolver.kt
+
 ## EditMetadataDialog - Metadata Editor for On-Device Songs
 - New centralized metadata editor dialog for local songs (reads/writes directly to audio files)
 - Uses jaudiotagger with Mp4FieldKey for proper MP4 atom reading (©day, ©wrt, cprt, etc.)

@@ -30,8 +30,8 @@ class CipherWebView private constructor(
     private val initContinuation: Continuation<CipherWebView>,
 ) {
     private val webView = WebView(context)
-    private var sigContinuation: Continuation<String>? = null
-    private var nContinuation: Continuation<String>? = null
+    @Volatile private var sigContinuation: Continuation<String>? = null
+    @Volatile private var nContinuation: Continuation<String>? = null
 
     @Volatile
     var nFunctionAvailable: Boolean = false
@@ -498,6 +498,10 @@ function discoverAndInit() {
         return withContext(Dispatchers.Main) {
             suspendCancellableCoroutine { cont ->
                 sigContinuation = cont
+                cont.invokeOnCancellation {
+                    Timber.tag(TAG).w("deobfuscateSignature cancelled, cleaning up continuation")
+                    sigContinuation = null
+                }
                 val constArgJs = if (sigInfo.constantArg != null) "${sigInfo.constantArg}" else "null"
                 val jsCall = "deobfuscateSig('${sigInfo.name}', $constArgJs, '${escapeJsString(obfuscatedSig)}')"
                 Timber.tag(TAG).d("Evaluating JS: ${jsCall.take(100)}...")
@@ -539,6 +543,10 @@ function discoverAndInit() {
         return withContext(Dispatchers.Main) {
             suspendCancellableCoroutine { cont ->
                 nContinuation = cont
+                cont.invokeOnCancellation {
+                    Timber.tag(TAG).w("transformN cancelled, cleaning up continuation")
+                    nContinuation = null
+                }
                 val jsCall = "transformN('${escapeJsString(nValue)}')"
                 Timber.tag(TAG).d("Evaluating JS: $jsCall")
                 webView.evaluateJavascript(jsCall, null)
@@ -605,6 +613,10 @@ function discoverAndInit() {
             return withContext(Dispatchers.Main) {
                 suspendCancellableCoroutine { cont ->
                     val wv = CipherWebView(context, playerJs, sigInfo, nFuncInfo, cont)
+                    cont.invokeOnCancellation {
+                        Timber.tag(TAG).w("CipherWebView.create() cancelled, cleaning up")
+                        wv.close()
+                    }
                     wv.loadPlayerJsFromFile()
                 }
             }
