@@ -48,9 +48,7 @@ data class HomePage(
             private fun fromMusicTwoRowItemRenderer(renderer: MusicTwoRowItemRenderer?): Innertube.Item? {
                 return when {
                     renderer?.isSong == true -> {
-                        println("HomePage: fromMusicTwoRowItemRenderer isSong: ${renderer.title?.runs?.firstOrNull()?.text}")
                         val songSubtitleRuns = renderer.subtitle?.runs?.map { "${it.text}(${it.navigationEndpoint?.browseEndpoint != null})" }
-                        println("HomePage: isSong subtitle runs: $songSubtitleRuns")
                         Innertube.SongItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -74,7 +72,6 @@ data class HomePage(
                     }
 
                     renderer?.isAlbum == true -> {
-                        println("HomePage: fromMusicTwoRowItemRenderer isAlbum: ${renderer.title?.runs?.firstOrNull()?.text}")
                         Innertube.AlbumItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -99,7 +96,6 @@ data class HomePage(
                     }
 
                     renderer?.isPlaylist == true -> {
-                        println("HomePage: fromMusicTwoRowItemRenderer isPlaylist: ${renderer.title?.runs?.firstOrNull()?.text}")
                         Innertube.PlaylistItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -113,7 +109,6 @@ data class HomePage(
                     }
 
                     renderer?.isArtist == true -> {
-                        println("HomePage: fromMusicTwoRowItemRenderer isArtist: ${renderer.title?.runs?.firstOrNull()?.text}")
                         Innertube.ArtistItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -125,9 +120,7 @@ data class HomePage(
                     }
 
                     renderer?.isVideo == true -> {
-                        println("HomePage: fromMusicTwoRowItemRenderer isVideo: ${renderer.title?.runs?.firstOrNull()?.text}")
                         val subtitleParts = renderer.subtitle?.splitBySeparator() ?: emptyList()
-                        println("HomePage: isVideo subtitleParts count=${subtitleParts.size}: $subtitleParts")
                         Innertube.VideoItem(
                             info = Innertube.Info(
                                 renderer.title?.runs?.firstOrNull()?.text,
@@ -155,7 +148,6 @@ data class HomePage(
                     }
 
                     else -> {
-                        println("HomePage: fromMusicTwoRowItemRenderer else renderer: $renderer")
                         null
                     }
                 }

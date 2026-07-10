@@ -80,3 +80,11 @@
 ## Fix: LyricsSettingsMenu Layout
 - Removed redundant Column wrapper with verticalScroll/weight in ListMenu path
 - ListMenu.Menu already provides its own scrollable content area with proper height constraints
+
+## Fix: Playlist/Album limited to 100 songs (gh-661)
+- Fixed `getPlaylistNewMode()` to extract `songsContinuation` from `musicPlaylistShelfRenderer.continuations` instead of broken `contents.lastOrNull()?.continuationItemRenderer`
+- Fixed `getPlaylistContinuation()` to check all 4 response structures (Metrolist pattern): `sectionListContinuation`, `musicPlaylistShelfContinuation`, `musicShelfContinuation`, `onResponseReceivedActions`
+- Added `List<MusicShelfRenderer.Content>.getContinuation()` extension with `@JvmName`
+- Changed `PlaylistSongList.kt` to load all continuation pages before updating UI via `LaunchedEffect(browseId)`
+- Removed verbose debug `println` calls from HomePage.kt, ChartsPageComplete.kt, RelatedPage.kt, PlaylistPage.kt, YtMusic.kt
+- Confirmed: 223/223 songs loaded for test playlist PLT7j9Cmd9zsH9RE3s8elMSqc3AXGET_4q

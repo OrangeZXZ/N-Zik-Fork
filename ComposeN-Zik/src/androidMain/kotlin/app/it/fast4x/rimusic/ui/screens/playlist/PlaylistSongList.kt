@@ -199,17 +199,28 @@ fun PlaylistSongList(
                    }
     }
 
-    LaunchedEffect( playlistPage ) {
+    LaunchedEffect( browseId ) {
         if (playlistPage == null) {
             withContext(Dispatchers.IO) {
-                updatedItemsPageProvider(null)
-            }.onSuccess { onlinePlaylist ->
-                playlistPage = onlinePlaylist
-                playlistSongs = onlinePlaylist.songs
-                                               .fastFilter { !parentalControlEnabled || !it.explicit }
-                                               .fastDistinctBy( Innertube.SongItem::key )
-                continuation = onlinePlaylist.songsContinuation
-            }.onFailure { e -> Timber.tag("PlaylistSongList").e(e, "Failed to load initial playlist") }
+                val firstPage = YtMusic.getPlaylist( browseId ).getOrNull() ?: return@withContext
+                val allSongs = firstPage.songs.toMutableList()
+                var cont = firstPage.songsContinuation
+                var maxPages = 50
+                while (cont != null && maxPages-- > 0) {
+                    val next = YtMusic.getPlaylistContinuation( cont ).getOrNull()
+                    if (next != null) {
+                        allSongs += next.songs
+                        cont = next.continuation
+                    } else {
+                        cont = null
+                    }
+                }
+                playlistPage = firstPage.copy(songs = allSongs, songsContinuation = null)
+                playlistSongs = allSongs
+                    .fastFilter { !parentalControlEnabled || !it.explicit }
+                    .fastDistinctBy( Innertube.SongItem::key )
+                continuation = null
+            }
         }
     }
 

@@ -94,3 +94,11 @@ data class MusicShelfRenderer(
 
 fun List<Continuation>.getContinuation() =
     firstOrNull()?.nextContinuationData?.continuation
+
+@JvmName("getContentContinuation")
+fun List<MusicShelfRenderer.Content>.getContinuation(): String? =
+    firstOrNull { it.continuationItemRenderer != null }
+        ?.continuationItemRenderer
+        ?.continuationEndpoint
+        ?.continuationCommand
+        ?.token

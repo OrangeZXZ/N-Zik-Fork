@@ -31,7 +31,6 @@ data class PlaylistPage(
 ) {
     companion object {
         fun fromMusicResponsiveListItemRenderer(renderer: MusicResponsiveListItemRenderer): Innertube.SongItem {
-            println("PlaylistPage: fromMusicResponsiveListItemRenderer setVideoId: ${renderer.playlistItemData?.playlistSetVideoId}")
             return Innertube.SongItem(
                 info = Innertube.Info(
                     name = renderer.flexColumns.firstOrNull()
