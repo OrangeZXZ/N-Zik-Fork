@@ -2,6 +2,16 @@
 
 ## 2026-07-11
 
+### Bump version 7.0.0 → 7.1.0 (versionCode 65 → 66)
+- feat(player): Transform PlaybackParamsDialog to menu
+- feat(stream): align with Metrolist stream/download/cipher architecture
+- feat(logging): add quality tracking logs for network, audio, and image
+- fix(player): Fix infinite buffering caused by missing cipher timeout
+- fix(player): Fix long click on Rectangular play button in Modern controls
+- fix(stream-resolver): fix cipher deobfuscation cancellation buffering loop
+- fix(playlist): load all songs from playlists/albums exceeding 100 items (gh-661)
+- fix(lyrics): refetch only selected lyrics type and menu layout
+
 ### fix(player): Fix infinite buffering caused by missing cipher timeout
 - Root cause: CipherWebView.deobfuscateSignature() and transformN() had no timeout, causing coroutine to hang forever when JS silently fails
 - Added RequestSlot<T> pattern with requestId to prevent stale callback races (aligned with Metrolist)
