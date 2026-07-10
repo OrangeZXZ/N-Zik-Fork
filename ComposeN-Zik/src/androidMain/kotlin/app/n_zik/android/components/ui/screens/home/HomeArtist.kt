@@ -117,7 +117,7 @@ import app.n_zik.android.components.menu.artist.LocalArtistItemMenu
 import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 import app.kreate.android.me.knighthat.utils.Toaster
-import app.n_zik.android.components.dialog.RetrySyncDialog
+import app.n_zik.android.components.dialog.common.RetrySyncDialog
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -506,6 +506,7 @@ fun HomeArtists(
         }
     }
 }
+
 
 
 

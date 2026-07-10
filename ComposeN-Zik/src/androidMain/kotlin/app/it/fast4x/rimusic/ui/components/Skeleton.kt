@@ -48,12 +48,12 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.seenChangelogsVersionKey
 import app.it.fast4x.rimusic.utils.transition
 import app.it.fast4x.rimusic.enums.UiType
-import app.n_zik.android.updater.ui.ChangelogsDialog
-import app.n_zik.android.updater.ui.CheckForUpdateDialog
-import app.n_zik.android.updater.ui.NewUpdateAvailableDialog
-import app.n_zik.android.updater.ui.BuildTransitionWarningDialog
+import app.n_zik.android.components.dialog.updater.ChangelogsDialog
+import app.n_zik.android.components.dialog.updater.CheckForUpdateDialog
+import app.n_zik.android.components.dialog.updater.NewUpdateAvailableDialog
+import app.n_zik.android.components.dialog.updater.BuildTransitionWarningDialog
 import app.n_zik.android.updater.models.MajorUpdateConfig
-import app.n_zik.android.updater.ui.MajorUpdateWarningDialog
+import app.n_zik.android.components.dialog.updater.MajorUpdateWarningDialog
 import app.n_zik.android.updater.services.Updater
 import app.it.fast4x.rimusic.utils.lastVersionCodeKey
 import app.it.fast4x.rimusic.utils.lastBuildTypeKey

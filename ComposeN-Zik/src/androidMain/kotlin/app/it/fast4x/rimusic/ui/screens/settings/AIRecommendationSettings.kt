@@ -65,7 +65,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import app.n_zik.android.components.tab.Search
-import app.n_zik.android.components.dialog.QuickPicksContentSettingsDialog
+import app.n_zik.android.components.dialog.settings.QuickPicksContentSettingsDialog
 
 @Composable
 fun DefaultAIRecommendationSettings() {
@@ -598,6 +598,7 @@ fun AIRecommendationSettings(
 
     }
 }
+
 
 
 

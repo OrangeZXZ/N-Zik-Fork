@@ -67,7 +67,7 @@ import app.it.fast4x.rimusic.enums.NavRoutes
 import app.n_zik.android.colorPalette
 import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.typography
-import app.n_zik.android.components.playlist.NewPlaylistDialog
+import app.n_zik.android.components.dialog.playlist.NewPlaylistDialog
 import app.n_zik.android.components.menu.ListMenu
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.utils.semiBold

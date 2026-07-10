@@ -49,6 +49,7 @@ import kotlin.math.pow
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import app.n_zik.android.components.dialog.updater.NewUpdateAvailableDialog
 
 object Updater {
     var isCheckingForUpdate by mutableStateOf(false)

@@ -2,7 +2,7 @@ package app.it.fast4x.rimusic.ui.components.themed
 
 import androidx.compose.runtime.Composable
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Dialog
-import app.n_zik.android.components.settings.SettingsInputDialog
+import app.n_zik.android.components.dialog.settings.SettingsInputDialog
 
 interface IDialog: Dialog {
 

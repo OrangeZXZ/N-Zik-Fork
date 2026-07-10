@@ -50,7 +50,7 @@ import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
 import app.n_zik.android.uiRoundnessShape
 import app.it.fast4x.rimusic.enums.MenuStyle
-import app.n_zik.android.components.playlist.NewPlaylistDialog
+import app.n_zik.android.components.dialog.playlist.NewPlaylistDialog
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.PlaylistSortBy
 import app.it.fast4x.rimusic.enums.SortOrder

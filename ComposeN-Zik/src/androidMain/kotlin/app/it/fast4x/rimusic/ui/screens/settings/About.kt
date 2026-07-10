@@ -50,7 +50,7 @@ import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.*
 import app.kreate.android.me.knighthat.utils.Repository
 import app.n_zik.android.updater.services.Updater
-import app.n_zik.android.updater.ui.NewUpdateAvailableDialog
+import app.n_zik.android.components.dialog.updater.NewUpdateAvailableDialog
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import app.it.fast4x.rimusic.ui.styling.ModernBlackColorPalette

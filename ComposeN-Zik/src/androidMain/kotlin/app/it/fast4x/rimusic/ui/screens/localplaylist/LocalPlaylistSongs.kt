@@ -169,11 +169,11 @@ import app.n_zik.android.components.ResetCache
 import app.n_zik.android.components.SongItem
 import app.n_zik.android.components.playlist.PinPlaylist
 import app.n_zik.android.components.playlist.PlaylistSongsSort
-import app.n_zik.android.components.playlist.RenamePlaylistDialog
+import app.n_zik.android.components.dialog.playlist.RenamePlaylistDialog
 import app.n_zik.android.components.playlist.Reposition
-import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
-import app.n_zik.android.components.tab.DownloadAllSongsDialog
-import app.n_zik.android.components.tab.ExportSongsToCSVDialog
+import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
+import app.n_zik.android.components.dialog.export.ExportSongsToCSVDialog
 import app.n_zik.android.components.tab.ItemSelector
 import app.n_zik.android.components.tab.LikeComponent
 import app.n_zik.android.components.tab.Locator
@@ -191,7 +191,7 @@ import app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import app.it.fast4x.rimusic.ui.components.themed.DefaultDialog
 import app.it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import app.it.fast4x.rimusic.ui.components.themed.InputTextField
-import app.n_zik.android.components.dialog.MatchResultsDialog
+import app.n_zik.android.components.dialog.search.MatchResultsDialog
 import app.n_zik.android.components.tab.ImportPlaylistsMenu
 import app.n_zik.android.components.tab.ImportSongsFromCSV
 import app.n_zik.android.components.tab.ImportSongsFromServices
@@ -1415,6 +1415,8 @@ fun LocalPlaylistSongs(
             )
     }
 }
+
+
 
 
 

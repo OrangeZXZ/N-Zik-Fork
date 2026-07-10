@@ -57,8 +57,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.forcePlayAtIndex
-import app.n_zik.android.components.artist.ChangeArtistTitleDialog
-import app.n_zik.android.components.artist.ChangeArtistCoverDialog
+import app.n_zik.android.components.dialog.artist.ChangeArtistTitleDialog
+import app.n_zik.android.components.dialog.artist.ChangeArtistCoverDialog
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.LocalPlayerServiceBinder
 

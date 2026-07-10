@@ -55,7 +55,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.rememberNavController
 import app.n_zik.android.R
 import io.ktor.http.Url
-import app.n_zik.android.components.dialog.RestartAppDialog
+import app.n_zik.android.components.dialog.common.RestartAppDialog
 import app.it.fast4x.compose.persist.persistList
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.utils.parseCookieString
@@ -112,7 +112,7 @@ import timber.log.Timber
 import androidx.compose.material3.Text
 import androidx.compose.ui.res.painterResource
 import app.n_zik.android.typography
-import app.n_zik.android.components.settings.SettingsInputDialog
+import app.n_zik.android.components.dialog.settings.SettingsInputDialog
 
 @Composable
 fun SettingIcon(@DrawableRes icon: Int) {
@@ -859,6 +859,7 @@ fun isYouTubeLoggedIn(): Boolean {
     val isLoggedIn = cookie?.let { parseCookieString(it) }?.contains("SAPISID") == true
     return isLoggedIn
 }
+
 
 
 

@@ -128,7 +128,7 @@ import app.n_zik.android.appContext
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import app.kreate.android.me.knighthat.utils.Toaster
-import app.n_zik.android.components.dialog.RetrySyncDialog
+import app.n_zik.android.components.dialog.common.RetrySyncDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -560,6 +560,7 @@ fun HomeAlbums(
         }
     }
 }
+
 
 
 

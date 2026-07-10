@@ -42,11 +42,11 @@ import app.it.fast4x.rimusic.utils.*
 import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
 import app.kreate.android.me.knighthat.utils.Toaster
-import app.n_zik.android.components.album.ChangeAlbumTitleDialog
-import app.n_zik.android.components.album.ChangeAlbumAuthorsDialog
-import app.n_zik.android.components.album.ChangeAlbumCoverDialog
-import app.n_zik.android.components.tab.DownloadAllSongsDialog
-import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.dialog.album.ChangeAlbumTitleDialog
+import app.n_zik.android.components.dialog.album.ChangeAlbumAuthorsDialog
+import app.n_zik.android.components.dialog.album.ChangeAlbumCoverDialog
+import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
+import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
 import app.it.fast4x.rimusic.models.Album
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.R

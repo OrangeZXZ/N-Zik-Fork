@@ -44,7 +44,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
-import app.n_zik.android.components.player.EditLyricsDialog
+import app.n_zik.android.components.dialog.song.EditLyricsDialog
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.thumbnailShape
 import app.n_zik.android.uiRoundnessShape
@@ -53,7 +53,7 @@ import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.launch
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import app.n_zik.android.components.menu.lyrics.LyricsSettingsMenu
-import app.n_zik.android.components.player.lyrics.utils.ShowOffsetDialog
+import app.n_zik.android.components.dialog.player.ShowOffsetDialog
 import dev.rebelonion.translator.Translator
 
 

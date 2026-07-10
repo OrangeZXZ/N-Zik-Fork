@@ -23,7 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import app.n_zik.android.components.ImportFromFile
-import app.n_zik.android.components.dialog.RestartAppDialog
+import app.n_zik.android.components.dialog.common.RestartAppDialog
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -159,5 +159,6 @@ class ImportMigration private constructor(
         "application/zip"
     )
 }
+
 
 

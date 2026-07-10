@@ -27,7 +27,7 @@ import app.it.fast4x.rimusic.utils.blurStrengthKey
 import app.it.fast4x.rimusic.utils.playerBackdropKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.rotatingAlbumCoverKey
-import app.n_zik.android.components.dialog.Dialog
+import app.n_zik.android.components.dialog.common.Dialog
 
 class BlurAdjuster private constructor(
     activeState: MutableState<Boolean>,

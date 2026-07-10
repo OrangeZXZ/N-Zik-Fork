@@ -136,9 +136,9 @@ import app.it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import app.it.fast4x.rimusic.utils.volumeNormalizationKey
 import app.it.fast4x.rimusic.utils.volumeBoostLevelKey
 import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
-import app.n_zik.android.components.settings.SettingsInputDialog
+import app.n_zik.android.components.dialog.settings.SettingsInputDialog
 
-import app.n_zik.android.components.dialog.RestartAppDialog
+import app.n_zik.android.components.dialog.common.RestartAppDialog
 import app.n_zik.android.components.tab.Search
 
 
@@ -1266,6 +1266,7 @@ fun GeneralSettings(
 
     }
 }   
+
 
 
 

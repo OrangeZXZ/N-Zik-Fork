@@ -56,13 +56,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import app.n_zik.android.components.export.ExportDatabaseDialog
-import app.n_zik.android.components.export.ExportSettingsDialog
+import app.n_zik.android.components.dialog.export.ExportDatabaseDialog
+import app.n_zik.android.components.dialog.export.ExportSettingsDialog
 import app.n_zik.android.components.import.ImportDatabase
 import app.n_zik.android.components.import.ImportMigration
 import app.n_zik.android.components.import.ImportSettings
-import app.n_zik.android.components.dialog.ExportBackupDialog
-import app.n_zik.android.components.dialog.ImportBackupDialog
+import app.n_zik.android.components.dialog.export.ExportBackupDialog
+import app.n_zik.android.components.dialog.backup.ImportBackupDialog
 import app.kreate.android.me.knighthat.utils.Toaster
 
 
@@ -559,6 +559,8 @@ fun DataSettings() {
 
     }
 }
+
+
 
 
 

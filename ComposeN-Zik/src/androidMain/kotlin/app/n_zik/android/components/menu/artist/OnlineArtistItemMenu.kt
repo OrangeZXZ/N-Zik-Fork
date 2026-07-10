@@ -44,8 +44,8 @@ import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
-import app.n_zik.android.components.artist.ChangeArtistTitleDialog
-import app.n_zik.android.components.artist.ChangeArtistCoverDialog
+import app.n_zik.android.components.dialog.artist.ChangeArtistTitleDialog
+import app.n_zik.android.components.dialog.artist.ChangeArtistCoverDialog
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.uiRoundnessShape

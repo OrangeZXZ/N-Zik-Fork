@@ -37,6 +37,7 @@ import app.n_zik.android.R
 import app.n_zik.android.appContext
 import app.n_zik.android.colorPalette
 import app.n_zik.android.components.tab.*
+import app.n_zik.android.components.dialog.export.ExportSongsToCSVDialog
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.typography
 import app.n_zik.android.utils.getAlbumVersionFromVideoGlobal
@@ -47,8 +48,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
 import app.it.fast4x.rimusic.ui.components.themed.InProgressDialog
-import app.n_zik.android.components.dialog.MatchResultsDialog
-import app.n_zik.android.components.dialog.YouTubeLinkImportDialog
+import app.n_zik.android.components.dialog.search.MatchResultsDialog
+import app.n_zik.android.components.dialog.media.YouTubeLinkImportDialog
 import app.n_zik.android.components.tab.ImportPlaylistsMenu
 import app.n_zik.android.components.tab.ImportSongsFromServices
 import app.n_zik.android.core.database.ImportSong
@@ -478,3 +479,5 @@ fun HomeSongsScreen(navController: NavController ) {
             )
     }
 }
+
+

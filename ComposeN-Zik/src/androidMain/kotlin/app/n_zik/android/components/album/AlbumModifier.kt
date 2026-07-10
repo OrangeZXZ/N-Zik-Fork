@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import app.n_zik.android.core.database.Database
-import app.n_zik.android.components.RenameDialog
+import app.n_zik.android.components.dialog.song.RenameDialog
 import app.n_zik.android.core.database.AlbumTable
 
 class AlbumModifier private constructor(

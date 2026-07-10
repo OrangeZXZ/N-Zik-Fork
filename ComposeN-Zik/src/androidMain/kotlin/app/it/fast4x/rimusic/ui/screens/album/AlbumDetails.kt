@@ -114,8 +114,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.withContext
 import app.n_zik.android.components.SongItem
 import app.n_zik.android.components.album.AlbumModifier
-import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
-import app.n_zik.android.components.tab.DownloadAllSongsDialog
+import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
 import app.n_zik.android.components.tab.ItemSelector
 import app.n_zik.android.components.tab.Locator
 import app.n_zik.android.components.tab.Radio

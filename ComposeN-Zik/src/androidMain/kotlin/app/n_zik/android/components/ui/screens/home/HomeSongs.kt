@@ -57,6 +57,9 @@ import app.n_zik.android.components.SongItem
 import app.n_zik.android.components.Sort
 import app.n_zik.android.components.song.PeriodSelector
 import app.n_zik.android.components.tab.*
+import app.n_zik.android.components.dialog.export.ExportSongsToCSVDialog
+import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
+import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.core.database.ext.FormatWithSong
 import app.n_zik.android.download.utils.MyDownloadHelper

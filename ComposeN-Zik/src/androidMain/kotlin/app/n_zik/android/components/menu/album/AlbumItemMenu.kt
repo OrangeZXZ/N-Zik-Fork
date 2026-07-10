@@ -86,11 +86,11 @@ import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey
-import app.n_zik.android.components.tab.DownloadAllSongsDialog
-import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
-import app.n_zik.android.components.album.ChangeAlbumTitleDialog
-import app.n_zik.android.components.album.ChangeAlbumAuthorsDialog
-import app.n_zik.android.components.album.ChangeAlbumCoverDialog
+import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
+import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.dialog.album.ChangeAlbumTitleDialog
+import app.n_zik.android.components.dialog.album.ChangeAlbumAuthorsDialog
+import app.n_zik.android.components.dialog.album.ChangeAlbumCoverDialog
 import app.n_zik.android.components.song.GoToArtist
 
 @UnstableApi

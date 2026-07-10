@@ -39,7 +39,7 @@ import app.it.fast4x.rimusic.models.Playlist
 import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import app.n_zik.android.components.playlist.NewPlaylistDialog
+import app.n_zik.android.components.dialog.playlist.NewPlaylistDialog
 import app.it.fast4x.rimusic.ui.items.PlaylistItem
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon

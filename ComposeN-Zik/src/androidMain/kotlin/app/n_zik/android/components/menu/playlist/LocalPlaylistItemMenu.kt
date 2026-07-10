@@ -40,7 +40,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
-import app.n_zik.android.components.playlist.RenamePlaylistDialog
+import app.n_zik.android.components.dialog.playlist.RenamePlaylistDialog
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.thumbnailShape
 import app.n_zik.android.typography
@@ -55,8 +55,8 @@ import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.ui.components.themed.Enqueue
 import app.it.fast4x.rimusic.ui.components.themed.PlayNext
-import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
-import app.n_zik.android.components.tab.DownloadAllSongsDialog
+import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
 import app.n_zik.android.core.coil.ImageCacheFactory
 
 @UnstableApi

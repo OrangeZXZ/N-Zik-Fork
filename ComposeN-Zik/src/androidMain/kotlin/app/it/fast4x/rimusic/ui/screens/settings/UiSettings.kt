@@ -207,8 +207,8 @@ import app.it.fast4x.rimusic.utils.useSystemFontKey
 import app.it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import app.it.fast4x.rimusic.utils.visualizerEnabledKey
 import app.it.fast4x.rimusic.utils.volumeNormalizationKey
-import app.n_zik.android.components.dialog.RestartAppDialog
-import app.n_zik.android.components.dialog.LibraryVisibilitySettingsDialog
+import app.n_zik.android.components.dialog.common.RestartAppDialog
+import app.n_zik.android.components.dialog.settings.LibraryVisibilitySettingsDialog
 import app.n_zik.android.components.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.it.fast4x.rimusic.enums.SearchDisplayOrder
@@ -1600,6 +1600,8 @@ fun UiSettings(
         )
     }
 }
+
+
 
 
 

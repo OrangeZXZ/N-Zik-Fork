@@ -46,7 +46,7 @@ import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import kotlinx.coroutines.launch
-import app.n_zik.android.components.dialog.Dialog
+import app.n_zik.android.components.dialog.common.Dialog
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.hours

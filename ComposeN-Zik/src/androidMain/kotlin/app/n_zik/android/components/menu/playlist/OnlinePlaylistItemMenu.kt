@@ -55,9 +55,9 @@ import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.Playlist
 import app.it.fast4x.rimusic.ui.components.themed.Enqueue
 import app.it.fast4x.rimusic.ui.components.themed.PlayNext
-import app.n_zik.android.components.playlist.ImportPlaylistDialog
-import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
-import app.n_zik.android.components.tab.DownloadAllSongsDialog
+import app.n_zik.android.components.dialog.playlist.ImportPlaylistDialog
+import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.database.Database
 

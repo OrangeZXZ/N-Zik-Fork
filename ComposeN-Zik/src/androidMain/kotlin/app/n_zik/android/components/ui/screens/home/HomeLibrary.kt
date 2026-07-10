@@ -108,7 +108,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.utils.PropUtils
 import app.n_zik.android.components.Sort
-import app.n_zik.android.components.playlist.NewPlaylistDialog
+import app.n_zik.android.components.dialog.playlist.NewPlaylistDialog
 import app.n_zik.android.components.tab.ImportSongsFromCSV
 import app.n_zik.android.components.tab.Search
 import app.n_zik.android.components.tab.SongShuffler
@@ -123,13 +123,13 @@ import it.fast4x.innertube.Innertube
 import app.it.fast4x.rimusic.utils.asSong
 import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.utils.preferences
-import app.n_zik.android.components.dialog.YouTubeLinkImportDialog
+import app.n_zik.android.components.dialog.media.YouTubeLinkImportDialog
 import app.n_zik.android.components.tab.ImportPlaylistsMenu
 import app.n_zik.android.components.tab.ImportSongsFromServices
 import app.n_zik.android.typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
-import app.n_zik.android.components.dialog.RetrySyncDialog
+import app.n_zik.android.components.dialog.common.RetrySyncDialog
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -571,6 +571,8 @@ fun HomeLibrary(
         }
     }
 }
+
+
 
 
 

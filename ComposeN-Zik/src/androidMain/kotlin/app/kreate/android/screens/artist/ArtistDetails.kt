@@ -116,8 +116,8 @@ import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
 import app.n_zik.android.components.SongItem
 import app.n_zik.android.components.artist.FollowButton
-import app.n_zik.android.components.tab.DeleteAllDownloadedSongsDialog
-import app.n_zik.android.components.tab.DownloadAllSongsDialog
+import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
 import app.n_zik.android.components.tab.ItemSelector
 import app.n_zik.android.components.tab.Radio
 import app.n_zik.android.components.tab.SongShuffler

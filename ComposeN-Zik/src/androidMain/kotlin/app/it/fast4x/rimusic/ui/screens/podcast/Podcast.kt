@@ -94,7 +94,7 @@ import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithSc
 import app.it.fast4x.rimusic.ui.components.themed.FontSizeRange
 import app.it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
-import app.n_zik.android.components.playlist.ImportPlaylistDialog
+import app.n_zik.android.components.dialog.playlist.ImportPlaylistDialog
 import app.it.fast4x.rimusic.ui.components.themed.LayoutWithAdaptiveThumbnail
 import app.it.fast4x.rimusic.ui.components.themed.PlaylistsItemMenu
 import app.it.fast4x.rimusic.ui.components.themed.adaptiveThumbnailContent

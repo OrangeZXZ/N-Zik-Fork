@@ -85,9 +85,9 @@ import kotlinx.coroutines.launch
 import app.n_zik.android.components.SongItem
 import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
-import app.n_zik.android.components.song.ChangeCoverDialog
-import app.n_zik.android.components.song.RenameSongDialog
-import app.n_zik.android.components.song.ChangeAuthorDialog
+import app.n_zik.android.components.dialog.song.ChangeCoverDialog
+import app.n_zik.android.components.dialog.song.RenameSongDialog
+import app.n_zik.android.components.dialog.song.ChangeAuthorDialog
 import app.n_zik.android.components.tab.Radio
 import app.kreate.android.me.knighthat.sync.YouTubeSync
 import timber.log.Timber

@@ -13,7 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import app.n_zik.android.components.ImportFromFile
-import app.n_zik.android.components.dialog.RestartAppDialog
+import app.n_zik.android.components.dialog.common.RestartAppDialog
 import timber.log.Timber
 import java.io.InputStream
 
@@ -78,3 +78,4 @@ class ImportSettings private constructor(
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 }
+

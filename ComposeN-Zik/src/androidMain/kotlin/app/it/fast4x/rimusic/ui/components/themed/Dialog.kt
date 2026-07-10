@@ -186,7 +186,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import app.n_zik.android.uiRoundnessShape
-import app.n_zik.android.components.settings.SettingsInputDialog
+import app.n_zik.android.components.dialog.settings.SettingsInputDialog
 
 
 @Composable
