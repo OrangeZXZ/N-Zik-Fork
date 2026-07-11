@@ -596,6 +596,8 @@ object YtMusic {
             }
         }
 
+        println("getAlbumSongs: Loaded ${songs.size} songs for playlist $playlistId")
+        songs
     }
 
 }
