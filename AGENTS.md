@@ -48,11 +48,30 @@
 
 User suggestions are input to the workflow, NOT a shortcut to skip it.
 
+**Enforcement — before starting the workflow:**
+
+1. Read the skill's SKILL.md file — **EVERY line, NOT just step headers**
+2. Count the total number of steps in the `<workflow>` section
+3. List all steps: "Steps: 1. X, 2. Y, 3. Z, ..."
+4. List all `<template-output>` tags per step (what to produce)
+5. List all `<energy-checkpoint>` tags (when to ask for breaks)
+6. List all checkpoint instructions (what options to present)
+7. Announce: "BMAD workflow has N steps. Starting step 1."
+
+**Enforcement — during the workflow:**
+
+- Before each action, announce: `[BMAD Step X/N: <step name>]`
+- Before moving to next step, ask user: "Step X complete. Proceed to step Y?"
+- Before implementing, verify: "All N steps complete. Ready to implement?"
+- If you cannot name the current step → HALT, you are lost
+
 → See rules/WORKFLOW.md for full BMAD workflow enforcement
 
 ### IDE Selection — One at a Time
 
 When asking which IDE/tool the user is using, **ask ONE option at a time** using the question tool. Skill path depends on the IDE.
+
+**Order of IDE options:** OpenCode first, then Google Antigravity, then other preferred tools (Claude Code, Cursor, GitHub Copilot, Codex).
 
 → See rules/BMAD-TOOLS.md for IDE skill directories
 
