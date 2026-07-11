@@ -64,10 +64,12 @@ NEVER write code or create implementation plans without completing this step.
 
 **BMAD Activation Sequence (MANDATORY for every skill):**
 
+**In this project:** `_bmad/` is at `../_bmad/` relative to `N-Zik/` (workspace root).
+
 1. Run `resolve_customization.py` to get merged config:
 
    ```
-   python3 {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --key agent
+   python3 ../_bmad/scripts/resolve_customization.py --skill {skill-root} --key agent
    ```
 
    (or `--key workflow` for workflow skills)
@@ -81,7 +83,7 @@ NEVER write code or create implementation plans without completing this step.
 
 4. Load `persistent_facts` — file refs loaded as context, literal text kept verbatim
 
-5. Load config from `_bmad/bmm/config.yaml` (user_name, languages, paths)
+5. Load config from the skill's module config (e.g., `_bmad/cis/config.yaml` for CIS skills, `_bmad/bmm/config.yaml` for BMM skills) — check the skill's SKILL.md for the correct path
 
 6. Adopt persona (role, identity, communication_style, principles)
 

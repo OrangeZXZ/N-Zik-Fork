@@ -15,6 +15,10 @@ Before creating/writing to `_bmad/` or `_bmad-output/`, verify where BMAD is ins
 3. NEVER create new `_bmad/` folder if one already exists elsewhere
 4. Use existing installation path for all operations
 
+**In this project:** `_bmad/` is at the workspace root `D:\Autres\Projet Android\NZik-Folder\_bmad` — one directory ABOVE `N-Zik/`. Use `../_bmad/` relative to `N-Zik/`.
+
+**`{project-root}` resolves to:** `D:\Autres\Projet Android\NZik-Folder\` (the workspace root, NOT `N-Zik/`).
+
 ---
 
 ## Installation Structure
