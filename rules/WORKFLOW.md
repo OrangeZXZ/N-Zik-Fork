@@ -104,10 +104,12 @@ NEVER write code or create implementation plans without completing this step.
 **Spec Production (MANDATORY):**
 
 - If the skill has a `template.md` → you MUST produce a spec document using that template
-- After every `<template-output>`, save the artifact to `{default_output_file}`
+- After every `<template-output>`, **write the artifact to disk** at `{default_output_file}` (use the Write tool, NOT just display in chat)
+- `{default_output_file}` = `{output_folder}/problem-solution-{date}.md` (resolved from `_bmad/bmm/config.yaml`)
 - Show checkpoint separator, display generated content, present options `[a] Advanced Elicitation`, `[c] Continue`, `[p] Party-Mode`, `[y] YOLO`
 - Wait for user response before proceeding to next step
 - NEVER skip spec production — the spec IS the workflow output
+- NEVER just display the spec in chat — it MUST be saved to a file
 
 **on_complete hook (MANDATORY):**
 
