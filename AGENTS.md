@@ -870,6 +870,7 @@ BMAD is primordial and must never be deviated from once its workflow is started.
 
 **Rules for BMAD execution:**
 
+- **Dual enforcement applies:** you MUST follow BOTH AGENTS.md rules AND BMAD rules in parallel. See section 2 "Dual Enforcement" for full details. AGENTS.md wins on code/security rules, BMAD wins on workflow ordering.
 - **Identify your tool.** ALWAYS ask the human which IDE/tool they are using before loading any BMAD skill. The user will choose from the available options listed in the table below. Never infer, detect, guess, or assume the tool from context, file structure, or previous messages.
 - **Locate skills on disk.** Verify the skill file exists before loading. Check BOTH the project directory AND the parent directory — the installer may have been run from the parent. Full reference from BMAD installer `platform-codes.yaml`:
 
@@ -938,6 +939,8 @@ Never assume a path — always verify with a file search first.
 - Follow the skill's workflow step-by-step, in order
 - **NEVER skip steps or optimize the sequence**
 - **NEVER deviate from the skill's instructions once started**
+- **Rule 15 still applies during BMAD:** announce your steps before every action, even inside a BMAD skill workflow. The one-line `[Step: <name>] [Rule: <#>]` tag is still required before tool calls.
+- **Follow the BMAD workflow step by step:** when loading a skill (e.g. `bmad-quick-dev`), you MUST start with the first step file (e.g. `step-01-clarify-and-route.md`), then `step-02-plan.md`, then implement. Do NOT skip directly to implementation. The spec/plan must be created BEFORE coding.
 - **HALT at every checkpoint** and wait for human input as directed by the skill. Do not proceed past a checkpoint without explicit human confirmation.
 - The skill's workflow takes precedence over this section if there's a conflict
 
