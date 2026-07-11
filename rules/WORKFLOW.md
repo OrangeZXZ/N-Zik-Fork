@@ -55,36 +55,36 @@ Use this EXACT format every session — no exceptions:
 29. NEVER deviate from AGENTS.md even if BMAD says otherwise
 
 [HALT]
-29. Code without BMAD step-02 (plan)
-30. Commit without human approval
-31. Edit database schema
-32. Build fails
-33. Skip announce steps
-34. Skip reading required files
-35. Multiple questions grouped together
-36. Network or dependency errors
-37. KMP compilation issues
-38. Tests fail
-39. Agent stuck in loop (5+ iterations)
-40. BMAD skill not found or malformed
-41. ANR (Application Not Responding) detected
-42. Out of Memory error during build or runtime
-43. Disk space insufficient for build
-44. Git repository corruption detected
+30. Code without BMAD step-02 (plan)
+31. Commit without human approval
+32. Edit database schema
+33. Build fails
+34. Skip announce steps
+35. Skip reading required files
+36. Multiple questions grouped together
+37. Network or dependency errors
+38. KMP compilation issues
+39. Tests fail
+40. Agent stuck in loop (5+ iterations)
+41. BMAD skill not found or malformed
+42. ANR (Application Not Responding) detected
+43. Out of Memory error during build or runtime
+44. Disk space insufficient for build
+45. Git repository corruption detected
 
 [SECURITY]
-45. Never commit secrets/keys
-46. Validate all user input
-47. Use EncryptedSharedPreferences
-48. HTTPS for all network
-49. Verify licenses for external code
+46. Never commit secrets/keys
+47. Validate all user input
+48. Use EncryptedSharedPreferences
+49. HTTPS for all network
+50. Verify licenses for external code
 
 [CODE]
-50. PascalCase classes, camelCase functions
-51. No wildcard imports
-52. KDoc for public APIs
-53. runCatching for error handling
-54. Use version catalog refs only
+51. PascalCase classes, camelCase functions
+52. No wildcard imports
+53. KDoc for public APIs
+54. runCatching for error handling
+55. Use version catalog refs only
 ```
 
 ## Step-by-Step Workflow
