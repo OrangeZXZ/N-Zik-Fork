@@ -12,8 +12,10 @@ import app.n_zik.android.core.database.Database
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import app.n_zik.android.components.ImportFromFile
 import app.n_zik.android.components.dialog.common.RestartAppDialog
+import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.io.FileOutputStream
 
@@ -23,7 +25,7 @@ class ImportDatabase private constructor(
 
     companion object {
         @Composable
-        operator fun invoke( context: Context ): ImportDatabase =
+        operator fun invoke( context: Context, onImportComplete: (() -> Unit)? = null ): ImportDatabase =
             ImportDatabase(
                 rememberLauncherForActivityResult(
                     ActivityResultContracts.OpenDocument()
@@ -51,9 +53,18 @@ class ImportDatabase private constructor(
                                        }
                                    } ?: Timber.tag("ImportDatabase").w("Failed to open input stream")
 
-                            RestartAppDialog.showDialog()
+                            withContext(Dispatchers.Main) {
+                                if (onImportComplete != null) {
+                                    onImportComplete()
+                                } else {
+                                    RestartAppDialog.showDialog()
+                                }
+                            }
                         } catch (e: Exception) {
                             Timber.tag("ImportDatabase").e(e, "Import failed")
+                            withContext(Dispatchers.Main) {
+                                Toaster.e("Import failed: ${e.message}")
+                            }
                         }
                     }
                 }

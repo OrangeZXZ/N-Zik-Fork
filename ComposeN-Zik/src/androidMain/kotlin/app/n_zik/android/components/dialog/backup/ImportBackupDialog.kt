@@ -38,6 +38,7 @@ import app.n_zik.android.components.import.ImportDatabase
 import app.n_zik.android.components.import.ImportSettings
 import timber.log.Timber
 import app.n_zik.android.components.dialog.common.Dialog
+import app.n_zik.android.components.dialog.common.RestartAppDialog
 
 object ImportBackupDialog : Dialog {
 
@@ -50,10 +51,29 @@ object ImportBackupDialog : Dialog {
     @Composable
     override fun DialogBody() {
         val context = LocalContext.current
-        val importDatabase = ImportDatabase(context)
-        val importSettings = ImportSettings(context)
-
         var selectedOption by remember { mutableIntStateOf(0) }
+        var isBothMode by remember { mutableStateOf(false) }
+
+        // Settings import callback - called after settings import completes
+        val importSettings = ImportSettings(context) {
+            Timber.tag("ImportBackupDialog").d("Settings import complete, isBothMode: $isBothMode")
+            hideDialog()
+            RestartAppDialog.showDialog()
+        }
+
+        // Database import callback - called after database import completes
+        val importDatabase = ImportDatabase(context) {
+            Timber.tag("ImportBackupDialog").d("Database import complete, isBothMode: $isBothMode")
+            if (isBothMode) {
+                // If both mode, launch settings import next
+                Timber.tag("ImportBackupDialog").d("Launching settings import (both mode)...")
+                importSettings.onShortClick()
+            } else {
+                // If database only, show restart dialog
+                hideDialog()
+                RestartAppDialog.showDialog()
+            }
+        }
 
         val databaseLabel = stringResource(R.string.database)
         val databaseDescription = stringResource(R.string.import_database_description)
@@ -121,17 +141,16 @@ object ImportBackupDialog : Dialog {
                     Timber.tag("ImportBackupDialog").d("Selected option: $selectedOption")
                     when (selectedOption) {
                         0 -> {
-                            Timber.tag("ImportBackupDialog").d("Importing database...")
+                            isBothMode = false
                             importDatabase.onShortClick()
                         }
                         1 -> {
-                            Timber.tag("ImportBackupDialog").d("Importing settings...")
+                            isBothMode = false
                             importSettings.onShortClick()
                         }
                         2 -> {
-                            Timber.tag("ImportBackupDialog").d("Importing both...")
+                            isBothMode = true
                             importDatabase.onShortClick()
-                            importSettings.onShortClick()
                         }
                     }
                 },

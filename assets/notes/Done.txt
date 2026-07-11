@@ -1,3 +1,11 @@
+## 2026-07-11 - Import Dialog Bug Fix
+- Modified: app/n_zik/android/components/import/ImportDatabase.kt
+- Modified: app/n_zik/android/components/import/ImportSettings.kt
+- Modified: app/n_zik/android/components/dialog/backup/ImportBackupDialog.kt
+- Fixed: RestartAppDialog now shows on top of UI after import (threading fix)
+- Fixed: "Both" import mode now chains DB → Settings correctly
+- Added: Error notification (Toaster.e()) when import fails
+
 ## Stream Client Settings & Quality Improvements
 - Added Preferred Stream Client dialog (Android VR / Web Remix) in NetworkSettings
 - Added stream client descriptions with ToggleListDialog support
