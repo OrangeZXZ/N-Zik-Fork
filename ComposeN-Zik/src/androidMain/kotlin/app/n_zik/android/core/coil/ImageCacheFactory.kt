@@ -667,13 +667,20 @@ object ImageCacheFactory {
         var lastError: String? = null
         
         while (currentUrl != null) {
+            val isLocalFile = currentUrl.startsWith("file://") || currentUrl.startsWith("/")
+            val maxSize = if (isLocalFile) 1000 else Int.MAX_VALUE
             
-            val request = ImageRequest.Builder(appContext())
+            val requestBuilder = ImageRequest.Builder(appContext())
                 .data(currentUrl)
                 .diskCacheKey(generateCacheKeySync(currentUrl, decision.quality))
                 .memoryCacheKey(generateCacheKeySync(currentUrl, decision.quality))
                 .allowHardware(allowHardware)
-                .build()
+            
+            if (isLocalFile) {
+                requestBuilder.size(maxSize, maxSize)
+            }
+            
+            val request = requestBuilder.build()
                 
             val result = LOADER.execute(request)
             if (result.image != null) {

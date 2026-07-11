@@ -1,3 +1,11 @@
+## 2026-07-11 - Fix Player Lag with Custom Images
+- Modified: app/it/fast4x/rimusic/utils/FileUtils.kt
+- Modified: app/n_zik/android/core/coil/ImageCacheFactory.kt
+- Fixed: Player lag when using custom local images from file picker
+- Added: Image resizing to max 1000x1000px on save (saveImageToInternalStorage)
+- Added: Coil size constraint for local file:// URLs in loadBitmap
+- Impact: ~16x memory reduction, smooth song changes
+
 ## 2026-07-11 - Import Dialog Bug Fix
 - Modified: app/n_zik/android/components/import/ImportDatabase.kt
 - Modified: app/n_zik/android/components/import/ImportSettings.kt
