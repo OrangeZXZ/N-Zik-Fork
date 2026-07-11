@@ -19,6 +19,8 @@ When starting a new session, follow this exact sequence:
 5. **Ask the user** using the question tool with multiple choices: "Bug, feature, or something else?"
 6. **Wait for user input**
 
+**CRITICAL: ALL questions to the user MUST use the question tool. NEVER ask questions in plain text. The question tool is the ONLY way to interact with the user for choices/decisions.**
+
 ---
 
 ## 0. About NZik
@@ -1145,6 +1147,8 @@ onDismiss = { showSheet = false } // Brittle: causes sudden disappearance
 **This is not a one-time acknowledgment. Compliance is required for the ENTIRE session, on EVERY single action, not just at the start. A one-time "I have read and understood" message is NOT sufficient and does not count as compliance if the rules are then forgotten or skipped later. See Rule 15 for the mandatory per-action reminder format. If you catch yourself about to skip a step "because it's obvious" or "to save time," that is exactly the moment to stop and re-check this file don't forgot any rule, never do any exception.**
 
 **When asking multiple questions**: Each question must be a separate prompt (one question tool call per question), never group them together.
+
+**CRITICAL: ALL questions to the user MUST use the question tool. NEVER ask questions in plain text. The question tool is the ONLY way to interact with the user for choices/decisions.**
 
 When starting a new session, follow this exact sequence:
 
