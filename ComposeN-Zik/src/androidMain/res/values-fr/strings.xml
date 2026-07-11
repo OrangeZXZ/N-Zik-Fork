@@ -15,7 +15,7 @@
   <string name="remove_from_queue">Supprimer de la file d\'attente</string>
   <string name="remove_from_playlist">Supprimer de la playlist </string>
   <string name="hide">Cacher</string>
-  <string name="hide_from_quick_picks">Cacher de la \"Sélection Rapide\"</string>
+  <string name="hide_from_quick_picks">Masquer de la « Sélection Rapide »</string>
   <string name="related_albums">Albums Associés</string>
   <string name="similar_artists">Artistes Similaires</string>
   <string name="playlists_you_might_like">Playlists que vous pourriez aimer</string>
@@ -96,8 +96,8 @@
   <string name="image_cache">CACHE D\'IMAGE</string>
   <string name="max_size">Taille maximale</string>
   <string name="database">Base de données</string>
-  <string name="reset_quick_picks">Réinitialiser la sélection rapide</string>
-  <string name="quick_picks_are_cleared">La sélection rapide a été effacée avec succès</string>
+  <string name="reset_quick_picks">Réinitialiser la « Sélection Rapide »</string>
+  <string name="quick_picks_are_cleared">La « Sélection Rapide » a été effacée avec succès</string>
   <string name="backup">SAUVEGARDE</string>
   <string name="personal_preference">Les préférences personnelles (c.-à-d. le mode du thème) et le cache sont exclus.</string>
   <string name="backup_1">Sauvegarde</string>
@@ -164,7 +164,7 @@
   <string name="error_the_returned_video_id_doesn_t_match_the_requested_one">L\'identifiant vidéo retourné ne correspond pas à celui demandé</string>
   <string name="error_an_unknown_playback_error_has_occurred">Une erreur de lecture inconnue s\'est produite, si le problème persiste signalez le problème</string>
   <string name="tips">Recommandations</string>
-  <string name="is_min_list_time_for_tips_or_quick_pics">C\'est la durée d\'écoute minimale pour inclure le titre comme une suggestion possible pour la sélection rapide et les recommandations</string>
+  <string name="is_min_list_time_for_tips_or_quick_pics">Durée minimale de lecture d\'un morceau pour qu\'il soit proposé dans la « Sélection Rapide »</string>
   <string name="min_listening_time">Durée d\'écoute minimale</string>
   <string name="player_thumbnail_size">Taille de la pochette d\'album</string>
   <string name="restarting_rimusic_is_required">Un redémarrage est requis</string>
@@ -484,7 +484,7 @@
   <string name="tab_miscellaneous">Divers</string>
   <string name="swipe_to_action">Action associée au balayage</string>
   <string name="activate_the_action_menu_by_swiping_the_song_left_or_right">Activer le menu d\'action en faisant glisser le titre vers la gauche ou la droite</string>
-  <string name="smart_recommendations">Recommandation intelligente</string>
+  <string name="smart_recommendations">Recommandations Intelligentes</string>
   <string name="player_collapsed_disable_swiping_down">Désactiver le balayage vers le bas</string>
   <string name="avoid_closing_the_player_cleaning_queue_by_swiping_down">Éviter de fermer le lecteur et de nettoyer la file en glissant vers le bas pendant qu\'il est minimisé</string>
   <string name="sort_date_liked">Date de mise en favoris</string>
@@ -571,7 +571,7 @@
   <string name="info_start_radio">Démarrer la radio</string>
   <string name="info_translation">Traduction</string>
   <string name="info_find_the_song_that_is_playing">Trouver le titre qui est en cours de lecture</string>
-  <string name="info_smart_recommendation">Recommandation intelligente</string>
+  <string name="info_smart_recommendation">Recommandations Intelligentes</string>
   <string name="info_clean_cached_congs">Nettoyer les titres en cache</string>
   <string name="info_pin_unpin_playlist">Épingler/Désépingler la playlist</string>
   <string name="info_lock_unlock_reorder_songs">Verrouiller / Déverrouiller la réorganisation des titres</string>
@@ -628,7 +628,7 @@
   <string name="vimusic_show_search_button_in_navigation_bar">Afficher le bouton de recherche dans la barre de navigation</string>
   <string name="vismusic_only_in_left_right_navigation_bar">Uniquement pour le mode ViMusic ui dans la barre de navigation gauche/droite</string>
   <string name="enable_monthly_playlists_creation">Activer la création de playlists mensuelles</string>
-  <string name="show_monthly_playlists_in_quick_picks">Afficher les playlists mensuelles dans « Sélection Rapide »</string>
+  <string name="show_monthly_playlists_in_quick_picks">Afficher les playlists mensuelles dans la « Sélection Rapide »</string>
   <string name="show_monthly_playlists_in_library">Afficher les playlists mensuelles dans la bibliothèque</string>
   <string name="info_no_singles_yet">Pas encore de morceaux</string>
   <string name="info_no_albums_yet">Pas encore d\'albums</string>
@@ -691,7 +691,7 @@
   <string name="exclude_songs_with_duration_limit">Exclure les titres avec une limite de durée</string>
   <string name="exclude_songs_with_duration_limit_description">Si activé, les titres dont la durée dépasse la limite seront exclues, se sera appliqué à la file d\'attente de Mon Top et pour la fille d\'attente</string>
   <string name="no_log_available">Pas de journaux disponibles</string>
-  <string name="enable_quick_picks_page">Activer la page de Sélection Rapide</string>
+  <string name="enable_quick_picks_page">Activer la page de « Sélection Rapide »</string>
   <string name="lang_vietnamese">Vietnamien (Tiếng Việt)</string>
   <string name="parental_control">Contrôle parental</string>
   <string name="info_prevent_play_songs_with_age_limitation">Empêcher la lecture de titres avec une limite d\'âge</string>
@@ -745,7 +745,7 @@
   <string name="piped_connected_to_s">Connecté à %s</string>
   <string name="fake_audio_bar">Fausse barre audio</string>
   <string name="copy_crash_log_to_clipboard">Copier le journal des plantages dans le presse-papiers</string>
-  <string name="title_backup_and_restore">Sauvegarde et restauration</string>
+  <string name="title_backup_and_restore">Sauvegarde et Restauration</string>
   <string name="message_excluded_s_songs">Titres %s exclus</string>
   <string name="show_thumbnail">Afficher la miniature</string>
   <string name="show_lyrics_thumbnail">Afficher la miniature pour les paroles</string>
@@ -889,7 +889,7 @@ Volume BAS : titre précédent</string>
   <string name="update">Mettre à jour</string>
   <string name="update_waveform">Mettre à jour la forme d\'onde</string>
   <string name="update_song">Voulez-vous vraiment recharger ce titre ? Son temps de lecture et son cache seront effacés. Cette action est irréversible.</string>
-  <string name="player_pause_listen_history_info">Cela ne sauvegarde pas les événements de lecture utilisés pour les statistiques, l\'historique et les suggestions dans la sélection rapide</string>
+  <string name="player_pause_listen_history_info">N\'enregistre pas les événements de lecture utilisés pour les statistiques, l\'historique et les suggestions dans la « Sélection Rapide »</string>
   <string name="vertical_widget">Widget vertical</string>
   <string name="horizontal_widget">Widget horizontal</string>
   <string name="social_reddit">Reddit</string>
@@ -1132,7 +1132,7 @@ Volume BAS : titre précédent</string>
   <string name="description_app_not_installed_by_apk">Si vous voyez ce message, cela signifie que votre version n\'a pas activé la mise à jour automatique, pls met à jour l\'application manuellement à partir de github</string>
   <string name="relative_listening_time">Temps d\'écoute relatif</string>
   <string name="added_to_dislikes">N\'a pas aimé %s</string>
-  <string name="removed_from_dislikes">Suppression de %s des « je n\'aime pas »</string>
+  <string name="removed_from_dislikes">Suppression de %s des « Je n\'aime pas »</string>
   <string name="artist_featured_on">En vedette sur</string>
   <string name="artist_fans_might_also_like">Les fans pourraient également aimer</string>
   <string name="update_changelogs">%s journaux des modifications</string>
@@ -1163,7 +1163,7 @@ Volume BAS : titre précédent</string>
   <string name="minified_title">MINIFIÉ</string>
   <string name="update_file_size">Taille du fichier : %s</string>
   <string name="beta_text">Ceci est toujours en bêta et peut contenir des bugs et des plantages</string>
-  <string name="quick_selection_type">Choisissez le nombre de titres recommandés à afficher dans « Sélection Rapide »</string>
+  <string name="quick_selection_type">Choisissez le nombre de titres recommandés à afficher dans la « Sélection Rapide »</string>
   <string name="quick_selection">%s titres recommandée</string>
   <string name="login_to_discord">Se connecter à Discord</string>
   <string name="discord_token_text_invalid">Votre jeton Discord n\'est pas valide, veuillez vous reconnecter</string>
@@ -1200,12 +1200,12 @@ Volume BAS : titre précédent</string>
   <string name="auto_update_ask">Demander</string>
   <string name="auto_update_disabled">Désactivé</string>
   <string name="tab_network">Réseau</string>
-  <string name="about_description">La section À propos affiche des informations sur l\'application, les développeurs, le dépannage et les options de mise à jour</string>
-  <string name="other_settings_description">La section Divers contient divers paramètres et utilitaires optionnels</string>
-  <string name="data_settings_description">La section données contient des paramètres qui modifient la façon dont l\'application gère les données localement et à distance</string>
-  <string name="accounts_settings_description">La section Comptes contient les paramètres de synchronisation Youtube, les paramètres de streaming conduits et les paramètres Rpc Discord</string>
-  <string name="quick_picks_description">La section des sélections rapides contient les paramètres de la page des sélections rapides et les recommandations alimentées par l\'IA</string>
-  <string name="smart_recommendations_description">La section recommandations intelligentes contient les paramètres des recommandations alimentées par une IA</string>
+  <string name="about_description">La section « À propos » contient des informations sur l\'application, ses développeurs, le dépannage et les options de mise à jour.</string>
+  <string name="other_settings_description">La section « Divers » contient divers paramètres optionnels et utilitaires.</string>
+  <string name="data_settings_description">La section « Données » contient des paramètres qui modifient la manière dont l\'application gère les données en local et à distance.</string>
+  <string name="accounts_settings_description">La section « Comptes » contient les paramètres de synchronisation YouTube, les paramètres de streaming Piped et les paramètres RPC de Discord.</string>
+  <string name="quick_picks_description">La section « Sélection Rapide » contient les paramètres relatifs à la page des sélections rapides et aux recommandations générées par l\'IA.</string>
+  <string name="smart_recommendations_description">La section « Recommandations Intelligentes » contient les paramètres relatifs aux recommandations générées par l\'IA.</string>
   <string name="ai_recommendations">Recommandations AI</string>
   <string name="my_playlist_top1">Mon Top</string>
   <string name="auto_download_settings">Paramètres de téléchargement automatique</string>
@@ -1215,14 +1215,14 @@ Volume BAS : titre précédent</string>
   <string name="auto_download_when_album_bookmarked_description">Télécharger automatiquement les chansons lorsque vous signez un album</string>
   <string name="connection_settings">Paramètres de connexion</string>
   <string name="connection_settings_description">Configurer les préférences de connexion réseau</string>
-  <string name="network_settings_description">La section réseau contient des paramètres permettant d\'optimiser les performances et l\'utilisation des données de l\'application</string>
+  <string name="network_settings_description">La section « Réseau » contient des paramètres permettant d\'optimiser les performances de l\'application et l\'utilisation des données.</string>
   <string name="easter_egg_click_message">Aimeriez-vous cliquer ? Alors continuez...</string>
   <string name="easter_egg_keep_going">Ok, vous cherchez quelque chose, gardez...</string>
   <string name="easter_egg_number_one">Vous êtes numéro un, cliquez et profitez de la surprise</string>
   <string name="easter_egg_last">Vous êtes numéro un, faites un clic long et profitez de la surprise</string>
-  <string name="general_settings_description">La section générale contient des paramètres pour les fonctionnalités générales de l\'application</string>
-  <string name="ui_settings_description">La section de l\'interface utilisateur contient des paramètres pour modifier l\'interface globale et la navigation</string>
-  <string name="appearance_settings_description">La section « Apparence » contient les paramètres relatifs à l\'apparence visuelle du lecteur</string>
+  <string name="general_settings_description">La section « Général » contient les paramètres relatifs aux fonctionnalités générales de l\'application.</string>
+  <string name="ui_settings_description">La section « Interface Utilisateur » contient des paramètres permettant de modifier l\'interface générale et la navigation.</string>
+  <string name="appearance_settings_description">La section « Apparence » contient les paramètres relatifs à l\'apparence visuelle du lecteur.</string>
   <string name="pause_between_songs_description">Ajouter une pause entre les chansons</string>
   <string name="notifications">Notifications</string>
   <string name="playback">Lecture</string>
@@ -1491,7 +1491,7 @@ Volume BAS : titre précédent</string>
   <string name="state_radio_on_discover">La radio est lancée (elle filtre les morceaux connus et ajoute de nouvelles découvertes)</string>
   <string name="state_radio_on_classic">La radio est lancée (avec des morceaux connus et de nouvelles découvertes)</string>
   <string name="state_radio_off">La radio s\'est arrêtée (Retour à la normale)</string>
-  <string name="state_discover_on">Mode « Découverte » activé (filtre les morceaux connus et ajoute de nouvelles découvertes)</string>
+  <string name="state_discover_on">Mode « Découverte » activé (filtre les titres connus et ajoute de nouvelles découvertes)</string>
   <string name="state_discover_off">Mode « Découverte » désactivé (comprend les titres connus et les nouvelles découvertes)</string>
   <string name="state_reminder_discover">Rappel : le mode « Découverte » est toujours actif</string>
   <string name="state_discover_error">Activez la fonction « Radio » ou « Remplissage automatique » pour utiliser « Découverte »</string>
