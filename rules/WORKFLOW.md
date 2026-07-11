@@ -151,10 +151,13 @@ NEVER write code or create implementation plans without completing this step.
 
 **Enforcement — before starting the workflow:**
 
-1. Read the skill's SKILL.md file
+1. Read the skill's SKILL.md file — **EVERY line, NOT just step headers**
 2. Count the total number of steps in the `<workflow>` section
 3. List all steps: "Steps: 1. X, 2. Y, 3. Z, ..."
-4. Announce: "BMAD workflow has N steps. Starting step 1."
+4. List all `<template-output>` tags per step (what to produce)
+5. List all `<energy-checkpoint>` tags (when to ask for breaks)
+6. List all checkpoint instructions (what options to present)
+7. Announce: "BMAD workflow has N steps. Starting step 1."
 
 **Enforcement — during the workflow:**
 
