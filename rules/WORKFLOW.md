@@ -106,8 +106,12 @@ NEVER write code or create implementation plans without completing this step.
 **Spec Production (MANDATORY):**
 
 - If the skill has a `template.md` → you MUST produce a spec document using that template
-- After every `<template-output>`, **write the artifact to disk** using the Write tool (NOT just display in chat)
-- **Where to write:** `{output_folder}/{default_output_file}` — read the skill's module `config.yaml` to get `{output_folder}`, then check the skill's SKILL.md for `{default_output_file}`
+- **Process:**
+  1. Read `{template_file}` (the template structure with `{{placeholders}}`)
+  2. After each step, replace the `{{placeholders}}` with actual values
+  3. Write/update the spec file on disk using the Write tool
+  4. Display the content in chat for checkpoint
+- **Where to write:** `{output_folder}/{default_output_file}` — read the skill's SKILL.md for the exact path
 - **In this project:** `{output_folder}` = `{project-root}/_bmad-output` = `D:\Autres\Projet Android\NZik-Folder\_bmad-output\`
 - Show checkpoint separator, display generated content, present options `[a] Advanced Elicitation`, `[c] Continue`, `[p] Party-Mode`, `[y] YOLO`
 - Wait for user response before proceeding to next step
@@ -167,7 +171,7 @@ NEVER write code or create implementation plans without completing this step.
 **Enforcement — during the workflow:**
 
 - Before each action, announce: `[BMAD Step X/N: <step name>]`
-- Before moving to next step, ask user: "Step X complete. Proceed to step Y?"
+- After each step, present the checkpoint options from the SKILL.md (e.g., `[a] Advanced Elicitation`, `[c] Continue`, `[p] Party-Mode`, `[y] YOLO`) — NEVER just ask "Step X complete. Proceed to step Y?"
 - Before implementing, verify: "All N steps complete. Ready to implement?"
 - If you cannot name the current step → HALT, you are lost
 
