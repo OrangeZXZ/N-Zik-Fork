@@ -71,6 +71,7 @@
 - Commit without human approval
 - Ask questions in plain text (use question tool)
 - Skip BMAD workflow steps
+- **Write code before completing full BMAD workflow (even if user suggests a fix)**
 - Use wildcard imports or inline FQCNs
 - Swallow exceptions silently
 - Log sensitive data (tokens, passwords)
@@ -79,6 +80,7 @@
 
 ## HALT IMMEDIATELY IF
 
+- **About to write code without completing BMAD workflow (diagnose → analyze → solutions → spec → plan → approval)**
 - Build or tests fail after changes
 - DB schema edit without instruction
 - Agent stuck in loop (5+ same actions)
@@ -125,6 +127,20 @@ This project uses BMAD for structured AI-assisted development.
 - AGENTS.md wins on: code quality, security, commits, logging, database, build
 - BMAD wins on: workflow ordering, templates, checkpoints
 - BOTH apply in parallel — if conflict, AGENTS.md wins
+
+### CRITICAL: BMAD Workflow Enforcement
+
+**NEVER write code before completing the FULL BMAD workflow.** This applies even when:
+
+- User suggests a specific fix or approach → still complete all workflow steps
+- Problem seems "obvious" → still do force analysis and solution evaluation
+- User says "just do X" → still create spec and get plan approval
+
+**User suggestions are input to the workflow, NOT a shortcut to skip it.**
+
+The workflow is: diagnose → force analysis → solutions → evaluate → spec → plan → **approval** → implement
+
+**HALT if you find yourself writing code before reaching the "implement" step.**
 
 ---
 
