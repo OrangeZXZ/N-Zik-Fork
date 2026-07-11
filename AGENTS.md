@@ -12,8 +12,8 @@ This document provides comprehensive guidelines for AI agents working on Android
 
 When starting a new session, follow this exact sequence:
 
-1. **Read AGENTS.md entirely** before doing anything else
-2. **Read BMAD.md** for technical reference
+1. **Read AGENTS.md entirely** before doing anything else — this is MANDATORY, do NOT skip it
+2. **Read BMAD.md entirely** for technical reference — this is MANDATORY, do NOT skip it
 3. **Language:** Match the user's language preference as specified by BMAD config. If not specified, use English.
 4. **Announce ALL rules** you must follow (every single rule from all sections)
 5. **Ask the user** using the question tool with multiple choices: "Bug, feature, or something else?"
@@ -1152,8 +1152,8 @@ onDismiss = { showSheet = false } // Brittle: causes sudden disappearance
 
 When starting a new session, follow this exact sequence:
 
-1. **Read AGENTS.md entirely** before doing anything else
-2. **Read BMAD.md** before doing anything else
+1. **Read AGENTS.md entirely** before doing anything else — this is MANDATORY, do NOT skip it
+2. **Read BMAD.md entirely** before doing anything else — this is MANDATORY, do NOT skip it
 3. **Language:** use English as default but match what the user write in, after bmad load use the BMAD config language setting.
 4. **Announce ALL rules** you must follow (every single rule from all sections)
 5. **Greet the user** with: "Hello! How can I help you with NZik today? Bug or feature?"
