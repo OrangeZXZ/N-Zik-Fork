@@ -36,6 +36,8 @@ See rules/*.md for full details.
 
 ## Step-by-Step Workflow
 
+**This workflow has 7 steps. NEVER stop after Step 6. Step 7 is MANDATORY.**
+
 ### Step 1: Understand
 
 - Read request carefully
@@ -186,6 +188,8 @@ NEVER write code or create implementation plans without completing this step.
 2. If still not found → HALT, inform user, suggest re-running BMAD installer
 3. If SKILL.md is malformed → HALT, report error, suggest `bmad-module-builder` to rebuild
 
+**IMPORTANT: This workflow has 7 steps. NEVER stop after Step 6. Step 7 (Post-BMAD Actions) is MANDATORY. The workflow is NOT complete until Step 7 is done.**
+
 ## Step-File Architecture
 
 Some skills use micro-file design where each step is in its own file.
@@ -217,6 +221,53 @@ Some skills use micro-file design where each step is in its own file.
 - Summarize what was done and why
 - Note files modified or created
 - Do NOT commit unless explicitly asked
+
+### Step 7: Post-BMAD Actions (MANDATORY)
+
+After the BMAD workflow completes, **MUST follow this exact flow** — NEVER skip any step:
+
+**Step 7a: Build and Test**
+
+- Run `./gradlew :ComposeN-Zik:assembleDebug`
+- Run relevant tests
+- If FAILS → fix and rebuild until it passes
+
+**Step 7b: Code Review Proposal**
+
+- **MUST ask user using question tool:**
+  ```
+  Code is functional. Proceed to code review ?
+  1. Yes → launch bmad-code-review
+  2. No → re-read code and fix issues
+  ```
+- If user says "No" → re-read code, fix issues, rebuild, ask again
+- If user says "Yes" → load and execute `bmad-code-review` skill
+
+**Step 7c: Post-Review Actions**
+
+- After code review completes, **MUST ask user using question tool:**
+  ```
+  Code review complete. What next ?
+  1. Functional → update Done.txt + git commit
+  2. Not functional → re-read and fix
+  3. Other → ask user
+  ```
+
+**Step 7d: Commit (only if user says "Functional")**
+
+- Update `assets/notes/Done.txt` with:
+  - Date
+  - Files modified
+  - Issue link (if applicable)
+- **MUST ask user for commit approval** (NEVER commit without approval)
+- If approved → `git commit` with conventional format (`type(scope): description`)
+
+**Step 7e: Finish Workflow**
+
+- Run `on_complete` hook if present
+- Announce: "Workflow complete."
+
+**NEVER skip any of these steps. The BMAD workflow is NOT complete until code is verified, reviewed, and committed (if approved).**
 
 ## Multi-Module Changes
 
