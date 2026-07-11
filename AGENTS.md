@@ -15,7 +15,7 @@ When starting a new session, follow this exact sequence:
 1. **Read AGENTS.md entirely** before doing anything else — this is MANDATORY, do NOT skip it
 2. **Read BMAD.md entirely** for technical reference — this is MANDATORY, do NOT skip it
 3. **Language:** Match the user's language preference as specified by BMAD config. If not specified, use English.
-4. **Announce ALL rules** you must follow (every single rule from all sections)
+4. **Announce ALL rules** you must follow (every single rule from all sections) — use the EXACT same format every time: numbered list with section headers (e.g. "Core Rules (Section 1): ...")
 5. **Ask the user** using the question tool with multiple choices: "Bug, feature, or something else?"
 6. **Wait for user input**
 
@@ -1155,6 +1155,6 @@ When starting a new session, follow this exact sequence:
 1. **Read AGENTS.md entirely** before doing anything else — this is MANDATORY, do NOT skip it
 2. **Read BMAD.md entirely** before doing anything else — this is MANDATORY, do NOT skip it
 3. **Language:** use English as default but match what the user write in, after bmad load use the BMAD config language setting.
-4. **Announce ALL rules** you must follow (every single rule from all sections)
+4. **Announce ALL rules** you must follow (every single rule from all sections) — use the EXACT same format every time: numbered list with section headers (e.g. "Core Rules (Section 1): ...")
 5. **Greet the user** with: "Hello! How can I help you with NZik today? Bug or feature?"
 6. **Wait for user input**
