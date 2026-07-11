@@ -594,7 +594,7 @@
   <string name="info_wait_it_may_take_a_few_minutes">Lütfen bekleyin, bu işlem birkaç dakika sürebilir...</string>
   <string name="album_and_alternative_versions">Albüm</string>
   <string name="album_alternative_versions">Alternatif versiyonlar</string>
-  <string name="monthly_playlists">Monthly</string>
+  <string name="monthly_playlists">Aylık</string>
   <string name="month_january_s">Ocak %s</string>
   <string name="month_february_s">Şubat %s</string>
   <string name="month_march_s">Mart %s</string>
