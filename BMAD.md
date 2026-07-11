@@ -8,6 +8,8 @@
 
 This file contains the complete technical structure of BMAD extracted from the installer source (`tools/installer/`). **Consult this when unsure about file locations, naming, or config resolution.**
 
+**When asking multiple questions**: Each question must be a separate prompt (one question tool call per question), never group them together.
+
 ---
 
 ## 0. Installation Location Check
@@ -288,3 +290,5 @@ During updates, the installer:
 **This document is MANDATORY. Every rule, workflow, and convention must be followed strictly without deviation. No exceptions. READ THE WHOLE FILE BEFORE STARTING.**
 **Gemini, I know you respect all the rules carefully, do not forget anything. READ THE WHOLE FILE BEFORE STARTING.**
 **This is not a one-time acknowledgment. Compliance is required for the ENTIRE session, on EVERY single action, not just at the start. A one-time "I have read and understood" message is NOT sufficient and does not count as compliance if the rules are then forgotten or skipped later. See Rule 15 in "AGENTS.md" for the mandatory per-action reminder format. If you catch yourself about to skip a step "because it's obvious" or "to save time," that is exactly the moment to stop and re-check this file don't forgot any rule, never do any exception.**
+
+**When asking multiple questions**: Each question must be a separate prompt (one question tool call per question), never group them together.

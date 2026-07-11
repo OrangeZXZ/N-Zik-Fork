@@ -8,13 +8,15 @@
 
 This document provides comprehensive guidelines for AI agents working on Android/Kotlin projects in this workspace. It covers code standards, build processes, architectural patterns, and workflows to ensure consistent, high-quality contributions.
 
+**When asking multiple questions**: Each question must be a separate prompt (one question tool call per question), never group them together.
+
 When starting a new session, follow this exact sequence:
 
 1. **Read AGENTS.md entirely** before doing anything else
 2. **Read BMAD.md** for technical reference
-3. **Language:** use English as default but match what the user write in, after bmad load use the BMAD config language setting.
+3. **Language:** Match the user's language preference as specified by BMAD config. If not specified, use English.
 4. **Announce ALL rules** you must follow (every single rule from all sections)
-5. **Greet the user** with: "Hello! How can I help you with NZik today? Bug or feature?"
+5. **Ask the user** using the question tool with multiple choices: "Bug, feature, or something else?"
 6. **Wait for user input**
 
 ---
@@ -250,6 +252,7 @@ Load a skill when a task matches its description. Skills provide step-by-step wo
 **Skill Selection Rules:**
 
 - **ALWAYS analyze the BMAD skills directory** first to find the most appropriate skill for the task
+- **Ask the user** which skill to use: "Use recommended skill (`bmad-problem-solving` for bug / `bmad-quick-dev` for addition), choose another, or let me decide?"
 - For **bug reports**: Use `bmad-problem-solving`. After implementation, **ALWAYS run `bmad-code-review`** before reporting.
 - For **additions**: Use `bmad-quick-dev`
 - **Always verify** the task complexity before choosing a skill — don't default to `bmad-quick-dev`.
@@ -836,6 +839,7 @@ When implementing a feature or fixing a bug, follow this process:
 
 - Read the request carefully and completely
 - Ask clarifying questions if anything is ambiguous
+- **When asking multiple questions**: Each question must be a separate prompt (one question tool call per question), never group them together.
 - Identify the scope (which modules, files, packages are affected)
 
 ### Step 2: Explore
@@ -866,7 +870,7 @@ BMAD is primordial and must never be deviated from once its workflow is started.
 
 **Rules for BMAD execution:**
 
-- **Identify your tool.** ALWAYS ask the human which IDE/tool they are using before loading any BMAD skill. Never infer, detect, guess, or assume the tool from context, file structure, or previous messages.
+- **Identify your tool.** ALWAYS ask the human which IDE/tool they are using before loading any BMAD skill. The user will choose from the available options listed in the table below. Never infer, detect, guess, or assume the tool from context, file structure, or previous messages.
 - **Locate skills on disk.** Verify the skill file exists before loading. Check BOTH the project directory AND the parent directory — the installer may have been run from the parent. Full reference from BMAD installer `platform-codes.yaml`:
 
 ### Preferred tools (recommended during install)
@@ -1136,6 +1140,8 @@ onDismiss = { showSheet = false } // Brittle: causes sudden disappearance
 **This document is MANDATORY. Every rule, workflow, and convention must be followed strictly without deviation. No exceptions. READ THE WHOLE FILE BEFORE STARTING.**
 
 **This is not a one-time acknowledgment. Compliance is required for the ENTIRE session, on EVERY single action, not just at the start. A one-time "I have read and understood" message is NOT sufficient and does not count as compliance if the rules are then forgotten or skipped later. See Rule 15 for the mandatory per-action reminder format. If you catch yourself about to skip a step "because it's obvious" or "to save time," that is exactly the moment to stop and re-check this file don't forgot any rule, never do any exception.**
+
+**When asking multiple questions**: Each question must be a separate prompt (one question tool call per question), never group them together.
 
 When starting a new session, follow this exact sequence:
 
