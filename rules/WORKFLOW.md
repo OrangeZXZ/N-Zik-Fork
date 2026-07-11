@@ -109,7 +109,7 @@ NEVER write code or create implementation plans without completing this step.
 - **Process:**
   1. Read `{template_file}` (the template structure with `{{placeholders}}`)
   2. After each step, replace the `{{placeholders}}` with actual values
-  3. Write/update the spec file on disk using the Write tool
+  3. **Write/update the spec file on disk AFTER EACH STEP** (use the Write tool, incremental updates)
   4. Display the content in chat for checkpoint
 - **Where to write:** `{output_folder}/{default_output_file}` — read the skill's SKILL.md for the exact path
 - **In this project:** `{output_folder}` = `{project-root}/_bmad-output` = `D:\Autres\Projet Android\NZik-Folder\_bmad-output\`
@@ -117,6 +117,7 @@ NEVER write code or create implementation plans without completing this step.
 - Wait for user response before proceeding to next step
 - NEVER skip spec production — the spec IS the workflow output
 - NEVER just display the spec in chat — it MUST be saved to a file
+- NEVER wait until the end to write the spec — write AFTER EACH STEP
 
 **on_complete hook (MANDATORY):**
 
