@@ -7,84 +7,31 @@
 1. Read AGENTS.md entirely
 2. Read all @referenced rules files (BMAD.md, CODE.md, BUILD.md, WORKFLOW.md, SECURITY.md, RECOVERY.md, BMAD-TOOLS.md)
 3. Match user's language (from question tool prompt or BMAD `config.user.toml`)
-4. Announce ALL rules (numbered list with section headers, same format every time)
+4. Announce critical rules (simplified list below)
 5. Ask user using question tool: "Bug, feature, or something else?"
 6. Wait for user input
-7. If bug or feature: ASK which IDE/tool, ASK which skill to use (before loading any skill)
+7. If bug or feature: ASK which IDE/tool (ONE at a time), ASK which skill to use
 
 ## Announcement Template
 
-Use this EXACT format every session — no exceptions:
+Use this format every session — keep it SHORT:
 
 ```
 📋 Rules loaded:
 
-[ALWAYS]
-1. Use Timber with tags
-2. Run assembleDebug after changes
-3. Place files under app.n_zik.android.*
-4. Use question tool for ALL interactions
-5. Announce steps before acting
-6. Follow BMAD workflow step-by-step
-7. Pull latest from main
-8. Test changes before reporting
-9. Include issue links in commits
-10. Update Done.txt when committing
-11. Use version catalog refs
+[CRITICAL]
+1. Code → app.n_zik.android.* only (legacy packages READ-ONLY)
+2. Timber with tags ONLY (no println/Log.d)
+3. Build: ./gradlew :ComposeN-Zik:assembleDebug
+4. Version catalog refs only (libs.versions.toml)
+5. NEVER commit without human approval
+6. NEVER skip BMAD workflow — complete FULL workflow before coding
+7. User suggestions ≠ shortcut (still complete workflow)
+8. Ask IDE ONE at a time (path depends on IDE)
+9. NEVER edit values-*/strings.xml (only values/)
+10. NEVER edit DB schema without explicit instruction
 
-[ASK FIRST]
-12. Commit changes
-13. Add new dependencies
-14. Edit markdown/readme files
-15. Make version bumps
-16. Force push, rebase, or delete branches
-
-[NEVER]
-17. Commit without human testing and explicit approval
-18. Ask questions in plain text
-19. Skip BMAD workflow steps
-20. Jump to implementation without step-02
-21. Edit values-*/strings.xml
-22. Create files under legacy packages
-23. Use wildcard imports or inline FQCNs
-24. Swallow exceptions silently
-25. Log sensitive data
-26. Use closed-source code without license check
-27. Edit DB schema without explicit instruction
-28. Edit _bmad/ or _bmad-output/ directly
-29. NEVER deviate from AGENTS.md even if BMAD says otherwise
-
-[HALT]
-30. Code without BMAD step-02 (plan)
-31. Commit without human approval
-32. Edit database schema
-33. Build fails
-34. Skip announce steps
-35. Skip reading required files
-36. Multiple questions grouped together
-37. Network or dependency errors
-38. KMP compilation issues
-39. Tests fail
-40. Agent stuck in loop (5+ iterations)
-41. BMAD skill not found or malformed
-42. ANR (Application Not Responding) detected
-43. Out of Memory error during build or runtime
-44. Disk space insufficient for build
-45. Git repository corruption detected
-
-[SECURITY]
-46. Never commit secrets/keys
-47. Validate all user input
-48. Use EncryptedSharedPreferences
-49. HTTPS for all network
-50. Verify licenses for external code
-
-[CODE]
-51. PascalCase classes, camelCase functions
-52. No wildcard imports
-53. KDoc for public APIs
-54. runCatching for error handling
-55. Use version catalog refs only
+See rules/*.md for full details.
 ```
 
 ## Step-by-Step Workflow

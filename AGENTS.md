@@ -27,8 +27,9 @@
 - `./gradlew :ComposeN-Zik:test` — all tests
 - ALWAYS verify build passes after changes
 - HALT after 3 failed build attempts
+- New features/bug fixes should include at least one test
 
-→ See rules/BUILD.md for build types, commit convention, version catalog
+→ See rules/BUILD.md for build types, commit convention, version catalog, testing patterns
 
 ### NEVER (Hard Stops)
 
