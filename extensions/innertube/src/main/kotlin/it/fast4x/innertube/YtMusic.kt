@@ -567,18 +567,35 @@ object YtMusic {
     suspend fun getAlbumSongs(playlistId: String): Result<List<Innertube.SongItem>> = runCatching {
         val response = Innertube.browse(browseId = "VL$playlistId").body<BrowseResponse>()
 
-        val contents =
-            response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
-                ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
-                ?.musicPlaylistShelfRenderer?.contents ?:
-            response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
-                ?.contents?.firstOrNull()?.musicPlaylistShelfRenderer?.contents
+        val shelf = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
+            ?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()
+            ?: response.contents?.twoColumnBrowseResultsRenderer?.secondaryContents?.sectionListRenderer
+ ?.contents?.firstOrNull()
+
+        val contents = shelf?.musicPlaylistShelfRenderer?.contents
+            ?: shelf?.musicShelfRenderer?.contents
 
         val songs = contents?.mapNotNull {
             it.musicResponsiveListItemRenderer?.let { it1 -> AlbumPage.getSong(it1) }
+        }?.toMutableList() ?: mutableListOf()
+
+        // Extract continuation token (same pattern as PlaylistSongList)
+        var continuation = shelf?.musicPlaylistShelfRenderer?.continuations?.getContinuation()
+            ?: shelf?.musicShelfRenderer?.continuations?.getContinuation()
+            ?: contents?.getContinuation()
+
+        // Load all continuation pages (max 50 to prevent infinite loops)
+        var maxPages = 50
+        while (continuation != null && maxPages-- > 0) {
+            val nextPage = getPlaylistContinuation(continuation).getOrNull()
+            if (nextPage != null) {
+                songs += nextPage.songs
+                continuation = nextPage.continuation
+            } else {
+                continuation = null
+            }
         }
-        println("mediaItem getAlbumSongs songs: $songs")
-        songs!!
+
     }
 
 }

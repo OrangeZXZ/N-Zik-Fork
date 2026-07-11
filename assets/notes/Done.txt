@@ -35,3 +35,11 @@
 - YouTube login/logout now clears caches and shows Restart Player
 - YouTube login toggle no longer clears account info (just disables Innertube)
 - Added streamClientRestartNeededKey preference for Restart Player state
+
+## 2026-07-11 - Fix Album Pagination (gh-661)
+- Modified: extensions/innertube/src/main/kotlin/it/fast4x/innertube/YtMusic.kt
+- Fixed: Albums with >100 songs now load all tracks (was limited to 100)
+- Added: Continuation token extraction from musicPlaylistShelfRenderer/musicShelfRenderer
+- Added: While loop to load all continuation pages (max 50) via getPlaylistContinuation()
+- Pattern: Same pagination logic as PlaylistSongList.kt (commit dacce3b)
+- Issue: https://github.com/N-Zik-Group/N-Zik/issues/661
