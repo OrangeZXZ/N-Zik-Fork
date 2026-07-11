@@ -106,7 +106,7 @@ Use this EXACT format every session — no exceptions:
 
 NEVER write code or create implementation plans without completing this step.
 
-- **ASK FIRST:** Which IDE/tool they are using (before loading any skill)
+- **ASK FIRST:** Which IDE/tool they are using (before loading any skill) — **ask ONE IDE at a time** (skill path depends on IDE, see BMAD-TOOLS.md)
 - **ASK FIRST:** Which skill to use (propose recommended, let user choose)
 - Identify appropriate skill (analyze skills directory first)
 - For bugs: `bmad-cis-problem-solving`, then `bmad-code-review`
@@ -115,6 +115,8 @@ NEVER write code or create implementation plans without completing this step.
 - Read the first step file (e.g. `step-01-clarify-and-route.md`)
 - Follow workflow step by step — NEVER skip to implementation
 - HALT at every checkpoint
+
+**User suggestions are input to the workflow, NOT a shortcut to skip it.** Even if the user suggests a specific fix, complete the full workflow (force analysis, solutions, evaluation, spec, plan) before implementing.
 
 **If user declines BMAD skill:** HALT and explain that BMAD workflow is mandatory per AGENTS.md rules. Ask user to confirm they want to proceed without BMAD.
 

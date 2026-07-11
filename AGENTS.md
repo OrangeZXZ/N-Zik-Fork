@@ -1,22 +1,24 @@
 # AI Agent Guidelines — NZik
 
-**MANDATORY: Read this file AND rules/\*.md before any task. Compliance for ENTIRE session.**
+**MANDATORY: Read this file AND rules/*.md before any task. Compliance for ENTIRE session.**
 
 ## Session Startup
 
 1. Read this file entirely
-2. Read all rules/\*.md files
+2. Read all rules/*.md files
 3. Ask user via question tool: "Bug, feature, or something else?"
 
 ---
 
-## Critical Rules
+## Critical Rules (Agents Consistently Miss These)
 
 ### Code Placement
 
 - **NEW code** → `app.n_zik.android.*` ONLY
 - **NEVER** create files under `app.it.fast4x.rimusic.*` or `app.kreate.android.*` (legacy, read-only)
 - **NEVER** edit `values-*/strings.xml` — only `values/strings.xml`
+
+→ See rules/CODE.md for full file placement table
 
 ### Build & Test
 
@@ -26,67 +28,30 @@
 - ALWAYS verify build passes after changes
 - HALT after 3 failed build attempts
 
-### Dependencies
+→ See rules/BUILD.md for build types, commit convention, version catalog
 
-- Use version catalog refs from `gradle/libs.versions.toml` — NEVER hardcode versions
-- If library not in catalog → HALT, ask user before adding
+### NEVER (Hard Stops)
 
-### Logging
-
-- Timber with tags ONLY — NEVER `println`, `Log.d`, `System.out`, `e.printStackTrace()`
-- See CODE.md for examples and log levels
-
-### Database
-
-- NEVER edit schema without explicit instruction
-- Never modify deployed migrations — create new ones
-- Migration failure → HALT immediately
-
-### Git & Commits
-
-- Format: `type(scope): short description` (under 72 chars, imperative mood)
-- Types: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `perf`
-- Include GitHub issue URL when applicable
-- Update `assets/notes/Done.txt` when committing
-- NEVER commit without human testing and explicit approval
-
-### KMP Source Sets
-
-- `commonMain` → shared logic (NO Android imports)
-- `androidMain` → Android-specific code
-- Use `expect/actual` in correct source sets
-
----
-
-## ASK FIRST (Human Approval Required)
-
-- Commit changes
-- Add new dependencies
-- Edit markdown/readme files
-- Version bumps
-- Force push, rebase, delete branches
-
-## NEVER (Hard Stops)
-
-- Commit without human approval
-- Ask questions in plain text (use question tool)
+- Commit without human testing and explicit approval
 - Skip BMAD workflow steps
 - **Write code before completing full BMAD workflow (even if user suggests a fix)**
-- Use wildcard imports or inline FQCNs
-- Swallow exceptions silently
-- Log sensitive data (tokens, passwords)
-- Edit `_bmad/` or `_bmad-output/` directly (use BMAD skills)
-- Use closed-source code without license check
+- Edit database schema without explicit instruction
 
-## HALT IMMEDIATELY IF
+→ See rules/WORKFLOW.md for full NEVER/HALT lists, rules/SECURITY.md for security rules
 
-- **About to write code without completing BMAD workflow (diagnose → analyze → solutions → spec → plan → approval)**
-- Build or tests fail after changes
-- DB schema edit without instruction
-- Agent stuck in loop (5+ same actions)
-- Network/dependency errors
-- KMP compilation issues
-- Multiple questions needed — ask each separately
+### User Suggestions ≠ Shortcut
+
+User suggestions are input to the BMAD workflow, NOT a shortcut to skip it. Even if the user suggests a specific fix, complete the full workflow before implementing.
+
+Workflow: diagnose → force analysis → solutions → evaluate → spec → plan → **approval** → implement
+
+→ See rules/WORKFLOW.md for full BMAD workflow enforcement
+
+### IDE Selection — One at a Time
+
+When asking which IDE/tool the user is using, **ask ONE option at a time** using the question tool. Skill path depends on the IDE.
+
+→ See rules/BMAD-TOOLS.md for IDE skill directories
 
 ---
 
@@ -128,19 +93,7 @@ This project uses BMAD for structured AI-assisted development.
 - BMAD wins on: workflow ordering, templates, checkpoints
 - BOTH apply in parallel — if conflict, AGENTS.md wins
 
-### CRITICAL: BMAD Workflow Enforcement
-
-**NEVER write code before completing the FULL BMAD workflow.** This applies even when:
-
-- User suggests a specific fix or approach → still complete all workflow steps
-- Problem seems "obvious" → still do force analysis and solution evaluation
-- User says "just do X" → still create spec and get plan approval
-
-**User suggestions are input to the workflow, NOT a shortcut to skip it.**
-
-The workflow is: diagnose → force analysis → solutions → evaluate → spec → plan → **approval** → implement
-
-**HALT if you find yourself writing code before reaching the "implement" step.**
+→ See rules/BMAD.md for installation, config resolution. See rules/WORKFLOW.md for step-by-step workflow.
 
 ---
 
