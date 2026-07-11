@@ -1,3 +1,25 @@
+## Stream Client Settings & Quality Improvements
+- Added Preferred Stream Client dialog (Android VR / Web Remix) in NetworkSettings
+- Added stream client descriptions with ToggleListDialog support
+- Fixed stream client names (hardcoded instead of translated)
+- Added validation: at least 1 stream client must be enabled
+- Added Reset/Cancel/OK buttons to both stream client dialogs
+- Fixed preferred client priority in StreamResolver (replaces "last successful client")
+- Added ANDROID client to disabled clients list
+- Added fallback to WEB_REMIX if all clients are disabled
+- Added warning log when preferred client is disabled
+- Quality thresholds aligned with YouTube: Low=48kbps, Medium=128kbps, High=AUDIO_QUALITY_HIGH
+- Updated getQuality() in StatsForNerds with all itags (Very High, High, Medium, Low)
+- Fixed format!! NPE in StatsForNerds (now uses format?.let)
+- Added clearStreamCaches() function (clears formatCache + playbackDataCache + webRemixFailedIds)
+- Added Restart Player button when stream client settings change
+- Added stream client settings moved from OtherSettings to NetworkSettings
+- Added conditional menu display (Preferred Client only shows if Web Remix AND Android VR enabled)
+- Added recommendation toast to re-download songs after changing stream client
+- YouTube login/logout now clears caches and shows Restart Player
+- YouTube login toggle no longer clears account info (just disables Innertube)
+- Added streamClientRestartNeededKey preference for Restart Player state
+
 ## Default Animated Gradient changed to M3EMorphingCover
 - Changed default animated gradient from FluidCoverColorGradient to M3EMorphingCover for new installations
 - Updated in MainActivity.kt and Player.kt rememberPreference calls

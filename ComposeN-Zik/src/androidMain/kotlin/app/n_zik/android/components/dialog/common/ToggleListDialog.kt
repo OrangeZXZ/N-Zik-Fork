@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,7 +41,8 @@ data class ToggleItem(
     val iconRes: Int,
     val label: String,
     val preferenceKey: String,
-    val defaultValue: Boolean
+    val defaultValue: Boolean,
+    val description: String? = null
 )
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -50,8 +52,16 @@ fun ToggleListDialog(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     reorderableState: ReorderableLazyListState? = null,
-    contentHeight: Dp = 480.dp
+    contentHeight: Dp = 480.dp,
+    enforceMinOneChecked: Boolean = false
 ) {
+    // Count checked items for validation
+    val checkedStates = items.map { item ->
+        val isChecked by rememberPreference(item.preferenceKey, item.defaultValue)
+        isChecked
+    }
+    val checkedCount = checkedStates.count { it }
+
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
@@ -63,6 +73,8 @@ fun ToggleListDialog(
             key = { _, item -> item.id }
         ) { index, item ->
             val isChecked by rememberPreference(item.preferenceKey, item.defaultValue)
+            val isLastChecked = enforceMinOneChecked && isChecked && checkedCount <= 1
+            val enabled = !isLastChecked
 
             if (reorderableState != null) {
                 ReorderableItem(reorderableState, key = item.id) { isDragging ->
@@ -74,7 +86,9 @@ fun ToggleListDialog(
                         preferenceKey = item.preferenceKey,
                         showReorder = true,
                         isDragging = isDragging,
-                        dragModifier = Modifier.draggableHandle()
+                        dragModifier = Modifier.draggableHandle(),
+                        description = item.description,
+                        enabled = enabled
                     )
                 }
             } else {
@@ -86,7 +100,9 @@ fun ToggleListDialog(
                     preferenceKey = item.preferenceKey,
                     showReorder = false,
                     isDragging = false,
-                    dragModifier = Modifier
+                    dragModifier = Modifier,
+                    description = item.description,
+                    enabled = enabled
                 )
             }
         }
@@ -102,7 +118,9 @@ private fun ToggleRow(
     preferenceKey: String,
     showReorder: Boolean,
     isDragging: Boolean,
-    dragModifier: Modifier
+    dragModifier: Modifier,
+    description: String? = null,
+    enabled: Boolean = true
 ) {
     val ctx = androidx.compose.ui.platform.LocalContext.current
 
@@ -114,8 +132,10 @@ private fun ToggleRow(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = {
-                    val prefs = ctx.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
-                    prefs.edit().putBoolean(preferenceKey, !isChecked).apply()
+                    if (enabled || !isChecked) {
+                        val prefs = ctx.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+                        prefs.edit().putBoolean(preferenceKey, !isChecked).apply()
+                    }
                 }
             )
             .padding(vertical = 6.dp, horizontal = 16.dp),
@@ -125,27 +145,43 @@ private fun ToggleRow(
         Icon(
             painter = painterResource(icon),
             contentDescription = null,
-            tint = colorPalette().accent,
+            tint = if (enabled) colorPalette().accent else colorPalette().textDisabled,
             modifier = Modifier.size(22.dp)
         )
 
-        BasicText(
-            text = label,
-            style = typography().xs.semiBold.copy(
-                color = if (isDragging) colorPalette().accent else colorPalette().text
-            ),
+        Column(
             modifier = Modifier.weight(1f)
-        )
+        ) {
+            BasicText(
+                text = label,
+                style = typography().xs.semiBold.copy(
+                    color = if (isDragging) colorPalette().accent 
+                           else if (enabled) colorPalette().text 
+                           else colorPalette().textDisabled
+                )
+            )
+            if (description != null) {
+                BasicText(
+                    text = description,
+                    style = typography().xxs.copy(
+                        color = colorPalette().textDisabled
+                    )
+                )
+            }
+        }
 
         Checkbox(
             checked = isChecked,
             onCheckedChange = null,
+            enabled = enabled,
             modifier = Modifier.size(20.dp),
             colors = CheckboxDefaults.colors(
                 checkedColor = colorPalette().accent,
                 uncheckedColor = colorPalette().textDisabled,
                 checkmarkColor = colorPalette().onAccent,
-                disabledIndeterminateColor = Color.Transparent
+                disabledIndeterminateColor = Color.Transparent,
+                disabledCheckedColor = colorPalette().textDisabled,
+                disabledUncheckedColor = colorPalette().textDisabled
             )
         )
 

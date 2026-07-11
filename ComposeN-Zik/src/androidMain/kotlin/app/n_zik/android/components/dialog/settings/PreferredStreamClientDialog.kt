@@ -1,0 +1,184 @@
+package app.n_zik.android.components.dialog.settings
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import app.n_zik.android.R
+import app.n_zik.android.colorPalette
+import app.n_zik.android.typography
+import app.n_zik.android.uiRoundnessShape
+import app.it.fast4x.rimusic.utils.medium
+import app.it.fast4x.rimusic.utils.preferredStreamClientKey
+import app.it.fast4x.rimusic.utils.semiBold
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.components.dialog.common.Dialog
+import app.it.fast4x.rimusic.utils.streamClientRestartNeededKey
+import app.n_zik.android.playback.services.clearStreamCaches
+import app.kreate.android.me.knighthat.utils.Toaster
+
+object PreferredStreamClientDialog : Dialog {
+
+    override val dialogTitle: String
+        @Composable
+        get() = stringResource(R.string.preferred_stream_client_title)
+
+    override var isActive: Boolean by mutableStateOf(false)
+
+    @Composable
+    override fun DialogBody() {
+        val context = LocalContext.current
+        val binder = LocalPlayerServiceBinder.current
+        val prefs = remember { context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
+        val savedPref = remember { prefs.getString(preferredStreamClientKey, "WEB_REMIX") ?: "WEB_REMIX" }
+
+        // Local state - not saved until OK is clicked
+        var selectedClient by remember { mutableStateOf(savedPref) }
+
+        val options = listOf(
+            Triple("ANDROID_VR", "Android VR", stringResource(R.string.client_android_vr_desc)),
+            Triple("WEB_REMIX", "Web Remix", stringResource(R.string.client_youtube_music_web_desc))
+        )
+
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp)
+            ) {
+                options.forEachIndexed { index, (value, title, description) ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(uiRoundnessShape())
+                            .clickable { selectedClient = value }
+                            .padding(vertical = 8.dp, horizontal = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = selectedClient == value,
+                            onClick = { selectedClient = value },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = colorPalette().text,
+                                unselectedColor = colorPalette().textSecondary
+                            ),
+                            modifier = Modifier.size(20.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = title,
+                                style = typography().xs.semiBold,
+                                color = colorPalette().text
+                            )
+                            Text(
+                                text = description,
+                                style = typography().xxs,
+                                color = colorPalette().textSecondary
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                // Reset button (grey) - only changes local state
+                BasicText(
+                    text = stringResource(R.string.reset),
+                    style = typography().xs.medium.copy(
+                        color = if (selectedClient != "WEB_REMIX") colorPalette().textDisabled else Color.Transparent,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .clip(uiRoundnessShape())
+                        .clickable(enabled = selectedClient != "WEB_REMIX") {
+                            selectedClient = "WEB_REMIX"
+                        }
+                        .padding(horizontal = 16.dp, vertical = 10.dp)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // Cancel button (red) - closes without saving
+                BasicText(
+                    text = stringResource(R.string.cancel),
+                    style = typography().xs.medium.copy(
+                        color = Color(android.graphics.Color.RED).copy(alpha = 0.3f),
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .clip(uiRoundnessShape())
+                        .clickable { hideDialog() }
+                        .padding(horizontal = 16.dp, vertical = 10.dp)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // OK button (accent filled) - saves only if changed
+                BasicText(
+                    text = stringResource(R.string.ok),
+                    style = typography().xs.semiBold.copy(
+                        color = colorPalette().onAccent,
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier
+                        .clip(uiRoundnessShape())
+                        .background(colorPalette().accent)
+                        .clickable {
+                            if (selectedClient != savedPref) {
+                                prefs.edit().putString(preferredStreamClientKey, selectedClient).apply()
+                                prefs.edit().putBoolean(streamClientRestartNeededKey, true).apply()
+                                clearStreamCaches()
+                                // Clear audio cache
+                                binder?.cache?.let { cache ->
+                                    cache.keys.forEach { song -> cache.removeResource(song) }
+                                }
+                                Toaster.i(R.string.preferred_stream_client_changed)
+                                Toaster.w(R.string.stream_client_redownload_recommendation)
+                            }
+                            hideDialog()
+                        }
+                        .padding(horizontal = 20.dp, vertical = 10.dp)
+                )
+            }
+        }
+    }
+}

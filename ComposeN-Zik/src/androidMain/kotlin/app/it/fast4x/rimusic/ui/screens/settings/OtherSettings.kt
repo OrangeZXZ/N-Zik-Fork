@@ -61,7 +61,6 @@ import app.it.fast4x.rimusic.utils.isProxyEnabledKey
 import app.it.fast4x.rimusic.utils.logDebugEnabledKey
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 import app.it.fast4x.rimusic.utils.disabledStreamClientsKey
-import app.n_zik.android.components.dialog.settings.StreamClientsSettingsDialog
 import app.it.fast4x.rimusic.utils.proxyHostnameKey
 import app.it.fast4x.rimusic.utils.proxyModeKey
 import app.it.fast4x.rimusic.utils.proxyPortKey
@@ -430,32 +429,6 @@ fun OtherSettings() {
                 }
             )
         }
-
-        /* Removed Spacer */
-
-        // Stream Clients Section
-        AnimatedVisibility(
-            visible = true,
-            enter = fadeIn(animationSpec = tween(800)) + scaleIn(
-                animationSpec = tween(800),
-                initialScale = 0.9f
-            )
-        ) {
-            SettingsSectionCard(
-                title = stringResource(R.string.stream_clients),
-                icon = R.drawable.musical_notes,
-                content = {
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.disabled_stream_clients),
-                        text = stringResource(R.string.configure_which_stream_clients_are_enabled),
-                        icon = R.drawable.musical_notes,
-                        onClick = { StreamClientsSettingsDialog.showDialog() }
-                    )
-                }
-            )
-        }
-
-        StreamClientsSettingsDialog.Render()
 
         /* Removed Spacer */
 

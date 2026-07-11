@@ -41,6 +41,13 @@ import app.it.fast4x.rimusic.enums.ImageQualityFormat
 import app.it.fast4x.rimusic.utils.navigationBarPositionKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.enums.AudioQualityFormat
+import app.it.fast4x.rimusic.utils.streamClientWebRemixEnabledKey
+import app.it.fast4x.rimusic.utils.streamClientAndroidVrEnabledKey
+import app.it.fast4x.rimusic.utils.streamClientRestartNeededKey
+import app.n_zik.android.appContext
+import app.it.fast4x.rimusic.utils.preferences
+import app.n_zik.android.components.dialog.settings.StreamClientsSettingsDialog
+import app.n_zik.android.components.dialog.settings.PreferredStreamClientDialog
 import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import app.it.fast4x.rimusic.utils.audioQualityFormatKey
 import app.it.fast4x.rimusic.utils.RestartPlayerService
@@ -63,6 +70,9 @@ fun NetworkSettings(
     var restartService by rememberSaveable { mutableStateOf(false) }
     var showAudioQualityDialog by rememberSaveable { mutableStateOf(false) }
     var showImageQualityDialog by rememberSaveable { mutableStateOf(false) }
+    val isWebRemixEnabled by rememberPreference(streamClientWebRemixEnabledKey, true)
+    val isAndroidVrEnabled by rememberPreference(streamClientAndroidVrEnabledKey, true)
+    val isStreamRestartNeeded by rememberPreference(streamClientRestartNeededKey, false)
     
     var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.BottomFloating)
 
@@ -244,6 +254,41 @@ fun NetworkSettings(
                 )
             }
         )
+
+        /* Removed Spacer */
+
+        // Stream Clients Section
+        SettingsSectionCard(
+            title = stringResource(R.string.stream_clients),
+            icon = R.drawable.musical_notes,
+            content = {
+                if (isWebRemixEnabled && isAndroidVrEnabled) {
+                    OtherSettingsEntry(
+                        title = stringResource(R.string.preferred_stream_client),
+                        text = stringResource(R.string.preferred_stream_client_description),
+                        icon = R.drawable.musical_notes,
+                        onClick = { PreferredStreamClientDialog.showDialog() }
+                    )
+                }
+                OtherSettingsEntry(
+                    title = stringResource(R.string.disabled_stream_clients),
+                    text = stringResource(R.string.configure_which_stream_clients_are_enabled),
+                    icon = R.drawable.musical_notes,
+                    onClick = { StreamClientsSettingsDialog.showDialog() }
+                )
+                RestartPlayerService(
+                    restartService = isStreamRestartNeeded,
+                    onRestart = {
+                        appContext().preferences.edit().putBoolean(streamClientRestartNeededKey, false).apply()
+                    }
+                )
+            }
+        )
+
+        if (isWebRemixEnabled && isAndroidVrEnabled) {
+            PreferredStreamClientDialog.Render()
+        }
+        StreamClientsSettingsDialog.Render()
 
         /* Removed Spacer */
 

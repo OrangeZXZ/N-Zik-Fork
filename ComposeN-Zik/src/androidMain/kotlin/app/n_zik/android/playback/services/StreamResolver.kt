@@ -60,6 +60,8 @@ import app.it.fast4x.rimusic.utils.streamClientIpadosEnabledKey
 import app.it.fast4x.rimusic.utils.streamClientWebEnabledKey
 import app.it.fast4x.rimusic.utils.streamClientWebCreatorEnabledKey
 import app.it.fast4x.rimusic.utils.streamClientMobileEnabledKey
+import app.it.fast4x.rimusic.utils.streamClientAndroidEnabledKey
+import app.it.fast4x.rimusic.utils.preferredStreamClientKey
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -272,16 +274,19 @@ private fun pickFormat(
                 ?: formats.maxByOrNull { scoreFormat(it) }
         }
         AudioQualityFormat.Medium -> {
-            formats.filter { it.audioQuality == "AUDIO_QUALITY_MEDIUM" }
-                .maxByOrNull { scoreFormat(it) }
-                ?: formats.maxByOrNull { it.bitrate ?: 0 }
-        }
-        AudioQualityFormat.Low -> {
-            // Cap at 128kbps, prefer original uploads over re-encodes
+            // Cap at 128kbps (YouTube Normal), prefer original uploads
             val cappedFormats = formats.filter { (it.bitrate ?: 0) <= 128000 }
             cappedFormats.filter { it.isOriginal }.maxByOrNull { it.bitrate ?: 0 }
                 ?: cappedFormats.maxByOrNull { it.bitrate ?: 0 }
                 ?: formats.filter { it.isOriginal }.minByOrNull { kotlin.math.abs((it.bitrate ?: 0).toDouble() - 128000.0) }
+                ?: formats.minByOrNull { it.bitrate ?: 0 }
+        }
+        AudioQualityFormat.Low -> {
+            // Cap at 48kbps (YouTube Low), prefer original uploads
+            val cappedFormats = formats.filter { (it.bitrate ?: 0) <= 48000 }
+            cappedFormats.filter { it.isOriginal }.maxByOrNull { it.bitrate ?: 0 }
+                ?: cappedFormats.maxByOrNull { it.bitrate ?: 0 }
+                ?: formats.filter { it.isOriginal }.minByOrNull { kotlin.math.abs((it.bitrate ?: 0).toDouble() - 48000.0) }
                 ?: formats.minByOrNull { it.bitrate ?: 0 }
         }
         AudioQualityFormat.Auto -> {
@@ -478,12 +483,7 @@ private suspend fun resolveStreamUriInternal(
     val wantsHighQuality = audioQualityFormat == AudioQualityFormat.High
 
     val prefs = appContext().preferences
-    // Use separate keys for logged-in vs logged-out so we don't prioritize a no-auth
-    // client (e.g. ANDROID_VR) when logged in, which could miss premium-only tracks.
-    val prefKey = if (isLoggedIn) "last_successful_yt_client_auth" else "last_successful_yt_client_noauth"
-    val lastSuccessfulClientName = prefs.getString(prefKey, null)
     
-    // Sort clients: put the last successful one first, keep the rest in their original order
     // Build disabled clients set from individual preference keys
     val disabledClients = mutableSetOf<String>().apply {
         if (!prefs.getBoolean(streamClientWebRemixEnabledKey, true)) add("WEB_REMIX")
@@ -497,18 +497,30 @@ private suspend fun resolveStreamUriInternal(
         if (!prefs.getBoolean(streamClientWebEnabledKey, true)) add("WEB")
         if (!prefs.getBoolean(streamClientWebCreatorEnabledKey, true)) add("WEB_CREATOR")
         if (!prefs.getBoolean(streamClientMobileEnabledKey, true)) add("MOBILE")
+        if (!prefs.getBoolean(streamClientAndroidEnabledKey, true)) add("ANDROID")
     }
-    val clientsToTry = if (lastSuccessfulClientName != null) {
-        val lastSuccessfulClient = FALLBACK_CLIENTS.find { it.clientName == lastSuccessfulClientName }
-        if (lastSuccessfulClient != null) {
-            Timber.tag(TAG).d("Prioritizing remembered client: ${lastSuccessfulClient.clientName} (${if (isLoggedIn) "auth" else "noauth"})")
-            listOf(lastSuccessfulClient) + FALLBACK_CLIENTS.filter { it.clientName != lastSuccessfulClientName && it.clientName !in disabledClients }
-        } else FALLBACK_CLIENTS.filter { it.clientName !in disabledClients }
-    } else FALLBACK_CLIENTS.filter { it.clientName !in disabledClients }
+    
+    // Get preferred client and prioritize it
+    val preferredClientName = prefs.getString(preferredStreamClientKey, "WEB_REMIX") ?: "WEB_REMIX"
+    val filteredClients = FALLBACK_CLIENTS.filter { it.clientName !in disabledClients }
+    val preferredClient = filteredClients.find { it.clientName == preferredClientName }
+    val clientsToTry = if (preferredClient != null) {
+        Timber.tag(TAG).d("Preferred client: $preferredClientName — will be tried first")
+        listOf(preferredClient) + filteredClients.filter { it.clientName != preferredClientName }
+    } else {
+        if (preferredClientName in disabledClients) {
+            Timber.tag(TAG).w("Preferred client $preferredClientName is disabled — falling back to default order")
+        }
+        filteredClients.ifEmpty {
+            Timber.tag(TAG).w("All stream clients are disabled — enabling WEB_REMIX as fallback")
+            listOf(FALLBACK_CLIENTS.first { it.clientName == "WEB_REMIX" })
+        }
+    }
 
     if (disabledClients.isNotEmpty()) {
         Timber.tag(TAG).d("Disabled stream clients: $disabledClients")
     }
+    Timber.tag(TAG).d("Clients to try (${clientsToTry.size}): ${clientsToTry.map { it.clientName }}")
 
     // Early age-restriction handling: if detected via NewPipe STS, skip to WEB_CREATOR
     if (isAgeRestricted && parentalControlEnabled && isLoggedIn) {
@@ -723,7 +735,6 @@ private suspend fun resolveStreamUriInternal(
             val perceptualLoudness = responseToUse.playerConfig?.audioConfig?.perceptualLoudnessDb
             val playbackUrl = responseToUse.playbackTracking?.videostatsPlaybackUrl?.baseUrl
             CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch { upsertSongFormat(videoId, format, perceptualLoudness, playbackUrl) }
-            prefs.edit().putString(prefKey, ytClient.clientName).apply()
 
             // Cache PlaybackData for metadata access (loudness, videoDetails, tracking)
             playbackDataCache[videoId] = PlaybackData(
@@ -823,6 +834,18 @@ internal val formatCache = mutableMapOf<String, Uri>()
  * Stores enriched metadata (audioConfig, videoDetails, playbackTracking) from stream resolution.
  */
 internal val playbackDataCache = mutableMapOf<String, PlaybackData>()
+
+/**
+ * Clear all stream caches when stream client settings change.
+ * This forces re-resolution with the new client on next playback.
+ * WARNING: This will cause current playback to re-buffer.
+ */
+fun clearStreamCaches() {
+    formatCache.clear()
+    playbackDataCache.clear()
+    webRemixFailedIds.clear()
+    Timber.tag("StreamResolver").d("All stream caches cleared (format + playback data + webRemix failures)")
+}
 
 /**
  * Player response intended for metadata / playback-tracking retrieval.

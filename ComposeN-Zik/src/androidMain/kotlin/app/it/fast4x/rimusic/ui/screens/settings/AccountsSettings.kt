@@ -80,6 +80,10 @@ import androidx.compose.ui.res.painterResource
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import app.it.fast4x.rimusic.utils.enableYouTubeLoginKey
+import app.it.fast4x.rimusic.utils.streamClientRestartNeededKey
+import app.it.fast4x.rimusic.utils.RestartPlayerService
+import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.playback.services.clearStreamCaches
 import app.it.fast4x.rimusic.utils.enableYouTubeSyncKey
 import app.it.fast4x.rimusic.utils.isAtLeastAndroid7
 import app.it.fast4x.rimusic.utils.isDiscordBrowsingEnabledKey
@@ -199,6 +203,7 @@ fun AccountsSettings() {
                     var isLoggedIn = remember(cookie) {
                         "SAPISID" in parseCookieString(cookie)
                     }
+                    val binder = LocalPlayerServiceBinder.current
 
                     OtherSwitchSettingEntry(
                         title = stringResource(R.string.enable_youtube_music_login),
@@ -207,13 +212,8 @@ fun AccountsSettings() {
                         onCheckedChange = {
                             isYouTubeLoginEnabled = it
                             if (!it) {
-                                visitorData = ""
-                                dataSyncId = ""
-                                cookie = ""
-                                accountName = ""
-                                accountChannelHandle = ""
-                                accountEmail = ""
-                                // Clear Innertube singleton
+                                // Only clear Innertube singleton (stop using account)
+                                // Keep account info so user doesn't have to reconnect
                                 Innertube.cookie = null
                                 Innertube.dataSyncId = null
                                 Innertube.visitorData = Innertube.DEFAULT_VISITOR_DATA
@@ -224,9 +224,37 @@ fun AccountsSettings() {
                                     remove(quickPicsYtmQuickPicksKey)
                                     remove(quickPicsDiscoverPageKey)
                                 }
+                            } else {
+                                // Re-enable: restore Innertube from saved preferences
+                                val savedCookie = appContext().preferences.getString(ytCookieKey, "") ?: ""
+                                if (savedCookie.isNotEmpty()) {
+                                    Innertube.cookie = savedCookie
+                                    Innertube.dataSyncId = appContext().preferences.getString(ytDataSyncIdKey, null)
+                                    Innertube.visitorData = appContext().preferences.getString(ytVisitorDataKey, null) ?: Innertube.DEFAULT_VISITOR_DATA
+                                }
                             }
+                            // Clear stream caches and mark restart needed
+                            clearStreamCaches()
+                            appContext().preferences.edit().putBoolean(streamClientRestartNeededKey, true).apply()
+                            // Clear audio cache
+                            binder?.cache?.let { cache ->
+                                val keys = cache.keys
+                                keys.forEach { song ->
+                                    cache.removeResource(song)
+                                }
+                            }
+                            Toaster.i(R.string.preferred_stream_client_changed)
+                            Toaster.w(R.string.stream_client_redownload_recommendation)
                         },
                         icon = R.drawable.ytmusic
+                    )
+
+                    val isStreamRestartNeeded by rememberPreference(streamClientRestartNeededKey, false)
+                    RestartPlayerService(
+                        restartService = isStreamRestartNeeded,
+                        onRestart = {
+                            appContext().preferences.edit().putBoolean(streamClientRestartNeededKey, false).apply()
+                        }
                     )
 
                     AnimatedVisibility(visible = isYouTubeLoginEnabled) {
