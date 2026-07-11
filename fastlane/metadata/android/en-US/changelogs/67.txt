@@ -1,0 +1,3 @@
+Hotfix:
+- Fixed albums with more than 100 songs not loading all tracks (gh-661)
+- Added pagination support for album songs using same pattern as playlists
