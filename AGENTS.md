@@ -1,11 +1,11 @@
 # AI Agent Guidelines — NZik
 
-**MANDATORY: Read this file AND rules/*.md before any task. Compliance for ENTIRE session.**
+**MANDATORY: Read this file AND rules/\*.md before any task. Compliance for ENTIRE session.**
 
 ## Session Startup
 
 1. Read this file entirely
-2. Read all rules/*.md files
+2. Read all rules/\*.md files
 3. Ask user via question tool: "Bug, feature, or something else?"
 
 ---
@@ -40,11 +40,13 @@
 
 → See rules/WORKFLOW.md for full NEVER/HALT lists, rules/SECURITY.md for security rules
 
-### User Suggestions ≠ Shortcut
+### BMAD Workflow — Mandatory
 
-User suggestions are input to the BMAD workflow, NOT a shortcut to skip it. Even if the user suggests a specific fix, complete the full workflow before implementing.
+**Loading a BMAD skill ≠ Completing the workflow.** You MUST follow the skill's workflow from first step to last step, in order, without skipping.
 
-Workflow: diagnose → force analysis → solutions → evaluate → spec → plan → **approval** → implement
+**Before writing ANY code:** verify you have completed EVERY step of the loaded BMAD skill's workflow. If any step is incomplete → HALT, do NOT write code.
+
+User suggestions are input to the workflow, NOT a shortcut to skip it.
 
 → See rules/WORKFLOW.md for full BMAD workflow enforcement
 

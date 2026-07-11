@@ -53,6 +53,8 @@ See rules/*.md for full details.
 
 NEVER write code or create implementation plans without completing this step.
 
+**Loading a skill ≠ Completing the workflow.** You MUST complete ALL sub-steps below.
+
 - **ASK FIRST:** Which IDE/tool they are using (before loading any skill) — **ask ONE IDE at a time** (skill path depends on IDE, see BMAD-TOOLS.md)
 - **ASK FIRST:** Which skill to use (propose recommended, let user choose)
 - Identify appropriate skill (analyze skills directory first)
@@ -63,7 +65,9 @@ NEVER write code or create implementation plans without completing this step.
 - Follow workflow step by step — NEVER skip to implementation
 - HALT at every checkpoint
 
-**User suggestions are input to the workflow, NOT a shortcut to skip it.** Even if the user suggests a specific fix, complete the full workflow (force analysis, solutions, evaluation, spec, plan) before implementing.
+**Before writing ANY code:** verify you have completed EVERY step of the loaded BMAD skill's workflow. Read the skill's step files in order — if any step is incomplete → HALT, do NOT write code.
+
+**User suggestions are input to the workflow, NOT a shortcut to skip it.** Even if the user suggests a specific fix, complete the skill's full workflow before implementing.
 
 **If user declines BMAD skill:** HALT and explain that BMAD workflow is mandatory per AGENTS.md rules. Ask user to confirm they want to proceed without BMAD.
 
@@ -112,10 +116,11 @@ Before ANY file edit, command, or tool call, output a short plan:
 
 ## BMAD Dual Enforcement
 
-Follow BOTH AGENTS.md AND BMAD rules IN PARALLEL.
+Follow BOTH AGENTS.md AND BMAD rules IN PARALLEL — at EVERY step of the workflow.
 
 - AGENTS.md wins on: code quality, security, commits, logging, database, build
 - BMAD wins on: workflow ordering, templates, checkpoints
+- **AGENTS.md rules apply DURING the BMAD workflow, not just after**
 
 **Conflict resolution example:**
 
@@ -125,3 +130,5 @@ AGENTS.md says: "Never commit without human approval"
 BMAD workflow says: "Mark story complete and commit"
 RESOLUTION: AGENTS.md wins — HALT, ask user for commit approval
 ```
+
+**NEVER use "I'm following BMAD" as an excuse to skip AGENTS.md rules.**
