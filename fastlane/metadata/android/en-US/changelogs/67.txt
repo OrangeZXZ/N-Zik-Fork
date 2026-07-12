@@ -1,19 +1,17 @@
 Hotfix:
-- This hotfix fix somes inconveniences from v7.1.0
+- Fixes for inconveniences from v7.1.0
 
 Added:
-- Playback settings menu (speed, pitch, volume, bass boost...) via long-press on play
+- Playback settings menu (speed, pitch, volume, bass boost) via long-press on play
 - Preferred stream client dialog (Web Remix / Android VR)
-- Auto fallback to Web Remix if all clients disabled
 
 Changed:
 - Stream settings moved to Network Settings
-- Auto image compression on import (max 1000x1000px)
+- Auto image compression on import
 
 Fixed:
 - Crash on minified builds
-- Infinite buffering on stream cipher decoding
+- Infinite buffering on stream decoding
 - Playlists/albums over 100 songs not loading fully
-- Lyrics refetch bug
 - Memory leak with local images (~16x less RAM)
-- Minor UI/translation fixes
+- Minor lyrics, UI and translation fixes
