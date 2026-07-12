@@ -36,7 +36,7 @@ See rules/*.md for full details.
 
 ## Step-by-Step Workflow
 
-**This workflow has 7 steps. NEVER stop after Step 6. Step 7 is MANDATORY.**
+**This workflow has 8 steps. NEVER stop before Step 8. Step 4 (Validate Plan) and Step 8 (Post-BMAD Actions) are MANDATORY.**
 
 ### Step 1: Understand
 
@@ -203,26 +203,36 @@ Some skills use micro-file design where each step is in its own file.
 - ALWAYS halt at checkpoints and wait for human input
 - Load next step file ONLY when directed by current step
 
-### Step 4: Implement
+### Step 4: Validate Plan (MANDATORY)
+
+Before implementing, **MUST ask user using question tool:**
+
+- Read the SKILL.md to see what actions/checkpoints are available after the plan
+- Present the actions from the SKILL.md (e.g., `[a] Advanced Elicitation`, `[c] Continue`, `[p] Party-Mode`, `[y] YOLO`)
+- Wait for user to choose before proceeding
+
+**NEVER implement without user approval.**
+
+### Step 5: Implement
 
 - Write clean code following all guidelines
 - Follow existing patterns
 - Handle errors appropriately
 - Remove dead code
 
-### Step 5: Verify
+### Step 6: Verify
 
 - Build: `./gradlew :ComposeN-Zik:assembleDebug`
 - Run tests if available
 - Review changes for quality
 
-### Step 6: Report
+### Step 7: Report
 
 - Summarize what was done and why
 - Note files modified or created
 - Do NOT commit unless explicitly asked
 
-### Step 7: Post-BMAD Actions (MANDATORY)
+### Step 8: Post-BMAD Actions (MANDATORY)
 
 After the BMAD workflow completes, **MUST follow this exact flow** — NEVER skip any step:
 
