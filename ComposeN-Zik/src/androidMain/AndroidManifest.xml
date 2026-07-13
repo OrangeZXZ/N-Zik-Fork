@@ -228,7 +228,7 @@
 
         <provider
             android:name="app.n_zik.android.playback.services.ArtworkContentProvider"
-            android:authorities="app.n_zik.android.artwork"
+            android:authorities="${applicationId}.artwork"
             android:exported="true" />
 
     </application>

@@ -15,7 +15,7 @@ import java.io.FileOutputStream
 class ArtworkContentProvider : ContentProvider() {
 
     companion object {
-        const val AUTHORITY = "app.n_zik.android.artwork"
+        val AUTHORITY = "${app.n_zik.android.BuildConfig.APPLICATION_ID}.artwork"
     }
 
     override fun onCreate(): Boolean = true
