@@ -539,13 +539,6 @@
   <string name="click_to_switch_to">點選切換至</string>
   <string name="direction_bottom">下方</string>
   <string name="direction_bottom_floating">底部浮动中</string>
-  <string name="event_shake">搖一搖</string>
-  <string name="shake_to_change_song">搖一搖切換下一首歌</string>
-  <string name="shake_sensitivity">Shake Sensitivity</string>
-  <string name="shake_sensitivity_very_high">Very High (1.0G)</string>
-  <string name="shake_sensitivity_high">High (2.2G)</string>
-  <string name="shake_sensitivity_medium">Medium (3.5G)</string>
-  <string name="shake_sensitivity_low">Low (5.0G)</string>
   <string name="shake_sensitivity_theme">Theme Shake Sensitivity</string>
   <string name="shake_sensitivity_theme_very_high">Very High (1.0G)</string>
   <string name="shake_sensitivity_theme_high">High (2.2G)</string>
