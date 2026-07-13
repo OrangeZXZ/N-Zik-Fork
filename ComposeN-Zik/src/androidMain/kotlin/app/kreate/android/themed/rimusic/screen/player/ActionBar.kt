@@ -478,7 +478,7 @@ fun BoxScope.ActionBar(
                     for (i in 0 until arr.length()) list.add(arr.getString(i))
                     list
                 } catch (_: Exception) {
-                    listOf("video", "discover", "download", "add_to_playlist", "loop", "shuffle", "lyrics", "expanded_player", "sleep_timer", "equalizer", "arrow", "start_radio", "menu")
+                    listOf("video", "discover", "download", "add_to_playlist", "loop", "shuffle", "lyrics", "visualizer", "expanded_player", "sleep_timer", "equalizer", "arrow", "start_radio", "menu")
                 }
             }
             Row(
@@ -652,7 +652,7 @@ fun BoxScope.ActionBar(
                                 )
                             }
                         }
-                        "equalizer" -> {
+                        "visualizer" -> {
                             val visualizerEnabled by rememberPreference( visualizerEnabledKey, false )
                             if (visualizerEnabled)
                                 IconButton(
@@ -665,6 +665,8 @@ fun BoxScope.ActionBar(
                                     },
                                     modifier = Modifier.size( 24.dp )
                                 )
+                        }
+                        "equalizer" -> {
                             val showButtonPlayerSystemEqualizer by rememberPreference( showButtonPlayerSystemEqualizerKey, false )
                             if (showButtonPlayerSystemEqualizer) {
                                 val activityResultLauncher =

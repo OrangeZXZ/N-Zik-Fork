@@ -1,1 +1,5 @@
-- Fix: Theme morphM3 is now the default animated gradient in appearance settings
+Fixed:
+- Theme morphM3 is now the default animated gradient in appearance settings.
+
+Added:
+- Visualizer button can now be toggled directly from the Player Action Bar Settings Dialog.

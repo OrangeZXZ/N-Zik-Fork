@@ -27,6 +27,7 @@ import app.it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import app.it.fast4x.rimusic.utils.expandedplayertoggleKey
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.visualizerEnabledKey
 import app.it.fast4x.rimusic.utils.playerActionBarButtonOrderKey
 import app.n_zik.android.components.dialog.common.Dialog
 import app.n_zik.android.components.dialog.common.ToggleItem
@@ -36,7 +37,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 
 private val defaultButtonOrder = listOf(
     "video", "discover", "download", "add_to_playlist",
-    "loop", "shuffle", "lyrics", "expanded_player",
+    "loop", "shuffle", "lyrics", "visualizer", "expanded_player",
     "sleep_timer", "equalizer", "arrow", "start_radio", "menu"
 )
 
@@ -56,6 +57,7 @@ private fun buildButtonDefs(): Map<String, ButtonDef> = mapOf(
     "loop" to ButtonDef("loop", showButtonPlayerLoopKey, R.drawable.repeat, R.string.action_bar_show_loop_button, true),
     "shuffle" to ButtonDef("shuffle", showButtonPlayerShuffleKey, R.drawable.shuffle, R.string.action_bar_show_shuffle_button, true),
     "lyrics" to ButtonDef("lyrics", showButtonPlayerLyricsKey, R.drawable.song_lyrics, R.string.action_bar_show_lyrics_button, true),
+    "visualizer" to ButtonDef("visualizer", visualizerEnabledKey, R.drawable.sound_effect, R.string.txt_visualizerbackground, false),
     "expanded_player" to ButtonDef("expanded_player", expandedplayertoggleKey, R.drawable.maximize, R.string.expandedplayer, true),
     "sleep_timer" to ButtonDef("sleep_timer", showButtonPlayerSleepTimerKey, R.drawable.sleep, R.string.action_bar_show_sleep_timer_button, false),
     "equalizer" to ButtonDef("equalizer", showButtonPlayerSystemEqualizerKey, R.drawable.equalizer, R.string.show_equalizer, false),
