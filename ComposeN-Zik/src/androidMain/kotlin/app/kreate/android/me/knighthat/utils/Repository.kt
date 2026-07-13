@@ -16,9 +16,8 @@ object Repository {
 
     const val LATEST_TAG_URL = "$REPO/releases/latest"
     const val RELEASE_DOWNLOAD_URL = "$REPO_URL/releases/download/v"
-    
-    const val FASTLANE_CHANGELOGS_PATH = "fastlane/metadata/android/en-US/changelogs"
-    const val FASTLANE_CHANGELOGS_URL = "$RAW_REPO_URL/$FASTLANE_CHANGELOGS_PATH"
+    const val CHANGELOGS_PATH = "Updater/changelogs"
+    const val CHANGELOGS_URL = "$RAW_REPO_URL/$CHANGELOGS_PATH"
 }
 
 

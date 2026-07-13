@@ -53,9 +53,9 @@ import app.n_zik.android.components.dialog.updater.NewUpdateAvailableDialog
 
 object Updater {
     var isCheckingForUpdate by mutableStateOf(false)
-    var isFetchingFastlane by mutableStateOf(false)
-    var latestFastlaneChangelog: String? by mutableStateOf(null)
-    var currentFastlaneChangelog: String? by mutableStateOf(null)
+    var isFetchingChangelog by mutableStateOf(false)
+    var latestChangelog: String? by mutableStateOf(null)
+    var currentChangelog: String? by mutableStateOf(null)
     var latestVersionCode: Int? = null
     private lateinit var tagName: String
     lateinit var build: GithubRelease.Build
@@ -238,25 +238,25 @@ object Updater {
 
             try {
                 // Find the exact version code linked in the release body
-                val regex = """${Repository.FASTLANE_CHANGELOGS_PATH}/(\d+)\.txt""".toRegex()
+                val regex = """${Repository.CHANGELOGS_PATH}/(\d+)\.txt""".toRegex()
                 val match = regex.find(bestRelease.body)
                 
                 if (match != null) {
-                    isFetchingFastlane = true
+                    isFetchingChangelog = true
                     val versionCodeStr = match.groupValues[1]
                     latestVersionCode = versionCodeStr.toIntOrNull()
-                    val downloadUrl = "${Repository.FASTLANE_CHANGELOGS_URL}/$versionCodeStr.txt"
+                    val downloadUrl = "${Repository.CHANGELOGS_URL}/$versionCodeStr.txt"
                     
                     val txtReq = Request.Builder().url(downloadUrl).build()
                     val txtRes = NetworkClientFactory.getClient().newCall(txtReq).execute()
                     if (txtRes.isSuccessful) {
-                        latestFastlaneChangelog = txtRes.body?.string()
+                        latestChangelog = txtRes.body?.string()
                     }
                 }
             } catch (e: Exception) {
-                Timber.tag("Updater").e(e, "Error fetching fastlane changelog")
+                Timber.tag("Updater").e(e, "Error fetching changelog")
             } finally {
-                isFetchingFastlane = false
+                isFetchingChangelog = false
             }
         } else {
             throw NoSuchFileException("")
@@ -266,18 +266,18 @@ object Updater {
     private const val CHANGELOG_CACHE_KEY = "cached_changelog"
     private const val CHANGELOG_VERSION_KEY = "cached_changelog_version"
 
-    fun fetchCurrentFastlaneChangelog() = CoroutineScope(Dispatchers.IO).launch {
+    fun fetchCurrentChangelog() = CoroutineScope(Dispatchers.IO).launch {
         try {
-            isFetchingFastlane = true
+            isFetchingChangelog = true
             val versionCode = BuildConfig.VERSION_CODE
-            val downloadUrl = "${Repository.FASTLANE_CHANGELOGS_URL}/$versionCode.txt"
+            val downloadUrl = "${Repository.CHANGELOGS_URL}/$versionCode.txt"
             
             val txtReq = Request.Builder().url(downloadUrl).build()
             val txtRes = NetworkClientFactory.getClient().newCall(txtReq).execute()
             if (txtRes.isSuccessful) {
                 val fetchedChangelog = txtRes.body?.string()
                 if (!fetchedChangelog.isNullOrBlank()) {
-                    currentFastlaneChangelog = fetchedChangelog
+                    currentChangelog = fetchedChangelog
                     // Cache the changelog locally
                     appContext().preferences.edit()
                         .putString(CHANGELOG_CACHE_KEY, fetchedChangelog)
@@ -286,13 +286,13 @@ object Updater {
                 }
             }
         } catch (e: Exception) {
-            Timber.tag("Updater").e(e, "Error fetching current fastlane changelog")
+            Timber.tag("Updater").e(e, "Error fetching current changelog")
             // If network fails, try to load from cache
-            if (currentFastlaneChangelog.isNullOrBlank()) {
+            if (currentChangelog.isNullOrBlank()) {
                 loadCachedChangelog()
             }
         } finally {
-            isFetchingFastlane = false
+            isFetchingChangelog = false
         }
     }
 
@@ -305,7 +305,7 @@ object Updater {
         val cachedChangelog = prefs.getString(CHANGELOG_CACHE_KEY, null)
         
         if (cachedVersion == BuildConfig.VERSION_CODE && !cachedChangelog.isNullOrBlank()) {
-            currentFastlaneChangelog = cachedChangelog
+            currentChangelog = cachedChangelog
         }
     }
 

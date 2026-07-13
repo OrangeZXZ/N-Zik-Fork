@@ -496,7 +496,7 @@ fun UpdateScreen(navController: NavController) {
                                                     apkUrl = currentDownloadUrl,
                                                     version = currentVersionStr
                                                 )
-                                                Updater.fetchCurrentFastlaneChangelog()
+                                                Updater.fetchCurrentChangelog()
                                             } catch (e: Exception) {
                                                 Timber.tag("UpdateScreen").e(e, "Error fetching update")
                                                 Toaster.w(R.string.update_not_available_yet)
@@ -637,7 +637,7 @@ fun UpdateScreen(navController: NavController) {
                         // Load from cache first for instant display
                         Updater.loadCachedChangelog()
                         // Then fetch from network to get latest
-                        Updater.fetchCurrentFastlaneChangelog()
+                        Updater.fetchCurrentChangelog()
                     }
                 }
                 val currentChangelog = remember {
@@ -649,14 +649,14 @@ fun UpdateScreen(navController: NavController) {
                     } catch (e: Exception) { "" }
                 }
                 val changelogTextToDisplay = if (isReinstalling || !hasUpdate) {
-                    if (!Updater.currentFastlaneChangelog.isNullOrBlank()) {
-                        Updater.currentFastlaneChangelog!!
+                    if (!Updater.currentChangelog.isNullOrBlank()) {
+                        Updater.currentChangelog!!
                     } else {
                         currentChangelog
                     }
                 } else {
-                    if (!Updater.latestFastlaneChangelog.isNullOrBlank()) {
-                        Updater.latestFastlaneChangelog!!
+                    if (!Updater.latestChangelog.isNullOrBlank()) {
+                        Updater.latestChangelog!!
                     } else if (!Updater.githubRelease?.body.isNullOrBlank()) {
                         Updater.githubRelease!!.body
                     } else {
@@ -664,7 +664,7 @@ fun UpdateScreen(navController: NavController) {
                     }
                 }
 
-                if (changelogTextToDisplay.isNotBlank() || Updater.isFetchingFastlane) {
+                if (changelogTextToDisplay.isNotBlank() || Updater.isFetchingChangelog) {
                     AnimatedVisibility(
                         visible = true,
                         enter = fadeIn(animationSpec = tween(800)) + scaleIn(
@@ -701,7 +701,7 @@ fun UpdateScreen(navController: NavController) {
                                         style = typography().m.bold.copy(color = colorPalette().text)
                                     )
                                 }
-                                if (Updater.isFetchingFastlane) {
+                                if (Updater.isFetchingChangelog) {
                                     Box(
                                         modifier = Modifier.fillMaxWidth().padding(32.dp),
                                         contentAlignment = Alignment.Center

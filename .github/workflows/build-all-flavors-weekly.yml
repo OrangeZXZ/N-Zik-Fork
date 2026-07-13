@@ -62,7 +62,7 @@ jobs:
 
       - name: Check if changelog exists
         run: |
-          if [ ! -f "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" ]; then
+          if [ ! -f "Updater/changelogs/${{ needs.versioning.outputs.code }}.txt" ]; then
             echo "Changelog not found. Exiting."
             exit 1
           fi
@@ -93,7 +93,7 @@ jobs:
           submodules: true
 
       - name: Copy changelogs into res/raw
-        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
+        run: cp "Updater/changelogs/${{ needs.versioning.outputs.code }}.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
         uses: actions/setup-java@v5.5.0
@@ -132,7 +132,7 @@ jobs:
           submodules: true
 
       - name: Copy changelogs into res/raw
-        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
+        run: cp "Updater/changelogs/${{ needs.versioning.outputs.code }}.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
         uses: actions/setup-java@v5.5.0
@@ -171,7 +171,7 @@ jobs:
           submodules: true
 
       - name: Copy changelogs into res/raw
-        run: cp "fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
+        run: cp "Updater/changelogs/${{ needs.versioning.outputs.code }}.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
         uses: actions/setup-java@v5.5.0
@@ -316,7 +316,7 @@ jobs:
             ## 🔗 Changelog & Downloads
             
             - Full changelog: [Compare v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }}](https://github.com/N-Zik-Group/N-Zik/compare/v${{ needs.versioning.outputs.upstream }}...v${{ needs.versioning.outputs.downstream }})  
-            - [Changelog text file](https://github.com/N-Zik-Group/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt)
+            - [Changelog text file](https://github.com/N-Zik-Group/N-Zik/blob/main/Updater/changelogs/${{ needs.versioning.outputs.code }}.txt)
 
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
@@ -395,7 +395,7 @@ jobs:
             - 📥 **Full APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}/N-Zik-full.apk
             - 📥 **Minified APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}/N-Zik-minified.apk
             - 📥 **FOSS APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}/N-Zik-foss.apk
-            - 📄 **Changelog:** <https://github.com/N-Zik-Group/N-Zik/blob/main/fastlane/metadata/android/en-US/changelogs/${{ needs.versioning.outputs.code }}.txt>
+            - 📄 **Changelog:** <https://github.com/N-Zik-Group/N-Zik/blob/main/Updater/changelogs/${{ needs.versioning.outputs.code }}.txt>
             - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}>
         run: |
           jq -n \
