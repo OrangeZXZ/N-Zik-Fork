@@ -177,6 +177,71 @@ fun upsertSongInfo(videoId: String) = runBlocking {
     )
 }
 
+/**
+ * Fetches format metadata for a videoId if missing from DB.
+ * Called fire-and-forget for every playback, including downloaded songs
+ * where the stream resolver is bypassed by downloadCache.
+ *
+ * Uses [playerResponseForMetadata] to get format info (bitrate, codec, etc.)
+ * and [playerConfig] for perceptual loudness. Then does a HEAD request
+ * on the stream URL to resolve content-length if not provided by the API.
+ */
+private fun fetchFormatIfMissing(videoId: String) {
+    if (videoId == justInserted) return
+    if (videoId.startsWith(LOCAL_KEY_PREFIX)) return
+    if (videoId.length != 11) return
+    CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
+        try {
+            val existing = Database.formatTable.findBySongId(videoId).firstOrNull()
+            val incomplete = existing == null ||
+                existing.contentLength == null || existing.contentLength == 0L ||
+                existing.loudnessDb == null ||
+                existing.perceptualLoudnessDb == null ||
+                existing.bitrate == 0L ||
+                existing.sampleRate == null ||
+                existing.audioChannels == null ||
+                existing.codecs.isNullOrEmpty()
+            if (!incomplete) return@launch
+
+            val response = playerResponseForMetadata(videoId).getOrNull() ?: return@launch
+            val api = response.streamingData?.formats?.firstOrNull() ?: return@launch
+            val apiPerceptual = response.playerConfig?.audioConfig?.perceptualLoudnessDb
+
+            val contentLength = existing?.contentLength?.takeIf { it > 0 }
+                ?: api.contentLength
+                ?: runCatching {
+                    val streamUrl = api.url?.let { android.net.Uri.parse(it) } ?: return@runCatching null
+                    val headRequest = okhttp3.Request.Builder().head().url(streamUrl.toString()).build()
+                    NetworkClientFactory.getCachelessClient().newCall(headRequest).execute().use { resp ->
+                        resp.header("Content-Length")?.toLongOrNull()
+                    }
+                }.onFailure { Timber.tag(TAG).w(it, "HEAD content-length failed for $videoId") }.getOrNull()
+
+            val codecs = api.mimeType.substringAfter("codecs=", "").removeSurrounding("\"").takeIf { it.isNotEmpty() }
+
+            Database.asyncTransaction {
+                formatTable.upsert(app.it.fast4x.rimusic.models.Format(
+                    songId = videoId,
+                    itag = existing?.itag ?: api.itag,
+                    mimeType = existing?.mimeType ?: api.mimeType,
+                    bitrate = existing?.bitrate?.takeIf { it > 0 } ?: api.bitrate.toLong(),
+                    contentLength = contentLength,
+                    lastModified = existing?.lastModified ?: api.lastModified,
+                    loudnessDb = existing?.loudnessDb ?: api.loudnessDb?.toFloat(),
+                    codecs = existing?.codecs?.takeIf { it.isNotEmpty() } ?: codecs,
+                    sampleRate = existing?.sampleRate ?: api.audioSampleRate,
+                    perceptualLoudnessDb = existing?.perceptualLoudnessDb ?: apiPerceptual,
+                    audioChannels = existing?.audioChannels ?: api.audioChannels,
+                    playbackUrl = existing?.playbackUrl
+                ))
+            }
+            Timber.tag(TAG).d("Updated format for $videoId: size=$contentLength loudness=${existing?.loudnessDb ?: api.loudnessDb} perceptual=${existing?.perceptualLoudnessDb ?: apiPerceptual}")
+        } catch (e: Exception) {
+            Timber.tag(TAG).w(e, "Failed to fetch missing format for $videoId")
+        }
+    }
+}
+
 @NonBlocking
 private fun upsertSongFormat(
     videoId: String,
@@ -1003,6 +1068,7 @@ fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory {
                 throw ExplicitContentException()
             }
         }
+        fetchFormatIfMissing(videoId)
         dataSpec.buildUpon().setKey(videoId).build()
     }
 }
