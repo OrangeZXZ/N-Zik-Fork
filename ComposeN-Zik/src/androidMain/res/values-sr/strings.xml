@@ -539,13 +539,6 @@
   <string name="click_to_switch_to">Kliknite da biste prešli na</string>
   <string name="direction_bottom">Dno</string>
   <string name="direction_bottom_floating">Bottom Floating</string>
-  <string name="event_shake">Protresi</string>
-  <string name="shake_to_change_song">Protresite da biste promenili pesmu</string>
-  <string name="shake_sensitivity">Shake Sensitivity</string>
-  <string name="shake_sensitivity_very_high">Very High (1.0G)</string>
-  <string name="shake_sensitivity_high">High (2.2G)</string>
-  <string name="shake_sensitivity_medium">Medium (3.5G)</string>
-  <string name="shake_sensitivity_low">Low (5.0G)</string>
   <string name="shake_sensitivity_theme">Theme Shake Sensitivity</string>
   <string name="shake_sensitivity_theme_very_high">Very High (1.0G)</string>
   <string name="shake_sensitivity_theme_high">High (2.2G)</string>
