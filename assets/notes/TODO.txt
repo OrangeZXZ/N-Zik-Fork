@@ -6,3 +6,4 @@ Make homepage editable remove / moving stuff
 Missing vz icon in reorder menu
 Add reset ok cancel on settings dialog
 refactor all dialog to centralize them and create a proper dialog manager
+Nerds stats get wiped and never getting any new datas

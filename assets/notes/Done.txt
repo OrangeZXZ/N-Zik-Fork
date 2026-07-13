@@ -1,0 +1,1 @@
+- Fix: Theme morphM3 is now the default animated gradient in appearance settings

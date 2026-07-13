@@ -375,6 +375,11 @@ fun DefaultAppearanceSettings() {
     keepPlayerMinimized = false
     var playerInfoShowIcons by rememberPreference(playerInfoShowIconsKey, true)
     playerInfoShowIcons = true
+    var animatedGradient by rememberPreference(
+        animatedGradientKey,
+        AnimatedGradient.M3EMorphingCover
+    )
+    animatedGradient = AnimatedGradient.M3EMorphingCover
 }
 
 @ExperimentalAnimationApi
@@ -559,7 +564,7 @@ fun AppearanceSettings(
     var topPadding by rememberPreference(topPaddingKey, true)
     var animatedGradient by rememberPreference(
         animatedGradientKey,
-        AnimatedGradient.FluidCoverColorGradient
+        AnimatedGradient.M3EMorphingCover
     )
     var shakeSensitivityTheme by rememberPreference(shakeSensitivityThemeKey, ShakeSensitivityTheme.High)
     var appearanceChooser by remember{ mutableStateOf(false)}
