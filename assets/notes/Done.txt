@@ -13,3 +13,8 @@ Removed:
 - Modified: app/n_zik/android/playback/services/StreamResolver.kt
 - Modified: app/n_zik/android/playback/services/PlayerServiceModern.kt
 - Fix: StatsForNerds streamClient data now persists across Android cache wipes
+
+## 2026-07-13
+- Modified: app/n_zik/android/playback/services/StreamResolver.kt
+- Fix: StatsForNerds missing format fields (Size, Loudness, Perceptual Loudness) for downloaded songs
+- Added fetchFormatIfMissing() in outer ResolvingDataSource: checks if any Format field is null/incomplete on every playback, fetches via playerResponseForMetadata and HEAD request, upserts merged result into Room DB

@@ -112,7 +112,8 @@ private val WEB_CLIENTS = setOf("WEB", "WEB_REMIX", "WEB_CREATOR", "TVHTML5", "T
 // Age-restricted playability statuses
 private val AGE_RESTRICTED_STATUSES = setOf("AGE_CHECK_REQUIRED", "AGE_VERIFICATION_REQUIRED", "LOGIN_REQUIRED", "CONTENT_CHECK_REQUIRED")
 
-// Track videoIds where WEB_REMIX failed validation (403/expired) to skip HEAD on next attempt
+// Track videoIds already fetched by fetchFormatIfMissing (avoid redundant API calls)
+private val fetchedFormatIds = Collections.synchronizedSet(mutableSetOf<String>())
 private val webRemixFailedIds = Collections.synchronizedSet(mutableSetOf<String>())
 
 // Warmup video ID for PoToken pre-generation (first YouTube video)
@@ -187,55 +188,83 @@ fun upsertSongInfo(videoId: String) = runBlocking {
  * on the stream URL to resolve content-length if not provided by the API.
  */
 private fun fetchFormatIfMissing(videoId: String) {
-    if (videoId == justInserted) return
+    if (videoId in fetchedFormatIds) return
     if (videoId.startsWith(LOCAL_KEY_PREFIX)) return
     if (videoId.length != 11) return
     CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
         try {
             val existing = Database.formatTable.findBySongId(videoId).firstOrNull()
-            val incomplete = existing == null ||
-                existing.contentLength == null || existing.contentLength == 0L ||
-                existing.loudnessDb == null ||
-                existing.perceptualLoudnessDb == null ||
-                existing.bitrate == 0L ||
-                existing.sampleRate == null ||
-                existing.audioChannels == null ||
-                existing.codecs.isNullOrEmpty()
-            if (!incomplete) return@launch
+            if (existing != null) {
+                val complete = (existing.contentLength ?: 0L) > 0L &&
+                    existing.loudnessDb != null &&
+                    existing.perceptualLoudnessDb != null &&
+                    (existing.bitrate ?: 0L) > 0L &&
+                    existing.sampleRate != null &&
+                    existing.audioChannels != null &&
+                    !existing.codecs.isNullOrEmpty()
+                if (complete) {
+                    Timber.tag(TAG).d("fetchFormatIfMissing: skip $videoId (complete)")
+                    fetchedFormatIds.add(videoId)
+                    return@launch
+                }
+                Timber.tag(TAG).d("fetchFormatIfMissing: re-fetch $videoId missing contentLength=${existing.contentLength} loudness=${existing.loudnessDb} perceptual=${existing.perceptualLoudnessDb}")
+            } else {
+                Timber.tag(TAG).d("fetchFormatIfMissing: new $videoId (no format in DB)")
+            }
 
             val response = playerResponseForMetadata(videoId).getOrNull() ?: return@launch
-            val api = response.streamingData?.formats?.firstOrNull() ?: return@launch
+            val api = response.streamingData?.adaptiveFormats
+                ?.filter { it.isAudio && (it.url != null || it.signatureCipher != null) }
+                ?.maxByOrNull { scoreCodec(it.mimeType) * 10000 + (it.bitrate ?: 0) }
+                ?: return@launch
             val apiPerceptual = response.playerConfig?.audioConfig?.perceptualLoudnessDb
+            val apiLoudness = response.playerConfig?.audioConfig?.loudnessDb
+            val codecs = api.mimeType.substringAfter("codecs=", "").removeSurrounding("\"").takeIf { it.isNotEmpty() }
 
-            val contentLength = existing?.contentLength?.takeIf { it > 0 }
-                ?: api.contentLength
+            // Try to get contentLength: DB > API > HEAD on resolved stream URL
+            val finalSize = existing?.contentLength?.takeIf { it > 0 }
+                ?: api.contentLength?.takeIf { it > 0 }
                 ?: runCatching {
-                    val streamUrl = api.url?.let { android.net.Uri.parse(it) } ?: return@runCatching null
-                    val headRequest = okhttp3.Request.Builder().head().url(streamUrl.toString()).build()
+                    val streamUri = resolveFormatUrl(videoId, api, "WEB_REMIX") ?: return@runCatching null
+                    val headRequest = okhttp3.Request.Builder().head().url(streamUri.toString()).build()
                     NetworkClientFactory.getCachelessClient().newCall(headRequest).execute().use { resp ->
                         resp.header("Content-Length")?.toLongOrNull()
                     }
                 }.onFailure { Timber.tag(TAG).w(it, "HEAD content-length failed for $videoId") }.getOrNull()
-
-            val codecs = api.mimeType.substringAfter("codecs=", "").removeSurrounding("\"").takeIf { it.isNotEmpty() }
+            val finalLoudness = existing?.loudnessDb ?: api.loudnessDb?.toFloat() ?: apiLoudness
+            val finalPerceptual = existing?.perceptualLoudnessDb ?: apiPerceptual
+            val finalBitrate = existing?.bitrate?.takeIf { it > 0 } ?: api.bitrate.toLong()
+            val finalCodecs = existing?.codecs?.takeIf { it.isNotEmpty() } ?: codecs
+            val finalSampleRate = existing?.sampleRate ?: api.audioSampleRate
+            val finalChannels = existing?.audioChannels ?: api.audioChannels
 
             Database.asyncTransaction {
                 formatTable.upsert(app.it.fast4x.rimusic.models.Format(
                     songId = videoId,
                     itag = existing?.itag ?: api.itag,
                     mimeType = existing?.mimeType ?: api.mimeType,
-                    bitrate = existing?.bitrate?.takeIf { it > 0 } ?: api.bitrate.toLong(),
-                    contentLength = contentLength,
+                    bitrate = finalBitrate,
+                    contentLength = finalSize,
                     lastModified = existing?.lastModified ?: api.lastModified,
-                    loudnessDb = existing?.loudnessDb ?: api.loudnessDb?.toFloat(),
-                    codecs = existing?.codecs?.takeIf { it.isNotEmpty() } ?: codecs,
-                    sampleRate = existing?.sampleRate ?: api.audioSampleRate,
-                    perceptualLoudnessDb = existing?.perceptualLoudnessDb ?: apiPerceptual,
-                    audioChannels = existing?.audioChannels ?: api.audioChannels,
+                    loudnessDb = finalLoudness,
+                    codecs = finalCodecs,
+                    sampleRate = finalSampleRate,
+                    perceptualLoudnessDb = finalPerceptual,
+                    audioChannels = finalChannels,
                     playbackUrl = existing?.playbackUrl
                 ))
             }
-            Timber.tag(TAG).d("Updated format for $videoId: size=$contentLength loudness=${existing?.loudnessDb ?: api.loudnessDb} perceptual=${existing?.perceptualLoudnessDb ?: apiPerceptual}")
+            fetchedFormatIds.add(videoId)
+            Timber.tag(TAG).d("fetchFormatIfMissing: videoId=$videoId" +
+                " existing=${existing != null}" +
+                " apiSize=${api.contentLength}" +
+                " finalSize=$finalSize" +
+                " loudness=$finalLoudness" +
+                " perceptual=$finalPerceptual" +
+                " bitrate=$finalBitrate" +
+                " sampleRate=$finalSampleRate" +
+                " channels=$finalChannels" +
+                " codecs=$finalCodecs")
         } catch (e: Exception) {
             Timber.tag(TAG).w(e, "Failed to fetch missing format for $videoId")
         }
@@ -247,7 +276,8 @@ private fun upsertSongFormat(
     videoId: String,
     format: PlayerResponse.StreamingData.Format,
     perceptualLoudnessDb: Float? = null,
-    playbackUrl: String? = null
+    playbackUrl: String? = null,
+    audioConfigLoudnessDb: Float? = null
 ) {
     if (videoId == justInserted) return
     runCatching {
@@ -256,6 +286,9 @@ private fun upsertSongFormat(
             .substringAfter("codecs=", "")
             .removeSurrounding("\"")
             .takeIf { it.isNotEmpty() }
+
+        // Prefer audioConfig.loudnessDb (player-level, more reliable) over format-level loudnessDb
+        val loudnessDb = audioConfigLoudnessDb ?: format.loudnessDb?.toFloat()
 
         Database.asyncTransaction {
             songTable.insertIgnore(Song.makePlaceholder(videoId))
@@ -266,7 +299,7 @@ private fun upsertSongFormat(
                 bitrate = format.bitrate.toLong(),
                 contentLength = format.contentLength,
                 lastModified = format.lastModified,
-                loudnessDb = format.loudnessDb?.toFloat(),
+                loudnessDb = loudnessDb,
                 codecs = codecs,
                 sampleRate = format.audioSampleRate,
                 perceptualLoudnessDb = perceptualLoudnessDb,
@@ -293,6 +326,12 @@ private fun checkPlayability(playabilityStatus: PlayerResponse.PlayabilityStatus
     }
 }
 
+private fun scoreCodec(mimeType: String): Int = when {
+    mimeType.contains("opus", ignoreCase = true) -> 2
+    mimeType.contains("mp4a", ignoreCase = true) -> 1
+    else -> 0
+}
+
 /**
  * Picks the best audio format from a player response based on user quality preference.
  * Uses codec-aware scoring: opus > mp4a, stereo > mono, then bitrate as tiebreaker.
@@ -308,12 +347,6 @@ private fun pickFormat(
         ?: return null
 
     if (formats.isEmpty()) return null
-
-    fun scoreCodec(mimeType: String): Int = when {
-        mimeType.contains("opus", ignoreCase = true) -> 2
-        mimeType.contains("mp4a", ignoreCase = true) -> 1
-        else -> 0
-    }
 
     fun scoreQuality(audioQuality: String?): Int = when (audioQuality) {
         "AUDIO_QUALITY_HIGH" -> 3
@@ -797,9 +830,10 @@ private suspend fun resolveStreamUriInternal(
 
             // Success!
             Timber.tag(TAG).d("${ytClient.clientName}: stream resolved successfully for $videoId")
+            val audioLoudnessDb = responseToUse.playerConfig?.audioConfig?.loudnessDb
             val perceptualLoudness = responseToUse.playerConfig?.audioConfig?.perceptualLoudnessDb
             val playbackUrl = responseToUse.playbackTracking?.videostatsPlaybackUrl?.baseUrl
-            CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch { upsertSongFormat(videoId, format, perceptualLoudness, playbackUrl) }
+            CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch { upsertSongFormat(videoId, format, perceptualLoudness, playbackUrl, audioLoudnessDb) }
 
             // Cache PlaybackData for metadata access (loudness, videoDetails, tracking)
             playbackDataCache[videoId] = PlaybackData(
@@ -910,6 +944,7 @@ fun clearStreamCaches() {
     formatCache.clear()
     playbackDataCache.clear()
     webRemixFailedIds.clear()
+    fetchedFormatIds.clear()
     PlaybackDataStore.clearStreamClients(appContext())
     Timber.tag("StreamResolver").d("All stream caches cleared (format + playback data + webRemix failures)")
 }
