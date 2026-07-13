@@ -19,7 +19,7 @@ Each entry uses this structure:
 
 - `<scope>` = the affected module/area (e.g. `player`, `lyrics`, `home`, `search`, `ui`)
 - Sub-bullets should reference concrete file names, function names, or class names when relevant
-- Include issue/PR numbers or short commit hashes when available: `(issue #123)` or `(gh-605)` or `` (`9f35d2c8e2`) ``
+- Include issue/PR links when available: `(issue https://github.com/N-Zik-Group/N-Zik/issues/123)` or commit hash `` (`9f35d2c8e2`) ``
 - If a fix touches multiple files or has multiple root causes, list each as its own sub-bullet
 - Prefer explaining root cause + fix, not just the symptom
 
@@ -32,7 +32,7 @@ For urgent patches that fix a critical bug or regression in a previously release
 
 ```
 Hotfix:
-- fix(startup): resolve app crash on launch (issue #701)
+- fix(startup): resolve app crash on launch (issue https://github.com/N-Zik-Group/N-Zik/issues/701)
   - Missing Room database migration between v12 and v13 caused a fatal crash on first launch
   - Added `Migration12to13` handling the new `lyrics_karaoke` table
   - Verified against a clean install and an upgrade path from v1.4.2
@@ -45,7 +45,7 @@ For any new feature, screen, or capability added to the application.
 
 ```
 Added:
-- feat(visualizer): add adjustable line thickness (issue #588)
+- feat(visualizer): add adjustable line thickness (issue https://github.com/N-Zik-Group/N-Zik/issues/588)
   - New `lineThicknessKey` preference, exposed in the Visualizer settings menu via `EnumSettingEntry`
   - Range 1–5dp, default 2dp, applied live in `AudioWavePill`
   - Persisted in DataStore alongside existing visualizer prefs
@@ -58,7 +58,7 @@ For changes in behavior, design, or logic of an existing feature.
 
 ```
 Changed:
-- change(ui): default thumbnail roundness 12 → 20 (gh-612)
+- change(ui): default thumbnail roundness 12 → 20 (issue https://github.com/N-Zik-Group/N-Zik/issues/612)
   - Updated `ThumbnailShape` default in `Theme.kt`
   - Applies to Home, Search, and Player screens; user overrides in settings are unaffected
 ```
@@ -82,7 +82,7 @@ For any bug fixes or crash resolutions.
 
 ```
 Fixed:
-- fix(lyrics): prevent FOREIGN KEY constraint crash on fast lyric APIs (issue #639)
+- fix(lyrics): prevent FOREIGN KEY constraint crash on fast lyric APIs (issue https://github.com/N-Zik-Group/N-Zik/issues/639)
   - Created `saveLyricsSafe` helper in `LyricsFetcher.kt` to catch `SQLiteConstraintException`
   - Added a 5-second async retry to let the background player persist the parent `Song` entity first
   - Replaced all raw `Database.asyncTransaction { lyricsTable.upsert(...) }` calls with `saveLyricsSafe(...)`
@@ -107,7 +107,7 @@ For features or options that have been intentionally taken out of the applicatio
 
 ```
 Removed:
-- remove(player): drop legacy video player component (gh-598)
+- remove(player): drop legacy video player component (issue https://github.com/N-Zik-Group/N-Zik/issues/598)
   - Deleted `LegacyVideoPlayer.kt` and its DataStore flag `useLegacyPlayerKey`
   - All video playback now routes through `ExoVideoPlayer`
 ```

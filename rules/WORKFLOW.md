@@ -265,12 +265,11 @@ After the BMAD workflow completes, **MUST follow this exact flow** — NEVER ski
 
 **Step 7d: Commit (only if user says "Functional")**
 
-- Update `assets/notes/Done.txt` with:
-  - Date
-  - Files modified
-  - Issue link (if applicable)
+- Update `assets/notes/Done.txt` using its own template (`Changelog_Template.txt` in same folder) — format: `<keyword>(<scope>): <short summary> (issue ref)` + technical sub-bullets, include full issue link
+- Update `fastlane/metadata/android/en-US/changelogs/{version}.txt` using its own template (`Changelog_Template.txt` in same folder) — **max 500 characters**
+- Update `Updater/changelogs/{version}.txt` using its own template (`Changelog_Template.txt` in same folder) — **no character limit**, include full issue link
 - **MUST ask user for commit approval** (NEVER commit without approval)
-- If approved → `git commit` with conventional format (`type(scope): description`)
+- If approved → `git commit` with conventional format (`type(scope): description`) — include issue link but avoid keywords that auto-close (e.g., use "issue https://..." not "fixes https://..." or "closes https://...")
 
 **Step 7e: Finish Workflow**
 

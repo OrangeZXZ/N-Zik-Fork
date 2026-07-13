@@ -95,7 +95,7 @@ Rules:
 - Imperative mood ("add" not "added")
 - Scope optional but recommended
 - No period at end
-- Include GitHub issue URL when applicable
+- Include GitHub issue URL when applicable — use `issue https://...` (avoid keywords that auto-close issues like "fixes" or "closes")
 
 ## Branching
 
