@@ -625,11 +625,14 @@ fun SliderSettingsEntry(
     modifier: Modifier = Modifier,
     onSlide: (Float) -> Unit = { },
     onSlideComplete: () -> Unit = { },
-    toDisplay: @Composable (Float) -> String = { it.toString() },
+    toDisplay: @Composable (Float) -> String = { it.toInt().toString() },
     stepSize: Float = 0.1f,
+    defaultValue: Float? = null,
+    drawValuePoints: Boolean = false,
     isEnabled: Boolean = true,
     usePadding: Boolean = true,
     icon: Int? = null,
+    isIntegerOnly: Boolean = false,
     trailingContent: (@Composable () -> Unit)? = null
 ) = Column(modifier = modifier) {
 
@@ -643,12 +646,13 @@ fun SliderSettingsEntry(
 
         override var isActive: Boolean by rememberSaveable { mutableStateOf(false) }
         override var value: String by remember( valueFloat ) {
-            val formatted = if (valueFloat % 1f == 0f) valueFloat.toInt().toString() else "%.1f".format( valueFloat ).replace(",", ".")
+            val isInteger = isIntegerOnly || kotlin.math.abs(valueFloat - kotlin.math.round(valueFloat)) < 0.001f
+            val formatted = if (isInteger) kotlin.math.round(valueFloat).toInt().toString() else "%.1f".format( valueFloat ).replace(",", ".")
             mutableStateOf( formatted )
         }
 
         override fun onSet( newValue: String ) {
-            val parsed = newValue.toFloatOrNull() ?: return
+            val parsed = newValue.replace(",", ".").toFloatOrNull() ?: return
             this.valueFloat = parsed.coerceIn(range.start, range.endInclusive)
             onSlide( this.valueFloat )
             onSlideComplete()
@@ -687,6 +691,8 @@ fun SliderSettingsEntry(
         onSlideComplete = onSlideComplete,
         range = range,
         stepSize = stepSize,
+        defaultValue = defaultValue,
+        drawValuePoints = drawValuePoints,
         modifier = Modifier
             .height(36.dp)
             .alpha(if (isEnabled) 1f else 0.5f)

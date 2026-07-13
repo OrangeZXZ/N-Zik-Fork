@@ -1095,7 +1095,7 @@ class PlayerServiceModern : MediaLibraryService(),
         runCatching {
             if (bassBoost == null) bassBoost = BassBoost(0, player.audioSessionId)
             val bassboostLevel =
-                (preferences.getFloat(bassboostLevelKey, 0.5f) * 1000f).toInt().toShort()
+                (preferences.getFloat(bassboostLevelKey, 0f) * 1000f).toInt().toShort()
             Timber.tag("PlayerServiceModern").d("maybeBassBoost bassboostLevel $bassboostLevel")
             bassBoost?.enabled = false
             bassBoost?.setStrength(bassboostLevel)

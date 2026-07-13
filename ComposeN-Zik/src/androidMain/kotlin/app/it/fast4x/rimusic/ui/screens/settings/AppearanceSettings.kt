@@ -1198,8 +1198,11 @@ fun AppearanceSettings(
                                     text = "",
                                     state = thumbnailSizeLDp,
                                     range = 0f..100f,
-                                    stepSize = 25f,
-                                    onSlide = { thumbnailSizeLDp = it },
+                                    stepSize = 0f,
+                                    defaultValue = 100f,
+                                    drawValuePoints = true,
+                                    isIntegerOnly = true,
+                                    onSlide = { thumbnailSizeLDp = kotlin.math.round(it) },
                                     toDisplay = { it.toInt().toString() },
                                     trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeLDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } } }
                                 )
@@ -1237,8 +1240,11 @@ fun AppearanceSettings(
                                     text = "",
                                     state = thumbnailSizeDp,
                                     range = 0f..100f,
-                                    stepSize = 25f,
-                                    onSlide = { thumbnailSizeDp = it },
+                                    stepSize = 0f,
+                                    defaultValue = 90f,
+                                    drawValuePoints = true,
+                                    isIntegerOnly = true,
+                                    onSlide = { thumbnailSizeDp = kotlin.math.round(it) },
                                     toDisplay = { it.toInt().toString() },
                                     trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } } }
                                 )
@@ -1278,8 +1284,11 @@ fun AppearanceSettings(
                                 text = "",
                                 state = thumbnailRoundnessDp,
                                 range = 0f..48f,
-                                stepSize = 12f,
-                                onSlide = { thumbnailRoundnessDp = it },
+                                stepSize = 0f,
+                                defaultValue = 12f,
+                                drawValuePoints = true,
+                                isIntegerOnly = true,
+                                onSlide = { thumbnailRoundnessDp = kotlin.math.round(it) },
                                 toDisplay = { it.toInt().toString() },
                                 trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } }
                             )
@@ -1316,8 +1325,11 @@ fun AppearanceSettings(
                             text = "",
                             state = uiRoundnessDp,
                             range = 0f..40f,
-                            stepSize = 10f,
-                            onSlide = { uiRoundnessDp = it },
+                            stepSize = 0f,
+                            defaultValue = 25f,
+                            drawValuePoints = true,
+                            isIntegerOnly = true,
+                            onSlide = { uiRoundnessDp = kotlin.math.round(it) },
                             toDisplay = { it.toInt().toString() },
                             trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(uiRoundnessDp.dp, 0.4f))).border(width = 1.dp, color = colorPalette().accent, shape = androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(uiRoundnessDp.dp, 0.4f)))) } },
                             modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
@@ -1969,9 +1981,12 @@ fun AppearanceSettings(
                             title = stringResource(R.string.visualizer_line_thickness),
                             text = "",
                             state = visualizerLineThickness,
-                            onSlide = { visualizerLineThickness = it },
+                            onSlide = { visualizerLineThickness = kotlin.math.round(it) },
                             range = 1f..10f,
-                            stepSize = 1f,
+                            stepSize = 0f,
+                            defaultValue = 6f,
+                            drawValuePoints = true,
+                            isIntegerOnly = true,
                             toDisplay = { it.toInt().toString() },
                             modifier = Modifier.padding(start = 25.dp)
                         )

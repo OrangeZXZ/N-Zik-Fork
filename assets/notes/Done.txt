@@ -24,3 +24,9 @@ Removed:
 - Fix: Universal slider architecture with SliderControl replacing old CustomSlider
 - Fix: Snapping magnetic thresholds dynamically size-based to feel natural on touch screens
 - Fix: Re-enabled missing stepSize across several settings (appearance, player, visualizer, volume, etc)
+
+## 2026-07-14
+- Modified: Settings menus and sliders (Appearance, Visualizer, Playback, General)
+- Fix: Forced integer-only slider dialogs to strip trailing .0 or .5 from legacy saved preferences.
+- Fix: Moved Blur Effect out of Audio Effects and into Player Effects within the list-style popup menu.
+- UI: Upgraded Visualizer line thickness slider to use the full SliderSettingsEntry component with chevron and dialog.

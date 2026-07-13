@@ -226,7 +226,7 @@ fun GeneralSettings(
     var autoLoadSongsInQueue by rememberPreference(autoLoadSongsInQueueKey, true)
 
     var bassboostEnabled by rememberPreference(bassboostEnabledKey,false)
-    var bassboostLevel by rememberPreference(bassboostLevelKey, 0.5f)
+    var bassboostLevel by rememberPreference(bassboostLevelKey, 0f)
     var audioReverb by rememberPreference(audioReverbPresetKey,   PresetsReverb.NONE)
     var audioFocusEnabled by rememberPreference(handleAudioFocusEnabledKey, true)
 
@@ -924,8 +924,12 @@ fun GeneralSettings(
                                 minimumSilenceDuration = newValue.toLong() * 1000L
                                 restartService = true
                             },
+                            isIntegerOnly = true,
                             toDisplay = { stringResource(R.string.format_ms, it.toLong()) },
                             range = 1.00f..2000.000f,
+                            stepSize = 0f,
+                            defaultValue = 2000f,
+                            drawValuePoints = true,
                             icon = R.drawable.time
                         )
                     }
@@ -960,13 +964,15 @@ fun GeneralSettings(
                             title = stringResource(R.string.settings_loudness_base_gain),
                             text = stringResource(R.string.settings_target_gain_loudness_info),
                             state = newValue,
-                            onSlide = { newValue = it },
+                            onSlide = { newValue = kotlin.math.round(it * 100f) / 100f },
                             onSlideComplete = {
                                 loudnessBaseGain = newValue
                             },
-                            toDisplay = { "%.1f dB".format(it).replace(",", ".") },
+                            toDisplay = { "%.2f dB".format(it) },
                             range = -20f..20f,
-                            stepSize = 10f,
+                            stepSize = 0f,
+                            defaultValue = 0f,
+                            drawValuePoints = true,
                             icon = R.drawable.volume_up
                         )
                         
@@ -975,7 +981,7 @@ fun GeneralSettings(
                             horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly
                         ) {
                             listOf(-20f to "-20", -10f to "-10", 0f to "0", 10f to "10", 20f to "20").forEach { (v, label) ->
-                                val isSelected = loudnessBaseGain.toInt() == v.toInt()
+                                val isSelected = loudnessBaseGain == v
                                 androidx.compose.material3.TextButton(
                                     onClick = { loudnessBaseGain = v; newValue = v },
                                     shape = app.n_zik.android.uiRoundnessShape(),
@@ -998,13 +1004,15 @@ fun GeneralSettings(
                             title = stringResource(R.string.loudness_boost_level),
                             text = stringResource(R.string.loudness_boost_level_info),
                             state = newValueVolume,
-                            onSlide = { newValueVolume = it },
+                            onSlide = { newValueVolume = kotlin.math.round(it * 100f) / 100f },
                             onSlideComplete = {
                                 volumeBoostLevel = newValueVolume
                             },
                             toDisplay = { "%.2f dB".format(it).replace(",", ".") },
                             range = -30f..30f,
-                            stepSize = 15f,
+                            stepSize = 0f,
+                            defaultValue = 0f,
+                            drawValuePoints = true,
                             icon = R.drawable.volume_up
                         )
                         
@@ -1013,7 +1021,7 @@ fun GeneralSettings(
                             horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly
                         ) {
                             listOf(-30f to "-30", -15f to "-15", 0f to "0", 15f to "15", 30f to "30").forEach { (v, label) ->
-                                val isSelected = volumeBoostLevel.toInt() == v.toInt()
+                                val isSelected = volumeBoostLevel == v
                                 androidx.compose.material3.TextButton(
                                     onClick = { volumeBoostLevel = v; newValueVolume = v },
                                     shape = app.n_zik.android.uiRoundnessShape(),
@@ -1056,14 +1064,38 @@ fun GeneralSettings(
                             title = stringResource(R.string.settings_bass_boost_level),
                             text = "",
                             state = newValue,
-                            onSlide = { newValue = it },
+                            onSlide = { newValue = kotlin.math.round(it * 10000f) / 10000f },
                             onSlideComplete = {
                                 bassboostLevel = newValue
                             },
-                            toDisplay = { "%.1f".format(bassboostLevel).replace(",", ".") },
+                            toDisplay = { "%.2f dB".format(it * 15f).replace(",", ".") },
                             range = 0f..1f,
+                            stepSize = 0f,
+                            defaultValue = 0f,
+                            drawValuePoints = true,
                             icon = R.drawable.equalizer
                         )
+                        
+                        androidx.compose.foundation.layout.Row(
+                            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly
+                        ) {
+                            listOf(0f to "0", (4f/15f) to "4", (8f/15f) to "8", (11f/15f) to "11", 1f to "15").forEach { (v, label) ->
+                                val isSelected = bassboostLevel == v
+                                androidx.compose.material3.TextButton(
+                                    onClick = { bassboostLevel = v; newValue = v },
+                                    shape = app.n_zik.android.uiRoundnessShape(),
+                                    colors = androidx.compose.material3.ButtonDefaults.textButtonColors(containerColor = if (isSelected) colorPalette().accent.copy(alpha = 0.2f) else androidx.compose.ui.graphics.Color.Transparent)
+                                ) {
+                                    androidx.compose.material3.Text(
+                                        text = label,
+                                        fontSize = 12.sp,
+                                        color = if (isSelected) colorPalette().accent else colorPalette().text,
+                                        fontWeight = if (isSelected) androidx.compose.ui.text.font.FontWeight.Bold else null
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }

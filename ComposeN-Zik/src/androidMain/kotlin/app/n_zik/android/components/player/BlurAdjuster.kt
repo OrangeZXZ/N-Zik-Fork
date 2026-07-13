@@ -82,7 +82,7 @@ class BlurAdjuster private constructor(
                     state = strength,
                     onSlide = { strength = it },
                     onSlideComplete = {},
-                    toDisplay = { "%.02f".format(it) },
+                    toDisplay = { "${it.toInt()}" },
                     range = 0f..100f,
                     stepSize = 1f
                 )
@@ -105,7 +105,7 @@ class BlurAdjuster private constructor(
                     state = backdrop,
                     onSlide = { backdrop = it },
                     onSlideComplete = {},
-                    toDisplay = { "%.0f".format(it) },
+                    toDisplay = { "${it.toInt()}" },
                     range = 0f..100f,
                     stepSize = 1f
                 )

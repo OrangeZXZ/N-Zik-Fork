@@ -50,8 +50,10 @@ fun Slider(
     state: Float,
     setState: (Float) -> Unit,
     onSlideComplete: () -> Unit = {},
-    range: ClosedFloatingPointRange<Float>,
-    stepSize: Float = 0.1f,
+    range: ClosedFloatingPointRange<Float> = 0f..100f,
+    stepSize: Float = 0f,
+    defaultValue: Float? = null,
+    drawValuePoints: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -82,7 +84,7 @@ fun Slider(
 
     val rangeSize = range.endInclusive - range.start
     val magneticThreshold = if (actualSteps > 0) {
-        minOf(rangeSize * 0.03f, stepSize * 0.3f)
+        minOf(rangeSize * 0.02f, stepSize * 0.15f)
     } else 0f
 
     val animatedValue by animateFloatAsState(
@@ -94,6 +96,7 @@ fun Slider(
     )
 
     fun normalize(value: Float): Float {
+        if (stepSize <= 0f) return value.coerceIn(range.start, range.endInclusive)
         val fraction = (value - range.start) / stepSize
         return (range.start + round(fraction) * stepSize)
             .coerceIn(range.start, range.endInclusive)
@@ -104,7 +107,15 @@ fun Slider(
         value = animatedValue,
         onValueChange = { newValue ->
             val normalized = normalize(newValue)
-            val finalValue = if (abs(newValue - normalized) <= magneticThreshold) normalized else newValue
+            var finalValue = if (abs(newValue - normalized) <= magneticThreshold) normalized else newValue
+            
+            if (defaultValue != null) {
+                val defaultThreshold = rangeSize * 0.02f
+                if (abs(newValue - defaultValue) <= defaultThreshold) {
+                    finalValue = defaultValue
+                }
+            }
+            
             setState(finalValue)
         },
         onValueChangeFinished = {
@@ -160,10 +171,9 @@ fun Slider(
                         
                         val trackWidth = size.width
                         val numIntervals = actualSteps + 1
-                        val edgePaddingPx = 8.dp.toPx()
                         
-                        val trackStart = edgePaddingPx
-                        val activeWidth = trackWidth - 2 * edgePaddingPx
+                        val trackStart = 0f
+                        val activeWidth = trackWidth
                         
                         var drawStep = 1
                         if (numIntervals > 10) {
@@ -189,6 +199,35 @@ fun Slider(
                                     center = androidx.compose.ui.geometry.Offset(x = x, y = size.height / 2)
                                 )
                             }
+                        }
+                    }
+                } else if (drawValuePoints) {
+                    val accentColor = colorPalette().accent
+                    val passedColor = colorPalette().text.copy(alpha = 0.5f)
+                    
+                    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxWidth().height(4.dp)) {
+                        val currentFraction = if (range.endInclusive > range.start) {
+                            (state - range.start) / (range.endInclusive - range.start)
+                        } else 0f
+                        
+                        val trackWidth = size.width
+                        val trackStart = 0f
+                        val activeWidth = trackWidth
+                        
+                        val pointsToDraw = mutableSetOf<Float>()
+                        if (defaultValue != null) {
+                            val defaultFraction = ((defaultValue - range.start) / (range.endInclusive - range.start)).coerceIn(0f, 1f)
+                            pointsToDraw.add(defaultFraction)
+                        }
+                        
+                        pointsToDraw.forEach { fraction ->
+                            val x = trackStart + (fraction * activeWidth)
+                            val isPassed = fraction <= currentFraction
+                            drawCircle(
+                                color = if (isPassed) passedColor else accentColor,
+                                radius = 2.dp.toPx(),
+                                center = androidx.compose.ui.geometry.Offset(x = x, y = size.height / 2)
+                            )
                         }
                     }
                 }

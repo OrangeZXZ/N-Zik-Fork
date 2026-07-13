@@ -64,6 +64,7 @@ import app.it.fast4x.rimusic.utils.showvisthumbnailKey
 import app.it.fast4x.rimusic.utils.visualizerLineThicknessKey
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
+import app.it.fast4x.rimusic.ui.screens.settings.SliderSettingsEntry
 import app.n_zik.android.typography
 import app.n_zik.android.uiRoundnessShape
 
@@ -187,28 +188,22 @@ class VisualizerSettingsMenu private constructor(
             
             // Line thickness slider
             Spacer(modifier = Modifier.height(8.dp))
-            SectionTitle(stringResource(R.string.visualizer_line_thickness))
-            
-            Row(
+            SliderSettingsEntry(
+                title = stringResource(R.string.visualizer_line_thickness),
+                text = "",
+                icon = R.drawable.sound_effect,
+                state = visualizerLineThickness,
+                onSlide = { if (currentVisualizer == 0 || currentVisualizer == 1 || currentVisualizer == 21) visualizerLineThickness = kotlin.math.round(it) },
+                toDisplay = { "${it.toInt()}" },
+                range = 1f..20f,
+                stepSize = 0f,
+                defaultValue = 6f,
+                drawValuePoints = true,
+                isIntegerOnly = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .alpha(if (currentVisualizer == 0 || currentVisualizer == 1 || currentVisualizer == 21) 1f else 0.5f)
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                SettingIcon(R.drawable.sound_effect)
-                Spacer(modifier = Modifier.size(16.dp))
-                Box(modifier = Modifier.weight(1f)) {
-                    SliderControl(
-                        state = visualizerLineThickness,
-                        onSlide = { if (currentVisualizer == 0 || currentVisualizer == 1 || currentVisualizer == 21) visualizerLineThickness = it },
-                        onSlideComplete = {},
-                        toDisplay = { "%.0f".format(it) },
-                        range = 1f..20f,
-                        stepSize = 1f
-                    )
-                }
-            }
+            )
             Spacer(modifier = Modifier.height(16.dp))
         }
 
@@ -293,33 +288,22 @@ class VisualizerSettingsMenu private constructor(
             }
             
             item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
-                Column {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SectionTitle(stringResource(R.string.visualizer_line_thickness))
-                }
-            }
-            
-            item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
-                Row(
+                SliderSettingsEntry(
+                    title = stringResource(R.string.visualizer_line_thickness),
+                    text = "",
+                    icon = R.drawable.sound_effect,
+                    state = visualizerLineThickness,
+                    onSlide = { if (currentVisualizer == 0 || currentVisualizer == 1 || currentVisualizer == 21) visualizerLineThickness = kotlin.math.round(it) },
+                    toDisplay = { "${it.toInt()}" },
+                    range = 1f..20f,
+                    stepSize = 0f,
+                    defaultValue = 6f,
+                    drawValuePoints = true,
+                    isIntegerOnly = true,
                     modifier = Modifier
                         .fillMaxWidth()
                         .alpha(if (currentVisualizer == 0 || currentVisualizer == 1 || currentVisualizer == 21) 1f else 0.5f)
-                        .padding(vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    SettingIcon(R.drawable.sound_effect)
-                    Spacer(modifier = Modifier.size(16.dp))
-                    Box(modifier = Modifier.weight(1f)) {
-                        SliderControl(
-                            state = visualizerLineThickness,
-                            onSlide = { if (currentVisualizer == 0 || currentVisualizer == 1 || currentVisualizer == 21) visualizerLineThickness = it },
-                            onSlideComplete = {},
-                            toDisplay = { "%.0f".format(it) },
-                            range = 1f..20f,
-                            stepSize = 1f
-                        )
-                    }
-                }
+                )
             }
             
             item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {

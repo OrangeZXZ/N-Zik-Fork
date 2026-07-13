@@ -30,8 +30,10 @@ fun SliderControl(
     modifier: Modifier = Modifier,
     onSlide: (Float) -> Unit = { },
     onSlideComplete: () -> Unit = { },
-    toDisplay: @Composable (Float) -> String = { it.toString() },
+    toDisplay: @Composable (Float) -> String = { it.toInt().toString() },
     stepSize: Float = 0.1f,
+    defaultValue: Float? = null,
+    drawValuePoints: Boolean = false,
     isEnabled: Boolean = true,
     usePadding: Boolean = true,
     showValue: Boolean = true
@@ -51,6 +53,8 @@ fun SliderControl(
             onSlideComplete = onSlideComplete,
             range = range,
             stepSize = stepSize,
+            defaultValue = defaultValue,
+            drawValuePoints = drawValuePoints,
             modifier = Modifier
                 .height(36.dp)
                 .alpha(if (isEnabled) 0.6f else 0.5f)

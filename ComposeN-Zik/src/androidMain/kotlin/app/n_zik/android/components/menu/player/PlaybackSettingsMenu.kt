@@ -102,7 +102,7 @@ class PlaybackSettingsMenu private constructor(
         var playbackDeviceVolume by rememberPreference(playbackDeviceVolumeKey, getDeviceVolume(context))
         var playbackDuration by rememberPreference(playbackDurationKey, 0f)
         var blurStrength by rememberPreference(blurStrengthKey, 25f)
-        var bassBoost by rememberPreference(bassboostLevelKey, 0.5f)
+        var bassBoost by rememberPreference(bassboostLevelKey, 0f)
         val volumeNormalization by rememberPreference(volumeNormalizationKey, false)
         var loudnessBaseGain by rememberPreference(loudnessBaseGainKey, 0f)
         var volumeBoostLevel by rememberPreference(volumeBoostLevelKey, 0f)
@@ -117,13 +117,16 @@ class PlaybackSettingsMenu private constructor(
                 title = stringResource(R.string.controls_title_playback_speed),
                 value = playbackSpeed,
                 onValueChange = {
-                    playbackSpeed = it
+                    val rounded = kotlin.math.round(it * 10f) / 10f
+                    playbackSpeed = rounded
                     binder.player.playbackParameters =
-                        androidx.media3.common.PlaybackParameters(playbackSpeed, playbackPitch)
+                        androidx.media3.common.PlaybackParameters(rounded, playbackPitch)
                 },
                 valueRange = 0.1f..10f,
-                displayValue = { "%.1fx".format(it) },
-                stepSize = 0.1f,
+                displayValue = { "%.1fx".format(it).replace(",", ".") },
+                stepSize = 0f,
+                defaultValue = 1f,
+                drawValuePoints = true,
                 onReset = {
                     playbackSpeed = 1f
                     binder.player.playbackParameters =
@@ -137,13 +140,16 @@ class PlaybackSettingsMenu private constructor(
                 title = stringResource(R.string.controls_title_playback_pitch),
                 value = playbackPitch,
                 onValueChange = {
-                    playbackPitch = it
+                    val rounded = kotlin.math.round(it * 10f) / 10f
+                    playbackPitch = rounded
                     binder.player.playbackParameters =
-                        androidx.media3.common.PlaybackParameters(playbackSpeed, playbackPitch)
+                        androidx.media3.common.PlaybackParameters(playbackSpeed, rounded)
                 },
                 valueRange = 0.1f..5f,
-                displayValue = { "%.1fx".format(it) },
-                stepSize = 0.1f,
+                displayValue = { "%.1fx".format(it).replace(",", ".") },
+                stepSize = 0f,
+                defaultValue = 1f,
+                drawValuePoints = true,
                 onReset = {
                     playbackPitch = 1f
                     binder.player.playbackParameters =
@@ -156,10 +162,12 @@ class PlaybackSettingsMenu private constructor(
                 icon = R.drawable.playbackduration,
                 title = stringResource(R.string.controls_title_medley_duration),
                 value = playbackDuration,
-                onValueChange = { playbackDuration = it },
+                onValueChange = { playbackDuration = kotlin.math.round(it) },
                 valueRange = 0f..60f,
                 displayValue = { "%.0f".format(it) },
-                stepSize = 1f,
+                stepSize = 0f,
+                defaultValue = 0f,
+                drawValuePoints = true,
                 onReset = { playbackDuration = 0f }
             )
 
@@ -172,13 +180,16 @@ class PlaybackSettingsMenu private constructor(
                 title = stringResource(R.string.controls_title_playback_volume),
                 value = playbackVolume,
                 onValueChange = {
-                    playbackVolume = it
+                    val rounded = kotlin.math.round(it * 100f) / 100f
+                    playbackVolume = rounded
                     binder.player.volume = playbackVolume
                     binder.player.setGlobalVolume(playbackVolume)
                 },
                 valueRange = 0f..1f,
-                displayValue = { "%.2f".format(it) },
-                stepSize = 0.05f,
+                displayValue = { "${(it * 100).toInt()}%" },
+                stepSize = 0f,
+                defaultValue = 1f,
+                drawValuePoints = true,
                 onReset = {
                     playbackVolume = 1f
                     binder.player.volume = playbackVolume
@@ -192,19 +203,21 @@ class PlaybackSettingsMenu private constructor(
                 title = stringResource(R.string.controls_title_device_volume),
                 value = playbackDeviceVolume,
                 onValueChange = {
-                    playbackDeviceVolume = it
+                    val rounded = kotlin.math.round(it * 100f) / 100f
+                    playbackDeviceVolume = rounded
                     setDeviceVolume(context, playbackDeviceVolume)
                 },
                 valueRange = 0f..1f,
-                displayValue = { "%.1f".format(it) },
+                displayValue = { "${(it * 100).toInt()}%" },
+                stepSize = 0f,
                 onReset = {
                     playbackDeviceVolume = getDeviceVolume(context)
                     setDeviceVolume(context, playbackDeviceVolume)
                 }
             )
 
-            // Section: Effects
-            SectionTitle(stringResource(R.string.audio_effects))
+            // Section: Player Effects
+            SectionTitle(stringResource(R.string.player_effects))
 
             // Blur Effect
             ListSliderMenuItem(
@@ -212,25 +225,32 @@ class PlaybackSettingsMenu private constructor(
                 title = stringResource(R.string.controls_title_blur_effect),
                 value = blurStrength,
                 onValueChange = {
-                    blurStrength = it
-                    onBlurScaleChange(it)
+                    blurStrength = kotlin.math.round(it)
+                    onBlurScaleChange(blurStrength)
                 },
                 valueRange = 0f..50f,
-                displayValue = { "%.0f".format(it) },
-                stepSize = 1f,
+                displayValue = { "${it.toInt()}" },
+                stepSize = 0f,
+                defaultValue = 25f,
+                drawValuePoints = true,
                 onReset = { blurStrength = 25f }
             )
+
+            // Section: Effects
+            SectionTitle(stringResource(R.string.audio_effects))
 
             // Bass Boost
             ListSliderMenuItem(
                 icon = R.drawable.musical_notes,
                 title = stringResource(R.string.settings_bass_boost_level),
                 value = bassBoost,
-                onValueChange = { bassBoost = it },
+                onValueChange = { bassBoost = kotlin.math.round(it * 10000f) / 10000f },
                 valueRange = 0f..1f,
-                displayValue = { "%.2f".format(it) },
-                stepSize = 0.05f,
-                onReset = { bassBoost = 0.5f },
+                displayValue = { "%.2f dB".format(it * 15f).replace(",", ".") },
+                stepSize = 0f,
+                defaultValue = 0f,
+                drawValuePoints = true,
+                onReset = { bassBoost = 0f },
                 isEnabled = isBassBoostEnabled()
             )
 
@@ -243,13 +263,15 @@ class PlaybackSettingsMenu private constructor(
                 onValueChange = { tempLoudnessGain = it },
                 onSlideComplete = { loudnessBaseGain = tempLoudnessGain },
                 valueRange = -20f..20f,
-                displayValue = { "%.1f dB".format(it) },
+                displayValue = { "%.2f dB".format(it) },
                 onReset = {
                     tempLoudnessGain = 0f
                     loudnessBaseGain = 0f
                 },
                 isEnabled = volumeNormalization,
-                stepSize = 1f
+                stepSize = 0f,
+                defaultValue = 0f,
+                drawValuePoints = true
             )
 
             // Volume Boost Level
@@ -267,7 +289,9 @@ class PlaybackSettingsMenu private constructor(
                     volumeBoostLevel = 0f
                 },
                 isEnabled = volumeNormalization,
-                stepSize = 1f
+                stepSize = 0f,
+                defaultValue = 0f,
+                drawValuePoints = true
             )
         }
     }
@@ -282,7 +306,7 @@ class PlaybackSettingsMenu private constructor(
         var playbackDeviceVolume by rememberPreference(playbackDeviceVolumeKey, getDeviceVolume(context))
         var playbackDuration by rememberPreference(playbackDurationKey, 0f)
         var blurStrength by rememberPreference(blurStrengthKey, 25f)
-        var bassBoost by rememberPreference(bassboostLevelKey, 0.5f)
+        var bassBoost by rememberPreference(bassboostLevelKey, 0f)
         val volumeNormalization by rememberPreference(volumeNormalizationKey, false)
         var loudnessBaseGain by rememberPreference(loudnessBaseGainKey, 0f)
         var volumeBoostLevel by rememberPreference(volumeBoostLevelKey, 0f)
@@ -299,14 +323,17 @@ class PlaybackSettingsMenu private constructor(
                     title = stringResource(R.string.controls_title_playback_speed),
                     icon = R.drawable.slow_motion,
                     value = playbackSpeed,
-                    displayValue = "%.1fx".format(playbackSpeed),
+                    toDisplay = { "%.1fx".format(it).replace(",", ".") },
                     onValueChange = {
-                        playbackSpeed = it
+                        val rounded = kotlin.math.round(it * 10f) / 10f
+                        playbackSpeed = rounded
                         binder.player.playbackParameters =
-                            androidx.media3.common.PlaybackParameters(playbackSpeed, playbackPitch)
+                            androidx.media3.common.PlaybackParameters(rounded, playbackPitch)
                     },
                     valueRange = 0.1f..10f,
-                    stepSize = 0.1f,
+                    stepSize = 0f,
+                    defaultValue = 1f,
+                    drawValuePoints = true,
                     onReset = {
                         playbackSpeed = 1f
                         binder.player.playbackParameters =
@@ -321,14 +348,17 @@ class PlaybackSettingsMenu private constructor(
                     title = stringResource(R.string.controls_title_playback_pitch),
                     icon = R.drawable.equalizer,
                     value = playbackPitch,
-                    displayValue = "%.1fx".format(playbackPitch),
+                    toDisplay = { "%.1fx".format(it).replace(",", ".") },
                     onValueChange = {
-                        playbackPitch = it
+                        val rounded = kotlin.math.round(it * 10f) / 10f
+                        playbackPitch = rounded
                         binder.player.playbackParameters =
-                            androidx.media3.common.PlaybackParameters(playbackSpeed, playbackPitch)
+                            androidx.media3.common.PlaybackParameters(playbackSpeed, rounded)
                     },
                     valueRange = 0.1f..5f,
-                    stepSize = 0.1f,
+                    stepSize = 0f,
+                    defaultValue = 1f,
+                    drawValuePoints = true,
                     onReset = {
                         playbackPitch = 1f
                         binder.player.playbackParameters =
@@ -343,10 +373,12 @@ class PlaybackSettingsMenu private constructor(
                     title = stringResource(R.string.controls_title_medley_duration),
                     icon = R.drawable.playbackduration,
                     value = playbackDuration,
-                    displayValue = "%.0f".format(playbackDuration),
-                    onValueChange = { playbackDuration = it },
+                    toDisplay = { "${it.toInt()}" },
+                    onValueChange = { playbackDuration = kotlin.math.round(it) },
                     valueRange = 0f..60f,
-                    stepSize = 1f,
+                    stepSize = 0f,
+                    defaultValue = 0f,
+                    drawValuePoints = true,
                     onReset = { playbackDuration = 0f }
                 )
             }
@@ -360,14 +392,17 @@ class PlaybackSettingsMenu private constructor(
                     title = stringResource(R.string.controls_title_playback_volume),
                     icon = R.drawable.volume_up,
                     value = playbackVolume,
-                    displayValue = "%.1f".format(playbackVolume),
+                    toDisplay = { "${(it * 100).toInt()}%" },
                     onValueChange = {
-                        playbackVolume = it
+                        val rounded = kotlin.math.round(it * 100f) / 100f
+                        playbackVolume = rounded
                         binder.player.volume = playbackVolume
                         binder.player.setGlobalVolume(playbackVolume)
                     },
                     valueRange = 0f..1f,
-                    stepSize = 0.05f,
+                    stepSize = 0f,
+                    defaultValue = 1f,
+                    drawValuePoints = true,
                     onReset = {
                         playbackVolume = 1f
                         binder.player.volume = playbackVolume
@@ -382,13 +417,14 @@ class PlaybackSettingsMenu private constructor(
                     title = stringResource(R.string.controls_title_device_volume),
                     icon = R.drawable.master_volume,
                     value = playbackDeviceVolume,
-                    displayValue = "%.1f".format(playbackDeviceVolume),
+                    toDisplay = { "${(it * 100).toInt()}%" },
                     onValueChange = {
-                        playbackDeviceVolume = it
+                        val rounded = kotlin.math.round(it * 100f) / 100f
+                        playbackDeviceVolume = rounded
                         setDeviceVolume(context, playbackDeviceVolume)
                     },
                     valueRange = 0f..1f,
-                    stepSize = 0.05f,
+                    stepSize = 0f,
                     onReset = {
                         playbackDeviceVolume = getDeviceVolume(context)
                         setDeviceVolume(context, playbackDeviceVolume)
@@ -396,8 +432,8 @@ class PlaybackSettingsMenu private constructor(
                 )
             }
 
-            // Section: Effects
-            item(span = { GridItemSpan(maxLineSpan) }) { SectionTitle(stringResource(R.string.audio_effects)) }
+            // Section: Player Effects
+            item(span = { GridItemSpan(maxLineSpan) }) { SectionTitle(stringResource(R.string.player_effects)) }
 
             // Blur Effect
             item {
@@ -405,16 +441,23 @@ class PlaybackSettingsMenu private constructor(
                     title = stringResource(R.string.controls_title_blur_effect),
                     icon = R.drawable.droplet,
                     value = blurStrength,
-                    displayValue = "%.0f".format(blurStrength),
+                    toDisplay = { "${it.toInt()}" },
                     onValueChange = {
-                        blurStrength = it
-                        onBlurScaleChange(it)
+                        blurStrength = kotlin.math.round(it)
+                        onBlurScaleChange(blurStrength)
                     },
                     valueRange = 0f..50f,
-                    stepSize = 1f,
+                    stepSize = 0f,
+                    defaultValue = 25f,
+                    drawValuePoints = true,
                     onReset = { blurStrength = 25f }
                 )
             }
+
+            // Section: Effects
+            item(span = { GridItemSpan(maxLineSpan) }) { SectionTitle(stringResource(R.string.audio_effects)) }
+
+
 
             // Bass Boost
             item {
@@ -422,11 +465,13 @@ class PlaybackSettingsMenu private constructor(
                     title = stringResource(R.string.settings_bass_boost_level),
                     icon = R.drawable.musical_notes,
                     value = bassBoost,
-                    displayValue = "%.1f".format(bassBoost),
-                    onValueChange = { bassBoost = it },
+                    toDisplay = { "%.2f dB".format(it * 15f).replace(",", ".") },
+                    onValueChange = { bassBoost = kotlin.math.round(it * 10000f) / 10000f },
                     valueRange = 0f..1f,
-                    stepSize = 0.05f,
-                    onReset = { bassBoost = 0.5f },
+                    stepSize = 0f,
+                    defaultValue = 0f,
+                    drawValuePoints = true,
+                    onReset = { bassBoost = 0f },
                     isEnabled = isBassBoostEnabled()
                 )
             }
@@ -437,8 +482,8 @@ class PlaybackSettingsMenu private constructor(
                     title = stringResource(R.string.settings_loudness_base_gain),
                     icon = R.drawable.volume_up,
                     value = tempLoudnessGain,
-                    displayValue = "%.1f dB".format(tempLoudnessGain),
-                    onValueChange = { tempLoudnessGain = it },
+                    toDisplay = { "%.2f dB".format(it) },
+                    onValueChange = { tempLoudnessGain = kotlin.math.round(it * 100f) / 100f },
                     onSlideComplete = { loudnessBaseGain = tempLoudnessGain },
                     valueRange = -20f..20f,
                     onReset = {
@@ -446,7 +491,9 @@ class PlaybackSettingsMenu private constructor(
                         loudnessBaseGain = 0f
                     },
                     isEnabled = volumeNormalization,
-                    stepSize = 1f
+                    stepSize = 0f,
+                    defaultValue = 0f,
+                    drawValuePoints = true
                 )
             }
 
@@ -456,8 +503,8 @@ class PlaybackSettingsMenu private constructor(
                     title = stringResource(R.string.loudness_boost_level),
                     icon = R.drawable.volume_up,
                     value = tempVolumeBoost,
-                    displayValue = "%.2f dB".format(tempVolumeBoost),
-                    onValueChange = { tempVolumeBoost = it },
+                    toDisplay = { "%.2f dB".format(it).replace(",", ".") },
+                    onValueChange = { tempVolumeBoost = kotlin.math.round(it * 100f) / 100f },
                     onSlideComplete = { volumeBoostLevel = tempVolumeBoost },
                     valueRange = -30f..30f,
                     onReset = {
@@ -465,7 +512,9 @@ class PlaybackSettingsMenu private constructor(
                         volumeBoostLevel = 0f
                     },
                     isEnabled = volumeNormalization,
-                    stepSize = 1f
+                    stepSize = 0f,
+                    defaultValue = 0f,
+                    drawValuePoints = true
                 )
             }
         }
@@ -524,7 +573,9 @@ class PlaybackSettingsMenu private constructor(
         displayValue: @Composable (Float) -> String,
         onReset: () -> Unit,
         isEnabled: Boolean = true,
-        stepSize: Float = 0.1f
+        stepSize: Float = 0.1f,
+        defaultValue: Float? = null,
+        drawValuePoints: Boolean = false
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -566,6 +617,9 @@ class PlaybackSettingsMenu private constructor(
                 toDisplay = displayValue,
                 range = valueRange,
                 stepSize = stepSize,
+                defaultValue = defaultValue,
+                drawValuePoints = drawValuePoints,
+                showValue = false,
                 modifier = Modifier.weight(1.5f)
             )
         }
@@ -576,13 +630,15 @@ class PlaybackSettingsMenu private constructor(
         title: String,
         icon: Int,
         value: Float,
-        displayValue: String,
+        toDisplay: @Composable (Float) -> String,
         onValueChange: (Float) -> Unit,
         onSlideComplete: () -> Unit = {},
         valueRange: ClosedFloatingPointRange<Float>,
         onReset: () -> Unit,
         isEnabled: Boolean = true,
-        stepSize: Float = 0.1f
+        stepSize: Float = 0.1f,
+        defaultValue: Float? = null,
+        drawValuePoints: Boolean = false
     ) {
         var isShowingDialog by remember { mutableStateOf(false) }
 
@@ -593,9 +649,12 @@ class PlaybackSettingsMenu private constructor(
                 value = value,
                 valueRange = valueRange,
                 stepSize = stepSize,
+                defaultValue = defaultValue,
+                drawValuePoints = drawValuePoints,
                 onValueChange = onValueChange,
                 onSlideComplete = onSlideComplete,
                 onReset = onReset,
+                toDisplay = toDisplay,
                 onDismiss = { isShowingDialog = false }
             )
         }
@@ -603,7 +662,7 @@ class PlaybackSettingsMenu private constructor(
         GridMenu.Entry(
             text = title,
             icon = { SettingIcon(icon) },
-            subtitle = displayValue,
+            subtitle = toDisplay(value),
             onClick = { isShowingDialog = true },
             trailingContent = {
                 Icon(
@@ -623,9 +682,12 @@ class PlaybackSettingsMenu private constructor(
         value: Float,
         valueRange: ClosedFloatingPointRange<Float>,
         stepSize: Float = 0.1f,
+        defaultValue: Float? = null,
+        drawValuePoints: Boolean = false,
         onValueChange: (Float) -> Unit,
         onSlideComplete: () -> Unit = {},
         onReset: () -> Unit,
+        toDisplay: @Composable (Float) -> String = { it.toInt().toString() },
         onDismiss: () -> Unit
     ) {
         var currentValue by remember { mutableFloatStateOf(value) }
@@ -658,7 +720,7 @@ class PlaybackSettingsMenu private constructor(
 
                 // Value display
                 androidx.compose.foundation.text.BasicText(
-                    text = "%.1f".format(currentValue),
+                    text = toDisplay(currentValue),
                     style = typography().l.semiBold.copy(
                         color = colorPalette().accent
                     ),
@@ -675,9 +737,12 @@ class PlaybackSettingsMenu private constructor(
                         onValueChange(currentValue)
                         onSlideComplete()
                     },
-                    toDisplay = { "%.1f".format(it) },
+                    toDisplay = toDisplay,
                     range = valueRange,
-                    stepSize = stepSize
+                    stepSize = stepSize,
+                    defaultValue = defaultValue,
+                    drawValuePoints = drawValuePoints,
+                    showValue = false
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
