@@ -1124,6 +1124,7 @@ fun MyDownloadHelper.createDataSourceFactory(): DataSource.Factory {
                 .build()
         }
 
+        fetchFormatIfMissing(videoId)
         CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch { upsertSongInfo(videoId) }
 
         val resolvedSpec = dataSpec.process(videoId, audioQualityFormat, appContext().isConnectionMetered())
