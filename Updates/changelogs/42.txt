@@ -1,0 +1,4 @@
+Hotfix:
+- Visualizer buttons can now be disabled in settings player appearance
+- Visualizer black background can now be disabled in settings player appearance
+- Improved Visualizer performance, and fix missaligned visualizer

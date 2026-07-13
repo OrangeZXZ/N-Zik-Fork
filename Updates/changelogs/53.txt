@@ -1,0 +1,3 @@
+Hotfix :
+- Fixed Discord Rich Presence bugged with timestamps.
+- Fixed modern player button not responding on skip/previous.

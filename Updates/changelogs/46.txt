@@ -1,0 +1,5 @@
+Hotfix:
+- Fixed lyrics alignment for circular thumbnails
+- Fixed visualizer position for circular thumbnails
+- Fixed circular configuration for thumbnail
+- Fixed player becoming a circle lol

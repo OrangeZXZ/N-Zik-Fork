@@ -1,0 +1,2 @@
+FDROID:
+- Fix reproducible build native library stripping issue (keepDebugSymbols)
