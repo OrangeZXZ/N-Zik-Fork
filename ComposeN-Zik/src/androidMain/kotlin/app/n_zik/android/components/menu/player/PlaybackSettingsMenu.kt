@@ -43,7 +43,7 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
-import app.it.fast4x.rimusic.ui.components.themed.SliderControl
+import app.n_zik.android.components.ui.sliders.SliderControl
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.setGlobalVolume
 import app.n_zik.android.isBassBoostEnabled
@@ -123,6 +123,7 @@ class PlaybackSettingsMenu private constructor(
                 },
                 valueRange = 0.1f..10f,
                 displayValue = { "%.1fx".format(it) },
+                stepSize = 0.1f,
                 onReset = {
                     playbackSpeed = 1f
                     binder.player.playbackParameters =
@@ -142,6 +143,7 @@ class PlaybackSettingsMenu private constructor(
                 },
                 valueRange = 0.1f..5f,
                 displayValue = { "%.1fx".format(it) },
+                stepSize = 0.1f,
                 onReset = {
                     playbackPitch = 1f
                     binder.player.playbackParameters =
@@ -157,6 +159,7 @@ class PlaybackSettingsMenu private constructor(
                 onValueChange = { playbackDuration = it },
                 valueRange = 0f..60f,
                 displayValue = { "%.0f".format(it) },
+                stepSize = 1f,
                 onReset = { playbackDuration = 0f }
             )
 
@@ -174,7 +177,8 @@ class PlaybackSettingsMenu private constructor(
                     binder.player.setGlobalVolume(playbackVolume)
                 },
                 valueRange = 0f..1f,
-                displayValue = { "%.1f".format(it) },
+                displayValue = { "%.2f".format(it) },
+                stepSize = 0.05f,
                 onReset = {
                     playbackVolume = 1f
                     binder.player.volume = playbackVolume
@@ -213,6 +217,7 @@ class PlaybackSettingsMenu private constructor(
                 },
                 valueRange = 0f..50f,
                 displayValue = { "%.0f".format(it) },
+                stepSize = 1f,
                 onReset = { blurStrength = 25f }
             )
 
@@ -223,7 +228,8 @@ class PlaybackSettingsMenu private constructor(
                 value = bassBoost,
                 onValueChange = { bassBoost = it },
                 valueRange = 0f..1f,
-                displayValue = { "%.1f".format(it) },
+                displayValue = { "%.2f".format(it) },
+                stepSize = 0.05f,
                 onReset = { bassBoost = 0.5f },
                 isEnabled = isBassBoostEnabled()
             )
@@ -243,7 +249,7 @@ class PlaybackSettingsMenu private constructor(
                     loudnessBaseGain = 0f
                 },
                 isEnabled = volumeNormalization,
-                steps = 3
+                stepSize = 1f
             )
 
             // Volume Boost Level
@@ -261,7 +267,7 @@ class PlaybackSettingsMenu private constructor(
                     volumeBoostLevel = 0f
                 },
                 isEnabled = volumeNormalization,
-                steps = 3
+                stepSize = 1f
             )
         }
     }
@@ -300,6 +306,7 @@ class PlaybackSettingsMenu private constructor(
                             androidx.media3.common.PlaybackParameters(playbackSpeed, playbackPitch)
                     },
                     valueRange = 0.1f..10f,
+                    stepSize = 0.1f,
                     onReset = {
                         playbackSpeed = 1f
                         binder.player.playbackParameters =
@@ -321,6 +328,7 @@ class PlaybackSettingsMenu private constructor(
                             androidx.media3.common.PlaybackParameters(playbackSpeed, playbackPitch)
                     },
                     valueRange = 0.1f..5f,
+                    stepSize = 0.1f,
                     onReset = {
                         playbackPitch = 1f
                         binder.player.playbackParameters =
@@ -338,6 +346,7 @@ class PlaybackSettingsMenu private constructor(
                     displayValue = "%.0f".format(playbackDuration),
                     onValueChange = { playbackDuration = it },
                     valueRange = 0f..60f,
+                    stepSize = 1f,
                     onReset = { playbackDuration = 0f }
                 )
             }
@@ -358,6 +367,7 @@ class PlaybackSettingsMenu private constructor(
                         binder.player.setGlobalVolume(playbackVolume)
                     },
                     valueRange = 0f..1f,
+                    stepSize = 0.05f,
                     onReset = {
                         playbackVolume = 1f
                         binder.player.volume = playbackVolume
@@ -378,6 +388,7 @@ class PlaybackSettingsMenu private constructor(
                         setDeviceVolume(context, playbackDeviceVolume)
                     },
                     valueRange = 0f..1f,
+                    stepSize = 0.05f,
                     onReset = {
                         playbackDeviceVolume = getDeviceVolume(context)
                         setDeviceVolume(context, playbackDeviceVolume)
@@ -400,6 +411,7 @@ class PlaybackSettingsMenu private constructor(
                         onBlurScaleChange(it)
                     },
                     valueRange = 0f..50f,
+                    stepSize = 1f,
                     onReset = { blurStrength = 25f }
                 )
             }
@@ -413,6 +425,7 @@ class PlaybackSettingsMenu private constructor(
                     displayValue = "%.1f".format(bassBoost),
                     onValueChange = { bassBoost = it },
                     valueRange = 0f..1f,
+                    stepSize = 0.05f,
                     onReset = { bassBoost = 0.5f },
                     isEnabled = isBassBoostEnabled()
                 )
@@ -433,7 +446,7 @@ class PlaybackSettingsMenu private constructor(
                         loudnessBaseGain = 0f
                     },
                     isEnabled = volumeNormalization,
-                    steps = 3
+                    stepSize = 1f
                 )
             }
 
@@ -452,7 +465,7 @@ class PlaybackSettingsMenu private constructor(
                         volumeBoostLevel = 0f
                     },
                     isEnabled = volumeNormalization,
-                    steps = 3
+                    stepSize = 1f
                 )
             }
         }
@@ -511,7 +524,7 @@ class PlaybackSettingsMenu private constructor(
         displayValue: @Composable (Float) -> String,
         onReset: () -> Unit,
         isEnabled: Boolean = true,
-        steps: Int = 0
+        stepSize: Float = 0.1f
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -552,7 +565,7 @@ class PlaybackSettingsMenu private constructor(
                 onSlideComplete = onSlideComplete,
                 toDisplay = displayValue,
                 range = valueRange,
-                steps = steps,
+                stepSize = stepSize,
                 modifier = Modifier.weight(1.5f)
             )
         }
@@ -569,7 +582,7 @@ class PlaybackSettingsMenu private constructor(
         valueRange: ClosedFloatingPointRange<Float>,
         onReset: () -> Unit,
         isEnabled: Boolean = true,
-        steps: Int = 0
+        stepSize: Float = 0.1f
     ) {
         var isShowingDialog by remember { mutableStateOf(false) }
 
@@ -579,7 +592,7 @@ class PlaybackSettingsMenu private constructor(
                 icon = icon,
                 value = value,
                 valueRange = valueRange,
-                steps = steps,
+                stepSize = stepSize,
                 onValueChange = onValueChange,
                 onSlideComplete = onSlideComplete,
                 onReset = onReset,
@@ -609,7 +622,7 @@ class PlaybackSettingsMenu private constructor(
         icon: Int,
         value: Float,
         valueRange: ClosedFloatingPointRange<Float>,
-        steps: Int = 0,
+        stepSize: Float = 0.1f,
         onValueChange: (Float) -> Unit,
         onSlideComplete: () -> Unit = {},
         onReset: () -> Unit,
@@ -664,7 +677,7 @@ class PlaybackSettingsMenu private constructor(
                     },
                     toDisplay = { "%.1f".format(it) },
                     range = valueRange,
-                    steps = steps
+                    stepSize = stepSize
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

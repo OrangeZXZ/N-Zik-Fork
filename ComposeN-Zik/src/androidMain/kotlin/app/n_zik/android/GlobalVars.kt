@@ -34,6 +34,22 @@ fun thumbnailShape() = LocalAppearance.current.thumbnailShape
 fun uiRoundnessShape() = LocalAppearance.current.uiRoundnessShape
 
 @Composable
+fun exactUiRoundnessShape(): Shape {
+    val appearance = LocalAppearance.current
+    val shape = appearance.uiRoundnessShape
+    return if (shape is RoundedCornerShape) {
+        val size = shape.topStart
+        if (size is BoundedCornerSize) {
+            RoundedCornerShape(size.dp)
+        } else {
+            shape
+        }
+    } else {
+        shape
+    }
+}
+
+@Composable
 fun gridMenuShape(): Shape {
     val appearance = LocalAppearance.current
     val shape = appearance.uiRoundnessShape
@@ -44,6 +60,22 @@ fun gridMenuShape(): Shape {
         } else {
             shape
         }
+    } else {
+        shape
+    }
+}
+
+@Composable
+fun topUiRoundnessShape(): Shape {
+    val appearance = LocalAppearance.current
+    val shape = appearance.uiRoundnessShape
+    return if (shape is RoundedCornerShape) {
+        RoundedCornerShape(
+            topStart = shape.topStart,
+            topEnd = shape.topEnd,
+            bottomEnd = androidx.compose.foundation.shape.CornerSize(0),
+            bottomStart = androidx.compose.foundation.shape.CornerSize(0)
+        )
     } else {
         shape
     }

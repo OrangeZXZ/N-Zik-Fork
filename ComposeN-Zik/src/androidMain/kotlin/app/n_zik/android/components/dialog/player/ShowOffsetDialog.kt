@@ -15,7 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
+import app.n_zik.android.components.ui.sliders.SliderControl
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -201,22 +201,15 @@ class ShowOffsetDialog private constructor(
                     )
                 }
 
-                Slider(
-                    value = lyricsOffset.toFloat(),
-                    onValueChange = { newValue ->
+                SliderControl(
+                    state = lyricsOffset.toFloat(),
+                    onSlide = { newValue ->
                         val rounded = (newValue / 100).toInt() * 100
                         lyricsOffset = rounded
                         textFieldValue = rounded.toString()
                     },
-                    valueRange = -3000f..3000f,
-                    steps = 59,
-                    colors = SliderDefaults.colors(
-                        thumbColor = colorPalette().accent,
-                        activeTrackColor = colorPalette().accent,
-                        inactiveTrackColor = colorPalette().textDisabled,
-                        activeTickColor = colorPalette().background0,
-                        inactiveTickColor = colorPalette().background0
-                    ),
+                    range = -3000f..3000f,
+                    stepSize = 100f,
                     modifier = Modifier.weight(1f)
                 )
 

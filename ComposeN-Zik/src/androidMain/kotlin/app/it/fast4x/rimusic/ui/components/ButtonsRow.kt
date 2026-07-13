@@ -37,6 +37,7 @@ fun <E> ButtonsRow(
             FilterChip(
                 label = { Text(label) },
                 selected = currentValue == value,
+                shape = app.n_zik.android.uiRoundnessShape(),
                 colors = FilterChipDefaults
                     .filterChipColors(
                         containerColor = colorPalette().background1,
@@ -74,6 +75,7 @@ fun ButtonsRow(
             FilterChip(
                 label = { Text( playlistType.text ) },
                 selected = currentValue == playlistType,
+                shape = app.n_zik.android.uiRoundnessShape(),
                 colors = FilterChipDefaults
                     .filterChipColors(
                         containerColor = colorPalette().background1,

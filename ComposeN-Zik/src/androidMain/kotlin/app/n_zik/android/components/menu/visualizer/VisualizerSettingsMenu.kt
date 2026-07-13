@@ -11,8 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
+import app.n_zik.android.components.ui.toggles.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -49,7 +48,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
-import app.it.fast4x.rimusic.ui.components.themed.SliderControl
+import app.n_zik.android.components.ui.sliders.SliderControl
 import app.it.fast4x.rimusic.ui.components.themed.TitleMiniSection
 import app.it.fast4x.rimusic.utils.blackBackgroundForVisThumbnailKey
 import app.it.fast4x.rimusic.utils.currentVisualizerKey
@@ -205,7 +204,8 @@ class VisualizerSettingsMenu private constructor(
                         onSlide = { if (currentVisualizer == 0 || currentVisualizer == 1 || currentVisualizer == 21) visualizerLineThickness = it },
                         onSlideComplete = {},
                         toDisplay = { "%.0f".format(it) },
-                        range = 1f..20f
+                        range = 1f..20f,
+                        stepSize = 1f
                     )
                 }
             }
@@ -315,7 +315,8 @@ class VisualizerSettingsMenu private constructor(
                             onSlide = { if (currentVisualizer == 0 || currentVisualizer == 1 || currentVisualizer == 21) visualizerLineThickness = it },
                             onSlideComplete = {},
                             toDisplay = { "%.0f".format(it) },
-                            range = 1f..20f
+                            range = 1f..20f,
+                            stepSize = 1f
                         )
                     }
                 }
@@ -405,12 +406,10 @@ class VisualizerSettingsMenu private constructor(
                         checked = isChecked,
                         onCheckedChange = null,
                         modifier = Modifier.scale(0.8f),
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = colorPalette().textSecondary,
-                            checkedTrackColor = colorPalette().accent.copy(alpha = 0.3f),
-                            uncheckedThumbColor = colorPalette().textSecondary,
-                            uncheckedTrackColor = colorPalette().textSecondary.copy(alpha = 0.3f)
-                        )
+                        checkedThumbColor = colorPalette().textSecondary,
+                        checkedTrackColor = colorPalette().accent.copy(alpha = 0.3f),
+                        uncheckedThumbColor = colorPalette().textSecondary,
+                        uncheckedTrackColor = colorPalette().textSecondary.copy(alpha = 0.3f)
                     )
                 }
             )
@@ -425,12 +424,10 @@ class VisualizerSettingsMenu private constructor(
                         checked = isChecked,
                         onCheckedChange = null,
                         modifier = Modifier.scale(0.8f),
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = colorPalette().textSecondary,
-                            checkedTrackColor = colorPalette().accent.copy(alpha = 0.3f),
-                            uncheckedThumbColor = colorPalette().textSecondary,
-                            uncheckedTrackColor = colorPalette().textSecondary.copy(alpha = 0.3f)
-                        )
+                        checkedThumbColor = colorPalette().textSecondary,
+                        checkedTrackColor = colorPalette().accent.copy(alpha = 0.3f),
+                        uncheckedThumbColor = colorPalette().textSecondary,
+                        uncheckedTrackColor = colorPalette().textSecondary.copy(alpha = 0.3f)
                     )
                 }
             )

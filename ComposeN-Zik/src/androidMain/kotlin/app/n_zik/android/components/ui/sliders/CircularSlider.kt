@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+package app.n_zik.android.components.ui.sliders
 
 import android.view.MotionEvent
 import androidx.compose.foundation.Canvas

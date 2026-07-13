@@ -1198,12 +1198,12 @@ fun AppearanceSettings(
                                     text = "",
                                     state = thumbnailSizeLDp,
                                     range = 0f..100f,
-                                    steps = 3,
+                                    stepSize = 25f,
                                     onSlide = { thumbnailSizeLDp = it },
                                     toDisplay = { it.toInt().toString() },
                                     trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeLDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } } }
                                 )
-
+                                
                                 androidx.compose.foundation.layout.Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 4.dp), horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly) {
                                 listOf(0f to "Min", 25f to "25%", 50f to "50%", 75f to "75%", 100f to "Max").forEach { (v, label) ->
                                     val isSelected = thumbnailSizeLDp.toInt() == v.toInt()
@@ -1221,7 +1221,7 @@ fun AppearanceSettings(
                                     }
                                 }
                             }
-                        }
+                            }
                         }
                 } else {
                     if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
@@ -1237,7 +1237,7 @@ fun AppearanceSettings(
                                     text = "",
                                     state = thumbnailSizeDp,
                                     range = 0f..100f,
-                                    steps = 3,
+                                    stepSize = 25f,
                                     onSlide = { thumbnailSizeDp = it },
                                     toDisplay = { it.toInt().toString() },
                                     trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Box(modifier = Modifier.size(36.dp).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))), contentAlignment = androidx.compose.ui.Alignment.Center) { androidx.compose.foundation.layout.Box(modifier = Modifier.padding(((100f - thumbnailSizeDp) * 0.15f).dp).fillMaxSize().background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } } }
@@ -1260,6 +1260,7 @@ fun AppearanceSettings(
                                     }
                                 }
                             }
+
                         }
                         }
                 }
@@ -1277,7 +1278,7 @@ fun AppearanceSettings(
                                 text = "",
                                 state = thumbnailRoundnessDp,
                                 range = 0f..48f,
-                                steps = 3,
+                                stepSize = 12f,
                                 onSlide = { thumbnailRoundnessDp = it },
                                 toDisplay = { it.toInt().toString() },
                                 trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))).border(width = 1.dp, color = colorPalette().accent, shape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)))) } }
@@ -1300,7 +1301,7 @@ fun AppearanceSettings(
                                 }
                             }
                         }
-                    }
+                        }
                     }
 
                 if (search.inputValue.isBlank() || stringResource(R.string.ui_roundness).contains(
@@ -1315,7 +1316,7 @@ fun AppearanceSettings(
                             text = "",
                             state = uiRoundnessDp,
                             range = 0f..40f,
-                            steps = 3,
+                            stepSize = 10f,
                             onSlide = { uiRoundnessDp = it },
                             toDisplay = { it.toInt().toString() },
                             trailingContent = @androidx.compose.runtime.Composable { androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) { androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(36.dp).background(color = colorPalette().accent.copy(alpha = 0.5f), shape = androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(uiRoundnessDp.dp, 0.4f))).border(width = 1.dp, color = colorPalette().accent, shape = androidx.compose.foundation.shape.RoundedCornerShape(BoundedCornerSize(uiRoundnessDp.dp, 0.4f)))) } },
@@ -1970,7 +1971,7 @@ fun AppearanceSettings(
                             state = visualizerLineThickness,
                             onSlide = { visualizerLineThickness = it },
                             range = 1f..10f,
-                            steps = 9,
+                            stepSize = 1f,
                             toDisplay = { it.toInt().toString() },
                             modifier = Modifier.padding(start = 25.dp)
                         )

@@ -54,6 +54,7 @@ object ListMenu {
         Column(
             Modifier.heightIn( max = (screenHeight * CONTENT_HEIGHT_FRACTION).dp )
                     .fillMaxWidth()
+                    .clip(app.n_zik.android.topUiRoundnessShape())
                     .background(colorPalette().background0),
             horizontalAlignment = Alignment.CenterHorizontally,
             content = {
@@ -63,7 +64,7 @@ object ListMenu {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                            .clip(app.n_zik.android.topUiRoundnessShape())
                             .background(colorPalette().background1)
                     ) {
                         if (showDragHandle) {
@@ -88,6 +89,7 @@ object ListMenu {
                     }
                 }
 
+                val topShape = app.n_zik.android.topUiRoundnessShape()
                 // Content
                 Column(
                     modifier = Modifier
@@ -95,7 +97,7 @@ object ListMenu {
                         .weight(1f)
                         .background(colorPalette().background0)
                         .conditional(!hasHeader) {
-                            clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                            clip(topShape)
                         }
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 16.dp),

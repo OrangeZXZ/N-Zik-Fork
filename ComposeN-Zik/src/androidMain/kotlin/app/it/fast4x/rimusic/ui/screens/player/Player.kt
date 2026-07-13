@@ -2310,7 +2310,7 @@ fun Player(
                     .background(queuePanelBackground)
                     .padding(WindowInsets.navigationBars.asPaddingValues())
                     .align(Alignment.BottomCenter)
-                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                    .clip(app.n_zik.android.topUiRoundnessShape())
             ) {
                 // Queue content - padding top for drag handle, overscroll to close
                 Box(
@@ -2336,7 +2336,7 @@ fun Player(
                         .fillMaxWidth()
                         .height(48.dp)
                         .align(Alignment.TopCenter)
-                        .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                        .clip(app.n_zik.android.topUiRoundnessShape())
                         .background(colorPalette().background0.copy(alpha = handleAlpha))
                         .pointerInput(Unit) {
                                 detectVerticalDragGestures(

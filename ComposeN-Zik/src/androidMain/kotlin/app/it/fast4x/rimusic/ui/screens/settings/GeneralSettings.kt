@@ -966,9 +966,10 @@ fun GeneralSettings(
                             },
                             toDisplay = { "%.1f dB".format(it).replace(",", ".") },
                             range = -20f..20f,
-                            steps = 3,
+                            stepSize = 10f,
                             icon = R.drawable.volume_up
                         )
+                        
                         androidx.compose.foundation.layout.Row(
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
                             horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly
@@ -989,6 +990,7 @@ fun GeneralSettings(
                                 }
                             }
                         }
+
                     }
 
                     if (search.inputValue.isBlank() || stringResource(R.string.loudness_boost_level).contains(search.inputValue, true) || (stringResource(R.string.loudness_boost_level_info)).contains(search.inputValue, true)) {
@@ -1002,9 +1004,10 @@ fun GeneralSettings(
                             },
                             toDisplay = { "%.2f dB".format(it).replace(",", ".") },
                             range = -30f..30f,
-                            steps = 3,
+                            stepSize = 15f,
                             icon = R.drawable.volume_up
                         )
+                        
                         androidx.compose.foundation.layout.Row(
                             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
                             horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly
@@ -1025,6 +1028,7 @@ fun GeneralSettings(
                                 }
                             }
                         }
+
                     }
                 }
             }

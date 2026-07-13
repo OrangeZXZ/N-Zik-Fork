@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
-import app.it.fast4x.rimusic.ui.components.themed.SliderControl
+import app.n_zik.android.components.ui.sliders.SliderControl
 import app.it.fast4x.rimusic.ui.screens.settings.SwitchSettingEntry
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
 import app.it.fast4x.rimusic.utils.blurStrengthKey
@@ -83,7 +83,8 @@ class BlurAdjuster private constructor(
                     onSlide = { strength = it },
                     onSlideComplete = {},
                     toDisplay = { "%.02f".format(it) },
-                    range = 0f..100f
+                    range = 0f..100f,
+                    stepSize = 1f
                 )
             }
             //</editor-fold>
@@ -105,7 +106,8 @@ class BlurAdjuster private constructor(
                     onSlide = { backdrop = it },
                     onSlideComplete = {},
                     toDisplay = { "%.0f".format(it) },
-                    range = 0f..100f
+                    range = 0f..100f,
+                    stepSize = 1f
                 )
             }
             //</editor-fold>

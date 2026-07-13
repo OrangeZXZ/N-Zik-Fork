@@ -2,6 +2,8 @@ package app.it.fast4x.rimusic.ui.components.themed
 
 import app.n_zik.android.core.database.*
 import app.n_zik.android.uiRoundnessShape
+import app.n_zik.android.components.ui.sliders.Slider
+import app.n_zik.android.components.ui.sliders.SliderControl
 
 import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.animateDpAsState
@@ -1281,61 +1283,8 @@ fun BlurParamsDialog(
                 onSlideComplete = {},
                 toDisplay = { "%.0f".format(it) },
                 range = 0f..100f,
-                steps = 99
+                stepSize = 1f
             )
-
-            /*
-            CustomSlider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 5.dp),
-                value = blurStrength,
-                onValueChange = {
-                    blurStrength = it
-                },
-                valueRange = 0f..50f,
-                gap = 1,
-                //showIndicator = true,
-                thumb = { thumbValue ->
-                    CustomSliderDefaults.Thumb(
-                        thumbValue = "%.0f".format(blurStrength),
-                        color = Color.Transparent,
-                        size = 40.dp,
-                        modifier = Modifier.background(
-                            brush = Brush.linearGradient(listOf(colorPalette.background1, colorPalette.favoritesIcon)),
-                            shape = CircleShape
-                        )
-                    )
-                },
-                track = { sliderPositions ->
-                    Box(
-                        modifier = Modifier
-                            .track()
-                            .border(
-                                width = 1.dp,
-                                color = Color.LightGray.copy(alpha = 0.4f),
-                                shape = CircleShape
-                            )
-                            .background(Color.White)
-                            .padding(1.dp),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .progress(sliderPositions = sliderPositions)
-                                .background(
-                                    brush = Brush.linearGradient(
-                                        listOf(
-                                            colorPalette.favoritesIcon,
-                                            Color.Red
-                                        )
-                                    )
-                                )
-                        )
-                    }
-                }
-            )
-            */
         }
     }
 }
@@ -1393,8 +1342,7 @@ fun BlurParamsDialog(
                         onSlideComplete = {
                             imageCoverSizeValue(imageCoverSize)
                         },
-                        toDisplay = { "%.0f".format(it) },
-                        steps = 10,
+                        stepSize = 5f,
                         range = 50f..100f
                     )
                 }
@@ -1423,67 +1371,10 @@ fun BlurParamsDialog(
                             onSlide = { thumbnailFadeEx = it },
                             onSlideComplete = {},
                             toDisplay = { "%.0f".format(it) },
-                            steps = 9,
+                            stepSize = 1f,
                             range = 0f..10f
                         )
 
-                        /*
-                CustomSlider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 5.dp),
-                    value = thumbnailOffset,
-                    onValueChange = {
-                        thumbnailOffset = it
-                    },
-                    valueRange = 0f..50f,
-                    gap = 1,
-                    //showIndicator = true,
-                    thumb = { thumbValue ->
-                        CustomSliderDefaults.Thumb(
-                            thumbValue = "%.0f".format(thumbnailOffset),
-                            color = Color.Transparent,
-                            size = 40.dp,
-                            modifier = Modifier.background(
-                                brush = Brush.linearGradient(
-                                    listOf(
-                                        colorPalette.background1,
-                                        colorPalette.favoritesIcon
-                                    )
-                                ),
-                                shape = CircleShape
-                            )
-                        )
-                    },
-                    track = { sliderPositions ->
-                        Box(
-                            modifier = Modifier
-                                .track()
-                                .border(
-                                    width = 1.dp,
-                                    color = Color.LightGray.copy(alpha = 0.4f),
-                                    shape = CircleShape
-                                )
-                                .background(Color.White)
-                                .padding(1.dp),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .progress(sliderPositions = sliderPositions)
-                                    .background(
-                                        brush = Brush.linearGradient(
-                                            listOf(
-                                                colorPalette.favoritesIcon,
-                                                Color.Red
-                                            )
-                                        )
-                                    )
-                            )
-                        }
-                    }
-                )
-                */
                     }
                 } else {
                     Row(
@@ -1507,7 +1398,7 @@ fun BlurParamsDialog(
                             onSlide = { thumbnailFade = it },
                             onSlideComplete = {},
                             toDisplay = { "%.0f".format(it) },
-                            steps = 9,
+                            stepSize = 1f,
                             range = 0f..10f
                         )
                     }
@@ -1535,66 +1426,9 @@ fun BlurParamsDialog(
                         onSlide = { thumbnailSpacing = it },
                         onSlideComplete = {},
                         toDisplay = { "%.0f".format(it) },
-                        range = -50f..50f
+                        range = -50f..50f,
+                        stepSize = 1f
                     )
-
-                    /*
-                CustomSlider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 5.dp),
-                    value = thumbnailSpacing,
-                    onValueChange = {
-                        thumbnailSpacing = it
-                    },
-                    valueRange = -50f..50f,
-                    gap = 1,
-                    //showIndicator = true,
-                    thumb = { thumbValue ->
-                        CustomSliderDefaults.Thumb(
-                            thumbValue = "%.0f".format(thumbnailSpacing),
-                            color = Color.Transparent,
-                            size = 40.dp,
-                            modifier = Modifier.background(
-                                brush = Brush.linearGradient(
-                                    listOf(
-                                        colorPalette.background1,
-                                        colorPalette.favoritesIcon
-                                    )
-                                ),
-                                shape = CircleShape
-                            )
-                        )
-                    },
-                    track = { sliderPositions ->
-                        Box(
-                            modifier = Modifier
-                                .track()
-                                .border(
-                                    width = 1.dp,
-                                    color = Color.LightGray.copy(alpha = 0.4f),
-                                    shape = CircleShape
-                                )
-                                .background(Color.White)
-                                .padding(1.dp),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .progress(sliderPositions = sliderPositions)
-                                    .background(
-                                        brush = Brush.linearGradient(
-                                            listOf(
-                                                colorPalette.favoritesIcon,
-                                                Color.Red
-                                            )
-                                        )
-                                    )
-                            )
-                        }
-                    }
-                )
-                 */
                 }
             }
             if (isLandscape) {
@@ -1620,7 +1454,8 @@ fun BlurParamsDialog(
                         onSlide = { thumbnailSpacingL = it },
                         onSlideComplete = {},
                         toDisplay = { "%.0f".format(it) },
-                        range = -50f..50f
+                        range = -50f..50f,
+                        stepSize = 1f
                     )
                 }
             }
@@ -1763,7 +1598,7 @@ fun LyricsSizeDialog(
                     onSlide = { lyricsSize = it },
                     onSlideComplete = {},
                     toDisplay = { "%.0f".format(it) },
-                    steps = 82,
+                    stepSize = 1f,
                     range = 18f..100f
                 )
             }
@@ -1790,7 +1625,8 @@ fun LyricsSizeDialog(
                     onSlide = { lyricsSizeL = it },
                     onSlideComplete = {},
                     toDisplay = { "%.0f".format(it) },
-                    range = 18f..100f
+                    range = 18f..100f,
+                    stepSize = 1f
                 )
             }
         }
@@ -2180,158 +2016,6 @@ fun SongMatchingDialog(
         }
     }
 }
-
-  /*if (isShowingLyrics && !showlyricsthumbnail)
-      DefaultDialog(
-          onDismiss = {
-              scaleValue(blurStrength2)
-              darkenFactorValue(blurDarkenFactor)
-              onDismiss()
-          }
-      ) {
-
-          Row(
-              horizontalArrangement = Arrangement.SpaceBetween,
-              verticalAlignment = Alignment.CenterVertically,
-              modifier = Modifier
-                  .fillMaxWidth()
-          ) {
-              IconButton(
-                  onClick = {
-                      blurStrength2 = defaultStrength2
-                  },
-                  icon = R.drawable.droplet,
-                  color = colorPalette.favoritesIcon,
-                  modifier = Modifier
-                      .size(24.dp)
-              )
-
-              CustomSlider(
-                  modifier = Modifier
-                      .fillMaxWidth()
-                      .padding(horizontal = 5.dp),
-                  value = blurStrength2,
-                  onValueChange = {
-                      blurStrength2 = it
-                  },
-                  valueRange = 0f..50f,
-                  gap = 1,
-                  showIndicator = true,
-                  thumb = { thumbValue ->
-                      CustomSliderDefaults.Thumb(
-                          thumbValue = "%.0f".format(blurStrength2),
-                          color = Color.Transparent,
-                          size = 40.dp,
-                          modifier = Modifier.background(
-                              brush = Brush.linearGradient(
-                                  listOf(
-                                      colorPalette.background1,
-                                      colorPalette.favoritesIcon
-                                  )
-                              ),
-                              shape = CircleShape
-                          )
-                      )
-                  },
-                  track = { sliderPositions ->
-                      Box(
-                          modifier = Modifier
-                              .track()
-                              .border(
-                                  width = 1.dp,
-                                  color = Color.LightGray.copy(alpha = 0.4f),
-                                  shape = CircleShape
-                              )
-                              .background(Color.White)
-                              .padding(1.dp),
-                          contentAlignment = Alignment.CenterStart
-                      ) {
-                          Box(
-                              modifier = Modifier
-                                  .progress(sliderPositions = sliderPositions)
-                                  .background(
-                                      brush = Brush.linearGradient(
-                                          listOf(
-                                              colorPalette.favoritesIcon,
-                                              Color.Red
-                                          )
-                                      )
-                                  )
-                          )
-                      }
-                  }
-              )
-          }
-      }*/
-
-
-
-
-        /*
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp, start = 4.dp)
-        ) {
-            IconButton(
-                onClick = {
-                    blurDarkenFactor = defaultDarkenFactor
-                },
-                icon = R.drawable.moon,
-                color = colorPalette.favoritesIcon,
-                modifier = Modifier
-                    .size(20.dp)
-            )
-
-            CustomSlider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 5.dp),
-                value = blurDarkenFactor,
-                onValueChange = {
-                    blurDarkenFactor = it
-                },
-                valueRange = 0f..1f,
-                gap = 1,
-                showIndicator = true,
-                thumb = { thumbValue ->
-                    CustomSliderDefaults.Thumb(
-                        thumbValue = "%.2f".format(blurDarkenFactor),
-                        color = Color.Transparent,
-                        size = 40.dp,
-                        modifier = Modifier.background(
-                            brush = Brush.linearGradient(listOf(colorPalette.background1, colorPalette.favoritesIcon)),
-                            shape = CircleShape
-                        )
-                    )
-                },
-                track = { sliderPositions ->
-                    Box(
-                        modifier = Modifier
-                            .track()
-                            .border(
-                                width = 1.dp,
-                                color = Color.LightGray.copy(alpha = 0.4f),
-                                shape = CircleShape
-                            )
-                            .background(Color.White)
-                            .padding(1.dp),
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .progress(sliderPositions = sliderPositions)
-                                .background(
-                                    brush = Brush.linearGradient(listOf(colorPalette.favoritesIcon, Color.Red))
-                                )
-                        )
-                    }
-                }
-            )
-        }
-         */
 
 
 @Composable

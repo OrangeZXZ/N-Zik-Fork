@@ -69,8 +69,7 @@ import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
+import app.n_zik.android.components.ui.toggles.Switch
 import app.n_zik.android.enums.lyrics.LyricsAlignment
 import app.n_zik.android.enums.lyrics.LyricsBackground
 import app.n_zik.android.enums.lyrics.LyricsColor
@@ -1059,12 +1058,10 @@ class LyricsSettingsMenu private constructor(
                         checked = isChecked,
                         onCheckedChange = null,
                         modifier = Modifier.scale(0.8f),
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = colorPalette().textSecondary,
-                            checkedTrackColor = colorPalette().accent.copy(alpha = 0.3f),
-                            uncheckedThumbColor = colorPalette().textSecondary,
-                            uncheckedTrackColor = colorPalette().textSecondary.copy(alpha = 0.3f)
-                        )
+                        checkedThumbColor = colorPalette().textSecondary,
+                        checkedTrackColor = colorPalette().accent.copy(alpha = 0.3f),
+                        uncheckedThumbColor = colorPalette().textSecondary,
+                        uncheckedTrackColor = colorPalette().textSecondary.copy(alpha = 0.3f)
                     )
                 }
             )
@@ -1079,12 +1076,10 @@ class LyricsSettingsMenu private constructor(
                         checked = isChecked,
                         onCheckedChange = null,
                         modifier = Modifier.scale(0.8f),
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = colorPalette().textSecondary,
-                            checkedTrackColor = colorPalette().accent.copy(alpha = 0.3f),
-                            uncheckedThumbColor = colorPalette().textSecondary,
-                            uncheckedTrackColor = colorPalette().textSecondary.copy(alpha = 0.3f)
-                        )
+                        checkedThumbColor = colorPalette().textSecondary,
+                        checkedTrackColor = colorPalette().accent.copy(alpha = 0.3f),
+                        uncheckedThumbColor = colorPalette().textSecondary,
+                        uncheckedTrackColor = colorPalette().textSecondary.copy(alpha = 0.3f)
                     )
                 }
             )

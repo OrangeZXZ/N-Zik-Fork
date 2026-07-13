@@ -46,7 +46,7 @@ private fun HamburgerMenu(
 
     val menu = DropdownMenu(
         expanded = expanded,
-        modifier = Modifier.background(colorPalette().background0.copy(0.90f)),
+        containerColor = colorPalette().background0.copy(0.90f),
         onDismissRequest = onDismissRequest
     )
     // History button

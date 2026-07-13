@@ -1,4 +1,4 @@
-package app.it.fast4x.rimusic.ui.components.themed
+package app.n_zik.android.components.ui.sliders
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -19,17 +19,19 @@ import app.it.fast4x.rimusic.utils.center
 import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.typography
 
+/**
+ * Wrapper around [Slider] that displays the value as an overlay.
+ * Uses the same [stepSize] for normalization.
+ */
 @Composable
 fun SliderControl(
-    //title: String,
-    //text: String,
     state: Float,
     range: ClosedFloatingPointRange<Float>,
     modifier: Modifier = Modifier,
     onSlide: (Float) -> Unit = { },
     onSlideComplete: () -> Unit = { },
     toDisplay: @Composable (Float) -> String = { it.toString() },
-    steps: Int = 0,
+    stepSize: Float = 0.1f,
     isEnabled: Boolean = true,
     usePadding: Boolean = true,
     showValue: Boolean = true
@@ -40,7 +42,6 @@ fun SliderControl(
 
     Box(
         modifier = Modifier
-            //.weight(1f)
             .fillMaxSize()
     ) {
         Slider(
@@ -49,7 +50,7 @@ fun SliderControl(
             setState = onSlide,
             onSlideComplete = onSlideComplete,
             range = range,
-            steps = steps,
+            stepSize = stepSize,
             modifier = Modifier
                 .height(36.dp)
                 .alpha(if (isEnabled) 0.6f else 0.5f)
@@ -76,5 +77,3 @@ fun SliderControl(
     }
 
 }
-
-

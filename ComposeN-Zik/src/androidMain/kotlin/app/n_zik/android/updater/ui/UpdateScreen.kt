@@ -445,7 +445,7 @@ fun UpdateScreen(navController: NavController) {
 
                                     val menu = app.it.fast4x.rimusic.ui.components.themed.DropdownMenu(
                                         expanded = showMenu,
-                                        modifier = Modifier.background(colorPalette().background0.copy(0.90f)),
+                                        containerColor = colorPalette().background0.copy(0.90f),
                                         onDismissRequest = { showMenu = false }
                                     )
                                     val isMinified = Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == UpdaterConstants.SUFFIX_CHAR_MINIFIED

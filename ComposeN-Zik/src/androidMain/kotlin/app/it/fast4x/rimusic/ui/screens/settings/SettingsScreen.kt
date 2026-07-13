@@ -63,16 +63,14 @@ import app.it.fast4x.rimusic.ui.components.Skeleton
 import app.it.fast4x.rimusic.ui.components.themed.DialogColorPicker
 import app.it.fast4x.rimusic.ui.components.themed.IDialog
 import app.n_zik.android.components.dialog.settings.SettingsInputDialog
-import app.it.fast4x.rimusic.ui.components.themed.Slider
+import app.n_zik.android.components.ui.sliders.Slider
 import app.it.fast4x.rimusic.ui.components.themed.StringListDialog
 import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
+import app.n_zik.android.components.ui.toggles.Switch
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import app.it.fast4x.rimusic.ui.components.themed.HeaderIconButton
-import app.it.fast4x.rimusic.ui.components.themed.Switch
 import app.it.fast4x.rimusic.ui.styling.ModernBlackColorPalette
 import app.it.fast4x.rimusic.ui.styling.PureBlackColorPalette
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
@@ -334,16 +332,14 @@ fun OtherSwitchSettingEntry(
                     }
                 }
 
-                // Switch Material 3 with theme colors
+                // Switch fake Material 3 with theme colors
                 Switch(
                     checked = isChecked,
                     onCheckedChange = onCheckedChange,
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = colorPalette().textSecondary,
-                        checkedTrackColor = colorPalette().accent.copy(alpha = 0.3f),
-                        uncheckedThumbColor = colorPalette().textSecondary,
-                        uncheckedTrackColor = colorPalette().textSecondary.copy(alpha = 0.3f)
-                    )
+                    checkedThumbColor = colorPalette().textSecondary,
+                    checkedTrackColor = colorPalette().accent.copy(alpha = 0.3f),
+                    uncheckedThumbColor = colorPalette().textSecondary,
+                    uncheckedTrackColor = colorPalette().textSecondary.copy(alpha = 0.3f)
                 )
 
             }
@@ -365,7 +361,7 @@ fun SwitchSettingEntry(
         text = text,
         isEnabled = isEnabled,
         onClick = { onCheckedChange(!isChecked) },
-        trailingContent = { Switch(isChecked = isChecked) },
+        trailingContent = { Switch(checked = isChecked, onCheckedChange = null) },
         modifier = modifier
     )
 }
@@ -630,7 +626,7 @@ fun SliderSettingsEntry(
     onSlide: (Float) -> Unit = { },
     onSlideComplete: () -> Unit = { },
     toDisplay: @Composable (Float) -> String = { it.toString() },
-    steps: Int = 0,
+    stepSize: Float = 0.1f,
     isEnabled: Boolean = true,
     usePadding: Boolean = true,
     icon: Int? = null,
@@ -690,7 +686,7 @@ fun SliderSettingsEntry(
         },
         onSlideComplete = onSlideComplete,
         range = range,
-        steps = steps,
+        stepSize = stepSize,
         modifier = Modifier
             .height(36.dp)
             .alpha(if (isEnabled) 1f else 0.5f)

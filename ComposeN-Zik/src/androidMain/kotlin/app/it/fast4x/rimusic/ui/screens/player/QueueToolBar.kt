@@ -68,7 +68,7 @@ fun QueueToolBar(
         modifier = modifier
             .fillMaxWidth()
             .clickable { QueueToolBarState.onBarClick() }
-            .background(colorPalette().background1, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+            .background(colorPalette().background1, app.n_zik.android.topUiRoundnessShape())
             .height(60.dp)
     ) {
         if (!isLandscape) {

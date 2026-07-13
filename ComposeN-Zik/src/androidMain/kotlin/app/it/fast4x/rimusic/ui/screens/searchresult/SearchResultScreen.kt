@@ -117,8 +117,9 @@ fun SearchResultScreen(
                         }
                         DropdownMenu(
                             expanded = showFilterMenu.value,
-                            modifier = Modifier.background(colorPalette().background0),
-                            onDismissRequest = { showFilterMenu.value = false }
+                            containerColor = colorPalette().background0,
+                            onDismissRequest = { showFilterMenu.value = false },
+                            shape = app.n_zik.android.uiRoundnessShape()
                         ) {
                             ContentType.entries.forEach { type ->
                                 DropdownMenuItem(

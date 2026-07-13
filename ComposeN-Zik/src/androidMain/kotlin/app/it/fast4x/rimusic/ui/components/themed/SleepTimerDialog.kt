@@ -1,4 +1,6 @@
-﻿package app.it.fast4x.rimusic.ui.components.themed
+package app.it.fast4x.rimusic.ui.components.themed
+
+import app.n_zik.android.components.ui.sliders.CircularSlider
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
