@@ -91,7 +91,6 @@ import app.it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import app.it.fast4x.rimusic.utils.playerSwipeSensitivityKey
 import app.n_zik.android.enums.PlayerSwipeSensitivity
 import app.it.fast4x.rimusic.utils.shakeSensitivityThemeKey
-import app.n_zik.android.enums.ShakeSensitivity
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey
 import app.it.fast4x.rimusic.utils.effectRotationKey
 import app.it.fast4x.rimusic.utils.enableWallpaperKey

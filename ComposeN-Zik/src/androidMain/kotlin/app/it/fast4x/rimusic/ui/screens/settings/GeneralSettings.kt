@@ -127,9 +127,6 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.resumePlaybackOnStartKey
 import app.it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import app.it.fast4x.rimusic.utils.semiBold
-import app.it.fast4x.rimusic.utils.shakeEventEnabledKey
-import app.it.fast4x.rimusic.utils.shakeSensitivityKey
-import app.n_zik.android.enums.ShakeSensitivity
 import app.it.fast4x.rimusic.utils.skipMediaOnErrorKey
 import app.it.fast4x.rimusic.utils.skipSilenceKey
 import app.it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
@@ -185,8 +182,6 @@ fun GeneralSettings(
 
     val search = Search()
 
-    var shakeEventEnabled by rememberPreference(shakeEventEnabledKey, false)
-    var shakeSensitivity by rememberPreference(shakeSensitivityKey, ShakeSensitivity.High)
     var useVolumeKeysToChangeSong by rememberPreference(useVolumeKeysToChangeSongKey, false)
 
     var customThemeLight_Background0 by rememberPreference(customThemeLight_Background0Key, DefaultLightColorPalette.background0.hashCode())
@@ -1121,7 +1116,7 @@ fun GeneralSettings(
          /* Removed Spacer */
 
          // Gestures & Events Section
-          val searchCtx_7 = search.inputValue.isBlank() || stringResource(R.string.gestures_events).contains(search.inputValue, true) || stringResource(R.string.event_volumekeys).contains(search.inputValue, true) || stringResource(R.string.event_volumekeysinfo).contains(search.inputValue, true) || stringResource(R.string.event_shake).contains(search.inputValue, true) || stringResource(R.string.shake_to_change_song).contains(search.inputValue, true) || stringResource(R.string.shake_sensitivity).contains(search.inputValue, true)
+          val searchCtx_7 = search.inputValue.isBlank() || stringResource(R.string.gestures_events).contains(search.inputValue, true) || stringResource(R.string.event_volumekeys).contains(search.inputValue, true) || stringResource(R.string.event_volumekeysinfo).contains(search.inputValue, true)
          AnimatedVisibility(
              visible = searchCtx_7,
              enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1300)) + androidx.compose.animation.scaleIn(
@@ -1145,33 +1140,6 @@ fun GeneralSettings(
                              icon = R.drawable.volume_control
             )
             RestartPlayerService(restartService, onRestart = { restartService = false } )
-        }
-
-        if (search.inputValue.isBlank() || stringResource(R.string.event_shake).contains(search.inputValue,true) || (stringResource(R.string.shake_to_change_song)).contains(search.inputValue, true) || (stringResource(R.string.shake_sensitivity)).contains(search.inputValue, true)) {
-                         OtherSwitchSettingEntry(
-                title = stringResource(R.string.event_shake),
-                text = stringResource(R.string.shake_to_change_song),
-                isChecked = shakeEventEnabled,
-                onCheckedChange = {
-                    shakeEventEnabled = it
-                    restartService = true
-                             },
-                             icon = R.drawable.shake_gesture
-            )
-            RestartPlayerService(restartService, onRestart = { restartService = false } )
-
-            AnimatedVisibility(visible = shakeEventEnabled) {
-                if (search.inputValue.isBlank() || stringResource(R.string.shake_sensitivity).contains(search.inputValue, true)) {
-                    OtherEnumValueSelectorSettingsEntry(
-                        icon = R.drawable.gesture,
-                        title = stringResource(R.string.shake_sensitivity),
-                        selectedValue = shakeSensitivity,
-                        onValueSelected = { shakeSensitivity = it },
-                        valueText = { it.text },
-                        modifier = Modifier.padding(start = 25.dp)
-                    )
-                }
-            }
                      }
                  }
              )

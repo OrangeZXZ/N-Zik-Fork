@@ -166,7 +166,6 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.rememberQueueScrollPositionKey
 import app.it.fast4x.rimusic.utils.resumePlaybackOnStartKey
 import app.it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
-import app.it.fast4x.rimusic.utils.shakeEventEnabledKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerArrowKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
@@ -303,8 +302,6 @@ fun DefaultUiSettings() {
     showDownloadedPlaylist = true
     var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
     showOnDevicePlaylist = true
-    var shakeEventEnabled by rememberPreference(shakeEventEnabledKey, false)
-    shakeEventEnabled = false
     var useVolumeKeysToChangeSong by rememberPreference(useVolumeKeysToChangeSongKey, false)
     useVolumeKeysToChangeSong = false
     var showFloatingIcon by rememberPreference(showFloatingIconKey, false)

@@ -9,10 +9,6 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.content.res.Configuration
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -227,9 +223,6 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.restartActivityKey
 import app.it.fast4x.rimusic.utils.hideStatusBarKey
 import app.it.fast4x.rimusic.utils.setDefaultPalette
-import app.it.fast4x.rimusic.utils.shakeEventEnabledKey
-import app.it.fast4x.rimusic.utils.shakeSensitivityKey
-import app.n_zik.android.enums.ShakeSensitivity
 import app.it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import app.it.fast4x.rimusic.utils.showSearchTabKey
 import app.it.fast4x.rimusic.utils.showTotalTimeQueueKey
@@ -253,7 +246,6 @@ import org.schabi.newpipe.extractor.NewPipe
 import timber.log.Timber
 import java.net.Proxy
 import java.util.Locale
-import java.util.Objects
 
 import kotlin.system.exitProcess
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -288,9 +280,6 @@ class MainActivity :
     private var intentUriData by mutableStateOf<Uri?>(null)
 
     override val persistMap = PersistMap()
-
-    private var sensorManager: SensorManager? = null
-    private var lastShakeTime = 0L
 
     private var _monet: MonetCompat? by mutableStateOf(null)
     private val monet get() = _monet ?: throw MonetActivityAccessException()
@@ -350,17 +339,6 @@ class MainActivity :
 
         monet.invokeOnReady {
             startApp()
-        }
-
-        if (preferences.getBoolean(shakeEventEnabledKey, false)) {
-            sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-            Objects.requireNonNull(sensorManager)
-                ?.registerListener(
-                    sensorListener,
-                    sensorManager!!
-                        .getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                    SensorManager.SENSOR_DELAY_NORMAL
-                )
         }
 
         checkIfAppIsRunningInBackground()
@@ -1349,51 +1327,13 @@ class MainActivity :
     }
 
 
-    private val sensorListener: SensorEventListener = object : SensorEventListener {
-        override fun onSensorChanged(event: SensorEvent) {
-
-            if (preferences.getBoolean(shakeEventEnabledKey, false)) {
-                val sensitivity = preferences.getEnum(shakeSensitivityKey, ShakeSensitivity.High)
-                val x = event.values[0]
-                val gX = x / SensorManager.GRAVITY_EARTH
-
-                if (kotlin.math.abs(gX) > sensitivity.thresholdG) {
-                    val now = System.currentTimeMillis()
-                    if (now - lastShakeTime > 1000) {
-                        lastShakeTime = now
-                        binder?.player?.playNext()
-                    }
-                }
-            }
-
-        }
-
-        override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
-    }
-
     override fun onResume() {
         super.onResume()
-        if (preferences.getBoolean(shakeEventEnabledKey, false)) {
-            runCatching {
-                sensorManager?.registerListener(
-                    sensorListener, sensorManager!!.getDefaultSensor(
-                        Sensor.TYPE_ACCELEROMETER
-                    ), SensorManager.SENSOR_DELAY_NORMAL
-                )
-            }.onFailure {
-                Timber.tag("MainActivity").e("onResume registerListener sensorManager ${it.stackTraceToString()}")
-            }
-        }
         appRunningInBackground = false
     }
 
     override fun onPause() {
         super.onPause()
-        runCatching {
-            sensorManager?.unregisterListener(sensorListener)
-        }.onFailure {
-            Timber.tag("MainActivity").e("onPause unregisterListener sensorListener ${it.stackTraceToString()}")
-        }
         appRunningInBackground = true
     }
 

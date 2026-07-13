@@ -3,3 +3,6 @@ Fixed:
 
 Added:
 - Visualizer button can now be toggled directly from the Player Action Bar Settings Dialog.
+
+Removed:
+- Shake to switch music feature (sensor listener, settings UI, ShakeSensitivity enum, related strings).
