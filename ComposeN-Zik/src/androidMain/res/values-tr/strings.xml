@@ -539,10 +539,6 @@
   <string name="click_to_switch_to">Değiştirmek için tıklayın</string>
   <string name="direction_bottom">Alt</string>
   <string name="direction_bottom_floating">Alt Yüzer</string>
-  <string name="event_shake">Sallama hareketi</string>
-  <string name="shake_to_change_song">Şarkıyı değiştirmek için sallayın</string>
-  <string name="shake_sensitivity">Sallama Hassasiyeti</string>
-  <string name="shake_sensitivity_very_high">Çok Yüksek (1,0G)</string>
   <string name="shake_sensitivity_high">Yüksek (2,2G)</string>
   <string name="shake_sensitivity_medium">Orta (3,5G)</string>
   <string name="shake_sensitivity_low">Düşük (5,0G)</string>

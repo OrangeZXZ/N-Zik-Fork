@@ -539,10 +539,6 @@
   <string name="click_to_switch_to">Klikk her for å bytte</string>
   <string name="direction_bottom">Bunn</string>
   <string name="direction_bottom_floating">Bunn flytende</string>
-  <string name="event_shake">Rist bevegelse</string>
-  <string name="shake_to_change_song">Rist for å endre sang</string>
-  <string name="shake_sensitivity">Shake Sensitivity</string>
-  <string name="shake_sensitivity_very_high">Very High (1.0G)</string>
   <string name="shake_sensitivity_high">High (2.2G)</string>
   <string name="shake_sensitivity_medium">Medium (3.5G)</string>
   <string name="shake_sensitivity_low">Low (5.0G)</string>

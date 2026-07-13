@@ -437,8 +437,6 @@
 <string name="style_list">Lista</string>
 <string name="click_to_switch_to">Toque para alternar para</string>
 <string name="direction_bottom">Direction bottom</string>
-<string name="event_shake">Agitar</string>
-<string name="shake_to_change_song">Agite para mudar a música</string>
 <string name="history">Histórico</string>
 <string name="yesterday">Ontem</string>
 <string name="this_week">Esta semana</string>

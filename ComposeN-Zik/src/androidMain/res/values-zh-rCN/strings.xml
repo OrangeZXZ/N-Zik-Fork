@@ -437,8 +437,6 @@
 <string name="style_list">列表</string>
 <string name="click_to_switch_to">点击以切换到</string>
 <string name="direction_bottom">Direction bottom</string>
-<string name="event_shake">摇晃</string>
-<string name="shake_to_change_song">摇晃以更改歌曲</string>
 <string name="history">历史记录</string>
 <string name="yesterday">昨天</string>
 <string name="this_week">本周</string>
