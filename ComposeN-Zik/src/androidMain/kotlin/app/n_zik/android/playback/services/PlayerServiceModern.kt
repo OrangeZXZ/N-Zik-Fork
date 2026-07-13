@@ -434,6 +434,22 @@ class PlayerServiceModern : MediaLibraryService(),
         cache = SimpleCache(cacheDir, cacheEvictor, StandaloneDatabaseProvider(this))
         downloadCache = MyDownloadHelper.getDownloadCache(applicationContext)
 
+        // Pre-load persisted stream client data into playbackDataCache
+        // so StatsForNerds shows correct streamClient after cache wipe
+        coroutineScope.launch {
+            PlaybackDataStore.loadStreamClients(applicationContext).forEach { (videoId, streamClient) ->
+                playbackDataCache.putIfAbsent(videoId, PlaybackData(
+                    streamUrl = "",
+                    format = null,
+                    loudnessDb = null,
+                    videoDetails = null,
+                    playbackTracking = null,
+                    streamExpiresInSeconds = null,
+                    streamClient = streamClient,
+                ))
+            }
+        }
+
 
         player = ExoPlayer.Builder(this)
             .setMediaSourceFactory(createMediaSourceFactory())

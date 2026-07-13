@@ -746,6 +746,7 @@ private suspend fun resolveStreamUriInternal(
                 streamExpiresInSeconds = responseToUse.streamingData?.expiresInSeconds?.toLong(),
                 streamClient = ytClient.clientName,
             )
+            PlaybackDataStore.saveStreamClient(appContext(), videoId, ytClient.clientName)
 
             // Resolve content-length via HEAD if not available
             val contentLength = format.contentLength ?: runCatching {
@@ -833,7 +834,7 @@ internal val formatCache = mutableMapOf<String, Uri>()
  * Cache of PlaybackData by videoId.
  * Stores enriched metadata (audioConfig, videoDetails, playbackTracking) from stream resolution.
  */
-internal val playbackDataCache = mutableMapOf<String, PlaybackData>()
+internal val playbackDataCache = java.util.concurrent.ConcurrentHashMap<String, PlaybackData>()
 
 /**
  * Clear all stream caches when stream client settings change.
@@ -844,6 +845,7 @@ fun clearStreamCaches() {
     formatCache.clear()
     playbackDataCache.clear()
     webRemixFailedIds.clear()
+    PlaybackDataStore.clearStreamClients(appContext())
     Timber.tag("StreamResolver").d("All stream caches cleared (format + playback data + webRemix failures)")
 }
 

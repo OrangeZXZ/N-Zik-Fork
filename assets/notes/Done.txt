@@ -6,3 +6,10 @@ Added:
 
 Removed:
 - Shake to switch music feature (sensor listener, settings UI, ShakeSensitivity enum, related strings).
+
+
+## 2026-07-13
+- Created: app/n_zik/android/playback/services/PlaybackDataStore.kt
+- Modified: app/n_zik/android/playback/services/StreamResolver.kt
+- Modified: app/n_zik/android/playback/services/PlayerServiceModern.kt
+- Fix: StatsForNerds streamClient data now persists across Android cache wipes
