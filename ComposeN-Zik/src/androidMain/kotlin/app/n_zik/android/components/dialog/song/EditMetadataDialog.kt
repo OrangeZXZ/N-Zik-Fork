@@ -4,11 +4,9 @@ import android.content.ContentUris
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -60,10 +58,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jaudiotagger.audio.AudioFileIO
-import org.jaudiotagger.tag.FieldKey
-import org.jaudiotagger.tag.images.ArtworkFactory
-import org.jaudiotagger.tag.mp4.Mp4FieldKey
 import timber.log.Timber
 import java.io.File
 
@@ -111,33 +105,33 @@ class EditMetadataDialog private constructor(
     )
 
     companion object {
-        private val TAG_LABELS = mapOf(
-            "©nam" to "Title", "©ART" to "Artist", "©alb" to "Album",
-            "©gen" to "Genre", "©day" to "Year", "©cmt" to "Comment",
-            "©wrt" to "Composer", "©too" to "Encoder", "cprt" to "Copyright",
-            "aART" to "Album Artist", "trkn" to "Track", "disk" to "Disc Number",
-            "covr" to "Cover", "tmpo" to "BPM", "cpil" to "Compilation",
-            "sonm" to "Title Sort", "soar" to "Artist Sort", "soal" to "Album Sort",
-            "TIT2" to "Title", "TPE1" to "Artist", "TALB" to "Album",
-            "TCON" to "Genre", "TDRC" to "Year", "COMM" to "Comment",
-            "TPE2" to "Album Artist", "TRCK" to "Track", "TPOS" to "Disc Number",
-            "TCOP" to "Copyright", "TBPM" to "BPM",
-            "TCOM" to "Composer", "TENC" to "Encoder", "TSRC" to "ISRC",
-            "TPUB" to "Publisher", "TEXT" to "Lyricist", "TPE3" to "Conductor",
-            "TPE4" to "Remixer", "USLT" to "Lyrics",
-            "TITLE" to "Title", "ARTIST" to "Artist", "ALBUM" to "Album",
-            "GENRE" to "Genre", "DATE" to "Year", "COMMENT" to "Comment",
-            "ALBUMARTIST" to "Album Artist", "TRACKNUMBER" to "Track",
-            "DISCNUMBER" to "Disc Number", "COPYRIGHT" to "Copyright",
-            "BPM" to "BPM", "COMPOSER" to "Composer", "ENCODEDBY" to "Encoder",
-            "ISRC" to "ISRC", "LABEL" to "Publisher", "LYRICIST" to "Lyricist",
-            "CONDUCTOR" to "Conductor", "REMIXER" to "Remixer",
+        val STANDARD_TAGS = listOf(
+            "TITLE", "ARTIST", "ALBUM", "GENRE", "DATE", "TRACK", "DISC_NUMBER",
+            "ALBUM_ARTIST", "COMPOSER", "COPYRIGHT", "COMMENT", "ENCODER",
+            "BPM", "ISRC", "PUBLISHER", "LYRICIST", "CONDUCTOR", "REMIXER", "EXPORTED"
         )
 
-        private val COVER_ART_IDS = setOf("covr", "APIC", "METADATA_BLOCK_PICTURE")
-
-        private fun labelFromKey(rawId: String): String =
-            TAG_LABELS[rawId] ?: rawId
+        val FFMPEG_KEY_MAP = mapOf(
+            "TITLE" to "title",
+            "ARTIST" to "artist",
+            "ALBUM" to "album",
+            "GENRE" to "genre",
+            "DATE" to "date",
+            "TRACK" to "track",
+            "DISC_NUMBER" to "disc",
+            "ALBUM_ARTIST" to "album_artist",
+            "COMPOSER" to "composer",
+            "COPYRIGHT" to "copyright",
+            "COMMENT" to "comment",
+            "ENCODER" to "encoder",
+            "BPM" to "bpm",
+            "ISRC" to "isrc",
+            "PUBLISHER" to "publisher",
+            "LYRICIST" to "lyricist",
+            "CONDUCTOR" to "conductor",
+            "REMIXER" to "remixer",
+            "EXPORTED" to "EXPORTED"
+        )
 
         private val LABEL_TO_STRING_RES = mapOf(
             "TITLE" to R.string.metadata_title,
@@ -145,7 +139,6 @@ class EditMetadataDialog private constructor(
             "ALBUM" to R.string.metadata_album,
             "GENRE" to R.string.metadata_genre,
             "DATE" to R.string.metadata_year,
-            "YEAR" to R.string.metadata_year,
             "TRACK" to R.string.metadata_track,
             "DISC_NUMBER" to R.string.metadata_disc_number,
             "ALBUM_ARTIST" to R.string.metadata_album_artist,
@@ -159,13 +152,12 @@ class EditMetadataDialog private constructor(
             "LYRICIST" to R.string.metadata_lyricist,
             "CONDUCTOR" to R.string.metadata_conductor,
             "REMIXER" to R.string.metadata_remixer,
-            "COVER" to R.string.metadata_cover,
             "COVERART" to R.string.metadata_cover,
+            "EXPORTED" to R.string.metadata_exported
         )
 
         @Composable
-        private fun displayLabel(rawId: String): String {
-            val key = labelFromKey(rawId)
+        private fun displayLabel(key: String): String {
             val resId = LABEL_TO_STRING_RES[key]
             return if (resId != null) stringResource(resId) else key
         }
@@ -247,24 +239,14 @@ class EditMetadataDialog private constructor(
             if (isLoading) {
                 Text(stringResource(R.string.metadata_loading), modifier = Modifier.fillMaxWidth().padding(8.dp))
             } else {
-                val displayOrder = listOf(
-                    "TITLE", "ARTIST", "ALBUM", "GENRE", "DATE", "DAY", "YEAR", "TRACK", "TRACKNUMBER",
-                    "DISCNUMBER", "DISC_NUMBER", "TPOS", "ALBUM_ARTIST", "ALBUMARTIST", "COMPOSER", "TCOM",
-                    "COPYRIGHT", "TCOP", "COMMENT", "COMM",
-                    "ENCODER", "TENC", "ENCODEDBY", "BPM", "TBPM", "ISRC", "TSRC",
-                    "LABEL", "PUBLISHER", "TPUB", "LYRICIST", "TEXT", "CONDUCTOR", "TPE3",
-                    "REMIXER", "TPE4",
-                    "COMPILATION", "TEMPO", "RATING", "GROUPING", "LYRICS", "USLT", "MOVEMENT"
-                )
                 val sortedFields = remember {
                     androidx.compose.runtime.derivedStateOf {
                         fields.sortedBy { f ->
                             when {
                                 f.isCoverArt -> -2
                                 f.value.text.isNotBlank() -> {
-                                    val label = labelFromKey(f.rawId).uppercase()
-                                    val idx = displayOrder.indexOfFirst { it.equals(f.key, ignoreCase = true) || it.equals(label, ignoreCase = true) }
-                                    if (idx >= 0) idx else Int.MAX_VALUE
+                                    val idx = STANDARD_TAGS.indexOf(f.key)
+                                    if (idx >= 0) idx else Int.MAX_VALUE - 2
                                 }
                                 else -> Int.MAX_VALUE - 1
                             }
@@ -280,7 +262,7 @@ class EditMetadataDialog private constructor(
                         )
                     } else {
                         EditField(
-                            label = displayLabel(field.rawId),
+                            label = displayLabel(field.key),
                             fieldValue = field.value,
                             onValueChange = { newValue ->
                                 fields[index] = fields[index].copy(value = newValue)
@@ -381,7 +363,6 @@ class EditMetadataDialog private constructor(
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun saveToFile() {
         val path = filePath ?: run { Toaster.e("Cannot resolve file path"); return }
         val song = getSong() ?: return
@@ -391,50 +372,114 @@ class EditMetadataDialog private constructor(
             val cacheDir = context.cacheDir
             val originalFile = File(path)
             val ext = originalFile.extension
-            val tempFile = File(cacheDir, "edit_meta_${song.id.hashCode()}.$ext")
+            Timber.tag("EditMetadata").i("saveToFile: song=${song.title}, path=$path, ext=$ext")
+
+            val tempExt = if (ext.equals("opus", ignoreCase = true) || ext.equals("ogg", ignoreCase = true)) "ogg" else ext
+            var tempFile = File(cacheDir, "edit_meta_${song.id.hashCode()}.$tempExt")
             val mediaStoreId = song.id.substringAfter(LOCAL_KEY_PREFIX).toLongOrNull()
             val mediaStoreUri = mediaStoreId?.let {
                 ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, it)
             }
 
+            var coverFile: File? = null
+
             try {
-                File(path).copyTo(tempFile, overwrite = true)
+                val commandBuilder = StringBuilder()
+                var isOpus = ext.equals("opus", ignoreCase = true) || ext.equals("ogg", ignoreCase = true)
 
-                val audioFile = AudioFileIO.read(tempFile)
-                val tag = audioFile.tagOrCreateAndSetDefault
-
-                val keysToDelete = mutableListOf<FieldKey>()
-                val it = tag.fields
-                while (it.hasNext()) {
-                    val f = it.next()
-                    try { keysToDelete.add(FieldKey.valueOf(f.id)) } catch (_: Exception) { }
+                if (!isOpus) {
+                    try {
+                        val probeSession = com.arthenica.ffmpegkit.FFprobeKit.getMediaInformation(originalFile.absolutePath)
+                        val codec = probeSession.mediaInformation?.streams?.firstOrNull()?.codec
+                        Timber.tag("EditMetadata").i("Probed codec: $codec")
+                        if (codec?.contains("opus", ignoreCase = true) == true) {
+                            isOpus = true
+                            tempFile = File(cacheDir, "edit_meta_${song.id.hashCode()}.ogg")
+                            Timber.tag("EditMetadata").w("Extension mismatch: file contains Opus but ext=$ext. Overriding, tempFile=${tempFile.name}")
+                        }
+                    } catch (e: Exception) {
+                        Timber.tag("EditMetadata").w(e, "Failed to probe file codec, using extension")
+                    }
                 }
-                for (key in keysToDelete) tag.deleteField(key)
 
-                for (field in fields) {
-                    if (field.isCoverArt) continue
+                Timber.tag("EditMetadata").i("isOpus=$isOpus, hasCover=${coverArtBytes != null}, mediaStoreUri=$mediaStoreUri")
+                
+                commandBuilder.append("-y -nostdin -i \"${originalFile.absolutePath}\" ")
+                
+                if (coverArtBytes != null && !isOpus) {
+                    val imgOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                    BitmapFactory.decodeByteArray(coverArtBytes!!, 0, coverArtBytes!!.size, imgOpts)
+                    val imgCodec = when {
+                        imgOpts.outMimeType?.contains("png") == true -> "png"
+                        imgOpts.outMimeType?.contains("webp") == true -> "webp"
+                        else -> "mjpeg"
+                    }
+                    coverFile = File(cacheDir, "temp_cover_${System.currentTimeMillis()}.jpg")
+                    coverFile.writeBytes(coverArtBytes!!)
+                    Timber.tag("EditMetadata").i("Cover file created: ${coverFile.absolutePath} (${coverArtBytes!!.size} bytes, codec=$imgCodec)")
+                    commandBuilder.append("-i \"${coverFile.absolutePath}\" -map 0:a -map 1:v ")
+                    commandBuilder.append("-c:v $imgCodec -disposition:v attached_pic ")
+                } else {
+                    commandBuilder.append("-map 0:a ")
+                }
+
+                commandBuilder.append("-map_metadata -1 -map_metadata:s:a -1 -c:a copy ")
+
+                fun escape(str: String): String {
+                    return str.replace("\\", "\\\\")
+                        .replace("\"", "\\\"")
+                        .replace("\n", " ")
+                        .replace("\r", "")
+                        .replace("\u0000", "")
+                        .replace(Regex("[\\x00-\\x08\\x0E-\\x1F]"), "")
+                }
+
+                fields.forEach { field ->
                     val value = field.value.text.trim()
-                    if (value.isEmpty()) continue
-                    val fieldKey = try { FieldKey.valueOf(field.key) } catch (_: Exception) { null }
-                    if (fieldKey != null) tag.setField(fieldKey, value)
+                    if (value.isNotEmpty() && field.key != "COVERART") {
+                        val ffmpegKey = FFMPEG_KEY_MAP[field.key] ?: field.key.lowercase()
+                        Timber.tag("EditMetadata").d("Setting tag: $ffmpegKey = ${value.take(80)}")
+                        commandBuilder.append("-metadata $ffmpegKey=\"${escape(value)}\" ")
+                    }
                 }
 
-                coverArtBytes?.let { bytes ->
-                    val artwork = ArtworkFactory.getNew()
-                    artwork.binaryData = bytes
-                    artwork.mimeType = "image/jpeg"
-                    tag.setField(artwork)
+                if (isOpus && coverArtBytes != null) {
+                    try {
+                        val flacPicBase64 = app.n_zik.android.components.dialog.export.ExportCacheDialog.generateFlacPictureBase64(coverArtBytes!!)
+                        commandBuilder.append("-metadata METADATA_BLOCK_PICTURE=\"$flacPicBase64\" ")
+                    } catch (e: Exception) {
+                        Timber.tag("EditMetadata").e(e, "Failed to build FlacPicture for Opus")
+                    }
                 }
 
-                audioFile.commit()
+                commandBuilder.append("\"${tempFile.absolutePath}\"")
+                
+                val command = commandBuilder.toString()
+                Timber.tag("EditMetadata").i("Executing FFmpeg: $command")
+
+                val session = com.arthenica.ffmpegkit.FFmpegKit.execute(command)
+                val returnCode = session.returnCode
+                if (!com.arthenica.ffmpegkit.ReturnCode.isSuccess(returnCode)) {
+                    val logs = session.allLogsAsString
+                    Timber.tag("EditMetadata").e("FFmpeg failed with return code $returnCode. Logs: $logs")
+                    throw Exception("FFmpeg failed to write tags: $logs")
+                }
+                Timber.tag("EditMetadata").i("FFmpeg success! Tags written to ${tempFile.absolutePath}")
 
                 if (mediaStoreUri != null) {
+                    Timber.tag("EditMetadata").i("Writing to MediaStore: $mediaStoreUri")
                     try {
-                        context.contentResolver.openOutputStream(mediaStoreUri)?.use { out ->
+                        val outputStream = context.contentResolver.openOutputStream(mediaStoreUri)
+                        if (outputStream == null) {
+                            throw Exception("Failed to open output stream for MediaStore URI")
+                        }
+                        outputStream.use { out ->
                             tempFile.inputStream().use { inp -> inp.copyTo(out) }
                         }
+                        Timber.tag("EditMetadata").i("MediaStore write successful")
                         onWriteSuccess(song, tempFile)
                     } catch (e: android.app.RecoverableSecurityException) {
+                        Timber.tag("EditMetadata").w("RecoverableSecurityException, requesting permission")
                         pendingTempFile = tempFile
                         pendingMediaStoreUri = mediaStoreUri
                         pendingSong = song
@@ -445,15 +490,21 @@ class EditMetadataDialog private constructor(
                         }
                     }
                 } else {
+                    Timber.tag("EditMetadata").i("No MediaStore URI, writing directly to original file: $path")
                     originalFile.outputStream().use { out ->
                         tempFile.inputStream().use { inp -> inp.copyTo(out) }
                     }
+                    Timber.tag("EditMetadata").i("Direct write successful")
                     onWriteSuccess(song, tempFile)
                 }
             } catch (e: Exception) {
                 Timber.tag("EditMetadata").e(e, "Failed to write tags")
-                tempFile.delete()
                 withContext(Dispatchers.Main) { Toaster.e("Failed to save: ${e.message}") }
+            } finally {
+                if (pendingTempFile == null) {
+                    tempFile.delete()
+                }
+                coverFile?.delete()
             }
         }
     }
@@ -508,77 +559,144 @@ class EditMetadataDialog private constructor(
                 EditableField("ARTIST", "ARTIST", TextFieldValue(song.artistsText?.let { cleanPrefix(it) } ?: ""), true)
             ))
 
+        Timber.tag("EditMetadata").i("readTagsFromFile: song=${song.title}, path=$path")
+
         try {
-            val audioFile = AudioFileIO.read(File(path))
-            val tag = audioFile.tag
             val result = mutableListOf<EditableField>()
             var cover: ByteArray? = null
             val seen = mutableSetOf<String>()
-            val isMp4 = tag?.javaClass?.simpleName?.contains("Mp4", ignoreCase = true) == true
 
-            if (tag != null) {
-                if (isMp4) {
-                    readMp4Tags(tag, result, seen, { cover = it })
-                } else {
-                    tag.fields?.forEach { field ->
-                        val rawId = field.id ?: return@forEach
-                        if (COVER_ART_IDS.any { rawId.contains(it, ignoreCase = true) }) return@forEach
-                        val value = try { field.toString().trim() } catch (_: Exception) { return@forEach }
-                        if (value.isEmpty()) return@forEach
-                        val key = try { FieldKey.valueOf(rawId).name } catch (_: Exception) { rawId }
-                        if (rawId !in seen && key !in seen) {
-                            seen += rawId; seen += key
-                            result.add(EditableField(key, rawId, TextFieldValue(value), true))
-                        }
-                    }
-
-                    try { tag.firstArtwork?.let { cover = it.binaryData } } catch (_: Exception) { }
+            try {
+                MediaMetadataRetriever().use { retriever ->
+                    retriever.setDataSource(path)
+                    cover = retriever.embeddedPicture
                 }
-
-                Timber.tag("EditMetadata").d("Tag read: %d fields (isMp4=%s)", result.size, isMp4)
-                result.forEach { Timber.tag("EditMetadata").d("  [%s] %s = %s", it.rawId, it.key, it.value.text.take(80)) }
+                Timber.tag("EditMetadata").i("Cover art: ${if (cover != null) "${cover!!.size} bytes" else "none"}")
+            } catch (e: Exception) {
+                Timber.tag("EditMetadata").w(e, "Failed to read cover via MediaMetadataRetriever")
             }
 
-            val existingLabels = result.map { labelFromKey(it.rawId) }.toSet()
-            val existingKeys = seen.toMutableSet()
+            try {
+                val session = com.arthenica.ffmpegkit.FFprobeKit.getMediaInformation(path)
+                val info = session.mediaInformation
+                val tags = mutableMapOf<String, String>()
 
-            if (!isMp4) {
-                try {
-                    MediaMetadataRetriever().use { retriever ->
-                        retriever.setDataSource(path)
-                        val mmr = mapOf(
-                            MediaMetadataRetriever.METADATA_KEY_TITLE to "TITLE",
-                            MediaMetadataRetriever.METADATA_KEY_ARTIST to "ARTIST",
-                            MediaMetadataRetriever.METADATA_KEY_ALBUM to "ALBUM",
-                            MediaMetadataRetriever.METADATA_KEY_GENRE to "GENRE",
-                            MediaMetadataRetriever.METADATA_KEY_DATE to "DATE",
-                            MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER to "TRACK",
-                            MediaMetadataRetriever.METADATA_KEY_COMPOSER to "COMPOSER",
-                        )
-                        for ((mmrKey, tagKey) in mmr) {
-                            if (tagKey in existingKeys) continue
-                            val label = labelFromKey(tagKey)
-                            if (label in existingLabels) continue
-                            val value = retriever.extractMetadata(mmrKey)?.trim() ?: continue
-                            if (value.isNotEmpty()) {
-                                seen += tagKey; existingKeys += tagKey
-                                result.add(EditableField(tagKey, tagKey, TextFieldValue(value), true))
-                            }
+                info?.tags?.let { json ->
+                    Timber.tag("EditMetadata").d("Global tags: ${json.length()} entries")
+                    val keys = json.keys()
+                    while (keys.hasNext()) {
+                        val key = keys.next()
+                        tags[key] = json.optString(key, "")
+                    }
+                }
+
+                info?.streams?.forEach { stream ->
+                    stream.tags?.let { json ->
+                        Timber.tag("EditMetadata").d("Stream tags: ${json.length()} entries")
+                        val keys = json.keys()
+                        while (keys.hasNext()) {
+                            val key = keys.next()
+                            tags[key] = json.optString(key, "")
                         }
                     }
-                } catch (_: Exception) { }
+                }
+
+                Timber.tag("EditMetadata").i("Total raw tags from FFprobeKit: ${tags.size}")
+                tags.forEach { (key, value) ->
+                    if (value.length < 200) {
+                        Timber.tag("EditMetadata").d("  [$key] = ${value.take(80)}")
+                    } else {
+                        Timber.tag("EditMetadata").d("  [$key] = <${value.length} chars, skipped>")
+                    }
+                }
+
+                val COVER_ART_TAG_KEYS = setOf("METADATA_BLOCK_PICTURE", "COVR", "APIC", "COVERART")
+                tags.forEach { (key, value) ->
+                    val upperKey = key.uppercase()
+                    if (upperKey in COVER_ART_TAG_KEYS) return@forEach
+                    val tagKey = when (upperKey) {
+                        "TITLE" -> "TITLE"
+                        "ARTIST" -> "ARTIST"
+                        "ALBUM" -> "ALBUM"
+                        "DATE", "YEAR" -> "DATE"
+                        "TRACK", "TRACKNUMBER" -> "TRACK"
+                        "DISCNUMBER", "TPOS", "DISK" -> "DISC_NUMBER"
+                        "ALBUMARTIST", "ALBUM_ARTIST", "TPE2" -> "ALBUM_ARTIST"
+                        "GENRE" -> "GENRE"
+                        "COMPOSER" -> "COMPOSER"
+                        "COPYRIGHT" -> "COPYRIGHT"
+                        "COMMENT" -> "COMMENT"
+                        "ENCODER" -> "ENCODER"
+                        "EXPORTED" -> "EXPORTED"
+                        "BPM", "TBPM", "TMPO" -> "BPM"
+                        "ISRC", "TSRC" -> "ISRC"
+                        "PUBLISHER", "LABEL", "TPUB" -> "PUBLISHER"
+                        "LYRICIST", "TEXT" -> "LYRICIST"
+                        "CONDUCTOR", "TPE3" -> "CONDUCTOR"
+                        "REMIXER", "TPE4" -> "REMIXER"
+                        else -> upperKey
+                    }
+                    if (tagKey !in seen && value.isNotEmpty()) {
+                        seen += tagKey
+                        result.add(EditableField(tagKey, tagKey, TextFieldValue(value), true))
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.tag("EditMetadata").e(e, "FFprobeKit failed to read tags")
+            }
+
+            if (cover == null) {
+                try {
+                    val isOpusPath = path.endsWith(".opus", ignoreCase = true) || path.endsWith(".ogg", ignoreCase = true)
+                    if (isOpusPath) {
+                        val session = com.arthenica.ffmpegkit.FFprobeKit.getMediaInformation(path)
+                        val mbpTag = session.mediaInformation?.tags?.optString("METADATA_BLOCK_PICTURE", null)
+                            ?: session.mediaInformation?.streams?.firstOrNull()?.tags?.optString("METADATA_BLOCK_PICTURE", null)
+                        if (mbpTag != null) {
+                            val decoded = android.util.Base64.decode(mbpTag, android.util.Base64.DEFAULT)
+                            val buf = java.nio.ByteBuffer.wrap(decoded).order(java.nio.ByteOrder.BIG_ENDIAN)
+                            if (buf.remaining() < 32) throw Exception("METADATA_BLOCK_PICTURE too short")
+                            buf.getInt() // picture type
+                            val mimeLen = buf.getInt()
+                            if (buf.remaining() < mimeLen + 4) throw Exception("Truncated MIME in METADATA_BLOCK_PICTURE")
+                            buf.position(buf.position() + mimeLen) // skip MIME
+                            val descLen = buf.getInt()
+                            if (buf.remaining() < descLen + 20) throw Exception("Truncated description in METADATA_BLOCK_PICTURE")
+                            buf.position(buf.position() + descLen) // skip description
+                            buf.getInt() // width
+                            buf.getInt() // height
+                            buf.getInt() // color depth
+                            buf.getInt() // indexed colors
+                            val dataLen = buf.getInt()
+                            if (buf.remaining() < dataLen) throw Exception("Truncated image data in METADATA_BLOCK_PICTURE")
+                            val imgData = ByteArray(dataLen)
+                            buf.get(imgData)
+                            cover = imgData
+                            Timber.tag("EditMetadata").i("Cover art from METADATA_BLOCK_PICTURE: ${imgData.size} bytes")
+                        }
+                    }
+                } catch (e: Exception) {
+                    Timber.tag("EditMetadata").w(e, "Failed to extract cover from METADATA_BLOCK_PICTURE")
+                }
             }
 
             result.add(EditableField("COVERART", "covr", TextFieldValue(""), true, isCoverArt = true))
 
-            val standardFields = listOf("TITLE", "ARTIST", "ALBUM", "GENRE", "DATE", "TRACK", "DISC_NUMBER", "ALBUM_ARTIST", "COMPOSER", "COPYRIGHT", "COMMENT", "ENCODER", "BPM", "ISRC", "PUBLISHER", "LYRICIST", "CONDUCTOR", "REMIXER")
-            for (key in standardFields) {
-                if (key !in seen && labelFromKey(key) !in existingLabels) {
-                    result.add(result.size - 1, EditableField(key, key, TextFieldValue(""), true))
+            STANDARD_TAGS.forEach { defaultKey ->
+                if (defaultKey !in seen) {
+                    val fallback = when (defaultKey) {
+                        "TITLE" -> cleanPrefix(song.title)
+                        "ARTIST" -> song.artistsText?.let { cleanPrefix(it) } ?: ""
+                        "EXPORTED" -> "N-Zik"
+                        else -> ""
+                    }
+                    result.add(EditableField(defaultKey, defaultKey, TextFieldValue(fallback), true))
                 }
             }
 
-            Timber.tag("EditMetadata").i("Total: %d fields", result.size)
+            Timber.tag("EditMetadata").i("Total fields: ${result.size}")
+            result.forEach { Timber.tag("EditMetadata").d("  [${it.key}] ${it.value.text.take(80)}") }
+
             return ReadResult(path, cover, result)
         } catch (e: Exception) {
             Timber.tag("EditMetadata").e(e, "Failed to read tags")
@@ -589,72 +707,4 @@ class EditMetadataDialog private constructor(
         }
     }
 
-    private fun readMp4Tags(
-        tag: org.jaudiotagger.tag.Tag,
-        result: MutableList<EditableField>,
-        seen: MutableSet<String>,
-        onCover: (ByteArray) -> Unit
-    ) {
-        val mp4Tag = tag as? org.jaudiotagger.tag.mp4.Mp4Tag
-        if (mp4Tag != null) {
-            val mp4KeyMap = Mp4FieldKey.entries.associateBy { it.name }
-
-            val logicalOrder = listOf(
-                "TITLE", "ARTIST", "ALBUM", "GENRE", "DAY", "TRACK",
-                "DISCNUMBER", "ALBUM_ARTIST", "COMPOSER", "COPYRIGHT", "COMMENT",
-                "ENCODER", "BPM", "ISRC", "LABEL", "LYRICIST", "CONDUCTOR", "REMIXER",
-                "COMPILATION", "TEMPO", "RATING", "GROUPING", "LYRICS", "MOVEMENT"
-            )
-
-            for (key in logicalOrder) {
-                val mp4Key = mp4KeyMap[key] ?: continue
-                if (mp4Key == Mp4FieldKey.ARTWORK) continue
-                val atomId = mp4Key.fieldName
-                if (mp4Key.name in seen || atomId in seen) continue
-
-                try {
-                    val value = mp4Tag.getFirst(mp4Key)?.trim()
-                    seen += mp4Key.name
-                    seen += atomId
-                    if (!value.isNullOrEmpty()) {
-                        result.add(EditableField(mp4Key.name, atomId, TextFieldValue(value), true))
-                    }
-                } catch (_: Exception) { }
-            }
-
-            for (mp4Key in Mp4FieldKey.entries) {
-                if (mp4Key == Mp4FieldKey.ARTWORK) continue
-                val atomId = mp4Key.fieldName
-                if (mp4Key.name in seen || atomId in seen) continue
-
-                try {
-                    val value = mp4Tag.getFirst(mp4Key)?.trim()
-                    if (!value.isNullOrEmpty()) {
-                        seen += mp4Key.name
-                        seen += atomId
-                        result.add(EditableField(mp4Key.name, atomId, TextFieldValue(value), true))
-                    }
-                } catch (_: Exception) { }
-            }
-
-            try {
-                val art = mp4Tag.firstArtwork
-                if (art != null) onCover(art.binaryData)
-            } catch (_: Exception) { }
-        } else {
-            tag.fields?.forEach { field ->
-                val rawId = field.id ?: return@forEach
-                if (COVER_ART_IDS.any { rawId.contains(it, ignoreCase = true) }) return@forEach
-                val value = try { field.toString().trim() } catch (_: Exception) { return@forEach }
-                if (value.isEmpty()) return@forEach
-                val key = try { FieldKey.valueOf(rawId).name } catch (_: Exception) { rawId }
-                if (rawId !in seen && key !in seen) {
-                    seen += rawId; seen += key
-                    result.add(EditableField(key, rawId, TextFieldValue(value), true))
-                }
-            }
-            try { tag.firstArtwork?.let { onCover(it.binaryData) } } catch (_: Exception) { }
-        }
-    }
 }
-

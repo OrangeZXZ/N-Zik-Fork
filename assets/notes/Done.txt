@@ -1,36 +1,41 @@
 Fixed:
-- Theme morphM3 is now the default animated gradient in appearance settings.
+- fix(settings): remove .0 or .5 trailing decimals from legacy integer slider preferences
+  - Modified Appearance, Visualizer, Playback, and General settings menus to enforce clean integer strings in dialogs
+
+- fix(database): resolve Room Binder crash on saving player queue with large custom covers
+  - Updated `Converters.kt` to purge `artworkData` prior to Room serialization
+  - Only runs when `artworkData` is present to prevent unnecessary GC pauses
+
+- fix(playback): ensure StatsForNerds streamClient data persists across app cache wipes
+  - Created `PlaybackDataStore.kt` for persistent storage
+  - Updated `StreamResolver.kt` and `PlayerServiceModern.kt` to leverage DataStore instead of temporary cache
+
+- fix(playback): populate missing Format fields (Size, Loudness) for downloaded songs in StatsForNerds
+  - Added `fetchFormatIfMissing()` in outer `ResolvingDataSource`
+  - Performs a HEAD request and uses `playerResponseForMetadata` if fields are null/incomplete, then upserts the merged result into Room DB
+
+- fix(ui): standardize magnetic snapping thresholds for slider controls
+  - Replaced legacy `CustomSlider` with a universal `SliderControl` architecture across the app
+  - Snapping thresholds are now dynamically size-based to feel natural on touch screens
+  - Re-enabled `stepSize` across appearance, player, visualizer, and volume settings
+
+- fix(export & metadata): unify metadata reading and writing using FFmpeg and FFprobe exclusively
+  - Replaced legacy `jaudiotagger` and `isoparser` implementations with robust FFmpeg/FFprobe commands for both `EditMetadataDialog.kt` and `ExportCacheDialog.kt`
+  - Fixed "Publisher" mapping (℗) in YouTube descriptions to map to standard "Copyright" tag for broader compatibility
+  - Cleaned up temp files securely using `finally` blocks
+  - Standardized all tags including custom `EXPORTED="N-Zik"` tag
+
+Changed:
+- change(ui): set Theme morphM3 as the default animated gradient in appearance settings
+- change(settings): moved Blur Effect out of Audio Effects and into Player Effects in the popup menu
 
 Added:
-- Visualizer button can now be toggled directly from the Player Action Bar Settings Dialog.
+- feat(visualizer): add direct toggle for Visualizer button from the Player Action Bar Settings Dialog
+
+Improved:
+- improve(visualizer): upgrade line thickness slider
+  - Now uses the full `SliderSettingsEntry` component with chevron and dialog for better UX
 
 Removed:
-- Shake to switch music feature (sensor listener, settings UI, ShakeSensitivity enum, related strings).
-
-
-## 2026-07-13
-- Created: app/n_zik/android/playback/services/PlaybackDataStore.kt
-- Modified: app/n_zik/android/playback/services/StreamResolver.kt
-- Modified: app/n_zik/android/playback/services/PlayerServiceModern.kt
-- Fix: StatsForNerds streamClient data now persists across Android cache wipes
-
-## 2026-07-13
-- Modified: app/n_zik/android/playback/services/StreamResolver.kt
-- Fix: StatsForNerds missing format fields (Size, Loudness, Perceptual Loudness) for downloaded songs
-- Added fetchFormatIfMissing() in outer ResolvingDataSource: checks if any Format field is null/incomplete on every playback, fetches via playerResponseForMetadata and HEAD request, upserts merged result into Room DB
-
-## 2026-07-13
-- Modified: Slider components across the app
-- Fix: Universal slider architecture with SliderControl replacing old CustomSlider
-- Fix: Snapping magnetic thresholds dynamically size-based to feel natural on touch screens
-- Fix: Re-enabled missing stepSize across several settings (appearance, player, visualizer, volume, etc)
-
-## 2026-07-14
-- Modified: Settings menus and sliders (Appearance, Visualizer, Playback, General)
-- Fix: Forced integer-only slider dialogs to strip trailing .0 or .5 from legacy saved preferences.
-- Fix: Moved Blur Effect out of Audio Effects and into Player Effects within the list-style popup menu.
-- UI: Upgraded Visualizer line thickness slider to use the full SliderSettingsEntry component with chevron and dialog.
-
-## 2026-07-14
-- Modified: app/n_zik/android/core/database/Converters.kt
-- Fix: Prevent "RuntimeException: Tried to marshall a Parcel that contained Binder objects" when saving player queue with large custom covers by purging "artworkData" before Room serialization. Optimized to only run when "artworkData" is present to avoid GC pauses.
+- remove(player): drop shake-to-switch music feature
+  - Deleted sensor listener, settings UI, `ShakeSensitivity` enum, and related string resources

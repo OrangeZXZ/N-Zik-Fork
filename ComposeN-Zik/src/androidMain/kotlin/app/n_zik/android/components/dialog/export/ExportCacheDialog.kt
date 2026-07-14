@@ -29,19 +29,15 @@ import kotlinx.coroutines.launch
 import app.n_zik.android.components.dialog.export.ExportToFileDialog
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
-import androidx.media3.transformer.Transformer
-import androidx.media3.transformer.ExportResult
-import androidx.media3.transformer.ExportException
-import androidx.media3.transformer.Composition
-import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
-import androidx.media3.common.MimeTypes
+import com.arthenica.ffmpegkit.FFmpegKit
+import com.arthenica.ffmpegkit.ReturnCode
 import java.io.File
 import coil3.SingletonImageLoader
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.toBitmap
 import android.graphics.Bitmap
+import androidx.compose.runtime.getValue
 import java.io.ByteArrayOutputStream
 import it.fast4x.innertube.requests.songInfo
 import it.fast4x.innertube.Innertube
@@ -51,7 +47,8 @@ class ExportCacheDialog(
     valueState: MutableState<TextFieldValue>,
     launcher: ManagedActivityResultLauncher<String, Uri?>,
     private val getSong: () -> Song,
-    val isExporting: MutableState<Boolean> = mutableStateOf(false)
+    val isExporting: MutableState<Boolean> = mutableStateOf(false),
+    override val extension: String = "m4a"
 ) : ExportToFileDialog(valueState, activeState, launcher), MenuIcon, Descriptive {
 
     companion object {
@@ -65,7 +62,11 @@ class ExportCacheDialog(
             kotlinx.coroutines.withContext(Dispatchers.Main) { isExporting.value = true }
             try {
                 Timber.tag("ExportCache").i("onExport triggered for song: ${song.title}")
-                val contentLength =  Database.formatTable.findContentLengthOf( song.id ).first()
+                val format = Database.formatTable.findBySongId( song.id ).first()
+                val contentLength = format?.contentLength ?: 0L
+                val isOpus = format?.mimeType?.contains("webm", ignoreCase = true) == true || 
+                             format?.mimeType?.contains("ogg", ignoreCase = true) == true ||
+                             format?.mimeType?.contains("opus", ignoreCase = true) == true
 
                 val isCached = binder.cache.isCached( song.id, 0, contentLength )
                 val isDownloaded = binder.downloadCache.isCached( song.id, 0, contentLength )
@@ -85,7 +86,8 @@ class ExportCacheDialog(
 
                 val cacheDir = appContext().cacheDir
                 val rawFile = File(cacheDir, "temp_raw_${System.currentTimeMillis()}.m4a")
-                val outFile = File(cacheDir, "temp_out_${System.currentTimeMillis()}.m4a")
+                var outFile = File(cacheDir, "temp_out_${System.currentTimeMillis()}.m4a")
+                var coverFile: File? = null
 
                 try {
                     Timber.tag("ExportCache").i("Creating raw file...")
@@ -96,6 +98,27 @@ class ExportCacheDialog(
                         }
                     }
                     Timber.tag("ExportCache").i("Raw file created. Size: ${rawFile.length()} bytes")
+
+                    // Detect actual codec from raw file to handle mismatched DB mimeType
+                    var actualIsOpus = isOpus
+                    if (!isOpus) {
+                        try {
+                            val probeSession = com.arthenica.ffmpegkit.FFprobeKit.getMediaInformation(rawFile.absolutePath)
+                            val codec = probeSession.mediaInformation?.streams?.firstOrNull()?.codec
+                            Timber.tag("ExportCache").i("Detected codec from raw file: $codec")
+                            if (codec?.contains("opus", ignoreCase = true) == true) {
+                                actualIsOpus = true
+                                Timber.tag("ExportCache").w("DB mimeType mismatch: raw file contains opus but format table says non-opus. Overriding.")
+                            }
+                        } catch (e: Exception) {
+                            Timber.tag("ExportCache").w(e, "Failed to probe raw file codec, using DB mimeType")
+                        }
+                    }
+
+                    // Always set correct output extension based on actual codec
+                    if (actualIsOpus) {
+                        outFile = File(cacheDir, "temp_out_${System.currentTimeMillis()}.ogg")
+                    }
 
                     val album = Database.songAlbumMapTable.findAlbumOf(song.id).first()
                     val trackPosition = Database.songAlbumMapTable.findPositionOf(song.id).first()
@@ -111,25 +134,11 @@ class ExportCacheDialog(
                         Timber.tag("ExportCache").w(e, "Failed to fetch song info (offline?)")
                     }
 
-                    // Parse description for metadata
-                    val composers = mutableListOf<String>()
-                    var publisher: String? = null
-                    var genre: String? = null
-                    description?.lines()?.forEach { line ->
-                        val trimmed = line.trim()
-                        when {
-                            trimmed.startsWith("Composer:", ignoreCase = true) -> {
-                                composers.add(trimmed.removePrefix("Composer:").trim())
-                            }
-                            trimmed.startsWith("℗", ignoreCase = false) || trimmed.startsWith("(P)", ignoreCase = true) -> {
-                                publisher = trimmed.removePrefix("℗").removePrefix("(P)").trim()
-                            }
-                            trimmed.startsWith("Genre:", ignoreCase = true) -> {
-                                genre = trimmed.removePrefix("Genre:").trim()
-                            }
-                        }
-                    }
-                    Timber.tag("ExportCache").i("Parsed: composers=$composers, publisher=$publisher, genre=$genre")
+                    val parsed = parseDescription(description)
+                    val finalAlbum = album?.title ?: parsed.album
+                    val finalYear = album?.year?.toString() ?: parsed.year
+                    
+                    Timber.tag("ExportCache").i("Parsed from description: composers=${parsed.composers}, copyright=${parsed.copyright}, genre=${parsed.genre}, descAlbum=${parsed.album}, descYear=${parsed.year}")
 
                     var artworkData: ByteArray? = null
                     if (!song.thumbnailUrl.isNullOrEmpty()) {
@@ -149,130 +158,115 @@ class ExportCacheDialog(
                         }
                     }
 
-                    val mediaMetadataBuilder = MediaMetadata.Builder()
-                        .setTitle(song.title)
-                        .setArtist(song.cleanArtistsText())
-
-                    album?.title?.let { mediaMetadataBuilder.setAlbumTitle(it) }
-                    album?.year?.toIntOrNull()?.let { mediaMetadataBuilder.setReleaseYear(it) }
-                    trackPosition?.let { if (it >= 0) mediaMetadataBuilder.setTrackNumber(it) }
-
-                    if (artworkData != null) {
-                        mediaMetadataBuilder.setArtworkData(artworkData, MediaMetadata.PICTURE_TYPE_FRONT_COVER)
+                    val commandBuilder = StringBuilder()
+                    commandBuilder.append("-y -nostdin -i \"${rawFile.absolutePath}\" ")
+                    
+                    if (artworkData != null && !actualIsOpus) {
+                        val imgOpts = android.graphics.BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                        android.graphics.BitmapFactory.decodeByteArray(artworkData, 0, artworkData.size, imgOpts)
+                        val imgCodec = when {
+                            imgOpts.outMimeType?.contains("png") == true -> "png"
+                            imgOpts.outMimeType?.contains("webp") == true -> "webp"
+                            else -> "mjpeg"
+                        }
+                        coverFile = File(cacheDir, "temp_cover_${System.currentTimeMillis()}.jpg")
+                        coverFile.writeBytes(artworkData)
+                        commandBuilder.append("-i \"${coverFile.absolutePath}\" -map 0:a -map 1:v ")
+                        commandBuilder.append("-c:v $imgCodec -disposition:v attached_pic ")
+                    } else {
+                        commandBuilder.append("-map 0:a ")
                     }
 
-                    val mediaMetadata = mediaMetadataBuilder.build()
+                    commandBuilder.append("-map_metadata -1 -map_metadata:s:a -1 -c:a copy ")
 
-                    Timber.tag("ExportCache").i("MediaMetadata built. Starting Transformer on Main thread...")
+                    fun escape(str: String?): String {
+                        if (str == null) return ""
+                        return str.replace("\\", "\\\\")
+                            .replace("\"", "\\\"")
+                            .replace("\n", " ")
+                            .replace("\r", "")
+                            .replace("\u0000", "")
+                            .replace(Regex("[\\x00-\\x08\\x0E-\\x1F]"), "")
+                    }
 
-                    val mediaItem = MediaItem.Builder()
-                        .setUri(Uri.fromFile(rawFile))
-                        .setMediaMetadata(mediaMetadata)
-                        .build()
+                    commandBuilder.append("-metadata title=\"${escape(song.title)}\" ")
+                    commandBuilder.append("-metadata artist=\"${escape(song.cleanArtistsText())}\" ")
+                    finalAlbum?.let { commandBuilder.append("-metadata album=\"${escape(it)}\" ") }
+                    finalYear?.let { commandBuilder.append("-metadata date=\"${escape(it)}\" ") }
+                    trackPosition?.let { if (it >= 0) commandBuilder.append("-metadata track=\"${it + 1}\" ") }
+                    parsed.genre?.let { commandBuilder.append("-metadata genre=\"${escape(it)}\" ") }
+                    parsed.copyright?.let { commandBuilder.append("-metadata copyright=\"${escape(it)}\" ") }
+                    if (parsed.composers.isNotEmpty()) {
+                        commandBuilder.append("-metadata composer=\"${escape(parsed.composers.joinToString(", "))}\" ")
+                    }
+                    commandBuilder.append("-metadata EXPORTED=\"N-Zik\" ")
 
-                    val editedMediaItem = androidx.media3.transformer.EditedMediaItem.Builder(mediaItem).build()
-
-                    kotlinx.coroutines.withContext(Dispatchers.Main) {
-                        Timber.tag("ExportCache").i("Building Transformer...")
-                        val transformer = Transformer.Builder(appContext())
-                            .setAudioMimeType(MimeTypes.AUDIO_AAC)
-                            .build()
-
-                        transformer.addListener(object : Transformer.Listener {
-                            override fun onCompleted(composition: Composition, exportResult: ExportResult) {
-                                Timber.tag("ExportCache").i("Transformer onCompleted! ExportResult: $exportResult")
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    try {
-                                        // 1. Manually write tags with jaudiotagger before copying
-                                        try {
-                                            val audioFile = org.jaudiotagger.audio.AudioFileIO.read(outFile)
-                                            val tag = audioFile.tagOrCreateAndSetDefault
-                                            tag.setField(org.jaudiotagger.tag.FieldKey.TITLE, song.title)
-                                            tag.setField(org.jaudiotagger.tag.FieldKey.ARTIST, song.cleanArtistsText())
-                                            album?.title?.let { tag.setField(org.jaudiotagger.tag.FieldKey.ALBUM, it) }
-                                            album?.year?.let { tag.setField(org.jaudiotagger.tag.FieldKey.YEAR, it) }
-                                            trackPosition?.let { if (it >= 0) tag.setField(org.jaudiotagger.tag.FieldKey.TRACK, (it + 1).toString()) }
-                                            tag.setField(org.jaudiotagger.tag.FieldKey.ENCODER, "Exported from N-Zik")
-                                            publisher?.let { tag.setField(org.jaudiotagger.tag.FieldKey.COPYRIGHT, it) }
-                                            genre?.let { tag.setField(org.jaudiotagger.tag.FieldKey.GENRE, it) }
-                                            if (composers.isNotEmpty()) {
-                                                tag.setField(org.jaudiotagger.tag.FieldKey.COMPOSER, composers.joinToString(", "))
-                                            }
-
-                                            if (artworkData != null) {
-                                                val artwork = org.jaudiotagger.tag.images.ArtworkFactory.getNew()
-                                                artwork.binaryData = artworkData
-                                                artwork.mimeType = "image/jpeg"
-                                                tag.setField(artwork)
-                                            }
-                                            audioFile.commit()
-                                            Timber.tag("ExportCache").i("jaudiotagger successfully wrote tags!")
-                                        } catch (e: Exception) {
-                                            Timber.tag("ExportCache").e(e, "jaudiotagger failed to write tags")
-                                        }
-
-                                        // 2. Copy the tagged file to the destination SAF URI
-                                        appContext().contentResolver.openOutputStream(uri)?.use { outStream ->
-                                            outFile.inputStream().use { inStream ->
-                                                inStream.copyTo(outStream)
-                                            }
-                                        }
-                                        CoroutineScope(Dispatchers.Main).launch {
-                                            Timber.tag("ExportCache").i("Toaster.done() called")
-                                            isExporting.value = false
-                                            Toaster.done()
-                                        }
-                                    } catch (e: Exception) {
-                                        Timber.tag("ExportCache").e(e, "Export copy error")
-                                        CoroutineScope(Dispatchers.Main).launch {
-                                            isExporting.value = false
-                                            Toaster.e(R.string.export_copy_error, e.message)
-                                        }
-                                    } finally {
-                                        rawFile.delete()
-                                        outFile.delete()
-                                    }
-                                }
-                            }
-
-                            override fun onError(composition: Composition, exportResult: ExportResult, exportException: ExportException) {
-                                Timber.tag("ExportCache").e(exportException, "Media3 Transformer export failed")
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    isExporting.value = false
-                                    Toaster.e(R.string.export_failed, exportException.message)
-                                }
-                                try { DocumentsContract.deleteDocument(appContext().contentResolver, uri) } catch (_: Exception) {}
-                                rawFile.delete()
-                                outFile.delete()
-                            }
-                        })
-
+                    if (actualIsOpus && artworkData != null) {
                         try {
-                            Timber.tag("ExportCache").i("Calling transformer.start()...")
-                            transformer.start(editedMediaItem, outFile.absolutePath)
-                            Timber.tag("ExportCache").i("transformer.start() returned successfully.")
+                            val flacPicBase64 = generateFlacPictureBase64(artworkData!!)
+                            commandBuilder.append("-metadata METADATA_BLOCK_PICTURE=\"$flacPicBase64\" ")
                         } catch (e: Exception) {
-                            Timber.tag("ExportCache").e(e, "Media3 Transformer start error")
-                            isExporting.value = false
-                            Toaster.e(R.string.export_start_error, e.message)
-                            rawFile.delete()
-                            outFile.delete()
+                            Timber.tag("ExportCache").e(e, "Failed to build FlacPicture for Opus")
                         }
+                    }
+
+                    commandBuilder.append("\"${outFile.absolutePath}\"")
+
+                    val command = commandBuilder.toString()
+                    Timber.tag("ExportCache").i("Executing FFmpeg: $command")
+
+                    val session = FFmpegKit.execute(command)
+                    val returnCode = session.returnCode
+
+                    if (ReturnCode.isSuccess(returnCode)) {
+                        Timber.tag("ExportCache").i("FFmpeg success! Transmuxed and tagged successfully.")
+
+                        if (!outFile.exists() || outFile.length() == 0L) {
+                            throw Exception("FFmpeg returned success but output file is missing or empty")
+                        }
+
+                        // Copy the tagged file to the destination SAF URI
+                        val outputStream = appContext().contentResolver.openOutputStream(uri)
+                        if (outputStream == null) {
+                            Timber.tag("ExportCache").e("Failed to open output stream for URI")
+                            throw Exception("Failed to open output stream for destination URI")
+                        }
+                        outputStream.use { outStream ->
+                            outFile.inputStream().use { inStream ->
+                                inStream.copyTo(outStream)
+                            }
+                        }
+                        kotlinx.coroutines.withContext(Dispatchers.Main) {
+                            Timber.tag("ExportCache").i("Toaster.done() called")
+                            isExporting.value = false
+                            Toaster.done()
+                        }
+                    } else {
+                        val logs = session.allLogsAsString
+                        Timber.tag("ExportCache").e("FFmpeg failed with return code $returnCode. Logs: $logs")
+                        kotlinx.coroutines.withContext(Dispatchers.Main) {
+                            isExporting.value = false
+                            Toaster.e(R.string.export_failed, "FFmpeg error: $returnCode")
+                        }
+                        try { DocumentsContract.deleteDocument(appContext().contentResolver, uri) } catch (_: Exception) {}
                     }
 
                 } catch (e: Exception) {
                     Timber.tag("ExportCache").e(e, "Export overall error")
-                    CoroutineScope(Dispatchers.Main).launch {
+                    kotlinx.coroutines.withContext(Dispatchers.Main) {
                         isExporting.value = false
-                        Toaster.e(R.string.export_error, e.message)
+                        Toaster.e(R.string.export_failed, e.message)
                     }
                     try { DocumentsContract.deleteDocument(appContext().contentResolver, uri) } catch (_: Exception) {}
+                } finally {
                     rawFile.delete()
                     outFile.delete()
+                    coverFile?.delete()
                 }
+
             } catch (e: Exception) {
                 Timber.tag("ExportCache").e(e, "Export init error")
-                CoroutineScope(Dispatchers.Main).launch {
+                kotlinx.coroutines.withContext(Dispatchers.Main) {
                     isExporting.value = false
                     Toaster.e(R.string.export_error, e.message)
                 }
@@ -287,28 +281,117 @@ class ExportCacheDialog(
             getSong: () -> Song
         ): ExportCacheDialog {
             val isExporting = remember { mutableStateOf(false) }
-            return ExportCacheDialog(
-            remember { mutableStateOf(false) },
-            remember( getSong().title ) {
-                mutableStateOf( TextFieldValue("${getSong().title} - ${getSong().cleanArtistsText()}") )
-            },
-            rememberLauncherForActivityResult(
-                ActivityResultContracts.CreateDocument( "audio/mp4" )
-            ) { uri ->
-                // [uri] must be non-null (meaning path exists) in or
-                uri ?: return@rememberLauncherForActivityResult
-                // Same thing with binder
-                binder ?: return@rememberLauncherForActivityResult
+            val song = getSong()
+            
+            val format by androidx.compose.runtime.produceState<app.it.fast4x.rimusic.models.Format?>(initialValue = null, song.id) {
+                value = Database.formatTable.findBySongId(song.id).first()
+            }
+            
+            val isOpus = format?.mimeType?.contains("webm", ignoreCase = true) == true ||
+                         format?.mimeType?.contains("ogg", ignoreCase = true) == true ||
+                         format?.mimeType?.contains("opus", ignoreCase = true) == true
 
-                onExport( uri, binder, getSong(), isExporting )
-            },
-            getSong,
-            isExporting
+            val mimeType = if (isOpus) "audio/ogg" else "audio/mp4"
+            val fileExtension = if (isOpus) "opus" else "m4a"
+
+            return ExportCacheDialog(
+                remember { mutableStateOf(false) },
+                remember( song.title ) {
+                    mutableStateOf( TextFieldValue("${song.title} - ${song.cleanArtistsText()}") )
+                },
+                rememberLauncherForActivityResult(
+                    ActivityResultContracts.CreateDocument( mimeType )
+                ) { uri ->
+                    // [uri] must be non-null (meaning path exists) in or
+                    uri ?: return@rememberLauncherForActivityResult
+                    // Same thing with binder
+                    binder ?: return@rememberLauncherForActivityResult
+
+                    onExport( uri, binder, getSong(), isExporting )
+                },
+                getSong,
+                isExporting,
+                fileExtension
+            )
+        }
+
+        private data class ParsedMetadata(
+            val album: String?,
+            val year: String?,
+            val composers: List<String>,
+            val copyright: String?,
+            val genre: String?
         )
+
+        private fun parseDescription(description: String?): ParsedMetadata {
+            val composers = mutableListOf<String>()
+            var copyright: String? = null
+            var genre: String? = null
+            var descAlbum: String? = null
+            var descYear: String? = null
+
+            val descLines = description?.lines()?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
+            if (descLines.firstOrNull()?.startsWith("Provided to YouTube by") == true) {
+                if (descLines.size >= 4) {
+                    descAlbum = descLines[2]
+                    val pLine = descLines[3]
+                    if (pLine.startsWith("℗") || pLine.startsWith("(P)")) {
+                        val yearMatch = Regex("""\d{4}""").find(pLine)
+                        descYear = yearMatch?.value
+                    }
+                }
+            }
+
+            description?.lines()?.forEach { line ->
+                val trimmed = line.trim()
+                when {
+                    trimmed.startsWith("Composer:", ignoreCase = true) -> {
+                        composers.add(trimmed.removePrefix("Composer:").trim())
+                    }
+                    trimmed.startsWith("℗", ignoreCase = false) || trimmed.startsWith("(P)", ignoreCase = true) -> {
+                        copyright = trimmed.removePrefix("℗").removePrefix("(P)").trim()
+                        if (descYear == null) {
+                            val yearMatch = Regex("""\d{4}""").find(trimmed)
+                            descYear = yearMatch?.value
+                        }
+                    }
+                    trimmed.startsWith("Genre:", ignoreCase = true) -> {
+                        genre = trimmed.removePrefix("Genre:").trim()
+                    }
+                }
+            }
+            return ParsedMetadata(descAlbum, descYear, composers, copyright, genre)
+        }
+
+        internal fun generateFlacPictureBase64(imageData: ByteArray): String {
+            val options = android.graphics.BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            android.graphics.BitmapFactory.decodeByteArray(imageData, 0, imageData.size, options)
+            val width = options.outWidth.takeIf { it > 0 } ?: 0
+            val height = options.outHeight.takeIf { it > 0 } ?: 0
+            val mimeType = options.outMimeType ?: "image/jpeg"
+            
+            val mimeBytes = mimeType.toByteArray(Charsets.US_ASCII)
+            val descBytes = ByteArray(0)
+            
+            val size = 4 + 4 + mimeBytes.size + 4 + descBytes.size + 4 + 4 + 4 + 4 + 4 + imageData.size
+            val buffer = java.nio.ByteBuffer.allocate(size).order(java.nio.ByteOrder.BIG_ENDIAN)
+            
+            buffer.putInt(3) // Picture Type: 3 = Front Cover
+            buffer.putInt(mimeBytes.size)
+            buffer.put(mimeBytes)
+            buffer.putInt(descBytes.size)
+            buffer.put(descBytes)
+            buffer.putInt(width)
+            buffer.putInt(height)
+            buffer.putInt(24) // Color depth
+            buffer.putInt(0)  // Indexed colors
+            buffer.putInt(imageData.size)
+            buffer.put(imageData)
+            
+            return android.util.Base64.encodeToString(buffer.array(), android.util.Base64.NO_WRAP)
         }
     }
 
-    override val extension: String = "m4a"
     override val iconId: Int = R.drawable.export_outline
     override val messageId: Int = R.string.info_export_cached_or_downloaded_song
     override val dialogTitle: String

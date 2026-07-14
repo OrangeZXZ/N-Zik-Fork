@@ -110,7 +110,8 @@ Join the N-Zik Discord:
 - 🎚️ **Advanced Audio Controls** – Adjust volume, playback speed, pitch, normalization, silence skipping, crossfade, volume boost and silence skipping.
 - 📺 **Wide Platform Support** – Compatible with Android Auto, Android Automotive, Android TV, and YouTube video playback.
 - 🧪 **Experimental Widgets** – Access upcoming features before they become stable.
-- 📤 **Media Export** – Export cached or downloaded music to external storage.
+- 📤 **Media Export** – Export cached or downloaded music to external storage with full metadata (title, artist, album, cover art, copyright, etc.) powered by FFmpeg.
+- ✏️ **Metadata Editor** – Edit song metadata (title, artist, album, genre, year, cover art, and more) directly in-app. Supports both AAC and Opus codecs with automatic cover art embedding.
 - ⚙️ **Settings Backup & Restore** – Save and restore your complete app configuration.
 - 📡 **Offline First** – Enjoy your music library even without an internet connection.
 - ▶️ **YouTube Integration (Early Access)** – Recommendations and profile-related content are already synchronized from your YouTube account. Full synchronization is currently in development.
