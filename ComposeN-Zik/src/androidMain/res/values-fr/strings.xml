@@ -1534,4 +1534,6 @@ Volume BAS : titre précédent</string>
   <string name="updating_waveform_in_progress">Mise à jour de la forme d\'onde en cours…</string>
   <string name="waveform_updated_successfully">La forme d\'onde a été mise à jour avec succès</string>
   <string name="error_updating_waveform">Erreur lors de la mise à jour de la forme d\'onde</string>
+  <string name="metadata_exported">Exported</string>
+  <string name="container">Container</string>
 </resources>
