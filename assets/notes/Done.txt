@@ -30,3 +30,7 @@ Removed:
 - Fix: Forced integer-only slider dialogs to strip trailing .0 or .5 from legacy saved preferences.
 - Fix: Moved Blur Effect out of Audio Effects and into Player Effects within the list-style popup menu.
 - UI: Upgraded Visualizer line thickness slider to use the full SliderSettingsEntry component with chevron and dialog.
+
+## 2026-07-14
+- Modified: app/n_zik/android/core/database/Converters.kt
+- Fix: Prevent "RuntimeException: Tried to marshall a Parcel that contained Binder objects" when saving player queue with large custom covers by purging "artworkData" before Room serialization. Optimized to only run when "artworkData" is present to avoid GC pauses.
