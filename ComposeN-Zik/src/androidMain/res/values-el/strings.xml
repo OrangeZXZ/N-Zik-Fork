@@ -1228,6 +1228,7 @@
   <string name="queue_management">Διαχείριση Ουράς</string>
   <string name="app_behavior">Συμπεριφορά Εφαρμογής</string>
   <string name="audio_effects">Εφέ Ήχου</string>
+  <string name="player_effects">Player Effects</string>
   <string name="gestures_events">Gestures &amp; Events</string>
   <string name="picture_in_picture">Εικόνα σε εικόνα</string>
   <string name="i_understand">Κατανοώ</string>

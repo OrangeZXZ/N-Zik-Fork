@@ -1228,6 +1228,7 @@
   <string name="queue_management">Queue Management</string>
   <string name="app_behavior">App Behavior</string>
   <string name="audio_effects">Audio Effects</string>
+  <string name="player_effects">Player Effects</string>
   <string name="gestures_events">Gestures &amp; Events</string>
   <string name="picture_in_picture">Picture in Picture</string>
   <string name="i_understand">I understand</string>
