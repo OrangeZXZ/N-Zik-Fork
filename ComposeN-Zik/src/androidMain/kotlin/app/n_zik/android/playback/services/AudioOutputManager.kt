@@ -151,21 +151,24 @@ class AudioOutputManager(private val context: Context, private val audioManager:
                 Timber.d("AudioOutputManager: MR2 Controller $index - Route id=${r?.id}, name=${r?.name}, isSystem=${r?.isSystemRoute}")
             }
 
-            if (mr2Route != null) {
-                if (mr2Route.isSystemRoute) {
-                    if (mr2Route.id == "DEFAULT_ROUTE" || mr2Route.id == "DEVICE_ROUTE") {
-                        activeRouteId = devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER || it.type == AudioDeviceInfo.TYPE_BUILTIN_EARPIECE }?.id
-                        if (activeRouteId != null) routeSource = "MR2(SystemSpeaker)"
-                    } else if (mr2Route.id == "WIRED_HEADSET_ROUTE") {
-                        activeRouteId = devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_WIRED_HEADSET || it.type == AudioDeviceInfo.TYPE_WIRED_HEADPHONES }?.id
-                        if (activeRouteId != null) routeSource = "MR2(SystemWired)"
-                    }
+            if (mr2RouteName != null) {
+                // Try to match the name with connected devices (e.g. Bluetooth device name)
+                val match = devices.firstOrNull { 
+                    val prodName = it.productName?.toString() ?: ""
+                    prodName.isNotEmpty() && (prodName.equals(mr2RouteName, ignoreCase = true) || mr2RouteName.contains(prodName, ignoreCase = true) || prodName.contains(mr2RouteName, ignoreCase = true))
+                }
+                
+                if (match != null) {
+                    activeRouteId = match.id
+                    routeSource = "MR2(NameMatch=${match.type})"
+                } else if (mr2RouteId?.endsWith("WIRED_HEADSET_ROUTE") == true || (isWiredOn && mr2RouteName.contains("casque", ignoreCase = true))) {
+                    activeRouteId = devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_WIRED_HEADSET || it.type == AudioDeviceInfo.TYPE_WIRED_HEADPHONES }?.id
+                    if (activeRouteId != null) routeSource = "MR2(Wired)"
                 } else {
-                    val match = devices.firstOrNull { it.productName.toString() == mr2Route.name?.toString() || it.address == mr2Route.id }
-                    if (match != null) {
-                        activeRouteId = match.id
-                        routeSource = "MR2(Matched=${match.type})"
-                    }
+                    // No match for external device. On HyperOS, DEFAULT_ROUTE is used for both Speaker and BT, but the name changes.
+                    // If the name didn't match any connected BT/external device, it's the internal speaker/earpiece.
+                    activeRouteId = devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER || it.type == AudioDeviceInfo.TYPE_BUILTIN_EARPIECE }?.id
+                    if (activeRouteId != null) routeSource = "MR2(Unmatched->Speaker)"
                 }
             }
         }
