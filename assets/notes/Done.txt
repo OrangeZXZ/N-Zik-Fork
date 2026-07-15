@@ -63,3 +63,4 @@ Added:
 - add(settings): add default MiniPlayer button order configuration
   - Removed unused `expand_player` toggle
   - Synced default list in MiniPlayer.kt with MiniPlayerButtonsSettingsDialog.kt so factory reset matches initial install state
+add: dynamic icons and volume slider to AudioOutputMenu

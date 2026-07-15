@@ -17,16 +17,24 @@ class AudioOutputManager(private val audioManager: AudioManager) {
         val type: Int,
         val isCurrentlyActive: Boolean
     ) {
-        val displayName: String
+        val deviceTypeName: String
             get() = when (type) {
-                AudioDeviceInfo.TYPE_BLUETOOTH_A2DP -> name.ifEmpty { "Bluetooth" }
-                AudioDeviceInfo.TYPE_BLUETOOTH_SCO -> name.ifEmpty { "Bluetooth SCO" }
-                AudioDeviceInfo.TYPE_WIRED_HEADSET -> name.ifEmpty { "Wired headset" }
-                AudioDeviceInfo.TYPE_WIRED_HEADPHONES -> name.ifEmpty { "Wired headphones" }
-                AudioDeviceInfo.TYPE_USB_HEADSET -> name.ifEmpty { "USB headset" }
+                AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
+                AudioDeviceInfo.TYPE_BLUETOOTH_SCO -> "Bluetooth"
+                AudioDeviceInfo.TYPE_WIRED_HEADSET,
+                AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
+                AudioDeviceInfo.TYPE_USB_HEADSET -> "Headphones"
                 AudioDeviceInfo.TYPE_BUILTIN_SPEAKER -> "Speaker"
                 AudioDeviceInfo.TYPE_BUILTIN_EARPIECE -> "Earpiece"
-                else -> name.ifEmpty { "Audio device" }
+                AudioDeviceInfo.TYPE_BUS -> "Car"
+                else -> "Audio device"
+            }
+            
+        val displayName: String
+            get() = if (name.isNotEmpty() && name != deviceTypeName) {
+                "$deviceTypeName / $name"
+            } else {
+                deviceTypeName
             }
     }
 
@@ -42,7 +50,7 @@ class AudioOutputManager(private val audioManager: AudioManager) {
         val activeRouteId = audioManager.communicationDevice?.id ?: -1
 
         return devices
-            .filter { it.isSink }
+            .filter { it.isSink && it.type != AudioDeviceInfo.TYPE_TELEPHONY }
             .map { device ->
                 AudioDevice(
                     id = device.id,
