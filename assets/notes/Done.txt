@@ -25,6 +25,15 @@ Fixed:
   - Cleaned up temp files securely using `finally` blocks
   - Standardized all tags including custom `EXPORTED="N-Zik"` tag
 
+- fix(export): correct output file extension based on actual codec detection
+  - `ExportCacheDialog.kt` now always uses `.ogg` extension when codec is Opus, regardless of DB mimeType match
+  - Prevents FFmpeg from muxing Opus into M4A container which caused export failures
+
+- fix(stats): display Container, Codec, Sample Rate, and Channels for local songs in StatsForNerds
+  - Added `MediaExtractor` probe in `OnDeviceMedia.kt` to extract `sampleRate`, `audioChannels`, and `codec` during local file scan
+  - `getCodec()` now prefers `format.codecs` field before falling back to mimeType parsing
+  - Removed `LOCAL_KEY_PREFIX` guards for these fields in both overlay and modern player views
+
 Changed:
 - change(ui): set Theme morphM3 as the default animated gradient in appearance settings
 - change(settings): moved Blur Effect out of Audio Effects and into Player Effects in the popup menu

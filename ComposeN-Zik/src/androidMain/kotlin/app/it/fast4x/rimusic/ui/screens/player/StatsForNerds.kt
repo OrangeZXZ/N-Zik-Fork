@@ -233,34 +233,6 @@ fun StatsForNerds(
                             style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
                         BasicText(
-                            text = stringResource(R.string.container),
-                            maxLines = 1,
-                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
-                            overflow = TextOverflow.Visible,
-                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
-                        )
-                        BasicText(
-                            text = stringResource(R.string.codec),
-                            maxLines = 1,
-                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
-                            overflow = TextOverflow.Visible,
-                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
-                        )
-                        BasicText(
-                            text = stringResource(R.string.sample_rate),
-                            maxLines = 1,
-                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
-                            overflow = TextOverflow.Visible,
-                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
-                        )
-                        BasicText(
-                            text = stringResource(R.string.channels),
-                            maxLines = 1,
-                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
-                            overflow = TextOverflow.Visible,
-                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
-                        )
-                        BasicText(
                             text = stringResource(R.string.perceptual_loudness),
                             maxLines = 1,
                             modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
@@ -268,6 +240,34 @@ fun StatsForNerds(
                             style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
                     }
+                    BasicText(
+                        text = stringResource(R.string.container),
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                    )
+                    BasicText(
+                        text = stringResource(R.string.codec),
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                    )
+                    BasicText(
+                        text = stringResource(R.string.sample_rate),
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                    )
+                    BasicText(
+                        text = stringResource(R.string.channels),
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                    )
                     BasicText(
                         text = stringResource(R.string.stream_client),
                         maxLines = 1,
@@ -382,40 +382,6 @@ fun StatsForNerds(
                             style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
                         BasicText(
-                            text = format?.let { getContainer(it) } ?: stringResource(R.string.audio_quality_format_unknown),
-                            maxLines = 1,
-                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
-                            overflow = TextOverflow.Visible,
-                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
-                        )
-                        BasicText(
-                            text = format?.let { getCodec(it) } ?: stringResource(R.string.audio_quality_format_unknown),
-                            maxLines = 1,
-                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
-                            overflow = TextOverflow.Visible,
-                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
-                        )
-                        BasicText(
-                            text = format?.sampleRate?.let { "${it / 1000} kHz" } ?: stringResource(R.string.audio_quality_format_unknown),
-                            maxLines = 1,
-                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
-                            overflow = TextOverflow.Visible,
-                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
-                        )
-                        BasicText(
-                            text = format?.audioChannels?.let {
-                                when (it) {
-                                    1 -> "Mono"
-                                    2 -> "Stereo"
-                                    else -> "$it ch"
-                                }
-                            } ?: stringResource(R.string.audio_quality_format_unknown),
-                            maxLines = 1,
-                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
-                            overflow = TextOverflow.Visible,
-                            style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
-                        )
-                        BasicText(
                             text = format?.perceptualLoudnessDb?.let { "%.2f dB".format(it) } ?: stringResource(R.string.audio_quality_format_unknown),
                             maxLines = 1,
                             modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
@@ -423,6 +389,40 @@ fun StatsForNerds(
                             style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
                     }
+                    BasicText(
+                        text = format?.let { getContainer(it) } ?: stringResource(R.string.audio_quality_format_unknown),
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                    )
+                    BasicText(
+                        text = format?.let { getCodec(it) } ?: stringResource(R.string.audio_quality_format_unknown),
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                    )
+                    BasicText(
+                        text = format?.sampleRate?.let { "${it / 1000} kHz" } ?: stringResource(R.string.audio_quality_format_unknown),
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                    )
+                    BasicText(
+                        text = format?.audioChannels?.let {
+                            when (it) {
+                                1 -> "Mono"
+                                2 -> "Stereo"
+                                else -> "$it ch"
+                            }
+                        } ?: stringResource(R.string.audio_quality_format_unknown),
+                        maxLines = 1,
+                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                        overflow = TextOverflow.Visible,
+                        style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
+                    )
                     BasicText(
                         text = if (downloadCachedBytes != 0L) {
                             stringResource(R.string.downloaded)
@@ -624,20 +624,19 @@ fun StatsForNerds(
                               }
                           }
                       }
-                      // Row 3: Codec + Sample Rate + Channels + Perceptual Loudness
-                      if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
-                          Row(
-                              verticalAlignment = Alignment.CenterVertically,
-                              horizontalArrangement = Arrangement.Center,
-                              modifier = modifier
-                                  .background(colorPalette().background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
-                                  .padding(vertical = 5.dp)
-                                  .fillMaxWidth(if (isLandscape) 0.8f else 1f)
-                          ) {
-                               Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = modifier.weight(1f)
-                                ) {
+                      // Row 3: Container + Codec + Sample Rate + Channels + Perceptual Loudness
+                      Row(
+                          verticalAlignment = Alignment.CenterVertically,
+                          horizontalArrangement = Arrangement.Center,
+                          modifier = modifier
+                              .background(colorPalette().background2.copy(alpha = if ((transparentBackgroundActionBarPlayer) || ((playerBackgroundColors == PlayerBackgroundColors.CoverColorGradient) || (playerBackgroundColors == PlayerBackgroundColors.ThemeColorGradient)) && blackgradient) 0.0f else 0.7f))
+                              .padding(vertical = 5.dp)
+                              .fillMaxWidth(if (isLandscape) 0.8f else 1f)
+                      ) {
+                           Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = modifier.weight(1f)
+                            ) {
                                      BasicText(
                                          text = stringResource(R.string.container) + " : " + (format?.let { getContainer(it) } ?: stringResource(R.string.audio_quality_format_unknown)),
                                          maxLines = 1,
@@ -688,6 +687,7 @@ fun StatsForNerds(
                                         style = typography().xs.medium.color(colorPalette().text)
                                     )
                                }
+                               if (format?.songId?.startsWith(LOCAL_KEY_PREFIX) == false) {
                                Box(
                                    contentAlignment = Alignment.Center,
                                    modifier = modifier.weight(1f)
@@ -700,7 +700,7 @@ fun StatsForNerds(
                                         style = typography().xs.medium.color(colorPalette().text)
                                     )
                                }
-                           }
+                               }
                            // Row 4: Stream Client
                            Row(
                                verticalAlignment = Alignment.CenterVertically,
@@ -793,6 +793,7 @@ private fun getContainer(format: Format): String {
 }
 
 private fun getCodec(format: Format): String {
+    format.codecs?.takeIf { it.isNotEmpty() }?.let { return it }
     val mimeType = format.mimeType ?: return "?"
     return mimeType.substringAfter("codecs=", "").removeSurrounding("\"")
 }
