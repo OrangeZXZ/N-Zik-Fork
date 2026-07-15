@@ -180,6 +180,7 @@ fun MiniPlayer(
     val context = LocalContext.current
     val menuState = LocalMenuState.current
     val pendingMiniPlayerAction = LocalPendingMiniPlayerAction.current
+    val audioOutputMenu = AudioOutputMenu()
 
     val playerUpdateTrigger by binder.playerUpdateTrigger.collectAsState()
 
@@ -300,7 +301,7 @@ fun MiniPlayer(
     val toggleDownload by rememberPreference(showMiniPlayerDownloadKey, false)
     val toggleShare by rememberPreference(showMiniPlayerShareKey, false)
     val toggleRadio by rememberPreference(showMiniPlayerRadioKey, false)
-    val toggleAudioOutput by rememberPreference(showMiniPlayerAudioOutputKey, false)
+    val toggleAudioOutput by rememberPreference(showMiniPlayerAudioOutputKey, true)
     val toggleSleepTimer by rememberPreference(showMiniPlayerSleepTimerKey, false)
     val toggleLyrics by rememberPreference(showMiniPlayerLyricsKey, false)
     val toggleVisualizer by rememberPreference(showMiniPlayerVisualizerKey, false)
@@ -638,9 +639,7 @@ fun MiniPlayer(
                             rotationAngle = rotationAngle,
                             onLikeClick = ::toggleLike,
                             onAudioOutputClick = { 
-                                menuState?.display {
-                                    AudioOutputMenu(onDismiss = menuState::hide)
-                                }
+                                audioOutputMenu.openMenu()
                             },
                             onShowPlayer = showPlayer,
                             mediaItem = mediaItem,
@@ -816,7 +815,7 @@ private fun MiniPlayerSlotButton(
         }
         MiniPlayerButton.AudioOutput -> {
             IconButton(
-                icon = R.drawable.speaker,
+                icon = R.drawable.devices,
                 color = controlsColorText,
                 onClick = onAudioOutputClick,
                 modifier = modifier

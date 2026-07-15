@@ -19,10 +19,10 @@ class AudioOutputManager(private val audioManager: AudioManager) {
     ) {
         val deviceTypeName: String
             get() = when (type) {
-                AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
+                AudioDeviceInfo.TYPE_BLUETOOTH_A2DP -> "Bluetooth"
                 AudioDeviceInfo.TYPE_BLUETOOTH_SCO -> "Bluetooth"
-                AudioDeviceInfo.TYPE_WIRED_HEADSET,
-                AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
+                AudioDeviceInfo.TYPE_WIRED_HEADSET -> "Headphones"
+                AudioDeviceInfo.TYPE_WIRED_HEADPHONES -> "Headphones"
                 AudioDeviceInfo.TYPE_USB_HEADSET -> "Headphones"
                 AudioDeviceInfo.TYPE_BUILTIN_SPEAKER -> "Speaker"
                 AudioDeviceInfo.TYPE_BUILTIN_EARPIECE -> "Earpiece"

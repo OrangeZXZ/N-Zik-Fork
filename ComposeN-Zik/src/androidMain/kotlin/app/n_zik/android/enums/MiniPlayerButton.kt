@@ -18,7 +18,7 @@ enum class MiniPlayerButton(
     Download(R.drawable.download, R.string.miniplayer_button_download),
     Share(R.drawable.share_social, R.string.miniplayer_button_share),
     Radio(R.drawable.radio, R.string.miniplayer_button_radio),
-    AudioOutput(R.drawable.speaker, R.string.miniplayer_button_audio_output),
+    AudioOutput(R.drawable.devices, R.string.miniplayer_button_audio_output),
     SleepTimer(R.drawable.sleep, R.string.miniplayer_button_sleep_timer),
     Lyrics(R.drawable.song_lyrics, R.string.miniplayer_button_lyrics),
     Visualizer(R.drawable.sound_effect, R.string.miniplayer_button_visualizer),

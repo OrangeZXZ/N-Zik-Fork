@@ -2,6 +2,9 @@ package app.n_zik.android.components.menu.player
 
 import app.n_zik.android.core.database.*
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -101,6 +104,18 @@ class PlaybackSettingsMenu private constructor(
         var playbackVolume by rememberPreference(playbackVolumeKey, 1f)
         var playbackDeviceVolume by rememberPreference(playbackDeviceVolumeKey, getDeviceVolume(context))
         var playbackDuration by rememberPreference(playbackDurationKey, 0f)
+
+        DisposableEffect(Unit) {
+            val receiver = object : android.content.BroadcastReceiver() {
+                override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
+                    if (intent?.action == "android.media.VOLUME_CHANGED_ACTION") {
+                        playbackDeviceVolume = getDeviceVolume(context!!)
+                    }
+                }
+            }
+            context.registerReceiver(receiver, android.content.IntentFilter("android.media.VOLUME_CHANGED_ACTION"))
+            onDispose { context.unregisterReceiver(receiver) }
+        }
         var blurStrength by rememberPreference(blurStrengthKey, 25f)
         var bassBoost by rememberPreference(bassboostLevelKey, 0f)
         val volumeNormalization by rememberPreference(volumeNormalizationKey, false)
@@ -305,6 +320,19 @@ class PlaybackSettingsMenu private constructor(
         var playbackVolume by rememberPreference(playbackVolumeKey, 1f)
         var playbackDeviceVolume by rememberPreference(playbackDeviceVolumeKey, getDeviceVolume(context))
         var playbackDuration by rememberPreference(playbackDurationKey, 0f)
+
+        DisposableEffect(Unit) {
+            val receiver = object : android.content.BroadcastReceiver() {
+                override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
+                    if (intent?.action == "android.media.VOLUME_CHANGED_ACTION") {
+                        playbackDeviceVolume = getDeviceVolume(context!!)
+                    }
+                }
+            }
+            context.registerReceiver(receiver, android.content.IntentFilter("android.media.VOLUME_CHANGED_ACTION"))
+            onDispose { context.unregisterReceiver(receiver) }
+        }
+
         var blurStrength by rememberPreference(blurStrengthKey, 25f)
         var bassBoost by rememberPreference(bassboostLevelKey, 0f)
         val volumeNormalization by rememberPreference(volumeNormalizationKey, false)
@@ -313,17 +341,16 @@ class PlaybackSettingsMenu private constructor(
         var tempLoudnessGain by remember { mutableFloatStateOf(loudnessBaseGain) }
         var tempVolumeBoost by remember { mutableFloatStateOf(volumeBoostLevel) }
 
-        GridMenu.Menu(title = stringResource(R.string.controls_header_customize)) {
+        GridMenu.Menu(title = stringResource(R.string.controls_header_customize), showDragHandle = true) {
             // Section: Playback
             item(span = { GridItemSpan(maxLineSpan) }) { SectionTitle(stringResource(R.string.playback)) }
 
             // Speed
-            item {
-                SliderGridEntry(
-                    title = stringResource(R.string.controls_title_playback_speed),
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                ListSliderMenuItem(
                     icon = R.drawable.slow_motion,
+                    title = stringResource(R.string.controls_title_playback_speed),
                     value = playbackSpeed,
-                    toDisplay = { "%.1fx".format(it).replace(",", ".") },
                     onValueChange = {
                         val rounded = kotlin.math.round(it * 10f) / 10f
                         playbackSpeed = rounded
@@ -331,6 +358,7 @@ class PlaybackSettingsMenu private constructor(
                             androidx.media3.common.PlaybackParameters(rounded, playbackPitch)
                     },
                     valueRange = 0.1f..10f,
+                    displayValue = { "%.1fx".format(it).replace(",", ".") },
                     stepSize = 0f,
                     defaultValue = 1f,
                     drawValuePoints = true,
@@ -343,12 +371,11 @@ class PlaybackSettingsMenu private constructor(
             }
 
             // Pitch
-            item {
-                SliderGridEntry(
-                    title = stringResource(R.string.controls_title_playback_pitch),
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                ListSliderMenuItem(
                     icon = R.drawable.equalizer,
+                    title = stringResource(R.string.controls_title_playback_pitch),
                     value = playbackPitch,
-                    toDisplay = { "%.1fx".format(it).replace(",", ".") },
                     onValueChange = {
                         val rounded = kotlin.math.round(it * 10f) / 10f
                         playbackPitch = rounded
@@ -356,6 +383,7 @@ class PlaybackSettingsMenu private constructor(
                             androidx.media3.common.PlaybackParameters(playbackSpeed, rounded)
                     },
                     valueRange = 0.1f..5f,
+                    displayValue = { "%.1fx".format(it).replace(",", ".") },
                     stepSize = 0f,
                     defaultValue = 1f,
                     drawValuePoints = true,
@@ -368,14 +396,14 @@ class PlaybackSettingsMenu private constructor(
             }
 
             // Medley Duration
-            item {
-                SliderGridEntry(
-                    title = stringResource(R.string.controls_title_medley_duration),
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                ListSliderMenuItem(
                     icon = R.drawable.playbackduration,
+                    title = stringResource(R.string.controls_title_medley_duration),
                     value = playbackDuration,
-                    toDisplay = { "${it.toInt()}" },
                     onValueChange = { playbackDuration = kotlin.math.round(it) },
                     valueRange = 0f..60f,
+                    displayValue = { "%.0f".format(it) },
                     stepSize = 0f,
                     defaultValue = 0f,
                     drawValuePoints = true,
@@ -387,12 +415,11 @@ class PlaybackSettingsMenu private constructor(
             item(span = { GridItemSpan(maxLineSpan) }) { SectionTitle(stringResource(R.string.volume)) }
 
             // Playback Volume
-            item {
-                SliderGridEntry(
-                    title = stringResource(R.string.controls_title_playback_volume),
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                ListSliderMenuItem(
                     icon = R.drawable.volume_up,
+                    title = stringResource(R.string.controls_title_playback_volume),
                     value = playbackVolume,
-                    toDisplay = { "${(it * 100).toInt()}%" },
                     onValueChange = {
                         val rounded = kotlin.math.round(it * 100f) / 100f
                         playbackVolume = rounded
@@ -400,6 +427,7 @@ class PlaybackSettingsMenu private constructor(
                         binder.player.setGlobalVolume(playbackVolume)
                     },
                     valueRange = 0f..1f,
+                    displayValue = { "${(it * 100).toInt()}%" },
                     stepSize = 0f,
                     defaultValue = 1f,
                     drawValuePoints = true,
@@ -412,18 +440,18 @@ class PlaybackSettingsMenu private constructor(
             }
 
             // Device Volume
-            item {
-                SliderGridEntry(
-                    title = stringResource(R.string.controls_title_device_volume),
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                ListSliderMenuItem(
                     icon = R.drawable.master_volume,
+                    title = stringResource(R.string.controls_title_device_volume),
                     value = playbackDeviceVolume,
-                    toDisplay = { "${(it * 100).toInt()}%" },
                     onValueChange = {
                         val rounded = kotlin.math.round(it * 100f) / 100f
                         playbackDeviceVolume = rounded
                         setDeviceVolume(context, playbackDeviceVolume)
                     },
                     valueRange = 0f..1f,
+                    displayValue = { "${(it * 100).toInt()}%" },
                     stepSize = 0f,
                     onReset = {
                         playbackDeviceVolume = getDeviceVolume(context)
@@ -436,17 +464,17 @@ class PlaybackSettingsMenu private constructor(
             item(span = { GridItemSpan(maxLineSpan) }) { SectionTitle(stringResource(R.string.player_effects)) }
 
             // Blur Effect
-            item {
-                SliderGridEntry(
-                    title = stringResource(R.string.controls_title_blur_effect),
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                ListSliderMenuItem(
                     icon = R.drawable.droplet,
+                    title = stringResource(R.string.controls_title_blur_effect),
                     value = blurStrength,
-                    toDisplay = { "${it.toInt()}" },
                     onValueChange = {
                         blurStrength = kotlin.math.round(it)
                         onBlurScaleChange(blurStrength)
                     },
                     valueRange = 0f..50f,
+                    displayValue = { "${it.toInt()}" },
                     stepSize = 0f,
                     defaultValue = 25f,
                     drawValuePoints = true,
@@ -457,17 +485,15 @@ class PlaybackSettingsMenu private constructor(
             // Section: Effects
             item(span = { GridItemSpan(maxLineSpan) }) { SectionTitle(stringResource(R.string.audio_effects)) }
 
-
-
             // Bass Boost
-            item {
-                SliderGridEntry(
-                    title = stringResource(R.string.settings_bass_boost_level),
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                ListSliderMenuItem(
                     icon = R.drawable.musical_notes,
+                    title = stringResource(R.string.settings_bass_boost_level),
                     value = bassBoost,
-                    toDisplay = { "%.2f dB".format(it * 15f).replace(",", ".") },
                     onValueChange = { bassBoost = kotlin.math.round(it * 10000f) / 10000f },
                     valueRange = 0f..1f,
+                    displayValue = { "%.2f dB".format(it * 15f).replace(",", ".") },
                     stepSize = 0f,
                     defaultValue = 0f,
                     drawValuePoints = true,
@@ -477,15 +503,16 @@ class PlaybackSettingsMenu private constructor(
             }
 
             // Loudness Base Gain
-            item {
-                SliderGridEntry(
-                    title = stringResource(R.string.settings_loudness_base_gain),
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                var tempLoudnessGain by remember { mutableFloatStateOf(loudnessBaseGain) }
+                ListSliderMenuItem(
                     icon = R.drawable.volume_up,
+                    title = stringResource(R.string.settings_loudness_base_gain),
                     value = tempLoudnessGain,
-                    toDisplay = { "%.2f dB".format(it) },
-                    onValueChange = { tempLoudnessGain = kotlin.math.round(it * 100f) / 100f },
+                    onValueChange = { tempLoudnessGain = it },
                     onSlideComplete = { loudnessBaseGain = tempLoudnessGain },
                     valueRange = -20f..20f,
+                    displayValue = { "%.2f dB".format(it) },
                     onReset = {
                         tempLoudnessGain = 0f
                         loudnessBaseGain = 0f
@@ -498,15 +525,16 @@ class PlaybackSettingsMenu private constructor(
             }
 
             // Volume Boost Level
-            item {
-                SliderGridEntry(
-                    title = stringResource(R.string.loudness_boost_level),
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                var tempVolumeBoost by remember { mutableFloatStateOf(volumeBoostLevel) }
+                ListSliderMenuItem(
                     icon = R.drawable.volume_up,
+                    title = stringResource(R.string.loudness_boost_level),
                     value = tempVolumeBoost,
-                    toDisplay = { "%.2f dB".format(it).replace(",", ".") },
-                    onValueChange = { tempVolumeBoost = kotlin.math.round(it * 100f) / 100f },
+                    onValueChange = { tempVolumeBoost = it },
                     onSlideComplete = { volumeBoostLevel = tempVolumeBoost },
                     valueRange = -30f..30f,
+                    displayValue = { "%.2f dB".format(it).replace(",", ".") },
                     onReset = {
                         tempVolumeBoost = 0f
                         volumeBoostLevel = 0f
@@ -562,6 +590,7 @@ class PlaybackSettingsMenu private constructor(
         }
     }
 
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     private fun ListSliderMenuItem(
         icon: Int,
@@ -578,36 +607,43 @@ class PlaybackSettingsMenu private constructor(
         drawValuePoints: Boolean = false
     ) {
         Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 4.dp)
+                .padding(vertical = 10.dp)
                 .let { if (!isEnabled) it.then(Modifier.alpha(0.5f)) else it }
         ) {
-            IconButton(
-                onClick = onReset,
-                icon = icon,
-                color = colorPalette().favoritesIcon,
-                modifier = Modifier.size(20.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(32.dp)
+                    .background(
+                        color = colorPalette().accent.copy(alpha = 0.1f),
+                        shape = uiRoundnessShape()
+                    )
+                    .clip(uiRoundnessShape())
+                    .combinedClickable(
+                        onLongClick = onReset,
+                        onClick = {}
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(icon),
+                    tint = colorPalette().accent,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
 
             androidx.compose.foundation.text.BasicText(
                 text = title,
-                style = typography().xxs.semiBold.copy(
-                    color = colorPalette().text
-                ),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 8.dp)
+                style = typography().s.semiBold.copy(color = colorPalette().text)
             )
 
             androidx.compose.foundation.text.BasicText(
                 text = displayValue(value),
-                style = typography().xxs.semiBold.copy(
-                    color = colorPalette().accent
-                ),
-                modifier = Modifier.padding(end = 8.dp)
+                style = typography().xxs.semiBold.copy(color = colorPalette().accent)
             )
 
             SliderControl(
@@ -620,158 +656,8 @@ class PlaybackSettingsMenu private constructor(
                 defaultValue = defaultValue,
                 drawValuePoints = drawValuePoints,
                 showValue = false,
-                modifier = Modifier.weight(1.5f)
+                modifier = Modifier.weight(1f)
             )
-        }
-    }
-
-    @Composable
-    private fun SliderGridEntry(
-        title: String,
-        icon: Int,
-        value: Float,
-        toDisplay: @Composable (Float) -> String,
-        onValueChange: (Float) -> Unit,
-        onSlideComplete: () -> Unit = {},
-        valueRange: ClosedFloatingPointRange<Float>,
-        onReset: () -> Unit,
-        isEnabled: Boolean = true,
-        stepSize: Float = 0.1f,
-        defaultValue: Float? = null,
-        drawValuePoints: Boolean = false
-    ) {
-        var isShowingDialog by remember { mutableStateOf(false) }
-
-        if (isShowingDialog) {
-            SliderDialog(
-                title = title,
-                icon = icon,
-                value = value,
-                valueRange = valueRange,
-                stepSize = stepSize,
-                defaultValue = defaultValue,
-                drawValuePoints = drawValuePoints,
-                onValueChange = onValueChange,
-                onSlideComplete = onSlideComplete,
-                onReset = onReset,
-                toDisplay = toDisplay,
-                onDismiss = { isShowingDialog = false }
-            )
-        }
-
-        GridMenu.Entry(
-            text = title,
-            icon = { SettingIcon(icon) },
-            subtitle = toDisplay(value),
-            onClick = { isShowingDialog = true },
-            trailingContent = {
-                Icon(
-                    painter = painterResource(R.drawable.chevron_forward),
-                    tint = colorPalette().textSecondary,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
-        )
-    }
-
-    @Composable
-    private fun SliderDialog(
-        title: String,
-        icon: Int,
-        value: Float,
-        valueRange: ClosedFloatingPointRange<Float>,
-        stepSize: Float = 0.1f,
-        defaultValue: Float? = null,
-        drawValuePoints: Boolean = false,
-        onValueChange: (Float) -> Unit,
-        onSlideComplete: () -> Unit = {},
-        onReset: () -> Unit,
-        toDisplay: @Composable (Float) -> String = { it.toInt().toString() },
-        onDismiss: () -> Unit
-    ) {
-        var currentValue by remember { mutableFloatStateOf(value) }
-
-        androidx.compose.ui.window.Dialog(onDismissRequest = onDismiss) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(colorPalette().background1)
-                    .padding(16.dp)
-            ) {
-                // Header
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    SettingIcon(icon)
-                    Spacer(modifier = Modifier.size(12.dp))
-                    androidx.compose.foundation.text.BasicText(
-                        text = title,
-                        style = typography().s.semiBold.copy(
-                            color = colorPalette().text
-                        ),
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Value display
-                androidx.compose.foundation.text.BasicText(
-                    text = toDisplay(currentValue),
-                    style = typography().l.semiBold.copy(
-                        color = colorPalette().accent
-                    ),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Slider
-                SliderControl(
-                    state = currentValue,
-                    onSlide = { currentValue = it },
-                    onSlideComplete = {
-                        onValueChange(currentValue)
-                        onSlideComplete()
-                    },
-                    toDisplay = toDisplay,
-                    range = valueRange,
-                    stepSize = stepSize,
-                    defaultValue = defaultValue,
-                    drawValuePoints = drawValuePoints,
-                    showValue = false
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Buttons
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    IconButton(
-                        onClick = {
-                            onReset()
-                            onDismiss()
-                        },
-                        icon = R.drawable.refresh,
-                        color = colorPalette().textSecondary,
-                        modifier = Modifier.size(24.dp)
-                    )
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    IconButton(
-                        onClick = onDismiss,
-                        icon = R.drawable.checkmark,
-                        color = colorPalette().accent,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }
         }
     }
 }
