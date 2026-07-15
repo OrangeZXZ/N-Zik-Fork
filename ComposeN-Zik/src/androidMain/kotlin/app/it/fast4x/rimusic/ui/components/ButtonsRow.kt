@@ -31,8 +31,6 @@ fun <E> ButtonsRow(
         modifier = modifier
             .horizontalScroll(rememberScrollState())
     ) {
-        Spacer(Modifier.width(12.dp))
-
         chips.forEach { (value, label) ->
             FilterChip(
                 label = { Text(label) },
@@ -69,8 +67,6 @@ fun ButtonsRow(
         modifier = modifier
             .horizontalScroll(rememberScrollState())
     ) {
-        Spacer(Modifier.width(12.dp))
-
         chips.forEach { playlistType ->
             FilterChip(
                 label = { Text( playlistType.text ) },

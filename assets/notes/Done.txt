@@ -48,3 +48,9 @@ Improved:
 Removed:
 - remove(player): drop shake-to-switch music feature
   - Deleted sensor listener, settings UI, `ShakeSensitivity` enum, and related string resources
+
+Fixed:
+- fix(ui): align action bar and filter buttons with song items in Songs/Albums/Artists/Playlists screens
+  - Reduced TabHeader start padding from 24dp to 12dp to match QuickPicks alignment
+  - Removed extra Spacer(12.dp) from ButtonsRow to fix filter chips left padding
+  - Now title, toolbar, and filter chips all start at 12dp like QuickPicks
