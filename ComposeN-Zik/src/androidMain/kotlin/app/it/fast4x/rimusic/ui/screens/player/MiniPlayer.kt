@@ -38,6 +38,7 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.neverEqualPolicy
 import androidx.compose.runtime.remember
@@ -56,6 +57,12 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.draw.alpha
+import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.showLyricsStateKey
+import app.it.fast4x.rimusic.utils.showVisualizerStateKey
+import app.it.fast4x.rimusic.utils.saveLyricsStateKey
+import app.it.fast4x.rimusic.utils.saveVisualizerStateKey
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -82,6 +89,13 @@ import app.it.fast4x.rimusic.enums.MiniPlayerType
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.n_zik.android.playback.services.PlayerServiceModern
+import app.n_zik.android.enums.MiniPlayerButton
+import app.n_zik.android.enums.PendingMiniPlayerAction
+import app.n_zik.android.LocalPendingMiniPlayerAction
+import app.it.fast4x.rimusic.ui.components.LocalMenuState
+import app.n_zik.android.components.menu.player.AddToPlaylistPlayerMenu
+import app.n_zik.android.components.menu.player.AudioOutputMenu
+import app.n_zik.android.playback.services.AudioOutputManager
 import app.n_zik.android.thumbnailShape
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
@@ -99,12 +113,38 @@ import app.it.fast4x.rimusic.utils.getUnlikedIcon
 import app.it.fast4x.rimusic.utils.intent
 import app.it.fast4x.rimusic.utils.isExplicit
 import app.it.fast4x.rimusic.utils.miniPlayerTypeKey
+import app.it.fast4x.rimusic.utils.miniPlayerSlot1Key
+import app.it.fast4x.rimusic.utils.miniPlayerSlot2Key
+import app.it.fast4x.rimusic.utils.miniPlayerSlot3Key
+import app.it.fast4x.rimusic.utils.miniPlayerSlot4Key
+import app.it.fast4x.rimusic.utils.miniPlayerButtonOrderKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerPlayPauseKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerSkipBackKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerSkipForwardKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerShuffleKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerRepeatKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerLikeKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerAddToPlaylistKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerDownloadKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerShareKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerRadioKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerAudioOutputKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerSleepTimerKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerLyricsKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerVisualizerKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerQueueKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerVideoKey
+import app.it.fast4x.rimusic.utils.showMiniPlayerDiscoverKey
 import app.it.fast4x.rimusic.utils.playNext
 import app.it.fast4x.rimusic.utils.playPrevious
+import app.it.fast4x.rimusic.utils.shuffleQueue
 import app.it.fast4x.rimusic.utils.positionAndDurationState
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.shouldBePlaying
+import app.it.fast4x.rimusic.enums.QueueLoopType
+import app.it.fast4x.rimusic.utils.isDownloadedSong
+import app.it.fast4x.rimusic.utils.manageDownload
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -138,6 +178,8 @@ fun MiniPlayer(
     binder?.player ?: return
 
     val context = LocalContext.current
+    val menuState = LocalMenuState.current
+    val pendingMiniPlayerAction = LocalPendingMiniPlayerAction.current
 
     val playerUpdateTrigger by binder.playerUpdateTrigger.collectAsState()
 
@@ -191,6 +233,107 @@ fun MiniPlayer(
         miniPlayerTypeKey,
         MiniPlayerType.Essential
     )
+
+    // Migration: read old pref, write new slots if slots are empty
+    val slot1Key = rememberPreference(miniPlayerSlot1Key, "")
+    val slot2Key = rememberPreference(miniPlayerSlot2Key, "")
+    val slot3Key = rememberPreference(miniPlayerSlot3Key, "")
+    val slot4Key = rememberPreference(miniPlayerSlot4Key, "")
+
+    // New toggle-based system: read button order + individual toggles
+    val defaultMiniPlayerButtonOrder = listOf(
+        "skip_back", "play_pause", "skip_forward", 
+        "shuffle", "repeat", "queue", "audio_output", "sleep_timer", 
+        "like", "add_to_playlist", "download", "share", 
+        "radio", "discover", "lyrics", "visualizer", "video"
+    )
+
+    fun parseMiniPlayerOrder(serialized: String): List<String> {
+        if (serialized.isBlank()) return defaultMiniPlayerButtonOrder
+        return try {
+            val arr = org.json.JSONArray(serialized)
+            val list = mutableListOf<String>()
+            for (i in 0 until arr.length()) {
+                list.add(arr.getString(i))
+            }
+            val validIds = defaultMiniPlayerButtonOrder
+            val result = list.filter { it in validIds }.toMutableList()
+            for (id in validIds) {
+                if (id !in result) result.add(id)
+            }
+            result
+        } catch (_: Exception) {
+            defaultMiniPlayerButtonOrder
+        }
+    }
+
+    val miniPlayerButtonIdToButton = mapOf(
+        "play_pause" to MiniPlayerButton.PlayPause,
+        "skip_back" to MiniPlayerButton.SkipBack,
+        "skip_forward" to MiniPlayerButton.SkipForward,
+        "shuffle" to MiniPlayerButton.Shuffle,
+        "repeat" to MiniPlayerButton.Repeat,
+        "like" to MiniPlayerButton.Like,
+        "add_to_playlist" to MiniPlayerButton.AddToPlaylist,
+        "download" to MiniPlayerButton.Download,
+        "share" to MiniPlayerButton.Share,
+        "radio" to MiniPlayerButton.Radio,
+        "audio_output" to MiniPlayerButton.AudioOutput,
+        "sleep_timer" to MiniPlayerButton.SleepTimer,
+        "lyrics" to MiniPlayerButton.Lyrics,
+        "visualizer" to MiniPlayerButton.Visualizer,
+        "queue" to MiniPlayerButton.Queue,
+        "video" to MiniPlayerButton.Video,
+        "discover" to MiniPlayerButton.Discover,
+    )
+
+    var orderSerialized by rememberPreference(miniPlayerButtonOrderKey, "")
+    val orderedIds = remember(orderSerialized) { parseMiniPlayerOrder(orderSerialized) }
+
+    val togglePlayPause by rememberPreference(showMiniPlayerPlayPauseKey, true)
+    val toggleSkipBack by rememberPreference(showMiniPlayerSkipBackKey, true)
+    val toggleSkipForward by rememberPreference(showMiniPlayerSkipForwardKey, true)
+    val toggleShuffle by rememberPreference(showMiniPlayerShuffleKey, false)
+    val toggleRepeat by rememberPreference(showMiniPlayerRepeatKey, false)
+    val toggleLike by rememberPreference(showMiniPlayerLikeKey, false)
+    val toggleAddToPlaylist by rememberPreference(showMiniPlayerAddToPlaylistKey, false)
+    val toggleDownload by rememberPreference(showMiniPlayerDownloadKey, false)
+    val toggleShare by rememberPreference(showMiniPlayerShareKey, false)
+    val toggleRadio by rememberPreference(showMiniPlayerRadioKey, false)
+    val toggleAudioOutput by rememberPreference(showMiniPlayerAudioOutputKey, false)
+    val toggleSleepTimer by rememberPreference(showMiniPlayerSleepTimerKey, false)
+    val toggleLyrics by rememberPreference(showMiniPlayerLyricsKey, false)
+    val toggleVisualizer by rememberPreference(showMiniPlayerVisualizerKey, false)
+    val toggleQueue by rememberPreference(showMiniPlayerQueueKey, false)
+    val toggleVideo by rememberPreference(showMiniPlayerVideoKey, false)
+    val toggleDiscover by rememberPreference(showMiniPlayerDiscoverKey, false)
+    val toggleMap = remember(togglePlayPause, toggleSkipBack, toggleSkipForward, toggleShuffle, toggleRepeat, toggleLike, toggleAddToPlaylist, toggleDownload, toggleShare, toggleRadio, toggleAudioOutput, toggleSleepTimer, toggleLyrics, toggleVisualizer, toggleQueue, toggleVideo, toggleDiscover) {
+        mapOf(
+            "play_pause" to togglePlayPause,
+            "skip_back" to toggleSkipBack,
+            "skip_forward" to toggleSkipForward,
+            "shuffle" to toggleShuffle,
+            "repeat" to toggleRepeat,
+            "like" to toggleLike,
+            "add_to_playlist" to toggleAddToPlaylist,
+            "download" to toggleDownload,
+            "share" to toggleShare,
+            "radio" to toggleRadio,
+            "audio_output" to toggleAudioOutput,
+            "sleep_timer" to toggleSleepTimer,
+            "lyrics" to toggleLyrics,
+            "visualizer" to toggleVisualizer,
+            "queue" to toggleQueue,
+            "video" to toggleVideo,
+            "discover" to toggleDiscover,
+        )
+    }
+
+    val activeButtons = remember(toggleMap, orderedIds) {
+        orderedIds.filter { id -> toggleMap[id] == true }
+            .mapNotNull { id -> miniPlayerButtonIdToButton[id] }
+    }
+
 
     val color = colorPalette()
     var dynamicColorPalette by remember { mutableStateOf( color ) }
@@ -448,80 +591,71 @@ fun MiniPlayer(
                 modifier = Modifier
                     .height(Dimensions.miniPlayerHeight)
             ) {
-               if (miniPlayerType == MiniPlayerType.Essential)
-                IconButton(
-                    icon = R.drawable.play_skip_back,
-                    color = controlsColorText,
-                    onClick = {
-                        binder.player.playPrevious()
-                        if (effectRotationEnabled) isRotated = !isRotated
-                    },
-                    modifier = Modifier
-                        .rotate(rotationAngle)
-                        .padding(horizontal = 2.dp, vertical = 8.dp)
-                        .size(24.dp)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .clip(uiRoundnessShape()).clickable {
-                            if (shouldBePlaying) {
-                                binder.gracefulPause()
+                activeButtons.forEach { button ->
+                    if (button == MiniPlayerButton.PlayPause) {
+                        // Play/Pause (distinct styling)
+                        Box(
+                            modifier = Modifier
+                                .clip(uiRoundnessShape()).clickable {
+                                    if (shouldBePlaying) {
+                                        binder.gracefulPause()
+                                    } else {
+                                        binder.gracefulPlay()
+                                    }
+                                    if (effectRotationEnabled) isRotated = !isRotated
+                                }
+                                .background(colorPalette().background2)
+                                .size(42.dp)
+                        ) {
+                            if (isBuffering && shouldBePlaying) {
+                                CircularWavyProgressIndicator(
+                                    color = colorPalette().accent,
+                                    trackColor = colorPalette().text,
+                                    modifier = Modifier
+                                        .rotate(rotationAngle)
+                                        .align(Alignment.Center)
+                                        .size(24.dp),
+                                    stroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { 2.dp.toPx() }),
+                                    trackStroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { 2.dp.toPx() })
+                                )
                             } else {
-                                binder.gracefulPlay()
+                                Image(
+                                    painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
+                                    contentDescription = null,
+                                    colorFilter = ColorFilter.tint(controlsColorText),
+                                    modifier = Modifier
+                                        .rotate(rotationAngle)
+                                        .align(Alignment.Center)
+                                        .size(24.dp)
+                                )
                             }
-                            if (effectRotationEnabled) isRotated = !isRotated
                         }
-                        .background(colorPalette().background2)
-                        .size(42.dp)
-                ) {
-                    if (isBuffering && shouldBePlaying) {
-                        CircularWavyProgressIndicator(
-                            color = colorPalette().accent,
-                            trackColor = colorPalette().text,
-                            modifier = Modifier
-                                .rotate(rotationAngle)
-                                .align(Alignment.Center)
-                                .size(24.dp),
-                            stroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { 2.dp.toPx() }),
-                            trackStroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { 2.dp.toPx() })
-                        )
                     } else {
-                        Image(
-                            painter = painterResource(if (shouldBePlaying) R.drawable.pause else R.drawable.play),
-                            contentDescription = null,
-                            colorFilter = ColorFilter.tint(controlsColorText),
-                            modifier = Modifier
-                                .rotate(rotationAngle)
-                                .align(Alignment.Center)
-                                .size(24.dp)
+                        MiniPlayerSlotButton(
+                            button = button,
+                            isLiked = isSongLiked,
+                            controlsColorText = controlsColorText,
+                            rotationAngle = rotationAngle,
+                            onLikeClick = ::toggleLike,
+                            onAudioOutputClick = { 
+                                menuState?.display {
+                                    AudioOutputMenu(onDismiss = menuState::hide)
+                                }
+                            },
+                            onShowPlayer = showPlayer,
+                            mediaItem = mediaItem,
+                            context = context,
+                            binder = binder,
+                            effectRotationEnabled = effectRotationEnabled,
+                            isRotated = isRotated,
+                            onRotatedChange = { isRotated = it },
+                            menuState = menuState,
+                            pendingAction = pendingMiniPlayerAction,
+                            navController = navController,
+                            onClosePlayer = hidePlayer
                         )
                     }
                 }
-               if (miniPlayerType == MiniPlayerType.Essential)
-                IconButton(
-                    icon = R.drawable.play_skip_forward,
-                    color = controlsColorText,
-                    onClick = {
-                        binder.player.playNext()
-                        if (effectRotationEnabled) isRotated = !isRotated
-                    },
-                    modifier = Modifier
-                        .rotate(rotationAngle)
-                        .padding(horizontal = 2.dp, vertical = 8.dp)
-                        .size(24.dp)
-                )
-                if (miniPlayerType == MiniPlayerType.Modern)
-                 IconButton(
-                     icon = if( isSongLiked ) getLikedIcon() else getUnlikedIcon(),
-                     color = colorPalette().favoritesIcon,
-                     onClick = ::toggleLike,
-                     modifier = Modifier
-                         .rotate(rotationAngle)
-                         .padding(horizontal = 2.dp, vertical = 8.dp)
-                         .size(24.dp)
-                 )
-
             }
 
             Spacer(
@@ -534,9 +668,256 @@ fun MiniPlayer(
     }
 }
 
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+@OptIn(androidx.compose.animation.ExperimentalAnimationApi::class, androidx.compose.material3.ExperimentalMaterial3Api::class, androidx.compose.foundation.ExperimentalFoundationApi::class, androidx.compose.ui.text.ExperimentalTextApi::class)
+@Composable
+private fun MiniPlayerSlotButton(
+    button: MiniPlayerButton?,
+    isLiked: Boolean,
+    controlsColorText: androidx.compose.ui.graphics.Color,
+    rotationAngle: Float,
+    onLikeClick: () -> Unit,
+    onAudioOutputClick: () -> Unit,
+    onShowPlayer: () -> Unit,
+    mediaItem: MediaItem?,
+    context: android.content.Context,
+    binder: PlayerServiceModern.Binder,
+    effectRotationEnabled: Boolean,
+    isRotated: Boolean,
+    onRotatedChange: (Boolean) -> Unit,
+    menuState: app.it.fast4x.rimusic.ui.components.MenuState?,
+    pendingAction: androidx.compose.runtime.MutableState<app.n_zik.android.enums.PendingMiniPlayerAction?>?,
+    navController: androidx.navigation.NavController?,
+    onClosePlayer: () -> Unit
+) {
+    if (button == null) return
 
+    val modifier = Modifier
+        .rotate(rotationAngle)
+        .padding(horizontal = 2.dp, vertical = 8.dp)
+        .size(24.dp)
 
+    when (button) {
+        MiniPlayerButton.SkipBack -> {
+            IconButton(
+                icon = R.drawable.play_skip_back,
+                color = controlsColorText,
+                onClick = {
+                    binder.player.playPrevious()
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.SkipForward -> {
+            IconButton(
+                icon = R.drawable.play_skip_forward,
+                color = controlsColorText,
+                onClick = {
+                    binder.player.playNext()
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.Shuffle -> {
+            IconButton(
+                icon = R.drawable.shuffle,
+                color = controlsColorText,
+                onClick = {
+                    binder.player.shuffleQueue()
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.Repeat -> {
+            var currentRepeatMode by remember { mutableIntStateOf(binder.player.repeatMode) }
+            val queueLoopType = QueueLoopType.from(currentRepeatMode)
+            IconButton(
+                icon = queueLoopType.iconId,
+                color = if (queueLoopType != QueueLoopType.Default) colorPalette().accent else controlsColorText,
+                onClick = {
+                    val next = queueLoopType.next()
+                    binder.player.repeatMode = next.type
+                    currentRepeatMode = next.type
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.Like -> {
+            IconButton(
+                icon = if (isLiked) getLikedIcon() else getUnlikedIcon(),
+                color = app.n_zik.android.colorPalette().favoritesIcon,
+                onClick = onLikeClick,
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.AddToPlaylist -> {
+            IconButton(
+                icon = R.drawable.add_in_playlist,
+                color = controlsColorText,
+                onClick = {
+                    menuState?.display {
+                        AddToPlaylistPlayerMenu(
+                            navController = navController ?: return@display,
+                            onDismiss = menuState::hide,
+                            mediaItem = mediaItem ?: return@display,
+                            binder = binder,
+                            onClosePlayer = onClosePlayer
+                        )
+                    }
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.Download -> {
+            val isDownloaded = mediaItem?.let { isDownloadedSong(it.mediaId) } ?: false
+            IconButton(
+                icon = if (isDownloaded) R.drawable.downloaded else R.drawable.download,
+                color = if (isDownloaded) colorPalette().accent else controlsColorText,
+                onClick = {
+                    mediaItem?.let { manageDownload(context, it, isDownloaded) }
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.Share -> {
+            IconButton(
+                icon = R.drawable.share_social,
+                color = controlsColorText,
+                onClick = {
+                    mediaItem?.let { item ->
+                        val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(android.content.Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=${item.mediaId}")
+                        }
+                        context.startActivity(android.content.Intent.createChooser(intent, null))
+                    }
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.Radio -> {
+            val isRadioActive = binder.isRadioActive
+            IconButton(
+                icon = R.drawable.radio,
+                color = if (isRadioActive) colorPalette().accent else controlsColorText,
+                onClick = {
+                    mediaItem?.let { binder.startRadio(it, false, null, true) }
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.AudioOutput -> {
+            IconButton(
+                icon = R.drawable.speaker,
+                color = controlsColorText,
+                onClick = onAudioOutputClick,
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.SleepTimer -> {
+            IconButton(
+                icon = R.drawable.sleep,
+                color = controlsColorText,
+                onClick = {
+                    pendingAction?.value = PendingMiniPlayerAction.SleepTimer
+                    onShowPlayer()
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.Lyrics -> {
+            var isLyricsActive by app.n_zik.android.LocalIsShowingLyrics.current
+            var savedLyricsState by rememberPreference(saveLyricsStateKey, false)
+            val shouldRememberLyricsState by rememberPreference(showLyricsStateKey, false)
+            
+            IconButton(
+                icon = R.drawable.song_lyrics,
+                color = if (isLyricsActive) colorPalette().accent else controlsColorText,
+                onClick = {
+                    if (isLyricsActive) {
+                        isLyricsActive = false
+                        if (shouldRememberLyricsState) savedLyricsState = false
+                    } else {
+                        pendingAction?.value = PendingMiniPlayerAction.Lyrics
+                        onShowPlayer()
+                    }
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.Visualizer -> {
+            var isVisualizerActive by app.n_zik.android.LocalIsShowingVisualizer.current
+            var savedVisualizerState by rememberPreference(saveVisualizerStateKey, false)
+            val shouldRememberVisualizerState by rememberPreference(showVisualizerStateKey, false)
+            
+            IconButton(
+                icon = R.drawable.sound_effect,
+                color = if (isVisualizerActive) colorPalette().accent else controlsColorText,
+                onClick = {
+                    if (isVisualizerActive) {
+                        isVisualizerActive = false
+                        if (shouldRememberVisualizerState) savedVisualizerState = false
+                    } else {
+                        pendingAction?.value = PendingMiniPlayerAction.Visualizer
+                        onShowPlayer()
+                    }
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.Queue -> {
+            IconButton(
+                icon = R.drawable.reorder,
+                color = controlsColorText,
+                onClick = {
+                    pendingAction?.value = PendingMiniPlayerAction.Queue
+                    onShowPlayer()
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.Video -> {
+            IconButton(
+                icon = R.drawable.video,
+                color = controlsColorText,
+                onClick = {
+                    pendingAction?.value = PendingMiniPlayerAction.Video
+                    onShowPlayer()
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                modifier = modifier
+            )
+        }
+        MiniPlayerButton.Discover -> {
+            val discoverIsEnabled by app.it.fast4x.rimusic.utils.rememberPreference(app.it.fast4x.rimusic.utils.discoverKey, false)
+            val isAutoFillEnabled by app.it.fast4x.rimusic.utils.rememberPreference(app.it.fast4x.rimusic.utils.autoLoadSongsInQueueKey, true)
+            val isDiscoverClickable = binder.service.nzikRadio.isRadioActive || isAutoFillEnabled
 
-
+            IconButton(
+                icon = R.drawable.discover,
+                color = if (discoverIsEnabled && isDiscoverClickable) app.n_zik.android.colorPalette().accent else controlsColorText,
+                onClick = {
+                    binder.service.nzikRadio.toggleDiscover()
+                    if (effectRotationEnabled) onRotatedChange(!isRotated)
+                },
+                onLongClick = { app.kreate.android.me.knighthat.utils.Toaster.i(R.string.discoverinfo) },
+                modifier = modifier.alpha(if (isDiscoverClickable) 1f else 0.4f)
+            )
+        }
+        else -> {}
+    }
+}
 
 

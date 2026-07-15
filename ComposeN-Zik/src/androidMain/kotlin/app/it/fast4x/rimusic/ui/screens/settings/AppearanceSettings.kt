@@ -68,6 +68,7 @@ import app.it.fast4x.rimusic.enums.WallpaperType
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.AppearancePresetDialog
 import app.n_zik.android.components.dialog.settings.PlayerActionBarSettingsDialog
+import app.n_zik.android.components.dialog.settings.MiniPlayerButtonsSettingsDialog
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.RestartPlayerService
@@ -636,6 +637,7 @@ fun AppearanceSettings(
         val searchCtx_0_4 = search.inputValue.isBlank() || stringResource(R.string.colors_and_background).contains(search.inputValue, true) || stringResource(R.string.background_colors).contains(search.inputValue, true) || stringResource(R.string.gradienttype).contains(search.inputValue, true) || stringResource(R.string.blackgradient).contains(search.inputValue, true) || stringResource(R.string.albumCoverRotation).contains(search.inputValue, true) || stringResource(R.string.bottomgradient).contains(search.inputValue, true) || stringResource(R.string.textoutline).contains(search.inputValue, true) || stringResource(R.string.show_total_time_of_queue).contains(search.inputValue, true) || stringResource(R.string.show_remaining_song_time).contains(search.inputValue, true) || stringResource(R.string.shake_sensitivity_theme).contains(search.inputValue, true)
         val searchCtx_0_5 = search.inputValue.isBlank() || stringResource(R.string.player_behavior_and_visuals).contains(search.inputValue, true) || stringResource(R.string.show_next_songs_in_player).contains(search.inputValue, true) || stringResource(R.string.showtwosongs).contains(search.inputValue, true) || stringResource(R.string.songs_number_to_show).contains(search.inputValue, true) || stringResource(R.string.showalbumcover).contains(search.inputValue, true) || stringResource(R.string.disable_scrolling_text).contains(search.inputValue, true) || stringResource(R.string.scrolling_text_is_used_for_long_texts).contains(search.inputValue, true) || stringResource(R.string.player_rotating_buttons).contains(search.inputValue, true) || stringResource(R.string.player_enable_rotation_buttons).contains(search.inputValue, true) || stringResource(R.string.toggle_lyrics).contains(search.inputValue, true) || stringResource(R.string.by_tapping_on_the_thumbnail).contains(search.inputValue, true) || stringResource(R.string.click_lyrics_text).contains(search.inputValue, true) || stringResource(R.string.save_lyrics_state).contains(search.inputValue, true) || stringResource(R.string.save_lyrics_state_description).contains(search.inputValue, true) || stringResource(R.string.show_background_in_lyrics).contains(search.inputValue, true) || stringResource(R.string.player_enable_lyrics_popup_message).contains(search.inputValue, true) || stringResource(R.string.background_progress_bar).contains(search.inputValue, true) || stringResource(R.string.visualizer).contains(search.inputValue, true) || stringResource(R.string.save_visualizer_state).contains(search.inputValue, true) || stringResource(R.string.save_visualizer_state_description).contains(search.inputValue, true) || stringResource(R.string.require_mic_permission).contains(search.inputValue, true)
         PlayerActionBarSettingsDialog.Render()
+        MiniPlayerButtonsSettingsDialog.Render()
         Column {
         AnimatedVisibility(
             visible = searchCtx_0_1,
@@ -1461,20 +1463,17 @@ fun AppearanceSettings(
 
 
 
-        if (search.inputValue.isBlank() || stringResource(R.string.miniplayertype).contains(
+        if (search.inputValue.isBlank() || stringResource(R.string.miniplayer_buttons_config).contains(
                 search.inputValue,
                 true
             )
         )
-            if (search.inputValue.isBlank() || stringResource(R.string.miniplayertype).contains(search.inputValue, true)) {
-                OtherEnumValueSelectorSettingsEntry(
+            if (search.inputValue.isBlank() || stringResource(R.string.miniplayer_buttons_config).contains(search.inputValue, true)) {
+                OtherSettingsEntry(
                     icon = R.drawable.ui,
-                    title = stringResource(R.string.miniplayertype),
-                    selectedValue = miniPlayerType,
-                    onValueSelected = {
-                        miniPlayerType = it
-                    },
-                    valueText = { it.text },
+                    title = stringResource(R.string.miniplayer_buttons_config),
+                    text = stringResource(R.string.miniplayer_buttons_config_description),
+                    onClick = { MiniPlayerButtonsSettingsDialog.showDialog() }
                 )
             }
 

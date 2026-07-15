@@ -53,7 +53,8 @@ fun ToggleListDialog(
     lazyListState: LazyListState = rememberLazyListState(),
     reorderableState: ReorderableLazyListState? = null,
     contentHeight: Dp = 480.dp,
-    enforceMinOneChecked: Boolean = false
+    enforceMinOneChecked: Boolean = false,
+    maxChecked: Int = Int.MAX_VALUE
 ) {
     // Count checked items for validation
     val checkedStates = items.map { item ->
@@ -74,7 +75,8 @@ fun ToggleListDialog(
         ) { index, item ->
             val isChecked by rememberPreference(item.preferenceKey, item.defaultValue)
             val isLastChecked = enforceMinOneChecked && isChecked && checkedCount <= 1
-            val enabled = !isLastChecked
+            val isMaxReached = !isChecked && checkedCount >= maxChecked
+            val enabled = !isLastChecked && !isMaxReached
 
             if (reorderableState != null) {
                 ReorderableItem(reorderableState, key = item.id) { isDragging ->

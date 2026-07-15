@@ -54,3 +54,12 @@ Fixed:
   - Reduced TabHeader start padding from 24dp to 12dp to match QuickPicks alignment
   - Removed extra Spacer(12.dp) from ButtonsRow to fix filter chips left padding
   - Now title, toolbar, and filter chips all start at 12dp like QuickPicks
+
+Added:
+- add(player): add visualizer and lyrics mutual exclusivity logic and properly sync state across the MiniPlayer
+  - Added LaunchedEffect in Player.kt so changing one state correctly unchecks the other when shouldRemember is false
+  - Added DisposableEffect to reset volatile lyrics/visualizer states when the player is fully closed
+
+- add(settings): add default MiniPlayer button order configuration
+  - Removed unused `expand_player` toggle
+  - Synced default list in MiniPlayer.kt with MiniPlayerButtonsSettingsDialog.kt so factory reset matches initial install state

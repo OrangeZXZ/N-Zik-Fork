@@ -507,6 +507,9 @@ class MainActivity :
             }
             var showPlayer by rememberSaveable { mutableStateOf(false) }
             var switchToAudioPlayer by rememberSaveable { mutableStateOf(false) }
+            val pendingMiniPlayerAction = remember { mutableStateOf<app.n_zik.android.enums.PendingMiniPlayerAction?>(null) }
+            val isShowingLyrics = rememberSaveable { mutableStateOf(false) }
+            val isShowingVisualizer = rememberSaveable { mutableStateOf(false) }
             var animatedGradient by rememberPreference(animatedGradientKey, AnimatedGradient.M3EMorphingCover)
             var customColor by rememberPreference(customColorKey, Color.Green.hashCode())
             val lightTheme = colorPaletteMode == ColorPaletteMode.Light || (colorPaletteMode == ColorPaletteMode.System && (!isSystemInDarkTheme()))
@@ -1071,6 +1074,9 @@ class MainActivity :
                             LocalPlayerSheetState provides playerState,
                             LocalMonetCompat provides monet,
                             LocalPersistMap provides persistMap,
+                            LocalPendingMiniPlayerAction provides pendingMiniPlayerAction,
+                            LocalIsShowingLyrics provides isShowingLyrics,
+                            LocalIsShowingVisualizer provides isShowingVisualizer,
                             //LocalInternetConnected provides internetConnected
                         ) {
 
@@ -1440,10 +1446,6 @@ val LocalPlayerSheetState =
 
 //val LocalInternetConnected = staticCompositionLocalOf<Boolean> { error("No Network Status provided") }
 
-
-
-
-
-
-
-
+val LocalPendingMiniPlayerAction = androidx.compose.runtime.staticCompositionLocalOf<androidx.compose.runtime.MutableState<app.n_zik.android.enums.PendingMiniPlayerAction?>> { error("No PendingMiniPlayerAction state provided") }
+val LocalIsShowingLyrics = staticCompositionLocalOf<androidx.compose.runtime.MutableState<Boolean>> { error("No LocalIsShowingLyrics provided") }
+val LocalIsShowingVisualizer = staticCompositionLocalOf<androidx.compose.runtime.MutableState<Boolean>> { error("No LocalIsShowingVisualizer provided") }

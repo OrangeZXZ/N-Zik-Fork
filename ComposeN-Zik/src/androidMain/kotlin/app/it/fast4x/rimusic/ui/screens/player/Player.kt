@@ -74,6 +74,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -158,6 +160,8 @@ import com.mikepenz.hypnoticcanvas.shaders.Shader
 import com.mikepenz.hypnoticcanvas.shaders.Stage
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.LocalPendingMiniPlayerAction
+import app.n_zik.android.enums.PendingMiniPlayerAction
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.AnimatedGradient
@@ -291,6 +295,7 @@ fun Player(
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val menuState = LocalMenuState.current
+    val pendingAction = LocalPendingMiniPlayerAction.current
     val binder = LocalPlayerServiceBinder.current ?: return
     // Settings
     val disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
@@ -370,14 +375,37 @@ fun Player(
     val showSearchEntityState = rememberSaveable { mutableStateOf( false ) }
     var showSearchEntity by showSearchEntityState
 
-    val showVisualizerState = rememberSaveable { mutableStateOf( false ) }
+    val showVisualizerState = app.n_zik.android.LocalIsShowingVisualizer.current
     var isShowingVisualizer by showVisualizerState
-
+    val showLyricsState = app.n_zik.android.LocalIsShowingLyrics.current
+    var isShowingLyrics by showLyricsState
+    
     val showSleepTimerState = rememberSaveable { mutableStateOf( false ) }
     var isShowingSleepTimerDialog by showSleepTimerState
 
-    val showLyricsState = rememberSaveable { mutableStateOf( false ) }
-    var isShowingLyrics by showLyricsState
+    LaunchedEffect(pendingAction.value) {
+        when (pendingAction.value) {
+            PendingMiniPlayerAction.Lyrics -> {
+                isShowingLyrics = !isShowingLyrics
+                if (isShowingLyrics) {
+                    isShowingVisualizer = false
+                }
+            }
+            PendingMiniPlayerAction.Visualizer -> {
+                isShowingVisualizer = !isShowingVisualizer
+                if (isShowingVisualizer) {
+                    isShowingLyrics = false
+                }
+            }
+            PendingMiniPlayerAction.Queue -> showQueue = true
+            PendingMiniPlayerAction.SleepTimer -> isShowingSleepTimerDialog = true
+            PendingMiniPlayerAction.Video -> showSearchEntity = true
+            null -> {}
+        }
+        if (pendingAction.value != null) {
+            pendingAction.value = null
+        }
+    }
 
     // User preferences (switch)
     val playerSwipeSensitivity by rememberPreference(playerSwipeSensitivityKey, PlayerSwipeSensitivity.Medium)
@@ -388,31 +416,47 @@ fun Player(
    var savedVisualizerState by rememberPreference("saveVisualizerStateKey", false)
    var savedLyricsState by rememberPreference("saveLyricsStateKey", false)
 
-   // Restore at startup (if enabled)
-   LaunchedEffect(Unit) {
-       if (shouldRememberVisualizerState) {
-           isShowingVisualizer = savedVisualizerState
-       }
-       if (shouldRememberLyricsState) {
-           isShowingLyrics = savedLyricsState
-       }
-   }
+    val initialPendingAction = remember { pendingAction.value }
+
+    // Restore at startup (if enabled)
+    LaunchedEffect(Unit) {
+        if (initialPendingAction == null) {
+            if (shouldRememberVisualizerState) {
+                isShowingVisualizer = savedVisualizerState
+            }
+            if (shouldRememberLyricsState) {
+                isShowingLyrics = savedLyricsState
+            }
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            if (!shouldRememberLyricsState) {
+                isShowingLyrics = false
+            }
+            if (!shouldRememberVisualizerState) {
+                isShowingVisualizer = false
+            }
+        }
+    }
+
 
    // Save only if not closing
    LaunchedEffect(isShowingVisualizer) {
        if (shouldRememberVisualizerState) {
            savedVisualizerState = isShowingVisualizer
-           if (isShowingVisualizer) {
-               isShowingLyrics = false
-           }
+       }
+       if (isShowingVisualizer) {
+           isShowingLyrics = false
        }
    }
    LaunchedEffect(isShowingLyrics) {
        if (shouldRememberLyricsState) {
            savedLyricsState = isShowingLyrics
-           if (isShowingLyrics) {
-               isShowingVisualizer = false
-           }
+       }
+       if (isShowingLyrics) {
+           isShowingVisualizer = false
        }
    }
 
