@@ -1,3 +1,5 @@
+/*
+
 package app.n_zik.android.components.menu.player
 
 import android.content.Context
@@ -29,6 +31,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.Manifest
+import android.os.Build
+import androidx.core.content.ContextCompat
+import android.content.pm.PackageManager
+import androidx.compose.runtime.LaunchedEffect
 import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.n_zik.android.components.menu.ListMenu
@@ -48,6 +57,11 @@ import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.n_zik.android.components.menu.GridMenu
 import androidx.compose.runtime.MutableState
+
+// TODO: This menu is no longer linked to MiniPlayer. 
+// It has been replaced by the native Android Media Output Switcher (Settings.Panel.ACTION_MEDIA_OUTPUT)
+// because Android prevents applications from forcing sound to the physical speaker 
+// when a Bluetooth A2DP device is connected (the "switch then reswitch" bug).
 
 class AudioOutputMenu private constructor(
     override val menuState: MenuState,
@@ -117,7 +131,6 @@ class AudioOutputMenu private constructor(
                     },
                     onClick = {
                         setAudioOutput?.invoke(device.id)
-                        closeMenu()
                     },
                     trailingContent = {
                         if (device.isCurrentlyActive) {
@@ -134,6 +147,7 @@ class AudioOutputMenu private constructor(
                 )
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
             VolumeRow(
                 currentVolume = currentVolume,
                 maxVolume = maxVolume,
@@ -200,12 +214,14 @@ class AudioOutputMenu private constructor(
                         },
                         onClick = {
                             setAudioOutput?.invoke(device.id)
-                            closeMenu()
                         }
                     )
                 }
             }
 
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
             item(span = { GridItemSpan(maxLineSpan) }) {
                 VolumeRow(
                     currentVolume = currentVolume,
@@ -219,12 +235,31 @@ class AudioOutputMenu private constructor(
     @Composable
     override fun MenuComponent() {
         val context = LocalContext.current
+        val binder = app.n_zik.android.LocalPlayerServiceBinder.current
+        val player = binder?.player as? androidx.media3.exoplayer.ExoPlayer
+
         val audioManager = remember { context.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
         val audioOutputManager = remember { AudioOutputManager(audioManager) }
 
         var internalDevices by remember { mutableStateOf(audioOutputManager.getAvailableDevices()) }
         var internalVolume by remember { mutableFloatStateOf(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC).toFloat()) }
         val internalMaxVolume = remember { audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC).toFloat() }
+
+        val permissionLauncher = rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            if (isGranted) {
+                internalDevices = audioOutputManager.getAvailableDevices()
+            }
+        }
+
+        LaunchedEffect(Unit) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    permissionLauncher.launch(Manifest.permission.BLUETOOTH_CONNECT)
+                }
+            }
+        }
 
         DisposableEffect(Unit) {
             val receiver = object : android.content.BroadcastReceiver() {
@@ -322,3 +357,4 @@ private fun VolumeRow(
         )
     }
 }
+*/
