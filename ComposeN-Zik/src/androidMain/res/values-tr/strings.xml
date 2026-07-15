@@ -1533,4 +1533,6 @@
   <string name="updating_waveform_in_progress">Waveform güncelleniyor…</string>
   <string name="waveform_updated_successfully">Waveform başarıyla güncellendi</string>
   <string name="error_updating_waveform">Waveform güncellenirken hata oluştu</string>
+  <string name="metadata_exported">Exported</string>
+  <string name="container">Container</string>
 </resources>
