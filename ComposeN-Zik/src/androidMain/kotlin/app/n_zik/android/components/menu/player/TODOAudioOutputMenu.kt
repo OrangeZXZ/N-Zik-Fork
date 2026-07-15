@@ -239,7 +239,7 @@ class AudioOutputMenu private constructor(
         val player = binder?.player as? androidx.media3.exoplayer.ExoPlayer
 
         val audioManager = remember { context.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
-        val audioOutputManager = remember { AudioOutputManager(audioManager) }
+        val audioOutputManager = remember { AudioOutputManager(context, audioManager) }
 
         var internalDevices by remember { mutableStateOf(audioOutputManager.getAvailableDevices()) }
         var internalVolume by remember { mutableFloatStateOf(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC).toFloat()) }

@@ -835,7 +835,7 @@ private fun MiniPlayerSlotButton(
         MiniPlayerButton.AudioOutput -> {
             val context = androidx.compose.ui.platform.LocalContext.current
             val audioManager = remember { context.getSystemService(android.content.Context.AUDIO_SERVICE) as android.media.AudioManager }
-            val audioOutputManager = remember { app.n_zik.android.playback.services.AudioOutputManager(audioManager) }
+            val audioOutputManager = remember { app.n_zik.android.playback.services.AudioOutputManager(context, audioManager) }
             var activeDevice by remember { mutableStateOf(audioOutputManager.getAvailableDevices().firstOrNull { it.isCurrentlyActive }) }
 
             androidx.compose.runtime.DisposableEffect(Unit) {
