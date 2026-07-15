@@ -145,10 +145,10 @@ class AudioOutputManager(private val context: Context, private val audioManager:
             mr2RouteName = mr2Route?.name?.toString()
             mr2IsSystem = mr2Route?.isSystemRoute ?: false
             
-            Timber.d("AudioOutputManager: MR2 SystemRoute id=$mr2RouteId, name=$mr2RouteName, isSystem=$mr2IsSystem")
+            Timber.tag("AudioOutputManager").d("MR2 SystemRoute id=$mr2RouteId, name=$mr2RouteName, isSystem=$mr2IsSystem")
             mr2.controllers.forEachIndexed { index, controller ->
                 val r = controller.selectedRoutes.firstOrNull()
-                Timber.d("AudioOutputManager: MR2 Controller $index - Route id=${r?.id}, name=${r?.name}, isSystem=${r?.isSystemRoute}")
+                Timber.tag("AudioOutputManager").d("MR2 Controller $index - Route id=${r?.id}, name=${r?.name}, isSystem=${r?.isSystemRoute}")
             }
 
             if (mr2RouteName != null) {
@@ -173,7 +173,7 @@ class AudioOutputManager(private val context: Context, private val audioManager:
             }
         }
 
-        Timber.d("AudioOutputManager: getAvailableDevices() - source=$routeSource, mediaRouterLegacyType=$mediaRouterDeviceType, isA2dpOn=$isA2dpOn, isWiredOn=$isWiredOn, activeRouteId=$activeRouteId")
+        Timber.tag("AudioOutputManager").d("getAvailableDevices() - source=$routeSource, mediaRouterLegacyType=$mediaRouterDeviceType, isA2dpOn=$isA2dpOn, isWiredOn=$isWiredOn, activeRouteId=$activeRouteId")
 
         return devices.map { device ->
             AudioDevice(
@@ -188,7 +188,7 @@ class AudioOutputManager(private val context: Context, private val audioManager:
     fun registerDeviceChanges(callback: (List<AudioDevice>) -> Unit) {
         deviceCallback = object : AudioDeviceCallback() {
             override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>) {
-                Timber.d("AudioOutputManager: onAudioDevicesAdded - count=${addedDevices.size}")
+                Timber.tag("AudioOutputManager").d("onAudioDevicesAdded - count=${addedDevices.size}")
                 callback(getAvailableDevices())
             }
 
@@ -202,7 +202,7 @@ class AudioOutputManager(private val context: Context, private val audioManager:
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val pbCallback = object : AudioManager.AudioPlaybackCallback() {
                 override fun onPlaybackConfigChanged(configs: MutableList<android.media.AudioPlaybackConfiguration>?) {
-                    Timber.d("AudioOutputManager: onPlaybackConfigChanged - configs=${configs?.size}")
+                    Timber.tag("AudioOutputManager").d("onPlaybackConfigChanged - configs=${configs?.size}")
                     callback(getAvailableDevices())
                 }
             }
@@ -213,7 +213,7 @@ class AudioOutputManager(private val context: Context, private val audioManager:
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val mr2Callback = object : MediaRouter2.ControllerCallback() {
                 override fun onControllerUpdated(controller: MediaRouter2.RoutingController) {
-                    Timber.d("AudioOutputManager: onControllerUpdated (MediaRouter2) - selectedRoutes=${controller.selectedRoutes.size}")
+                    Timber.tag("AudioOutputManager").d("onControllerUpdated (MediaRouter2) - selectedRoutes=${controller.selectedRoutes.size}")
                     callback(getAvailableDevices())
                 }
             }
