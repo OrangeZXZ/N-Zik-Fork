@@ -71,5 +71,6 @@ Added:
 - improve(ui): unify volume slider design across AudioOutputMenu and PlaybackSettingsMenu
   - Extracted ListSliderMenuItem to mimic VolumeRow exact proportions, paddings, and alignment
   - Updated icons using accent colors inside a 32dp rounded Box with 0.1f alpha
+  - Restored SliderGridEntry to preserve grid layout in PlaybackSettingsMenu while adhering to the new 32dp icon design
 
 - add(ui): dynamic icons and volume slider to AudioOutputMenu
