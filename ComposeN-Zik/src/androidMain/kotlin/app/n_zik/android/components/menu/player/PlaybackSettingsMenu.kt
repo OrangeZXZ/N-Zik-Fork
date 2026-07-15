@@ -6,6 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +53,8 @@ import app.it.fast4x.rimusic.utils.setGlobalVolume
 import app.n_zik.android.isBassBoostEnabled
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.bassboostLevelKey
+import app.it.fast4x.rimusic.utils.conditional
+import app.it.fast4x.rimusic.utils.disableScrollingTextKey
 import app.it.fast4x.rimusic.utils.blurStrengthKey
 import app.it.fast4x.rimusic.utils.getDeviceVolume
 import app.it.fast4x.rimusic.utils.loudnessBaseGainKey
@@ -622,14 +625,24 @@ class PlaybackSettingsMenu private constructor(
                 )
             }
 
+            val isScrollingTextDisabled by rememberPreference(disableScrollingTextKey, false)
+
             androidx.compose.foundation.text.BasicText(
                 text = title,
-                style = typography().s.semiBold.copy(color = colorPalette().text)
+                maxLines = 1,
+                style = typography().s.semiBold.copy(color = colorPalette().text),
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .padding(end = 8.dp)
+                    .conditional(!isScrollingTextDisabled) {
+                        basicMarquee(iterations = Int.MAX_VALUE)
+                    }
             )
 
             androidx.compose.foundation.text.BasicText(
                 text = displayValue(value),
-                style = typography().xxs.semiBold.copy(color = colorPalette().accent)
+                style = typography().xxs.semiBold.copy(color = colorPalette().accent),
+                modifier = Modifier.padding(end = 8.dp)
             )
 
             SliderControl(
@@ -642,7 +655,7 @@ class PlaybackSettingsMenu private constructor(
                 defaultValue = defaultValue,
                 drawValuePoints = drawValuePoints,
                 showValue = false,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1.5f)
             )
         }
     }
@@ -730,12 +743,19 @@ class PlaybackSettingsMenu private constructor(
                 ) {
                     SettingIcon(icon)
                     Spacer(modifier = Modifier.size(12.dp))
+                    val isScrollingTextDisabled by rememberPreference(disableScrollingTextKey, false)
+
                     androidx.compose.foundation.text.BasicText(
                         text = title,
+                        maxLines = 1,
                         style = typography().s.semiBold.copy(
                             color = colorPalette().text
                         ),
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
+                            .conditional(!isScrollingTextDisabled) {
+                                basicMarquee(iterations = Int.MAX_VALUE)
+                            }
                     )
                 }
 
