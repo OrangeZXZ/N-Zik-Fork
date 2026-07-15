@@ -46,9 +46,15 @@ fun Switch(
             .size(width = 52.dp, height = 32.dp)
             .background(trackColor, shape = exactUiRoundnessShape())
             .clip(exactUiRoundnessShape())
-            .clickable(enabled = enabled) {
-                onCheckedChange?.invoke(!checked)
-            },
+            .then(
+                if (onCheckedChange != null) {
+                    Modifier.clickable(enabled = enabled) {
+                        onCheckedChange.invoke(!checked)
+                    }
+                } else {
+                    Modifier
+                }
+            ),
         contentAlignment = Alignment.CenterStart
     ) {
         Box(

@@ -313,16 +313,8 @@ class VisualizerSettingsMenu private constructor(
 
         if (menuStyle == MenuStyle.List) {
             ListMenu.Menu(title = stringResource(R.string.visualizer)) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState())
-                        .padding(vertical = 8.dp)
-                ) {
-                    settingsContent()
-                    Spacer(modifier = Modifier.navigationBarsPadding())
-                }
+                settingsContent()
+                Spacer(modifier = Modifier.navigationBarsPadding())
             }
         } else {
             GridMenu.Menu(title = stringResource(R.string.visualizer)) {
