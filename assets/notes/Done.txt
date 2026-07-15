@@ -73,4 +73,7 @@ Added:
   - Updated icons using accent colors inside a 32dp rounded Box with 0.1f alpha
   - Restored SliderGridEntry to preserve grid layout in PlaybackSettingsMenu while adhering to the new 32dp icon design
 
-- add(ui): dynamic icons and volume slider to AudioOutputMenu
+- improve(ui): dynamic MiniPlayer audio output icon matching active external device (bluetooth, headphones, etc) and accent color
+- fix(playback): fallback to active media device correctly when no manual routing is set, preventing Earpiece from showing as active
+- improve(ui): add basicMarquee to long text fields in PlaybackSettingsMenu to prevent layout breaking on languages with long translations
+- refactor(playback): centralize AudioDevice icon mapping in AudioOutputManager and clean up redundant UI logic in MiniPlayer

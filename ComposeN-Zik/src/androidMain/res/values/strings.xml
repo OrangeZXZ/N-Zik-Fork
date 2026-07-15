@@ -1561,4 +1561,5 @@
 <string name="miniplayer_slot">Slot %1$d</string>
 <string name="miniplayer_slot_fixed">Fixed</string>
 <string name="miniplayer_slot_vide">Empty</string>
+<string name="available_on_android_10_or_higher">Available on Android 10 or higher</string>
 </resources>
