@@ -213,7 +213,7 @@ class AudioOutputManager(private val context: Context, private val audioManager:
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val mr2Callback = object : MediaRouter2.ControllerCallback() {
                 override fun onControllerUpdated(controller: MediaRouter2.RoutingController) {
-                    Timber.d("AudioOutputManager: onControllerUpdated (MediaRouter2) - selectedRoutes=${controller.selectedRoutes.map { it.type }}")
+                    Timber.d("AudioOutputManager: onControllerUpdated (MediaRouter2) - selectedRoutes=${controller.selectedRoutes.size}")
                     callback(getAvailableDevices())
                 }
             }
