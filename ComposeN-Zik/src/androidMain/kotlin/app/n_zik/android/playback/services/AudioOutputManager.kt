@@ -133,13 +133,40 @@ class AudioOutputManager(private val context: Context, private val audioManager:
             }
         }
 
+        var mr2RouteId: String? = null
+        var mr2RouteName: String? = null
+        var mr2IsSystem = false
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val mr2 = android.media.MediaRouter2.getInstance(context)
             val mr2Route = mr2.systemController.selectedRoutes.firstOrNull()
-            Timber.d("AudioOutputManager: MR2 SystemRoute id=${mr2Route?.id}, name=${mr2Route?.name}, isSystem=${mr2Route?.isSystemRoute}")
+            
+            mr2RouteId = mr2Route?.id
+            mr2RouteName = mr2Route?.name?.toString()
+            mr2IsSystem = mr2Route?.isSystemRoute ?: false
+            
+            Timber.d("AudioOutputManager: MR2 SystemRoute id=$mr2RouteId, name=$mr2RouteName, isSystem=$mr2IsSystem")
             mr2.controllers.forEachIndexed { index, controller ->
                 val r = controller.selectedRoutes.firstOrNull()
                 Timber.d("AudioOutputManager: MR2 Controller $index - Route id=${r?.id}, name=${r?.name}, isSystem=${r?.isSystemRoute}")
+            }
+
+            if (mr2Route != null) {
+                if (mr2Route.isSystemRoute) {
+                    if (mr2Route.id == "DEFAULT_ROUTE" || mr2Route.id == "DEVICE_ROUTE") {
+                        activeRouteId = devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER || it.type == AudioDeviceInfo.TYPE_BUILTIN_EARPIECE }?.id
+                        if (activeRouteId != null) routeSource = "MR2(SystemSpeaker)"
+                    } else if (mr2Route.id == "WIRED_HEADSET_ROUTE") {
+                        activeRouteId = devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_WIRED_HEADSET || it.type == AudioDeviceInfo.TYPE_WIRED_HEADPHONES }?.id
+                        if (activeRouteId != null) routeSource = "MR2(SystemWired)"
+                    }
+                } else {
+                    val match = devices.firstOrNull { it.productName.toString() == mr2Route.name?.toString() || it.address == mr2Route.id }
+                    if (match != null) {
+                        activeRouteId = match.id
+                        routeSource = "MR2(Matched=${match.type})"
+                    }
+                }
             }
         }
 
@@ -188,9 +215,24 @@ class AudioOutputManager(private val context: Context, private val audioManager:
                 }
             }
             mediaRouter2Callback = mr2Callback
-            MediaRouter2.getInstance(context).registerControllerCallback(context.mainExecutor, mr2Callback)
+            val mr2 = MediaRouter2.getInstance(context)
+            mr2.registerControllerCallback(context.mainExecutor, mr2Callback)
+
+            val routeCallback = object : MediaRouter2.RouteCallback() {
+                override fun onRoutesAdded(routes: MutableList<android.media.MediaRoute2Info>) { callback(getAvailableDevices()) }
+                override fun onRoutesRemoved(routes: MutableList<android.media.MediaRoute2Info>) { callback(getAvailableDevices()) }
+                override fun onRoutesChanged(routes: MutableList<android.media.MediaRoute2Info>) { callback(getAvailableDevices()) }
+            }
+            mediaRouter2RouteCallback = routeCallback
+            mr2.registerRouteCallback(
+                context.mainExecutor,
+                routeCallback,
+                android.media.RouteDiscoveryPreference.Builder(listOf(android.media.MediaRoute2Info.FEATURE_LIVE_AUDIO), true).build()
+            )
         }
     }
+
+    private var mediaRouter2RouteCallback: Any? = null
 
     @SuppressLint("NewApi")
     fun unregisterDeviceChanges() {
@@ -205,10 +247,16 @@ class AudioOutputManager(private val context: Context, private val audioManager:
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val mr2 = MediaRouter2.getInstance(context)
             (mediaRouter2Callback as? MediaRouter2.ControllerCallback)?.let {
-                MediaRouter2.getInstance(context).unregisterControllerCallback(it)
+                mr2.unregisterControllerCallback(it)
             }
             mediaRouter2Callback = null
+
+            (mediaRouter2RouteCallback as? MediaRouter2.RouteCallback)?.let {
+                mr2.unregisterRouteCallback(it)
+            }
+            mediaRouter2RouteCallback = null
         }
     }
 }
