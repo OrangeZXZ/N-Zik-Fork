@@ -77,3 +77,26 @@ Added:
 - fix(playback): fallback to active media device correctly when no manual routing is set, preventing Earpiece from showing as active
 - improve(ui): add basicMarquee to long text fields in PlaybackSettingsMenu to prevent layout breaking on languages with long translations
 - refactor(playback): centralize AudioDevice icon mapping in AudioOutputManager and clean up redundant UI logic in MiniPlayer
+
+Changed:
+- change(settings): QuickPicks dialog — remove 'Enable Quick Picks page' toggle from QuickPicksContentSettingsDialog
+  - The setting is now only accessible from AIRecommendationSettings, not from the QuickPicks content dialog
+
+- change(settings): QuickPicks dialog — pin 'Tips' section to top as non-reorderable fixed item
+  - `parseOrder()` now forces 'tips' to index 0 regardless of saved order
+  - `pinnedItemCount = 1` prevents it from being dragged
+
+Fixed:
+- fix(home): respect showTips preference in HomeQuickPicks — QuickPicksHeader + QuickPicksGrid now hidden when Tips is disabled
+  - Wrapped the entire tips block (header + recommendations grid) in `if (showTips)`
+  - Moved `showTips` declaration before the `loadedQuickPicks` check to fix 'Unresolved reference' compile error
+
+Improved:
+- improve(ui): reorderable settings dialogs (PlayerActionBar, MiniPlayerButtons, StreamClients, QuickPicksContent)
+  - Refactored ToggleListDialog to support pinned items, locked-checked IDs, and per-item checked state overrides
+  - New HomeAlbums, HomeArtists, HomePlaylists, HomeSongs settings dialogs added with drag-to-reorder support
+  - Removed LibraryVisibilitySettingsDialog (consolidated into per-screen dialogs)
+
+Removed:
+- remove(settings): drop LibraryVisibilitySettingsDialog
+  - Functionality replaced by individual HomeAlbums/HomeArtists/HomePlaylists/HomeSongs dialogs

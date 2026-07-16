@@ -102,7 +102,10 @@ import app.it.fast4x.rimusic.utils.filterByKey
 import app.it.fast4x.rimusic.utils.importYTMLikedAlbums
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
+import app.it.fast4x.rimusic.utils.showFavoritesAlbumKey
+import app.it.fast4x.rimusic.utils.homeAlbumsOrderKey
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
+import org.json.JSONArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -178,7 +181,35 @@ fun HomeAlbums(
         key = arrayOf( albumType )
     )
 
-    val buttonsList = AlbumsType.entries.map { it to it.text }
+    val showFavoritesAlbum by rememberPreference(showFavoritesAlbumKey, true)
+    val homeAlbumsOrderPref by rememberPreference(homeAlbumsOrderKey, "")
+
+    val favoritesLabel = stringResource(R.string.favorites)
+    val allLabel = stringResource(R.string.all)
+    val albumsDefaultOrder = listOf("all", "favorites")
+    val labelMap = mapOf("favorites" to favoritesLabel, "all" to allLabel)
+    val typeMap = mapOf("favorites" to AlbumsType.Favorites, "all" to AlbumsType.Library)
+    val toggleMap = mapOf("favorites" to showFavoritesAlbum, "all" to true)
+    val buttonsList = remember(showFavoritesAlbum, homeAlbumsOrderPref, favoritesLabel, allLabel) {
+        val order = try {
+            val arr = JSONArray(homeAlbumsOrderPref)
+            val parsed = (0 until arr.length()).map { arr.getString(it) }
+            val valid = parsed.filter { it in albumsDefaultOrder }.toMutableList()
+            for (id in albumsDefaultOrder) { if (id !in valid) valid.add(id) }
+            valid
+        } catch (_: Exception) { albumsDefaultOrder }
+        order.mapNotNull { id ->
+            if (toggleMap[id] == true) {
+                val type = typeMap[id] ?: return@mapNotNull null
+                val label = labelMap[id] ?: return@mapNotNull null
+                type to label
+            } else null
+        }
+    }
+
+    LaunchedEffect(showFavoritesAlbum) {
+        if (!showFavoritesAlbum && albumType == AlbumsType.Favorites) albumType = AlbumsType.Library
+    }
 
     if (!isYouTubeSyncEnabled()) {
         filterBy = FilterBy.All

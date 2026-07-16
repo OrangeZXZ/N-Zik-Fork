@@ -207,7 +207,10 @@ import app.it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import app.it.fast4x.rimusic.utils.visualizerEnabledKey
 import app.it.fast4x.rimusic.utils.volumeNormalizationKey
 import app.n_zik.android.components.dialog.common.RestartAppDialog
-import app.n_zik.android.components.dialog.settings.LibraryVisibilitySettingsDialog
+import app.n_zik.android.components.dialog.settings.HomePlaylistsSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeSongsSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeArtistsSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeAlbumsSettingsDialog
 import app.n_zik.android.components.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.it.fast4x.rimusic.enums.SearchDisplayOrder
@@ -721,7 +724,10 @@ fun UiSettings(
             .verticalScroll(rememberScrollState())
     ) {
 
-        LibraryVisibilitySettingsDialog.Render()
+        HomePlaylistsSettingsDialog.Render()
+        HomeSongsSettingsDialog.Render()
+        HomeArtistsSettingsDialog.Render()
+        HomeAlbumsSettingsDialog.Render()
 
         HeaderWithIcon(
             title = stringResource(R.string.user_interface),
@@ -1543,7 +1549,10 @@ fun UiSettings(
 
         val listsSearchContextMatch = search.inputValue.isBlank() || 
             stringResource(R.string.songs).contains(search.inputValue, true) ||
-            stringResource(R.string.playlists).contains(search.inputValue, true)
+            stringResource(R.string.artists).contains(search.inputValue, true) ||
+            stringResource(R.string.albums).contains(search.inputValue, true) ||
+            stringResource(R.string.playlists).contains(search.inputValue, true) ||
+            stringResource(R.string.library).contains(search.inputValue, true)
 
         AnimatedVisibility(
             visible = listsSearchContextMatch,
@@ -1553,11 +1562,35 @@ fun UiSettings(
                 title = stringResource(R.string.library),
                 icon = R.drawable.library,
                 content = {
-                    if (search.inputValue.isBlank() || stringResource(R.string.library_visibility).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.home_songs_settings).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
-                            title = stringResource(R.string.library_visibility),
+                            title = stringResource(R.string.home_songs_settings),
                             text = stringResource(R.string.library_visibility_description),
-                            onClick = { LibraryVisibilitySettingsDialog.showDialog() },
+                            onClick = { HomeSongsSettingsDialog.showDialog() },
+                            icon = R.drawable.musical_notes
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.home_artists_settings).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.home_artists_settings),
+                            text = stringResource(R.string.library_visibility_description),
+                            onClick = { HomeArtistsSettingsDialog.showDialog() },
+                            icon = R.drawable.people
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.home_albums_settings).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.home_albums_settings),
+                            text = stringResource(R.string.library_visibility_description),
+                            onClick = { HomeAlbumsSettingsDialog.showDialog() },
+                            icon = R.drawable.album
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.home_playlists_settings).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.home_playlists_settings),
+                            text = stringResource(R.string.library_visibility_description),
+                            onClick = { HomePlaylistsSettingsDialog.showDialog() },
                             icon = R.drawable.library
                         )
                     }

@@ -26,12 +26,13 @@ import app.it.fast4x.rimusic.utils.showButtonPlayerStartRadioKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerSystemEqualizerKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerVideoKey
 import app.it.fast4x.rimusic.utils.expandedplayertoggleKey
-import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.visualizerEnabledKey
 import app.it.fast4x.rimusic.utils.playerActionBarButtonOrderKey
+import app.it.fast4x.rimusic.utils.rememberPreference
 import app.n_zik.android.components.dialog.common.Dialog
 import app.n_zik.android.components.dialog.common.ToggleItem
 import app.n_zik.android.components.dialog.common.ToggleListDialog
+import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
@@ -133,7 +134,17 @@ object PlayerActionBarSettingsDialog : Dialog {
             items = items,
             lazyListState = lazyListState,
             reorderableState = reorderableState,
-            contentHeight = 480.dp
+            onReset = {
+                buttonOrder.clear()
+                buttonOrder.addAll(defaultButtonOrder)
+                orderSerialized = serializeOrder(defaultButtonOrder)
+            },
+            onCancel = {
+                hideDialog()
+            },
+            onConfirm = {
+                hideDialog()
+            }
         )
     }
 }
