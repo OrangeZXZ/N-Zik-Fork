@@ -208,6 +208,7 @@ import app.it.fast4x.rimusic.utils.visualizerEnabledKey
 import app.it.fast4x.rimusic.utils.volumeNormalizationKey
 import app.n_zik.android.components.dialog.common.RestartAppDialog
 import app.n_zik.android.components.dialog.settings.HomePlaylistsSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeTabsSettingsDialog
 import app.n_zik.android.components.dialog.settings.HomeSongsSettingsDialog
 import app.n_zik.android.components.dialog.settings.HomeArtistsSettingsDialog
 import app.n_zik.android.components.dialog.settings.HomeAlbumsSettingsDialog
@@ -724,6 +725,7 @@ fun UiSettings(
             .verticalScroll(rememberScrollState())
     ) {
 
+        HomeTabsSettingsDialog.Render()
         HomePlaylistsSettingsDialog.Render()
         HomeSongsSettingsDialog.Render()
         HomeArtistsSettingsDialog.Render()
@@ -1107,6 +1109,7 @@ fun UiSettings(
             stringResource(R.string.player_position).contains(search.inputValue, true) ||
             stringResource(R.string.menu_style).contains(search.inputValue, true) ||
             stringResource(R.string.message_type).contains(search.inputValue, true) ||
+            stringResource(R.string.home_tabs_settings).contains(search.inputValue, true) ||
             stringResource(R.string.default_page).contains(search.inputValue, true) ||
             stringResource(R.string.transition_effect).contains(search.inputValue, true)
 
@@ -1235,6 +1238,15 @@ fun UiSettings(
                             valueText = { it.text },
                             values = HomeScreenTabs.values().toList(),
                             onDismiss = { showDefPageDialog = false }
+                        )
+                    }
+
+                    if (search.inputValue.isBlank() || stringResource(R.string.home_tabs_settings).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.home_tabs_settings),
+                            text = stringResource(R.string.home_tabs_settings_description),
+                            onClick = { HomeTabsSettingsDialog.showDialog() },
+                            icon = R.drawable.sparkles
                         )
                     }
 

@@ -73,6 +73,10 @@ Added:
   - Updated icons using accent colors inside a 32dp rounded Box with 0.1f alpha
   - Restored SliderGridEntry to preserve grid layout in PlaybackSettingsMenu while adhering to the new 32dp icon design
 
+- feature(home): dynamic home tabs reordering and toggling
+  - Added HomeTabsSettingsDialog to UI Settings to allow reordering and hiding home tabs (QuickPicks, Songs, Artists, Albums, Playlists).
+  - Refactored HomeScreen to dynamically build the bottom navigation bar and route to the correct tab based on user preference.
+  - QuickPicks visibility toggle is synchronized with the AI Recommendation settings.
 - improve(ui): dynamic MiniPlayer audio output icon matching active external device (bluetooth, headphones, etc) and accent color
 - fix(playback): fallback to active media device correctly when no manual routing is set, preventing Earpiece from showing as active
 - improve(ui): add basicMarquee to long text fields in PlaybackSettingsMenu to prevent layout breaking on languages with long translations

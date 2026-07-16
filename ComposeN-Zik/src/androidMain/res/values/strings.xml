@@ -1580,4 +1580,6 @@
 <string name="miniplayer_slot_fixed">Fixed</string>
 <string name="miniplayer_slot_vide">Empty</string>
 <string name="available_on_android_10_or_higher">Available on Android 10 or higher</string>
+<string name="home_tabs_settings">Home page</string>
+<string name="home_tabs_settings_description">Reorder and show/hide tabs</string>
 </resources>
