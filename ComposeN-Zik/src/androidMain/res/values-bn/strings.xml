@@ -377,6 +377,7 @@
   <string name="action_bar_show_loop_button">লুপ বাটন দেখান</string>
   <string name="action_bar_show_shuffle_button">শাফল বাটন দেখান</string>
   <string name="action_bar_show_lyrics_button">লিরিক বাটন দেখান</string>
+  <string name="action_bar_show_visualizer_button">Visualizer button</string>
   <string name="action_bar_show_arrow_button_to_open_queue">এরো বাটন দেখান</string>
   <string name="lang_finnish">ফিনিশ</string>
   <string name="listening_time">শোনার সময়কাল</string>
@@ -524,6 +525,7 @@
   <string name="minimized_player">মিনিমাইজড প্লেয়ার</string>
   <string name="both">দুটোই</string>
   <string name="max_songs_in_queue">কিউতে সর্বোচ্চ গান সংখ্যা</string>
+  <string name="max_songs_in_queue_android_auto">Max songs in queue (Android Auto)</string>
   <string name="back">পেছনে</string>
   <string name="folders">ফোল্ডার</string>
   <string name="show_folders_in_on_device_page">ডিভাইসের পেজে ফোল্ডার দেখন</string>
