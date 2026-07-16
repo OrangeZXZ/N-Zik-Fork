@@ -75,28 +75,6 @@ fun HomeScreen(
 
     val openTabFromShortcut1 by remember{ mutableIntStateOf(openTabFromShortcut) }
 
-    var initialtabIndex =
-        when (openTabFromShortcut1) {
-            -1 -> when (preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.Default)) {
-                HomeScreenTabs.Default -> HomeScreenTabs.QuickPics.index
-                else -> preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.QuickPics).index
-            }
-            else -> openTabFromShortcut1
-        }
-
-    var (tabIndex, onTabChanged) = rememberPreference(homeScreenTabIndexKey, initialtabIndex)
-
-    // Check if services are ready
-    val binder = LocalPlayerServiceBinder.current
-    var isReady by remember { mutableStateOf(false) }
-    
-    LaunchedEffect(binder) {
-        delay(100) // Small delay to ensure services are initialized
-        isReady = true
-    }
-
-    if (tabIndex == -2) navController.navigate(NavRoutes.search.name)
-
     val enableSongsTab by rememberPreference("hometab_songs_enabled", true)
     val enableArtistsTab by rememberPreference("hometab_artists_enabled", true)
     val enableAlbumsTab by rememberPreference("hometab_albums_enabled", true)
@@ -120,6 +98,41 @@ fun HomeScreen(
         }
         if (filtered.isEmpty()) listOf("quickpicks") else filtered
     }
+
+    val initialtabIndex = run {
+        val targetIndex = when (openTabFromShortcut1) {
+            -1 -> when (val pref = preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.Default)) {
+                HomeScreenTabs.Default -> HomeScreenTabs.QuickPics.index
+                else -> pref.index
+            }
+            else -> openTabFromShortcut1
+        }
+        
+        val targetTabId = when (targetIndex) {
+            HomeScreenTabs.QuickPics.index -> "quickpicks"
+            HomeScreenTabs.Songs.index -> "songs"
+            HomeScreenTabs.Artists.index -> "artists"
+            HomeScreenTabs.Albums.index -> "albums"
+            HomeScreenTabs.Playlists.index -> "playlists"
+            else -> "quickpicks"
+        }
+        
+        val foundIndex = activeTabs.indexOf(targetTabId)
+        if (foundIndex != -1) foundIndex else 0
+    }
+
+    var (tabIndex, onTabChanged) = rememberPreference(homeScreenTabIndexKey, initialtabIndex)
+
+    // Check if services are ready
+    val binder = LocalPlayerServiceBinder.current
+    var isReady by remember { mutableStateOf(false) }
+    
+    LaunchedEffect(binder) {
+        delay(100) // Small delay to ensure services are initialized
+        isReady = true
+    }
+
+    if (tabIndex == -2) navController.navigate(NavRoutes.search.name)
 
     if (tabIndex >= activeTabs.size) tabIndex = 0
 

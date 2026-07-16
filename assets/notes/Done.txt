@@ -128,3 +128,8 @@ Changed:
   - Moved Player Presets (Modern/Essential elements) and layout toggles to the top of the "Player Presets and Layout" section.
   - Moved 'Show top actions bar' into the 'Player behavior and visuals' section.
   - Updated search contexts to reflect these structural changes in settings search.
+
+Fixed:
+- fix(home): correct default startup tab opening when home tabs are reordered
+  - Mapped the saved default `HomeScreenTabs` preference to its string identifier instead of its absolute enum index.
+  - Dynamically searches for the identifier within the `activeTabs` list so the correct tab opens even when tabs are reordered or hidden.
