@@ -377,6 +377,7 @@
   <string name="action_bar_show_loop_button">Mostrar botón bucle</string>
   <string name="action_bar_show_shuffle_button">Mostrar botón aleatorio</string>
   <string name="action_bar_show_lyrics_button">Mostrar botón letra</string>
+  <string name="action_bar_show_visualizer_button">Visualizer button</string>
   <string name="action_bar_show_arrow_button_to_open_queue">Mostrar botón de flecha para abrir la cola</string>
   <string name="lang_finnish">Finlandés</string>
   <string name="listening_time">Tiempo de reproducción</string>
@@ -524,6 +525,7 @@
   <string name="minimized_player">Reproductor minimizado</string>
   <string name="both">Ambos</string>
   <string name="max_songs_in_queue">Máximo de canciones en la cola</string>
+  <string name="max_songs_in_queue_android_auto">Max songs in queue (Android Auto)</string>
   <string name="back">Atrás</string>
   <string name="folders">Carpetas</string>
   <string name="show_folders_in_on_device_page">Mostrar carpetas en la página en el dispositivo</string>
