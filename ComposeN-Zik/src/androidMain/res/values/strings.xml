@@ -377,6 +377,7 @@
 <string name="action_bar_show_loop_button">Loop button</string>
 <string name="action_bar_show_shuffle_button">Shuffle button</string>
 <string name="action_bar_show_lyrics_button">Lyrics button</string>
+<string name="action_bar_show_visualizer_button">Visualizer button</string>
 <string name="action_bar_show_arrow_button_to_open_queue">Arrow button</string>
 <string name="lang_finnish">Finnish (Suomalainen)</string>
 <string name="listening_time">Playback duration</string>

@@ -1,16 +1,13 @@
 package app.n_zik.android.components.dialog.settings
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.components.dialog.common.Dialog
@@ -48,21 +45,6 @@ private val defaultClientOrder = listOf(
     "web",
     "web_creator",
     "mobile"
-)
-
-private val clientKeys = listOf(
-    streamClientWebRemixEnabledKey,
-    streamClientVisionosEnabledKey,
-    streamClientTvEmbeddedEnabledKey,
-    streamClientTvHtml5EnabledKey,
-    streamClientAndroidVrEnabledKey,
-    streamClientAndroidCreatorEnabledKey,
-    streamClientAndroidEnabledKey,
-    streamClientIosEnabledKey,
-    streamClientIpadosEnabledKey,
-    streamClientWebEnabledKey,
-    streamClientWebCreatorEnabledKey,
-    streamClientMobileEnabledKey
 )
 
 private data class ClientDef(
@@ -124,28 +106,38 @@ object StreamClientsSettingsDialog : Dialog {
 
     @Composable
     override fun DialogBody() {
-        val context = androidx.compose.ui.platform.LocalContext.current
+        val context = LocalContext.current
         val binder = LocalPlayerServiceBinder.current
         val prefs = remember { context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
         val clientDefs = remember { buildClientDefs() }
 
-        val savedStates = remember {
-            clientKeys.associateWith { prefs.getBoolean(it, true) }
+        val initial = remember {
+            val orderSerialized = prefs.getString(streamClientsOrderKey, "") ?: ""
+            val order = parseOrder(orderSerialized).toMutableList()
+            val toggles = order.map { id ->
+                val def = clientDefs[id]
+                if (def != null) prefs.getBoolean(def.preferenceKey, def.defaultValue) else true
+            }.toMutableList()
+            order to toggles
         }
 
-        val orderSerialized = remember { mutableStateOf(prefs.getString(streamClientsOrderKey, "") ?: "") }
-        val currentOrder = remember(orderSerialized.value) { parseOrder(orderSerialized.value) }
-        var workingOrder by remember { mutableStateOf(currentOrder.toMutableList()) }
+        var workingOrder by remember { mutableStateOf(initial.first) }
+        var workingToggles by remember { mutableStateOf(initial.second) }
 
         val lazyListState = rememberLazyListState()
 
         val reorderableState = rememberReorderableLazyListState(lazyListState) { from, to ->
-            val fromIndex = workingOrder.indexOf(from.key)
-            val toIndex = workingOrder.indexOf(to.key)
+            val order = workingOrder.toMutableList()
+            val toggles = workingToggles.toMutableList()
+            val fromIndex = order.indexOf(from.key)
+            val toIndex = order.indexOf(to.key)
             if (fromIndex != -1 && toIndex != -1) {
-                val item = workingOrder.removeAt(fromIndex)
-                workingOrder.add(toIndex, item)
-                orderSerialized.value = serializeOrder(workingOrder)
+                val item = order.removeAt(fromIndex)
+                order.add(toIndex, item)
+                val checkedItem = toggles.removeAt(fromIndex)
+                toggles.add(toIndex, checkedItem)
+                workingOrder = order
+                workingToggles = toggles
             }
         }
 
@@ -166,23 +158,36 @@ object StreamClientsSettingsDialog : Dialog {
             lazyListState = lazyListState,
             reorderableState = reorderableState,
             enforceMinOneChecked = true,
+            checkedStatesOverride = workingToggles.toList(),
+            onCheckedChange = { index, newValue ->
+                val newToggles = workingToggles.toMutableList()
+                newToggles[index] = newValue
+                workingToggles = newToggles
+            },
             onReset = {
-                clientKeys.forEach { key ->
-                    prefs.edit().putBoolean(key, true).apply()
-                }
+                workingOrder = defaultClientOrder.toMutableList()
+                workingToggles = defaultClientOrder.map { id ->
+                    clientDefs[id]?.defaultValue ?: true
+                }.toMutableList()
             },
             onCancel = {
-                savedStates.forEach { (key, value) ->
-                    prefs.edit().putBoolean(key, value).apply()
-                }
                 hideDialog()
             },
             onConfirm = {
-                val hasChanges = clientKeys.any { key ->
-                    prefs.getBoolean(key, true) != savedStates[key]
+                // Detect if any enabled/disabled state changed to trigger stream restart
+                val initialById = initial.first.zip(initial.second).toMap()
+                val hasChanges = workingOrder.any { id ->
+                    val idx = workingOrder.indexOf(id)
+                    workingToggles.getOrElse(idx) { true } != (initialById[id] ?: true)
+                }
+                val editor = prefs.edit()
+                editor.putString(streamClientsOrderKey, serializeOrder(workingOrder))
+                workingOrder.forEachIndexed { index, id ->
+                    val def = clientDefs[id] ?: return@forEachIndexed
+                    editor.putBoolean(def.preferenceKey, workingToggles[index])
                 }
                 if (hasChanges) {
-                    prefs.edit().putBoolean(streamClientRestartNeededKey, true).apply()
+                    editor.putBoolean(streamClientRestartNeededKey, true)
                     clearStreamCaches()
                     binder?.cache?.let { cache ->
                         cache.keys.forEach { song -> cache.removeResource(song) }
@@ -190,6 +195,7 @@ object StreamClientsSettingsDialog : Dialog {
                     Toaster.i(R.string.preferred_stream_client_changed)
                     Toaster.w(R.string.stream_client_redownload_recommendation)
                 }
+                editor.apply()
                 hideDialog()
             }
         )

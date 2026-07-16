@@ -491,7 +491,7 @@ fun BoxScope.ActionBar(
                 buttonOrder.forEach { buttonId ->
                     when (buttonId) {
                         "video" -> {
-                            val showButtonPlayerVideo by rememberPreference( showButtonPlayerVideoKey, false )
+                            val showButtonPlayerVideo by rememberPreference( showButtonPlayerVideoKey, true )
                             if (showButtonPlayerVideo)
                                 IconButton(
                                     icon = R.drawable.video,
@@ -579,7 +579,7 @@ fun BoxScope.ActionBar(
                             }
                         }
                         "loop" -> {
-                            val showButtonPlayerLoop by rememberPreference( showButtonPlayerLoopKey, true )
+                            val showButtonPlayerLoop by rememberPreference( showButtonPlayerLoopKey, false )
                             if (showButtonPlayerLoop) {
                                 var queueLoopType by queueLoopState
                                 val effectRotationEnabled by rememberPreference( effectRotationKey, true )
@@ -624,7 +624,7 @@ fun BoxScope.ActionBar(
                             val playerType by rememberPreference( playerTypeKey, PlayerType.Essential )
                             val showThumbnail by rememberPreference( showthumbnailKey, true )
                             if (!isLandscape || ((playerType == PlayerType.Essential) && !showThumbnail)) {
-                                val expandedPlayerToggle by rememberPreference( expandedplayertoggleKey, true )
+                                val expandedPlayerToggle by rememberPreference( expandedplayertoggleKey, false )
                                 var expandedPlayer by expandPlayerState
                                 if (expandedPlayerToggle && !showLyricsThumbnail)
                                     IconButton(

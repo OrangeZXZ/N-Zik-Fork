@@ -1,1 +1,4 @@
 # Done
+- Fix ToggleListDialog : marquee, limit max 4, and drag/drop state corruption
+- Fix PlayerActionBarSettingsDialog and StreamClientsSettingsDialog : local states and drag/drop logic
+- Align Player Action Bar buttons default states (loop, video, expanded_player) across ActionBar.kt, UiSettings.kt, AppearanceSettings.kt

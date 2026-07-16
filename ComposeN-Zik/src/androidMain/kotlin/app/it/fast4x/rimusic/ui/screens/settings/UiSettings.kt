@@ -476,12 +476,12 @@ fun DefaultUiSettings() {
     showButtonPlayerArrow = true
     var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
     showButtonPlayerDownload = true
-    var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
-    showButtonPlayerLoop = true
+    var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, false)
+    showButtonPlayerLoop = false
     var showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
     showButtonPlayerLyrics = true
-    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey, true)
-    expandedplayertoggle = true
+    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey, false)
+    expandedplayertoggle = false
     var showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
     showButtonPlayerShuffle = true
     var showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
@@ -672,9 +672,9 @@ fun UiSettings(
     var showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
     var showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, true)
     var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
-    var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
+    var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, false)
     var showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
-    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey, true)
+    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey, false)
     var showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
     var showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
     var showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
