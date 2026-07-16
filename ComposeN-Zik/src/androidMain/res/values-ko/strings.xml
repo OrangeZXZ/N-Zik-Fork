@@ -377,6 +377,7 @@
   <string name="action_bar_show_loop_button">Loop button</string>
   <string name="action_bar_show_shuffle_button">Shuffle button</string>
   <string name="action_bar_show_lyrics_button">Lyrics button</string>
+  <string name="action_bar_show_visualizer_button">Visualizer button</string>
   <string name="action_bar_show_arrow_button_to_open_queue">Arrow button</string>
   <string name="lang_finnish">Finnish (Suomalainen)</string>
   <string name="listening_time">Playback duration</string>
@@ -524,6 +525,7 @@
   <string name="minimized_player">플레이어 최소화</string>
   <string name="both">둘다</string>
   <string name="max_songs_in_queue">재생목록 노래 최대 갯수</string>
+  <string name="max_songs_in_queue_android_auto">Max songs in queue (Android Auto)</string>
   <string name="back">뒤로가기</string>
   <string name="folders">폴더</string>
   <string name="show_folders_in_on_device_page">Show folders in \"On Device\" page</string>
