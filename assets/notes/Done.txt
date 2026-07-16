@@ -104,3 +104,21 @@ Improved:
 Removed:
 - remove(settings): drop LibraryVisibilitySettingsDialog
   - Functionality replaced by individual HomeAlbums/HomeArtists/HomePlaylists/HomeSongs dialogs
+
+Added:
+- feat(settings): add separate Queue Size setting for Android Auto
+  - Added `maxSongsInQueueAndroidAutoKey` preference in `Preferences.kt`
+  - Added UI entry in `GeneralSettings.kt` with dedicated dialog
+  - Added string resources in `values/strings.xml` and `values-fr/strings.xml`
+  - Implemented truncation logic in `AutoSessionCallback.kt` (`onSetMediaItems`) to enforce the limit while preserving playback index context
+
+Changed:
+- change(home): reorder Home Playlists default order to All → Pinned → Monthly → YT/YTM → Piped
+  - Updated `playlistsDefaultOrder` in both `HomePlaylistsSettingsDialog.kt` and `HomeLibrary.kt`
+  - Reset button in dialog now restores this new order
+
+- change(home): set "All" as the default selected tab on first install for all Home screens
+  - Songs: default changed from Favorites → All (`HomeSongsScreen.kt`)
+  - Albums: default changed from Favorites → All/Library (`HomeAlbum.kt`)
+  - Artists: default changed from Favorites → All/Library (`HomeArtist.kt`)
+  - Playlists: was already defaulting to All

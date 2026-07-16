@@ -66,7 +66,7 @@ fun HomeSongsScreen(navController: NavController ) {
     val binder = LocalPlayerServiceBinder.current
     val lazyListState = rememberLazyListState()
 
-    var builtInPlaylist by rememberPreference( builtInPlaylistKey, BuiltInPlaylist.Favorites )
+    var builtInPlaylist by rememberPreference( builtInPlaylistKey, BuiltInPlaylist.All )
     var isRecommendationEnabled by remember { mutableStateOf(false) }
     var recommendationCount by remember { mutableStateOf(0) }
     var isRecommendationsLoading by remember { mutableStateOf(false) }

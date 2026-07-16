@@ -111,6 +111,7 @@ import app.it.fast4x.rimusic.utils.languageAppKey
 import app.it.fast4x.rimusic.utils.languageDestinationName
 import app.it.fast4x.rimusic.utils.loudnessBaseGainKey
 import app.it.fast4x.rimusic.utils.maxSongsInQueueKey
+import app.it.fast4x.rimusic.utils.maxSongsInQueueAndroidAutoKey
 import app.it.fast4x.rimusic.utils.minimumSilenceDurationKey
 import app.it.fast4x.rimusic.utils.navigationBarPositionKey
 import app.it.fast4x.rimusic.utils.navigationBarTypeKey
@@ -176,6 +177,7 @@ fun GeneralSettings(
     var navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconOnly)
     var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
     var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.Unlimited)
+    var maxSongsInQueueAndroidAuto by rememberPreference(maxSongsInQueueAndroidAutoKey, MaxSongs.Unlimited)
     var crossfadeEnabled by rememberPreference(app.it.fast4x.rimusic.utils.crossfadeEnabledKey, false)
     var crossfadeDuration by rememberPreference(app.it.fast4x.rimusic.utils.crossfadeDurationKey, 3000)
     var crossfadeGapless by rememberPreference(app.it.fast4x.rimusic.utils.crossfadeGaplessKey, false)
@@ -679,6 +681,7 @@ fun GeneralSettings(
                  icon = R.drawable.playlist,
                  content = {
                      var showMaxSongsDialog by remember { mutableStateOf(false) }
+                     var showMaxSongsAndroidAutoDialog by remember { mutableStateOf(false) }
                      if (search.inputValue.isBlank() || stringResource(R.string.max_songs_in_queue).contains(search.inputValue,true)) {
                          OtherSettingsEntry(
                              title = stringResource(R.string.max_songs_in_queue),
@@ -694,6 +697,22 @@ fun GeneralSettings(
                                  MaxSongs.`3000` -> MaxSongs.`3000`.name
                              },
                              onClick = { showMaxSongsDialog = true },
+                             icon = R.drawable.music_file
+                         )
+                         OtherSettingsEntry(
+                             title = stringResource(R.string.max_songs_in_queue_android_auto),
+                             text = when (maxSongsInQueueAndroidAuto) {
+                                 MaxSongs.Unlimited -> stringResource(R.string.unlimited)
+                                 MaxSongs.`50` -> MaxSongs.`50`.name
+                                 MaxSongs.`100` -> MaxSongs.`100`.name
+                                 MaxSongs.`200` -> MaxSongs.`200`.name
+                                 MaxSongs.`300` -> MaxSongs.`300`.name
+                                 MaxSongs.`500` -> MaxSongs.`500`.name
+                                 MaxSongs.`1000` -> MaxSongs.`1000`.name
+                                 MaxSongs.`2000` -> MaxSongs.`2000`.name
+                                 MaxSongs.`3000` -> MaxSongs.`3000`.name
+                             },
+                             onClick = { showMaxSongsAndroidAutoDialog = true },
                              icon = R.drawable.music_file
                          )
                      }
@@ -718,6 +737,29 @@ fun GeneralSettings(
                              },
                              values = MaxSongs.values().toList(),
                              onDismiss = { showMaxSongsDialog = false }
+                         )
+                     }
+
+                     if (showMaxSongsAndroidAutoDialog) {
+                         ValueSelectorDialog(
+                title = stringResource(R.string.max_songs_in_queue_android_auto),
+                selectedValue = maxSongsInQueueAndroidAuto,
+                onValueSelected = { maxSongsInQueueAndroidAuto = it },
+                valueText = {
+                    when (it) {
+                        MaxSongs.Unlimited -> stringResource(R.string.unlimited)
+                        MaxSongs.`50` -> MaxSongs.`50`.name
+                        MaxSongs.`100` -> MaxSongs.`100`.name
+                        MaxSongs.`200` -> MaxSongs.`200`.name
+                        MaxSongs.`300` -> MaxSongs.`300`.name
+                        MaxSongs.`500` -> MaxSongs.`500`.name
+                        MaxSongs.`1000` -> MaxSongs.`1000`.name
+                        MaxSongs.`2000` -> MaxSongs.`2000`.name
+                        MaxSongs.`3000` -> MaxSongs.`3000`.name
+                    }
+                             },
+                             values = MaxSongs.values().toList(),
+                             onDismiss = { showMaxSongsAndroidAutoDialog = false }
                          )
                      }
 

@@ -153,7 +153,7 @@ fun HomeAlbums(
 
     // Settings
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
-    var albumType by rememberPreference(albumTypeKey, AlbumsType.Favorites )
+    var albumType by rememberPreference(albumTypeKey, AlbumsType.Library )
 
     var items by persistList<Album>( "home/albums/items" )
     var itemsToFilter by persistList<Album>( "home/albums/itemsToFilter" )

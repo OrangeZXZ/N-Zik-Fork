@@ -265,7 +265,7 @@ fun HomeLibrary(
     val showYtPlaylists by rememberPreference(showYtPlaylistsKey, true)
     val homePlaylistsOrderPref by rememberPreference(homePlaylistsOrderKey, "")
 
-    val playlistsDefaultOrder = listOf("all", "yt_playlists", "piped_playlists", "pinned_playlists", "monthly_playlists")
+    val playlistsDefaultOrder = listOf("all", "pinned_playlists", "monthly_playlists", "yt_playlists", "piped_playlists")
     val toggleMap = mapOf(
         "yt_playlists" to showYtPlaylists,
         "piped_playlists" to showPipedPlaylists,

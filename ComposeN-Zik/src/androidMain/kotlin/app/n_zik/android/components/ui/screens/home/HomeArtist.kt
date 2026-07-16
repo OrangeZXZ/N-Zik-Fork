@@ -141,7 +141,7 @@ fun HomeArtists(
     val coroutineScope = rememberCoroutineScope()
 
     // Settings
-    var artistType by rememberPreference(artistTypeKey, ArtistsType.Favorites )
+    var artistType by rememberPreference(artistTypeKey, ArtistsType.Library )
     var filterBy by rememberPreference(filterByKey, FilterBy.All)
 
 

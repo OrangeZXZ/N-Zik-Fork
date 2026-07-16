@@ -20,8 +20,7 @@ import app.it.fast4x.rimusic.utils.homePlaylistsOrderKey
 import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
-
-private val playlistsDefaultOrder = listOf("all", "yt_playlists", "piped_playlists", "pinned_playlists", "monthly_playlists")
+private val playlistsDefaultOrder = listOf("all", "pinned_playlists", "monthly_playlists", "yt_playlists", "piped_playlists")
 
 object HomePlaylistsSettingsDialog : Dialog {
     override val dialogTitle: String @Composable get() = stringResource(R.string.home_playlists_settings)
