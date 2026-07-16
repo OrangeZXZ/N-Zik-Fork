@@ -377,6 +377,7 @@
   <string name="action_bar_show_loop_button">Кнопка для циклу</string>
   <string name="action_bar_show_shuffle_button">Shuffle button</string>
   <string name="action_bar_show_lyrics_button">Кнопка текстів</string>
+  <string name="action_bar_show_visualizer_button">Visualizer button</string>
   <string name="action_bar_show_arrow_button_to_open_queue">Кнопка стрілки</string>
   <string name="lang_finnish">Finnish (Suomalainen)</string>
   <string name="listening_time">Тривалість відтворення</string>
@@ -524,6 +525,7 @@
   <string name="minimized_player">Зменшити плеєр</string>
   <string name="both">Обидва</string>
   <string name="max_songs_in_queue">Макс. к-сть пісень у черзі</string>
+  <string name="max_songs_in_queue_android_auto">Max songs in queue (Android Auto)</string>
   <string name="back">Назад</string>
   <string name="folders">Теки</string>
   <string name="show_folders_in_on_device_page">Відображати папки на сторінці \"На пристрої\"</string>
