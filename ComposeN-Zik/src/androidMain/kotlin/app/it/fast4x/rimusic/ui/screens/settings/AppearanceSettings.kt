@@ -631,11 +631,11 @@ fun AppearanceSettings(
         var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
         var swipeAnimationNoThumbnail by rememberPreference(swipeAnimationsNoThumbnailKey, SwipeAnimationNoThumbnail.Sliding)
 
-        val searchCtx_0_1 = search.inputValue.isBlank() || stringResource(R.string.player_presets_and_layout).contains(search.inputValue, true) || stringResource(R.string.appearancepresets).contains(search.inputValue, true) || stringResource(R.string.appearancepresetssecondary).contains(search.inputValue, true) || stringResource(R.string.show_player_top_actions_bar).contains(search.inputValue, true) || stringResource(R.string.blankspace).contains(search.inputValue, true) || stringResource(R.string.playertype).contains(search.inputValue, true) || stringResource(R.string.queuetype).contains(search.inputValue, true)
-        val searchCtx_0_2 = search.inputValue.isBlank() || stringResource(R.string.cover_and_thumbnail).contains(search.inputValue, true) || stringResource(R.string.show_thumbnail).contains(search.inputValue, true) || stringResource(R.string.swipe_Animation_No_Thumbnail).contains(search.inputValue, true) || stringResource(R.string.te_slide_vertical).contains(search.inputValue, true) || stringResource(R.string.te_fade).contains(search.inputValue, true) || stringResource(R.string.te_scale).contains(search.inputValue, true) || stringResource(R.string.carousel).contains(search.inputValue, true) || stringResource(R.string.vt_circular).contains(search.inputValue, true) || stringResource(R.string.fadingedge).contains(search.inputValue, true) || stringResource(R.string.carouselsize).contains(search.inputValue, true) || stringResource(R.string.thumbnailpause).contains(search.inputValue, true) || stringResource(R.string.show_lyrics_thumbnail).contains(search.inputValue, true) || stringResource(R.string.showvisthumbnail).contains(search.inputValue, true) || stringResource(R.string.show_cover_thumbnail_animation).contains(search.inputValue, true) || stringResource(R.string.cover_thumbnail_animation_type).contains(search.inputValue, true) || stringResource(R.string.player_thumbnail_size).contains(search.inputValue, true) || stringResource(R.string.thumbnailtype).contains(search.inputValue, true) || stringResource(R.string.thumbnail_roundness).contains(search.inputValue, true) || stringResource(R.string.noblur).contains(search.inputValue, true) || stringResource(R.string.statsfornerdsplayer).contains(search.inputValue, true)
-        val searchCtx_0_3 = search.inputValue.isBlank() || stringResource(R.string.timeline_and_controls).contains(search.inputValue, true) || stringResource(R.string.timelinesize).contains(search.inputValue, true) || stringResource(R.string.pinfo_type).contains(search.inputValue, true) || stringResource(R.string.pinfo_album_and_artist_name).contains(search.inputValue, true) || stringResource(R.string.pinfo_show_icons).contains(search.inputValue, true) || stringResource(R.string.miniplayertype).contains(search.inputValue, true) || stringResource(R.string.player_swap_controls_with_timeline).contains(search.inputValue, true) || stringResource(R.string.timeline).contains(search.inputValue, true) || stringResource(R.string.transparentbar).contains(search.inputValue, true) || stringResource(R.string.pcontrols_type).contains(search.inputValue, true) || stringResource(R.string.play_button).contains(search.inputValue, true) || stringResource(R.string.buttonzoomout).contains(search.inputValue, true) || stringResource(R.string.icon_like_button).contains(search.inputValue, true)
+        val searchCtx_0_1 = search.inputValue.isBlank() || stringResource(R.string.player_presets_and_layout).contains(search.inputValue, true) || stringResource(R.string.appearancepresets).contains(search.inputValue, true) || stringResource(R.string.appearancepresetssecondary).contains(search.inputValue, true) || stringResource(R.string.playertype).contains(search.inputValue, true) || stringResource(R.string.queuetype).contains(search.inputValue, true) || stringResource(R.string.thumbnailtype).contains(search.inputValue, true) || stringResource(R.string.pinfo_type).contains(search.inputValue, true) || stringResource(R.string.pinfo_album_and_artist_name).contains(search.inputValue, true) || stringResource(R.string.pinfo_show_icons).contains(search.inputValue, true) || stringResource(R.string.pcontrols_type).contains(search.inputValue, true) || stringResource(R.string.icon_like_button).contains(search.inputValue, true)
+        val searchCtx_0_2 = search.inputValue.isBlank() || stringResource(R.string.cover_and_thumbnail).contains(search.inputValue, true) || stringResource(R.string.show_thumbnail).contains(search.inputValue, true) || stringResource(R.string.swipe_Animation_No_Thumbnail).contains(search.inputValue, true) || stringResource(R.string.te_slide_vertical).contains(search.inputValue, true) || stringResource(R.string.te_fade).contains(search.inputValue, true) || stringResource(R.string.te_scale).contains(search.inputValue, true) || stringResource(R.string.carousel).contains(search.inputValue, true) || stringResource(R.string.vt_circular).contains(search.inputValue, true) || stringResource(R.string.fadingedge).contains(search.inputValue, true) || stringResource(R.string.carouselsize).contains(search.inputValue, true) || stringResource(R.string.thumbnailpause).contains(search.inputValue, true) || stringResource(R.string.show_lyrics_thumbnail).contains(search.inputValue, true) || stringResource(R.string.showvisthumbnail).contains(search.inputValue, true) || stringResource(R.string.show_cover_thumbnail_animation).contains(search.inputValue, true) || stringResource(R.string.cover_thumbnail_animation_type).contains(search.inputValue, true) || stringResource(R.string.player_thumbnail_size).contains(search.inputValue, true) || stringResource(R.string.thumbnail_roundness).contains(search.inputValue, true) || stringResource(R.string.noblur).contains(search.inputValue, true) || stringResource(R.string.statsfornerdsplayer).contains(search.inputValue, true)
+        val searchCtx_0_3 = search.inputValue.isBlank() || stringResource(R.string.timeline_and_controls).contains(search.inputValue, true) || stringResource(R.string.timelinesize).contains(search.inputValue, true) || stringResource(R.string.miniplayertype).contains(search.inputValue, true) || stringResource(R.string.player_swap_controls_with_timeline).contains(search.inputValue, true) || stringResource(R.string.timeline).contains(search.inputValue, true) || stringResource(R.string.transparentbar).contains(search.inputValue, true) || stringResource(R.string.play_button).contains(search.inputValue, true) || stringResource(R.string.buttonzoomout).contains(search.inputValue, true)
         val searchCtx_0_4 = search.inputValue.isBlank() || stringResource(R.string.colors_and_background).contains(search.inputValue, true) || stringResource(R.string.background_colors).contains(search.inputValue, true) || stringResource(R.string.gradienttype).contains(search.inputValue, true) || stringResource(R.string.blackgradient).contains(search.inputValue, true) || stringResource(R.string.albumCoverRotation).contains(search.inputValue, true) || stringResource(R.string.bottomgradient).contains(search.inputValue, true) || stringResource(R.string.textoutline).contains(search.inputValue, true) || stringResource(R.string.show_total_time_of_queue).contains(search.inputValue, true) || stringResource(R.string.show_remaining_song_time).contains(search.inputValue, true) || stringResource(R.string.shake_sensitivity_theme).contains(search.inputValue, true)
-        val searchCtx_0_5 = search.inputValue.isBlank() || stringResource(R.string.player_behavior_and_visuals).contains(search.inputValue, true) || stringResource(R.string.show_next_songs_in_player).contains(search.inputValue, true) || stringResource(R.string.showtwosongs).contains(search.inputValue, true) || stringResource(R.string.songs_number_to_show).contains(search.inputValue, true) || stringResource(R.string.showalbumcover).contains(search.inputValue, true) || stringResource(R.string.disable_scrolling_text).contains(search.inputValue, true) || stringResource(R.string.scrolling_text_is_used_for_long_texts).contains(search.inputValue, true) || stringResource(R.string.player_rotating_buttons).contains(search.inputValue, true) || stringResource(R.string.player_enable_rotation_buttons).contains(search.inputValue, true) || stringResource(R.string.toggle_lyrics).contains(search.inputValue, true) || stringResource(R.string.by_tapping_on_the_thumbnail).contains(search.inputValue, true) || stringResource(R.string.click_lyrics_text).contains(search.inputValue, true) || stringResource(R.string.save_lyrics_state).contains(search.inputValue, true) || stringResource(R.string.save_lyrics_state_description).contains(search.inputValue, true) || stringResource(R.string.show_background_in_lyrics).contains(search.inputValue, true) || stringResource(R.string.player_enable_lyrics_popup_message).contains(search.inputValue, true) || stringResource(R.string.background_progress_bar).contains(search.inputValue, true) || stringResource(R.string.visualizer).contains(search.inputValue, true) || stringResource(R.string.save_visualizer_state).contains(search.inputValue, true) || stringResource(R.string.save_visualizer_state_description).contains(search.inputValue, true) || stringResource(R.string.require_mic_permission).contains(search.inputValue, true)
+        val searchCtx_0_5 = search.inputValue.isBlank() || stringResource(R.string.player_behavior_and_visuals).contains(search.inputValue, true) || stringResource(R.string.show_player_top_actions_bar).contains(search.inputValue, true) || stringResource(R.string.blankspace).contains(search.inputValue, true) || stringResource(R.string.show_next_songs_in_player).contains(search.inputValue, true) || stringResource(R.string.showtwosongs).contains(search.inputValue, true) || stringResource(R.string.songs_number_to_show).contains(search.inputValue, true) || stringResource(R.string.showalbumcover).contains(search.inputValue, true) || stringResource(R.string.disable_scrolling_text).contains(search.inputValue, true) || stringResource(R.string.scrolling_text_is_used_for_long_texts).contains(search.inputValue, true) || stringResource(R.string.player_rotating_buttons).contains(search.inputValue, true) || stringResource(R.string.player_enable_rotation_buttons).contains(search.inputValue, true) || stringResource(R.string.toggle_lyrics).contains(search.inputValue, true) || stringResource(R.string.by_tapping_on_the_thumbnail).contains(search.inputValue, true) || stringResource(R.string.click_lyrics_text).contains(search.inputValue, true) || stringResource(R.string.save_lyrics_state).contains(search.inputValue, true) || stringResource(R.string.save_lyrics_state_description).contains(search.inputValue, true) || stringResource(R.string.show_background_in_lyrics).contains(search.inputValue, true) || stringResource(R.string.player_enable_lyrics_popup_message).contains(search.inputValue, true) || stringResource(R.string.background_progress_bar).contains(search.inputValue, true) || stringResource(R.string.visualizer).contains(search.inputValue, true) || stringResource(R.string.save_visualizer_state).contains(search.inputValue, true) || stringResource(R.string.save_visualizer_state_description).contains(search.inputValue, true) || stringResource(R.string.require_mic_permission).contains(search.inputValue, true)
         PlayerActionBarSettingsDialog.Render()
         MiniPlayerButtonsSettingsDialog.Render()
         Column {
@@ -933,39 +933,8 @@ fun AppearanceSettings(
                     onClick = { appearanceChooser = true }
                 )
             }
-
-            if (search.inputValue.isBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
-                    search.inputValue,
-                    true
-                )
-            )
-                if (search.inputValue.isBlank() || stringResource(R.string.show_player_top_actions_bar).contains(search.inputValue, true)) {
-                    OtherSwitchSettingEntry(
-                    icon = R.drawable.enqueue,
-                        title = stringResource(R.string.show_player_top_actions_bar),
-                        text = "",
-                        isChecked = showTopActionsBar,
-                        onCheckedChange = { showTopActionsBar = it }
-                    )
-                }
-
-            if (!showTopActionsBar) {
-                if (search.inputValue.isBlank() || stringResource(R.string.blankspace).contains(
-                        search.inputValue,
-                        true
-                    )
-                )
-                    if (search.inputValue.isBlank() || stringResource(R.string.blankspace).contains(search.inputValue, true)) {
-                        OtherSwitchSettingEntry(
-                    icon = R.drawable.space,
-                            title = stringResource(R.string.blankspace),
-                            text = "",
-                            isChecked = topPadding,
-                            onCheckedChange = { topPadding = it }
-                        )
-                    }
-            }
         }
+
         if (search.inputValue.isBlank() || stringResource(R.string.playertype).contains(
                 search.inputValue,
                 true
@@ -973,7 +942,7 @@ fun AppearanceSettings(
         )
             if (search.inputValue.isBlank() || stringResource(R.string.playertype).contains(search.inputValue, true)) {
                 OtherEnumValueSelectorSettingsEntry(
-                    icon = R.drawable.ui,
+                    icon = R.drawable.play,
                     title = stringResource(R.string.playertype),
                     selectedValue = playerType,
                     onValueSelected = {
@@ -999,6 +968,101 @@ fun AppearanceSettings(
                     valueText = { it.text },
                 )
             }
+
+        if (search.inputValue.isBlank() || stringResource(R.string.thumbnailtype).contains(
+                search.inputValue,
+                true
+            )
+        )
+            if (search.inputValue.isBlank() || stringResource(R.string.thumbnailtype).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.cd,
+                    title = stringResource(R.string.thumbnailtype),
+                    selectedValue = thumbnailType,
+                    onValueSelected = {
+                        thumbnailType = it
+                    },
+                    valueText = { it.text },
+                    modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
+                )
+            }
+
+        if (search.inputValue.isBlank() || stringResource(R.string.pinfo_type).contains(
+                search.inputValue,
+                true
+            )
+        ) {
+            if (search.inputValue.isBlank() || stringResource(R.string.pinfo_type).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.information,
+                    title = stringResource(R.string.pinfo_type),
+                    selectedValue = playerInfoType,
+                    onValueSelected = {
+                        playerInfoType = it
+                    },
+                    valueText = { it.text },
+                )
+            }
+            SettingsDescription(text = stringResource(R.string.pinfo_album_and_artist_name))
+
+            AnimatedVisibility( visible = playerInfoType == PlayerInfoType.Modern) {
+                Column {
+                    if (search.inputValue.isBlank() || stringResource(R.string.pinfo_show_icons).contains(
+                            search.inputValue,
+                            true
+                        )
+                    )
+                        if (search.inputValue.isBlank() || stringResource(R.string.pinfo_show_icons).contains(search.inputValue, true)) {
+                            OtherSwitchSettingEntry(
+                    icon = R.drawable.information,
+                                title = stringResource(R.string.pinfo_show_icons),
+                                text = "",
+                                isChecked = playerInfoShowIcons,
+                                onCheckedChange = { playerInfoShowIcons = it },
+                                modifier = Modifier
+                                    .padding(start = 25.dp)
+                            )
+                        }
+                }
+            }
+
+        }
+
+        if (search.inputValue.isBlank() || stringResource(R.string.pcontrols_type).contains(
+                search.inputValue,
+                true
+            )
+        )
+            if (search.inputValue.isBlank() || stringResource(R.string.pcontrols_type).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.burger,
+                    title = stringResource(R.string.pcontrols_type),
+                    selectedValue = playerControlsType,
+                    onValueSelected = {
+                        playerControlsType = it
+                    },
+                    valueText = { it.text }
+                )
+            }
+
+        if (search.inputValue.isBlank() || stringResource(R.string.icon_like_button).contains(
+                search.inputValue,
+                true
+            )
+        )
+            if (search.inputValue.isBlank() || stringResource(R.string.icon_like_button).contains(search.inputValue, true)) {
+                OtherEnumValueSelectorSettingsEntry(
+                    icon = R.drawable.heart,
+                    title = stringResource(R.string.icon_like_button),
+                    selectedValue = iconLikeType,
+                    onValueSelected = {
+                        iconLikeType = it
+                    },
+                    valueText = { it.text },
+                )
+            }
+
+
         }
     )
         /* Removed Spacer */
@@ -1168,23 +1232,7 @@ fun AppearanceSettings(
                     }
                 }
 
-                if (search.inputValue.isBlank() || stringResource(R.string.thumbnailtype).contains(
-                        search.inputValue,
-                        true
-                    )
-                )
-                    if (search.inputValue.isBlank() || stringResource(R.string.thumbnailtype).contains(search.inputValue, true)) {
-                        OtherEnumValueSelectorSettingsEntry(
-                            icon = R.drawable.cd,
-                            title = stringResource(R.string.thumbnailtype),
-                            selectedValue = thumbnailType,
-                            onValueSelected = {
-                                thumbnailType = it
-                            },
-                            valueText = { it.text },
-                            modifier = Modifier.padding(start = if (playerBackgroundColors == PlayerBackgroundColors.BlurredCoverColor) 25.dp else 0.dp)
-                        )
-                    }
+
 
                 if (isLandscape) {
                     if (search.inputValue.isBlank() || stringResource(R.string.player_thumbnail_size).contains(
@@ -1420,46 +1468,7 @@ fun AppearanceSettings(
                 )
             }
 
-        if (search.inputValue.isBlank() || stringResource(R.string.pinfo_type).contains(
-                search.inputValue,
-                true
-            )
-        ) {
-            if (search.inputValue.isBlank() || stringResource(R.string.pinfo_type).contains(search.inputValue, true)) {
-                OtherEnumValueSelectorSettingsEntry(
-                    icon = R.drawable.information,
-                    title = stringResource(R.string.pinfo_type),
-                    selectedValue = playerInfoType,
-                    onValueSelected = {
-                        playerInfoType = it
-                    },
-                    valueText = { it.text },
-                )
-            }
-            SettingsDescription(text = stringResource(R.string.pinfo_album_and_artist_name))
 
-            AnimatedVisibility( visible = playerInfoType == PlayerInfoType.Modern) {
-                Column {
-                    if (search.inputValue.isBlank() || stringResource(R.string.pinfo_show_icons).contains(
-                            search.inputValue,
-                            true
-                        )
-                    )
-                        if (search.inputValue.isBlank() || stringResource(R.string.pinfo_show_icons).contains(search.inputValue, true)) {
-                            OtherSwitchSettingEntry(
-                    icon = R.drawable.information,
-                                title = stringResource(R.string.pinfo_show_icons),
-                                text = "",
-                                isChecked = playerInfoShowIcons,
-                                onCheckedChange = { playerInfoShowIcons = it },
-                                modifier = Modifier
-                                    .padding(start = 25.dp)
-                            )
-                        }
-                }
-            }
-
-        }
 
 
 
@@ -1525,22 +1534,7 @@ fun AppearanceSettings(
                 )
             }
 
-        if (search.inputValue.isBlank() || stringResource(R.string.pcontrols_type).contains(
-                search.inputValue,
-                true
-            )
-        )
-            if (search.inputValue.isBlank() || stringResource(R.string.pcontrols_type).contains(search.inputValue, true)) {
-                OtherEnumValueSelectorSettingsEntry(
-                    icon = R.drawable.burger,
-                    title = stringResource(R.string.pcontrols_type),
-                    selectedValue = playerControlsType,
-                    onValueSelected = {
-                        playerControlsType = it
-                    },
-                    valueText = { it.text }
-                )
-            }
+
 
         if (search.inputValue.isBlank() || stringResource(R.string.player_controls_colors).contains(
                 search.inputValue,
@@ -1809,6 +1803,40 @@ fun AppearanceSettings(
         title = stringResource(R.string.player_behavior_and_visuals),
         icon = R.drawable.equalizer,
         content = {
+        if (!isLandscape) {
+            if (search.inputValue.isBlank() || stringResource(R.string.show_player_top_actions_bar).contains(
+                    search.inputValue,
+                    true
+                )
+            )
+                if (search.inputValue.isBlank() || stringResource(R.string.show_player_top_actions_bar).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                    icon = R.drawable.enqueue,
+                        title = stringResource(R.string.show_player_top_actions_bar),
+                        text = "",
+                        isChecked = showTopActionsBar,
+                        onCheckedChange = { showTopActionsBar = it }
+                    )
+                }
+
+            if (!showTopActionsBar) {
+                if (search.inputValue.isBlank() || stringResource(R.string.blankspace).contains(
+                        search.inputValue,
+                        true
+                    )
+                )
+                    if (search.inputValue.isBlank() || stringResource(R.string.blankspace).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                    icon = R.drawable.space,
+                            title = stringResource(R.string.blankspace),
+                            text = "",
+                            isChecked = topPadding,
+                            onCheckedChange = { topPadding = it }
+                        )
+                    }
+            }
+        }
+
         if (search.inputValue.isBlank() || stringResource(R.string.show_next_songs_in_player).contains(
                 search.inputValue,
                 true

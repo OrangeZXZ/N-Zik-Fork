@@ -122,3 +122,9 @@ Changed:
   - Albums: default changed from Favorites → All/Library (`HomeAlbum.kt`)
   - Artists: default changed from Favorites → All/Library (`HomeArtist.kt`)
   - Playlists: was already defaulting to All
+
+Changed:
+- change(settings): reorder items in Appearance Settings
+  - Moved Player Presets (Modern/Essential elements) and layout toggles to the top of the "Player Presets and Layout" section.
+  - Moved 'Show top actions bar' into the 'Player behavior and visuals' section.
+  - Updated search contexts to reflect these structural changes in settings search.
