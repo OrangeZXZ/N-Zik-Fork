@@ -377,6 +377,7 @@
   <string name="action_bar_show_loop_button">ループボタン</string>
   <string name="action_bar_show_shuffle_button">Shuffle button</string>
   <string name="action_bar_show_lyrics_button">歌詞ボタン</string>
+  <string name="action_bar_show_visualizer_button">Visualizer button</string>
   <string name="action_bar_show_arrow_button_to_open_queue">矢印ボタン</string>
   <string name="lang_finnish">Finnish (Suomalainen)</string>
   <string name="listening_time">再生時間</string>
@@ -524,6 +525,7 @@
   <string name="minimized_player">最小化したプレイヤー</string>
   <string name="both">両方</string>
   <string name="max_songs_in_queue">キューの最大曲数</string>
+  <string name="max_songs_in_queue_android_auto">Max songs in queue (Android Auto)</string>
   <string name="back">戻る</string>
   <string name="folders">フォルダー</string>
   <string name="show_folders_in_on_device_page">「デバイス上」ページにフォルダを表示</string>
