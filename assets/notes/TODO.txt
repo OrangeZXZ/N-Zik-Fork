@@ -1,9 +1,3 @@
 Update YTB sync to use new innertube api also update eevery sync like album artists songs ect...
 Add back dislike button in player, android auto and notification still support it
 Make the desktop version
-Fix metadata nbeing not editable  https://github.com/N-Zik-Group/N-Zik/issues/636
-Make homepage editable remove / moving stuff
-Missing vz icon in reorder menu
-Add reset ok cancel on settings dialog
-refactor all dialog to centralize them and create a proper dialog manager
-Nerds stats get wiped and never getting any new datas
