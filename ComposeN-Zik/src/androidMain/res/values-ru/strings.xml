@@ -377,6 +377,7 @@
   <string name="action_bar_show_loop_button">Кнопка цикла</string>
   <string name="action_bar_show_shuffle_button">Shuffle button</string>
   <string name="action_bar_show_lyrics_button">Кнопка \"Текст\"</string>
+  <string name="action_bar_show_visualizer_button">Visualizer button</string>
   <string name="action_bar_show_arrow_button_to_open_queue">Кнопка стрелки</string>
   <string name="lang_finnish">Finnish (Suomalainen)</string>
   <string name="listening_time">Длительность воспроизведения</string>
@@ -446,8 +447,14 @@
   <string name="player_action_bar_buttons_description">Configure which buttons appear in the player action bar</string>
   <string name="quick_picks_content">Quick Picks sections</string>
   <string name="quick_picks_content_description">Choose which sections appear on the home page</string>
+  <string name="my_top">Мои Топ</string>
+  <string name="generic_ytm_sections">Other sections</string>
   <string name="library_visibility">Library playlists</string>
-  <string name="library_visibility_description">Choose which playlists appear in the library</string>
+  <string name="library_visibility_description">Choose which sections appear in the library</string>
+  <string name="home_songs_settings">Home Songs</string>
+  <string name="home_artists_settings">Home Artists</string>
+  <string name="home_albums_settings">Home Albums</string>
+  <string name="home_playlists_settings">Home Playists</string>
   <string name="export_backup">Export backup</string>
   <string name="import_backup">Import backup</string>
   <string name="export">Export</string>
@@ -518,6 +525,7 @@
   <string name="minimized_player">Свернутый плеер</string>
   <string name="both">Оба</string>
   <string name="max_songs_in_queue">Макс. кол-во треков в очереди</string>
+  <string name="max_songs_in_queue_android_auto">Max songs in queue (Android Auto)</string>
   <string name="back">Назад</string>
   <string name="folders">Папки</string>
   <string name="show_folders_in_on_device_page">Показывать папки на странице \"На устройстве\"</string>
@@ -721,6 +729,18 @@
   <string name="client_web_desc">Standard web client.</string>
   <string name="client_web_creator_desc">Web creator client.</string>
   <string name="client_mobile_desc">Mobile client.</string>
+  <string name="stream_client_web_remix">Web Remix</string>
+  <string name="stream_client_android_vr">Android VR</string>
+  <string name="stream_client_visionos">visionOS</string>
+  <string name="stream_client_tv_embedded">TV Embedded</string>
+  <string name="stream_client_tv_html5">TV HTML5</string>
+  <string name="stream_client_android_creator">Android Creator</string>
+  <string name="stream_client_android">Android</string>
+  <string name="stream_client_ios">iOS</string>
+  <string name="stream_client_ipados">iPadOS</string>
+  <string name="stream_client_web">Web</string>
+  <string name="stream_client_web_creator">Web Creator</string>
+  <string name="stream_client_mobile">Mobile</string>
   <string name="cache_location_private">Внутри файлов приложения</string>
   <string name="cache_location_system">Стандартное (внутри системы)</string>
   <string name="info_cannot_rename_a_monthly_or_piped_playlist">Невозможно переименовать ежемесячный или Piped плейлист</string>
@@ -1562,4 +1582,6 @@
   <string name="miniplayer_slot_fixed">Fixed</string>
   <string name="miniplayer_slot_vide">Empty</string>
   <string name="available_on_android_10_or_higher">Available on Android 10 or higher</string>
+  <string name="home_tabs_settings">Home page</string>
+  <string name="home_tabs_settings_description">Reorder and show/hide tabs</string>
 </resources>
