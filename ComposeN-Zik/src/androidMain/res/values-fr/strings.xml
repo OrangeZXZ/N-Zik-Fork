@@ -290,7 +290,7 @@
   <string name="rectangular">Rectangulaire</string>
   <string name="square">Carré</string>
   <string name="circular_ribbed">Cercle ondulé</string>
-  <string name="play_button">Bouton lecture</string>
+  <string name="play_button">Bouton « Lecture »</string>
   <string name="portuguese_brazilian">Portugais, Brésilien (Portuguese, Brazilian)</string>
   <string name="portuguese">Portugais (Portuguese)</string>
   <string name="indonesian">Indonésien (Indonesian)</string>
@@ -377,7 +377,7 @@
   <string name="action_bar_show_loop_button">Bouton « Boucle »</string>
   <string name="action_bar_show_shuffle_button">Bouton « Lecture Aléatoire »</string>
   <string name="action_bar_show_lyrics_button">Bouton « Paroles »</string>
-  <string name="action_bar_show_visualizer_button">Visualizer button</string>
+  <string name="action_bar_show_visualizer_button">Bouton « Visualiseur »</string>
   <string name="action_bar_show_arrow_button_to_open_queue">Bouton « Flèche »</string>
   <string name="lang_finnish">Finnois (Suomalainen)</string>
   <string name="listening_time">Durée d’écoute</string>
@@ -525,7 +525,7 @@
   <string name="minimized_player">Lecteur minimisé</string>
   <string name="both">Les deux</string>
   <string name="max_songs_in_queue">Nombre maximum de titres dans la file d\'attente</string>
-  <string name="max_songs_in_queue_android_auto">Max songs in queue (Android Auto)</string>
+  <string name="max_songs_in_queue_android_auto">Nombre maximal de titres dans la file d\'attente (Android Auto)</string>
   <string name="back">Précédent</string>
   <string name="folders">Dossiers</string>
   <string name="show_folders_in_on_device_page">Afficher les dossiers sur la page de l\'appareil</string>
