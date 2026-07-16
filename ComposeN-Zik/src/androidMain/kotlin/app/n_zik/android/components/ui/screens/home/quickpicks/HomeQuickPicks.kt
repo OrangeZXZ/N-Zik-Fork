@@ -537,7 +537,7 @@ fun HomeQuickPicks(
             }
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if (UiType.ViMusic.isCurrent() && showFloatingIcon)
+            if (showFloatingIcon)
                 Box(modifier = Modifier.fillMaxSize()) {
                     MultiFloatingActionsContainer(iconId = R.drawable.search, onClick = onSearchClick, onClickSettings = onSettingsClick, onClickSearch = onSearchClick)
                 }

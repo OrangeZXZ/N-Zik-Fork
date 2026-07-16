@@ -2,3 +2,4 @@
 - Fix ToggleListDialog : marquee, limit max 4, and drag/drop state corruption
 - Fix PlayerActionBarSettingsDialog and StreamClientsSettingsDialog : local states and drag/drop logic
 - Align Player Action Bar buttons default states (loop, video, expanded_player) across ActionBar.kt, UiSettings.kt, AppearanceSettings.kt
+- Fix 'Show floating search icon' setting not taking effect on N-Zik UI (removed ViMusic-only restriction on the floating icon)

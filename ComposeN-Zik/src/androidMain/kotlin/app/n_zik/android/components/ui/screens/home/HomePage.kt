@@ -258,7 +258,7 @@ fun HomePage(
             }
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if (UiType.ViMusic.isCurrent() && showFloatingIcon)
+            if (showFloatingIcon)
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.search,
                     onClick = onSearchClick,

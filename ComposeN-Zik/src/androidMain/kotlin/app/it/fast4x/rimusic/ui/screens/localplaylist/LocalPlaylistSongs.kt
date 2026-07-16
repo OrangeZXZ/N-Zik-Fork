@@ -1397,7 +1397,7 @@ fun LocalPlaylistSongs(
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
         val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-        if ( UiType.ViMusic.isCurrent() && showFloatingIcon )
+        if ( showFloatingIcon )
             FloatingActionsContainerWithScrollToTop(
                 lazyListState = lazyListState,
                 iconId = R.drawable.shuffle,

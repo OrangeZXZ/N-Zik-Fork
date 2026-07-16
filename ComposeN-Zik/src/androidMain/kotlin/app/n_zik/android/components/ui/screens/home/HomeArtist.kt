@@ -527,7 +527,7 @@ fun HomeArtists(
             FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if( UiType.ViMusic.isCurrent() && showFloatingIcon )
+            if( showFloatingIcon )
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.search,
                     onClick = onSearchClick,

@@ -489,7 +489,7 @@ fun HomeSongsScreen(navController: NavController ) {
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
         val showFloatingIcon by rememberPreference( showFloatingIconKey, false )
-        if( UiType.ViMusic.isCurrent() && showFloatingIcon )
+        if( showFloatingIcon )
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = { navController.navigate(NavRoutes.search.name) },
