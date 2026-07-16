@@ -377,6 +377,7 @@
   <string name="action_bar_show_loop_button">Przycisk pętli</string>
   <string name="action_bar_show_shuffle_button">Shuffle button</string>
   <string name="action_bar_show_lyrics_button">Przycisk tekstu</string>
+  <string name="action_bar_show_visualizer_button">Visualizer button</string>
   <string name="action_bar_show_arrow_button_to_open_queue">Przycisk strzałki</string>
   <string name="lang_finnish">Finnish (Suomalainen)</string>
   <string name="listening_time">Czas odtwarzania</string>
@@ -524,6 +525,7 @@
   <string name="minimized_player">Zminimalizowany odtwarzacz</string>
   <string name="both">Oba</string>
   <string name="max_songs_in_queue">Maksymalna ilość utworów w kolejce</string>
+  <string name="max_songs_in_queue_android_auto">Max songs in queue (Android Auto)</string>
   <string name="back">Wstecz</string>
   <string name="folders">Foldery</string>
   <string name="show_folders_in_on_device_page">Pokaż foldery na stronie \"Na urządzeniu\"</string>
