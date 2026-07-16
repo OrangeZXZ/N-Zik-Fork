@@ -377,6 +377,7 @@
   <string name="action_bar_show_loop_button">Döngü düğmesi</string>
   <string name="action_bar_show_shuffle_button">Karıştır düğmesi</string>
   <string name="action_bar_show_lyrics_button">Şarkı sözleri düğmesi</string>
+  <string name="action_bar_show_visualizer_button">Visualizer button</string>
   <string name="action_bar_show_arrow_button_to_open_queue">Ok düğmesi</string>
   <string name="lang_finnish">Fince (Suomalainen)</string>
   <string name="listening_time">Oynatma süresi</string>
@@ -524,6 +525,7 @@
   <string name="minimized_player">Küçültülmüş oynatıcı</string>
   <string name="both">Her ikisi</string>
   <string name="max_songs_in_queue">Sıradaki maksimum şarkı sayısı</string>
+  <string name="max_songs_in_queue_android_auto">Max songs in queue (Android Auto)</string>
   <string name="back">Geri</string>
   <string name="folders">Klasörler</string>
   <string name="show_folders_in_on_device_page">“Cihazda” sayfasında klasörleri göster</string>
