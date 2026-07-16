@@ -377,6 +377,7 @@
   <string name="action_bar_show_loop_button">Gjenta knapp</string>
   <string name="action_bar_show_shuffle_button">Shuffle button</string>
   <string name="action_bar_show_lyrics_button">Tekst-knapp</string>
+  <string name="action_bar_show_visualizer_button">Visualizer button</string>
   <string name="action_bar_show_arrow_button_to_open_queue">Pil knapp</string>
   <string name="lang_finnish">Finnish (Suomalainen)</string>
   <string name="listening_time">Varighet på avspilling</string>
@@ -524,6 +525,7 @@
   <string name="minimized_player">Minimert spiller</string>
   <string name="both">Begge</string>
   <string name="max_songs_in_queue">Maks sanger i kø</string>
+  <string name="max_songs_in_queue_android_auto">Max songs in queue (Android Auto)</string>
   <string name="back">Tilbake</string>
   <string name="folders">Mapper</string>
   <string name="show_folders_in_on_device_page">Vis mapper på \"På enhet\"-siden</string>
