@@ -5,8 +5,10 @@
 ## Session Startup
 
 1. Read this file entirely
-2. Read all rules/\*.md files
+2. Read ALL rules/\*.md files
 3. Ask user via question tool: "Bug, feature, or something else?"
+
+**CRITICAL: ALL rules files apply at ALL times.** You MUST follow CODE.md (code quality), SECURITY.md (security), RECOVERY.md (error handling), BUILD.md (build rules), WORKFLOW.md (workflow enforcement), BMAD.md (BMAD config), BMAD-TOOLS.md (IDE paths) — not just workflow rules. These are ALL NOT optional. If you skip or forget any rule from any file, HALT and re-read the file.
 
 ---
 
