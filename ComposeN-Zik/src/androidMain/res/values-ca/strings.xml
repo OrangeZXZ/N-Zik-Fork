@@ -377,6 +377,7 @@
   <string name="action_bar_show_loop_button">Mostra el botó de Bucle</string>
   <string name="action_bar_show_shuffle_button">Mostra el botó Shuffle</string>
   <string name="action_bar_show_lyrics_button">Mostra el botó de Lletres</string>
+  <string name="action_bar_show_visualizer_button">Visualizer button</string>
   <string name="action_bar_show_arrow_button_to_open_queue">Mostra el botó de Fletxa per obrir la cua</string>
   <string name="lang_finnish">Finlandès</string>
   <string name="listening_time">Temps d\'escolta</string>
@@ -524,6 +525,7 @@
   <string name="minimized_player">Reproductor minimitzat</string>
   <string name="both">Ambdós</string>
   <string name="max_songs_in_queue">Màxim de cançons a la cua</string>
+  <string name="max_songs_in_queue_android_auto">Max songs in queue (Android Auto)</string>
   <string name="back">Enrere</string>
   <string name="folders">Carpetes</string>
   <string name="show_folders_in_on_device_page">Mostra les carpetes a la pàgina del dispositiu</string>
