@@ -1,0 +1,17 @@
+Added:
+- Reorder & hide Home tabs (Songs, Albums, Artists, Playlists)
+- Android Auto queue size setting
+- Visualizer toggle in Player Action Bar
+
+Changed:
+- New default theme with animated gradient
+- Reorganized Appearance & QuickPicks settings
+
+Improved:
+- Smoother sliders, volume sync with system
+- Better MiniPlayer icons & layout
+
+Fixed:
+- Crashes on saving queue with large covers
+- Export/metadata reliability
+- Local song stats display

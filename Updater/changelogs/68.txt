@@ -1,0 +1,44 @@
+Fixed:
+- Remove trailing .0 or .5 decimals from legacy integer slider preferences in Appearance, Visualizer, Playback, and General settings dialogs.
+- Resolve Room Binder crash when saving player queue with large custom covers by purging `artworkData` before Room serialization.
+- Ensure StatsForNerds streamClient data persists across app cache wipes via new `PlaybackDataStore.kt`.
+- Populate missing Format fields (Size, Loudness) for downloaded songs in StatsForNerds via `fetchFormatIfMissing()`.
+- Standardize magnetic snapping thresholds for slider controls with a universal `SliderControl` architecture, dynamically size-based.
+- Unify metadata reading/writing using FFmpeg and FFprobe exclusively, replacing legacy `jaudiotagger`/`isoparser`; fix Publisher (℗) to Copyright tag mapping; standardize `EXPORTED="N-Zik"` tag.
+- Correct output file extension based on actual codec detection — Opus exports now always use `.ogg` instead of being muxed into M4A.
+- Display Container, Codec, Sample Rate, and Channels for local songs in StatsForNerds via `MediaExtractor` probing.
+- Align action bar and filter buttons with song items across Songs/Albums/Artists/Playlists screens to match QuickPicks padding.
+- Synchronize in-app volume sliders with Android system volume in real-time via a `VOLUME_CHANGED_ACTION` broadcast receiver.
+- Fallback to the active media device correctly when no manual routing is set, preventing Earpiece from incorrectly showing as active.
+- Respect the `showTips` preference in HomeQuickPicks, hiding the Tips header and grid when disabled.
+- Correct default startup tab opening when Home tabs are reordered, by resolving the saved tab preference to its identifier rather than its absolute index.
+
+Changed:
+- Set Theme morphM3 as the default animated gradient in Appearance settings.
+- Move Blur Effect from Audio Effects into Player Effects in the popup menu.
+- Remove the "Enable Quick Picks page" toggle from the QuickPicks content dialog; it's now only accessible from AI Recommendation settings.
+- Pin the "Tips" section to the top of the QuickPicks dialog as a non-reorderable fixed item.
+- Reorder default Home Playlists order to All → Pinned → Monthly → YT/YTM → Piped.
+- Set "All" as the default selected tab on first install for Songs, Albums, and Artists Home screens (Playlists was already default).
+- Reorder Appearance Settings: move Player Presets and layout toggles to the top of their section; move "Show top actions bar" into "Player behavior and visuals".
+
+Added:
+- Direct toggle for the Visualizer button from the Player Action Bar Settings dialog.
+- Visualizer and lyrics mutual exclusivity logic, synced across the MiniPlayer.
+- Default MiniPlayer button order configuration, with the unused `expand_player` toggle removed.
+- Separate Queue Size setting for Android Auto, with dedicated UI and truncation logic preserving playback index context.
+- Dynamic Home tabs reordering and toggling (QuickPicks, Songs, Artists, Albums, Playlists), synced with the AI Recommendation setting for QuickPicks visibility.
+
+Improved:
+- Upgrade the visualizer line thickness slider to the full `SliderSettingsEntry` component for better UX.
+- Unify volume slider design across AudioOutputMenu and PlaybackSettingsMenu, including new icon styling and grid layout preservation.
+- Dynamic MiniPlayer audio output icon matching the active external device (Bluetooth, headphones, etc.) and accent color.
+- Add `basicMarquee` to long text fields in PlaybackSettingsMenu to prevent layout breaking on long translations.
+- Rework reorderable settings dialogs (Player Action Bar, MiniPlayer Buttons, Stream Clients, QuickPicks Content) with pinned items and per-item overrides; add new HomeAlbums/HomeArtists/HomePlaylists/HomeSongs dialogs with drag-to-reorder.
+
+Removed:
+- Drop the shake-to-switch music feature, including its sensor listener, settings UI, and related resources.
+- Drop `LibraryVisibilitySettingsDialog`, replaced by individual per-screen Home dialogs.
+
+Refactor:
+- Centralize AudioDevice icon mapping in AudioOutputManager and clean up redundant UI logic in MiniPlayer.
