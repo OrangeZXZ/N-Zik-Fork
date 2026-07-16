@@ -52,7 +52,7 @@
 
 <h1>⏳ Only <a href="https://keepandroidopen.org"><img src="https://img.shields.io/badge/J--168-red?style=flat-round&logo=android&logoColor=white" alt="Android Lockdown"/></a> days remaining until Android Lockdown</h1>
 
-Starting in **September ~~2026~~ 2027** [See why the date changed here](https://keepandroidopen.org/en/faq/), Google will require **identity verification for all Android developers**, including those distributing applications **outside of Google Play**.
+Starting in **~~September 2026~~ January 2027** [See why the date changed here](https://keepandroidopen.org/en/faq/), Google will require **identity verification for all Android developers**, including those distributing applications **outside of Google Play**.
 
 As a **Free and Open Source Software (FOSS)** project, **N‑Zik** and his **developer** opposes this requirement due to its impact on developer privacy, independent distribution, and software freedom.
 
