@@ -207,7 +207,11 @@ import app.it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import app.it.fast4x.rimusic.utils.visualizerEnabledKey
 import app.it.fast4x.rimusic.utils.volumeNormalizationKey
 import app.n_zik.android.components.dialog.common.RestartAppDialog
-import app.n_zik.android.components.dialog.settings.LibraryVisibilitySettingsDialog
+import app.n_zik.android.components.dialog.settings.HomePlaylistsSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeTabsSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeSongsSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeArtistsSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeAlbumsSettingsDialog
 import app.n_zik.android.components.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.it.fast4x.rimusic.enums.SearchDisplayOrder
@@ -472,12 +476,12 @@ fun DefaultUiSettings() {
     showButtonPlayerArrow = true
     var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
     showButtonPlayerDownload = true
-    var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
-    showButtonPlayerLoop = true
+    var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, false)
+    showButtonPlayerLoop = false
     var showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
     showButtonPlayerLyrics = true
-    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey, true)
-    expandedplayertoggle = true
+    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey, false)
+    expandedplayertoggle = false
     var showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
     showButtonPlayerShuffle = true
     var showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
@@ -668,9 +672,9 @@ fun UiSettings(
     var showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
     var showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, true)
     var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
-    var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, true)
+    var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, false)
     var showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
-    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey, true)
+    var expandedplayertoggle by rememberPreference(expandedplayertoggleKey, false)
     var showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
     var showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
     var showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
@@ -721,7 +725,11 @@ fun UiSettings(
             .verticalScroll(rememberScrollState())
     ) {
 
-        LibraryVisibilitySettingsDialog.Render()
+        HomeTabsSettingsDialog.Render()
+        HomePlaylistsSettingsDialog.Render()
+        HomeSongsSettingsDialog.Render()
+        HomeArtistsSettingsDialog.Render()
+        HomeAlbumsSettingsDialog.Render()
 
         HeaderWithIcon(
             title = stringResource(R.string.user_interface),
@@ -1101,6 +1109,7 @@ fun UiSettings(
             stringResource(R.string.player_position).contains(search.inputValue, true) ||
             stringResource(R.string.menu_style).contains(search.inputValue, true) ||
             stringResource(R.string.message_type).contains(search.inputValue, true) ||
+            stringResource(R.string.home_tabs_settings).contains(search.inputValue, true) ||
             stringResource(R.string.default_page).contains(search.inputValue, true) ||
             stringResource(R.string.transition_effect).contains(search.inputValue, true)
 
@@ -1229,6 +1238,15 @@ fun UiSettings(
                             valueText = { it.text },
                             values = HomeScreenTabs.values().toList(),
                             onDismiss = { showDefPageDialog = false }
+                        )
+                    }
+
+                    if (search.inputValue.isBlank() || stringResource(R.string.home_tabs_settings).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.home_tabs_settings),
+                            text = stringResource(R.string.home_tabs_settings_description),
+                            onClick = { HomeTabsSettingsDialog.showDialog() },
+                            icon = R.drawable.sparkles
                         )
                     }
 
@@ -1543,7 +1561,10 @@ fun UiSettings(
 
         val listsSearchContextMatch = search.inputValue.isBlank() || 
             stringResource(R.string.songs).contains(search.inputValue, true) ||
-            stringResource(R.string.playlists).contains(search.inputValue, true)
+            stringResource(R.string.artists).contains(search.inputValue, true) ||
+            stringResource(R.string.albums).contains(search.inputValue, true) ||
+            stringResource(R.string.playlists).contains(search.inputValue, true) ||
+            stringResource(R.string.library).contains(search.inputValue, true)
 
         AnimatedVisibility(
             visible = listsSearchContextMatch,
@@ -1553,11 +1574,35 @@ fun UiSettings(
                 title = stringResource(R.string.library),
                 icon = R.drawable.library,
                 content = {
-                    if (search.inputValue.isBlank() || stringResource(R.string.library_visibility).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.home_songs_settings).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
-                            title = stringResource(R.string.library_visibility),
+                            title = stringResource(R.string.home_songs_settings),
                             text = stringResource(R.string.library_visibility_description),
-                            onClick = { LibraryVisibilitySettingsDialog.showDialog() },
+                            onClick = { HomeSongsSettingsDialog.showDialog() },
+                            icon = R.drawable.musical_notes
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.home_artists_settings).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.home_artists_settings),
+                            text = stringResource(R.string.library_visibility_description),
+                            onClick = { HomeArtistsSettingsDialog.showDialog() },
+                            icon = R.drawable.people
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.home_albums_settings).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.home_albums_settings),
+                            text = stringResource(R.string.library_visibility_description),
+                            onClick = { HomeAlbumsSettingsDialog.showDialog() },
+                            icon = R.drawable.album
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.home_playlists_settings).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.home_playlists_settings),
+                            text = stringResource(R.string.library_visibility_description),
+                            onClick = { HomePlaylistsSettingsDialog.showDialog() },
                             icon = R.drawable.library
                         )
                     }

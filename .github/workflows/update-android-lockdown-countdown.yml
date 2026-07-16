@@ -1,31 +1,52 @@
 name: Update Android Lockdown Countdown
+
 on:
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
+
 permissions:
   contents: write
+
 jobs:
   update-countdown:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
-      - name: Calculate days remaining
+        uses: actions/checkout@v4
+
+      - name: Get target date and calculate days remaining
         id: countdown
         run: |
-          TARGET="2026-09-30 00:00:00"
+          # Get target date from Keep Android Open banner.js
+          TARGET=$(curl -s https://keepandroidopen.org/banner.js \
+            | grep -o 'new Date("[^"]*"' \
+            | sed 's/new Date("//;s/"//')
+
+          if [ -z "$TARGET" ]; then
+            echo "Could not find target date"
+            exit 1
+          fi
+
+          echo "Detected target date: $TARGET"
+
           NOW=$(date +%s)
           TARGET_EPOCH=$(date -d "$TARGET" +%s)
+
           DAYS=$(( (TARGET_EPOCH - NOW) / 86400 ))
+
           [ $DAYS -lt 0 ] && DAYS=0
+
           echo "days=$DAYS" >> $GITHUB_OUTPUT
+
       - name: Update README
         run: |
           DAYS="${{ steps.countdown.outputs.days }}"
           sed -i "s|J--[0-9]*-red|J--${DAYS}-red|g" README.md
+
       - name: Commit if changed
-        uses: stefanzweifel/git-auto-commit-action@v7
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: update Android lockdown countdown (${{ steps.countdown.outputs.days }} days left)"
           file_pattern: README.md

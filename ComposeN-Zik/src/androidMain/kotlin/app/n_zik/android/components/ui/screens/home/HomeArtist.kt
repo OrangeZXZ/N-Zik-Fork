@@ -102,7 +102,10 @@ import app.it.fast4x.rimusic.utils.filterByKey
 import app.it.fast4x.rimusic.utils.importYTMSubscribedChannels
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
+import app.it.fast4x.rimusic.utils.showFavoritesArtistKey
+import app.it.fast4x.rimusic.utils.homeArtistsOrderKey
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
+import org.json.JSONArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -138,7 +141,7 @@ fun HomeArtists(
     val coroutineScope = rememberCoroutineScope()
 
     // Settings
-    var artistType by rememberPreference(artistTypeKey, ArtistsType.Favorites )
+    var artistType by rememberPreference(artistTypeKey, ArtistsType.Library )
     var filterBy by rememberPreference(filterByKey, FilterBy.All)
 
 
@@ -169,7 +172,35 @@ fun HomeArtists(
         key = arrayOf( artistType )
     )
 
-    val buttonsList = ArtistsType.entries.map { it to it.text }
+    val showFavoritesArtist by rememberPreference(showFavoritesArtistKey, true)
+    val homeArtistsOrderPref by rememberPreference(homeArtistsOrderKey, "")
+
+    val favoritesLabel = stringResource(R.string.favorites)
+    val allLabel = stringResource(R.string.all)
+    val artistsDefaultOrder = listOf("all", "favorites")
+    val labelMap = mapOf("favorites" to favoritesLabel, "all" to allLabel)
+    val typeMap = mapOf("favorites" to ArtistsType.Favorites, "all" to ArtistsType.Library)
+    val toggleMap = mapOf("favorites" to showFavoritesArtist, "all" to true)
+    val buttonsList = remember(showFavoritesArtist, homeArtistsOrderPref, favoritesLabel, allLabel) {
+        val order = try {
+            val arr = JSONArray(homeArtistsOrderPref)
+            val parsed = (0 until arr.length()).map { arr.getString(it) }
+            val valid = parsed.filter { it in artistsDefaultOrder }.toMutableList()
+            for (id in artistsDefaultOrder) { if (id !in valid) valid.add(id) }
+            valid
+        } catch (_: Exception) { artistsDefaultOrder }
+        order.mapNotNull { id ->
+            if (toggleMap[id] == true) {
+                val type = typeMap[id] ?: return@mapNotNull null
+                val label = labelMap[id] ?: return@mapNotNull null
+                type to label
+            } else null
+        }
+    }
+
+    LaunchedEffect(showFavoritesArtist) {
+        if (!showFavoritesArtist && artistType == ArtistsType.Favorites) artistType = ArtistsType.Library
+    }
 
     if (!isYouTubeSyncEnabled()) {
         filterBy = FilterBy.All
@@ -496,7 +527,7 @@ fun HomeArtists(
             FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if( UiType.ViMusic.isCurrent() && showFloatingIcon )
+            if( showFloatingIcon )
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.search,
                     onClick = onSearchClick,

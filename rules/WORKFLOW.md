@@ -30,6 +30,11 @@ Use this format every session — keep it SHORT:
 8. Ask IDE ONE at a time (path depends on IDE)
 9. NEVER edit values-*/strings.xml (only values/)
 10. NEVER edit DB schema without explicit instruction
+11. NEVER skip ahead to later steps — follow Step 1→2→3... in order
+12. After any interruption, re-announce current step before continuing
+13. If you lost context, re-read the current step file
+14. After BMAD workflow COMPLETE: if user gives logs/bug/errors, START NEW bmad-cis-problem-solving or bmad-code-review workflow — don't improvise
+15. User input (logs, screenshots, errors) = new workflow trigger, NOT freeform response
 
 See rules/*.md for full details.
 ```

@@ -134,6 +134,14 @@ python3 {project-root}/_bmad/scripts/resolve_config.py
 OpenCode: `.opencode/commands/` with `@skills/{canonicalId}` format.
 Copilot: `.github/agents/` with `LOAD the FULL {path}/SKILL.md` format.
 
+### OpenCode — Direct Skill Loading
+
+To load a skill directly in OpenCode (bypassing command files), use the `@` prefix with the skill path:
+```
+@skills/bmad-quick-dev
+```
+This triggers the agent to read and follow the SKILL.md from that path.
+
 ## Skill Naming
 
 - Agents: `bmad-agent-{name}.md` (core) or `bmad-agent-{module}-{name}.md`

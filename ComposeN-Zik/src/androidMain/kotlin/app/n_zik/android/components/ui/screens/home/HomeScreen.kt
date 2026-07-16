@@ -46,6 +46,8 @@ import app.it.fast4x.rimusic.ui.components.themed.Loader
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import app.n_zik.android.components.ui.screens.home.quickpicks.HomeQuickPicks
+import app.it.fast4x.rimusic.utils.homeTabsOrderKey
+import app.n_zik.android.components.dialog.settings.HomeTabsSettingsDialog
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -73,14 +75,51 @@ fun HomeScreen(
 
     val openTabFromShortcut1 by remember{ mutableIntStateOf(openTabFromShortcut) }
 
-    var initialtabIndex =
-        when (openTabFromShortcut1) {
-            -1 -> when (preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.Default)) {
+    val enableSongsTab by rememberPreference("hometab_songs_enabled", true)
+    val enableArtistsTab by rememberPreference("hometab_artists_enabled", true)
+    val enableAlbumsTab by rememberPreference("hometab_albums_enabled", true)
+    val enablePlaylistsTab by rememberPreference("hometab_playlists_enabled", true)
+
+    val homeTabsOrderSerialized by rememberPreference(homeTabsOrderKey, "")
+    val tabOrder = remember(homeTabsOrderSerialized) {
+        HomeTabsSettingsDialog.parseOrder(homeTabsOrderSerialized)
+    }
+
+    val activeTabs = remember(tabOrder, enableQuickPicksPage, enableSongsTab, enableArtistsTab, enableAlbumsTab, enablePlaylistsTab) {
+        val filtered = tabOrder.filter { id ->
+            when (id) {
+                "quickpicks" -> enableQuickPicksPage
+                "songs" -> enableSongsTab
+                "artists" -> enableArtistsTab
+                "albums" -> enableAlbumsTab
+                "playlists" -> enablePlaylistsTab
+                else -> false
+            }
+        }
+        if (filtered.isEmpty()) listOf("quickpicks") else filtered
+    }
+
+    val initialtabIndex = run {
+        val targetIndex = when (openTabFromShortcut1) {
+            -1 -> when (val pref = preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.Default)) {
                 HomeScreenTabs.Default -> HomeScreenTabs.QuickPics.index
-                else -> preferences.getEnum(indexNavigationTabKey, HomeScreenTabs.QuickPics).index
+                else -> pref.index
             }
             else -> openTabFromShortcut1
         }
+        
+        val targetTabId = when (targetIndex) {
+            HomeScreenTabs.QuickPics.index -> "quickpicks"
+            HomeScreenTabs.Songs.index -> "songs"
+            HomeScreenTabs.Artists.index -> "artists"
+            HomeScreenTabs.Albums.index -> "albums"
+            HomeScreenTabs.Playlists.index -> "playlists"
+            else -> "quickpicks"
+        }
+        
+        val foundIndex = activeTabs.indexOf(targetTabId)
+        if (foundIndex != -1) foundIndex else 0
+    }
 
     var (tabIndex, onTabChanged) = rememberPreference(homeScreenTabIndexKey, initialtabIndex)
 
@@ -95,7 +134,7 @@ fun HomeScreen(
 
     if (tabIndex == -2) navController.navigate(NavRoutes.search.name)
 
-    if (!enableQuickPicksPage && tabIndex==0) tabIndex = 1
+    if (tabIndex >= activeTabs.size) tabIndex = 0
 
     // Show loader while services are not ready
     if (!isReady) {
@@ -114,17 +153,21 @@ fun HomeScreen(
         onTabChanged,
         miniPlayer,
         navBarContent = { Item ->
-            if (enableQuickPicksPage)
-                Item(0, stringResource(R.string.quick_picks), R.drawable.sparkles)
-            Item(1, stringResource(R.string.songs), R.drawable.musical_notes)
-            Item(2, stringResource(R.string.artists), R.drawable.people)
-            Item(3, stringResource(R.string.albums), R.drawable.album)
-            Item(4, stringResource(R.string.playlists), R.drawable.library)
+            activeTabs.forEachIndexed { index, id ->
+                when (id) {
+                    "quickpicks" -> Item(index, stringResource(R.string.quick_picks), R.drawable.sparkles)
+                    "songs" -> Item(index, stringResource(R.string.songs), R.drawable.musical_notes)
+                    "artists" -> Item(index, stringResource(R.string.artists), R.drawable.people)
+                    "albums" -> Item(index, stringResource(R.string.albums), R.drawable.album)
+                    "playlists" -> Item(index, stringResource(R.string.playlists), R.drawable.library)
+                }
+            }
         }
     ) { currentTabIndex ->
         saveableStateHolder.SaveableStateProvider(key = currentTabIndex) {
-            when (currentTabIndex) {
-                0 -> HomeQuickPicks(
+            val currentTabId = activeTabs.getOrNull(currentTabIndex)
+            when (currentTabId) {
+                "quickpicks" -> HomeQuickPicks(
                     onAlbumClick = {
                         navController.navigate(route = "${NavRoutes.album.name}/$it")
                     },
@@ -158,9 +201,9 @@ fun HomeScreen(
 
                 )
 
-                1 -> HomeSongsScreen( navController )
+                "songs" -> HomeSongsScreen( navController )
 
-                2 -> HomeArtists(
+                "artists" -> HomeArtists(
                     onArtistClick = {
                         navController.navigate(route = "${NavRoutes.artist.name}/${it.id}")
                     },
@@ -174,7 +217,7 @@ fun HomeScreen(
                     }
                 )
 
-                3 -> HomeAlbums(
+                "albums" -> HomeAlbums(
                     navController = navController,
                     onAlbumClick = {
                         //albumRoute(it.id)
@@ -190,7 +233,7 @@ fun HomeScreen(
                     }
                 )
 
-                4 -> HomeLibrary(
+                "playlists" -> HomeLibrary(
                     navController = navController,
                     onPlaylistClick = {
                         //localPlaylistRoute(it.id)

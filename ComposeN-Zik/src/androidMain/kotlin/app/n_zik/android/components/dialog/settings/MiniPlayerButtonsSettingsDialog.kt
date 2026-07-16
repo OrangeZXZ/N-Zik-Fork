@@ -1,43 +1,21 @@
 package app.n_zik.android.components.dialog.settings
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
-import app.n_zik.android.colorPalette
-import app.n_zik.android.typography
-import app.n_zik.android.uiRoundnessShape
+import app.n_zik.android.components.dialog.common.Dialog
+import app.n_zik.android.components.dialog.common.ToggleItem
+import app.n_zik.android.components.dialog.common.ToggleListDialog
 import app.it.fast4x.rimusic.utils.miniPlayerButtonOrderKey
 import app.it.fast4x.rimusic.utils.showMiniPlayerPlayPauseKey
 import app.it.fast4x.rimusic.utils.showMiniPlayerSkipBackKey
@@ -56,12 +34,9 @@ import app.it.fast4x.rimusic.utils.showMiniPlayerVisualizerKey
 import app.it.fast4x.rimusic.utils.showMiniPlayerQueueKey
 import app.it.fast4x.rimusic.utils.showMiniPlayerVideoKey
 import app.it.fast4x.rimusic.utils.showMiniPlayerDiscoverKey
-import app.n_zik.android.components.dialog.common.Dialog
-import app.it.fast4x.rimusic.utils.medium
-import app.it.fast4x.rimusic.utils.semiBold
+import app.it.fast4x.rimusic.utils.visualizerEnabledKey
 import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
-import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
 private val defaultButtonOrder = listOf(
@@ -114,8 +89,7 @@ private fun buildButtonDefs(): Map<String, MiniPlayerButtonDef> = mapOf(
     "sleep_timer" to MiniPlayerButtonDef("sleep_timer", showMiniPlayerSleepTimerKey, R.drawable.sleep, R.string.miniplayer_button_sleep_timer, false),
     "lyrics" to MiniPlayerButtonDef("lyrics", showMiniPlayerLyricsKey, R.drawable.song_lyrics, R.string.miniplayer_button_lyrics, false),
     "visualizer" to MiniPlayerButtonDef("visualizer", showMiniPlayerVisualizerKey, R.drawable.sound_effect, R.string.miniplayer_button_visualizer, false)
-
-    )
+)
 
 object MiniPlayerButtonsSettingsDialog : Dialog {
 
@@ -167,18 +141,16 @@ object MiniPlayerButtonsSettingsDialog : Dialog {
             editor.putBoolean(def.preferenceKey, toggles[id] ?: def.defaultValue)
         }
         
-        // Force enable the global visualizer if the miniplayer button is enabled
         if (toggles["visualizer"] == true) {
-            editor.putBoolean(app.it.fast4x.rimusic.utils.visualizerEnabledKey, true)
+            editor.putBoolean(visualizerEnabledKey, true)
         }
         
         editor.apply()
     }
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun DialogBody() {
-        val context = LocalContext.current
+        val context = androidx.compose.ui.platform.LocalContext.current
         val prefs = remember { context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
         val buttonDefs = remember { buildButtonDefs() }
         val maxChecked = 4
@@ -188,10 +160,6 @@ object MiniPlayerButtonsSettingsDialog : Dialog {
         var workingOrder by remember { mutableStateOf(initial.first) }
         var workingToggles by remember { mutableStateOf(initial.second) }
         var checkedCount by remember { mutableIntStateOf(workingToggles.count { it }) }
-
-        fun syncCheckedCount() {
-            checkedCount = workingToggles.count { it }
-        }
 
         val lazyListState = rememberLazyListState()
 
@@ -210,153 +178,48 @@ object MiniPlayerButtonsSettingsDialog : Dialog {
             }
         }
 
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f, fill = false)
-                    .height(400.dp)
-                    .fillMaxWidth(),
-                state = lazyListState
-            ) {
-                items(
-                    count = workingOrder.size,
-                    key = { workingOrder[it] }
-                ) { index ->
-                    val buttonId = workingOrder[index]
-                    val def = buttonDefs[buttonId] ?: return@items
-                    val isChecked = workingToggles[index]
-                    val isMaxReached = !isChecked && checkedCount >= maxChecked
+        val items = workingOrder.mapIndexed { index, buttonId ->
+            val def = buttonDefs[buttonId] ?: return@mapIndexed null
+            ToggleItem(
+                id = def.id,
+                iconRes = def.iconRes,
+                label = stringResource(def.labelRes),
+                preferenceKey = def.preferenceKey,
+                defaultValue = def.defaultValue
+            )
+        }.filterNotNull()
 
-                    ReorderableItem(reorderableState, key = buttonId) { isDragging ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(uiRoundnessShape())
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null,
-                                    enabled = !isMaxReached,
-                                    onClick = {
-                                        val newToggles = workingToggles.toMutableList()
-                                        newToggles[index] = !newToggles[index]
-                                        workingToggles = newToggles
-                                        syncCheckedCount()
-                                    }
-                                )
-                                .padding(vertical = 6.dp, horizontal = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            Icon(
-                                painter = painterResource(def.iconRes),
-                                contentDescription = null,
-                                tint = if (!isMaxReached) colorPalette().accent else colorPalette().textDisabled,
-                                modifier = Modifier.size(22.dp)
-                            )
-
-                            BasicText(
-                                text = stringResource(def.labelRes),
-                                style = typography().xs.semiBold.copy(
-                                    color = if (isDragging) colorPalette().accent
-                                    else if (!isMaxReached) colorPalette().text
-                                    else colorPalette().textDisabled
-                                ),
-                                modifier = Modifier.weight(1f)
-                            )
-
-                            Checkbox(
-                                checked = isChecked,
-                                onCheckedChange = null,
-                                enabled = !isMaxReached,
-                                modifier = Modifier.size(20.dp),
-                                colors = CheckboxDefaults.colors(
-                                    checkedColor = colorPalette().accent,
-                                    uncheckedColor = colorPalette().textDisabled,
-                                    checkmarkColor = colorPalette().onAccent,
-                                    disabledIndeterminateColor = Color.Transparent,
-                                    disabledCheckedColor = colorPalette().textDisabled,
-                                    disabledUncheckedColor = colorPalette().textDisabled
-                                )
-                            )
-
-                            Icon(
-                                painter = painterResource(R.drawable.reorder),
-                                contentDescription = null,
-                                tint = if (isDragging) colorPalette().accent else colorPalette().textDisabled,
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .then(Modifier.draggableHandle())
-                            )
-                        }
-                    }
+        ToggleListDialog(
+            items = items,
+            lazyListState = lazyListState,
+            reorderableState = reorderableState,
+            maxChecked = maxChecked,
+            checkedStatesOverride = workingToggles.toList(),
+            onCheckedChange = { index, newValue ->
+                val newToggles = workingToggles.toMutableList()
+                newToggles[index] = newValue
+                workingToggles = newToggles
+                checkedCount = workingToggles.count { it }
+            },
+            onReset = {
+                workingOrder = defaultButtonOrder.toMutableList()
+                workingToggles = defaultButtonOrder.map { id ->
+                    buttonDefs[id]?.defaultValue ?: false
+                }.toMutableList()
+                checkedCount = workingToggles.count { it }
+            },
+            onCancel = {
+                hideDialog()
+            },
+            onConfirm = {
+                val toggleMap = mutableMapOf<String, Boolean>()
+                workingOrder.forEachIndexed { index, id ->
+                    toggleMap[id] = workingToggles[index]
                 }
+                savePrefs(prefs, workingOrder, toggleMap)
+                Toaster.s(R.string.toast_preference_saved)
+                hideDialog()
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                BasicText(
-                    text = stringResource(R.string.reset),
-                    style = typography().xs.medium.copy(
-                        color = colorPalette().textDisabled,
-                        textAlign = TextAlign.Center
-                    ),
-                    modifier = Modifier
-                        .clip(uiRoundnessShape())
-                        .clickable {
-                            workingOrder = defaultButtonOrder.toMutableList()
-                            workingToggles = defaultButtonOrder.map { id ->
-                                buttonDefs[id]?.defaultValue ?: false
-                            }.toMutableList()
-                            syncCheckedCount()
-                        }
-                        .padding(horizontal = 16.dp, vertical = 10.dp)
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                BasicText(
-                    text = stringResource(R.string.cancel),
-                    style = typography().xs.medium.copy(
-                        color = Color(android.graphics.Color.RED).copy(alpha = 0.3f),
-                        textAlign = TextAlign.Center
-                    ),
-                    modifier = Modifier
-                        .clip(uiRoundnessShape())
-                        .clickable { hideDialog() }
-                        .padding(horizontal = 16.dp, vertical = 10.dp)
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                BasicText(
-                    text = stringResource(R.string.ok),
-                    style = typography().xs.semiBold.copy(
-                        color = colorPalette().onAccent,
-                        textAlign = TextAlign.Center
-                    ),
-                    modifier = Modifier
-                        .clip(uiRoundnessShape())
-                        .background(colorPalette().accent)
-                        .clickable {
-                            val toggleMap = mutableMapOf<String, Boolean>()
-                            workingOrder.forEachIndexed { index, id ->
-                                toggleMap[id] = workingToggles[index]
-                            }
-                            savePrefs(prefs, workingOrder, toggleMap)
-                            Toaster.s(R.string.toast_preference_saved)
-                            hideDialog()
-                        }
-                        .padding(horizontal = 20.dp, vertical = 10.dp)
-                )
-            }
-        }
+        )
     }
 }

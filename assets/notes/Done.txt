@@ -73,7 +73,63 @@ Added:
   - Updated icons using accent colors inside a 32dp rounded Box with 0.1f alpha
   - Restored SliderGridEntry to preserve grid layout in PlaybackSettingsMenu while adhering to the new 32dp icon design
 
+- feature(home): dynamic home tabs reordering and toggling
+  - Added HomeTabsSettingsDialog to UI Settings to allow reordering and hiding home tabs (QuickPicks, Songs, Artists, Albums, Playlists).
+  - Refactored HomeScreen to dynamically build the bottom navigation bar and route to the correct tab based on user preference.
+  - QuickPicks visibility toggle is synchronized with the AI Recommendation settings.
 - improve(ui): dynamic MiniPlayer audio output icon matching active external device (bluetooth, headphones, etc) and accent color
 - fix(playback): fallback to active media device correctly when no manual routing is set, preventing Earpiece from showing as active
 - improve(ui): add basicMarquee to long text fields in PlaybackSettingsMenu to prevent layout breaking on languages with long translations
 - refactor(playback): centralize AudioDevice icon mapping in AudioOutputManager and clean up redundant UI logic in MiniPlayer
+
+Changed:
+- change(settings): QuickPicks dialog — remove 'Enable Quick Picks page' toggle from QuickPicksContentSettingsDialog
+  - The setting is now only accessible from AIRecommendationSettings, not from the QuickPicks content dialog
+
+- change(settings): QuickPicks dialog — pin 'Tips' section to top as non-reorderable fixed item
+  - `parseOrder()` now forces 'tips' to index 0 regardless of saved order
+  - `pinnedItemCount = 1` prevents it from being dragged
+
+Fixed:
+- fix(home): respect showTips preference in HomeQuickPicks — QuickPicksHeader + QuickPicksGrid now hidden when Tips is disabled
+  - Wrapped the entire tips block (header + recommendations grid) in `if (showTips)`
+  - Moved `showTips` declaration before the `loadedQuickPicks` check to fix 'Unresolved reference' compile error
+
+Improved:
+- improve(ui): reorderable settings dialogs (PlayerActionBar, MiniPlayerButtons, StreamClients, QuickPicksContent)
+  - Refactored ToggleListDialog to support pinned items, locked-checked IDs, and per-item checked state overrides
+  - New HomeAlbums, HomeArtists, HomePlaylists, HomeSongs settings dialogs added with drag-to-reorder support
+  - Removed LibraryVisibilitySettingsDialog (consolidated into per-screen dialogs)
+
+Removed:
+- remove(settings): drop LibraryVisibilitySettingsDialog
+  - Functionality replaced by individual HomeAlbums/HomeArtists/HomePlaylists/HomeSongs dialogs
+
+Added:
+- feat(settings): add separate Queue Size setting for Android Auto
+  - Added `maxSongsInQueueAndroidAutoKey` preference in `Preferences.kt`
+  - Added UI entry in `GeneralSettings.kt` with dedicated dialog
+  - Added string resources in `values/strings.xml` and `values-fr/strings.xml`
+  - Implemented truncation logic in `AutoSessionCallback.kt` (`onSetMediaItems`) to enforce the limit while preserving playback index context
+
+Changed:
+- change(home): reorder Home Playlists default order to All → Pinned → Monthly → YT/YTM → Piped
+  - Updated `playlistsDefaultOrder` in both `HomePlaylistsSettingsDialog.kt` and `HomeLibrary.kt`
+  - Reset button in dialog now restores this new order
+
+- change(home): set "All" as the default selected tab on first install for all Home screens
+  - Songs: default changed from Favorites → All (`HomeSongsScreen.kt`)
+  - Albums: default changed from Favorites → All/Library (`HomeAlbum.kt`)
+  - Artists: default changed from Favorites → All/Library (`HomeArtist.kt`)
+  - Playlists: was already defaulting to All
+
+Changed:
+- change(settings): reorder items in Appearance Settings
+  - Moved Player Presets (Modern/Essential elements) and layout toggles to the top of the "Player Presets and Layout" section.
+  - Moved 'Show top actions bar' into the 'Player behavior and visuals' section.
+  - Updated search contexts to reflect these structural changes in settings search.
+
+Fixed:
+- fix(home): correct default startup tab opening when home tabs are reordered
+  - Mapped the saved default `HomeScreenTabs` preference to its string identifier instead of its absolute enum index.
+  - Dynamically searches for the identifier within the `activeTabs` list so the correct tab opens even when tabs are reordered or hidden.

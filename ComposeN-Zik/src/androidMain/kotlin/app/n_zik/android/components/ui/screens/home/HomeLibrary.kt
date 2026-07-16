@@ -101,7 +101,10 @@ import app.it.fast4x.rimusic.utils.showFloatingIconKey
 import app.it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import app.it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import app.it.fast4x.rimusic.utils.showPipedPlaylistsKey
+import app.it.fast4x.rimusic.utils.showYtPlaylistsKey
+import app.it.fast4x.rimusic.utils.homePlaylistsOrderKey
 import app.it.fast4x.rimusic.utils.semiBold
+import org.json.JSONArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -259,21 +262,60 @@ fun HomeLibrary(
     val showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
     val showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
     val showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
+    val showYtPlaylists by rememberPreference(showYtPlaylistsKey, true)
+    val homePlaylistsOrderPref by rememberPreference(homePlaylistsOrderKey, "")
 
-    val buttonsList = mutableListOf(PlaylistsType.Playlist to stringResource(R.string.playlists))
-    buttonsList += PlaylistsType.YTPlaylist to stringResource(R.string.yt_playlists)
-    if (showPipedPlaylists) buttonsList +=
-        PlaylistsType.PipedPlaylist to stringResource(R.string.piped_playlists)
-    if (showPinnedPlaylists) buttonsList +=
-        PlaylistsType.PinnedPlaylist to stringResource(R.string.pinned_playlists)
-    if (showMonthlyPlaylists) buttonsList +=
-        PlaylistsType.MonthlyPlaylist to stringResource(R.string.monthly_playlists)
+    val playlistsDefaultOrder = listOf("all", "pinned_playlists", "monthly_playlists", "yt_playlists", "piped_playlists")
+    val toggleMap = mapOf(
+        "yt_playlists" to showYtPlaylists,
+        "piped_playlists" to showPipedPlaylists,
+        "pinned_playlists" to showPinnedPlaylists,
+        "monthly_playlists" to showMonthlyPlaylists
+    )
+    val typeMap = mapOf(
+        "yt_playlists" to PlaylistsType.YTPlaylist,
+        "piped_playlists" to PlaylistsType.PipedPlaylist,
+        "pinned_playlists" to PlaylistsType.PinnedPlaylist,
+        "monthly_playlists" to PlaylistsType.MonthlyPlaylist
+    )
+    val allLabel = stringResource(R.string.all)
+    val ytLabel = stringResource(R.string.yt_playlists)
+    val pipedLabel = stringResource(R.string.piped_playlists)
+    val pinnedLabel = stringResource(R.string.pinned_playlists)
+    val monthlyLabel = stringResource(R.string.monthly_playlists)
+    val labelMap = mapOf(
+        "yt_playlists" to ytLabel,
+        "piped_playlists" to pipedLabel,
+        "pinned_playlists" to pinnedLabel,
+        "monthly_playlists" to monthlyLabel
+    )
+    val buttonsList = remember(showPinnedPlaylists, showMonthlyPlaylists, showPipedPlaylists, showYtPlaylists, homePlaylistsOrderPref, allLabel, ytLabel, pipedLabel, pinnedLabel, monthlyLabel) {
+        val order = try {
+            val arr = JSONArray(homePlaylistsOrderPref)
+            val parsed = (0 until arr.length()).map { arr.getString(it) }
+            val valid = parsed.filter { it in playlistsDefaultOrder }.toMutableList()
+            for (id in playlistsDefaultOrder) { if (id !in valid) valid.add(id) }
+            valid
+        } catch (_: Exception) { playlistsDefaultOrder }
+        val result = mutableListOf<Pair<PlaylistsType, String>>()
+        result.add(PlaylistsType.Playlist to allLabel)
+        for (id in order) {
+            if (id == "all") continue
+            if (toggleMap[id] == true) {
+                val type = typeMap[id] ?: continue
+                val label = labelMap[id] ?: continue
+                result.add(type to label)
+            }
+        }
+        result
+    }
     // END - Additional playlists
 
-    LaunchedEffect(showPinnedPlaylists, showMonthlyPlaylists, showPipedPlaylists) {
+    LaunchedEffect(showPinnedPlaylists, showMonthlyPlaylists, showPipedPlaylists, showYtPlaylists) {
         if (!showPinnedPlaylists && playlistType == PlaylistsType.PinnedPlaylist) playlistType = PlaylistsType.Playlist
         if (!showMonthlyPlaylists && playlistType == PlaylistsType.MonthlyPlaylist) playlistType = PlaylistsType.Playlist
         if (!showPipedPlaylists && playlistType == PlaylistsType.PipedPlaylist) playlistType = PlaylistsType.Playlist
+        if (!showYtPlaylists && playlistType == PlaylistsType.YTPlaylist) playlistType = PlaylistsType.Playlist
     }
 
 
@@ -561,7 +603,7 @@ fun HomeLibrary(
             FloatingActionsContainerWithScrollToTop(lazyGridState = lazyGridState)
 
             val showFloatingIcon by rememberPreference(showFloatingIconKey, false)
-            if (UiType.ViMusic.isCurrent() && showFloatingIcon)
+            if (showFloatingIcon)
                 MultiFloatingActionsContainer(
                     iconId = R.drawable.search,
                     onClick = onSearchClick,

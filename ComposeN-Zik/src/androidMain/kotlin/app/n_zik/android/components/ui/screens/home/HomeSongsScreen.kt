@@ -31,6 +31,7 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import app.it.fast4x.rimusic.ui.components.themed.*
 import app.it.fast4x.rimusic.utils.*
 import app.kreate.android.me.knighthat.utils.Toaster
+import org.json.JSONArray
 import app.n_zik.android.components.ui.screens.home.onDevice.OnDeviceSong
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.R
@@ -65,7 +66,7 @@ fun HomeSongsScreen(navController: NavController ) {
     val binder = LocalPlayerServiceBinder.current
     val lazyListState = rememberLazyListState()
 
-    var builtInPlaylist by rememberPreference( builtInPlaylistKey, BuiltInPlaylist.Favorites )
+    var builtInPlaylist by rememberPreference( builtInPlaylistKey, BuiltInPlaylist.All )
     var isRecommendationEnabled by remember { mutableStateOf(false) }
     var recommendationCount by remember { mutableStateOf(0) }
     var isRecommendationsLoading by remember { mutableStateOf(false) }
@@ -422,19 +423,37 @@ fun HomeSongsScreen(navController: NavController ) {
                     val showMyTopPlaylist by rememberPreference( showMyTopPlaylistKey, true )
                     val showDownloadedPlaylist by rememberPreference( showDownloadedPlaylistKey, true )
                     val showOnDeviceChip by rememberPreference( showOnDevicePlaylistKey, true )
-                    val chips = remember( showFavoritesPlaylist, showCachedPlaylist, showMyTopPlaylist, showDownloadedPlaylist) {
+                    val homeSongsOrderPref by rememberPreference( homeSongsOrderKey, "" )
+                    val chips = remember( showFavoritesPlaylist, showCachedPlaylist, showMyTopPlaylist, showDownloadedPlaylist, showOnDeviceChip, homeSongsOrderPref ) {
+                        val songsDefaultOrder = listOf("all", "favorites", "cached", "downloaded", "top", "on_device")
+                        val toggleMap = mapOf(
+                            "favorites" to showFavoritesPlaylist,
+                            "cached" to showCachedPlaylist,
+                            "downloaded" to showDownloadedPlaylist,
+                            "top" to showMyTopPlaylist,
+                            "on_device" to showOnDeviceChip
+                        )
+                        val builtinMap = mapOf(
+                            "all" to BuiltInPlaylist.All,
+                            "favorites" to BuiltInPlaylist.Favorites,
+                            "cached" to BuiltInPlaylist.Offline,
+                            "downloaded" to BuiltInPlaylist.Downloaded,
+                            "top" to BuiltInPlaylist.Top,
+                            "on_device" to BuiltInPlaylist.OnDevice
+                        )
+                        val order = try {
+                            val arr = JSONArray(homeSongsOrderPref)
+                            val parsed = (0 until arr.length()).map { arr.getString(it) }
+                            val valid = parsed.filter { it in songsDefaultOrder }.toMutableList()
+                            for (id in songsDefaultOrder) { if (id !in valid) valid.add(id) }
+                            valid
+                        } catch (_: Exception) { songsDefaultOrder }
                         buildList {
-                            add( BuiltInPlaylist.All )
-                            if( showFavoritesPlaylist )
-                                add( BuiltInPlaylist.Favorites )
-                            if( showCachedPlaylist )
-                                add( BuiltInPlaylist.Offline )
-                            if( showDownloadedPlaylist )
-                                add( BuiltInPlaylist.Downloaded )
-                            if( showMyTopPlaylist )
-                                add( BuiltInPlaylist.Top )
-                            if( showOnDeviceChip )
-                                add( BuiltInPlaylist.OnDevice )
+                            for (id in order) {
+                                if (id == "all" || toggleMap[id] == true) {
+                                    builtinMap[id]?.let { add(it) }
+                                }
+                            }
                         }
                     }
 
@@ -470,7 +489,7 @@ fun HomeSongsScreen(navController: NavController ) {
         FloatingActionsContainerWithScrollToTop(lazyListState = lazyListState)
 
         val showFloatingIcon by rememberPreference( showFloatingIconKey, false )
-        if( UiType.ViMusic.isCurrent() && showFloatingIcon )
+        if( showFloatingIcon )
             MultiFloatingActionsContainer(
                 iconId = R.drawable.search,
                 onClick = { navController.navigate(NavRoutes.search.name) },
