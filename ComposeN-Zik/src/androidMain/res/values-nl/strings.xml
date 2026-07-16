@@ -377,6 +377,7 @@
   <string name="action_bar_show_loop_button">Herhaal knop</string>
   <string name="action_bar_show_shuffle_button">Shuffle button</string>
   <string name="action_bar_show_lyrics_button">Songtekst knop</string>
+  <string name="action_bar_show_visualizer_button">Visualizer button</string>
   <string name="action_bar_show_arrow_button_to_open_queue">Pijl knop</string>
   <string name="lang_finnish">Finnish (Suomalainen)</string>
   <string name="listening_time">Afspeelduur</string>
@@ -524,6 +525,7 @@
   <string name="minimized_player">Geminimaliseerde speler</string>
   <string name="both">Beide</string>
   <string name="max_songs_in_queue">Max nummers in wachtrij</string>
+  <string name="max_songs_in_queue_android_auto">Max songs in queue (Android Auto)</string>
   <string name="back">Terug</string>
   <string name="folders">Mappen</string>
   <string name="show_folders_in_on_device_page">Mappen weergeven in \"Op apparaat\" pagina</string>
