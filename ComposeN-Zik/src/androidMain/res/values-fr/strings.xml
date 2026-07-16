@@ -1562,5 +1562,5 @@ Volume BAS : titre précédent</string>
   <string name="miniplayer_slot">Emplacement %1$d</string>
   <string name="miniplayer_slot_fixed">Corrigé</string>
   <string name="miniplayer_slot_vide">Vide</string>
-  <string name="available_on_android_10_or_higher">Available on Android 10 or higher</string>
+  <string name="available_on_android_10_or_higher">Disponible sur Android 10 ou version ultérieure</string>
 </resources>
