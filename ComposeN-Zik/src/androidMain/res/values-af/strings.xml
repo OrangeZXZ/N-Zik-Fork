@@ -377,6 +377,7 @@
   <string name="action_bar_show_loop_button">Show Loop button</string>
   <string name="action_bar_show_shuffle_button">Show Shuffle button</string>
   <string name="action_bar_show_lyrics_button">Wys Lirieke-knoppie</string>
+  <string name="action_bar_show_visualizer_button">Visualizer button</string>
   <string name="action_bar_show_arrow_button_to_open_queue">Wys Pyl-knoppie</string>
   <string name="lang_finnish">Fins</string>
   <string name="listening_time">Luister tyd</string>
@@ -524,6 +525,7 @@
   <string name="minimized_player">Minimized player</string>
   <string name="both">Both</string>
   <string name="max_songs_in_queue">Max songs in queue</string>
+  <string name="max_songs_in_queue_android_auto">Max songs in queue (Android Auto)</string>
   <string name="back">Back</string>
   <string name="folders">Folders</string>
   <string name="show_folders_in_on_device_page">Show folders in On Device page</string>
