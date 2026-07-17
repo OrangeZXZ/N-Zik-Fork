@@ -1394,6 +1394,7 @@
   <string name="cd_app_icon_in_player">oynatıcıdaki uygulama simgesi</string>
   <string name="cd_number_of_songs_in_queue">Kuyrukta bulunan şarkı sayısı</string>
   <string name="cd_loading">yükleniyor...</string>
+  <string name="loading_songs_count">Loading %1$d songs…</string>
   <string name="cd_switch_mode">Anahtar Modu</string>
   <string name="cd_filter">Filtre</string>
   <string name="txt_developers_rotation">developers_rotation</string>

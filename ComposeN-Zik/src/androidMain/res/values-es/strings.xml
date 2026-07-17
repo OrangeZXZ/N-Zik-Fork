@@ -1394,6 +1394,7 @@
   <string name="cd_app_icon_in_player">icono de la aplicación en el reproductor</string>
   <string name="cd_number_of_songs_in_queue">Número de canciones en cola</string>
   <string name="cd_loading">cargando...</string>
+  <string name="loading_songs_count">Loading %1$d songs…</string>
   <string name="cd_switch_mode">Cambiar modo</string>
   <string name="cd_filter">Filtro</string>
   <string name="txt_developers_rotation">Desarrollador_rotación</string>

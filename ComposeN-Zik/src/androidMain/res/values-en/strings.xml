@@ -442,7 +442,7 @@
   <string name="this_folder_already_exists">This folder already exists</string>
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Are you sure you want to remove this folder from the blacklist?</string>
   <string name="player_appearance">Player Appearance</string>
-  <string name="player_action_bar">Player action bar</string>
+  <string name="player_action_bar">PLAYER ACTION BAR</string>
   <string name="player_action_bar_buttons">Button visibility</string>
   <string name="player_action_bar_buttons_description">Configure which buttons appear in the player action bar</string>
   <string name="quick_picks_content">Quick Picks sections</string>
@@ -451,6 +451,10 @@
   <string name="generic_ytm_sections">Other sections</string>
   <string name="library_visibility">Library playlists</string>
   <string name="library_visibility_description">Choose which sections appear in the library</string>
+  <string name="home_songs_settings">Home Songs</string>
+  <string name="home_artists_settings">Home Artists</string>
+  <string name="home_albums_settings">Home Albums</string>
+  <string name="home_playlists_settings">Home Playists</string>
   <string name="export_backup">Export backup</string>
   <string name="import_backup">Import backup</string>
   <string name="export">Export</string>
@@ -1390,6 +1394,7 @@
   <string name="cd_app_icon_in_player">app icon in player</string>
   <string name="cd_number_of_songs_in_queue">Number of songs in queue</string>
   <string name="cd_loading">loading...</string>
+  <string name="loading_songs_count">Loading %1$d songs…</string>
   <string name="cd_switch_mode">Switch Mode</string>
   <string name="cd_filter">Filter</string>
   <string name="txt_developers_rotation">developers_rotation</string>

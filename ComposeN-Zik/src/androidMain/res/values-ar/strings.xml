@@ -1394,6 +1394,7 @@
   <string name="cd_app_icon_in_player">أيقونة التطبيق في المشغل</string>
   <string name="cd_number_of_songs_in_queue">عدد الأغاني في قائمة الانتظار</string>
   <string name="cd_loading">تحميل...</string>
+  <string name="loading_songs_count">Loading %1$d songs…</string>
   <string name="cd_switch_mode">تبديل الوضع</string>
   <string name="cd_filter">تصفية</string>
   <string name="txt_developers_rotation">دوران_المطورين</string>

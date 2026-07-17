@@ -1394,6 +1394,7 @@
   <string name="cd_app_icon_in_player">app ikon i spiller</string>
   <string name="cd_number_of_songs_in_queue">Antall sanger i kø</string>
   <string name="cd_loading">laster...</string>
+  <string name="loading_songs_count">Loading %1$d songs…</string>
   <string name="cd_switch_mode">Bytt modus</string>
   <string name="cd_filter">Filtrer</string>
   <string name="txt_developers_rotation">utvikler_rotasjon</string>

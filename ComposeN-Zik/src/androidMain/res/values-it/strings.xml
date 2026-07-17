@@ -1394,6 +1394,7 @@
   <string name="cd_app_icon_in_player">icona app nel giocatore</string>
   <string name="cd_number_of_songs_in_queue">Numero di brani in coda</string>
   <string name="cd_loading">caricamento...</string>
+  <string name="loading_songs_count">Loading %1$d songs…</string>
   <string name="cd_switch_mode">Cambia Modalità</string>
   <string name="cd_filter">Filtro</string>
   <string name="txt_developers_rotation">sviluppatori_rotazione</string>

@@ -1394,6 +1394,7 @@
   <string name="cd_app_icon_in_player">pictograma aplicatiei in player</string>
   <string name="cd_number_of_songs_in_queue">Numărul de melodii în coadă</string>
   <string name="cd_loading">se încarcă...</string>
+  <string name="loading_songs_count">Loading %1$d songs…</string>
   <string name="cd_switch_mode">Mod Comutare</string>
   <string name="cd_filter">Filtrare</string>
   <string name="txt_developers_rotation">dezvoltators_rotație</string>

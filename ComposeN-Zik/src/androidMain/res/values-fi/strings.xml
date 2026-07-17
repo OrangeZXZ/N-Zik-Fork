@@ -1394,6 +1394,7 @@
   <string name="cd_app_icon_in_player">sovelluksen kuvake soittimessa</string>
   <string name="cd_number_of_songs_in_queue">Jonossa olevien kappaleiden määrä</string>
   <string name="cd_loading">ladataan...</string>
+  <string name="loading_songs_count">Loading %1$d songs…</string>
   <string name="cd_switch_mode">Vaihda Tila</string>
   <string name="cd_filter">Suodatin</string>
   <string name="txt_developers_rotation">developers_rotation</string>
