@@ -22,6 +22,7 @@ import org.schabi.newpipe.extractor.localization.Localization
 import org.schabi.newpipe.extractor.services.youtube.InnertubeClientRequestInfo
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import timber.log.Timber
+import java.io.IOException
 
 /**
  * Centralized store for network tokens and cookies.
@@ -75,32 +76,41 @@ object Store {
 
     /**
      * Retrieves visitor data for iOS client.
+     * Returns null if the network request fails (e.g., no connectivity, DNS failure).
      */
-    fun getIosVisitorData(): String = runBlocking {
-        iosVisitorData?.let { return@runBlocking it }
+    suspend fun getIosVisitorData(): String? {
+        iosVisitorData?.let { return it }
 
-        visitorMutex.withLock {
-            iosVisitorData?.let { return@withLock it }
+        return try {
+            visitorMutex.withLock {
+                iosVisitorData?.let { return@withLock it }
 
-            val currentLocale = java.util.Locale.getDefault()
-            val localization = Localization(currentLocale.language)
-            val contentCountry = ContentCountry(currentLocale.country)
+                val currentLocale = java.util.Locale.getDefault()
+                val localization = Localization(currentLocale.language)
+                val contentCountry = ContentCountry(currentLocale.country)
 
-            val headers: MutableMap<String, List<String>> = mutableMapOf()
-            headers["User-Agent"] = listOf(YoutubeParsingHelper.getIosUserAgent(localization))
-            headers.putAll(YoutubeParsingHelper.getOriginReferrerHeaders("https://www.youtube.com"))
+                val headers: MutableMap<String, List<String>> = mutableMapOf()
+                headers["User-Agent"] = listOf(YoutubeParsingHelper.getIosUserAgent(localization))
+                headers.putAll(YoutubeParsingHelper.getOriginReferrerHeaders("https://www.youtube.com"))
 
-            val data = YoutubeParsingHelper.getVisitorDataFromInnertube(
-                InnertubeClientRequestInfo.ofIosClient(),
-                localization,
-                contentCountry,
-                headers,
-                YoutubeParsingHelper.YOUTUBEI_V1_URL,
-                null,
-                false
-            )
-            iosVisitorData = data
-            data
+                val data = YoutubeParsingHelper.getVisitorDataFromInnertube(
+                    InnertubeClientRequestInfo.ofIosClient(),
+                    localization,
+                    contentCountry,
+                    headers,
+                    YoutubeParsingHelper.YOUTUBEI_V1_URL,
+                    null,
+                    false
+                )
+                iosVisitorData = data
+                data
+            }
+        } catch (e: IOException) {
+            Timber.tag("Store").w(e, "Failed to fetch iOS visitor data (network error)")
+            null
+        } catch (e: Exception) {
+            Timber.tag("Store").e(e, "Unexpected error fetching iOS visitor data")
+            null
         }
     }
 

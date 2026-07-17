@@ -115,8 +115,8 @@ android {
         applicationId = "com.nevar.nzik"
         minSdk = 24
         targetSdk = 37
-        versionCode = 69
-        versionName = "7.2.1"
+        versionCode = 70
+        versionName = "7.2.2"
 
         /*
                 UNIVERSAL VARIABLES
@@ -179,10 +179,33 @@ android {
             matchingFallbacks += listOf("release")
         }
 
-        create( "foss" ) {
-            initWith( maybeCreate("full") )
+        create( "fossMinified" ) {
+
+            // App's properties
+            applicationIdSuffix = ".foss"
+            versionNameSuffix = "-fm"
             buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
-            // Fallback for modules that don't have a 'foss' build type
+
+            // Package optimization
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
+
+            // Fallback for modules that don't have a 'minified' build type (like :discordrpc)
+            matchingFallbacks += listOf("release")
+        }
+
+        create( "fossFull" ) {
+            // App's properties
+            versionNameSuffix = "-ff"
+            applicationIdSuffix = ".foss"
+            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
+
+            // Fallback for modules that don't have a 'full' build type (like :discordrpc)
             matchingFallbacks += listOf("release")
         }
 
@@ -300,5 +323,5 @@ tasks.withType<Test> {
 }
 
 tasks.register("assembleFossRelease") {
-    dependsOn("assembleFoss")
+    dependsOn("assembleFossMinified", "assembleFossFull")
 }
