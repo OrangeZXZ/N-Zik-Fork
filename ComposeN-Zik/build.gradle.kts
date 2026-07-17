@@ -181,7 +181,8 @@ android {
 
         create( "foss" ) {
             // App's properties
-            initWith( maybeCreate("full") ) 
+            initWith( maybeCreate("full") )
+            manifestPlaceholders += mapOf("appName" to "$APP_NAME-foss")
             applicationIdSuffix = ".foss"
             buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
 
