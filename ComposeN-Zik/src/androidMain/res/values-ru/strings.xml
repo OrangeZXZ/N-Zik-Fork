@@ -1394,6 +1394,7 @@
   <string name="cd_app_icon_in_player">значок приложения в плеере</string>
   <string name="cd_number_of_songs_in_queue">Количество треков в очереди</string>
   <string name="cd_loading">загрузка...</string>
+  <string name="loading_songs_count">Loading %1$d songs…</string>
   <string name="cd_switch_mode">Переключить режим</string>
   <string name="cd_filter">Фильтр</string>
   <string name="txt_developers_rotation">ротация разработчиков</string>
