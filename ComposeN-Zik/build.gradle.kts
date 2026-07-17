@@ -181,11 +181,10 @@ android {
 
         create( "foss" ) {
             // App's properties
-            versionNameSuffix = "-foss"
             applicationIdSuffix = ".foss"
             initWith( maybeCreate("full") )
             buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
-            
+
             // Fallback for modules that don't have a 'foss' build type
             matchingFallbacks += listOf("release")
         }
