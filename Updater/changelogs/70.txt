@@ -3,7 +3,3 @@ Hotfix:
 
 Fixed:
 - Crash when having no internet
-
-Added:
-- FOSS release and FOSS minified release for alt stores
-- Auto update on FOSS is off

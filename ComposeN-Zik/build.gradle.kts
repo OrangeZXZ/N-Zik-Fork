@@ -179,33 +179,10 @@ android {
             matchingFallbacks += listOf("release")
         }
 
-        create( "fossMinified" ) {
-
-            // App's properties
-            applicationIdSuffix = ".foss"
-            versionNameSuffix = "-fm"
+        create( "foss" ) {
+            initWith( maybeCreate("full") )
             buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
-
-            // Package optimization
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
-
-            // Fallback for modules that don't have a 'minified' build type (like :discordrpc)
-            matchingFallbacks += listOf("release")
-        }
-
-        create( "fossFull" ) {
-            // App's properties
-            versionNameSuffix = "-ff"
-            applicationIdSuffix = ".foss"
-            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
-
-            // Fallback for modules that don't have a 'full' build type (like :discordrpc)
+            // Fallback for modules that don't have a 'foss' build type
             matchingFallbacks += listOf("release")
         }
 
@@ -323,5 +300,5 @@ tasks.withType<Test> {
 }
 
 tasks.register("assembleFossRelease") {
-    dependsOn("assembleFossMinified", "assembleFossFull")
+    dependsOn("assembleFoss")
 }
