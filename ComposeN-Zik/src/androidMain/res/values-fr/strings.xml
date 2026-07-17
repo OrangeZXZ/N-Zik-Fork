@@ -1395,7 +1395,7 @@ Volume BAS : titre précédent</string>
   <string name="cd_app_icon_in_player">icône de l\'application dans le lecteur</string>
   <string name="cd_number_of_songs_in_queue">Nombre de chansons en file d\'attente</string>
   <string name="cd_loading">chargement en cours...</string>
-  <string name="loading_songs_count">Loading %1$d songs…</string>
+  <string name="loading_songs_count">Chargement de %1$d titres…</string>
   <string name="cd_switch_mode">Changer de Mode</string>
   <string name="cd_filter">Filtre</string>
   <string name="txt_developers_rotation">rotation_développeurs</string>
