@@ -1394,6 +1394,7 @@
   <string name="cd_app_icon_in_player">播放器中的应用图标</string>
   <string name="cd_number_of_songs_in_queue">队列中歌曲数</string>
   <string name="cd_loading">正在加载...</string>
+  <string name="loading_songs_count">Loading %1$d songs…</string>
   <string name="cd_switch_mode">切换模式</string>
   <string name="cd_filter">筛选器</string>
   <string name="txt_developers_rotation">开发者旋转</string>
