@@ -519,7 +519,7 @@ object YtMusic {
         println("YtMusic: getArtistItemsContinuation error: ${it.stackTraceToString()}")
     }
 
-    suspend fun getAlbum(browseId: String, withSongs: Boolean = true): Result<AlbumPage> = runCatching {
+    suspend fun getAlbum(browseId: String, withSongs: Boolean = true, onProgress: ((loaded: Int) -> Unit)? = null): Result<AlbumPage> = runCatching {
         val response = Innertube.browse(browseId = browseId).body<BrowseResponse>()
         val playlistId = response.microformat?.microformatDataRenderer?.urlCanonical?.substringAfterLast('=')!!
 
@@ -542,7 +542,7 @@ object YtMusic {
                 year = response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.subtitle?.runs?.lastOrNull()?.text,
                 thumbnail = response.contents.twoColumnBrowseResultsRenderer.tabs.firstOrNull()?.tabRenderer?.content?.sectionListRenderer?.contents?.firstOrNull()?.musicResponsiveHeaderRenderer?.thumbnail?.musicThumbnailRenderer?.thumbnail?.thumbnails?.lastOrNull(),
             ),
-            songs = if (withSongs) getAlbumSongs(playlistId).getOrThrow() else emptyList(),
+            songs = if (withSongs) getAlbumSongs(playlistId, onProgress).getOrThrow() else emptyList(),
             otherVersions = response.contents.twoColumnBrowseResultsRenderer.secondaryContents?.sectionListRenderer?.contents?.getOrNull(
                 1
             )?.musicCarouselShelfRenderer?.contents
@@ -564,7 +564,7 @@ object YtMusic {
         )
     }
 
-    suspend fun getAlbumSongs(playlistId: String): Result<List<Innertube.SongItem>> = runCatching {
+    suspend fun getAlbumSongs(playlistId: String, onProgress: ((loaded: Int) -> Unit)? = null): Result<List<Innertube.SongItem>> = runCatching {
         val response = Innertube.browse(browseId = "VL$playlistId").body<BrowseResponse>()
 
         val shelf = response.contents?.singleColumnBrowseResultsRenderer?.tabs?.firstOrNull()
@@ -579,6 +579,8 @@ object YtMusic {
             it.musicResponsiveListItemRenderer?.let { it1 -> AlbumPage.getSong(it1) }
         }?.toMutableList() ?: mutableListOf()
 
+        onProgress?.invoke(songs.size)
+
         // Extract continuation token (same pattern as PlaylistSongList)
         var continuation = shelf?.musicPlaylistShelfRenderer?.continuations?.getContinuation()
             ?: shelf?.musicShelfRenderer?.continuations?.getContinuation()
@@ -590,6 +592,7 @@ object YtMusic {
             val nextPage = getPlaylistContinuation(continuation).getOrNull()
             if (nextPage != null) {
                 songs += nextPage.songs
+                onProgress?.invoke(songs.size)
                 continuation = nextPage.continuation
             } else {
                 continuation = null

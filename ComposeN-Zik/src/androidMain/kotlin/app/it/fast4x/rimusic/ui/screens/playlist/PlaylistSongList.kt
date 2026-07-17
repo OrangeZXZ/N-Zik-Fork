@@ -20,6 +20,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -185,6 +188,7 @@ fun PlaylistSongList(
     var playlistPage by persist<PlaylistPage?>("playlist/$browseId/playlistPage")
     var continuation: String? by remember { mutableStateOf( null ) }
     var playlistSongs by persistList<Innertube.SongItem>("playlist/$browseId/songs")
+    var loadedSongsCount by remember { mutableIntStateOf(0) }
 
     val updatedItemsPageProvider: suspend (String?) -> Result<PlaylistPage> by rememberUpdatedState {
         if( it == null )
@@ -200,16 +204,19 @@ fun PlaylistSongList(
     }
 
     LaunchedEffect( browseId ) {
+        loadedSongsCount = 0
         if (playlistPage == null) {
             withContext(Dispatchers.IO) {
                 val firstPage = YtMusic.getPlaylist( browseId ).getOrNull() ?: return@withContext
                 val allSongs = firstPage.songs.toMutableList()
+                loadedSongsCount = allSongs.fastDistinctBy( Innertube.SongItem::key ).size
                 var cont = firstPage.songsContinuation
                 var maxPages = 50
                 while (cont != null && maxPages-- > 0) {
                     val next = YtMusic.getPlaylistContinuation( cont ).getOrNull()
                     if (next != null) {
                         allSongs += next.songs
+                        loadedSongsCount = allSongs.fastDistinctBy( Innertube.SongItem::key ).size
                         cont = next.continuation
                     } else {
                         cont = null
@@ -367,7 +374,20 @@ fun PlaylistSongList(
             contentAlignment = Alignment.Center
         ) {
             if (playlistPage == null && playlistSongs.isEmpty()) {
-                Loader()
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Loader()
+                    if (loadedSongsCount > 0) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        BasicText(
+                            text = stringResource(R.string.loading_songs_count, loadedSongsCount),
+                            style = typography().xxs.copy(
+                                color = colorPalette().textDisabled
+                            )
+                        )
+                    }
+                }
             } else {
                 LazyColumn(
                     state = lazyListState,

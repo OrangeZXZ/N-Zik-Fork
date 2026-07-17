@@ -179,6 +179,33 @@ fun upsertSongInfo(videoId: String) = runBlocking {
 }
 
 /**
+ * Safely upserts a [Format] row, catching FOREIGN KEY race conditions
+ * (song not yet committed when format arrives) and retrying after 5 s.
+ * Mirrors [saveLyricsSafe] in LyricsFetcher.
+ */
+private fun saveFormatSafe(format: app.it.fast4x.rimusic.models.Format) {
+    Database.asyncTransaction {
+        try {
+            formatTable.upsert(format)
+        } catch (e: android.database.sqlite.SQLiteConstraintException) {
+            Timber.tag(TAG).w("Foreign key constraint failed for songId ${format.songId}. Retrying in 5 s...")
+            CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
+                delay(5000)
+                try {
+                    Database.asyncTransaction {
+                        formatTable.upsert(format)
+                    }
+                } catch (e2: Exception) {
+                    Timber.tag(TAG).e("Failed to save format even after delay for ${format.songId}: ${e2.message}")
+                }
+            }
+        } catch (e: Exception) {
+            Timber.tag(TAG).e("Error saving format for ${format.songId}: ${e.message}")
+        }
+    }
+}
+
+/**
  * Fetches format metadata for a videoId if missing from DB.
  * Called fire-and-forget for every playback, including downloaded songs
  * where the stream resolver is bypassed by downloadCache.
@@ -238,22 +265,21 @@ private fun fetchFormatIfMissing(videoId: String) {
             val finalSampleRate = existing?.sampleRate ?: api.audioSampleRate
             val finalChannels = existing?.audioChannels ?: api.audioChannels
 
-            Database.asyncTransaction {
-                formatTable.upsert(app.it.fast4x.rimusic.models.Format(
-                    songId = videoId,
-                    itag = existing?.itag ?: api.itag,
-                    mimeType = existing?.mimeType ?: api.mimeType,
-                    bitrate = finalBitrate,
-                    contentLength = finalSize,
-                    lastModified = existing?.lastModified ?: api.lastModified,
-                    loudnessDb = finalLoudness,
-                    codecs = finalCodecs,
-                    sampleRate = finalSampleRate,
-                    perceptualLoudnessDb = finalPerceptual,
-                    audioChannels = finalChannels,
-                    playbackUrl = existing?.playbackUrl
-                ))
-            }
+            val formatToSave = app.it.fast4x.rimusic.models.Format(
+                songId = videoId,
+                itag = existing?.itag ?: api.itag,
+                mimeType = existing?.mimeType ?: api.mimeType,
+                bitrate = finalBitrate,
+                contentLength = finalSize,
+                lastModified = existing?.lastModified ?: api.lastModified,
+                loudnessDb = finalLoudness,
+                codecs = finalCodecs,
+                sampleRate = finalSampleRate,
+                perceptualLoudnessDb = finalPerceptual,
+                audioChannels = finalChannels,
+                playbackUrl = existing?.playbackUrl
+            )
+            saveFormatSafe(formatToSave)
             fetchedFormatIds.add(videoId)
             Timber.tag(TAG).d("fetchFormatIfMissing: videoId=$videoId" +
                 " existing=${existing != null}" +
@@ -290,23 +316,24 @@ private fun upsertSongFormat(
         // Prefer audioConfig.loudnessDb (player-level, more reliable) over format-level loudnessDb
         val loudnessDb = audioConfigLoudnessDb ?: format.loudnessDb?.toFloat()
 
+        val formatToSave = Format(
+            songId = videoId,
+            itag = format.itag,
+            mimeType = format.mimeType,
+            bitrate = format.bitrate.toLong(),
+            contentLength = format.contentLength,
+            lastModified = format.lastModified,
+            loudnessDb = loudnessDb,
+            codecs = codecs,
+            sampleRate = format.audioSampleRate,
+            perceptualLoudnessDb = perceptualLoudnessDb,
+            audioChannels = format.audioChannels,
+            playbackUrl = playbackUrl
+        )
         Database.asyncTransaction {
             songTable.insertIgnore(Song.makePlaceholder(videoId))
-            formatTable.upsert(Format(
-                songId = videoId,
-                itag = format.itag,
-                mimeType = format.mimeType,
-                bitrate = format.bitrate.toLong(),
-                contentLength = format.contentLength,
-                lastModified = format.lastModified,
-                loudnessDb = loudnessDb,
-                codecs = codecs,
-                sampleRate = format.audioSampleRate,
-                perceptualLoudnessDb = perceptualLoudnessDb,
-                audioChannels = format.audioChannels,
-                playbackUrl = playbackUrl
-            ))
         }
+        saveFormatSafe(formatToSave)
         justInserted = videoId
     }
 }

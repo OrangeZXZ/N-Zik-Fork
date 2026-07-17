@@ -16,6 +16,7 @@ import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -142,6 +143,7 @@ fun AlbumDetails(
     alternatives: List<Innertube.AlbumItem>,
 
     description: String,
+    loadedSongsCount: Int = 0,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
@@ -264,7 +266,20 @@ fun AlbumDetails(
             contentAlignment = Alignment.Center
         ) {
             if (items.isEmpty()) {
-                Loader()
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Loader()
+                    if (loadedSongsCount > 0) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        BasicText(
+                            text = stringResource(R.string.loading_songs_count, loadedSongsCount),
+                            style = typography().xxs.copy(
+                                color = colorPalette().textDisabled
+                            )
+                        )
+                    }
+                }
             } else {
                 LazyColumn(
                     state = lazyListState,

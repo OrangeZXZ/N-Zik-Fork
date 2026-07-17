@@ -31,7 +31,9 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
@@ -103,8 +105,9 @@ fun AlbumScreen(
 
     var alternatives by persistList<Innertube.AlbumItem>( "album/$browseId/alternatives" )
     var description by rememberSaveable { mutableStateOf("") }
+    var loadedSongsCount by remember { mutableIntStateOf(0) }
     LaunchedEffect( Unit ) {
-        YtMusic.getAlbum( browseId, true )
+        YtMusic.getAlbum( browseId, true, onProgress = { loadedSongsCount = it } )
                .onSuccess { online ->
                    val onlineAlbum = online.album
                     val authorsText: String? = onlineAlbum.authors.parseArtists().joinToString(", ")
@@ -227,6 +230,7 @@ fun AlbumScreen(
                                 thumbnailPainter = thumbnailPainter,
                                 alternatives = alternatives,
                                 description = description,
+                                loadedSongsCount = loadedSongsCount,
                                 onSearchClick = {
                                     navController.navigate(NavRoutes.search.name)
                                 },
