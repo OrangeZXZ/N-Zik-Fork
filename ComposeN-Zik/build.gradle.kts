@@ -181,8 +181,8 @@ android {
 
         create( "foss" ) {
             // App's properties
+            initWith( maybeCreate("full") ) 
             applicationIdSuffix = ".foss"
-            initWith( maybeCreate("full") )
             buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
 
             // Fallback for modules that don't have a 'foss' build type
