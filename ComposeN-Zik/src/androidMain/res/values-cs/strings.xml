@@ -1394,6 +1394,7 @@
   <string name="cd_app_icon_in_player">ikona aplikace v přehrávači</string>
   <string name="cd_number_of_songs_in_queue">Počet skladeb ve frontě</string>
   <string name="cd_loading">načítám...</string>
+  <string name="loading_songs_count">Loading %1$d songs…</string>
   <string name="cd_switch_mode">Režim přepínání</string>
   <string name="cd_filter">Filtr</string>
   <string name="txt_developers_rotation">Otočení vývojářů</string>
