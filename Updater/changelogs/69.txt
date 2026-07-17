@@ -1,0 +1,6 @@
+Hotfix:
+- Fixes for inconveniences from v7.2.0
+
+Fixed:
+- Added loading song count for playlists and albums
+- Fixed StreamResolver race condition with retry logic
