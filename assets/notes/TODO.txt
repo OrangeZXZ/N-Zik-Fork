@@ -2,3 +2,4 @@ Update YTB sync to use new innertube api also update eevery sync like album arti
 Add back dislike button in player, android auto and notification still support it
 Make the desktop version
 Landscape not usable in home, quickpicks, songs, artist, albums, playlists. Fix that for the tablet users and mobile
+Problem with music from YTB home while logged or not somes music contain NO browse id, need to fix it
