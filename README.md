@@ -110,7 +110,7 @@ Join the N-Zik Discord:
 </p>
 
 - 📰 **News Feed** – Explore moods, genres, releases, and albums from your favorite artists.
-- 🔄 **Playlist Import & Export** – Easily back up, share, and restore playlists.
+- 🔄 **Playlist Import & Export** – Easily back up, share, and restore playlists, you can import from Riplay, Spotify, Youtube Music and N-Zik
 - ✍️ **Advanced Lyrics Support** – Fetch, display, edit, synchronize, and translate lyrics.
 - 🎭 **Custom Themes** – Personalize the app with multiple theme options.
 - ⏲️ **Sleep Timer** – Automatically stop playback after a configurable duration.
