@@ -294,8 +294,8 @@ jobs:
             
             - **Full** – Complete build with all components.  
             - **Minified** – Lightweight build, recommended for low-end devices.
-            - **FOSS** – Full build without auto-updater, suitable for alternative stores.
-            
+            - **FOSS** (`com.nevar.nzik.foss`) – Full build without auto-updater, suitable for alternative stores (e.g. F-Droid, Accrescent, IzzyOnDroid).
+
             ## 🔄 Update Policy
             
             - 🟢 **Full Build (-f)** 
@@ -310,6 +310,10 @@ jobs:
               - **User options:** - You can **disable Stable updates** in **Settings > About > Auto update enabled**.  
                 - Always updates to the **Full Stable Build**.  
                 - No Beta option available.
+
+            - 🟣 **FOSS Build (`com.nevar.nzik.foss`)**
+            - **Default:** Auto-update is **disabled** and cannot be enabled.
+              - Distributed through alternative stores (F-Droid, IzzyOnDroid, Accrescent, etc.), so updates are handled by the store itself, not the in-app updater.
                 
             This lets you decide whether to test new experimental updates or stick with the stable ones.
             
@@ -373,7 +377,7 @@ jobs:
 
             - **Full** – Complete build with all components.  
             - **Minified** – Lightweight build, recommended for low-end devices.
-            - **FOSS** – Full build without auto-updater, suitable for alternative stores.
+            - **FOSS** (`com.nevar.nzik.foss`) – Full build without auto-updater, suitable for alternative stores.
 
             ## 🔄 Update Policy
 
@@ -387,6 +391,8 @@ jobs:
               - **User options:** - You can **disable Stable updates** in **Settings > About > Auto update enabled**.  
                 - Always updates to the **Full Stable Build**.  
                 - No Beta option available.
+
+            - 🟣 **FOSS Build (`com.nevar.nzik.foss`)** - Auto-update is **off by default and can't be enabled**, since store updates (F-Droid, IzzyOnDroid, Accrescent...) handle it instead.
                 
             This lets you decide whether to test new experimental updates or stick with the stable ones.
 
