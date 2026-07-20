@@ -30,8 +30,8 @@ body:
           required: true
         - label: I have checked for already existing issues.
           required: true
-        - label: I have tried reinstalling/resetting the app. (Optional)
-          required: false
+        - label: I have tried reinstalling/resetting the app, with all combinations (with/without database backup, with/without settings, or a full reset with nothing restored).
+          required: true
 
   - type: input
     id: version-number
