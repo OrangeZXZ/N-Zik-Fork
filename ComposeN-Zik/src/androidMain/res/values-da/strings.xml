@@ -1579,6 +1579,7 @@
   <string name="miniplayer_button_menu">Menu</string>
   <string name="audio_output_title">Audio output</string>
   <string name="audio_output_no_devices">No audio devices available</string>
+  <string name="audio_output_not_supported">Audio output selection is not supported on this device</string>
   <string name="miniplayer_buttons_config">MiniPlayer buttons</string>
   <string name="miniplayer_buttons_config_description">Configure the 4 buttons in the miniplayer</string>
   <string name="miniplayer_slot">Slot %1$d</string>
