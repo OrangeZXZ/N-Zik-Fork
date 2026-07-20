@@ -460,6 +460,8 @@
   <string name="export">Dışa aktar</string>
   <string name="import_button">İçe aktar</string>
   <string name="export_both">İkisini de dışa aktar</string>
+  <string name="include_youtube_credentials">Include YouTube identity credentials</string>
+  <string name="include_discord_credentials">Include Discord identity credentials</string>
   <string name="import_both">İkisini de içe aktar</string>
   <string name="export_database_description">Şarkıları, çalma listelerini ve geçmişi içeren veritabanını dışa aktar</string>
   <string name="export_settings_description">Uygulama ayarlarını ve tercihlerini dışa aktar</string>
