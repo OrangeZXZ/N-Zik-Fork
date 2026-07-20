@@ -139,10 +139,14 @@ body:
   - type: textarea
     id: logs
     attributes:
-      label: 📜 Logs (Optional)
-      description: You can use the "Debug Mode" feature in app to get them. Keep it simple and paste raw logs.
+      label: 📜 Logs
+      description: |
+        To get your logs, go to Settings > Misc (at the bottom), enable Debug Mode, then restart the app.
+        There are two types: operation logs and crash logs.
+        **If you experienced a crash, logs are mandatory**: enable the "reproduce logs" option and submit the crash logs.
+        If the logs are too large to paste directly, attach them as a file, or upload them to https://pastebin.com/ and share the link.
       placeholder: |
-        Paste your crash logs or error messages here
+        Paste your logs here (operation logs and/or crash logs), or a file/Pastebin link if too large
     validations:
       required: false
 
