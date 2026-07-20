@@ -58,7 +58,11 @@ class AudioOutputManager(private val context: Context, private val audioManager:
             val configs = audioManager.activePlaybackConfigurations
             val activeConfig = configs.firstOrNull()
             if (activeConfig != null) {
-                val deviceInfo = activeConfig.audioDeviceInfo
+                val deviceInfo = runCatching { 
+                    activeConfig.audioDeviceInfo 
+                }.onFailure { e ->
+                    Timber.tag("AudioOutputManager").e(e, "Failed to get audioDeviceInfo (vendor framework anomaly)")
+                }.getOrNull()
                 if (deviceInfo != null) {
                     activeRouteId = devices.firstOrNull { it.id == deviceInfo.id }?.id
                     if (activeRouteId != null) routeSource = "PlaybackConfig(type=${deviceInfo.type})"
