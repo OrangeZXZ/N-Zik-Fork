@@ -1579,6 +1579,7 @@
   <string name="miniplayer_button_menu">Menü</string>
   <string name="audio_output_title">Ses çıkışı</string>
   <string name="audio_output_no_devices">Kullanılabilir ses aygıtı yok</string>
+  <string name="audio_output_not_supported">Audio output selection is not supported on this device</string>
   <string name="miniplayer_buttons_config">Mini Oynatıcı düğmeleri</string>
   <string name="miniplayer_buttons_config_description">Mini oynatıcıdaki 4 düğmeyi yapılandırın</string>
   <string name="miniplayer_slot">Slot %1$d</string>
