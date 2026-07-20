@@ -460,6 +460,8 @@
 <string name="export">Export</string>
 <string name="import_button">Import</string>
 <string name="export_both">Export both</string>
+<string name="include_youtube_credentials">Include YouTube identity credentials</string>
+<string name="include_discord_credentials">Include Discord identity credentials</string>
 <string name="import_both">Import both</string>
 <string name="export_database_description">Export database with songs, playlists, and history</string>
 <string name="export_settings_description">Export app settings and preferences</string>
