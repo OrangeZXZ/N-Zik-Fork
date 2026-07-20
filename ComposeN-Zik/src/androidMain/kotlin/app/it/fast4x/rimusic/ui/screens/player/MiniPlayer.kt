@@ -97,11 +97,8 @@ import app.n_zik.android.components.menu.player.AddToPlaylistPlayerMenu
 // import app.n_zik.android.components.menu.player.AudioOutputMenu
 import app.n_zik.android.playback.services.AudioOutputManager
 import android.content.Intent
-<<<<<<< HEAD
 import timber.log.Timber
-=======
 import android.content.pm.PackageManager
->>>>>>> 51b8efab57a84cb6c2eddb05d03fd7eb7c87e874
 import app.n_zik.android.thumbnailShape
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
