@@ -148,17 +148,11 @@ body:
       label: 📜 Logs
       description: |
         To get your logs, go to Settings > Misc (at the bottom), enable Debug Mode, then restart the app.
-        There are two types: operation logs and crash logs.
-        **If you answered "Yes" above, crash logs are mandatory**: enable the "reproduce logs" option and submit the crash logs.
-        Leave the HTML tags intact to collapse them and keep the issue clean!
+        Reproduce the action or crash you're reporting, then reopen the app, go back to Settings > Misc, and copy the logs from there (operation logs and/or crash logs).
+        **If you answered "Yes" above, crash logs are mandatory**: enable the "reproduce logs" option, reproduce the crash, then come back and copy the crash logs.
         If the logs are too large to paste directly, attach them as a file, or upload them to https://pastebin.com/ and share the link.
       placeholder: |
-        <details>
-        <summary>Click to expand logs</summary>
-
         Paste your logs here (operation logs and/or crash logs), or a file/Pastebin link if too large
-
-        </details>
     validations:
       required: false
 
