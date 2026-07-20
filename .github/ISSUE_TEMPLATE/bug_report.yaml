@@ -50,6 +50,7 @@ body:
       options:
         - Full
         - Minified
+        - Foss (N-Zik-Foss, com.nevar.nzik.foss)
     validations:
       required: true
 
