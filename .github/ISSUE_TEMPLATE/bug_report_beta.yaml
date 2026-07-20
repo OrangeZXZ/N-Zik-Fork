@@ -27,12 +27,12 @@ body:
       label: 📝 Before submitting
       description: Please verify the following steps before submitting your issue. Completing these steps may fix problems!
       options:
-        - label: I am currently using the **Beta** build of N-Zik.
+        - label: I have tested the latest stable version.
           required: true
         - label: I have checked for already existing issues.
           required: true
-        - label: I have tried reinstalling/resetting the app. (Optional)
-          required: false
+        - label: I have tried reinstalling/resetting the app, with all combinations (with/without database backup, with/without settings, or a full reset with nothing restored).
+          required: true
 
   - type: input
     id: version-number
