@@ -460,8 +460,8 @@
   <string name="export">Exporter</string>
   <string name="import_button">Importer</string>
   <string name="export_both">Exporter les deux</string>
-  <string name="include_youtube_credentials">Include YouTube identity credentials</string>
-  <string name="include_discord_credentials">Include Discord identity credentials</string>
+  <string name="include_youtube_credentials">Ajouter les identifiants de votre compte YouTube</string>
+  <string name="include_discord_credentials">Ajouter les identifiants de votre compte Discord</string>
   <string name="import_both">Importer les deux</string>
   <string name="export_database_description">Exporter la base de données contenant les titres, les playlists et l\'historique</string>
   <string name="export_settings_description">Exporter les paramètres et les préférences de l\'application</string>
