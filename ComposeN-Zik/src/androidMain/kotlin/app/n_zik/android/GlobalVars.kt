@@ -12,6 +12,7 @@ import app.it.fast4x.rimusic.utils.bassboostEnabledKey
 import app.it.fast4x.rimusic.utils.handleAudioFocusEnabledKey
 import app.it.fast4x.rimusic.utils.isConnectionMeteredEnabledKey
 import app.it.fast4x.rimusic.utils.logDebugEnabledKey
+import app.it.fast4x.rimusic.utils.encryptedPreferences
 import app.it.fast4x.rimusic.utils.preferences
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.showButtonPlayerVideoKey
@@ -93,8 +94,8 @@ fun binder() = LocalPlayerServiceBinder.current?.service
 fun appContext(): Context = Dependencies.application.applicationContext
 fun context(): Context = Dependencies.application
 
-fun ytAccountName() = appContext().preferences.getString(ytAccountNameKey, "")
-fun ytAccountThumbnail() = appContext().preferences.getString(ytAccountThumbnailKey, "")
+fun ytAccountName() = appContext().encryptedPreferences.getString(ytAccountNameKey, "")
+fun ytAccountThumbnail() = appContext().encryptedPreferences.getString(ytAccountThumbnailKey, "")
 fun isVideoEnabled() = appContext().preferences.getBoolean(showButtonPlayerVideoKey, false)
 
 fun isConnectionMeteredEnabled() = appContext().preferences.getBoolean(isConnectionMeteredEnabledKey, true)

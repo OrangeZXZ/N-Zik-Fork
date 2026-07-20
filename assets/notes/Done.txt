@@ -1,0 +1,11 @@
+## 2026-07-20
+
+Changed:
+- change(security): migrate YouTube and Discord credentials to EncryptedSharedPreferences
+  - Moved all sensitive keys (YouTube cookie, VisitorData, SyncId, Discord tokens) from `Preferences.kt` to `EncryptedPreferences.kt`
+  - Added atomic credential migration in `MainApplication.kt` on startup to move existing plain preferences to encrypted storage safely
+  - Updated `GlobalVars` and `PlayerServiceModern` to read credentials directly from `encryptedPreferences`
+  - Modified `ExportSettingsDialog` to make credential backup opt-in via checkboxes, protecting user data during normal exports
+  - Modified `ImportSettings` to automatically route sensitive keys to `encryptedPreferences` regardless of the CSV format
+  - Fixed a race condition in `ExportSettingsDialog` during export data collection
+  - Fixed a memory leak in `PlayerServiceModern` by unregistering `encryptedPrefsListener` on destroy

@@ -268,6 +268,12 @@ class PlayerServiceModern : MediaLibraryService(),
     private lateinit var audioVolumeObserver: AudioVolumeObserver
     private lateinit var bitmapProvider: BitmapProvider
     private var volumeNormalizationJob: Job? = null
+
+    private val encryptedPrefsListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == isDiscordBrowsingEnabledKey) {
+            discordPresenceManager?.onBrowsingSettingChanged()
+        }
+    }
     private var isPersistentQueueEnabled: Boolean = false
     private var isclosebackgroundPlayerEnabled = false
     private var audioManager: AudioManager? = null
@@ -610,16 +616,18 @@ class PlayerServiceModern : MediaLibraryService(),
         /**
          * Discord presence
          */
-        if (preferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
+        if (encryptedPreferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
             val token = encryptedPreferences.getString(discordPersonalAccessTokenKey, "")
             if (token?.isNotEmpty() == true) {
                 discordPresenceManager = DiscordPresenceManager(
                     context = this,
                     getToken = { token },
-                    getBrowsingEnabled = { preferences.getBoolean(isDiscordBrowsingEnabledKey, true) },
+                    getBrowsingEnabled = { encryptedPreferences.getBoolean(isDiscordBrowsingEnabledKey, true) },
                 )
             }
         }
+        
+        encryptedPreferences.registerOnSharedPreferenceChangeListener(encryptedPrefsListener)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -704,12 +712,13 @@ class PlayerServiceModern : MediaLibraryService(),
             /**
              * Discord presence cleanup
              */
-            if (preferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
+            if (encryptedPreferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
                 Toaster.i(R.string.discord_presence_closed)
                 discordPresenceManager?.onStop()
             }
             maybeSavePlayerQueue()
             preferences.unregisterOnSharedPreferenceChangeListener(this)
+            encryptedPreferences.unregisterOnSharedPreferenceChangeListener(encryptedPrefsListener)
             stopService(intent<MyDownloadService>())
             stopService(intent<PlayerServiceModern>())
             player.removeListener(this)
@@ -857,7 +866,7 @@ class PlayerServiceModern : MediaLibraryService(),
         val title = mediaItem?.mediaMetadata?.title ?: "<none>"
         val duration = player.duration
         val now = System.currentTimeMillis()
-        if (preferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
+        if (encryptedPreferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
             val token = encryptedPreferences.getString(discordPersonalAccessTokenKey, "")
             if (token?.isNotEmpty() == true) {
                 // Capture current values to avoid thread safety issues
@@ -908,7 +917,7 @@ class PlayerServiceModern : MediaLibraryService(),
         val duration = player.duration
         val now = System.currentTimeMillis()
         
-        if (preferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
+        if (encryptedPreferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
             val token = encryptedPreferences.getString(discordPersonalAccessTokenKey, "")
             if (token?.isNotEmpty() == true) {
                 // Capture current values to avoid thread safety issues
@@ -1628,7 +1637,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
         // Discord presence: update on seek/skip
         if (reason == Player.DISCONTINUITY_REASON_SEEK || reason == Player.DISCONTINUITY_REASON_SKIP) {
-            if (preferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
+            if (encryptedPreferences.getBoolean(isDiscordPresenceEnabledKey, false)) {
                 val token = encryptedPreferences.getString(discordPersonalAccessTokenKey, "")
                 if (token?.isNotEmpty() == true) {
                     // Capture current values to avoid thread safety issues

@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.utils.ytAccountThumbnailKey
 import app.it.fast4x.rimusic.utils.ytCookieKey
+import app.it.fast4x.rimusic.utils.rememberEncryptedPreference
 import it.fast4x.innertube.utils.parseCookieString
 
 @Composable
@@ -89,11 +90,11 @@ fun ActionBar(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    val cookie by rememberPreference(key = ytCookieKey, defaultValue = "")
+    val cookie by rememberEncryptedPreference(key = ytCookieKey, defaultValue = "")
     val isLoggedIn = remember(cookie) {
         "SAPISID" in parseCookieString(cookie)
     }
-    val accountThumbnail by rememberPreference(key = ytAccountThumbnailKey, defaultValue = "")
+    val accountThumbnail by rememberEncryptedPreference(key = ytAccountThumbnailKey, defaultValue = "")
 
     // Search Icon
     HeaderIcon( R.drawable.search) { navController.navigate(NavRoutes.search.name) }

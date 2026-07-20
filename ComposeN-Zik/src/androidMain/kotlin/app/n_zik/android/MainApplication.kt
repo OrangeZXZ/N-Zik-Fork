@@ -3,38 +3,50 @@ package app.n_zik.android
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.os.Build
 import android.os.StrictMode
-import android.content.Context
-import coil3.SingletonImageLoader
 import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import java.io.File
+import timber.log.Timber
 
-import app.n_zik.android.R
-import app.n_zik.android.core.coil.ImageCacheFactory
-import app.n_zik.android.core.network.client.NetworkClientFactory
-import app.n_zik.android.playback.services.PlayerServiceModern
-import app.n_zik.android.download.utils.MyDownloadHelper
 import app.it.fast4x.rimusic.utils.CaptureCrash
 import app.it.fast4x.rimusic.utils.FileLoggingTree
+import app.it.fast4x.rimusic.utils.discordAvatarKey
+import app.it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
+import app.it.fast4x.rimusic.utils.discordUsernameKey
+import app.it.fast4x.rimusic.utils.enableYouTubeLoginKey
+import app.it.fast4x.rimusic.utils.enableYouTubeSyncKey
+import app.it.fast4x.rimusic.utils.encryptedPreferences
+import app.it.fast4x.rimusic.utils.getEnum
+import app.it.fast4x.rimusic.utils.isDiscordBrowsingEnabledKey
+import app.it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
+import app.it.fast4x.rimusic.utils.isProxyEnabledKey
+import app.it.fast4x.rimusic.utils.isValidIP
 import app.it.fast4x.rimusic.utils.logDebugEnabledKey
 import app.it.fast4x.rimusic.utils.preferences
+import app.it.fast4x.rimusic.utils.proxyHostnameKey
+import app.it.fast4x.rimusic.utils.proxyModeKey
+import app.it.fast4x.rimusic.utils.proxyPortKey
+import app.it.fast4x.rimusic.utils.useYtLoginOnlyForBrowseKey
+import app.it.fast4x.rimusic.utils.ytAccountChannelHandleKey
+import app.it.fast4x.rimusic.utils.ytAccountEmailKey
+import app.it.fast4x.rimusic.utils.ytAccountNameKey
+import app.it.fast4x.rimusic.utils.ytAccountThumbnailKey
+import app.it.fast4x.rimusic.utils.ytCookieKey
+import app.it.fast4x.rimusic.utils.ytDataSyncIdKey
+import app.it.fast4x.rimusic.utils.ytVisitorDataKey
+import app.n_zik.android.core.coil.ImageCacheFactory
+import app.n_zik.android.core.network.client.NetworkClientFactory
 import app.n_zik.android.core.network.client.Store
 import app.n_zik.android.core.security.cipher.CipherDeobfuscator
 import app.n_zik.android.core.security.cipher.PlayerConfigStore
 import app.n_zik.android.core.security.cipher.PlayerDatesStore
-import app.it.fast4x.rimusic.utils.isProxyEnabledKey
-import app.it.fast4x.rimusic.utils.proxyHostnameKey
-import app.it.fast4x.rimusic.utils.proxyModeKey
-import app.it.fast4x.rimusic.utils.proxyPortKey
-import app.it.fast4x.rimusic.utils.ytCookieKey
-import app.it.fast4x.rimusic.utils.ytVisitorDataKey
-import app.it.fast4x.rimusic.utils.ytDataSyncIdKey
-import app.it.fast4x.rimusic.utils.isValidIP
-import app.it.fast4x.rimusic.utils.getEnum
+import app.n_zik.android.download.utils.MyDownloadHelper
+import app.n_zik.android.playback.services.PlayerServiceModern
 import it.fast4x.innertube.utils.ProxyPreferenceItem
 import it.fast4x.innertube.utils.ProxyPreferences
-import timber.log.Timber
-import java.io.File
 import java.net.Proxy
 import app.n_zik.android.playback.services.prewarmPoToken
 import it.fast4x.innertube.Innertube
@@ -49,6 +61,7 @@ class MainApplication : Application(), SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
         Dependencies.init(this)
+        migrateCredentialsToEncrypted()
         CipherDeobfuscator.initialize(this)
         PlayerConfigStore.initialize(this)
         PlayerConfigStore.scheduleStartupRefresh()
@@ -95,11 +108,11 @@ class MainApplication : Application(), SingletonImageLoader.Factory {
             Innertube.proxy = proxy
             
             // Initialize YouTube session identifiers from Datastore
-            val savedCookie = preferences.getString(ytCookieKey, "")
+            val savedCookie = encryptedPreferences.getString(ytCookieKey, "")
             if (!savedCookie.isNullOrBlank()) {
                 Innertube.cookie = savedCookie
-                Innertube.visitorData = preferences.getString(ytVisitorDataKey, "") ?: ""
-                Innertube.dataSyncId = preferences.getString(ytDataSyncIdKey, "")
+                Innertube.visitorData = encryptedPreferences.getString(ytVisitorDataKey, "") ?: ""
+                Innertube.dataSyncId = encryptedPreferences.getString(ytDataSyncIdKey, "")
             }
 
             runCatching {
@@ -135,6 +148,48 @@ class MainApplication : Application(), SingletonImageLoader.Factory {
             Timber.plant(Timber.DebugTree())
         }
         /**** LOG *********/
+    }
+
+    private fun migrateCredentialsToEncrypted() {
+        val keysToMigrateString = listOf(
+            ytCookieKey, ytVisitorDataKey, ytDataSyncIdKey, ytAccountNameKey, ytAccountEmailKey,
+            ytAccountChannelHandleKey, ytAccountThumbnailKey, discordPersonalAccessTokenKey,
+            discordAvatarKey, discordUsernameKey
+        )
+        val keysToMigrateBoolean = listOf(
+            enableYouTubeLoginKey, enableYouTubeSyncKey, useYtLoginOnlyForBrowseKey,
+            isDiscordPresenceEnabledKey, isDiscordBrowsingEnabledKey
+        )
+
+        val edit = preferences.edit()
+        val encryptedEdit = encryptedPreferences.edit()
+        var migrated = false
+
+        for (key in keysToMigrateString) {
+            if (preferences.contains(key)) {
+                val value = preferences.getString(key, null)
+                if (value != null) {
+                    encryptedEdit.putString(key, value)
+                    edit.remove(key)
+                    migrated = true
+                }
+            }
+        }
+        
+        for (key in keysToMigrateBoolean) {
+            if (preferences.contains(key)) {
+                val value = preferences.getBoolean(key, false)
+                encryptedEdit.putBoolean(key, value)
+                edit.remove(key)
+                migrated = true
+            }
+        }
+
+        if (migrated) {
+            encryptedEdit.commit()
+            edit.commit()
+            Timber.tag("MainApplication").i("Migrated credentials to encryptedPreferences")
+        }
     }
 
     private fun createNotificationChannels() {

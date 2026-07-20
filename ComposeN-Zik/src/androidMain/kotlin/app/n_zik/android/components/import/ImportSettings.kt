@@ -8,16 +8,33 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.util.fastForEach
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import app.it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
+import java.io.InputStream
+
 import app.n_zik.android.components.ImportFromFile
 import app.n_zik.android.components.dialog.common.RestartAppDialog
 import app.kreate.android.me.knighthat.utils.Toaster
-import timber.log.Timber
-import java.io.InputStream
+import app.it.fast4x.rimusic.utils.discordAvatarKey
+import app.it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
+import app.it.fast4x.rimusic.utils.discordUsernameKey
+import app.it.fast4x.rimusic.utils.enableYouTubeLoginKey
+import app.it.fast4x.rimusic.utils.enableYouTubeSyncKey
+import app.it.fast4x.rimusic.utils.encryptedPreferences
+import app.it.fast4x.rimusic.utils.isDiscordBrowsingEnabledKey
+import app.it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
+import app.it.fast4x.rimusic.utils.preferences
+import app.it.fast4x.rimusic.utils.useYtLoginOnlyForBrowseKey
+import app.it.fast4x.rimusic.utils.ytAccountChannelHandleKey
+import app.it.fast4x.rimusic.utils.ytAccountEmailKey
+import app.it.fast4x.rimusic.utils.ytAccountNameKey
+import app.it.fast4x.rimusic.utils.ytAccountThumbnailKey
+import app.it.fast4x.rimusic.utils.ytCookieKey
+import app.it.fast4x.rimusic.utils.ytDataSyncIdKey
+import app.it.fast4x.rimusic.utils.ytVisitorDataKey
 
 class ImportSettings private constructor(
     launcher: ManagedActivityResultLauncher<Array<String>, Uri?>
@@ -28,22 +45,41 @@ class ImportSettings private constructor(
             Timber.tag("ImportSettings").d("Starting settings import...")
             val rows = csvReader().readAllWithHeader( inStream )
             Timber.tag("ImportSettings").d("Read ${rows.size} rows from CSV")
+            val encryptedKeys = listOf(
+                ytCookieKey, ytVisitorDataKey, ytDataSyncIdKey, ytAccountNameKey, ytAccountEmailKey,
+                ytAccountChannelHandleKey, ytAccountThumbnailKey, enableYouTubeLoginKey,
+                enableYouTubeSyncKey, useYtLoginOnlyForBrowseKey, discordPersonalAccessTokenKey,
+                discordAvatarKey, discordUsernameKey, isDiscordPresenceEnabledKey, isDiscordBrowsingEnabledKey
+            )
+            
+            val editor = context.preferences.edit()
+            val encryptedEditor = context.encryptedPreferences.edit()
+
             rows.fastForEach { row ->
                 val type = row["Type"] ?: ""
                 val key = row["Key"] ?: ""
                 val value = row["Value"] ?: ""
                 Timber.tag("ImportSettings").d("Processing row: type=$type, key=$key")
 
-                val editor = context.preferences.edit()
-                when( type.lowercase() ) {
-                    "string" -> editor.putString( key, value )
-                    "int" -> editor.putInt( key, value.toInt() )
-                    "long" -> editor.putLong( key, value.toLong() )
-                    "float" -> editor.putFloat( key, value.toFloat() )
-                    "boolean" -> editor.putBoolean( key, value.toBoolean() )
+                val isEncrypted = key in encryptedKeys
+                val targetEditor = if (isEncrypted) encryptedEditor else editor
+                if (isEncrypted) Timber.tag("ImportSettings").d("  → routing to encryptedPreferences")
+
+                runCatching {
+                    when( type.lowercase() ) {
+                        "string" -> targetEditor.putString( key, value )
+                        "int" -> targetEditor.putInt( key, value.toInt() )
+                        "long" -> targetEditor.putLong( key, value.toLong() )
+                        "float" -> targetEditor.putFloat( key, value.toFloat() )
+                        "boolean" -> targetEditor.putBoolean( key, value.toBoolean() )
+                        else -> Timber.tag("ImportSettings").w("Unknown type '$type' for key '$key', skipping")
+                    }
+                }.onFailure { e ->
+                    Timber.tag("ImportSettings").e(e, "Failed to import key '$key' (type=$type, value=$value)")
                 }
-                editor.commit()
             }
+            editor.commit()
+            encryptedEditor.commit()
             Timber.tag("ImportSettings").d("Settings import complete")
         }
 
@@ -57,7 +93,7 @@ class ImportSettings private constructor(
                     uri ?: return@rememberLauncherForActivityResult
 
                     CoroutineScope(Dispatchers.IO).launch {
-                        try {
+                        runCatching {
                             context.contentResolver
                                    .openInputStream( uri )
                                    ?.use { inStream ->
@@ -71,7 +107,7 @@ class ImportSettings private constructor(
                                     RestartAppDialog.showDialog()
                                 }
                             }
-                        } catch (e: Exception) {
+                        }.onFailure { e ->
                             Timber.tag("ImportSettings").e(e, "Import failed")
                             withContext(Dispatchers.Main) {
                                 Toaster.e("Import failed: ${e.message}")

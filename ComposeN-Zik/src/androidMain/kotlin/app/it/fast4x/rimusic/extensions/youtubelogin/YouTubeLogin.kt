@@ -36,6 +36,7 @@ import app.n_zik.android.LocalPlayerAwareWindowInsets
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.utils.ytVisitorDataKey
 import app.it.fast4x.rimusic.utils.ytCookieKey
+import app.it.fast4x.rimusic.utils.rememberEncryptedPreference
 import app.it.fast4x.rimusic.utils.ytAccountNameKey
 import app.it.fast4x.rimusic.utils.ytAccountEmailKey
 import app.it.fast4x.rimusic.utils.ytAccountChannelHandleKey
@@ -58,13 +59,13 @@ fun YouTubeLogin(
 
     val scope = rememberCoroutineScope()
 
-    var visitorData by rememberPreference(key = ytVisitorDataKey, defaultValue = Innertube.DEFAULT_VISITOR_DATA)
-    var dataSyncId by rememberPreference(key = ytDataSyncIdKey, defaultValue = "")
-    var cookie by rememberPreference(key = ytCookieKey, defaultValue = "")
-    var accountName by rememberPreference(key = ytAccountNameKey, defaultValue = "")
-    var accountEmail by rememberPreference(key = ytAccountEmailKey, defaultValue = "")
-    var accountChannelHandle by rememberPreference(key = ytAccountChannelHandleKey, defaultValue = "")
-    var accountThumbnail by rememberPreference(key = ytAccountThumbnailKey, defaultValue = "")
+    var visitorData by rememberEncryptedPreference(key = ytVisitorDataKey, defaultValue = Innertube.DEFAULT_VISITOR_DATA)
+    var dataSyncId by rememberEncryptedPreference(key = ytDataSyncIdKey, defaultValue = "")
+    var cookie by rememberEncryptedPreference(key = ytCookieKey, defaultValue = "")
+    var accountName by rememberEncryptedPreference(key = ytAccountNameKey, defaultValue = "")
+    var accountEmail by rememberEncryptedPreference(key = ytAccountEmailKey, defaultValue = "")
+    var accountChannelHandle by rememberEncryptedPreference(key = ytAccountChannelHandleKey, defaultValue = "")
+    var accountThumbnail by rememberEncryptedPreference(key = ytAccountThumbnailKey, defaultValue = "")
 
     var webView: WebView? = null
 

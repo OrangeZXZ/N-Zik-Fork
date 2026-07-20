@@ -6,28 +6,51 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
-import app.n_zik.android.BuildConfig
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
-import app.it.fast4x.rimusic.utils.preferences
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
+import app.n_zik.android.BuildConfig
+import app.it.fast4x.rimusic.utils.discordAvatarKey
+import app.it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
+import app.it.fast4x.rimusic.utils.discordUsernameKey
+import app.it.fast4x.rimusic.utils.enableYouTubeLoginKey
+import app.it.fast4x.rimusic.utils.enableYouTubeSyncKey
+import app.it.fast4x.rimusic.utils.encryptedPreferences
+import app.it.fast4x.rimusic.utils.isDiscordBrowsingEnabledKey
+import app.it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
+import app.it.fast4x.rimusic.utils.preferences
+import app.it.fast4x.rimusic.utils.useYtLoginOnlyForBrowseKey
+import app.it.fast4x.rimusic.utils.ytAccountChannelHandleKey
+import app.it.fast4x.rimusic.utils.ytAccountEmailKey
+import app.it.fast4x.rimusic.utils.ytAccountNameKey
+import app.it.fast4x.rimusic.utils.ytAccountThumbnailKey
+import app.it.fast4x.rimusic.utils.ytCookieKey
+import app.it.fast4x.rimusic.utils.ytDataSyncIdKey
+import app.it.fast4x.rimusic.utils.ytVisitorDataKey
 
 class ExportSettingsDialog private constructor(
     private val launcher: ManagedActivityResultLauncher<String, Uri?>,
-    private val context: Context
+    private val context: Context,
+    private val includeYtbState: androidx.compose.runtime.MutableState<Boolean>,
+    private val includeDiscordState: androidx.compose.runtime.MutableState<Boolean>
 ) {
     companion object {
         private fun onExport(
             uri: Uri,
-            context: Context
+            context: Context,
+            includeYtb: Boolean,
+            includeDiscord: Boolean
         ) = CoroutineScope( Dispatchers.IO ).launch {
-            try {
+            runCatching {
                 Timber.tag("ExportSettingsDialog").d("Starting settings export...")
-                val entries: List<Triple<String, String, Any>> = context.preferences
+                val entries: MutableList<Triple<String, String, Any>> = context.preferences
                     .all
                     .map {
                         val value = it.value ?: Unit
@@ -35,6 +58,46 @@ class ExportSettingsDialog private constructor(
                         Triple( type, it.key, value )
                     }
                     .filter { it.first != "null" && it.third !== Unit }
+                    .toMutableList()
+
+                if (includeYtb || includeDiscord) {
+                    val ytbKeys = listOf(
+                        ytCookieKey,
+                        ytVisitorDataKey,
+                        ytDataSyncIdKey,
+                        ytAccountNameKey,
+                        ytAccountEmailKey,
+                        ytAccountChannelHandleKey,
+                        ytAccountThumbnailKey,
+                        enableYouTubeLoginKey,
+                        enableYouTubeSyncKey,
+                        useYtLoginOnlyForBrowseKey
+                    )
+                    val discordKeys = listOf(
+                        discordPersonalAccessTokenKey,
+                        discordAvatarKey,
+                        discordUsernameKey,
+                        isDiscordPresenceEnabledKey,
+                        isDiscordBrowsingEnabledKey
+                    )
+                    val encryptedPrefs = context.encryptedPreferences
+                    if (includeYtb) {
+                        ytbKeys.forEach { key ->
+                            encryptedPrefs.all[key]?.let { value ->
+                                val type = value::class.simpleName ?: "null"
+                                if (type != "null") entries.add(Triple(type, key, value))
+                            }
+                        }
+                    }
+                    if (includeDiscord) {
+                        discordKeys.forEach { key ->
+                            encryptedPrefs.all[key]?.let { value ->
+                                val type = value::class.simpleName ?: "null"
+                                if (type != "null") entries.add(Triple(type, key, value))
+                            }
+                        }
+                    }
+                }
 
                 Timber.tag("ExportSettingsDialog").d("Found ${entries.size} settings entries")
 
@@ -51,26 +114,33 @@ class ExportSettingsDialog private constructor(
                         }
                         Timber.tag("ExportSettingsDialog").d("Settings export complete")
                     } ?: Timber.tag("ExportSettingsDialog").w("Failed to open output stream")
-            } catch (e: Exception) {
+            }.onFailure { e ->
                 Timber.tag("ExportSettingsDialog").e(e, "Settings export failed")
             }
         }
 
         @Composable
-        operator fun invoke( context: Context ): ExportSettingsDialog =
-            ExportSettingsDialog(
-                rememberLauncherForActivityResult(
-                    ActivityResultContracts.CreateDocument( "text/csv" )
-                ) { uri ->
-                    Timber.tag("ExportSettingsDialog").d("File picker callback received, uri: $uri")
-                    uri ?: return@rememberLauncherForActivityResult
-                    onExport( uri, context )
-                },
-                context
-            )
+        operator fun invoke( context: Context ): ExportSettingsDialog {
+            val includeYtbState = remember { mutableStateOf(false) }
+            val includeDiscordState = remember { mutableStateOf(false) }
+            val launcher = rememberLauncherForActivityResult(
+                ActivityResultContracts.CreateDocument( "text/csv" )
+            ) { uri ->
+                Timber.tag("ExportSettingsDialog").d("File picker callback received, uri: $uri")
+                uri ?: return@rememberLauncherForActivityResult
+                val ytb = includeYtbState.value
+                val discord = includeDiscordState.value
+                onExport( uri, context, ytb, discord )
+            }
+            return remember(launcher, context) {
+                ExportSettingsDialog(launcher, context, includeYtbState, includeDiscordState)
+            }
+        }
     }
 
-    fun export() {
+    fun export(includeYtb: Boolean = false, includeDiscord: Boolean = false) {
+        includeYtbState.value = includeYtb
+        includeDiscordState.value = includeDiscord
         val date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         val fileName = "${BuildConfig.APP_NAME} $date Settings"
         Timber.tag("ExportSettingsDialog").d("Launching file picker with name: $fileName.csv")

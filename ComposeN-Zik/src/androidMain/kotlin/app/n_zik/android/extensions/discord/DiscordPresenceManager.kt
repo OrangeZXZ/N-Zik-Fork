@@ -65,8 +65,12 @@ class DiscordPresenceManager(
     init {
         discordScope.launch {
             DiscordUiState.currentRoute.collect { route ->
-                if (!isStopped && !hasActiveMediaItem && getBrowsingEnabled() && route != null) {
-                    sendBrowsingPresence(route)
+                if (!isStopped && !hasActiveMediaItem && route != null) {
+                    if (getBrowsingEnabled()) {
+                        sendBrowsingPresence(route)
+                    } else {
+                        rpc?.clearActivity()
+                    }
                 }
             }
         }
@@ -149,6 +153,8 @@ class DiscordPresenceManager(
                 DiscordUiState.currentRoute.value?.let { route ->
                     sendBrowsingPresence(route)
                 }
+            } else {
+                discordScope.launch { rpc?.clearActivity() }
             }
             return
         }
@@ -313,6 +319,21 @@ class DiscordPresenceManager(
         refreshJob?.cancel()
         rpc?.closeDirect()
         discordScope.cancel()
+    }
+
+    /**
+     * Called when the discord browsing setting is toggled
+     */
+    fun onBrowsingSettingChanged() {
+        if (!isStopped && !hasActiveMediaItem) {
+            if (getBrowsingEnabled()) {
+                DiscordUiState.currentRoute.value?.let { route ->
+                    sendBrowsingPresence(route)
+                }
+            } else {
+                discordScope.launch { rpc?.clearActivity() }
+            }
+        }
     }
 
     /**

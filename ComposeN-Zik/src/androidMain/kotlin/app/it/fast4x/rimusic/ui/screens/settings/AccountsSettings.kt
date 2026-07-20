@@ -87,6 +87,8 @@ import app.n_zik.android.playback.services.clearStreamCaches
 import app.it.fast4x.rimusic.utils.enableYouTubeSyncKey
 import app.it.fast4x.rimusic.utils.isAtLeastAndroid7
 import app.it.fast4x.rimusic.utils.isDiscordBrowsingEnabledKey
+import app.it.fast4x.rimusic.utils.discordAvatarKey
+import app.it.fast4x.rimusic.utils.discordUsernameKey
 import app.it.fast4x.rimusic.utils.isDiscordPresenceEnabledKey
 import app.it.fast4x.rimusic.utils.isPipedCustomEnabledKey
 import app.it.fast4x.rimusic.utils.isPipedEnabledKey
@@ -115,6 +117,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import androidx.compose.material3.Text
 import androidx.compose.ui.res.painterResource
+import app.it.fast4x.rimusic.utils.encryptedPreferences
 import app.n_zik.android.typography
 import app.n_zik.android.components.dialog.settings.SettingsInputDialog
 
@@ -187,19 +190,19 @@ fun AccountsSettings() {
                 icon = R.drawable.ytmusic,
                 content = {
                     // rememberEncryptedPreference only works correct with API 24 and up
-                    var isYouTubeLoginEnabled by rememberPreference(enableYouTubeLoginKey, false)
-                    var isYouTubeSyncEnabled by rememberPreference(enableYouTubeSyncKey, false)
+                    var isYouTubeLoginEnabled by rememberEncryptedPreference(enableYouTubeLoginKey, false)
+                    var isYouTubeSyncEnabled by rememberEncryptedPreference(enableYouTubeSyncKey, false)
                     var loginYouTube by remember { mutableStateOf(false) }
-                    var visitorData by rememberPreference(key = ytVisitorDataKey, defaultValue = "")
-                    var dataSyncId by rememberPreference(key = ytDataSyncIdKey, defaultValue = "")
-                    var cookie by rememberPreference(key = ytCookieKey, defaultValue = "")
-                    var accountName by rememberPreference(key = ytAccountNameKey, defaultValue = "")
-                    var accountEmail by rememberPreference(key = ytAccountEmailKey, defaultValue = "")
-                    var accountChannelHandle by rememberPreference(
+                    var visitorData by rememberEncryptedPreference(key = ytVisitorDataKey, defaultValue = "")
+                    var dataSyncId by rememberEncryptedPreference(key = ytDataSyncIdKey, defaultValue = "")
+                    var cookie by rememberEncryptedPreference(key = ytCookieKey, defaultValue = "")
+                    var accountName by rememberEncryptedPreference(key = ytAccountNameKey, defaultValue = "")
+                    var accountEmail by rememberEncryptedPreference(key = ytAccountEmailKey, defaultValue = "")
+                    var accountChannelHandle by rememberEncryptedPreference(
                         key = ytAccountChannelHandleKey,
                         defaultValue = ""
                     )
-                    var accountThumbnail by rememberPreference(key = ytAccountThumbnailKey, defaultValue = "")
+                    var accountThumbnail by rememberEncryptedPreference(key = ytAccountThumbnailKey, defaultValue = "")
                     var isLoggedIn = remember(cookie) {
                         "SAPISID" in parseCookieString(cookie)
                     }
@@ -226,11 +229,11 @@ fun AccountsSettings() {
                                 }
                             } else {
                                 // Re-enable: restore Innertube from saved preferences
-                                val savedCookie = appContext().preferences.getString(ytCookieKey, "") ?: ""
+                                val savedCookie = appContext().encryptedPreferences.getString(ytCookieKey, "") ?: ""
                                 if (savedCookie.isNotEmpty()) {
                                     Innertube.cookie = savedCookie
-                                    Innertube.dataSyncId = appContext().preferences.getString(ytDataSyncIdKey, null)
-                                    Innertube.visitorData = appContext().preferences.getString(ytVisitorDataKey, null) ?: Innertube.DEFAULT_VISITOR_DATA
+                                    Innertube.dataSyncId = appContext().encryptedPreferences.getString(ytDataSyncIdKey, null)
+                                    Innertube.visitorData = appContext().encryptedPreferences.getString(ytVisitorDataKey, null) ?: Innertube.DEFAULT_VISITOR_DATA
                                 }
                             }
                             // Clear stream caches and mark restart needed
@@ -280,7 +283,7 @@ fun AccountsSettings() {
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
-                                                .padding(top = 8.dp),
+                                                .padding(top = 8.dp, bottom = 8.dp),
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             if (accountThumbnail.isNotEmpty()) {
@@ -306,11 +309,11 @@ fun AccountsSettings() {
 
                                             Box(
                                                 modifier = Modifier
-                                                    .padding(start = 8.dp)
-                                                    .padding(top = 8.dp, bottom = 8.dp),
+                                                    .weight(1f)
+                                                    .padding(start = 8.dp, top = 8.dp, bottom = 8.dp),
                                                 contentAlignment = Alignment.CenterStart
                                             ) {
-                                                Column {
+                                                Column(modifier = Modifier.fillMaxWidth()) {
                                                     Text(
                                                         text = accountName,
                                                         color = colorPalette().text,
@@ -671,18 +674,18 @@ fun AccountsSettings() {
                     icon = R.drawable.logo_discord,
                     content = {
                         // rememberEncryptedPreference only works correct with API 24 and up
-                        var isDiscordPresenceEnabled by rememberPreference(isDiscordPresenceEnabledKey, false)
+                        var isDiscordPresenceEnabled by rememberEncryptedPreference(isDiscordPresenceEnabledKey, false)
                         var loginDiscord by remember { mutableStateOf(false) }
                         var discordPersonalAccessToken by rememberEncryptedPreference(
                             key = discordPersonalAccessTokenKey,
                             defaultValue = ""
                         )
                         var discordAvatar by rememberEncryptedPreference(
-                            key = "discord_avatar",
+                            key = discordAvatarKey,
                             defaultValue = ""
                         )
                         var discordUsername by rememberEncryptedPreference(
-                            key = "discord_username",
+                            key = discordUsernameKey,
                             defaultValue = ""
                         )
                         var isTokenValid by remember { mutableStateOf(true) }
@@ -727,7 +730,7 @@ fun AccountsSettings() {
 
                         AnimatedVisibility(visible = isDiscordPresenceEnabled) {
                             Column {
-                                var isDiscordBrowsingEnabled by rememberPreference(isDiscordBrowsingEnabledKey, true)
+                                var isDiscordBrowsingEnabled by rememberEncryptedPreference(isDiscordBrowsingEnabledKey, true)
 
                                 OtherSwitchSettingEntry(
                                     title = stringResource(R.string.discord_enable_browsing),
@@ -873,17 +876,17 @@ fun AccountsSettings() {
 }
 
 fun isYouTubeLoginEnabled(): Boolean {
-    val isYouTubeLoginEnabled = appContext().preferences.getBoolean(enableYouTubeLoginKey, false)
+    val isYouTubeLoginEnabled = appContext().encryptedPreferences.getBoolean(enableYouTubeLoginKey, false)
     return isYouTubeLoginEnabled
 }
 
 fun isYouTubeSyncEnabled(): Boolean {
-    val isYouTubeSyncEnabled = appContext().preferences.getBoolean(enableYouTubeSyncKey, false)
+    val isYouTubeSyncEnabled = appContext().encryptedPreferences.getBoolean(enableYouTubeSyncKey, false)
     return isYouTubeSyncEnabled && isYouTubeLoggedIn() && isYouTubeLoginEnabled()
 }
 
 fun isYouTubeLoggedIn(): Boolean {
-    val cookie = appContext().preferences.getString(ytCookieKey, "")
+    val cookie = appContext().encryptedPreferences.getString(ytCookieKey, "")
     val isLoggedIn = cookie?.let { parseCookieString(it) }?.contains("SAPISID") == true
     return isLoggedIn
 }

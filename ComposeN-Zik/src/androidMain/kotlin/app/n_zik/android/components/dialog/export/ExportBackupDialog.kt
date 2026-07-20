@@ -67,6 +67,9 @@ object ExportBackupDialog : Dialog {
             Triple(R.drawable.server, bothLabel, bothDescription)
         )
 
+        var includeYtbCredentials by remember { mutableStateOf(false) }
+        var includeDiscordCredentials by remember { mutableStateOf(false) }
+
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -110,6 +113,27 @@ object ExportBackupDialog : Dialog {
                             )
                         }
                     }
+                    
+                    androidx.compose.animation.AnimatedVisibility(visible = selectedOption == index && (index == 1 || index == 2)) {
+                        Column(modifier = Modifier.padding(start = 44.dp, bottom = 8.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                androidx.compose.material3.Checkbox(
+                                    checked = includeYtbCredentials,
+                                    onCheckedChange = { includeYtbCredentials = it },
+                                    colors = androidx.compose.material3.CheckboxDefaults.colors(checkedColor = colorPalette().text, uncheckedColor = colorPalette().textSecondary)
+                                )
+                                Text(stringResource(R.string.include_youtube_credentials), style = typography().xxs, color = colorPalette().text)
+                            }
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                androidx.compose.material3.Checkbox(
+                                    checked = includeDiscordCredentials,
+                                    onCheckedChange = { includeDiscordCredentials = it },
+                                    colors = androidx.compose.material3.CheckboxDefaults.colors(checkedColor = colorPalette().text, uncheckedColor = colorPalette().textSecondary)
+                                )
+                                Text(stringResource(R.string.include_discord_credentials), style = typography().xxs, color = colorPalette().text)
+                            }
+                        }
+                    }
                 }
             }
 
@@ -119,10 +143,10 @@ object ExportBackupDialog : Dialog {
                 onClick = {
                     when (selectedOption) {
                         0 -> exportDbDialog.export()
-                        1 -> exportSettingsDialog.export()
+                        1 -> exportSettingsDialog.export(includeYtbCredentials, includeDiscordCredentials)
                         2 -> {
                             exportDbDialog.export()
-                            exportSettingsDialog.export()
+                            exportSettingsDialog.export(includeYtbCredentials, includeDiscordCredentials)
                         }
                     }
                 },

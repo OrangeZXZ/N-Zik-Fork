@@ -20,6 +20,21 @@ const val pipedInstanceNameKey = "pipedInstanceName"
 const val pipedApiBaseUrlKey = "pipedApiBaseUrl"
 const val pipedApiTokenKey = "pipedApiToken"
 const val discordPersonalAccessTokenKey = "DiscordPersonalAccessToken"
+const val isDiscordPresenceEnabledKey = "isDiscordPresenceEnabled"
+const val isDiscordBrowsingEnabledKey = "isDiscordBrowsingEnabled"
+
+const val enableYouTubeLoginKey = "enableYoutubeLogin"
+const val enableYouTubeSyncKey = "enableYoutubeSync"
+const val useYtLoginOnlyForBrowseKey = "useYtLoginOnlyForBrowse"
+const val ytAccountNameKey = "ytAccountName"
+const val ytAccountEmailKey = "ytAccountEmail"
+const val ytVisitorDataKey = "ytVisitorData"
+const val ytCookieKey = "ytCookie"
+const val ytAccountChannelHandleKey = "ytAccountChannelHandle"
+const val ytAccountThumbnailKey = "ytAccountThumbnail"
+const val discordAvatarKey = "discord_avatar"
+const val discordUsernameKey = "discord_username"
+const val ytDataSyncIdKey = "ytDataSyncId"
 
 inline fun <reified T : Enum<T>> EncryptedSharedPreferences.getEnum(
     key: String,
