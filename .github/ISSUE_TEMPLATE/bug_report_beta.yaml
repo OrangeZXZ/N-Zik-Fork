@@ -126,6 +126,22 @@ body:
       value: |
         ****
 
+  - type: dropdown
+    id: crash-occurred
+    attributes:
+      label: 💥 Did the app crash?
+      description: Select "Yes" if the app crashed or closed unexpectedly. If so, crash logs become mandatory below.
+      options:
+        - "No"
+        - "Yes"
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ****
+
   - type: textarea
     id: logs
     attributes:
@@ -133,7 +149,7 @@ body:
       description: |
         To get your logs, go to Settings > Misc (at the bottom), enable Debug Mode, then restart the app.
         There are two types: operation logs and crash logs.
-        **If you experienced a crash, logs are mandatory**: enable the "reproduce logs" option and submit the crash logs.
+        **If you answered "Yes" above, crash logs are mandatory**: enable the "reproduce logs" option and submit the crash logs.
         Leave the HTML tags intact to collapse them and keep the issue clean!
         If the logs are too large to paste directly, attach them as a file, or upload them to https://pastebin.com/ and share the link.
       placeholder: |
