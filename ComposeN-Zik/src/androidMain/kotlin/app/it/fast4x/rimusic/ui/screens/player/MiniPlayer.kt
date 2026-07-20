@@ -97,7 +97,11 @@ import app.n_zik.android.components.menu.player.AddToPlaylistPlayerMenu
 // import app.n_zik.android.components.menu.player.AudioOutputMenu
 import app.n_zik.android.playback.services.AudioOutputManager
 import android.content.Intent
+<<<<<<< HEAD
 import timber.log.Timber
+=======
+import android.content.pm.PackageManager
+>>>>>>> 51b8efab57a84cb6c2eddb05d03fd7eb7c87e874
 import app.n_zik.android.thumbnailShape
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.NowPlayingSongIndicator
@@ -644,6 +648,7 @@ fun MiniPlayer(
                                     val intent = Intent("android.settings.panel.action.MEDIA_OUTPUT").apply {
                                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                     }
+<<<<<<< HEAD
                                     kotlin.runCatching {
                                         context.startActivity(intent)
                                     }.onFailure { e ->
@@ -660,7 +665,27 @@ fun MiniPlayer(
                                         } else {
                                             Timber.tag("MiniPlayer").w("No broadcast receiver found for LAUNCH_MEDIA_OUTPUT_DIALOG — panel unsupported on this device")
                                             Toaster.w(R.string.audio_output_not_supported)
+=======
+                                    val isSupported = context.packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null
+                                    if (isSupported) {
+                                        kotlin.runCatching {
+                                            context.startActivity(intent)
+                                        }.onFailure { e ->
+                                            timber.log.Timber.tag("MiniPlayer").w(e, "Standard MEDIA_OUTPUT panel failed, trying broadcast fallback")
+                                            val broadcastIntent = Intent("com.android.systemui.action.LAUNCH_MEDIA_OUTPUT_DIALOG").apply {
+                                                setPackage("com.android.systemui")
+                                                putExtra("package_name", context.packageName)
+                                            }
+                                            kotlin.runCatching {
+                                                context.sendBroadcast(broadcastIntent)
+                                            }.onFailure { fallbackError ->
+                                                timber.log.Timber.tag("MiniPlayer").e(fallbackError, "Fallback LAUNCH_MEDIA_OUTPUT_DIALOG also failed")
+                                            }
+>>>>>>> 51b8efab57a84cb6c2eddb05d03fd7eb7c87e874
                                         }
+                                    } else {
+                                        timber.log.Timber.tag("MiniPlayer").w("MEDIA_OUTPUT panel not supported on this device (Android Go or stripped SystemUI)")
+                                        Toaster.w(R.string.audio_output_not_supported)
                                     }
                                 } else {
                                     Toaster.w(R.string.available_on_android_10_or_higher)
