@@ -10,3 +10,4 @@ Changed:
   - Fixed a race condition in `ExportSettingsDialog` during export data collection
   - Fixed a memory leak in `PlayerServiceModern` by unregistering `encryptedPrefsListener` on destroy
 - fix(player): wrap `AudioPlaybackConfiguration.audioDeviceInfo` in `runCatching` to prevent `NoSuchMethodError` crashes when opening lyrics on devices with modified Android frameworks (Fix #685)
+- feat(miniplayer): show informative toast when audio output panel is not supported on the device (ref #685)
