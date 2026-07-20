@@ -11,7 +11,7 @@ body:
         ### ❗ READ BEFORE SUBMITTING ❗
 
         This form is for bugs found specifically in the **Beta** build of N-Zik.
-        If you're on the **Full** or **Minified** build, please use the regular Bug report template instead.
+        If you're on the **Full** or **Minified** or **Foss* build, please use the regular Bug report template instead.
 
         * **Media cannot be played / Unknown Error / Login required:**
         YouTube is likely blocking you. Please **do not** open a ticket for this.
