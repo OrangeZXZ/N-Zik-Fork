@@ -1580,7 +1580,7 @@ Volume BAS : titre précédent</string>
   <string name="miniplayer_button_menu">Menu</string>
   <string name="audio_output_title">Sortie audio</string>
   <string name="audio_output_no_devices">Aucun périphérique audio disponible</string>
-  <string name="audio_output_not_supported">Audio output selection is not supported on this device</string>
+  <string name="audio_output_not_supported">La sélection de la sortie audio n\'est pas prise en charge sur cet appareil.</string>
   <string name="miniplayer_buttons_config">Boutons du mini-lecteur</string>
   <string name="miniplayer_buttons_config_description">Configurer les 4 boutons du mini-lecteur</string>
   <string name="miniplayer_slot">Emplacement %1$d</string>
