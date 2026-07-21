@@ -103,7 +103,9 @@ import app.it.fast4x.rimusic.utils.forcePlayAtIndex
 import app.it.fast4x.rimusic.utils.formatAsTime
 import app.n_zik.android.core.network.client.NetworkClientFactory
 import app.it.fast4x.rimusic.utils.isLandscape
-import app.it.fast4x.rimusic.utils.languageDestination
+import app.it.fast4x.rimusic.enums.Languages
+import app.it.fast4x.rimusic.utils.otherLanguageAppAlbumKey
+import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.medium
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 import app.it.fast4x.rimusic.utils.rememberPreference
@@ -124,6 +126,7 @@ import app.n_zik.android.components.tab.SongShuffler
 import app.n_zik.android.components.ui.screens.DynamicOrientationLayout
 import app.n_zik.android.components.ui.screens.album.AlbumBookmark
 import app.n_zik.android.components.ui.screens.album.Translate
+import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
 import timber.log.Timber
@@ -238,10 +241,17 @@ fun AlbumDetails(
         updateCover( browseId, "$MODIFIED_PREFIX$it" )
     }
     //</editor-fold>
-    //<editor-fold defaultstate="collapsed" desc="Translator">
-    val translate = Translate.init()
+    ///<editor-fold defaultstate="collapsed" desc="Translator">
+    var showTranslateLanguageDialog by remember { mutableStateOf(false) }
+    val translate = Translate.init(onLongClick = { showTranslateLanguageDialog = true })
     val translator = Translator(NetworkClientFactory.getTranslatorClient())
-    val languageDestination = languageDestination()
+    var otherLanguageApp by rememberPreference(otherLanguageAppAlbumKey, Languages.System)
+    val appLangAlbum = java.util.Locale.getDefault().language
+    val activeTranslateLang = remember(otherLanguageApp, appLangAlbum) {
+        if (otherLanguageApp != Languages.System) otherLanguageApp
+        else Languages.entries.firstOrNull { it.code == appLangAlbum } ?: Languages.English
+    }
+    val languageDestination = activeTranslateLang.translatorLanguage
     //</editor-fold>
 
     val thumbnailSizeDp = Dimensions.thumbnails.song
@@ -437,6 +447,21 @@ fun AlbumDetails(
                         ) {
                             Row(verticalAlignment = Alignment.Top) {
                                 translate.ToolBarButton()
+                                
+                                if (showTranslateLanguageDialog) {
+                                    ValueSelectorDialog(
+                                        title = stringResource(R.string.info_translation),
+                                        selectedValue = otherLanguageApp,
+                                        onValueSelected = {
+                                            otherLanguageApp = it
+                                            translate.isActive = it.translatorLanguage != Language.ENGLISH
+                                            showTranslateLanguageDialog = false
+                                        },
+                                        valueText = { it.text },
+                                        values = Languages.entries.toList(),
+                                        onDismiss = { showTranslateLanguageDialog = false }
+                                    )
+                                }
                                 
                                 BasicText(
                                     text = "“",

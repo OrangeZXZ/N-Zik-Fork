@@ -12,6 +12,7 @@ import app.n_zik.android.updater.models.UpdaterConstants
 import app.n_zik.android.updater.models.GithubRelease
 import app.n_zik.android.updater.models.MajorUpdateConfig
 import app.n_zik.android.uiRoundnessShape
+import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -20,6 +21,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +36,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.verticalScroll
@@ -44,7 +45,7 @@ import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -58,6 +59,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import app.it.fast4x.rimusic.enums.Languages
+import app.it.fast4x.rimusic.utils.otherLanguageAppUpdateKey
+import app.it.fast4x.rimusic.utils.rememberPreference
+import dev.rebelonion.translator.Language
+import dev.rebelonion.translator.Translator
+import app.n_zik.android.core.network.client.NetworkClientFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -100,6 +111,15 @@ fun UpdateScreen(navController: NavController) {
         Updater.extractVersionSuffix(it)
     } ?: Updater.extractVersionSuffix(BuildConfig.VERSION_NAME)
     var checkBetaUpdates by rememberPreference(checkBetaUpdatesKey, currentSuffix == UpdaterConstants.SUFFIX_CHAR_BETA)
+
+    var otherLanguageApp by rememberPreference(otherLanguageAppUpdateKey, Languages.System)
+    val appLang = java.util.Locale.getDefault().language
+    val activeTranslateLang = remember(otherLanguageApp, appLang) {
+        if (otherLanguageApp != Languages.System) otherLanguageApp
+        else Languages.entries.firstOrNull { it.code == appLang } ?: Languages.English
+    }
+    var isTranslationActive by rememberPreference("updateTranslationActive", appLang != "en")
+    var showLanguageDialog by remember { mutableStateOf(false) }
 
     var showInstallWarningDialog by remember { mutableStateOf(false) }
     var apkPathToInstall by remember { mutableStateOf<String?>(null) }
@@ -145,6 +165,7 @@ fun UpdateScreen(navController: NavController) {
     androidx.compose.material3.Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = colorPalette().background0,
+        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
         bottomBar = {
             // Floating Action button at the bottom
             Box(
@@ -430,11 +451,16 @@ fun UpdateScreen(navController: NavController) {
                             elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                         ) {
                             Box(modifier = Modifier.fillMaxWidth()) {
-                                
                                 // Settings Menu positioned at TopEnd
                                 Box(modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)) {
                                     var showMenu by remember { mutableStateOf(false) }
-                                    IconButton(onClick = { showMenu = true }) {
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(uiRoundnessShape())
+                                            .clickable { showMenu = true }
+                                            .padding(12.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
                                         Icon(
                                             painter = painterResource(R.drawable.ellipsis_vertical),
                                             contentDescription = stringResource(R.string.menu),
@@ -442,12 +468,12 @@ fun UpdateScreen(navController: NavController) {
                                             modifier = Modifier.size(24.dp)
                                         )
                                     }
-
                                     val menu = app.it.fast4x.rimusic.ui.components.themed.DropdownMenu(
                                         expanded = showMenu,
                                         containerColor = colorPalette().background0.copy(0.90f),
                                         onDismissRequest = { showMenu = false }
                                     )
+
                                     val isMinified = Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == UpdaterConstants.SUFFIX_CHAR_MINIFIED
                                     if (!isMinified) {
                                         menu.add(
@@ -482,6 +508,15 @@ fun UpdateScreen(navController: NavController) {
                                     val apkName = "${BuildConfig.APP_NAME}-$buildType.apk"
                                     val currentDownloadUrl = "${Repository.RELEASE_DOWNLOAD_URL}$tagVersion/$apkName"
                                     
+                                    menu.add(
+                                        app.it.fast4x.rimusic.ui.components.themed.DropdownMenu.Item(
+                                            iconId = R.drawable.translate,
+                                            customText = "${stringResource(R.string.info_translation)}: \n${otherLanguageApp.text}"
+                                        ) {
+                                            showMenu = false
+                                            showLanguageDialog = true
+                                        }
+                                    )
                                     val downloadText = "${stringResource(R.string.redownload_update)} ($currentVersionStr)"
                                     menu.add(
                                         app.it.fast4x.rimusic.ui.components.themed.DropdownMenu.Item(
@@ -514,6 +549,23 @@ fun UpdateScreen(navController: NavController) {
                                         }
                                     )
                                     menu.Draw()
+                                }
+
+                                // The translate button has been moved to the bottom right of the What's new card
+
+                                if (showLanguageDialog) {
+                                    ValueSelectorDialog(
+                                        title = stringResource(R.string.info_translation),
+                                        selectedValue = otherLanguageApp,
+                                        onValueSelected = {
+                                            otherLanguageApp = it
+                                            isTranslationActive = it.translatorLanguage != Language.ENGLISH
+                                            showLanguageDialog = false
+                                        },
+                                        valueText = { it.text },
+                                        values = Languages.entries.toList(),
+                                        onDismiss = { showLanguageDialog = false }
+                                    )
                                 }
 
                                 Column(
@@ -664,6 +716,28 @@ fun UpdateScreen(navController: NavController) {
                     }
                 }
 
+                val translator = remember { Translator(NetworkClientFactory.getTranslatorClient()) }
+                var translatedText by remember { mutableStateOf<String?>(null) }
+
+                LaunchedEffect(changelogTextToDisplay, isTranslationActive, activeTranslateLang) {
+                    if (isTranslationActive && changelogTextToDisplay.isNotBlank()) {
+                        val destLanguage = activeTranslateLang.translatorLanguage
+                        if (destLanguage != Language.ENGLISH) {
+                            try {
+                                val res = withContext(Dispatchers.IO) {
+                                    translator.translate(changelogTextToDisplay, destLanguage, Language.ENGLISH).translatedText
+                                }
+                                translatedText = res
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        } else {
+                            translatedText = changelogTextToDisplay
+                        }
+                    }
+                }
+                
+                // We don't replace the display text here. We pass both to ChangelogCard.
                 if (changelogTextToDisplay.isNotBlank() || Updater.isFetchingChangelog) {
                     AnimatedVisibility(
                         visible = true,
@@ -700,6 +774,24 @@ fun UpdateScreen(navController: NavController) {
                                         text = stringResource(R.string.whats_new_in, if (hasUpdate && !isReinstalling) newVersion else "${UpdaterConstants.PREFIX_VERSION}$currentVersion"),
                                         style = typography().m.bold.copy(color = colorPalette().text)
                                     )
+                                    Spacer(modifier = Modifier.weight(1f))
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(uiRoundnessShape())
+                                            .combinedClickable(
+                                                onClick = { isTranslationActive = !isTranslationActive },
+                                                onLongClick = { showLanguageDialog = true }
+                                            )
+                                            .padding(6.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(R.drawable.translate),
+                                            contentDescription = stringResource(R.string.translate),
+                                            tint = if (isTranslationActive) colorPalette().accent else colorPalette().textSecondary,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
                                 }
                                 if (Updater.isFetchingChangelog) {
                                     Box(
@@ -713,7 +805,8 @@ fun UpdateScreen(navController: NavController) {
                                     }
                                 } else {
                                     ChangelogCard(
-                                        changelogText = changelogTextToDisplay,
+                                        rawText = changelogTextToDisplay,
+                                        translatedText = if (isTranslationActive) translatedText else null,
                                         colorPaletteMode = colorPaletteMode
                                     )
                                 }
@@ -751,14 +844,17 @@ fun parseChangelogText(text: String): List<Pair<String, List<String>>> {
     }
 
     text.lines().forEach { line ->
+        val trimmed = line.trim()
         when {
-            line.endsWith(":") -> {
+            trimmed.endsWith(":") || trimmed.endsWith(" :") -> {
                 packSection()
-                currentTitle = line.removeSuffix(":")
+                currentTitle = trimmed.substringBeforeLast(":").trim()
             }
-            line.trim().startsWith("-") -> {
-                if (line.isNotBlank())
-                    currentChanges.add(line.trim())
+            trimmed.startsWith("-") -> {
+                val change = trimmed.removePrefix("-").trim()
+                if (change.isNotBlank()) {
+                    currentChanges.add(change)
+                }
             }
         }
     }
@@ -773,15 +869,31 @@ fun parseChangelogText(text: String): List<Pair<String, List<String>>> {
 }
 
 @Composable
-fun ChangelogCard(changelogText: String, colorPaletteMode: ColorPaletteMode) {
-    val sections = remember(changelogText) { parseChangelogText(changelogText) }
-    if (sections.isEmpty()) return
+fun ChangelogCard(rawText: String, translatedText: String?, colorPaletteMode: ColorPaletteMode) {
+    val rawSections = remember(rawText) { parseChangelogText(rawText) }
+    
+    val displaySections = remember(rawText, translatedText) {
+        val parsedTranslated = translatedText?.let { parseChangelogText(it) }
+        
+        if (parsedTranslated != null && parsedTranslated.size == rawSections.size) {
+            // Zip them: Triple(Raw Title, Display Title, Display Changes)
+            rawSections.mapIndexed { index, rawSection ->
+                Triple(rawSection.first, parsedTranslated[index].first, parsedTranslated[index].second)
+            }
+        } else {
+            // Fallback: no translation or structure broke
+            val fallbackSections = parsedTranslated ?: rawSections
+            fallbackSections.map { Triple(it.first, it.first, it.second) }
+        }
+    }
+    
+    if (displaySections.isEmpty()) return
 
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        sections.forEach { section ->
+        displaySections.forEach { section ->
             var expanded by remember { androidx.compose.runtime.mutableStateOf(true) }
             
             Card(
@@ -815,7 +927,7 @@ fun ChangelogCard(changelogText: String, colorPaletteMode: ColorPaletteMode) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         BasicText(
-                            text = section.first,
+                            text = section.second, // Use Display Title
                             style = typography().s.semiBold.copy(color = colorPalette().text)
                         )
                         Spacer(modifier = Modifier.weight(1f))
@@ -833,7 +945,7 @@ fun ChangelogCard(changelogText: String, colorPaletteMode: ColorPaletteMode) {
                                 .fillMaxWidth()
                                 .padding(top = 16.dp)
                         ) {
-                            section.second.forEach { change ->
+                            section.third.forEach { change ->
                                 Row(
                                     verticalAlignment = Alignment.Top,
                                     modifier = Modifier.padding(vertical = 6.dp)
@@ -855,7 +967,7 @@ fun ChangelogCard(changelogText: String, colorPaletteMode: ColorPaletteMode) {
                                     )
                                     Spacer(modifier = Modifier.width(12.dp))
                                     BasicText(
-                                        text = change.removePrefix("- "),
+                                        text = change, // Display Change (prefix already removed by new parser)
                                         style = typography().xs.copy(color = colorPalette().text),
                                         modifier = Modifier.weight(1f)
                                     )

@@ -26,8 +26,7 @@ import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.Languages
-import app.it.fast4x.rimusic.utils.otherLanguageAppKey
-import app.it.fast4x.rimusic.utils.languageDestinationName
+import app.it.fast4x.rimusic.utils.otherLanguageAppLyricsKey
 
 @UnstableApi
 class LanguagesListMenu private constructor(
@@ -69,7 +68,7 @@ class LanguagesListMenu private constructor(
 
     @Composable
     override fun MenuComponent() {
-        var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
+        var otherLanguageApp by rememberPreference(otherLanguageAppLyricsKey, Languages.System)
 
         buttons = mutableListOf<Button>().apply {
             add(object : MenuIcon, Descriptive, Clickable {
@@ -88,7 +87,7 @@ class LanguagesListMenu private constructor(
                 override val iconId: Int = R.drawable.translate
                 override val messageId: Int = R.string._default
                 @get:Composable
-                override val menuIconTitle: String get() = stringResource(messageId) + " (" + languageDestinationName(otherLanguageApp) + ")"
+                override val menuIconTitle: String get() = stringResource(messageId) + " (" + otherLanguageApp.text + ")"
                 override fun onShortClick() {
                     menuState.hide()
                     translateEnabled.value = true
@@ -102,7 +101,7 @@ class LanguagesListMenu private constructor(
                         override val iconId: Int = R.drawable.translate
                         override val messageId: Int = -1
                         @get:Composable
-                        override val menuIconTitle: String get() = languageDestinationName(lang)
+                        override val menuIconTitle: String get() = lang.text
                         override fun onShortClick() {
                             menuState.hide()
                             otherLanguageApp = lang

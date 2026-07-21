@@ -11,3 +11,21 @@ Changed:
   - Fixed a memory leak in `PlayerServiceModern` by unregistering `encryptedPrefsListener` on destroy
 - fix(player): wrap `AudioPlaybackConfiguration.audioDeviceInfo` in `runCatching` to prevent `NoSuchMethodError` crashes when opening lyrics on devices with modified Android frameworks (Fix #685)
 - feat(miniplayer): show informative toast when audio output panel is not supported on the device (ref #685)
+## 2026-07-21
+
+Changed:
+- feat(translations): implement dynamic context-aware translations across the app
+  - Implemented dual-language display for `KaraokeLyricsView` and `UnsyncedLyricsView`, allowing users to see original and translated lyrics simultaneously.
+  - Added automatic translation support for metadata descriptions in `AlbumDetails`, `ArtistDetails`, `PlaylistSongList`, and `UpdateScreen` using the Lingva API.
+  - Created dedicated settings menus in each of these screens to allow on-the-fly language selection.
+- feat(settings): separate translation language preferences per screen context
+  - Created independent preference keys (`otherLanguageAppLyricsKey`, `otherLanguageAppAlbumKey`, etc.) replacing the global setting, allowing users to have different language preferences for different views.
+  - Implemented robust `System` language detection in `Locales.kt` to safely resolve the device's locale to valid Lingva/Google Translate language codes (e.g., mapping Android's default locale to "fr", "en").
+- fix(lyrics): prevent old song metadata from being used during lyrics fetching on track change
+  - Eliminated 1-frame state lag in `LyricsScreen` by utilizing derived states for `artistName` and `title` to instantly reflect `mediaMetadata` updates while preserving user edits.
+  - Added `mediaMetadata.title` and `mediaMetadata.artist` to `LyricsFetcher`'s `LaunchedEffect` keys so that network requests automatically restart with the correct new metadata when the player finishes loading it.
+- fix(ui): revert translated lyrics animation to jump effect
+  - Removed buggy wave animation logic for translated lines in `KaraokeLyricsView`.
+  - Reinstated the clean, letter-by-letter jump animation which is more robust for lines lacking word-level timings.
+- refactor: clean up deprecated components
+  - Removed redundant `ChangelogsDialog` and `LanguageDestination` as part of the refactoring process for the new translation menus.

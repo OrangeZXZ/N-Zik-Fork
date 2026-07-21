@@ -66,7 +66,7 @@ fun LyricsFetcher(
     val context = LocalContext.current
     var previousLyricsType by remember { mutableStateOf(lyricsType) }
     var previousCheckLyrics by remember { mutableStateOf(checkLyrics) }
-    LaunchedEffect(mediaId, lyricsType, checkLyrics) {
+    LaunchedEffect(mediaId, lyricsType, checkLyrics, mediaMetadata.title, mediaMetadata.artist) {
         if (checkLyrics != previousCheckLyrics) {
             globalLastSyncedAttemptMediaId = null
             globalLastKaraokeAttemptMediaId = null

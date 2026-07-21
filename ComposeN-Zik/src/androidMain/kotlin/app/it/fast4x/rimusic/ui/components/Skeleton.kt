@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.add
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.graphics.Color
+import androidx.media3.common.util.UnstableApi
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.NavigationBarType
 import app.it.fast4x.rimusic.ui.components.navigation.nav.AbstractNavigationBar
@@ -48,7 +49,6 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.seenChangelogsVersionKey
 import app.it.fast4x.rimusic.utils.transition
 import app.it.fast4x.rimusic.enums.UiType
-import app.n_zik.android.components.dialog.updater.ChangelogsDialog
 import app.n_zik.android.components.dialog.updater.CheckForUpdateDialog
 import app.n_zik.android.components.dialog.updater.NewUpdateAvailableDialog
 import app.n_zik.android.components.dialog.updater.BuildTransitionWarningDialog
@@ -59,6 +59,7 @@ import app.it.fast4x.rimusic.utils.lastVersionCodeKey
 import app.it.fast4x.rimusic.utils.lastBuildTypeKey
 
 // THIS IS THE SCAFFOLD
+@androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Skeleton(

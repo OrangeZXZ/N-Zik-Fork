@@ -58,7 +58,7 @@ fun UnsyncedLyricsView(
     var translatedText by remember { mutableStateOf("") }
     
     if (showSecondLine || translateEnabled || romanizationEnabled) {
-        val mutState = remember { mutableStateOf("") }
+        val mutState = remember(translateEnabled, romanizationEnabled, showSecondLine) { mutableStateOf("") }
         TranslateLyricsWithRomanization(
             output = mutState,
             textToTranslate = decodedText,
@@ -70,7 +70,7 @@ fun UnsyncedLyricsView(
             onPlaceholderDismissed = {},
             destinationLanguage = languageDestination
         )
-        translatedText = mutState.value
+        translatedText = mutState.value.ifEmpty { decodedText }
     } else {
         translatedText = decodedText
     }

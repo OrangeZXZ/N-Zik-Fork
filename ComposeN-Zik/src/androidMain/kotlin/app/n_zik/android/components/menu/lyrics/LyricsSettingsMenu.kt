@@ -52,9 +52,8 @@ import app.it.fast4x.rimusic.utils.lyricsIntervalIndicatorKey
 import app.it.fast4x.rimusic.utils.lyricsOutlineKey
 import app.it.fast4x.rimusic.utils.lyricsSizeAnimateKey
 import app.it.fast4x.rimusic.utils.lyricsTypeKey
-import app.it.fast4x.rimusic.utils.languageDestinationName
+import app.it.fast4x.rimusic.utils.otherLanguageAppLyricsKey
 import app.it.fast4x.rimusic.utils.menuStyleKey
-import app.it.fast4x.rimusic.utils.otherLanguageAppKey
 import app.it.fast4x.rimusic.utils.playerEnableLyricsPopupMessageKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.romanizationEnabledKey
@@ -160,7 +159,7 @@ class LyricsSettingsMenu private constructor(
         var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
         var playerEnableLyricsPopupMessage by rememberPreference(playerEnableLyricsPopupMessageKey, true)
         var karaokeRespectAgentPosition by rememberPreference(karaokeRespectAgentPositionKey, true)
-        var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
+        var otherLanguageApp by rememberPreference(otherLanguageAppLyricsKey, Languages.System)
 
         // Settings content for list
         @Composable
@@ -441,8 +440,8 @@ class LyricsSettingsMenu private constructor(
 
             // Translate Toggle
             ToggleSettingEntry(
-                title = stringResource(R.string.translate_to, languageDestinationName(otherLanguageApp)),
-                subtitle = languageDestinationName(otherLanguageApp),
+                title = stringResource(R.string.translate_to, otherLanguageApp.text),
+                subtitle = otherLanguageApp.text,
                 icon = R.drawable.translate,
                 isChecked = translateEnabled.value,
                 onCheckedChange = { translateEnabled.value = it }
@@ -453,8 +452,8 @@ class LyricsSettingsMenu private constructor(
                 title = stringResource(R.string.translate_to_other_language),
                 icon = R.drawable.translate,
                 selectedValue = otherLanguageApp,
-                values = Languages.entries.filter { it != Languages.System }.toList(),
-                valueText = { languageDestinationName(it) },
+                values = Languages.entries.toList(),
+                valueText = { it.text },
                 onValueSelected = { lang ->
                     otherLanguageApp = lang
                     translateEnabled.value = true
@@ -864,8 +863,8 @@ class LyricsSettingsMenu private constructor(
             // Translate Toggle
             item {
                 ToggleSettingEntry(
-                    title = stringResource(R.string.translate_to, languageDestinationName(otherLanguageApp)),
-                    subtitle = languageDestinationName(otherLanguageApp),
+                    title = stringResource(R.string.translate_to, otherLanguageApp.text),
+                    subtitle = otherLanguageApp.text,
                     icon = R.drawable.translate,
                     isChecked = translateEnabled.value,
                     onCheckedChange = { translateEnabled.value = it }
@@ -878,8 +877,8 @@ class LyricsSettingsMenu private constructor(
                     title = stringResource(R.string.translate_to_other_language),
                     icon = R.drawable.translate,
                     selectedValue = otherLanguageApp,
-                    values = Languages.entries.filter { it != Languages.System }.toList(),
-                    valueText = { languageDestinationName(it) },
+                    values = Languages.entries.toList(),
+                    valueText = { it.text },
                     onValueSelected = { lang ->
                         otherLanguageApp = lang
                         translateEnabled.value = true

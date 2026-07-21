@@ -150,7 +150,7 @@ android {
         }
 
         create( "full" ) {
-            // App's properties
+            signingConfig = signingConfigs.getByName("debug")// App's properties
             versionNameSuffix = "-f"
             // Fallback for modules that don't have a 'full' build type (like :discordrpc)
             matchingFallbacks += listOf("release")

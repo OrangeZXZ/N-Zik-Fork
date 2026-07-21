@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import app.n_zik.android.R
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.colorPalette
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.Clickable
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.DualIcon
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.DynamicColor
@@ -93,14 +94,16 @@ fun AlbumBookmark(
 }
 
 class Translate private constructor(
-    activeState: MutableState<Boolean>
-): DynamicColor, Icon, Descriptive {
+    activeState: MutableState<Boolean>,
+    private val onLongClickAction: () -> Unit
+): DynamicColor, Icon, Descriptive, Clickable {
 
     companion object {
         @JvmStatic
         @Composable
-        fun init() = Translate(
-            rememberSaveable { mutableStateOf(false) }
+        fun init(onLongClick: () -> Unit = {}) = Translate(
+            rememberSaveable { mutableStateOf(false) },
+            onLongClick
         )
     }
 
@@ -112,5 +115,6 @@ class Translate private constructor(
     override var isFirstColor by activeState
 
     override fun onShortClick() { isFirstColor = !isFirstColor }
+    override fun onLongClick() { onLongClickAction() }
 }
 

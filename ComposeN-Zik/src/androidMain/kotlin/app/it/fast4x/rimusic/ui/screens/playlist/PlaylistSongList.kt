@@ -138,7 +138,9 @@ import app.n_zik.android.core.network.client.NetworkClientFactory
 import app.it.fast4x.rimusic.utils.isDownloadedSong
 import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.isNetworkConnected
-import app.it.fast4x.rimusic.utils.languageDestination
+import app.it.fast4x.rimusic.enums.Languages
+import app.it.fast4x.rimusic.utils.otherLanguageAppPlaylistKey
+import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.manageDownload
 import app.it.fast4x.rimusic.utils.medium
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
@@ -160,6 +162,7 @@ import dev.rebelonion.translator.Translator
 import app.n_zik.android.components.SongItem
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.playback.utils.Shuffler
+import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import timber.log.Timber
 
 
@@ -263,9 +266,16 @@ fun PlaylistSongList(
     var translateEnabled by remember {
         mutableStateOf(false)
     }
+    var showTranslateLanguageDialog by remember { mutableStateOf(false) }
 
     val translator = Translator(NetworkClientFactory.getTranslatorClient())
-    val languageDestination = languageDestination()
+    var otherLanguageApp by rememberPreference(otherLanguageAppPlaylistKey, Languages.System)
+    val appLang = java.util.Locale.getDefault().language
+    val activeTranslateLang = remember(otherLanguageApp, appLang) {
+        if (otherLanguageApp != Languages.System) otherLanguageApp
+        else Languages.entries.firstOrNull { it.code == appLang } ?: Languages.English
+    }
+    val languageDestination = activeTranslateLang.translatorLanguage
 
     val localPlaylist by remember( saveCheck ) {
         Database.playlistTable
@@ -944,8 +954,23 @@ fun PlaylistSongList(
                                         enabled = true,
                                         modifier = Modifier.padding(all = 8.dp).size(18.dp).clip(uiRoundnessShape()),
                                         onClick = { translateEnabled = !translateEnabled },
-                                        onLongClick = { Toaster.i( R.string.info_translation ) }
+                                        onLongClick = { showTranslateLanguageDialog = true }
                                     )
+                                    
+                                    if (showTranslateLanguageDialog) {
+                                        ValueSelectorDialog(
+                                            title = stringResource(R.string.info_translation),
+                                            selectedValue = otherLanguageApp,
+                                            onValueSelected = {
+                                                otherLanguageApp = it
+                                                translateEnabled = it.translatorLanguage != Language.ENGLISH
+                                                showTranslateLanguageDialog = false
+                                            },
+                                            valueText = { it.text },
+                                            values = Languages.entries.toList(),
+                                            onDismiss = { showTranslateLanguageDialog = false }
+                                        )
+                                    }
                                     
                                     BasicText(
                                         text = "“",

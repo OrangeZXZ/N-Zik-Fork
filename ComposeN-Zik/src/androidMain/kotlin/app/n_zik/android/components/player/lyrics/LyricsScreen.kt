@@ -116,9 +116,16 @@ fun LyricsScreen(
         var romanizationEnabled by rememberPreference(romanizationEnabledKey, true)
         var showIntervalIndicator by rememberPreference(lyricsIntervalIndicatorKey, true)
         var showSecondLine by rememberPreference(showSecondLineKey, false)
-        var otherLanguageApp by rememberPreference(otherLanguageAppKey, Languages.English)
+        var otherLanguageApp by rememberPreference(otherLanguageAppLyricsKey, Languages.System)
         var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
-        var languageDestination = languageDestination(otherLanguageApp)
+        val languageDestination = remember(otherLanguageApp) {
+            if (otherLanguageApp != Languages.System) {
+                otherLanguageApp.translatorLanguage
+            } else {
+                val systemCode = java.util.Locale.getDefault().language
+                Languages.entries.find { it.code == systemCode }?.translatorLanguage ?: dev.rebelonion.translator.Language.ENGLISH
+            }
+        }
 
         var copyToClipboard by remember { mutableStateOf(false) }
         if (copyToClipboard) text?.let { textCopyToClipboard(it, context) }
@@ -138,8 +145,10 @@ fun LyricsScreen(
         var karaokeRespectAgentPosition by rememberPreference(karaokeRespectAgentPositionKey, true)
         var lyricsSizeAnimate by rememberPreference(lyricsSizeAnimateKey, false)
         val mediaMetadata = mediaMetadataProvider()
-        var artistName by rememberSaveable { mutableStateOf(cleanPrefix(mediaMetadata.artist?.toString().orEmpty()))}
-        var title by rememberSaveable { mutableStateOf(cleanPrefix(mediaMetadata.title?.toString().orEmpty()))}
+        var editedArtistName by rememberSaveable { mutableStateOf<String?>(null) }
+        var editedTitle by rememberSaveable { mutableStateOf<String?>(null) }
+        var artistName = editedArtistName ?: cleanPrefix(mediaMetadata.artist?.toString().orEmpty())
+        var title = editedTitle ?: cleanPrefix(mediaMetadata.title?.toString().orEmpty())
         var lyricsSize by rememberPreference(lyricsSizeKey, 20f)
         var lyricsSizeL by rememberPreference(lyricsSizeLKey, 20f)
         var customSize = if (isLandscape) lyricsSizeL else lyricsSize
@@ -171,9 +180,9 @@ fun LyricsScreen(
         val showOffsetDialog = ShowOffsetDialog(mediaId = mediaId)
         showOffsetDialog.Render()
 
-        LaunchedEffect(mediaMetadata.title, mediaMetadata.artist) {
-            artistName = cleanPrefix(mediaMetadata.artist?.toString().orEmpty())
-            title = cleanPrefix(mediaMetadata.title?.toString().orEmpty())
+        LaunchedEffect(mediaId, mediaMetadata.title, mediaMetadata.artist) {
+            editedArtistName = null
+            editedTitle = null
             lyrics = null
             checkedLyricsLrc = false
             checkedLyricsKugou = false
@@ -228,8 +237,8 @@ fun LyricsScreen(
                 lyrics = lyrics,
                 initialTitle = title,
                 initialArtistName = artistName,
-                onTitleChange = { title = it },
-                onArtistNameChange = { artistName = it },
+                onTitleChange = { editedTitle = it },
+                onArtistNameChange = { editedArtistName = it },
                 playerEnableLyricsPopupMessage = playerEnableLyricsPopupMessage,
                 coroutineScope = coroutineScope,
                 onSearchRetry = {

@@ -731,7 +731,7 @@ fun KaraokeLyricsView(
                                 withStyle(androidx.compose.ui.text.SpanStyle(color = lineAccent.copy(alpha = 0.85f))) {
                                     append(displayedText.substring(safeLen))
                                 }
-                            } else if (line.words.isNotEmpty()) {
+                            } else if (line.words.isNotEmpty() && !isTextReplaced) {
                                 // Per-word coloring: smooth fade for active long words
                                 var searchIdx = 0
                                 line.words.forEachIndexed { wordIdx, word ->
@@ -882,95 +882,14 @@ fun KaraokeLyricsView(
                                     val lineEndMs = line.words.maxOfOrNull { it.endMs } ?: (lineStartMs + 2000L)
                                     
                                     if (currentPositionMs >= lineEndMs) {
-                                        val dur = lineEndMs - lineStartMs
-                                        if (dur > 500L) {
-                                            // Long line: smooth descent with fading oscillation
-                                            val fadeMs = 1200L
-                                            val fadeProgress = ((currentPositionMs - lineEndMs).toFloat() / fadeMs).coerceIn(0f, 1f)
-                                            val fadeFactor = 1f - (fadeProgress * fadeProgress * (3f - 2f * fadeProgress))
-                                            val totalLength = displayedText.length
-                                            val durFactor = (dur / 800f).coerceIn(0.6f, 2f)
-                                            val scaleAmount = 1f + (fadeFactor * 0.04f)
-                                            // Oscillation fades gradually
-                                            val waveAmplitude = fadeFactor * with(density) { (4f * durFactor).dp.toPx() }
-                                            val waveFrequency = (600f / dur.toFloat().coerceAtLeast(100f)).coerceIn(2f, 8f)
-                                            // Rise fades gradually
-                                            val riseAmount = fadeFactor * with(density) { (2.5f * durFactor).dp.toPx() }
-                                            
-                                            drawContext.canvas.save()
-                                            val wordStartBox = layout.getBoundingBox(0)
-                                            val wordEndBox = layout.getBoundingBox(totalLength - 1)
-                                            drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(wordStartBox.left - with(density) { 8.dp.toPx() }, wordStartBox.top - waveAmplitude - riseAmount - with(density) { 8.dp.toPx() }, wordEndBox.right + with(density) { 8.dp.toPx() }, wordEndBox.bottom + waveAmplitude + with(density) { 8.dp.toPx() }))
-                                            
-                                            for (charIdx in 0 until totalLength) {
-                                                val charBox = layout.getBoundingBox(charIdx)
-                                                val charPos = charIdx.toFloat() / totalLength.coerceAtLeast(1)
-                                                // Oscillation continues from where it ended, fading out
-                                                val endPhase = charPos * waveFrequency - waveFrequency * 1.5f
-                                                val wavePhase = endPhase + fadeProgress * 0.5f // slight forward motion
-                                                val charWaveY = kotlin.math.sin(wavePhase).toFloat() * waveAmplitude
-                                                
-                                                val pivotX = charBox.left + charBox.width / 2f
-                                                val pivotY = charBox.bottom
-                                                drawContext.canvas.save()
-                                                drawContext.canvas.translate(pivotX, pivotY + charWaveY - riseAmount)
-                                                drawContext.canvas.scale(scaleAmount, scaleAmount)
-                                                drawContext.canvas.translate(-pivotX, -pivotY)
-                                                drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
-                                                this@drawWithContent.drawContent()
-                                                drawContext.canvas.restore()
-                                            }
-                                            drawContext.canvas.restore()
-                                        } else {
-                                            // Short line: simple draw
-                                            this@drawWithContent.drawContent()
-                                        }
+                                        this@drawWithContent.drawContent()
                                     } else if (currentPositionMs > lineStartMs) {
                                         val progress = ((currentPositionMs - lineStartMs).toFloat() / (lineEndMs - lineStartMs).coerceAtLeast(1L)).coerceIn(0f, 1f)
                                         val totalLength = displayedText.length
-                                        val dur = lineEndMs - lineStartMs
                                         
-                                        if (dur > 500L) {
-                                            // Long line: wave effect
-                                            val easedProgress = progress * progress * (3f - 2f * progress)
-                                            val durFactor = (dur / 800f).coerceIn(0.6f, 2f)
-                                            val waveAmplitude = with(density) { (4f * durFactor).dp.toPx() }
-                                            val waveFrequency = (600f / dur.toFloat().coerceAtLeast(100f)).coerceIn(2f, 8f)
-                                            val scaleAmount = 1f + (easedProgress * 0.04f)
-                                            
-                                            // Aggressive rise curve: fast at start, then stabilizes
-                                            val riseCurve = progress * progress // quadratic - rises fast
-                                            val riseAmount = riseCurve * with(density) { (2.5f * durFactor).dp.toPx() }
-                                            
-                                            val wordStartBox = layout.getBoundingBox(0)
-                                            val wordEndBox = layout.getBoundingBox(totalLength - 1)
-                                            
-                                            val fillRight = wordStartBox.left + (wordEndBox.right - wordStartBox.left) * easedProgress
-                                            drawContext.canvas.save()
-                                            drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(wordStartBox.left - with(density) { 8.dp.toPx() }, wordStartBox.top - waveAmplitude - riseAmount - with(density) { 8.dp.toPx() }, fillRight + with(density) { 8.dp.toPx() }, wordEndBox.bottom + waveAmplitude + with(density) { 8.dp.toPx() }))
-                                            
-                                            for (charIdx in 0 until totalLength) {
-                                                val charBox = layout.getBoundingBox(charIdx)
-                                                val charPos = charIdx.toFloat() / totalLength.coerceAtLeast(1)
-                                                
-                                                val wavePhase = charPos * waveFrequency - easedProgress * waveFrequency * 1.5f
-                                                val charWaveY = kotlin.math.sin(wavePhase).toFloat() * waveAmplitude
-                                                
-                                                val pivotX = charBox.left + charBox.width / 2f
-                                                val pivotY = charBox.bottom
-                                                
-                                                drawContext.canvas.save()
-                                                drawContext.canvas.translate(pivotX, pivotY + charWaveY - riseAmount)
-                                                drawContext.canvas.scale(scaleAmount, scaleAmount)
-                                                drawContext.canvas.translate(-pivotX, -pivotY)
-                                                drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
-                                                this@drawWithContent.drawContent()
-                                                drawContext.canvas.restore()
-                                            }
-                                            drawContext.canvas.restore()
-                                        } else {
-                                            // Short line: original character-by-character bounce
-                                            val activeCharIdx = (progress * totalLength).toInt().coerceIn(0, totalLength - 1)
+                                        if (totalLength > 0) {
+                                            val activeCharIdx = (progress * totalLength).toInt().coerceAtMost(totalLength - 1)
+                                            val charLp = ((progress * totalLength) - activeCharIdx).coerceIn(0f, 1f)
                                             
                                             if (activeCharIdx > 0) {
                                                 val path = getFastPathForRange(layout, 0, activeCharIdx - 1)
@@ -980,7 +899,6 @@ fun KaraokeLyricsView(
                                                 drawContext.canvas.restore()
                                             }
                                             
-                                            val charLp = ((progress * totalLength) - activeCharIdx).coerceIn(0f, 1f)
                                             val ease = { t: Float -> t * t * (3f - 2f * t) }
                                             val bounceFactor = when {
                                                 charLp < 0.4f -> ease(charLp / 0.4f)
@@ -991,6 +909,7 @@ fun KaraokeLyricsView(
                                             val scaleFactor = 1f + (bounceFactor * 0.05f)
                                             
                                             val charBox = layout.getBoundingBox(activeCharIdx)
+                                            
                                             drawContext.canvas.save()
                                             val pivotX = charBox.left + charBox.width / 2f
                                             val pivotY = charBox.bottom

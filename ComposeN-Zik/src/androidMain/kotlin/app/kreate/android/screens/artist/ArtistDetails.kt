@@ -106,7 +106,9 @@ import app.it.fast4x.rimusic.utils.forcePlay
 import app.it.fast4x.rimusic.utils.forcePlayAtIndex
 import app.n_zik.android.core.network.client.NetworkClientFactory
 import app.it.fast4x.rimusic.utils.isLandscape
-import app.it.fast4x.rimusic.utils.languageDestination
+import app.it.fast4x.rimusic.enums.Languages
+import app.it.fast4x.rimusic.utils.otherLanguageAppArtistKey
+import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
@@ -257,7 +259,13 @@ fun ArtistDetails(
     //<editor-fold defaultstate="collapsed" desc="Translator">
     val translate = Translate.init()
     val translator = Translator(NetworkClientFactory.getTranslatorClient())
-    val languageDestination = languageDestination()
+    val otherLanguageApp by rememberPreference(otherLanguageAppArtistKey, Languages.System)
+    val appLang = java.util.Locale.getDefault().language
+    val activeTranslateLang = remember(otherLanguageApp, appLang) {
+        if (otherLanguageApp != Languages.System) otherLanguageApp
+        else Languages.entries.firstOrNull { it.code == appLang } ?: Languages.English
+    }
+    val languageDestination = activeTranslateLang.translatorLanguage
     //</editor-fold>
 
     //<editor-fold desc="Dialog renders">

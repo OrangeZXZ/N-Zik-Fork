@@ -3,6 +3,7 @@ package app.it.fast4x.rimusic.enums
 import androidx.annotation.StringRes
 import app.n_zik.android.R
 import app.kreate.android.me.knighthat.enums.TextView
+import dev.rebelonion.translator.Language
 
 enum class Languages(
     @field:StringRes override val textId: Int
@@ -41,12 +42,11 @@ enum class Languages(
     Malayalam( R.string.lang_malayalam ),
     Norwegian( R.string.lang_norwegian ),
     Odia( R.string.odia ),
-    //Persian,
+    Persian( R.string.persian ),
     Polish( R.string.polish ),
     PortugueseBrazilian( R.string.portuguese_brazilian ),
     Portuguese( R.string.portuguese ),
     Romanian( R.string.romanian ),
-    //RomanianEmo,
     Russian( R.string.russian ),
     SerbianCyrillic( R.string.lang_serbian_cyrillic ),
     SerbianLatin( R.string.lang_serbian_latin ),
@@ -86,7 +86,7 @@ enum class Languages(
             Czech -> "cs"
             German -> "de"
             Greek -> "el"
-            Hebrew -> "iw" //Hebrew -> "he"
+            Hebrew -> "iw" 
             Hindi -> "hi"
             Hungarian -> "hu"
             Interlingua -> "ia"
@@ -95,12 +95,11 @@ enum class Languages(
             Malayalam -> "ml"
             Norwegian -> "no"
             Odia -> "or"
-            //Persian -> "fa"
+            Persian -> "fa"
             Polish -> "pl"
             Portuguese -> "pt"
             PortugueseBrazilian -> "pt-BR"
             Romanian -> "ro"
-            //RomanianEmo -> "ro-RO"
             Russian -> "ru"
             SerbianCyrillic -> "sr"
             SerbianLatin -> "sr-CS"
@@ -111,6 +110,58 @@ enum class Languages(
             Turkish -> "tr"
             Ukrainian -> "uk"
             Vietnamese -> "vi"
+        }
+        
+    val translatorLanguage: Language
+        get() = when (this) {
+            System -> Language.AUTO
+            Afrikaans -> Language.AFRIKAANS
+            Arabic -> Language.ARABIC
+            Azerbaijani -> Language.AZERBAIJANI
+            Bashkir -> Language.BASQUE
+            Bengali -> Language.BENGALI
+            Catalan -> Language.CATALAN
+            ChineseSimplified -> Language.CHINESE_SIMPLIFIED
+            ChineseTraditional -> Language.CHINESE_TRADITIONAL
+            Czech -> Language.CZECH
+            Danish -> Language.DANISH
+            Dutch -> Language.DUTCH
+            English -> Language.ENGLISH
+            Esperanto -> Language.ESPERANTO
+            Estonian -> Language.ESTONIAN
+            Filipino -> Language.FILIPINO
+            Finnish -> Language.FINNISH
+            French -> Language.FRENCH
+            Galician -> Language.GALICIAN
+            German -> Language.GERMAN
+            Greek -> Language.GREEK
+            Hebrew -> Language.HEBREW_HE
+            Hindi -> Language.HINDI
+            Hungarian -> Language.HUNGARIAN
+            Indonesian -> Language.INDONESIAN
+            Interlingua -> Language.LATIN
+            Irish -> Language.IRISH
+            Japanese -> Language.JAPANESE
+            Korean -> Language.KOREAN
+            Italian -> Language.ITALIAN
+            Malayalam -> Language.MALAYALAM
+            Norwegian -> Language.NORWEGIAN
+            Odia -> Language.ODIA
+            Persian -> Language.PERSIAN
+            Polish -> Language.POLISH
+            PortugueseBrazilian -> Language.PORTUGUESE
+            Portuguese -> Language.PORTUGUESE
+            Romanian -> Language.ROMANIAN
+            Russian -> Language.RUSSIAN
+            SerbianCyrillic, SerbianLatin -> Language.SERBIAN
+            Sinhala -> Language.SINHALA
+            Spanish -> Language.SPANISH
+            Swedish -> Language.SWEDISH
+            Tamil -> Language.TAMIL
+            Telugu -> Language.TELUGU
+            Turkish -> Language.TURKISH
+            Ukrainian -> Language.UKRAINIAN
+            Vietnamese -> Language.VIETNAMESE
         }
 }
 
