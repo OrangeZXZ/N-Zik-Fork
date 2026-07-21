@@ -51,6 +51,7 @@
 
 > [!NOTE]
 > **Full**, **Beta** and **FOSS** builds are **64-bit only** (`arm64-v8a`) because they bundle FFmpeg, which only ships 64-bit native libraries.
+> 
 > The **Minified** build drops FFmpeg, so it's **universal for 32-bit and 64-bit devices** (`armeabi-v7a` + `arm64-v8a`).
 ---
 
