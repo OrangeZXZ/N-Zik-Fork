@@ -463,12 +463,12 @@ class PlayerItemMenu private constructor(
 
                 if (song.isLocal) {
                     // Local songs: editMetadata, then player controls, then favorites/playlist, then export
-                    add(editMetadata)        // 2
+                    if (app.n_zik.android.BuildConfig.ENABLE_FFMPEG) add(editMetadata)        // 2
                     add(equalizerButton)     // 3
                     add(sleepTimerButton)    // 4
                     add(addToFavorite)       // 5
                     add(addToPlaylist)       // 6
-                    add(exportCacheDialog)
+                    if (app.n_zik.android.BuildConfig.ENABLE_FFMPEG) add(exportCacheDialog)
                 } else {
                     // Remote songs
                     add(renameSong)          // 2
