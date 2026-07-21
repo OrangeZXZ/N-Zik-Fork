@@ -171,3 +171,22 @@ body:
     attributes:
       value: |
         ****
+
+  - type: textarea
+    id: db-settings-export
+    attributes:
+      label: 🗄️ Database & Settings export (Optional)
+      description: |
+        If relevant to the bug, you can attach a database and/or settings export (Settings > Backup > Export) to help us reproduce the issue.
+
+        > [!CAUTION]
+        > When exporting, **DO NOT check the option that includes your YouTube/Discord account credentials**. Leave it unchecked, otherwise your credentials/tokens will be included in the export and leaked if attached here.
+      placeholder: |
+        Attach the exported .sqlite/.csv file(s) here, or a Pastebin/file-hosting link
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ****
