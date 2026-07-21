@@ -369,7 +369,7 @@ class SongItemMenu private constructor(
         buttons = mutableListOf<Button>().apply {
             add( infoButton )
             if (song.isLocal) {
-                add( editMetadata )
+                if (app.n_zik.android.BuildConfig.ENABLE_FFMPEG) add( editMetadata )
             } else {
                 add( renameSong )
                 add( changeAuthor )
@@ -450,7 +450,7 @@ class SongItemMenu private constructor(
             if (!song.isLocal) {
                 add( deleteSongDialog )
             }
-            add( exportCacheDialog )
+            if (app.n_zik.android.BuildConfig.ENABLE_FFMPEG) add( exportCacheDialog )
         }
         //</editor-fold>
 

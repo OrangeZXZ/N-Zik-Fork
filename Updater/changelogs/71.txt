@@ -1,0 +1,35 @@
+Added:
+- Show informative toast when audio output panel is not supported on the device.
+- Dynamic context-aware translations across the app (lyrics, album/artist details).
+  - Implemented dual-language display for KaraokeLyricsView and UnsyncedLyricsView.
+  - Added automatic translation support for metadata descriptions in AlbumDetails, ArtistDetails, PlaylistSongList, and UpdateScreen using the Lingva API.
+  - Created dedicated settings menus in each of these screens to allow on-the-fly language selection.
+- Separate translation language preferences per screen context.
+  - Created independent preference keys replacing the global setting.
+  - Implemented robust System language detection to safely resolve the device's locale to valid language codes.
+
+Changed:
+- Migrate YouTube and Discord credentials to EncryptedSharedPreferences.
+  - Moved all sensitive keys (YouTube cookie, VisitorData, SyncId, Discord tokens) from Preferences to EncryptedPreferences.
+  - Added atomic credential migration on startup to move existing plain preferences to encrypted storage safely.
+  - Updated GlobalVars and PlayerServiceModern to read credentials directly from encryptedPreferences.
+  - Modified ExportSettingsDialog to make credential backup opt-in via checkboxes, protecting user data during normal exports.
+  - Modified ImportSettings to automatically route sensitive keys to encryptedPreferences regardless of the CSV format.
+
+Fixed:
+- Wrap AudioPlaybackConfiguration.audioDeviceInfo in runCatching to prevent NoSuchMethodError crashes when opening lyrics on devices with modified Android frameworks.
+- Fixed a race condition in ExportSettingsDialog during export data collection.
+- Fixed a memory leak in PlayerServiceModern by unregistering encryptedPrefsListener on destroy.
+- Prevent old song metadata from being used during lyrics fetching on track change.
+  - Eliminated 1-frame state lag in LyricsScreen by utilizing derived states for artistName and title.
+  - Added mediaMetadata.title and mediaMetadata.artist to LyricsFetcher's LaunchedEffect keys so that network requests automatically restart with the correct new metadata.
+- Revert translated lyrics animation to jump effect.
+  - Removed buggy wave animation logic for translated lines in KaraokeLyricsView.
+  - Reinstated the clean, letter-by-letter jump animation.
+
+Removed:
+- Removed Cache Export and Edit Metadata from minified build to reduce APK size.
+  - Replaced global ffmpeg dependency with compileOnly and variant-specific implementations.
+  - Hid UI options in PlayerItemMenu and SongItemMenu based on buildConfigField.
+- Clean up deprecated components.
+  - Removed redundant ChangelogsDialog and LanguageDestination.

@@ -1,0 +1,14 @@
+Added:
+- Dynamic context-aware translations across the app.
+- Separate translation language preferences per screen context.
+- Show toast when audio output panel is not supported.
+
+Changed:
+- Migrate YouTube & Discord credentials to EncryptedSharedPreferences.
+
+Fixed:
+- NoSuchMethodError crashes when opening lyrics.
+- Lyrics fetching lag and metadata issues.
+
+Removed:
+- FFmpeg dependency from minified build to reduce APK size.

@@ -115,8 +115,8 @@ android {
         applicationId = "com.nevar.nzik"
         minSdk = 24
         targetSdk = 37
-        versionCode = 70
-        versionName = "7.2.2"
+        versionCode = 71
+        versionName = "7.2.5"
 
         /*
                 UNIVERSAL VARIABLES
@@ -150,7 +150,7 @@ android {
         }
 
         create( "full" ) {
-            signingConfig = signingConfigs.getByName("debug")// App's properties
+            // App's properties
             versionNameSuffix = "-f"
             // Fallback for modules that don't have a 'full' build type (like :discordrpc)
             matchingFallbacks += listOf("release")
@@ -197,6 +197,11 @@ android {
          */
         forEach {
             it.manifestPlaceholders.putIfAbsent( "appName", APP_NAME )
+            if (it.name == "minified") {
+                it.buildConfigField("Boolean", "ENABLE_FFMPEG", "false")
+            } else {
+                it.buildConfigField("Boolean", "ENABLE_FFMPEG", "true")
+            }
         }
     }
 
@@ -253,7 +258,11 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.compose.animation)
     implementation(libs.kotlin.csv)
-    implementation(libs.ffmpeg.kit.audio)
+    compileOnly(libs.ffmpeg.kit.audio)
+    "debugImplementation"(libs.ffmpeg.kit.audio)
+    "fullImplementation"(libs.ffmpeg.kit.audio)
+    "betaImplementation"(libs.ffmpeg.kit.audio)
+    "fossImplementation"(libs.ffmpeg.kit.audio)
     implementation(libs.monetcompat)
     implementation(libs.androidmaterial)
     implementation(libs.timber)
