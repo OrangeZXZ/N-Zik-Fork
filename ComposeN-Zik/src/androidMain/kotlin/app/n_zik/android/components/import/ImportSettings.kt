@@ -68,7 +68,7 @@ class ImportSettings private constructor(
                 runCatching {
                     when( type.lowercase() ) {
                         "string" -> targetEditor.putString( key, value )
-                        "int" -> targetEditor.putInt( key, value.toInt() )
+                        "int", "integer" -> targetEditor.putInt( key, value.toInt() )
                         "long" -> targetEditor.putLong( key, value.toLong() )
                         "float" -> targetEditor.putFloat( key, value.toFloat() )
                         "boolean" -> targetEditor.putBoolean( key, value.toBoolean() )

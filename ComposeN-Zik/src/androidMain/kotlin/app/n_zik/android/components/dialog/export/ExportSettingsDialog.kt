@@ -80,10 +80,10 @@ class ExportSettingsDialog private constructor(
                         isDiscordPresenceEnabledKey,
                         isDiscordBrowsingEnabledKey
                     )
-                    val encryptedPrefs = context.encryptedPreferences
+                    val encryptedPrefs = context.encryptedPreferences.all
                     if (includeYtb) {
                         ytbKeys.forEach { key ->
-                            encryptedPrefs.all[key]?.let { value ->
+                            encryptedPrefs[key]?.let { value ->
                                 val type = value::class.simpleName ?: "null"
                                 if (type != "null") entries.add(Triple(type, key, value))
                             }
@@ -91,7 +91,7 @@ class ExportSettingsDialog private constructor(
                     }
                     if (includeDiscord) {
                         discordKeys.forEach { key ->
-                            encryptedPrefs.all[key]?.let { value ->
+                            encryptedPrefs[key]?.let { value ->
                                 val type = value::class.simpleName ?: "null"
                                 if (type != "null") entries.add(Triple(type, key, value))
                             }
