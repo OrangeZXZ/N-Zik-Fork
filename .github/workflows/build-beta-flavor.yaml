@@ -205,7 +205,7 @@ jobs:
 
             ## 📦 Available Build
 
-            - **Full (BETA)** – Complete build with all components.  
+            - **Full (BETA)** – Complete build with all components (`arm64-v8a`, 64-bit only).  
               ⚠️ May contain bugs or experimental features.
 
             ## 🔄 Update Policy
@@ -255,7 +255,7 @@ jobs:
 
             ## 📦 Available Build
 
-            - **Full (BETA)** – Complete build with all components.  
+            - **Full (BETA)** – Complete build with all components (`arm64-v8a`, 64-bit only).  
               ⚠️ May contain bugs or experimental features.
 
             ## 🔄 Update Policy
