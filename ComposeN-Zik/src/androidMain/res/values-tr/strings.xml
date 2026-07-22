@@ -460,8 +460,8 @@
   <string name="export">Dışa aktar</string>
   <string name="import_button">İçe aktar</string>
   <string name="export_both">İkisini de dışa aktar</string>
-  <string name="include_youtube_credentials">Include YouTube identity credentials</string>
-  <string name="include_discord_credentials">Include Discord identity credentials</string>
+  <string name="include_youtube_credentials">YouTube kimlik bilgilerini ekleyin</string>
+  <string name="include_discord_credentials">Discord kimlik bilgilerini ekleyin</string>
   <string name="import_both">İkisini de içe aktar</string>
   <string name="export_database_description">Şarkıları, çalma listelerini ve geçmişi içeren veritabanını dışa aktar</string>
   <string name="export_settings_description">Uygulama ayarlarını ve tercihlerini dışa aktar</string>
@@ -1579,7 +1579,7 @@
   <string name="miniplayer_button_menu">Menü</string>
   <string name="audio_output_title">Ses çıkışı</string>
   <string name="audio_output_no_devices">Kullanılabilir ses aygıtı yok</string>
-  <string name="audio_output_not_supported">Audio output selection is not supported on this device</string>
+  <string name="audio_output_not_supported">Bu cihazda ses çıkışı seçimi desteklenmemektedir</string>
   <string name="miniplayer_buttons_config">Mini Oynatıcı düğmeleri</string>
   <string name="miniplayer_buttons_config_description">Mini oynatıcıdaki 4 düğmeyi yapılandırın</string>
   <string name="miniplayer_slot">Slot %1$d</string>
