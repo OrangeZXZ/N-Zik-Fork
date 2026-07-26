@@ -6,7 +6,7 @@
   <string name="hidesong">Soll der Titel wirklich ausblendet werden? Die Wiedergabezeit und der Cache werden zurückgesetzt. Diese Aktion kann nicht rückgängig gemacht werden.</string>
   <string name="new_playlist">Neue Wiedergabeliste</string>
   <string name="start_radio">Radio starten</string>
-  <string name="stop_radio">Stop radio</string>
+  <string name="stop_radio">Radio stoppen</string>
   <string name="equalizer">Equalizer</string>
   <string name="stop_sleep_timer">Möchtest Du den Schlaf-Timer stoppen?</string>
   <string name="set_sleep_timer">Schlaf-Timer einstellen</string>
@@ -19,7 +19,7 @@
   <string name="related_albums">Ähnliche Alben</string>
   <string name="similar_artists">Ähnliche Künstler</string>
   <string name="playlists_you_might_like">Wiedergabelisten, die dir gefallen könnten</string>
-  <string name="forgotten_favorites">Forgotten favorites</string>
+  <string name="forgotten_favorites">Vergessene Favoriten</string>
   <string name="fresh_finds_old_favorites">Fresh finds, old favorites</string>
   <string name="mixed_for_you">Mixed for you</string>
   <string name="your_daily_discover">Your daily discover</string>
