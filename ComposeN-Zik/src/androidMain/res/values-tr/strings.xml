@@ -1557,7 +1557,7 @@
   <string name="waveform_updated_successfully">Waveform başarıyla güncellendi</string>
   <string name="error_updating_waveform">Waveform güncellenirken hata oluştu</string>
   <string name="metadata_exported">Dışa aktarıldı</string>
-  <string name="container">Konteyner</string>
+  <string name="container">Medya Türü</string>
   <string name="miniplayer_button_play_pause">Oynat/Duraklat</string>
   <string name="miniplayer_button_skip_back">Önceki</string>
   <string name="miniplayer_button_skip_forward">Sonraki</string>
