@@ -266,11 +266,12 @@ fun LyricsTrackSelector(
                                 menuState.hide()
                                 onDismiss()
                                 Database.asyncTransaction {
+                                    val isSynced = !it.syncedLyrics.isNullOrEmpty()
                                     lyricsTable.upsert(
                                         Lyrics(
                                             songId = mediaId,
-                                            type = LyricsType.Synced.name,
-                                            data = it.syncedLyrics.orEmpty()
+                                            type = if (isSynced) LyricsType.Synced.name else LyricsType.Unsynced.name,
+                                            data = if (isSynced) it.syncedLyrics!! else it.plainLyrics.orEmpty()
                                         )
                                     )
                                 }

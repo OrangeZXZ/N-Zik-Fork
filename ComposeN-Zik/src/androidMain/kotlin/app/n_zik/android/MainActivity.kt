@@ -342,6 +342,11 @@ class MainActivity :
         }
 
         checkIfAppIsRunningInBackground()
+        
+        // Verify backup location exists
+        lifecycleScope.launch(Dispatchers.IO) {
+            app.n_zik.android.core.backup.BackupManager.verifyBackupLocation(this@MainActivity)
+        }
 
         // Fetch Piped & Invidious instances
         lifecycleScope.launch(Dispatchers.IO) {

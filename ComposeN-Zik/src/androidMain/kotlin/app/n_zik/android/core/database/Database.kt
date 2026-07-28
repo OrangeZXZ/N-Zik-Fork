@@ -575,7 +575,7 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
 
     companion object {
         val Instance: DatabaseInitializer by lazy {
-            Room.databaseBuilder(
+            val db = Room.databaseBuilder(
                     context = appContext(),
                     klass = DatabaseInitializer::class.java,
                     name = Database.FILE_NAME
@@ -594,6 +594,16 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
                     From30To31Migration()
                 )
                 .build()
+            
+            db.invalidationTracker.addObserver(object : androidx.room.InvalidationTracker.Observer(
+                "Song", "Playlist", "SongPlaylistMap", "Album", "Artist", "SongArtistMap", "SongAlbumMap"
+            ) {
+                override fun onInvalidated(tables: Set<String>) {
+                    app.n_zik.android.core.backup.BackupManager.triggerOnChangeBackup(appContext())
+                }
+            })
+            
+            db
         }
     }
 }

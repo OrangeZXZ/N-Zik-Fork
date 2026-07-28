@@ -1,0 +1,12 @@
+Added:
+- Automatic database backup with customizable intervals (#698)
+- Backup on DB change with configurable trigger (#698)
+- Retention policy and backup location verification (#698)
+
+Improved:
+- Lyrics fallback logic for unsynced lyrics (#697)
+- Backup interval acts as master switch (#698)
+
+Fixed:
+- Lyrics loop bug when searching lyrics (#697)
+- Manual lyrics type detection (#697)

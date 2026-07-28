@@ -432,6 +432,8 @@ fun DataSettings() {
                 title = stringResource(R.string.title_backup_and_restore),
                 icon = R.drawable.server,
                 content = {
+                    app.n_zik.android.core.backup.ui.AutoBackupSettingsBlock()
+                    
                     ExportBackupDialog.Render()
                     ImportBackupDialog.Render()
 
@@ -498,6 +500,21 @@ fun DataSettings() {
                             .findAllContain("")
                             .map { it.size }
                     }.collectAsState(0, Dispatchers.IO)
+                    
+                    OtherSwitchSettingEntry(
+                        title = stringResource(R.string.player_pause_listen_history),
+                        text = stringResource(R.string.player_pause_listen_history_info),
+                        isChecked = pauseListenHistory,
+                        onCheckedChange = {
+                            pauseListenHistory = it
+                            restartService = true
+                        },
+                        icon = R.drawable.pause
+                    )
+                    
+                    val eventsCount by remember {
+                        Database.eventTable.countAll()
+                    }.collectAsState(0L, Dispatchers.IO)
 
                     OtherSettingsEntry(
                         title = stringResource(R.string.clear_search_history),
@@ -514,21 +531,6 @@ fun DataSettings() {
                             Toaster.done()
                         }
                     )
-                    
-                    OtherSwitchSettingEntry(
-                        title = stringResource(R.string.player_pause_listen_history),
-                        text = stringResource(R.string.player_pause_listen_history_info),
-                        isChecked = pauseListenHistory,
-                        onCheckedChange = {
-                            pauseListenHistory = it
-                            restartService = true
-                        },
-                        icon = R.drawable.pause
-                    )
-                    
-                    val eventsCount by remember {
-                        Database.eventTable.countAll()
-                    }.collectAsState(0L, Dispatchers.IO)
 
                     OtherSettingsEntry(
                         title = stringResource(R.string.clear_listen_history),

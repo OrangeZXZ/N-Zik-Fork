@@ -77,6 +77,9 @@ fun LyricsFetcher(
         
         // Mode switch
         if (lyricsType != previousLyricsType) {
+            globalLastSyncedAttemptMediaId = null
+            globalLastKaraokeAttemptMediaId = null
+            globalLastUnSyncedAttemptMediaId = null
             previousLyricsType = lyricsType
             onLyricsUpdated(null)
         }
@@ -102,7 +105,7 @@ fun LyricsFetcher(
 
 
 
-                if ((wantSynced && currentLyrics?.data.isNullOrEmpty()) || needKaraokeFetch || needSyncedFetch || needUnsyncedFetch) {
+                if (needKaraokeFetch || needSyncedFetch || needUnsyncedFetch) {
 
                     if (needKaraokeFetch) {
                         globalLastKaraokeAttemptMediaId = mediaId
@@ -113,9 +116,6 @@ fun LyricsFetcher(
                     if (needUnsyncedFetch) {
                         globalLastUnSyncedAttemptMediaId = mediaId
                     }
-
-                    // Always clear lyrics when fetching to force UI refresh
-                    onLyricsUpdated(null)
 
                     // Unsync mode → skip synced/karaoke fetch, go directly to unsynced
                     if (needUnsyncedFetch) {
@@ -488,6 +488,8 @@ fun LyricsFetcher(
                             Timber.tag(TAG).e("→ YouTube(U) ERROR: ${it.stackTraceToString()}")
                         }
                     }
+                    onCheckedLrcUpdated(true)
+                    onCheckedKugouUpdated(true)
                     onCheckedInnertubeUpdated(true)
                 } else {
                     onLyricsUpdated(currentLyrics)

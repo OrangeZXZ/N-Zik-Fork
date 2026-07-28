@@ -1,0 +1,42 @@
+Added:
+- feat(backup): add customizable backup intervals and UI modernization (issue https://github.com/N-Zik-Group/N-Zik/issues/698)
+  - Upgraded settings dialog in `AutoBackupSettingsBlock.kt` with `AnimatedVisibility` for cleaner UX
+  - Replaced hardcoded hourly interval with options: hourly, daily, weekly, monthly, and custom
+  - Custom interval supports value + unit (minutes, hours, days, weeks, months)
+
+- feat(backup): allow custom retention limits for automatic backups (issue https://github.com/N-Zik-Group/N-Zik/issues/698)
+  - Implemented `maxBackups` limit in `BackupManager.kt` via `enforceRetentionPolicy`
+  - Keeps only the N most recent backups and deletes older documents from the SAF tree
+  - DB backups and settings backups are counted separately to avoid orphan files
+
+- feat(backup): option to include YouTube and Discord credentials in settings export (issue https://github.com/N-Zik-Group/N-Zik/issues/698)
+  - Evaluates `includeYtb` and `includeDiscord` flags during CSV generation in `BackupManager.kt`
+
+- feat(backup): automatic backup triggered on database changes (issue https://github.com/N-Zik-Group/N-Zik/issues/698)
+  - `InvalidationTracker` on Song, Playlist, Album, Artist tables triggers backup with 1-minute debounce
+  - Uses `ExistingWorkPolicy.REPLACE` to prevent concurrent backup conflicts
+
+Fixed:
+- fix(lyrics): correct fallback logic when requested lyric type is unavailable (issue https://github.com/N-Zik-Group/N-Zik/issues/697)
+  - `LyricsDecisionMaker.kt` now correctly falls back from Karaoke → Synced → Unsynced, instead of returning null
+  - Fixed `needSyncedFetch` to properly trigger when a song only has unsynced lyrics but synced lyrics are requested
+  - When switching lyrics modes in `LyricsFetcher.kt`, previous fetch attempts are cleared to force a re-fetch if needed
+  - `LyricsTrackSelector.kt` now correctly saves manually selected lyrics as `Unsynced` if they only contain `plainLyrics`
+
+Improved:
+- improve(backup): comprehensive and tagged logging for the backup lifecycle (issue https://github.com/N-Zik-Group/N-Zik/issues/698)
+  - Replaced generic logging with `Timber.tag("AutoBackup")` across `BackupManager.kt` and `AutoBackupWorker.kt`
+  - Added logging for settings count to verify credential inclusions during export
+  - Removed logcat spam in `triggerOnChangeBackup` to prevent log floods on DB activity
+
+- improve(backup): make Auto Backup Interval a master switch (issue https://github.com/N-Zik-Group/N-Zik/issues/698)
+  - Wrapped dependent backup settings (location, DB change, max backups) in `AnimatedVisibility` so they hide when interval is "Disabled"
+  - Updated `BackupManager.kt` so `triggerOnChangeBackup` immediately returns if `PREF_INTERVAL` is disabled, ignoring `PREF_DB_CHANGE`
+
+- improve(backup): verify backup location integrity at startup (issue https://github.com/N-Zik-Group/N-Zik/issues/698)
+  - Added `verifyBackupLocation` in `BackupManager.kt` called from `MainActivity.kt` during startup on IO dispatcher
+  - Validates `PREF_URI` through the SAF content resolver; if the user deletes the folder externally, it clears the preference, disables the interval, and cancels the scheduled work to prevent silent failures
+
+- improve(lyrics): state management during fetch process (issue https://github.com/N-Zik-Group/N-Zik/issues/697)
+  - `LyricsFetcher.kt` explicitly marks `onCheckedLrcUpdated(true)` and `onCheckedKugouUpdated(true)` alongside InnerTube checks to ensure UI state doesn't hang
+  - Lyrics are no longer cleared before fetch to avoid flashing empty state

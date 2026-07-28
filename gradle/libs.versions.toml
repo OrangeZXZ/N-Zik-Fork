@@ -53,6 +53,7 @@ kermit = "2.1.0"
 kotlinx-serialization = "1.11.0"
 composeReorderable = "3.1.0"
 freedroidwarn = "V1.13"
+work = "2.9.0"
 
 [libraries]
 # Kotlinx
@@ -93,6 +94,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 androidx-crypto = {  group = "androidx.security", name = "security-crypto", version.ref = "crypto" }
 androidx-glance-widgets = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
 androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
+work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
 
 # Ktor
 ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }

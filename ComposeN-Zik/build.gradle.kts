@@ -115,8 +115,8 @@ android {
         applicationId = "com.nevar.nzik"
         minSdk = 24
         targetSdk = 37
-        versionCode = 72
-        versionName = "7.2.6"
+        versionCode = 73
+        versionName = "7.2.8"
 
         /*
                 UNIVERSAL VARIABLES
@@ -276,6 +276,7 @@ dependencies {
     implementation(libs.hypnoticcanvas.shaders)
     implementation(libs.github.jeziellago.compose.markdown)
     implementation(libs.compose.reorderable)
+    implementation(libs.work.runtime.ktx)
 
     implementation(libs.room)
     add("kspAndroid", libs.room.compiler)

@@ -27,9 +27,12 @@ object LyricsDecisionMaker {
         val wantKaraoke = lyricsType == LyricsType.Karaoke
 
         val currentLyrics = if (wantKaraoke) {
-            allLyrics.find { it.type == LyricsType.Karaoke.name } ?: allLyrics.find { it.type == LyricsType.Synced.name }
+            allLyrics.find { it.type == LyricsType.Karaoke.name }
+                ?: allLyrics.find { it.type == LyricsType.Synced.name }
+                ?: allLyrics.find { it.type == LyricsType.Unsynced.name }
         } else if (wantSynced) {
             allLyrics.find { it.type == LyricsType.Synced.name }
+                ?: allLyrics.find { it.type == LyricsType.Unsynced.name }
         } else {
             allLyrics.find { it.type == LyricsType.Unsynced.name }
         }
@@ -37,7 +40,7 @@ object LyricsDecisionMaker {
         val hasWordTimings = currentLyrics?.data?.lines()?.any { it.trim().startsWith("<") && it.contains(":") && it.contains(">") } == true
 
         val needKaraokeFetch = wantKaraoke && (!hasWordTimings && globalLastKaraokeAttemptMediaId != mediaId)
-        val needSyncedFetch = lyricsType == LyricsType.Synced && currentLyrics?.data.isNullOrEmpty() && globalLastSyncedAttemptMediaId != mediaId
+        val needSyncedFetch = lyricsType == LyricsType.Synced && (currentLyrics == null || currentLyrics.type != LyricsType.Synced.name || currentLyrics.data.isNullOrEmpty()) && globalLastSyncedAttemptMediaId != mediaId
         val needUnsyncedFetch = lyricsType == LyricsType.Unsynced && currentLyrics?.data.isNullOrEmpty() && globalLastUnSyncedAttemptMediaId != mediaId
 
         return FetchNeeds(

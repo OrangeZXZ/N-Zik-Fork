@@ -1,0 +1,36 @@
+Added:
+- feat(backup): add customizable backup intervals and UI modernization (#698)
+  - Upgraded settings dialog in `AutoBackupSettingsBlock.kt` with `AnimatedVisibility` for cleaner UX
+  - Replaced hardcoded hourly interval with options: hourly, daily, weekly, and custom
+
+- feat(backup): allow custom retention limits for automatic backups (#698)
+  - Implemented `maxBackups` limit in `BackupManager.kt` via `enforceRetentionPolicy`
+  - Keeps only the N most recent backups and deletes older documents from the SAF tree
+  - Integrated with the settings UI
+
+- feat(backup): option to include YouTube and Discord credentials in settings export (#698)
+  - Evaluates `includeYtb` and `includeDiscord` flags during CSV generation in `BackupManager.kt`
+
+Fixed:
+- fix(lyrics): correct fallback logic when requested lyric type is unavailable
+  - `LyricsDecisionMaker.kt` now correctly falls back from Karaoke → Synced → Unsynced, instead of returning null
+  - Fixed `needSyncedFetch` to properly trigger when a song only has unsynced lyrics but synced lyrics are requested
+  - When switching lyrics modes in `LyricsFetcher.kt`, previous fetch attempts are cleared to force a re-fetch if needed
+  - `LyricsTrackSelector.kt` now correctly saves manually selected lyrics as `Unsynced` if they only contain `plainLyrics`
+
+Improved:
+- improve(backup): comprehensive and tagged logging for the backup lifecycle (#698)
+  - Replaced generic logging with `Timber.tag("AutoBackup")` across `BackupManager.kt` and `AutoBackupWorker.kt`
+  - Added logging for settings count to verify credential inclusions during export
+  - Removed logcat spam in `triggerOnChangeBackup` to prevent log floods on DB activity
+
+- improve(backup): make Auto Backup Interval a master switch (#698)
+  - Wrapped dependent backup settings (location, DB change, max backups) in `AnimatedVisibility` so they hide when interval is "Disabled"
+  - Updated `BackupManager.kt` so `triggerOnChangeBackup` immediately returns if `PREF_INTERVAL` is disabled, ignoring `PREF_DB_CHANGE`
+
+- improve(backup): verify backup location integrity at startup (#698)
+  - Added `verifyBackupLocation` in `BackupManager.kt` called from `MainActivity.kt` during startup
+  - Validates `PREF_URI` through the SAF content resolver; if the user deletes the folder externally, it clears the preference, disables the interval, and cancels the scheduled work to prevent silent failures
+
+- improve(lyrics): state management during fetch process
+  - `LyricsFetcher.kt` explicitly marks `onCheckedLrcUpdated(true)` and `onCheckedKugouUpdated(true)` alongside InnerTube checks to ensure UI state doesn't hang

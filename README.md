@@ -115,7 +115,7 @@ Join the N-Zik Discord:
 
 - 📰 **News Feed** – Explore moods, genres, releases, and albums from your favorite artists.
 - 🔄 **Playlist Import & Export** – Easily back up, share, and restore playlists, you can import from Riplay, Spotify ([Exportify](https://exportify.net/)), Youtube Music and N-Zik
-- ✍️ **Advanced Lyrics Support** – Fetch, display word by word, sync and unsync view !, edit, and translate lyrics.
+- ✍️ **Advanced Lyrics Support** – Fetch, display word by word, sync and unsync lyrics with smart fallback mechanisms, edit, and translate them.
 - 🎭 **Custom Themes** – Personalize the app with multiple theme options.
 - ⏲️ **Sleep Timer** – Automatically stop playback after a configurable duration.
 - 🎚️ **Advanced Audio Controls** – Adjust volume, playback speed, pitch, normalization, silence skipping, crossfade, volume boost and silence skipping.
@@ -123,7 +123,7 @@ Join the N-Zik Discord:
 - 🧪 **Experimental Widgets** – Access upcoming features before they become stable.
 - 📤 **Media Export** – Export cached or downloaded music to external storage with full metadata (title, artist, album, cover art, copyright, etc.) powered by FFmpeg.
 - ✏️ **Metadata Editor** – Edit song metadata (title, artist, album, genre, year, cover art, and more) directly in-app. Supports both AAC and Opus codecs with automatic cover art embedding.
-- ⚙️ **Settings Backup & Restore** – Save and restore your complete app configuration.
+- ⚙️ **Settings & Database Auto-Backup** – Save, restore, and automatically back up your complete app configuration and database with customizable intervals, retention limits, and optional YouTube/Discord credential inclusion.
 - 📡 **Offline First** – Enjoy your music library even without an internet connection.
 - ▶️ **YouTube Integration (Early Access)** – Recommendations and profile-related content are already synchronized from your YouTube account. Full synchronization is currently in development.
 
