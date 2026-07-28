@@ -1589,9 +1589,9 @@ Volume BAS : titre précédent</string>
   <string name="available_on_android_10_or_higher">Disponible sur Android 10 ou version ultérieure</string>
   <string name="home_tabs_settings">Page d\'accueil</string>
   <string name="home_tabs_settings_description">Réorganiser et afficher/masquer les onglets</string>
-  <string name="auto_backup_title">Automatic Backup</string>
-  <string name="auto_backup_description">Settings for automatic database backup</string>
-  <string name="auto_backup_interval">Auto Backup Interval</string>
+  <string name="auto_backup_title">Sauvegarde automatique</string>
+  <string name="auto_backup_description">Paramètres de sauvegarde automatique de la base de données</string>
+  <string name="auto_backup_interval">Intervalle de sauvegarde automatique</string>
   <string name="auto_backup_interval_none">Désactivé</string>
   <string name="auto_backup_interval_hourly">Hourly</string>
   <string name="auto_backup_interval_daily">Daily</string>
