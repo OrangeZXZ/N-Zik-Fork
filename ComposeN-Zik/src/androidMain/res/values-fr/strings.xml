@@ -1601,10 +1601,10 @@ Volume BAS : titre précédent</string>
   <string name="auto_backup_custom_interval_value">Custom Interval Value</string>
   <string name="auto_backup_custom_interval_unit">Custom Interval Unit</string>
   <string name="auto_backup_unit_minutes">Minutes</string>
-  <string name="auto_backup_unit_hours">Hours</string>
-  <string name="auto_backup_unit_days">Days</string>
-  <string name="auto_backup_unit_weeks">Weeks</string>
-  <string name="auto_backup_unit_months">Months</string>
+  <string name="auto_backup_unit_hours">Heures</string>
+  <string name="auto_backup_unit_days">Jours</string>
+  <string name="auto_backup_unit_weeks">Semaines</string>
+  <string name="auto_backup_unit_months">Mois</string>
   <string name="auto_backup_schedule_time">Backup Time</string>
   <string name="auto_backup_schedule_time_description">Set the exact hour for the backup</string>
   <string name="auto_backup_schedule_day_of_week">Day of Week</string>
