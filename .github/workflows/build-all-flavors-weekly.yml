@@ -120,7 +120,7 @@ jobs:
         with:
           name: unsigned-full
           path: ComposeN-Zik/build/outputs/apk/full/*.apk
-      
+
   build-minified:
     needs: [versioning, verify-version]
     name: Build minified version
@@ -212,7 +212,7 @@ jobs:
         with:
           path: upstream/unsigned
           merge-multiple: true
-   
+
       - name: Sign APKs
         uses: Tlaster/android-sign@v1.2.2
         with:
@@ -224,11 +224,11 @@ jobs:
           output: signed
         env:
           BUILD_TOOLS_VERSION: "34.0.0"
-   
+
       - name: Remove trails
         run: |
           for filename in signed/*.apk; do mv "$filename" "${filename//-signed}"; done
-   
+
       - name: Upload for release
         uses: actions/upload-artifact@v7
         with:
@@ -333,11 +333,11 @@ jobs:
     permissions:
       issues: write
     steps:
-      - name: Close issues marked as "patched"
+      - name: Close issues marked as "patched STABLE"
         uses: gcampbell-msft/fixed-pending-release@0.0.12
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          label: patched
+          label: patched STABLE
           message: |
             🎉 This issue has been fixed and is now available in **v${{ needs.versioning.outputs.downstream }}** 🎉
             ➤ Download: https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}
