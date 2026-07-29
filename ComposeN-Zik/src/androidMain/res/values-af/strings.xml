@@ -143,6 +143,8 @@
   <string name="unsynchronized_lyrics">nie gesinchroniseerde lirieke</string>
   <string name="synchronized_lyrics">gesinchroniseerde lirieke</string>
   <string name="karaoke_lyrics">karaoke lyrics</string>
+  <string name="auto_lyrics">Auto</string>
+  <string name="current_lyrics_state">Current state: %1$s</string>
   <string name="provided_by">Verskaf deur</string>
   <string name="delete_playback_events">Verwyder %1$s afspeel gebeurtenisse</string>
   <string name="existing_data_will_be_overwritten">Bestaande data sal oorskryf word. %1$s sal outomaties toe maak na die herstel van die databasis.</string>
