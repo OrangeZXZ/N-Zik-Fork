@@ -143,6 +143,8 @@
   <string name="unsynchronized_lyrics">niezsynchronizowany tekst</string>
   <string name="synchronized_lyrics">zsynchronizowany tekst</string>
   <string name="karaoke_lyrics">karaoke tekst piosenki</string>
+  <string name="auto_lyrics">Auto</string>
+  <string name="current_lyrics_state">Current state: %1$s</string>
   <string name="provided_by">Dostarczono przez</string>
   <string name="delete_playback_events">Usuń %1$s akcje odtarzania</string>
   <string name="existing_data_will_be_overwritten">Istniejące dane zostaną nadpisane. %1$s automatycznie zamknie się po przywróceniu bazy danych.</string>
