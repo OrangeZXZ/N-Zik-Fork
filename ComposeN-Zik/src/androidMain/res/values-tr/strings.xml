@@ -143,6 +143,8 @@
   <string name="unsynchronized_lyrics">senkronize edilmemiş şarkı sözleri</string>
   <string name="synchronized_lyrics">senkronize edilmiş şarkı sözleri</string>
   <string name="karaoke_lyrics">Karakoke şarkı sözleri</string>
+  <string name="auto_lyrics">Auto</string>
+  <string name="current_lyrics_state">Current state: %1$s</string>
   <string name="provided_by">Tarafından sağlanan</string>
   <string name="delete_playback_events">%1$s çalma olayını sil</string>
   <string name="existing_data_will_be_overwritten">Mevcut verilerin üzerine yazılacaktır. Veritabanı geri yüklendikten sonra %1$s otomatik olarak kapanacaktır.</string>

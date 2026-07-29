@@ -143,6 +143,8 @@
   <string name="unsynchronized_lyrics">usynkroniserte sangtekster</string>
   <string name="synchronized_lyrics">synkroniserte sangtekster</string>
   <string name="karaoke_lyrics">karaoke tekster</string>
+  <string name="auto_lyrics">Auto</string>
+  <string name="current_lyrics_state">Current state: %1$s</string>
   <string name="provided_by">Levert av</string>
   <string name="delete_playback_events">Slett %1$s avspillingshendelser</string>
   <string name="existing_data_will_be_overwritten">Eksisterende data vil bli overskrevet. %1$s vil automatisk bli stengt selv ved gjenoppretting av databasen.</string>

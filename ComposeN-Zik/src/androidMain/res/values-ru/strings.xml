@@ -143,6 +143,8 @@
   <string name="unsynchronized_lyrics">несинхронизированные тексты</string>
   <string name="synchronized_lyrics">синхронизированные тексты</string>
   <string name="karaoke_lyrics">караоке-тексты</string>
+  <string name="auto_lyrics">Auto</string>
+  <string name="current_lyrics_state">Current state: %1$s</string>
   <string name="provided_by">Визуальные материалы из</string>
   <string name="delete_playback_events">Удалить %1$s События воспроизведения</string>
   <string name="existing_data_will_be_overwritten">Existing data will be overwritten. %1$s will automatically close itself after restoring the database.</string>

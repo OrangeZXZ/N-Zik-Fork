@@ -143,6 +143,8 @@
   <string name="unsynchronized_lyrics">μη συγχρονισμένων στίχων</string>
   <string name="synchronized_lyrics">συγχρονισμένων στίχων</string>
   <string name="karaoke_lyrics">καραόκε στίχους</string>
+  <string name="auto_lyrics">Auto</string>
+  <string name="current_lyrics_state">Current state: %1$s</string>
   <string name="provided_by">Παρέχονται από</string>
   <string name="delete_playback_events">Διαγραφή %1$s συμβάντων αναπαραγωγής</string>
   <string name="existing_data_will_be_overwritten">Τα υπάρχοντα δεδομένα θα αντικατασταθούν.\nΤο %1$s θα κλείσει αυτόματα μετά την επαναφορά της βάσης δεδομένων.</string>

@@ -143,6 +143,8 @@
   <string name="unsynchronized_lyrics">nesynchronizovaný písňový text</string>
   <string name="synchronized_lyrics">synchronizovaný písňový text</string>
   <string name="karaoke_lyrics">karaoke texty</string>
+  <string name="auto_lyrics">Auto</string>
+  <string name="current_lyrics_state">Current state: %1$s</string>
   <string name="provided_by">Poskytnuto od</string>
   <string name="delete_playback_events">Smazat %1$s přehrávané akce</string>
   <string name="existing_data_will_be_overwritten">Stávající data budou přepsána. %1$s se po obnovení databáze automaticky uzavře.</string>
