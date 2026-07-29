@@ -53,7 +53,7 @@ kermit = "2.1.0"
 kotlinx-serialization = "1.11.0"
 composeReorderable = "3.1.0"
 freedroidwarn = "V1.13"
-work = "2.9.0"
+work = "2.11.2"
 
 [libraries]
 # Kotlinx
