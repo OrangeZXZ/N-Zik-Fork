@@ -230,6 +230,43 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
 
+  comment-beta-issues:
+    needs: [upload-to-release, versioning]
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Comment issues marked as "patched BETA" (no close)
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'patched BETA',
+              per_page: 100,
+            });
+
+            const version = '${{ needs.versioning.outputs.downstream }}-b';
+            const body = [
+              `🧪 This issue is fixed in the **BETA** build **v${version}** 🧪`,
+              `➤ Download: https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/v${version}`,
+              '',
+              '> This is a beta release, the ticket stays open until the stable version confirms the fix.'
+            ].join('\n');
+
+            for (const issue of issues) {
+              if (issue.pull_request) continue;
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body,
+              });
+              console.log(`Commented on issue #${issue.number}`);
+            }
+
   notify-discord:
     needs: [upload-to-release, versioning]
     runs-on: ubuntu-latest
