@@ -143,6 +143,8 @@
   <string name="unsynchronized_lyrics">동기화되지 않은 가사</string>
   <string name="synchronized_lyrics">동기화된 가사</string>
   <string name="karaoke_lyrics">karaoke lyrics</string>
+  <string name="auto_lyrics">Auto</string>
+  <string name="current_lyrics_state">Current state: %1$s</string>
   <string name="provided_by">제공:</string>
   <string name="delete_playback_events">재생 이벤트(%1$s) 삭제</string>
   <string name="existing_data_will_be_overwritten">Existing data will be overwritten. %1$s will automatically close itself after restoring the database.</string>
