@@ -143,6 +143,8 @@
   <string name="unsynchronized_lyrics">不同步歌詞</string>
   <string name="synchronized_lyrics">同步歌詞</string>
   <string name="karaoke_lyrics">卡拉奥克歌词</string>
+  <string name="auto_lyrics">Auto</string>
+  <string name="current_lyrics_state">Current state: %1$s</string>
   <string name="provided_by">提供者:</string>
   <string name="delete_playback_events">移除 %1$s 個重播活動</string>
   <string name="existing_data_will_be_overwritten">現有資料將被覆蓋. \n%1$s 回復資料後將自動關閉.</string>
