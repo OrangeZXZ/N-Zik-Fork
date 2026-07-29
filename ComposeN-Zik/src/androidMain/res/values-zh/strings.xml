@@ -143,7 +143,7 @@
   <string name="unsynchronized_lyrics">不同步的歌词</string>
   <string name="synchronized_lyrics">同步歌词</string>
   <string name="karaoke_lyrics">卡拉奥克歌词</string>
-  <string name="auto_lyrics">Auto</string>
+  <string name="auto_lyrics">auto lyrics</string>
   <string name="current_lyrics_state">Current state: %1$s</string>
   <string name="provided_by">提供:</string>
   <string name="delete_playback_events">删除 %1$s 的播放事件</string>
