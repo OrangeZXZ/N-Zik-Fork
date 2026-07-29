@@ -143,6 +143,8 @@
   <string name="unsynchronized_lyrics">szinkronizálatlan dalszöveg</string>
   <string name="synchronized_lyrics">szinkronizált dalszöveg</string>
   <string name="karaoke_lyrics">karaoke lyrics</string>
+  <string name="auto_lyrics">Auto</string>
+  <string name="current_lyrics_state">Current state: %1$s</string>
   <string name="provided_by">Biztosítja</string>
   <string name="delete_playback_events">%1$s lejátszási esemény törlése</string>
   <string name="existing_data_will_be_overwritten">Existing data will be overwritten. %1$s will automatically close itself after restoring the database.</string>
