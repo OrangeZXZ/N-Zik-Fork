@@ -43,7 +43,11 @@ fun resetGlobalAttemptForType(type: LyricsType) {
         LyricsType.Karaoke -> globalLastKaraokeAttemptMediaId = null
         LyricsType.Synced -> globalLastSyncedAttemptMediaId = null
         LyricsType.Unsynced -> globalLastUnSyncedAttemptMediaId = null
-        LyricsType.Auto -> {}
+        LyricsType.Auto -> {
+            globalLastKaraokeAttemptMediaId = null
+            globalLastSyncedAttemptMediaId = null
+            globalLastUnSyncedAttemptMediaId = null
+        }
     }
 }
 

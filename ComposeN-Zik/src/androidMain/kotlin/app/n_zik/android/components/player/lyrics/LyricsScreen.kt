@@ -663,6 +663,10 @@ fun LyricsScreen(
                                         },
                                         onFetchLyricsAgain = {
                                             resetGlobalAttemptForType(lyricsType)
+                                            checkedLyricsLrc = false
+                                            checkedLyricsKugou = false
+                                            checkedLyricsInnertube = false
+                                            checkLyrics = !checkLyrics
                                             val targetType = lyrics?.type ?: lyricsType.name
                                             Database.asyncTransaction {
                                                 lyricsTable.upsert(

@@ -2,6 +2,9 @@ Fixed:
 - fix(lyrics): prevent getting stuck on Karaoke when switching to Synced
   - strictly forces a refetch if the user explicitly switches to Synced mode but the local database only contains Karaoke lyrics
   - BetterLyrics result is silently rejected (falling back to LrcLib/KuGou) if the user requested Synced but BetterLyrics provides word-by-word Karaoke timings
+- fix(lyrics): "Fetch lyrics again" in Auto mode no longer causes infinite shimmer
+  - `resetGlobalAttemptForType(Auto)` now resets all global attempt IDs instead of being a no-op
+  - `onFetchLyricsAgain` now resets checked source flags and toggles `checkLyrics` to properly restart the fetch cycle
 
 Improved:
 - improve(lyrics): real-time UI state updates in settings menu
