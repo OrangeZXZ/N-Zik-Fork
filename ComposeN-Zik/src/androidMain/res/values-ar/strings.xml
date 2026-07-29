@@ -143,6 +143,8 @@
   <string name="unsynchronized_lyrics">unsynchronized lyrics</string>
   <string name="synchronized_lyrics">synchronized lyrics</string>
   <string name="karaoke_lyrics">كلمات الكراوكي</string>
+  <string name="auto_lyrics">Auto</string>
+  <string name="current_lyrics_state">Current state: %1$s</string>
   <string name="provided_by">Provided by</string>
   <string name="delete_playback_events">Delete %1$s playback events</string>
   <string name="existing_data_will_be_overwritten">سيتم الكتابة فوق البيانات الموجودة. سيتم إغلاق %1$s تلقائياً بعد استعادة قاعدة البيانات.</string>
