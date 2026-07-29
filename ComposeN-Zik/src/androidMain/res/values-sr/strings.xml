@@ -143,6 +143,8 @@
   <string name="unsynchronized_lyrics">nesinhronizovane stihove</string>
   <string name="synchronized_lyrics">sinhronizovane stihove</string>
   <string name="karaoke_lyrics">karaoke lyrics</string>
+  <string name="auto_lyrics">Auto</string>
+  <string name="current_lyrics_state">Current state: %1$s</string>
   <string name="provided_by">Obezbeđuje</string>
   <string name="delete_playback_events">Izbriši %1$s događaje reprodukcije</string>
   <string name="existing_data_will_be_overwritten">Postojeći podaci će biti prepisani. %1$s će se automatski zatvoriti nakon vraćanja baze podataka.</string>
