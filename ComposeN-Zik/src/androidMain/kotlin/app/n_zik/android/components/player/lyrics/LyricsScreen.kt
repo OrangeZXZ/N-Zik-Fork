@@ -51,6 +51,7 @@ import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.typography
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import kotlin.Float.Companion.POSITIVE_INFINITY
 import app.n_zik.android.components.menu.lyrics.LyricsSettingsMenu
 import app.n_zik.android.components.dialog.player.ShowOffsetDialog
@@ -84,7 +85,7 @@ fun LyricsScreen(
         val binder = LocalPlayerServiceBinder.current
 
         var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
-        var lyricsType by rememberPreference(lyricsTypeKey, LyricsType.Karaoke)
+        var lyricsType by rememberPreference(lyricsTypeKey, LyricsType.Auto)
         var invalidLrc by remember(mediaId, lyricsType) { mutableStateOf(false) }
         var isPicking by remember(mediaId, lyricsType) { mutableStateOf(false) }
         var lyricsColor by rememberPreference(lyricsColorKey, LyricsColor.White)
@@ -95,15 +96,25 @@ fun LyricsScreen(
         val thumbnailSize = Dimensions.thumbnails.player.song
         val colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
 
-        var showPlaceholder by remember { mutableStateOf(false) }
+        var checkLyrics by remember { mutableStateOf(false) }
+        var isFetching by remember(mediaId, checkLyrics, lyricsType) { mutableStateOf(true) }
         var lyrics by remember { mutableStateOf<Lyrics?>(null) }
+
+        LaunchedEffect(mediaId) {
+            lyrics = null
+        }
+
+        val actualLyricsType = remember(lyrics, lyricsType) {
+            lyrics?.type?.let { runCatching { LyricsType.valueOf(it) }.getOrNull() }
+        }
 
         val editLyricsDialog = EditLyricsDialog(
             mediaId = mediaId,
-            lyricsType = lyricsType,
+            lyricsType = actualLyricsType ?: (if (lyricsType != LyricsType.Auto) lyricsType else LyricsType.Karaoke),
             getLyrics = { lyrics },
             ensureSongInserted = { ensureSongInserted() }
         )
+
 
         val text = lyrics?.data
 
@@ -138,7 +149,7 @@ fun LyricsScreen(
         var checkedLyricsLrc by remember { mutableStateOf(false) }
         var checkedLyricsKugou by remember { mutableStateOf(false) }
         var checkedLyricsInnertube by remember { mutableStateOf(false) }
-        var checkLyrics by remember { mutableStateOf(false) }
+
 
         var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
         var lyricsAlignment by rememberPreference(lyricsAlignmentKey, LyricsAlignment.Center)
@@ -226,7 +237,8 @@ fun LyricsScreen(
             onErrorUpdated = { isError = it },
             onCheckedLrcUpdated = { checkedLyricsLrc = checkedLyricsLrc || it },
             onCheckedKugouUpdated = { checkedLyricsKugou = checkedLyricsKugou || it },
-            onCheckedInnertubeUpdated = { checkedLyricsInnertube = checkedLyricsInnertube || it }
+            onCheckedInnertubeUpdated = { checkedLyricsInnertube = checkedLyricsInnertube || it },
+            onFetchingStateChanged = { isFetching = it }
         )
 
         editLyricsDialog.Render()
@@ -271,7 +283,7 @@ fun LyricsScreen(
             val noLyricsFound = text == null && allSyncedSourcesChecked
 
             AnimatedVisibility(
-                visible = ((isError && text == null) || (invalidLrc && lyricsType != LyricsType.Unsynced)) && !noLyricsFound,
+                visible = ((isError && text == null) || (invalidLrc && lyricsType != LyricsType.Unsynced)) && !noLyricsFound && !isFetching,
                 enter = slideInVertically { -it },
                 exit = slideOutVertically { -it },
                 modifier = Modifier.align(Alignment.TopCenter)
@@ -293,7 +305,7 @@ fun LyricsScreen(
             if (text?.isNotEmpty() == true) {
                 val hasWordTimings = text.lines().any { it.trim().startsWith("<") && it.contains(":") && it.contains(">") }
                 when {
-                    lyricsType == LyricsType.Karaoke && hasWordTimings -> {
+                    actualLyricsType == LyricsType.Karaoke && hasWordTimings -> {
                         KaraokeLyricsView(
                             text = text,
                             currentPositionProvider = { (binder?.player?.currentPosition ?: 0L) + lyricsOffsetState.value },
@@ -331,7 +343,7 @@ fun LyricsScreen(
                         )
                     }
 
-                    lyricsType == LyricsType.Synced || (lyricsType == LyricsType.Karaoke && !hasWordTimings) -> {
+                    actualLyricsType == LyricsType.Synced || (actualLyricsType == LyricsType.Karaoke && !hasWordTimings) -> {
                         SyncedLyricsView(
                             text = text,
                             currentPositionProvider = { (binder?.player?.currentPosition ?: 0L) + lyricsOffsetState.value },
@@ -367,7 +379,7 @@ fun LyricsScreen(
                             karaokeRespectAgentPosition = karaokeRespectAgentPosition
                         )
                     }
-                    lyricsType == LyricsType.Unsynced -> {
+                    actualLyricsType == LyricsType.Unsynced -> {
                         UnsyncedLyricsView(
                             text = text,
                             showlyricsthumbnail = showlyricsthumbnail,
@@ -395,7 +407,7 @@ fun LyricsScreen(
                 }
             }
 
-            if (noLyricsFound && !isPicking) {
+            if (noLyricsFound && !isPicking && !isFetching) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
@@ -440,7 +452,7 @@ fun LyricsScreen(
                 }
             }
 
-            if ((text == null && !isError && !noLyricsFound) || showPlaceholder) {
+            if ((text == null && !isError && !noLyricsFound) || isFetching) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.shimmer()
@@ -625,7 +637,12 @@ fun LyricsScreen(
                                     LyricsSettingsMenu(
                                         isLandscape = isLandscape,
                                         translateEnabled = translateEnabledState,
-                                        isLyricsNotNull = lyrics != null,
+                                        isLyricsNotNull = { lyrics != null },
+                                        actualLyricsType = {
+                                            lyrics?.type?.let { typeString ->
+                                                LyricsType.entries.find { it.name == typeString }
+                                            }
+                                        },
                                         onShowLyricsSizeDialog = { showLyricsSizeDialog = !showLyricsSizeDialog },
                                         onEditLyrics = { editLyricsDialog.onShortClick() },
                                         onCopyLyrics = { copyToClipboard = true },
@@ -646,11 +663,12 @@ fun LyricsScreen(
                                         },
                                         onFetchLyricsAgain = {
                                             resetGlobalAttemptForType(lyricsType)
+                                            val targetType = lyrics?.type ?: lyricsType.name
                                             Database.asyncTransaction {
                                                 lyricsTable.upsert(
                                                     Lyrics(
                                                         songId = mediaId,
-                                                        type = lyricsType.name,
+                                                        type = targetType,
                                                         data = null
                                                     )
                                                 )

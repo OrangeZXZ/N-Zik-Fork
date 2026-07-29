@@ -1,5 +1,6 @@
 package app.n_zik.android.components.menu.lyrics
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -84,7 +85,8 @@ import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 class LyricsSettingsMenu private constructor(
     private val isLandscape: Boolean,
     private val translateEnabled: MutableState<Boolean>,
-    private val isLyricsNotNull: Boolean,
+    private val isLyricsNotNull: () -> Boolean,
+    private val actualLyricsType: () -> LyricsType?,
     private val onShowLyricsSizeDialog: () -> Unit,
     private val onEditLyrics: () -> Unit,
     private val onCopyLyrics: () -> Unit,
@@ -101,7 +103,8 @@ class LyricsSettingsMenu private constructor(
         operator fun invoke(
             isLandscape: Boolean,
             translateEnabled: MutableState<Boolean>,
-            isLyricsNotNull: Boolean,
+            isLyricsNotNull: () -> Boolean,
+            actualLyricsType: () -> LyricsType?,
             onShowLyricsSizeDialog: () -> Unit,
             onEditLyrics: () -> Unit,
             onCopyLyrics: () -> Unit,
@@ -114,6 +117,7 @@ class LyricsSettingsMenu private constructor(
                 isLandscape = isLandscape,
                 translateEnabled = translateEnabled,
                 isLyricsNotNull = isLyricsNotNull,
+                actualLyricsType = actualLyricsType,
                 onShowLyricsSizeDialog = onShowLyricsSizeDialog,
                 onEditLyrics = onEditLyrics,
                 onCopyLyrics = onCopyLyrics,
@@ -150,7 +154,7 @@ class LyricsSettingsMenu private constructor(
         var lyricsSizeAnimate by rememberPreference(lyricsSizeAnimateKey, false)
         var lyricsHighlight by rememberPreference(lyricsHighlightKey, LyricsHighlight.None)
         var lyricsBackground by rememberPreference(lyricsBackgroundKey, LyricsBackground.Black)
-        var lyricsType by rememberPreference(lyricsTypeKey, LyricsType.Karaoke)
+        var lyricsType by rememberPreference(lyricsTypeKey, LyricsType.Auto)
         var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
         var showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
         var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, true)
@@ -178,10 +182,34 @@ class LyricsSettingsMenu private constructor(
                         LyricsType.Karaoke -> stringResource(R.string.karaoke_lyrics)
                         LyricsType.Synced -> stringResource(R.string.synchronized_lyrics)
                         LyricsType.Unsynced -> stringResource(R.string.unsynchronized_lyrics)
+                        LyricsType.Auto -> stringResource(R.string.auto_lyrics)
                     }
                 },
                 onValueSelected = { lyricsType = it }
             )
+
+            val actualStateString = actualLyricsType()?.let {
+                when (it) {
+                    LyricsType.Karaoke -> stringResource(R.string.karaoke_lyrics)
+                    LyricsType.Synced -> stringResource(R.string.synchronized_lyrics)
+                    LyricsType.Unsynced -> stringResource(R.string.unsynchronized_lyrics)
+                    LyricsType.Auto -> stringResource(R.string.auto_lyrics)
+                }
+            }
+
+            AnimatedContent(
+                targetState = actualStateString,
+                label = "LyricsStateAnimation"
+            ) { stateString ->
+                if (stateString != null) {
+                    ActionSettingEntry(
+                        title = stringResource(R.string.current_lyrics_state, stateString),
+                        icon = R.drawable.information,
+                        enabled = false,
+                        onClick = {}
+                    )
+                }
+            }
 
             // Show Lyrics Thumbnail
             ToggleSettingEntry(
@@ -513,9 +541,9 @@ class LyricsSettingsMenu private constructor(
             ActionSettingEntry(
                 title = stringResource(R.string.fetch_lyrics_again),
                 icon = R.drawable.sync,
-                enabled = isLyricsNotNull,
+                enabled = isLyricsNotNull(),
                 onClick = {
-                    if (isLyricsNotNull) {
+                    if (isLyricsNotNull()) {
                         menuState.hide()
                         onFetchLyricsAgain()
                     }
@@ -565,10 +593,35 @@ class LyricsSettingsMenu private constructor(
                             LyricsType.Karaoke -> stringResource(R.string.karaoke_lyrics)
                             LyricsType.Synced -> stringResource(R.string.synchronized_lyrics)
                             LyricsType.Unsynced -> stringResource(R.string.unsynchronized_lyrics)
+                            LyricsType.Auto -> stringResource(R.string.auto_lyrics)
                         }
                     },
                     onValueSelected = { lyricsType = it }
                 )
+            }
+
+            item {
+                val actualStateString = when (actualLyricsType()) {
+                    LyricsType.Karaoke -> stringResource(R.string.karaoke_lyrics)
+                    LyricsType.Synced -> stringResource(R.string.synchronized_lyrics)
+                    LyricsType.Unsynced -> stringResource(R.string.unsynchronized_lyrics)
+                    LyricsType.Auto -> stringResource(R.string.auto_lyrics)
+                    null -> null
+                }
+
+                AnimatedContent(
+                    targetState = actualStateString,
+                    label = "LyricsStateGridAnimation"
+                ) { stateString ->
+                    if (stateString != null) {
+                        ActionSettingEntry(
+                            title = stringResource(R.string.current_lyrics_state, stateString),
+                            icon = R.drawable.information,
+                            enabled = false,
+                            onClick = {}
+                        )
+                    }
+                }
             }
 
             // Show Lyrics Thumbnail
@@ -950,9 +1003,9 @@ class LyricsSettingsMenu private constructor(
                 ActionSettingEntry(
                     title = stringResource(R.string.fetch_lyrics_again),
                     icon = R.drawable.sync,
-                    enabled = isLyricsNotNull,
+                    enabled = isLyricsNotNull(),
                     onClick = {
-                        if (isLyricsNotNull) {
+                        if (isLyricsNotNull()) {
                             menuState.hide()
                             onFetchLyricsAgain()
                         }

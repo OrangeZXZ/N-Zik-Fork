@@ -43,6 +43,7 @@ fun resetGlobalAttemptForType(type: LyricsType) {
         LyricsType.Karaoke -> globalLastKaraokeAttemptMediaId = null
         LyricsType.Synced -> globalLastSyncedAttemptMediaId = null
         LyricsType.Unsynced -> globalLastUnSyncedAttemptMediaId = null
+        LyricsType.Auto -> {}
     }
 }
 
@@ -61,7 +62,8 @@ fun LyricsFetcher(
     onErrorUpdated: (Boolean) -> Unit,
     onCheckedLrcUpdated: (Boolean) -> Unit,
     onCheckedKugouUpdated: (Boolean) -> Unit,
-    onCheckedInnertubeUpdated: (Boolean) -> Unit
+    onCheckedInnertubeUpdated: (Boolean) -> Unit,
+    onFetchingStateChanged: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
     var previousLyricsType by remember { mutableStateOf(lyricsType) }
@@ -95,17 +97,18 @@ fun LyricsFetcher(
                     globalLastUnSyncedAttemptMediaId = globalLastUnSyncedAttemptMediaId
                 )
 
-                val wantSynced = lyricsType != LyricsType.Unsynced
-                val wantKaraoke = lyricsType == LyricsType.Karaoke
+                val isAuto = lyricsType == LyricsType.Auto
+                val wantSynced = lyricsType == LyricsType.Synced || isAuto
+                val wantKaraoke = lyricsType == LyricsType.Karaoke || lyricsType == LyricsType.Synced || isAuto
 
                 val currentLyrics = fetchNeeds.currentLyrics
                 val needKaraokeFetch = fetchNeeds.needKaraokeFetch
                 val needSyncedFetch = fetchNeeds.needSyncedFetch
                 val needUnsyncedFetch = fetchNeeds.needUnsyncedFetch
 
-
-
                 if (needKaraokeFetch || needSyncedFetch || needUnsyncedFetch) {
+                    onFetchingStateChanged(true)
+                    try {
 
                     if (needKaraokeFetch) {
                         globalLastKaraokeAttemptMediaId = mediaId
@@ -117,8 +120,19 @@ fun LyricsFetcher(
                         globalLastUnSyncedAttemptMediaId = mediaId
                     }
 
+                    var duration = withContext(Dispatchers.Main) {
+                        durationProvider()
+                    }
+
+                    while (duration == C.TIME_UNSET) {
+                        delay(100)
+                        duration = withContext(Dispatchers.Main) {
+                            durationProvider()
+                        }
+                    }
+
                     // Unsync mode → skip synced/karaoke fetch, go directly to unsynced
-                    if (needUnsyncedFetch) {
+                    if (lyricsType == LyricsType.Unsynced && needUnsyncedFetch) {
                         var foundUnsynced = false
                         kotlin.runCatching {
                             LrcLib.lyricsUnsynced(
@@ -143,17 +157,6 @@ fun LyricsFetcher(
                             tryYouTubeUnsynced(mediaId, mediaMetadata, coroutineScope, playerEnableLyricsPopupMessage, onErrorUpdated, onCheckedInnertubeUpdated, onLyricsUpdated, currentLyrics, context)
                         }
                     } else {
-
-                    var duration = withContext(Dispatchers.Main) {
-                        durationProvider()
-                    }
-
-                    while (duration == C.TIME_UNSET) {
-                        delay(100)
-                        duration = withContext(Dispatchers.Main) {
-                            durationProvider()
-                        }
-                    }
 
                     val fetchLrcLibAndKugou: suspend () -> Unit = {
                         if (currentLyrics?.data.isNullOrEmpty() || needSyncedFetch) {
@@ -346,26 +349,41 @@ fun LyricsFetcher(
                                 val hasKaraokeTimings = ttmlStr.lines().any { it.trim().startsWith("<") && it.contains(":") && it.contains(">") }
                                 if (ttmlStr.isNotEmpty()) {
                                     if (hasKaraokeTimings) {
-                                        if (playerEnableLyricsPopupMessage) {
-                                            Toaster.s(
-                                                R.string.info_lyrics_found_on_s,
-                                                context.getString(R.string.source_betterlyrics_karaoke)
-                                            )
+                                        if (lyricsType == LyricsType.Synced) {
+                                            // The user explicitly requested Synced, not Karaoke. 
+                                            // BetterLyrics returned Karaoke timings, so we reject it and fallback.
+                                            fetchLrcLibAndKugou()
+                                        } else {
+                                            if (playerEnableLyricsPopupMessage) {
+                                                Toaster.s(
+                                                    R.string.info_lyrics_found_on_s,
+                                                    context.getString(R.string.source_betterlyrics_karaoke)
+                                                )
+                                            }
+                                            onErrorUpdated(false)
+                                            onCheckedLrcUpdated(true)
+                                            saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Karaoke.name, data = ttmlStr))
                                         }
-
-                                        onErrorUpdated(false)
-                                        onCheckedLrcUpdated(true)
-
-                                        saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Karaoke.name, data = ttmlStr))
                                     } else {
                                         // BetterLyrics found synced lyrics (no word timings)
-                                        if (playerEnableLyricsPopupMessage) {
-                                            Toaster.w(R.string.info_karaoke_not_found_showing_sync, context.getString(R.string.source_betterlyrics_karaoke), context.getString(R.string.source_betterlyrics_synced))
+                                        if (lyricsType == LyricsType.Synced) {
+                                            if (playerEnableLyricsPopupMessage) {
+                                                Toaster.s(
+                                                    R.string.info_lyrics_found_on_s,
+                                                    context.getString(R.string.source_betterlyrics_synced)
+                                                )
+                                            }
+                                            onErrorUpdated(false)
+                                            onCheckedLrcUpdated(true)
+                                            saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Synced.name, data = ttmlStr))
+                                        } else {
+                                            if (playerEnableLyricsPopupMessage) {
+                                                Toaster.w(R.string.info_karaoke_not_found_showing_sync, context.getString(R.string.source_betterlyrics_karaoke), context.getString(R.string.source_betterlyrics_synced))
+                                            }
+                                            onErrorUpdated(false)
+                                            onCheckedLrcUpdated(true)
+                                            saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Karaoke.name, data = ttmlStr))
                                         }
-                                        onErrorUpdated(false)
-                                        onCheckedLrcUpdated(true)
-
-                                        saveLyricsSafe(Lyrics(songId = mediaId, type = LyricsType.Karaoke.name, data = ttmlStr))
                                     }
                                 } else {
                                     if (playerEnableLyricsPopupMessage) {
@@ -375,7 +393,14 @@ fun LyricsFetcher(
                                             context.getString(R.string.source_betterlyrics_synced)
                                         )
                                     }
-                                    fetchLrcLibAndKugou()
+                                    if (isAuto || lyricsType == LyricsType.Synced) {
+                                        fetchLrcLibAndKugou()
+                                    } else {
+                                        onCheckedLrcUpdated(true)
+                                        onCheckedKugouUpdated(true)
+                                        onCheckedInnertubeUpdated(true)
+                                        onErrorUpdated(true)
+                                    }
                                 }
                             }.onFailure {
                                 if (playerEnableLyricsPopupMessage) {
@@ -385,7 +410,14 @@ fun LyricsFetcher(
                                         context.getString(R.string.source_betterlyrics_synced)
                                     )
                                 }
-                                fetchLrcLibAndKugou()
+                                if (isAuto || lyricsType == LyricsType.Synced) {
+                                    fetchLrcLibAndKugou()
+                                } else {
+                                    onCheckedLrcUpdated(true)
+                                    onCheckedKugouUpdated(true)
+                                    onCheckedInnertubeUpdated(true)
+                                    onErrorUpdated(true)
+                                }
                             }
                         }.onFailure {
                             Timber.tag(TAG).e("→ BetterLyrics KARAOKE ERROR: ${it.stackTraceToString()}")
@@ -396,19 +428,32 @@ fun LyricsFetcher(
                                     context.getString(R.string.source_betterlyrics_synced)
                                 )
                             }
-                            fetchLrcLibAndKugou()
+                            if (isAuto || lyricsType == LyricsType.Synced) {
+                                fetchLrcLibAndKugou()
+                            } else {
+                                onCheckedLrcUpdated(true)
+                                onCheckedKugouUpdated(true)
+                                onCheckedInnertubeUpdated(true)
+                                onErrorUpdated(true)
+                            }
                         }
                     } else {
                         fetchLrcLibAndKugou()
                     }
                     } // end else (not needUnsyncedFetch)
+                    } finally {
+                        onFetchingStateChanged(false)
+                    }
 
                 } else if (!currentLyrics?.data.isNullOrEmpty()) {
+                    onFetchingStateChanged(false)
                     // No fetch needed — just update UI with current lyrics
                     onLyricsUpdated(currentLyrics)
+                } else {
+                    onFetchingStateChanged(false)
                 }
 
-                if (!wantSynced && currentLyrics?.data == null && globalLastUnSyncedAttemptMediaId != mediaId) {
+                if (lyricsType == LyricsType.Unsynced && currentLyrics?.data == null && globalLastUnSyncedAttemptMediaId != mediaId) {
                     globalLastUnSyncedAttemptMediaId = mediaId
                     onErrorUpdated(false)
                     onLyricsUpdated(null)
