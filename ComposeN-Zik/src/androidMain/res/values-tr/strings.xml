@@ -142,8 +142,8 @@
   <string name="show">Göster</string>
   <string name="unsynchronized_lyrics">senkronize edilmemiş şarkı sözleri</string>
   <string name="synchronized_lyrics">senkronize edilmiş şarkı sözleri</string>
-  <string name="karaoke_lyrics">Karakoke şarkı sözleri</string>
-  <string name="auto_lyrics">Auto</string>
+  <string name="karaoke_lyrics">karakoke şarkı sözleri</string>
+  <string name="auto_lyrics">otomatik şarkı sözleri</string>
   <string name="current_lyrics_state">Mevcut durum: %1$s</string>
   <string name="provided_by">Tarafından sağlanan</string>
   <string name="delete_playback_events">%1$s çalma olayını sil</string>
