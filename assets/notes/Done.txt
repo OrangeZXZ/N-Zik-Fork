@@ -1,3 +1,5 @@
+- refactor(easter-egg): replace Pacman and Snake mini-games with static unknown easter egg images
+
 BETA V 7.2.9
 
 Fixed:

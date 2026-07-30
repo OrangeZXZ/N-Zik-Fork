@@ -58,8 +58,7 @@ import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.enums.StatisticsType
 import app.it.fast4x.rimusic.enums.TransitionEffect
-import app.n_zik.android.extensions.games.pacman.Pacman
-import app.n_zik.android.extensions.games.snake.SnakeGame
+import app.n_zik.android.components.ui.screens.easter.EasterScreen
 import app.it.fast4x.rimusic.models.Mood
 import app.it.fast4x.rimusic.models.SearchQuery
 import app.it.fast4x.rimusic.ui.components.CustomModalBottomSheet
@@ -257,11 +256,11 @@ fun AppNavigation(
         }
 
         composable(route = NavRoutes.gamePacman.name) {
-            Pacman(navController = navController)
+            EasterScreen(navController = navController, imageResId = app.n_zik.android.R.drawable.easter1)
         }
 
         composable(route = NavRoutes.gameSnake.name) {
-            SnakeGame(navController = navController)
+            EasterScreen(navController = navController, imageResId = app.n_zik.android.R.drawable.easter2)
         }
 
         composable(route = NavRoutes.queue.name) {
