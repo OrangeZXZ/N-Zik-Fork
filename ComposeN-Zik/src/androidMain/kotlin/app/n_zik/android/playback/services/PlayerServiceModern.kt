@@ -516,7 +516,6 @@ class PlayerServiceModern : MediaLibraryService(),
 
         player.skipSilenceEnabled = preferences.getBoolean(skipSilenceKey, false)
         player.addListener(this@PlayerServiceModern)
-        player.addAnalyticsListener(PlaybackStatsListener(false, this@PlayerServiceModern))
 
         player.repeatMode = preferences.getEnum(queueLoopTypeKey, QueueLoopType.Default).type
 
@@ -658,7 +657,6 @@ class PlayerServiceModern : MediaLibraryService(),
         eventTime: AnalyticsListener.EventTime,
         playbackStats: PlaybackStats
     ) {
-        // if pause listen history is enabled, don't register statistic event
         if (preferences.getBoolean(pauseListenHistoryKey, false)) return
 
         try {
@@ -677,7 +675,6 @@ class PlayerServiceModern : MediaLibraryService(),
                 }
 
                 if ( totalPlayTimeMs > minTimeForEvent.asMillis ) {
-                    // Ensure the song exists in the DB so the foreign key constraint is satisfied
                     insertIgnore(mediaItem)
 
                     eventTable.insertIgnore(
@@ -2276,6 +2273,7 @@ class PlayerServiceModern : MediaLibraryService(),
         secondaryPlayer = createCrossfadeExoPlayer()
         val secPlayer = secondaryPlayer!!
         secPlayer.addListener(secondaryPlayerListener)
+        secPlayer.addAnalyticsListener(PlaybackStatsListener(false, this@PlayerServiceModern))
 
         val itemCount = player.mediaItemCount
         val items = mutableListOf<androidx.media3.common.MediaItem>()

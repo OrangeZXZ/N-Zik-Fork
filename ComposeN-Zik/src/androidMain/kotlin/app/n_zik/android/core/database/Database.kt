@@ -16,6 +16,7 @@ import androidx.room.withTransaction
 import androidx.sqlite.db.SimpleSQLiteQuery
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.requests.searchPage
 import it.fast4x.innertube.requests.albumPage
 import it.fast4x.innertube.utils.from
@@ -221,7 +222,6 @@ object Database {
      */
     fun insertIgnore( mediaItem: MediaItem ) {
         val cleanSongId = mediaItem.mediaId.split("/").lastOrNull() ?: mediaItem.mediaId
-        // Insert song with merge (preserve existing non-empty fields)
         val newSong = mediaItem.asSong
         val dbSong = songTable.findByIdDirect(cleanSongId)
         val mergedSong = if (dbSong != null) {
@@ -259,68 +259,65 @@ object Database {
         } else newSong
         songTable.upsert(mergedSong)
 
-        // Insert/merge album and fetch details (including year) if missing
-        mediaItem.mediaMetadata
-                 .extras
-                 ?.getString("albumId")
-                 ?.let { albumId ->
-                     val albumTitle = mediaItem.mediaMetadata.albumTitle?.toString()
-                     val artworkUri = mediaItem.mediaMetadata.artworkUri?.toString()
-                     val artist = mediaItem.mediaMetadata.artist?.toString()
-                     val year = mediaItem.mediaMetadata.releaseYear?.toString()
-                     
-                     val dbAlbum = albumTable.findByIdDirect(albumId)
-                     val mergedAlbum = if (dbAlbum != null) {
-                         Album(
-                             id = albumId,
-                             title = albumTitle.takeIf { !it.isNullOrBlank() } ?: dbAlbum.title,
-                             thumbnailUrl = artworkUri.takeIf { !it.isNullOrBlank() } ?: dbAlbum.thumbnailUrl,
-                             year = year.takeIf { !it.isNullOrBlank() } ?: dbAlbum.year,
-                             authorsText = artist.takeIf { !it.isNullOrBlank() } ?: dbAlbum.authorsText,
-                             shareUrl = dbAlbum.shareUrl,
-                             timestamp = dbAlbum.timestamp,
-                             bookmarkedAt = dbAlbum.bookmarkedAt
-                         )
-                     } else {
-                         Album(
-                             id = albumId,
-                             title = albumTitle,
-                             thumbnailUrl = artworkUri,
-                             year = year,
-                             authorsText = artist
-                         )
-                     }
-                     albumTable.upsert(mergedAlbum)
+        val albumId = mediaItem.mediaMetadata.extras?.getString("albumId")
+        if (albumId != null) {
+            val albumTitle = mediaItem.mediaMetadata.albumTitle?.toString()
+            val artworkUri = mediaItem.mediaMetadata.artworkUri?.toString()
+            val artist = mediaItem.mediaMetadata.artist?.toString()
+            val year = mediaItem.mediaMetadata.releaseYear?.toString()
+            
+            val dbAlbum = albumTable.findByIdDirect(albumId)
+            val mergedAlbum = if (dbAlbum != null) {
+                Album(
+                    id = albumId,
+                    title = albumTitle.takeIf { !it.isNullOrBlank() } ?: dbAlbum.title,
+                    thumbnailUrl = artworkUri.takeIf { !it.isNullOrBlank() } ?: dbAlbum.thumbnailUrl,
+                    year = year.takeIf { !it.isNullOrBlank() } ?: dbAlbum.year,
+                    authorsText = artist.takeIf { !it.isNullOrBlank() } ?: dbAlbum.authorsText,
+                    shareUrl = dbAlbum.shareUrl,
+                    timestamp = dbAlbum.timestamp,
+                    bookmarkedAt = dbAlbum.bookmarkedAt
+                )
+            } else {
+                Album(
+                    id = albumId,
+                    title = albumTitle,
+                    thumbnailUrl = artworkUri,
+                    year = year,
+                    authorsText = artist
+                )
+            }
+            albumTable.upsert(mergedAlbum)
 
-                     // Background fetch album page metadata if year is missing online
-                     if (mergedAlbum.year.isNullOrBlank()) {
-                         CoroutineScope(Dispatchers.IO).launch {
-                             try {
-                                 Innertube.albumPage(it.fast4x.innertube.models.bodies.BrowseBody(browseId = albumId))
-                                     ?.getOrNull()
-                                     ?.let { albumPage ->
-                                         if (!albumPage.year.isNullOrBlank()) {
-                                             val updatedAlbum = Album(
-                                                 id = albumId,
-                                                 title = albumPage.title.takeIf { !it.isNullOrBlank() } ?: mergedAlbum.title,
-                                                 thumbnailUrl = albumPage.thumbnail?.url.takeIf { !it.isNullOrBlank() } ?: mergedAlbum.thumbnailUrl,
-                                                 year = albumPage.year,
-                                                 authorsText = albumPage.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() } ?: mergedAlbum.authorsText,
-                                                 shareUrl = albumPage.url ?: mergedAlbum.shareUrl,
-                                                 timestamp = System.currentTimeMillis(),
-                                                 bookmarkedAt = mergedAlbum.bookmarkedAt
-                                             )
-                                             albumTable.upsert(updatedAlbum)
-                                         }
-                                     }
-                             } catch (e: Exception) {
-                                 timber.log.Timber.tag("Database").e(e, "Failed to fetch album page for year update")
-                             }
-                         }
-                     }
+            // Background fetch album page metadata if year is missing online
+            if (mergedAlbum.year.isNullOrBlank()) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        Innertube.albumPage(BrowseBody(browseId = albumId))
+                            ?.getOrNull()
+                            ?.let { albumPage ->
+                                if (!albumPage.year.isNullOrBlank()) {
+                                    val updatedAlbum = Album(
+                                        id = albumId,
+                                        title = albumPage.title.takeIf { !it.isNullOrBlank() } ?: mergedAlbum.title,
+                                        thumbnailUrl = albumPage.thumbnail?.url.takeIf { !it.isNullOrBlank() } ?: mergedAlbum.thumbnailUrl,
+                                        year = albumPage.year,
+                                        authorsText = albumPage.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() } ?: mergedAlbum.authorsText,
+                                        shareUrl = albumPage.url ?: mergedAlbum.shareUrl,
+                                        timestamp = System.currentTimeMillis(),
+                                        bookmarkedAt = mergedAlbum.bookmarkedAt
+                                    )
+                                    albumTable.upsert(updatedAlbum)
+                                }
+                            }
+                    } catch (e: Exception) {
+                        timber.log.Timber.tag("Database").e(e, "Failed to fetch album page for year update")
+                    }
+                }
+            }
 
-                     songAlbumMapTable.map( cleanSongId, albumId )
-                 }
+            songAlbumMapTable.map( cleanSongId, albumId )
+        }
 
         // Insert artist
         val artistsNames = mediaItem.mediaMetadata.extras?.getStringArrayList("artistNames").orEmpty()
@@ -508,13 +505,12 @@ object Database {
                 } catch (e: android.database.sqlite.SQLiteDatabaseLockedException) {
                     attempt++
                     if (attempt >= retries) {
-                        timber.log.Timber.tag("Database").e(e, "Transaction failed after $retries attempts")
+                        timber.log.Timber.tag("Database").e(e, "Transaction FAILED after $retries attempts")
                         return@execute
                     }
-                    timber.log.Timber.tag("Database").w(e, "Database locked, retry $attempt/$retries")
                     Thread.sleep(200L * attempt)
                 } catch (e: Exception) {
-                    timber.log.Timber.tag("Database").e(e, "asyncTransaction failed with unexpected exception, aborting")
+                    timber.log.Timber.tag("Database").e(e, "asyncTransaction unexpected exception, aborting")
                     return@execute
                 }
             }

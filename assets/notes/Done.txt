@@ -55,6 +55,10 @@ Fixed:
 - fix(album): resolve missing album release year
   - Updated `Database.insertIgnore(mediaItem)` to merge new album metadata with existing DB records on song transitions instead of ignoring.
   - Added background resolution: if a song's album does not have a release year in the database, a lightweight background coroutine is launched to fetch the album page and populate the year, description, and share URL automatically.
+- fix(playback): resolve DB stuck after crossfade — history and play stats stopped recording
+  - `PlaybackStatsListener` was never added to the secondary crossfade player, so after `player = nextPlayer` swap, `onPlaybackStatsReady` never fired again — no events, no play time updates.
+  - Added `PlaybackStatsListener` to secondary player in `preloadCrossfade()`.
+  - Removed duplicate `PlaybackStatsListener` registration on main player (was registered twice causing double callbacks).
 
 BETA V 7.2.9
 
