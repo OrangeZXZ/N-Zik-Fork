@@ -11,7 +11,7 @@
     <a href="https://github.com/knighthat/Kreate">Kreate</a>, so feel free to use it or other 
     solid alternatives like <a href="https://github.com/MetrolistGroup/Metrolist">Metrolist</a>, 
     <a href="https://github.com/vivizzz007/vivi-music">VIVI Music</a>, or 
-    <a href="https://github.com/fast4x/RiPlay">RiPlay</a> if you need a more mature option (Doesn't have download / cache feature).
+    <a href="https://github.com/fast4x/RiPlay">RiPlay</a> if you need a more mature option (RiPlay doesn't have download / cache feature).
   </p>
   <p>
     <strong>N-Zik</strong> is a side project I originally built for myself and friends, not chasing glory. 
