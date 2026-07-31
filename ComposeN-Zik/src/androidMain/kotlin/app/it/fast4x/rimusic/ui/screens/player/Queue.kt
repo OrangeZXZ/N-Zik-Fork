@@ -8,6 +8,8 @@ import app.n_zik.android.uiRoundnessShape
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -476,9 +478,12 @@ fun Queue(
             }
 
             // Search box
+            val searchBottomPadding by animateDpAsState(if (search.isVisible) 64.dp else 0.dp)
             Box(
                 modifier = Modifier.fillMaxWidth()
-                                   .background( colorPalette().background1 ),
+                                   .background( colorPalette().background1 )
+                                   .padding(bottom = searchBottomPadding)
+                                   .imePadding(),
             ) { search.SearchBar( this@Column ) }
         }
 

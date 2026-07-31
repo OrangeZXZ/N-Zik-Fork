@@ -7,6 +7,9 @@ Added:
 - refactor(easter-egg): replace Pacman and Snake mini-games with static unknown easter egg images
 
 Fixed:
+- fix(ui): fix queue search bar being hidden by the bottom toolbar and software keyboard
+  - Added bottom padding (`64.dp`) to the SearchBar in `Queue.kt` when it is visible so it sits above the `QueueToolBar`.
+  - Added `Modifier.imePadding()` to ensure the search bar is pushed up correctly when the software keyboard opens.
 - fix(playback): resolve auto-fix race conditions and missing UI updates
   - Fixed an issue where the background auto-fix would silently abort on the very first playback because it queried the database before the async song insertion transaction completed. Moved `insertIgnore(item)` into the same coroutine block for synchronous execution.
   - Fixed an issue where the "Go to Artist" and "Go to Album" buttons required restarting the music to function. Removed the Compose `remember` caching (`init` block) from `GoToArtist.kt` and `GoToAlbum.kt` so they always fetch the freshest ID from the database at the exact moment of click, eliminating the need to restart after an auto-fix.
