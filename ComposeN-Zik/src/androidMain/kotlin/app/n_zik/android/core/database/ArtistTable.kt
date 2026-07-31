@@ -67,6 +67,9 @@ interface ArtistTable {
     @Query("SELECT DISTINCT * FROM Artist WHERE id = :artistId")
     fun findById( artistId: String ): Flow<Artist?>
 
+    @Query("SELECT DISTINCT * FROM Artist WHERE id = :artistId")
+    fun findByIdDirect( artistId: String ): Artist?
+
     @Query("""
         SELECT DISTINCT Artist.*
         FROM SongArtistMap
@@ -81,6 +84,9 @@ interface ArtistTable {
      */
     @Query("SELECT DISTINCT * FROM Artist WHERE name = :name COLLATE NOCASE LIMIT 1")
     fun findByName( name: String ): Flow<Artist?>
+
+    @Query("SELECT DISTINCT * FROM Artist WHERE name = :name COLLATE NOCASE LIMIT 1")
+    fun findByNameDirect( name: String ): Artist?
 
     /**
      * @return whether [Artist] with id [artistId] is followed by user,

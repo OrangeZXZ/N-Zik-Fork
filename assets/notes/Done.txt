@@ -11,6 +11,9 @@ Fixed:
   - Immediately persist complete `MediaItem` metadata to the database in `PlayerServiceModern.kt` during `onMediaItemTransition`.
   - Added a check in `StreamResolver.kt` to prevent inserting a blank placeholder `Song` if the song already exists in the database.
 - fix(database): resolve Room transaction deadlocks by replacing runBlocking/Flow calls with synchronous DAO queries (`findByIdDirect`, `countById`) to prevent database freezes during playback.
+- fix(database): resolve database lock caused by network calls inside Room transactions
+  - Moved `Innertube.searchPage()` network calls outside `Database.upsert()` transaction block — network I/O was holding Room's write lock for seconds, blocking all other DB operations.
+  - Replaced `runBlocking { artistTable.findByName().first() }` with synchronous `findByNameDirect()` in `Database.insertIgnore()` to prevent blocking the single-threaded transaction executor.
 - fix(playback): fix play time stats and history logging for songs played from albums/playlists
   - `PlaybackStatsListener` now correctly splits `mediaItem.mediaId` containing slashes (e.g. `albumId/videoId`) to extract the canonical `songId`, ensuring successful updates to the `Song` table and satisfying foreign key constraints for `Event` history entries.
 - fix(search): fix unsafe fallback search in GoToAlbum
