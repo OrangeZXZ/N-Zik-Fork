@@ -1,3 +1,9 @@
+Added:
+- feat(build): introduce 32-bit compatible builds (`full32`, `minified32`, `beta32`)
+  - Drops FFmpeg to support older 32-bit devices (`armeabi-v7a`), Media Export is disabled on these builds
+  - Updated GitHub CI/CD workflows to automatically assemble and release these new APKs
+  - Ensured seamless OTA update support in the native Updater for the new variants
+
 - refactor(easter-egg): replace Pacman and Snake mini-games with static unknown easter egg images
 
 BETA V 7.2.9

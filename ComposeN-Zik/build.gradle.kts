@@ -171,11 +171,35 @@ android {
             )
         }
 
+        create( "full32" ) {
+            // App's properties
+            initWith( maybeCreate("full") )
+            versionNameSuffix = "-f32"
+            // Fallback for modules that don't have a 'full32' build type
+            matchingFallbacks += listOf("release")
+        }
+
+        create( "minified32" ) {
+            // App's properties
+            initWith( maybeCreate("minified") )
+            versionNameSuffix = "-m32"
+            // Fallback for modules that don't have a 'minified32' build type
+            matchingFallbacks += listOf("release")
+        }
+
         create( "beta" ) {
             initWith( maybeCreate("full") )
             versionNameSuffix = "-b"
             signingConfig = signingConfigs.getByName("debug")
             // Fallback for modules that don't have a 'beta' build type (like :discordrpc)
+            matchingFallbacks += listOf("release")
+        }
+
+        create( "beta32" ) {
+            initWith( maybeCreate("beta") )
+            versionNameSuffix = "-b32"
+            signingConfig = signingConfigs.getByName("debug")
+            // Fallback for modules that don't have a 'beta32' build type
             matchingFallbacks += listOf("release")
         }
 
@@ -197,7 +221,7 @@ android {
          */
         forEach {
             it.manifestPlaceholders.putIfAbsent( "appName", APP_NAME )
-            if (it.name == "minified") {
+            if (it.name == "full32" || it.name == "minified32" || it.name == "beta32") {
                 it.buildConfigField("Boolean", "ENABLE_FFMPEG", "false")
             } else {
                 it.buildConfigField("Boolean", "ENABLE_FFMPEG", "true")
@@ -261,6 +285,7 @@ dependencies {
     compileOnly(libs.ffmpeg.kit.audio)
     "debugImplementation"(libs.ffmpeg.kit.audio)
     "fullImplementation"(libs.ffmpeg.kit.audio)
+    "minifiedImplementation"(libs.ffmpeg.kit.audio)
     "betaImplementation"(libs.ffmpeg.kit.audio)
     "fossImplementation"(libs.ffmpeg.kit.audio)
     implementation(libs.monetcompat)
