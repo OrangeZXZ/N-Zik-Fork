@@ -66,7 +66,6 @@ kotlin {
 
 
             implementation(projects.oldtube)
-            implementation(projects.piped)
             implementation(projects.invidious)
 
 
@@ -311,7 +310,6 @@ dependencies {
     implementation(projects.kugou)
     implementation(projects.lrclib)
     implementation(projects.betterlyrics)
-    implementation(projects.piped)
     implementation(libs.freedroidwarn)
 
 

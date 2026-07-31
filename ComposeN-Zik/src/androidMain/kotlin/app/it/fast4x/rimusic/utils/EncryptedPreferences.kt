@@ -14,11 +14,7 @@ import androidx.security.crypto.MasterKey
 import timber.log.Timber
 
 
-const val pipedUsernameKey = "pipedUsername"
-const val pipedPasswordKey = "pipedPassword"
-const val pipedInstanceNameKey = "pipedInstanceName"
-const val pipedApiBaseUrlKey = "pipedApiBaseUrl"
-const val pipedApiTokenKey = "pipedApiToken"
+
 const val discordPersonalAccessTokenKey = "DiscordPersonalAccessToken"
 const val isDiscordPresenceEnabledKey = "isDiscordPresenceEnabled"
 const val isDiscordBrowsingEnabledKey = "isDiscordBrowsingEnabled"

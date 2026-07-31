@@ -17,15 +17,13 @@ import androidx.compose.ui.text.input.TextFieldValue
 import app.n_zik.android.R
 import it.fast4x.innertube.YtMusic
 import app.n_zik.android.core.database.Database
+
 import app.n_zik.android.appContext
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.models.Playlist
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
-import app.it.fast4x.rimusic.utils.createPipedPlaylist
-import app.it.fast4x.rimusic.utils.getPipedSession
-import app.it.fast4x.rimusic.utils.isPipedEnabledKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +35,7 @@ import timber.log.Timber
 class NewPlaylistDialog private constructor(
     activeState: MutableState<Boolean>,
     valueState: MutableState<TextFieldValue>,
-    private val pipedState: MutableState<Boolean>,
+
     private val onPlaylistCreated: (Playlist) -> Unit = {}
 ): TextInputDialog(InputDialogConstraints.ALL), MenuIcon, Descriptive {
 
@@ -49,7 +47,7 @@ class NewPlaylistDialog private constructor(
                 remember {
                     mutableStateOf( TextFieldValue() )
                 },
-                rememberPreference( isPipedEnabledKey, false ),
+
                 onPlaylistCreated
             )
     }
@@ -113,19 +111,6 @@ class NewPlaylistDialog private constructor(
             }
         }
 
-        val pipedSession = getPipedSession()
-        if ( pipedState.value && pipedSession.token.isNotEmpty() )
-            createPipedPlaylist(
-                context = appContext(),
-                coroutineScope = CoroutineScope( Dispatchers.IO ),
-                pipedSession = pipedSession.toApiSession(),
-                name = newValue
-            )
-
         hideDialog()
     }
 }
-
-
-
-

@@ -45,7 +45,7 @@ import app.n_zik.android.R
 import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.MONTHLY_PREFIX
 import app.it.fast4x.rimusic.PINNED_PREFIX
-import app.it.fast4x.rimusic.PIPED_PREFIX
+
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
 import app.n_zik.android.uiRoundnessShape
@@ -313,14 +313,6 @@ fun PlaylistsItemMenu(
                                         onDismiss()
                                     },
                                     trailingContent = {
-                                        if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
-                                            Image(
-                                                painter = painterResource(R.drawable.piped_logo),
-                                                contentDescription = null,
-                                                colorFilter = ColorFilter.tint(colorPalette().red),
-                                                modifier = Modifier
-                                                    .size(18.dp)
-                                            )
                                         if (playlistPreview.playlist.isYoutubePlaylist) {
                                             Image(
                                                 painter = painterResource(R.drawable.ytmusic),
@@ -420,14 +412,7 @@ fun PlaylistsItemMenu(
                                         onDismiss()
                                     },
                                     trailingContent = {
-                                        if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
-                                            Image(
-                                                painter = painterResource(R.drawable.piped_logo),
-                                                contentDescription = null,
-                                                colorFilter = ColorFilter.tint(colorPalette().red),
-                                                modifier = Modifier
-                                                    .size(18.dp)
-                                            )
+
 
                                         IconButton(
                                             icon = R.drawable.open,

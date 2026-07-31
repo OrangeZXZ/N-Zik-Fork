@@ -40,7 +40,7 @@ import it.fast4x.innertube.Innertube
 import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.MONTHLY_PREFIX
 import app.it.fast4x.rimusic.PINNED_PREFIX
-import app.it.fast4x.rimusic.PIPED_PREFIX
+
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.models.PlaylistPreview
@@ -269,8 +269,7 @@ fun PlaylistItem(
 
             name ?: return@BoxWithConstraints
             val (icon, color) = when {
-                name.startsWith( PIPED_PREFIX, true ) ->
-                    painterResource( R.drawable.piped_logo ) to colorPalette().red
+
 
                 name.startsWith( PINNED_PREFIX, true ) ->
                     painterResource( R.drawable.pin_filled ) to colorPalette().accent

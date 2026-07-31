@@ -234,7 +234,7 @@ const val showFloatingIconKey = "showFloatingIcon"
 const val transitionEffectKey = "transitionEffect"
 const val disableNavigationBackStackKey = "disableNavigationBackStack"
 const val showMonthlyPlaylistsKey = "showMonthlyPlaylists"
-const val showPipedPlaylistsKey = "showPipedPlaylists"
+
 const val showMonthlyPlaylistInQuickPicksKey = "showMonthlyPlaylistInQuickPicks"
 const val showMonthlyPlaylistInLibraryKey = "showMonthlyPlaylistInLibrary"
 const val enableQuickPicksPageKey = "enableQuickPicksPage"
@@ -372,8 +372,7 @@ const val streamClientRestartNeededKey = "stream_client_restart_needed"
 const val playerPositionKey = "playerPosition"
 const val excludeSongsWithDurationLimitKey = "excludeSongsWithDurationLimit"
 const val logDebugEnabledKey = "logDebugEnabled"
-const val isPipedEnabledKey = "isPipedEnabled"
-const val isPipedCustomEnabledKey = "isPipedCustomEnabled"
+
 
 const val messageTypeKey = "messageType"
 const val isPauseOnVolumeZeroEnabledKey = "isPauseOnVolumeZeroEnabled"

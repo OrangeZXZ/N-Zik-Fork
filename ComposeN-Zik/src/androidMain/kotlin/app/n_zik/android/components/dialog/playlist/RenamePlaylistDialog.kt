@@ -11,14 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import app.n_zik.android.R
 import app.n_zik.android.core.database.Database
-import app.it.fast4x.rimusic.PIPED_PREFIX
-import app.n_zik.android.appContext
-import app.it.fast4x.rimusic.cleanPrefix
 import app.it.fast4x.rimusic.models.Playlist
-import app.it.fast4x.rimusic.utils.getPipedSession
-import app.it.fast4x.rimusic.utils.isPipedEnabledKey
-import app.it.fast4x.rimusic.utils.rememberPreference
-import app.it.fast4x.rimusic.utils.renamePipedPlaylist
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import app.n_zik.android.components.dialog.song.RenameDialog
@@ -27,7 +20,7 @@ import java.util.UUID
 class RenamePlaylistDialog private constructor(
     activeState: MutableState<Boolean>,
     valueState: MutableState<TextFieldValue>,
-    private val pipedActiveState: MutableState<Boolean>,
+
     private val getPlaylist: () -> Playlist?,
 ): RenameDialog(activeState, valueState) {
 
@@ -39,7 +32,7 @@ class RenamePlaylistDialog private constructor(
                 remember( getPlaylist()?.name ) {
                     mutableStateOf( TextFieldValue(getPlaylist()?.name ?: "") )
                 },
-                rememberPreference( isPipedEnabledKey, false ),
+
                 getPlaylist
             )
     }
@@ -67,26 +60,10 @@ class RenamePlaylistDialog private constructor(
 
         val playlist = getPlaylist() ?: return
 
-        val pipedSession = getPipedSession()
-        val isPipedPlaylist =
-            playlist.name.startsWith( PIPED_PREFIX, true )
-                    && pipedActiveState.value
-                    && pipedSession.token.isNotEmpty()
-        val prefix = if( isPipedPlaylist ) PIPED_PREFIX else ""
-
         Database.asyncTransaction {
-            playlist.copy( name = "$prefix$newValue" )
+            playlist.copy( name = newValue )
                     .let( playlistTable::update )
         }
-
-        if ( isPipedPlaylist )
-            renamePipedPlaylist(
-                context = appContext(),
-                coroutineScope = CoroutineScope( Dispatchers.IO ),
-                pipedSession = pipedSession.toApiSession(),
-                id = UUID.fromString( cleanPrefix(playlist.browseId ?: "") ),
-                name = "$PIPED_PREFIX$newValue"
-            )
 
         hideDialog()
     }

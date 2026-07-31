@@ -51,7 +51,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.compositeOver
-import app.it.fast4x.rimusic.PIPED_PREFIX
+
 import app.n_zik.android.components.menu.ListMenu
 import androidx.compose.material3.Icon
 import androidx.compose.ui.res.painterResource
@@ -137,13 +137,6 @@ class PlaylistsMenu private constructor(
                 onAdd( playlistPreview )
             },
             trailingContent = {
-                if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
-                    Image(
-                        painter = painterResource(R.drawable.piped_logo),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(colorPalette().red),
-                        modifier = Modifier.size(18.dp)
-                    )
                 if (playlistPreview.playlist.isYoutubePlaylist) {
                     Image(
                         painter = painterResource(R.drawable.ytmusic),

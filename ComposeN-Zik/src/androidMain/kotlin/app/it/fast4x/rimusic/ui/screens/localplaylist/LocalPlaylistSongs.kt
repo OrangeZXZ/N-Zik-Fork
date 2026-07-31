@@ -82,7 +82,7 @@ import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.MONTHLY_PREFIX
-import app.it.fast4x.rimusic.PIPED_PREFIX
+
 import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
@@ -119,7 +119,7 @@ import app.it.fast4x.rimusic.ui.styling.px
 import app.it.fast4x.rimusic.utils.DeletePlaylist
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 import app.it.fast4x.rimusic.utils.addNext
-import app.it.fast4x.rimusic.utils.addToPipedPlaylist
+
 import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.autosyncKey
 import app.it.fast4x.rimusic.utils.center
@@ -127,17 +127,17 @@ import app.it.fast4x.rimusic.utils.checkFileExists
 import app.it.fast4x.rimusic.utils.color
 import app.it.fast4x.rimusic.utils.completed
 import app.it.fast4x.rimusic.utils.deleteFileIfExists
-import app.it.fast4x.rimusic.utils.deletePipedPlaylist
+
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey
 import app.it.fast4x.rimusic.utils.durationTextToMillis
 import app.it.fast4x.rimusic.utils.enqueue
 import app.it.fast4x.rimusic.utils.forcePlayAtIndex
 import app.it.fast4x.rimusic.utils.forcePlayFromBeginning
 import app.it.fast4x.rimusic.utils.formatAsTime
-import app.it.fast4x.rimusic.utils.getPipedSession
+
 import app.it.fast4x.rimusic.utils.isAtLeastAndroid14
 import app.it.fast4x.rimusic.utils.isLandscape
-import app.it.fast4x.rimusic.utils.isPipedEnabledKey
+
 import app.it.fast4x.rimusic.utils.manageDownload
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 import app.it.fast4x.rimusic.utils.recommendationsNumberKey
@@ -148,11 +148,11 @@ import app.it.fast4x.rimusic.utils.parseArtists
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.preferences
 import app.it.fast4x.rimusic.utils.Preference
-import app.it.fast4x.rimusic.utils.removeFromPipedPlaylist
+
 import app.it.fast4x.rimusic.utils.saveImageToInternalStorage
 import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
-import app.it.fast4x.rimusic.utils.syncSongsInPipedPlaylist
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
@@ -220,7 +220,7 @@ fun LocalPlaylistSongs(
 
     // Settings
     val parentalControlEnabled by rememberPreference( parentalControlEnabledKey, false )
-    val isPipedEnabled by rememberPreference( isPipedEnabledKey, false )
+
     val disableScrollingText by rememberPreference( disableScrollingTextKey, false )
     var isRecommendationEnabled by remember { mutableStateOf(false) }
     var getAlbumVersion by remember { mutableStateOf(false) }
@@ -243,7 +243,7 @@ fun LocalPlaylistSongs(
     var matchResultsFailedSongs by remember { mutableStateOf<List<Song>>(emptyList()) }
 
     // Non-vital
-    val pipedSession = getPipedSession()
+
     val thumbnailUrl = remember { mutableStateOf("") }
 
     val playlist by remember {
@@ -650,17 +650,6 @@ fun LocalPlaylistSongs(
             playlist?.let( playlistTable::delete )
         }
 
-        if (
-            playlist?.name?.startsWith(PIPED_PREFIX) == true
-            && isPipedEnabled
-            && pipedSession.token.isNotEmpty()
-        )
-            deletePipedPlaylist(
-                context = context,
-                coroutineScope = coroutineScope,
-                pipedSession = pipedSession.toApiSession(),
-                id = UUID.fromString(playlist?.browseId)
-            )
 
         onDismiss()
 
@@ -717,17 +706,7 @@ fun LocalPlaylistSongs(
     val addToPlaylist = PlaylistsMenu.init(
         navController,
         {
-            if( it.playlist.name.startsWith(PIPED_PREFIX)
-                && isPipedEnabled
-                && pipedSession.token.isNotEmpty()
-            )
-                addToPipedPlaylist(
-                    context = context,
-                    coroutineScope = coroutineScope,
-                    pipedSession = pipedSession.toApiSession(),
-                    id = UUID.fromString(it.playlist.browseId),
-                    videos = getSongs().map( Song::id )
-                )
+
 
             getMediaItems()
         },
@@ -742,35 +721,22 @@ fun LocalPlaylistSongs(
 
     fun sync() {
         playlist?.let {
-            if ( !it.name.startsWith(PIPED_PREFIX, true) ) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val remotePlaylist = Innertube.playlistPage(
-                        BrowseBody(browseId = it.browseId ?: "")
-                    )?.completed()?.getOrNull()
-                    remotePlaylist?.let { rp ->
-                        val mediaItems = rp.songsPage
-                            ?.items
-                            ?.map(Innertube.SongItem::asMediaItem)
+            CoroutineScope(Dispatchers.IO).launch {
+                val remotePlaylist = Innertube.playlistPage(
+                    BrowseBody(browseId = it.browseId ?: "")
+                )?.completed()?.getOrNull()
+                remotePlaylist?.let { rp ->
+                    val mediaItems = rp.songsPage
+                        ?.items
+                        ?.map(Innertube.SongItem::asMediaItem)
 
-                        if (mediaItems != null && mediaItems.isNotEmpty()) {
-                            Database.asyncTransaction {
-                                songPlaylistMapTable.clear( playlistId )
-                                mapIgnore( it, *mediaItems.toTypedArray() )
-                            }
+                    if (mediaItems != null && mediaItems.isNotEmpty()) {
+                        Database.asyncTransaction {
+                            songPlaylistMapTable.clear( playlistId )
+                            mapIgnore( it, *mediaItems.toTypedArray() )
                         }
                     }
                 }
-            } else {
-                syncSongsInPipedPlaylist(
-                    context = context,
-                    coroutineScope = coroutineScope,
-                    pipedSession = pipedSession.toApiSession(),
-                    idPipedPlaylist = UUID.fromString(
-                        it.browseId
-                    ),
-                    playlistId = it.id
-
-                )
             }
         }
     }
@@ -933,7 +899,7 @@ fun LocalPlaylistSongs(
 //                getTitleMonthlyPlaylist(context, name.substringAfter(MONTHLY_PREFIX))
 //            else
 //                name.substringAfter( PINNED_PREFIX )
-//                    .substringAfter( PIPED_PREFIX )
+
 //        } ?: "Unknown"
 
         val thumbnailName = "thumbnail/playlist_${playlistId}"
@@ -1277,16 +1243,7 @@ fun LocalPlaylistSongs(
                             }
 
 
-                            if (playlist?.name?.startsWith(PIPED_PREFIX) == true && isPipedEnabled && pipedSession.token.isNotEmpty()) {
-                                Timber.tag("LocalPlaylistSongs").d("onSwipeToLeft browseId ${playlist?.browseId}")
-                                removeFromPipedPlaylist(
-                                    context = context,
-                                    coroutineScope = coroutineScope,
-                                    pipedSession = pipedSession.toApiSession(),
-                                    id = UUID.fromString(playlist?.browseId),
-                                    index
-                                )
-                            }
+
 
                             Toaster.s(
                                 "${context.resources.getString( R.string.deleted )} \"${song.asMediaItem.mediaMetadata.title}\" - \"${song.asMediaItem.mediaMetadata.artist}\""

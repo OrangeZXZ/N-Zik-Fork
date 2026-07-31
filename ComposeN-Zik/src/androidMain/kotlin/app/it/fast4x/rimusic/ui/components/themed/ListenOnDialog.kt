@@ -25,10 +25,7 @@ fun ListenOnDialog(
                 ExternalUris.youtubeMusic(mediaId),
                 stringResource(R.string.listen_on_youtube_music)
             ),
-            Info(
-                ExternalUris.piped(mediaId),
-                stringResource(R.string.listen_on_piped)
-            ),
+
             Info(
                 ExternalUris.invidious(mediaId),
                 stringResource(R.string.listen_on_invidious)

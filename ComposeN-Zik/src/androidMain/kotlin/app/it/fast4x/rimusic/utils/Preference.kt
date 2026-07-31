@@ -38,7 +38,7 @@ object Preference {
     val HOME_LIBRARY_SORT_BY = Key( "HomeLibrarySortBy", PlaylistSortBy.SongCount )
     val HOME_LIBRARY_PLAYLIST_SORT_BY = Key( "HomeLibraryPlaylistSortBy", PlaylistSortBy.SongCount )
     val HOME_LIBRARY_YT_PLAYLIST_SORT_BY = Key( "HomeLibraryYTPlaylistSortBy", PlaylistSortBy.SongCount )
-    val HOME_LIBRARY_PIPED_PLAYLIST_SORT_BY = Key( "HomeLibraryPipedPlaylistSortBy", PlaylistSortBy.SongCount )
+
     val HOME_LIBRARY_PINNED_PLAYLIST_SORT_BY = Key( "HomeLibraryPinnedPlaylistSortBy", PlaylistSortBy.SongCount )
     val HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_BY = Key( "HomeLibraryMonthlyPlaylistSortBy", PlaylistSortBy.SongCount )
     val PLAYLIST_SONGS_SORT_BY = Key( "PlaylistSongsSortBy", PlaylistSongSortBy.Title )
@@ -61,7 +61,7 @@ object Preference {
     val HOME_LIBRARY_SORT_ORDER = Key( "HomeLibrarySortOrder", SortOrder.Ascending )
     val HOME_LIBRARY_PLAYLIST_SORT_ORDER = Key( "HomeLibraryPlaylistSortOrder", SortOrder.Ascending )
     val HOME_LIBRARY_YT_PLAYLIST_SORT_ORDER = Key( "HomeLibraryYTPlaylistSortOrder", SortOrder.Ascending )
-    val HOME_LIBRARY_PIPED_PLAYLIST_SORT_ORDER = Key( "HomeLibraryPipedPlaylistSortOrder", SortOrder.Ascending )
+
     val HOME_LIBRARY_PINNED_PLAYLIST_SORT_ORDER = Key( "HomeLibraryPinnedPlaylistSortOrder", SortOrder.Ascending )
     val HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_ORDER = Key( "HomeLibraryMonthlyPlaylistSortOrder", SortOrder.Ascending )
     val PLAYLIST_SONGS_SORT_ORDER = Key( "PlaylistSongsSortOrder", SortOrder.Ascending )

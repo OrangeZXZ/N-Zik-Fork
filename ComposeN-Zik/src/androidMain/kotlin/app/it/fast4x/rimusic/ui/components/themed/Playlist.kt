@@ -26,7 +26,7 @@ import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.colorPalette
 import app.n_zik.android.core.database.Database
-import app.it.fast4x.rimusic.PIPED_PREFIX
+
 import app.it.fast4x.rimusic.cleanPrefix
 import app.it.fast4x.rimusic.models.Playlist
 import app.it.fast4x.rimusic.ui.items.PlaylistItem

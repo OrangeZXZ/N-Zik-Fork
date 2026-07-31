@@ -63,7 +63,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.Icon
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import app.it.fast4x.rimusic.PIPED_PREFIX
+
 import app.it.fast4x.rimusic.YTP_PREFIX
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.PlaylistsType
@@ -85,8 +85,7 @@ import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PLAYLIST_SORT_BY
 import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PLAYLIST_SORT_ORDER
 import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_YT_PLAYLIST_SORT_BY
 import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_YT_PLAYLIST_SORT_ORDER
-import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PIPED_PLAYLIST_SORT_BY
-import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PIPED_PLAYLIST_SORT_ORDER
+
 import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PINNED_PLAYLIST_SORT_BY
 import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_PINNED_PLAYLIST_SORT_ORDER
 import app.it.fast4x.rimusic.utils.Preference.HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_BY
@@ -100,7 +99,7 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
 import app.it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import app.it.fast4x.rimusic.utils.showPinnedPlaylistsKey
-import app.it.fast4x.rimusic.utils.showPipedPlaylistsKey
+
 import app.it.fast4x.rimusic.utils.showYtPlaylistsKey
 import app.it.fast4x.rimusic.utils.homePlaylistsOrderKey
 import app.it.fast4x.rimusic.utils.semiBold
@@ -164,7 +163,7 @@ fun HomeLibrary(
     val sort = when( playlistType ) {
         PlaylistsType.Playlist -> Sort( HOME_LIBRARY_PLAYLIST_SORT_BY, HOME_LIBRARY_PLAYLIST_SORT_ORDER )
         PlaylistsType.YTPlaylist -> Sort( HOME_LIBRARY_YT_PLAYLIST_SORT_BY, HOME_LIBRARY_YT_PLAYLIST_SORT_ORDER )
-        PlaylistsType.PipedPlaylist -> Sort( HOME_LIBRARY_PIPED_PLAYLIST_SORT_BY, HOME_LIBRARY_PIPED_PLAYLIST_SORT_ORDER )
+
         PlaylistsType.PinnedPlaylist -> Sort( HOME_LIBRARY_PINNED_PLAYLIST_SORT_BY, HOME_LIBRARY_PINNED_PLAYLIST_SORT_ORDER )
         PlaylistsType.MonthlyPlaylist -> Sort( HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_BY, HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_ORDER )
     }
@@ -186,7 +185,7 @@ fun HomeLibrary(
             PlaylistsType.Playlist          -> Database.playlistTable::allSongs
             PlaylistsType.PinnedPlaylist    -> Database.playlistTable::allPinnedSongs
             PlaylistsType.MonthlyPlaylist   -> Database.playlistTable::allMonthlySongs
-            PlaylistsType.PipedPlaylist     -> Database.playlistTable::allPipedSongs
+
             PlaylistsType.YTPlaylist        -> Database.playlistTable::allYTPlaylistSongs
         },
         key = arrayOf( playlistType )
@@ -261,35 +260,30 @@ fun HomeLibrary(
     // START: Additional playlists
     val showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
     val showMonthlyPlaylists by rememberPreference(showMonthlyPlaylistsKey, true)
-    val showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
     val showYtPlaylists by rememberPreference(showYtPlaylistsKey, true)
     val homePlaylistsOrderPref by rememberPreference(homePlaylistsOrderKey, "")
 
-    val playlistsDefaultOrder = listOf("all", "pinned_playlists", "monthly_playlists", "yt_playlists", "piped_playlists")
+    val playlistsDefaultOrder = listOf("all", "pinned_playlists", "monthly_playlists", "yt_playlists")
     val toggleMap = mapOf(
         "yt_playlists" to showYtPlaylists,
-        "piped_playlists" to showPipedPlaylists,
         "pinned_playlists" to showPinnedPlaylists,
         "monthly_playlists" to showMonthlyPlaylists
     )
     val typeMap = mapOf(
         "yt_playlists" to PlaylistsType.YTPlaylist,
-        "piped_playlists" to PlaylistsType.PipedPlaylist,
         "pinned_playlists" to PlaylistsType.PinnedPlaylist,
         "monthly_playlists" to PlaylistsType.MonthlyPlaylist
     )
     val allLabel = stringResource(R.string.all)
     val ytLabel = stringResource(R.string.yt_playlists)
-    val pipedLabel = stringResource(R.string.piped_playlists)
     val pinnedLabel = stringResource(R.string.pinned_playlists)
     val monthlyLabel = stringResource(R.string.monthly_playlists)
     val labelMap = mapOf(
         "yt_playlists" to ytLabel,
-        "piped_playlists" to pipedLabel,
         "pinned_playlists" to pinnedLabel,
         "monthly_playlists" to monthlyLabel
     )
-    val buttonsList = remember(showPinnedPlaylists, showMonthlyPlaylists, showPipedPlaylists, showYtPlaylists, homePlaylistsOrderPref, allLabel, ytLabel, pipedLabel, pinnedLabel, monthlyLabel) {
+    val buttonsList = remember(showPinnedPlaylists, showMonthlyPlaylists, showYtPlaylists, homePlaylistsOrderPref, allLabel, ytLabel, pinnedLabel, monthlyLabel) {
         val order = try {
             val arr = JSONArray(homePlaylistsOrderPref)
             val parsed = (0 until arr.length()).map { arr.getString(it) }
@@ -311,10 +305,10 @@ fun HomeLibrary(
     }
     // END - Additional playlists
 
-    LaunchedEffect(showPinnedPlaylists, showMonthlyPlaylists, showPipedPlaylists, showYtPlaylists) {
+    LaunchedEffect(showPinnedPlaylists, showMonthlyPlaylists, showYtPlaylists) {
         if (!showPinnedPlaylists && playlistType == PlaylistsType.PinnedPlaylist) playlistType = PlaylistsType.Playlist
         if (!showMonthlyPlaylists && playlistType == PlaylistsType.MonthlyPlaylist) playlistType = PlaylistsType.Playlist
-        if (!showPipedPlaylists && playlistType == PlaylistsType.PipedPlaylist) playlistType = PlaylistsType.Playlist
+        if (!showYtPlaylists && playlistType == PlaylistsType.YTPlaylist) playlistType = PlaylistsType.Playlist
         if (!showYtPlaylists && playlistType == PlaylistsType.YTPlaylist) playlistType = PlaylistsType.Playlist
     }
 
@@ -414,7 +408,6 @@ fun HomeLibrary(
                         PlaylistsType.Playlist -> ""    // Matches everything
                         PlaylistsType.PinnedPlaylist -> PINNED_PREFIX
                         PlaylistsType.MonthlyPlaylist -> MONTHLY_PREFIX
-                        PlaylistsType.PipedPlaylist -> PIPED_PREFIX
                         PlaylistsType.YTPlaylist -> YTP_PREFIX
                     }
                 val condition: (PlaylistPreview) -> Boolean = {
@@ -423,11 +416,9 @@ fun HomeLibrary(
                         PlaylistsType.Playlist -> {
                             val isMonthly = it.playlist.name.startsWith(MONTHLY_PREFIX, true)
                             val isPinned = it.playlist.name.startsWith(PINNED_PREFIX, true)
-                            val isPiped = it.playlist.name.startsWith(PIPED_PREFIX, true)
                             
                             (!isMonthly || showMonthlyPlaylists) && 
-                            (!isPinned || showPinnedPlaylists) && 
-                            (!isPiped || showPipedPlaylists)
+                            (!isPinned || showPinnedPlaylists)
                         }
                         else -> it.playlist.name.startsWith(listPrefix, true)
                     }

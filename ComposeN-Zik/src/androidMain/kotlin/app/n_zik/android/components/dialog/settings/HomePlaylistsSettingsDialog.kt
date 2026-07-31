@@ -13,14 +13,14 @@ import app.n_zik.android.components.dialog.common.Dialog
 import app.n_zik.android.components.dialog.common.ToggleItem
 import app.n_zik.android.components.dialog.common.ToggleListDialog
 import app.it.fast4x.rimusic.utils.showYtPlaylistsKey
-import app.it.fast4x.rimusic.utils.showPipedPlaylistsKey
+
 import app.it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 import app.it.fast4x.rimusic.utils.showMonthlyPlaylistsKey
 import app.it.fast4x.rimusic.utils.homePlaylistsOrderKey
 import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
-private val playlistsDefaultOrder = listOf("all", "pinned_playlists", "monthly_playlists", "yt_playlists", "piped_playlists")
+private val playlistsDefaultOrder = listOf("all", "pinned_playlists", "monthly_playlists", "yt_playlists")
 
 object HomePlaylistsSettingsDialog : Dialog {
     override val dialogTitle: String @Composable get() = stringResource(R.string.home_playlists_settings)
@@ -40,7 +40,7 @@ object HomePlaylistsSettingsDialog : Dialog {
 
         val allLabel = stringResource(R.string.all)
         val ytLabel = stringResource(R.string.yt_playlists)
-        val pipedLabel = stringResource(R.string.piped_playlists)
+
         val pinnedLabel = stringResource(R.string.pinned_playlists)
         val monthlyLabel = stringResource(R.string.monthly_playlists)
 
@@ -54,7 +54,7 @@ object HomePlaylistsSettingsDialog : Dialog {
             when (id) {
                 "all" -> ToggleItem(id, R.drawable.library, allLabel, "always_true_playlists", true)
                 "yt_playlists" -> ToggleItem(id, R.drawable.logo_youtube, ytLabel, showYtPlaylistsKey, true)
-                "piped_playlists" -> ToggleItem(id, R.drawable.piped_logo, pipedLabel, showPipedPlaylistsKey, true)
+
                 "pinned_playlists" -> ToggleItem(id, R.drawable.pin_filled, pinnedLabel, showPinnedPlaylistsKey, true)
                 "monthly_playlists" -> ToggleItem(id, R.drawable.calendar, monthlyLabel, showMonthlyPlaylistsKey, true)
                 else -> null
@@ -69,7 +69,7 @@ object HomePlaylistsSettingsDialog : Dialog {
                 workingOrder = playlistsDefaultOrder.toMutableList()
                 prefs.edit()
                     .putBoolean(showYtPlaylistsKey, true)
-                    .putBoolean(showPipedPlaylistsKey, true)
+
                     .putBoolean(showPinnedPlaylistsKey, true)
                     .putBoolean(showMonthlyPlaylistsKey, true)
                     .apply()

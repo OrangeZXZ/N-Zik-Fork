@@ -90,7 +90,7 @@ N-Zik/
 │   │   └── kreate/android/      ⚠ READ-ONLY legacy
 │   ├── commonMain/kotlin/database/
 │   └── test/
-├── extensions/                  API modules (innertube, lrclib, piped, etc.)
+├── extensions/                  API modules (innertube, lrclib, etc.)
 ├── modules/                     Feature submodules (betterlyrics, discordrpc, nextvisualizer)
 ├── gradle/libs.versions.toml    Version catalog
 └── docs/                        Reference projects (READ-ONLY)

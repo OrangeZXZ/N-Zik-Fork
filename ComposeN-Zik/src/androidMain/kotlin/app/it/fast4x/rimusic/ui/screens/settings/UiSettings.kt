@@ -186,7 +186,7 @@ import app.it.fast4x.rimusic.utils.hideStatusBarKey
 import app.it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import app.it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import app.it.fast4x.rimusic.utils.showPinnedPlaylistsKey
-import app.it.fast4x.rimusic.utils.showPipedPlaylistsKey
+
 import app.it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import app.it.fast4x.rimusic.utils.showSearchTabKey
 import app.it.fast4x.rimusic.utils.showStatsInNavbarKey
@@ -315,8 +315,7 @@ fun DefaultUiSettings() {
     var transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Fade)
     transitionEffect = TransitionEffect.Fade
 
-    var showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
-    showPipedPlaylists = true
+
     var showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
     showPinnedPlaylists = true
 
@@ -579,7 +578,7 @@ fun UiSettings(
     var transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Fade)
     var disableBackStack by rememberPreference(app.it.fast4x.rimusic.utils.disableNavigationBackStackKey, false)
 
-    var showPipedPlaylists by rememberPreference(showPipedPlaylistsKey, true)
+
     var showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
 
 

@@ -238,7 +238,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.knighthat.invidious.Invidious
-import me.knighthat.piped.Piped
+
 import app.kreate.android.me.knighthat.utils.Toaster
 import it.fast4x.innertube.Innertube.proxy
 import okhttp3.OkHttpClient
@@ -342,19 +342,17 @@ class MainActivity :
         }
 
         checkIfAppIsRunningInBackground()
-        
         // Verify backup location exists
         lifecycleScope.launch(Dispatchers.IO) {
             app.n_zik.android.core.backup.BackupManager.verifyBackupLocation(this@MainActivity)
         }
 
-        // Fetch Piped & Invidious instances
+        // Fetch Invidious instances
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                Piped.fetchInstances()
                 Invidious.fetchInstances()
             } catch (e: Exception) {
-                Timber.tag("MainActivity").e(e, "Error fetching Piped & Invidious instances")
+                Timber.tag("MainActivity").e(e, "Error fetching Invidious instances")
             }
         }
 

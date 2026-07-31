@@ -1,0 +1,31 @@
+== Done: Remove Piped ==
+
+Date: 2026-07-31
+
+Suppression complète de l'intégration Piped du projet N-Zik.
+
+Fichiers supprimés (D):
+- extensions/piped/ (module entier)
+- extensions/innertube/.../me/knighthat/piped/
+- PipedResponse.kt (innertube)
+- GetPipedSession.kt
+- SyncPipedUtils.kt
+- PipedSession.kt
+
+Fichiers modifiés (M):
+- settings.gradle.kts — supprimé include(":piped")
+- build.gradle.kts (ComposeN-Zik, innertube) — supprimé dépendances piped
+- MainActivity.kt — supprimé Piped.fetchInstances()
+- Utils.kt — supprimé Piped utilities
+- HomeLibrary.kt — supprimé filtres/toggles Piped
+- PlayerMenu.kt — supprimé add/remove Piped playlist
+- NewPlaylistDialog.kt — supprimé création Piped playlist
+- RenamePlaylistDialog.kt — supprimé renommage Piped
+- AccountsSettings.kt — supprimé login/sync Piped
+- Plus 15 autres fichiers Kotlin
+
+Nettoyage post-suppression (aujourd'hui):
+- AGENTS.md — supprimé "piped" de la description
+- spec-remove-piped.md — supprimé
+
+Statut: Terminé. Le code source ne contient plus de références à Piped (hors strings.xml).

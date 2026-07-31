@@ -33,7 +33,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.R
 import app.n_zik.android.core.database.Database
-import app.it.fast4x.rimusic.PIPED_PREFIX
+
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.context
 import app.it.fast4x.rimusic.enums.MenuStyle
@@ -42,17 +42,14 @@ import app.n_zik.android.playback.services.PlayerServiceModern
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import app.it.fast4x.rimusic.utils.addSongToYtPlaylist
-import app.it.fast4x.rimusic.utils.addToPipedPlaylist
-import app.it.fast4x.rimusic.utils.addToYtLikedSong
 import app.it.fast4x.rimusic.utils.addToYtPlaylist
+import app.it.fast4x.rimusic.utils.addToYtLikedSong
 import app.it.fast4x.rimusic.utils.asSong
-import app.it.fast4x.rimusic.utils.getPipedSession
 import app.it.fast4x.rimusic.utils.isNetworkConnected
-import app.it.fast4x.rimusic.utils.isPipedEnabledKey
 import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.rememberEqualizerLauncher
 import app.it.fast4x.rimusic.utils.rememberPreference
-import app.it.fast4x.rimusic.utils.removeFromPipedPlaylist
+
 import app.it.fast4x.rimusic.utils.removeYTSongFromPlaylist
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -159,8 +156,6 @@ fun AddToPlaylistPlayerMenu(
     onDismiss: () -> Unit,
     onClosePlayer: () -> Unit,
 ) {
-    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val pipedSession = getPipedSession()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     AddToPlaylistItemMenu(
@@ -180,32 +175,14 @@ fun AddToPlaylistPlayerMenu(
                     addSongToYtPlaylist(playlist.id, position, playlist.browseId ?: "", mediaItem)
                 }
             }
-            if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
-                Timber.tag("PlayerMenu").d("onAddToPlaylist mediaItem ${mediaItem.mediaId}")
-                addToPipedPlaylist(
-                    context = context,
-                    coroutineScope = coroutineScope,
-                    pipedSession = pipedSession.toApiSession(),
-                    id = UUID.fromString(playlist.browseId),
-                    videos = listOf(mediaItem.mediaId)
-                )
-            }
+
         },
         onRemoveFromPlaylist = { playlist ->
             Database.asyncTransaction {
                 val position = songPlaylistMapTable.findPositionOf( mediaItem.mediaId, playlist.id )
                 if( position == -1 ) return@asyncTransaction
 
-                if (playlist.name.startsWith(PIPED_PREFIX) && isPipedEnabled && pipedSession.token.isNotEmpty()) {
-                    Timber.tag("PlayerMenu").d("onRemoveFromPlaylist browseId ${playlist.browseId}")
-                    removeFromPipedPlaylist(
-                        context = context,
-                        coroutineScope = coroutineScope,
-                        pipedSession = pipedSession.toApiSession(),
-                        id = UUID.fromString(cleanPrefix(playlist.browseId ?: "")),
-                        idx = position
-                    )
-                }
+
             }
             if(isYouTubeSyncEnabled() && playlist.isYoutubePlaylist && playlist.isEditable) {
                 Database.asyncTransaction {
@@ -239,8 +216,6 @@ fun AddToPlaylistArtistSongs(
     onDismiss: () -> Unit,
     onClosePlayer: () -> Unit,
 ) {
-    val isPipedEnabled by rememberPreference(isPipedEnabledKey, false)
-    val pipedSession = getPipedSession()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var position by remember {
@@ -263,17 +238,7 @@ fun AddToPlaylistArtistSongs(
                         addToYtPlaylist(playlistPreview.playlist.id, position, playlistPreview.playlist.browseId ?: "", mediaItems)
                     }
 
-                if ( playlistPreview.playlist.name.startsWith(PIPED_PREFIX)
-                    && isPipedEnabled
-                    && pipedSession.token.isNotEmpty()
-                )
-                    addToPipedPlaylist(
-                        context = context,
-                        coroutineScope = coroutineScope,
-                        pipedSession = pipedSession.toApiSession(),
-                        id = UUID.fromString(playlistPreview.playlist.browseId),
-                        videos = mediaItems.map( MediaItem::mediaId )
-                    )
+
             }
 
             onDismiss()
@@ -397,14 +362,7 @@ fun AddToPlaylistItemMenu(
                             onDismiss()
                         },
                         trailingContent = {
-                            if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
-                                Image(
-                                    painter = painterResource(R.drawable.piped_logo),
-                                    contentDescription = null,
-                                    colorFilter = ColorFilter.tint(colorPalette().red),
-                                    modifier = Modifier
-                                        .size(18.dp)
-                                )
+
                             if (playlistPreview.playlist.isYoutubePlaylist) {
                                 Image(
                                     painter = painterResource(R.drawable.ytmusic),
@@ -492,14 +450,7 @@ fun AddToPlaylistItemMenu(
                             onDismiss()
                         },
                         trailingContent = {
-                            if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
-                                Image(
-                                    painter = painterResource(R.drawable.piped_logo),
-                                    contentDescription = null,
-                                    colorFilter = ColorFilter.tint(colorPalette().red),
-                                    modifier = Modifier
-                                        .size(18.dp)
-                                )
+
 
                             IconButton(
                                 icon = R.drawable.open,
@@ -648,14 +599,7 @@ fun AddToPlaylistArtistSongsMenu(
                             onDismiss()
                         },
                         trailingContent = {
-                            if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
-                                Image(
-                                    painter = painterResource(R.drawable.piped_logo),
-                                    contentDescription = null,
-                                    colorFilter = ColorFilter.tint(colorPalette().red),
-                                    modifier = Modifier
-                                        .size(18.dp)
-                                )
+
                             if (playlistPreview.playlist.isYoutubePlaylist) {
                                 Image(
                                     painter = painterResource(R.drawable.ytmusic),
@@ -753,14 +697,7 @@ fun AddToPlaylistArtistSongsMenu(
                             onDismiss()
                         },
                         trailingContent = {
-                            if (playlistPreview.playlist.name.startsWith(PIPED_PREFIX, 0, true))
-                                Image(
-                                    painter = painterResource(R.drawable.piped_logo),
-                                    contentDescription = null,
-                                    colorFilter = ColorFilter.tint(colorPalette().red),
-                                    modifier = Modifier
-                                        .size(18.dp)
-                                )
+
 
                             IconButton(
                                 icon = R.drawable.open,
