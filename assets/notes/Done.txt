@@ -6,6 +6,11 @@ Added:
 
 - refactor(easter-egg): replace Pacman and Snake mini-games with static unknown easter egg images
 
+Fixed:
+- fix(playback): resolve database corruption/race condition on music playback initialization
+  - Immediately persist complete `MediaItem` metadata to the database in `PlayerServiceModern.kt` during `onMediaItemTransition`.
+  - Added a check in `StreamResolver.kt` to prevent inserting a blank placeholder `Song` if the song already exists in the database.
+
 BETA V 7.2.9
 
 Fixed:

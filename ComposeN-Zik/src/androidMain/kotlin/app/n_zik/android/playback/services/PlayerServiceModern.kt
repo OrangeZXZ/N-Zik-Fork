@@ -841,6 +841,17 @@ class PlayerServiceModern : MediaLibraryService(),
         }
 
         currentMediaItem.update { mediaItem }
+
+        // Immediately persist the full MediaItem metadata to the DB.
+        // This seeds the Song row with real data (title, artist, thumbnail)
+        // before StreamResolver can insert a blank placeholder for FK satisfaction.
+        // insertIgnore uses merge logic that preserves existing non-empty fields.
+        mediaItem?.let {
+            Database.asyncTransaction {
+                insertIgnore(it)
+            }
+        }
+
         nzikRadio.showReminderIfNeeded()
         maybeRecoverPlaybackError()
         maybeNormalizeVolume()

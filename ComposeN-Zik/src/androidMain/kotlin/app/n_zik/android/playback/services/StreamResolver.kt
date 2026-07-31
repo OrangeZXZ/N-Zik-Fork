@@ -330,8 +330,16 @@ private fun upsertSongFormat(
             audioChannels = format.audioChannels,
             playbackUrl = playbackUrl
         )
-        Database.asyncTransaction {
-            songTable.insertIgnore(Song.makePlaceholder(videoId))
+        // Ensure the Song row exists for the Format FK constraint.
+        // Only insert a placeholder if the song is NOT already in the DB
+        // (e.g., already seeded by onMediaItemTransition with full metadata).
+        // This avoids creating a blank row that would propagate empty data
+        // to the UI via reactive Flows.
+        val songExists = runBlocking { Database.songTable.findById(videoId).firstOrNull() } != null
+        if (!songExists) {
+            Database.asyncTransaction {
+                songTable.insertIgnore(Song.makePlaceholder(videoId))
+            }
         }
         saveFormatSafe(formatToSave)
         justInserted = videoId
