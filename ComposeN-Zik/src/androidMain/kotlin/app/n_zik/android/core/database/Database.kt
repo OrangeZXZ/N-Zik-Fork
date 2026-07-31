@@ -306,7 +306,7 @@ object Database {
                      albumTable.upsert(mergedAlbum)
 
                      // Background fetch album page metadata if year is missing online
-                     if (mergedAlbum.year.isNullOrBlank() && !albumId.startsWith("MPRE")) {
+                     if (mergedAlbum.year.isNullOrBlank()) {
                          CoroutineScope(Dispatchers.IO).launch {
                              try {
                                  Innertube.albumPage(it.fast4x.innertube.models.bodies.BrowseBody(browseId = albumId))
