@@ -39,7 +39,8 @@ interface ArtistTable {
         SELECT DISTINCT A.*
         FROM Artist A
         JOIN SongArtistMap sam ON sam.artistId = A.id
-        JOIN SongPlaylistMap spm ON spm.songId = sam.songId
+        JOIN Song S ON S.id = sam.songId
+        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL
         ORDER BY A.ROWID
         LIMIT :limit
     """)
@@ -268,7 +269,8 @@ interface ArtistTable {
         SELECT DISTINCT A.*
         FROM Artist A
         JOIN SongArtistMap sam ON sam.artistId = A.id
-        JOIN SongPlaylistMap spm ON spm.songId = sam.songId
+        JOIN Song S ON S.id = sam.songId
+        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL
         ORDER BY 
             CASE WHEN A.position = -1 THEN A.ROWID ELSE A.position END ASC
         LIMIT :limit

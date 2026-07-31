@@ -45,7 +45,8 @@ interface AlbumTable {
         SELECT DISTINCT A.*
         FROM Album A
         JOIN SongAlbumMap sam ON sam.albumId = A.id
-        JOIN SongPlaylistMap spm ON spm.songId = sam.songId 
+        JOIN Song S ON S.id = sam.songId
+        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL
         ORDER BY A.ROWID
         LIMIT :limit
     """)
@@ -351,7 +352,8 @@ interface AlbumTable {
         SELECT DISTINCT A.*
         FROM Album A
         JOIN SongAlbumMap sam ON sam.albumId = A.id
-        JOIN SongPlaylistMap spm ON spm.songId = sam.songId 
+        JOIN Song S ON S.id = sam.songId
+        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL
         ORDER BY 
             CASE WHEN A.position = -1 THEN A.ROWID ELSE A.position END ASC
         LIMIT :limit
@@ -375,9 +377,10 @@ interface AlbumTable {
 
     @Query("""
         SELECT DISTINCT A.*
-        FROM SongPlaylistMap spm
-        JOIN SongAlbumMap sam ON sam.songId = spm.songId
+        FROM Song S
+        JOIN SongAlbumMap sam ON sam.songId = S.id
         JOIN Album A ON A.id = sam.albumId
+        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL
         GROUP BY A.id
         ORDER BY COUNT(sam.songId)
         LIMIT :limit
@@ -386,10 +389,10 @@ interface AlbumTable {
 
     @Query("""
         SELECT DISTINCT A.*
-        FROM SongPlaylistMap spm
-        JOIN SongAlbumMap sam ON sam.songId = spm.songId
+        FROM Song S
+        JOIN SongAlbumMap sam ON sam.songId = S.id
         JOIN Album A ON A.id = sam.albumId
-        JOIN Song S ON S.id = sam.songId
+        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL
         GROUP BY A.id
         ORDER BY SUM(
             CASE 

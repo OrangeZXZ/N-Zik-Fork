@@ -14,6 +14,8 @@ Fixed:
   - `PlaybackStatsListener` now correctly splits `mediaItem.mediaId` containing slashes (e.g. `albumId/videoId`) to extract the canonical `songId`, ensuring successful updates to the `Song` table and satisfying foreign key constraints for `Event` history entries.
 - fix(search): fix unsafe fallback search in GoToAlbum
   - Removed the unsafe `firstOrNull()` fallback in `GoToAlbum.kt` which resulted in navigating to wrong albums 100% of the time. Now only navigates if there is a strict match on the song ID, and displays a toast error otherwise.
+- fix(library): update Artists and Albums library queries to match Songs behavior
+  - Changed Room queries in `ArtistTable.kt` and `AlbumTable.kt` so that 'All' library screens fetch based on whether at least one song is liked or played (totalPlayTimeMs >= 1) instead of requiring songs to be mapped to a playlist.
 
 BETA V 7.2.9
 

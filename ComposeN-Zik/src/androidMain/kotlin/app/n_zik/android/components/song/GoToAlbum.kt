@@ -88,7 +88,7 @@ class GoToAlbum(
                         
                         Timber.tag("go_to_album").d("Search result items count: %s", searchResult?.items?.size)
                         
-                        val foundSong = searchResult?.items?.firstOrNull { it.key == song.id }
+                        val foundSong = searchResult?.items?.firstOrNull { it.key == song.id } ?: searchResult?.items?.firstOrNull()
                         val albumEndpoint = foundSong?.album?.endpoint
                         
                         if (albumEndpoint != null && !albumEndpoint.browseId.isNullOrBlank()) {
