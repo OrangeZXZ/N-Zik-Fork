@@ -88,9 +88,7 @@ fun ImportPipedPlaylists(){
                 //itemsPiped = it
                 Database.asyncTransaction {
                     it.forEach {
-                        val playlistExist = runBlocking {
-                            playlistTable.exists( "$PIPED_PREFIX${it.name}" ).first()
-                        }
+                        val playlistExist = playlistTable.existsDirect( "$PIPED_PREFIX${it.name}" )
                         if ( !playlistExist ) {
                             coroutineScope.launch(Dispatchers.IO) {
                                 async {

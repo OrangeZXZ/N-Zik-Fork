@@ -233,6 +233,9 @@ interface PlaylistTable {
     """)
     fun exists( playlistName: String ): Flow<Boolean>
 
+    @Query("SELECT COUNT(*) > 0 FROM Playlist WHERE name = :playlistName")
+    fun existsDirect( playlistName: String ): Boolean
+
     /**
      * ### If playlist **IS NOT** pinned
      *

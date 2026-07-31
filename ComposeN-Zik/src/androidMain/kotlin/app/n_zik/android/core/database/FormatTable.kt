@@ -54,6 +54,9 @@ interface FormatTable {
     @Query("SELECT DISTINCT * FROM Format WHERE songId = :songId")
     fun findBySongId( songId: String ): Flow<Format?>
 
+    @Query("SELECT DISTINCT * FROM Format WHERE songId = :songId")
+    fun findBySongIdDirect( songId: String ): Format?
+
     /**
      * Attempt to write [format] into database.
      *

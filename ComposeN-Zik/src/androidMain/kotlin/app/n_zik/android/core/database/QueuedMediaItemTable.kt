@@ -22,6 +22,9 @@ interface QueuedMediaItemTable {
     """)
     fun all( limit: Int = Int.MAX_VALUE ): Flow<List<QueuedMediaItem>>
 
+    @Query("SELECT DISTINCT * FROM QueuedMediaItem LIMIT :limit")
+    fun allDirect( limit: Int = Int.MAX_VALUE ): List<QueuedMediaItem>
+
     /**
      * Attempt to write the list of [QueuedMediaItem] to database.
      *

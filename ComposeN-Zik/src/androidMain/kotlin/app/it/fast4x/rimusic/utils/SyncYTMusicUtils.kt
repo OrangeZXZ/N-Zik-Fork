@@ -34,43 +34,32 @@ import timber.log.Timber
 @OptIn(UnstableApi::class)
 fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
     playlist.let { plist ->
-        Database.asyncTransaction {
-            runBlocking(Dispatchers.IO) {
-                withContext(Dispatchers.IO) {
-                    plist.browseId?.let {
-                        YtMusic.getPlaylist(
-                            playlistId = it
-                        ).completed()
+        CoroutineScope(Dispatchers.IO).launch {
+            // Network call OUTSIDE transaction
+            val remotePlaylist = plist.browseId?.let {
+                YtMusic.getPlaylist(playlistId = it).completed().getOrNull()
+            }
+            remotePlaylist?.let { rp ->
+                Timber.tag("SyncYTMusicUtils").d("ytmPrivatePlaylistSync Remote playlist editable: ${rp.isEditable}")
+
+                val allSongs = rp.songs.toMutableList()
+                var continuation = rp.songsContinuation
+                while (continuation != null) {
+                    val contPage = YtMusic.getPlaylistContinuation(continuation).getOrNull()
+                    if (contPage != null) {
+                        allSongs.addAll(contPage.songs)
+                        continuation = contPage.continuation
+                    } else {
+                        break
                     }
                 }
-            }?.getOrNull()?.let { remotePlaylist ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    withContext(Dispatchers.IO) {
+                val mediaItems = allSongs.map( Innertube.SongItem::asMediaItem )
 
-                        Timber.tag("SyncYTMusicUtils").d("ytmPrivatePlaylistSync Remote playlist editable: ${remotePlaylist.isEditable}")
-
-                        // Update here playlist isEditable flag because library contain playlists but isEditable isn't always available
-                        if (remotePlaylist.isEditable == true)
-                            Database.playlistTable
-                                    .update( playlist.copy(isEditable = true) )
-
-                        val allSongs = remotePlaylist.songs.toMutableList()
-                        var continuation = remotePlaylist.songsContinuation
-                        while (continuation != null) {
-                            val contPage = YtMusic.getPlaylistContinuation(continuation).getOrNull()
-                            if (contPage != null) {
-                                allSongs.addAll(contPage.songs)
-                                continuation = contPage.continuation
-                            } else {
-                                break
-                            }
-                        }
-
-                        allSongs.map( Innertube.SongItem::asMediaItem )
-                                      .let {
-                                          mapIgnore( playlist, *it.toTypedArray() )
-                                      }
-                    }
+                Database.asyncTransaction {
+                    if (rp.isEditable == true)
+                        Database.playlistTable
+                                .update( playlist.copy(isEditable = true) )
+                    mapIgnore( playlist, *mediaItems.toTypedArray() )
                 }
             }
         }

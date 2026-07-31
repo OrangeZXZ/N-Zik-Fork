@@ -87,6 +87,9 @@ interface AlbumTable {
     """)
     fun findBySongId( songId: String ): Flow<Album?>
 
+    @Query("SELECT DISTINCT A.* FROM Album A JOIN SongAlbumMap SAM ON SAM.albumId = A.id WHERE SAM.songId = :songId")
+    fun findBySongIdDirect( songId: String ): Album?
+
     /**
      * Attempt to write [Album] into database.
      *

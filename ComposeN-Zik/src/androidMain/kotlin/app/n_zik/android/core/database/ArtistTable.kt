@@ -78,6 +78,9 @@ interface ArtistTable {
     """)
     fun findBySongId( songId: String ): Flow<List<Artist>>
 
+    @Query("SELECT DISTINCT Artist.* FROM SongArtistMap JOIN Artist ON id = artistId WHERE songId = :songId")
+    fun findBySongIdDirect( songId: String ): List<Artist>
+
     /**
      * @param name artist name to search for (case-insensitive)
      * @return first [Artist] that matches the name

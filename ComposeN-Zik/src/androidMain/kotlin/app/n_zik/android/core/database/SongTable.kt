@@ -229,6 +229,9 @@ interface SongTable {
     """)
     fun isLiked( songId: String ): Flow<Boolean>
 
+    @Query("SELECT COALESCE(likedAt IS NOT NULL AND likedAt > 0, 0) FROM Song WHERE id = :songId")
+    fun isLikedDirect( songId: String ): Boolean
+
     /**
      * A tri-state represents 3 different states of like.
      *

@@ -218,8 +218,8 @@ class NZikRadio(
         // Apply Discover Filter (remove known songs)
         if (isDiscoverEnabled) {
             filtered = filtered.filter { item ->
-                val isMapped = Database.songPlaylistMapTable.isMapped(item.mediaId).first()
-                val isLiked = Database.songTable.isLiked(item.mediaId).first()
+                val isMapped = Database.songPlaylistMapTable.isMappedSync(item.mediaId)
+                val isLiked = Database.songTable.isLikedDirect(item.mediaId)
                 !(isMapped && isLiked) // Keep if NOT (mapped AND liked)
             }
         }

@@ -112,7 +112,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
             Timber.tag("MatchGlobal").d("BDD: newSong from YouTube - id='${newSong.id}', duration='${newSong.durationText}', title='${newSong.title}'")
 
             // Check if a song with this YouTube ID already exists (duplicate match)
-            val existingSong = songTable.findById(newSong.id).first()
+            val existingSong = songTable.findByIdDirect(newSong.id)
             if (existingSong != null && existingSong.id != song.id) {
                 Timber.tag("MatchGlobal").d("MERGE: '${song.title}' (id='${song.id}') -> existing id='${existingSong.id}'")
                 // Merge: transfer references from old song to existing
@@ -305,7 +305,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
             val newSong = matchedSong.asSong
             Timber.tag("MatchPlaylist").d("BDD: newSong from YouTube - id='${newSong.id}', duration='${newSong.durationText}'")
 
-            val existingSong = songTable.findById(newSong.id).first()
+            val existingSong = songTable.findByIdDirect(newSong.id)
             if (existingSong != null && existingSong.id != song.id) {
                 Timber.tag("MatchPlaylist").d("MERGE: '${song.title}' (id='${song.id}') -> existing id='${existingSong.id}'")
                 val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)

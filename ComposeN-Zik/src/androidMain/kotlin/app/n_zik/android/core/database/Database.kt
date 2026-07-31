@@ -500,9 +500,23 @@ object Database {
      *
      * @param block of statements to write to database
      */
-    fun asyncTransaction( block: Database.() -> Unit ) =
+    fun asyncTransaction( retries: Int = 3, block: Database.() -> Unit ) =
         _internal.transactionExecutor.execute {
-            this.block()
+            var attempt = 0
+            while (attempt < retries) {
+                try {
+                    this.block()
+                    return@execute
+                } catch (e: android.database.sqlite.SQLiteDatabaseLockedException) {
+                    attempt++
+                    if (attempt >= retries) {
+                        timber.log.Timber.tag("Database").e(e, "Transaction failed after $retries attempts")
+                        return@execute
+                    }
+                    timber.log.Timber.tag("Database").w(e, "Database locked, retry $attempt/$retries")
+                    Thread.sleep(200L * attempt)
+                }
+            }
         }
 
     /**

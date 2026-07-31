@@ -68,6 +68,9 @@ interface SongAlbumMapTable {
     """)
     fun allSongsOf( albumId: String, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
+    @Query("SELECT DISTINCT Song.* FROM SongAlbumMap JOIN Song ON id = songId WHERE albumId = :albumId ORDER BY SongAlbumMap.position LIMIT :limit")
+    fun allSongsOfDirect( albumId: String, limit: Int = Int.MAX_VALUE ): List<Song>
+
     /**
      * @return [Album] that the song belongs to
      */

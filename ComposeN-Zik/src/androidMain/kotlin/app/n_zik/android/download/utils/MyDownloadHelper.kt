@@ -363,12 +363,10 @@ object MyDownloadHelper {
     fun autoDownloadWhenLiked(context: Context, mediaItem: MediaItem) {
         if (context.preferences.getBoolean(autoDownloadSongWhenLikedKey, false)) {
             Database.asyncQuery {
-                runBlocking {
-                    if( songTable.isLiked( mediaItem.mediaId ).first() )
-                        autoDownload(context, mediaItem)
-                    else
-                        removeDownload(context, mediaItem)
-                }
+                if( songTable.isLikedDirect( mediaItem.mediaId ) )
+                    autoDownload(context, mediaItem)
+                else
+                    removeDownload(context, mediaItem)
             }
         }
     }

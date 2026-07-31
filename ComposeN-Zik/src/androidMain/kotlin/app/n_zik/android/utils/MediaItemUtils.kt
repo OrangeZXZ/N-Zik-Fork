@@ -53,9 +53,7 @@ fun MediaItem.albumIdWithFallback(): String? {
 fun MediaItem.artistTextOrDb(): String {
     val artist = app.it.fast4x.rimusic.cleanPrefix(mediaMetadata.artist?.toString() ?: "")
     if (artist.isNotBlank() && artist != "null") return artist
-    val dbText = runBlocking {
-        Database.songTable.findById(mediaId).first()?.artistsText
-    }
+    val dbText = Database.songTable.findByIdDirect(mediaId)?.artistsText
     if (!dbText.isNullOrBlank() && dbText != "null") return app.it.fast4x.rimusic.cleanPrefix(dbText)
     return artist
 }
@@ -63,7 +61,5 @@ fun MediaItem.artistTextOrDb(): String {
 fun MediaItem.albumTitleOrDb(): String {
     val album = mediaMetadata.albumTitle?.toString() ?: ""
     if (album.isNotBlank() && album != "null") return album
-    return runBlocking {
-        Database.albumTable.findBySongId(mediaId).first()?.title ?: album
-    }
+    return Database.albumTable.findBySongIdDirect(mediaId)?.title ?: album
 }

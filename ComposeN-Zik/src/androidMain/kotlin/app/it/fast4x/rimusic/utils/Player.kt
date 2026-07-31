@@ -161,20 +161,16 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
         if (targetItem != null) {
             val videoId = targetItem.mediaId.substringAfter("/").ifBlank { targetItem.mediaId }
             // Pre-fetch synchronously so the search online completes before we read the DB.
-            runCatching { app.n_zik.android.playback.services.upsertSongInfo(videoId) }
+            runCatching { kotlinx.coroutines.runBlocking { app.n_zik.android.playback.services.upsertSongInfo(videoId) } }
             // Now read the DB to populate the MediaItem.
             val enrichedItem = runCatching {
-                runBlocking {
-                    val dbSong = Database
-                        .songTable.findById(videoId)
-                        .first()
-                    if (dbSong != null) {
-                        val dbArtists = Database
-                            .artistTable.findBySongId(videoId)
-                            .first()
-                        val dbAlbum = Database
-                            .albumTable.findBySongId(videoId)
-                            .first()
+                val dbSong = Database
+                    .songTable.findByIdDirect(videoId)
+                if (dbSong != null) {
+                    val dbArtists = Database
+                        .artistTable.findBySongIdDirect(videoId)
+                    val dbAlbum = Database
+                        .albumTable.findBySongIdDirect(videoId)
                         val existing = targetItem.mediaMetadata
                         val artistNames = ArrayList<String>().apply { addAll(dbArtists.mapNotNull { it.name }) }
                         val artistIds = ArrayList<String>().apply { addAll(dbArtists.map { it.id }) }
@@ -195,7 +191,6 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
                             )
                             .build()
                     } else null
-                }
             }.getOrNull()
             if (enrichedItem != null) {
                 Timber.tag("PlayerPrefetch").d("Prefetch success! Enriched metadata for: $videoId")

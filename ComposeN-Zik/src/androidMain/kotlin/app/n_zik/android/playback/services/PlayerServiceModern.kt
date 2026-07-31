@@ -671,20 +671,18 @@ class PlayerServiceModern : MediaLibraryService(),
         val totalPlayTimeMs = playbackStats.totalPlayTimeMs
         val songId = mediaItem.mediaId.split("/").lastOrNull() ?: mediaItem.mediaId
 
-        if ( totalPlayTimeMs > 5000 )
-            Database.asyncTransaction {
-                songTable.updateTotalPlayTime( songId, totalPlayTimeMs, true )
-            }
-
-
         val minTimeForEvent =
             preferences.getEnum(exoPlayerMinTimeForEventKey, ExoPlayerMinTimeForEvent.`20s`)
 
-        if ( totalPlayTimeMs > minTimeForEvent.asMillis ) {
-            Database.asyncTransaction {
+        Database.asyncTransaction {
+            if ( totalPlayTimeMs > 5000 ) {
+                songTable.updateTotalPlayTime( songId, totalPlayTimeMs, true )
+            }
+
+            if ( totalPlayTimeMs > minTimeForEvent.asMillis ) {
                 // Ensure the song exists in the DB so the foreign key constraint is satisfied
                 insertIgnore(mediaItem)
-                
+
                 eventTable.insertIgnore(
                     Event(
                         songId = songId,
@@ -1719,9 +1717,7 @@ class PlayerServiceModern : MediaLibraryService(),
         val parentalControlEnabled = preferences.getBoolean(parentalControlEnabledKey, false)
 
         Database.asyncQuery {
-            val queuedSong = runBlocking {
-                queueTable.all().first()
-            }
+            val queuedSong = queueTable.allDirect()
 
             if (queuedSong.isEmpty()) return@asyncQuery
 
@@ -1734,7 +1730,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
             val index = filteredQueuedSong.indexOfFirst { it.position != null }.coerceAtLeast(0)
 
-            runBlocking(Dispatchers.Main) {
+            CoroutineScope(Dispatchers.Main).launch {
                 player.setMediaItems(
                     filteredQueuedSong.map { mediaItem ->
                         mediaItem.mediaItem.buildUpon()
@@ -1779,7 +1775,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
             if (filteredItems.isEmpty()) return@onSuccess
 
-            runBlocking(Dispatchers.Main) {
+            CoroutineScope(Dispatchers.Main).launch {
                 player.setMediaItems(
                     filteredItems.map { song ->
                         song.asMediaItem.buildUpon()
@@ -1794,7 +1790,6 @@ class PlayerServiceModern : MediaLibraryService(),
                 )
 
                 player.prepare()
-
             }
 
         }.onFailure {

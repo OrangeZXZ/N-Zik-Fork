@@ -743,25 +743,20 @@ fun LocalPlaylistSongs(
     fun sync() {
         playlist?.let {
             if ( !it.name.startsWith(PIPED_PREFIX, true) ) {
-                Database.asyncTransaction {
-                    runBlocking(Dispatchers.IO) {
-                        withContext(Dispatchers.IO) {
-                            Innertube.playlistPage(
-                                BrowseBody(
-                                    browseId = it.browseId
-                                        ?: ""
-                                )
-                            )
-                                ?.completed()
-                        }
-                    }?.getOrNull()?.let { remotePlaylist ->
-                        val mediaItems = remotePlaylist.songsPage
+                CoroutineScope(Dispatchers.IO).launch {
+                    val remotePlaylist = Innertube.playlistPage(
+                        BrowseBody(browseId = it.browseId ?: "")
+                    )?.completed()?.getOrNull()
+                    remotePlaylist?.let { rp ->
+                        val mediaItems = rp.songsPage
                             ?.items
                             ?.map(Innertube.SongItem::asMediaItem)
 
                         if (mediaItems != null && mediaItems.isNotEmpty()) {
-                            songPlaylistMapTable.clear( playlistId )
-                            mapIgnore( it, *mediaItems.toTypedArray() )
+                            Database.asyncTransaction {
+                                songPlaylistMapTable.clear( playlistId )
+                                mapIgnore( it, *mediaItems.toTypedArray() )
+                            }
                         }
                     }
                 }

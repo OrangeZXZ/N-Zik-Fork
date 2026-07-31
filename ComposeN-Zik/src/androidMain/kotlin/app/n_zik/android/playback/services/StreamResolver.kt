@@ -161,9 +161,8 @@ private val jsonParser = Json {
     explicitNulls = false
 }
 
-@Blocking
-fun upsertSongInfo(videoId: String) = runBlocking {
-    if (videoId == justInserted) return@runBlocking
+suspend fun upsertSongInfo(videoId: String) {
+    if (videoId == justInserted) return
     Innertube.nextPage(NextBody(videoId = videoId))?.fold(
         onSuccess = { nextPage ->
             val songItem = nextPage.itemsPage?.items?.firstOrNull() ?: return@fold
@@ -220,7 +219,7 @@ private fun fetchFormatIfMissing(videoId: String) {
     if (videoId.length != 11) return
     CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
         try {
-            val existing = Database.formatTable.findBySongId(videoId).firstOrNull()
+            val existing = Database.formatTable.findBySongIdDirect(videoId)
             if (existing != null) {
                 val complete = (existing.contentLength ?: 0L) > 0L &&
                     existing.loudnessDb != null &&
@@ -1133,7 +1132,7 @@ fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory {
         val videoId = dataSpec.key ?: dataSpec.uri.toString().substringAfter("watch?v=")
         val parentalControlEnabled = appContext().preferences.getBoolean(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false)
         if (parentalControlEnabled) {
-            val isExplicit = kotlinx.coroutines.runBlocking { Database.songTable.findById(videoId).firstOrNull()?.title?.startsWith(EXPLICIT_PREFIX, true) == true }
+            val isExplicit = Database.songTable.findByIdDirect(videoId)?.title?.startsWith(EXPLICIT_PREFIX, true) == true
             if (isExplicit) {
                 throw ExplicitContentException()
             }

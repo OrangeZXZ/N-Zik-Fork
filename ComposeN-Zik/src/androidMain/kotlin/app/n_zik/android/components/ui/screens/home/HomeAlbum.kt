@@ -259,14 +259,12 @@ fun HomeAlbums(
                       * 2 songs to have the same [Song.thumbnailUrl] to return
                       * the same result.
                       */
-                     runBlocking {
-                         songAlbumMapTable.allSongsOf( album.id )
-                                          .first()
+                     val coverUrl = songAlbumMapTable.allSongsOfDirect( album.id )
                                           .groupingBy( Song::thumbnailUrl )
                                           .eachCount()
                                           .maxByOrNull { it.value }
                                           ?.key
-                     }?.let { albumTable.updateCover( album.id, it ) }
+                     coverUrl?.let { albumTable.updateCover( album.id, it ) }
                  }
         }
     }
