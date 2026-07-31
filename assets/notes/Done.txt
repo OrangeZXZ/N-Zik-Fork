@@ -41,6 +41,11 @@ Fixed:
   - `YouTubeSync.kt` `toggleSongLike()`: replaced `runBlocking { likeState().first() }` with direct suspend `.first()` call.
   - `PlaylistSongList.kt`: replaced `runBlocking { isLiked().first() }` in Composable with `LaunchedEffect` to prevent main thread blocking.
   - Removed unused `runBlocking` and `flow.first` imports from Database.kt, Player.kt, YouTubeSync.kt, PlaylistSongList.kt.
+- fix(database): prevent permanent DB lock from unhandled exceptions during crossfade
+  - `Database.asyncTransaction()`: added broad `catch (e: Exception)` around transaction execution — previously only `SQLiteDatabaseLockedException` was caught; any other exception (FK violation, NPE, etc.) would kill the transaction executor thread permanently, causing all subsequent `asyncTransaction` calls to queue forever.
+  - `PlayerServiceModern.onPlaybackStatsReady()`: wrapped entire callback body in `try-catch(Exception)` to prevent exceptions from propagating and killing the transaction executor.
+  - `PlayerServiceModern.onMediaItemTransition()`: wrapped `asyncTransaction { insertIgnore(it) }` in `try-catch(Exception)` to prevent exceptions during crossfade from killing the executor.
+  - Removed unused `runBlocking` and `flow.first` imports from PlayerServiceModern.kt and AutoSessionCallback.kt.
 - fix(playback): fix play time stats and history logging for songs played from albums/playlists
   - `PlaybackStatsListener` now correctly splits `mediaItem.mediaId` containing slashes (e.g. `albumId/videoId`) to extract the canonical `songId`, ensuring successful updates to the `Song` table and satisfying foreign key constraints for `Event` history entries.
 - fix(search): fix unsafe fallback search in GoToAlbum
