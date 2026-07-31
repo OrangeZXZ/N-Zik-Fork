@@ -73,6 +73,9 @@ interface AlbumTable {
     @Query("SELECT DISTINCT * FROM Album WHERE id = :albumId")
     fun findById( albumId: String ): Flow<Album?>
 
+    @Query("SELECT DISTINCT * FROM Album WHERE id = :albumId")
+    fun findByIdDirect( albumId: String ): Album?
+
     /**
      * @return [Album] that has song with id [songId]
      */

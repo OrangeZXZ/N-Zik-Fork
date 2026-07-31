@@ -17,6 +17,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.SearchBody
 import it.fast4x.innertube.requests.searchPage
+import it.fast4x.innertube.requests.albumPage
 import it.fast4x.innertube.utils.from
 import app.it.fast4x.rimusic.models.Album
 import app.it.fast4x.rimusic.models.Artist
@@ -232,9 +233,10 @@ object Database {
      * this method handles the insertion automatically.
      */
     fun insertIgnore( mediaItem: MediaItem ) {
+        val cleanSongId = mediaItem.mediaId.split("/").lastOrNull() ?: mediaItem.mediaId
         // Insert song with merge (preserve existing non-empty fields)
         val newSong = mediaItem.asSong
-        val dbSong = songTable.findByIdDirect(newSong.id)
+        val dbSong = songTable.findByIdDirect(cleanSongId)
         val mergedSong = if (dbSong != null) {
             val newTitle = newSong.title
             val finalTitle = when {
@@ -258,7 +260,7 @@ object Database {
             }
 
             Song(
-                id = newSong.id,
+                id = cleanSongId,
                 title = finalTitle.orEmpty(),
                 artistsText = finalArtistsText ?: "",
                 durationText = finalDurationText,
@@ -270,23 +272,67 @@ object Database {
         } else newSong
         songTable.upsert(mergedSong)
 
-        // Insert album
+        // Insert/merge album and fetch details (including year) if missing
         mediaItem.mediaMetadata
                  .extras
                  ?.getString("albumId")
-                 ?.let {
-                     Album(
-                         id = it,
-                         title =  mediaItem.mediaMetadata.albumTitle?.toString(),
-                         thumbnailUrl = mediaItem.mediaMetadata.artworkUri?.toString(),
-                         year = mediaItem.mediaMetadata.releaseYear?.toString(),
-                         authorsText = mediaItem.mediaMetadata.artist?.toString()
-                     )
-                 }
-                 // Passing MediaItem causes infinite loop
-                 ?.also( albumTable::insertIgnore )
-                 ?.also {
-                     songAlbumMapTable.map( mediaItem.mediaId, it.id )
+                 ?.let { albumId ->
+                     val albumTitle = mediaItem.mediaMetadata.albumTitle?.toString()
+                     val artworkUri = mediaItem.mediaMetadata.artworkUri?.toString()
+                     val artist = mediaItem.mediaMetadata.artist?.toString()
+                     val year = mediaItem.mediaMetadata.releaseYear?.toString()
+                     
+                     val dbAlbum = albumTable.findByIdDirect(albumId)
+                     val mergedAlbum = if (dbAlbum != null) {
+                         Album(
+                             id = albumId,
+                             title = albumTitle.takeIf { !it.isNullOrBlank() } ?: dbAlbum.title,
+                             thumbnailUrl = artworkUri.takeIf { !it.isNullOrBlank() } ?: dbAlbum.thumbnailUrl,
+                             year = year.takeIf { !it.isNullOrBlank() } ?: dbAlbum.year,
+                             authorsText = artist.takeIf { !it.isNullOrBlank() } ?: dbAlbum.authorsText,
+                             shareUrl = dbAlbum.shareUrl,
+                             timestamp = dbAlbum.timestamp,
+                             bookmarkedAt = dbAlbum.bookmarkedAt
+                         )
+                     } else {
+                         Album(
+                             id = albumId,
+                             title = albumTitle,
+                             thumbnailUrl = artworkUri,
+                             year = year,
+                             authorsText = artist
+                         )
+                     }
+                     albumTable.upsert(mergedAlbum)
+
+                     // Background fetch album page metadata if year is missing online
+                     if (mergedAlbum.year.isNullOrBlank() && !albumId.startsWith("MPRE")) {
+                         CoroutineScope(Dispatchers.IO).launch {
+                             try {
+                                 Innertube.albumPage(it.fast4x.innertube.models.bodies.BrowseBody(browseId = albumId))
+                                     ?.getOrNull()
+                                     ?.let { albumPage ->
+                                         if (!albumPage.year.isNullOrBlank()) {
+                                             val updatedAlbum = Album(
+                                                 id = albumId,
+                                                 title = albumPage.title.takeIf { !it.isNullOrBlank() } ?: mergedAlbum.title,
+                                                 thumbnailUrl = albumPage.thumbnail?.url.takeIf { !it.isNullOrBlank() } ?: mergedAlbum.thumbnailUrl,
+                                                 year = albumPage.year,
+                                                 authorsText = albumPage.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() } ?: mergedAlbum.authorsText,
+                                                 shareUrl = albumPage.url ?: mergedAlbum.shareUrl,
+                                                 timestamp = System.currentTimeMillis(),
+                                                 bookmarkedAt = mergedAlbum.bookmarkedAt
+                                             )
+                                             albumTable.upsert(updatedAlbum)
+                                         }
+                                     }
+                             } catch (e: Exception) {
+                                 timber.log.Timber.tag("Database").e(e, "Failed to fetch album page for year update")
+                             }
+                         }
+                     }
+
+                     songAlbumMapTable.map( cleanSongId, albumId )
                  }
 
         // Insert artist
@@ -303,14 +349,14 @@ object Database {
                     artistTable.insertIgnore(Artist(id, name))
                     id
                 }
-                songArtistMapTable.insertIgnore(SongArtistMap(mediaItem.mediaId, targetArtistId))
+                songArtistMapTable.insertIgnore(SongArtistMap(cleanSongId, targetArtistId))
             }
         } else if (artistsNames.isNotEmpty()) {
             // No browse IDs but we have names: try database by name first
             artistsNames.forEach { name ->
                 val existingArtist = runBlocking { artistTable.findByName(name).first() }
                 if (existingArtist != null) {
-                    songArtistMapTable.insertIgnore(SongArtistMap(mediaItem.mediaId, existingArtist.id))
+                    songArtistMapTable.insertIgnore(SongArtistMap(cleanSongId, existingArtist.id))
                 } else {
                     // Search online for the artist in background (non-blocking)
                     CoroutineScope(Dispatchers.IO).launch {
@@ -328,7 +374,7 @@ object Database {
                             } ?: searchResult?.items?.firstOrNull()
                             if (foundArtist != null && foundArtist.key != null) {
                                 artistTable.insertIgnore(Artist(id = foundArtist.key, name = foundArtist.info?.name ?: name, isYoutubeArtist = true))
-                                songArtistMapTable.insertIgnore(SongArtistMap(mediaItem.mediaId, foundArtist.key))
+                                songArtistMapTable.insertIgnore(SongArtistMap(cleanSongId, foundArtist.key))
                             }
                         } catch (_: Exception) { }
                     }
