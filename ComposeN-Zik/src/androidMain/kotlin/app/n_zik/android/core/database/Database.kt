@@ -513,6 +513,9 @@ object Database {
                     }
                     timber.log.Timber.tag("Database").w(e, "Database locked, retry $attempt/$retries")
                     Thread.sleep(200L * attempt)
+                } catch (e: Exception) {
+                    timber.log.Timber.tag("Database").e(e, "asyncTransaction failed with unexpected exception, aborting")
+                    return@execute
                 }
             }
         }

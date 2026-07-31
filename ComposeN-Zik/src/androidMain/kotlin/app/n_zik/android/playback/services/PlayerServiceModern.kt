@@ -661,32 +661,36 @@ class PlayerServiceModern : MediaLibraryService(),
         // if pause listen history is enabled, don't register statistic event
         if (preferences.getBoolean(pauseListenHistoryKey, false)) return
 
-        val mediaItem =
-            eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
+        try {
+            val mediaItem =
+                eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
 
-        val totalPlayTimeMs = playbackStats.totalPlayTimeMs
-        val songId = mediaItem.mediaId.split("/").lastOrNull() ?: mediaItem.mediaId
+            val totalPlayTimeMs = playbackStats.totalPlayTimeMs
+            val songId = mediaItem.mediaId.split("/").lastOrNull() ?: mediaItem.mediaId
 
-        val minTimeForEvent =
-            preferences.getEnum(exoPlayerMinTimeForEventKey, ExoPlayerMinTimeForEvent.`20s`)
+            val minTimeForEvent =
+                preferences.getEnum(exoPlayerMinTimeForEventKey, ExoPlayerMinTimeForEvent.`20s`)
 
-        Database.asyncTransaction {
-            if ( totalPlayTimeMs > 5000 ) {
-                songTable.updateTotalPlayTime( songId, totalPlayTimeMs, true )
-            }
+            Database.asyncTransaction {
+                if ( totalPlayTimeMs > 5000 ) {
+                    songTable.updateTotalPlayTime( songId, totalPlayTimeMs, true )
+                }
 
-            if ( totalPlayTimeMs > minTimeForEvent.asMillis ) {
-                // Ensure the song exists in the DB so the foreign key constraint is satisfied
-                insertIgnore(mediaItem)
+                if ( totalPlayTimeMs > minTimeForEvent.asMillis ) {
+                    // Ensure the song exists in the DB so the foreign key constraint is satisfied
+                    insertIgnore(mediaItem)
 
-                eventTable.insertIgnore(
-                    Event(
-                        songId = songId,
-                        timestamp = System.currentTimeMillis(),
-                        playTime = totalPlayTimeMs
+                    eventTable.insertIgnore(
+                        Event(
+                            songId = songId,
+                            timestamp = System.currentTimeMillis(),
+                            playTime = totalPlayTimeMs
+                        )
                     )
-                )
+                }
             }
+        } catch (e: Exception) {
+            Timber.tag("PlayerServiceModern").e(e, "Error in onPlaybackStatsReady")
         }
     }
 
@@ -842,8 +846,12 @@ class PlayerServiceModern : MediaLibraryService(),
         // before StreamResolver can insert a blank placeholder for FK satisfaction.
         // insertIgnore uses merge logic that preserves existing non-empty fields.
         mediaItem?.let {
-            Database.asyncTransaction {
-                insertIgnore(it)
+            try {
+                Database.asyncTransaction {
+                    insertIgnore(it)
+                }
+            } catch (e: Exception) {
+                Timber.tag("PlayerServiceModern").e(e, "Error in onMediaItemTransition DB insert")
             }
         }
 
