@@ -34,6 +34,13 @@ Fixed:
   - PlayerServiceModern `updateCustomNotification()`: removed unnecessary `runBlocking` wrappers around `artistTextOrDb()` / `albumTitleOrDb()` which are now synchronous.
   - AutoSessionCallback `onGetItem()`: replaced `songTable.findById().first()` Flow call with synchronous `findByIdDirect()`.
   - Removed unused `runBlocking` and `flow.first` imports from PlayerServiceModern.kt and StreamResolver.kt.
+- fix(database): convert Database.upsert() to suspend fun, eliminating runBlocking wrapper
+  - Removed `runBlocking` wrapper from `Database.upsert(SongItem)` — this was the most dangerous pattern: `runBlocking` wrapping `withTransaction` + network calls, blocking the calling thread for the entire DB read + Innertube search + DB write duration. Now properly `suspend fun` so callers use coroutine context.
+  - `Player.kt` `forcePlayAtIndex()`: replaced `runBlocking { upsertSongInfo() }` with direct suspend call (already inside `CoroutineScope(Dispatchers.Default).launch`).
+  - `SongItem.kt` download click: moved `Database.upsert()` into `CoroutineScope(Dispatchers.IO).launch` to prevent main thread blocking.
+  - `YouTubeSync.kt` `toggleSongLike()`: replaced `runBlocking { likeState().first() }` with direct suspend `.first()` call.
+  - `PlaylistSongList.kt`: replaced `runBlocking { isLiked().first() }` in Composable with `LaunchedEffect` to prevent main thread blocking.
+  - Removed unused `runBlocking` and `flow.first` imports from Database.kt, Player.kt, YouTubeSync.kt, PlaylistSongList.kt.
 - fix(playback): fix play time stats and history logging for songs played from albums/playlists
   - `PlaybackStatsListener` now correctly splits `mediaItem.mediaId` containing slashes (e.g. `albumId/videoId`) to extract the canonical `songId`, ensuring successful updates to the `Song` table and satisfying foreign key constraints for `Event` history entries.
 - fix(search): fix unsafe fallback search in GoToAlbum

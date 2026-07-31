@@ -17,9 +17,7 @@ import app.n_zik.android.R
 import app.it.fast4x.rimusic.enums.DurationInMinutes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.ArrayDeque
@@ -161,7 +159,7 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
         if (targetItem != null) {
             val videoId = targetItem.mediaId.substringAfter("/").ifBlank { targetItem.mediaId }
             // Pre-fetch synchronously so the search online completes before we read the DB.
-            runCatching { kotlinx.coroutines.runBlocking { app.n_zik.android.playback.services.upsertSongInfo(videoId) } }
+            runCatching { app.n_zik.android.playback.services.upsertSongInfo(videoId) }
             // Now read the DB to populate the MediaItem.
             val enrichedItem = runCatching {
                 val dbSong = Database

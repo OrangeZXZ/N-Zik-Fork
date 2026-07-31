@@ -154,7 +154,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import app.it.fast4x.rimusic.utils.ExternalUris
 import dev.rebelonion.translator.Language
@@ -314,12 +313,12 @@ fun PlaylistSongList(
     var totalMinutesToLike by remember { mutableStateOf("") }
 
     if (showYoutubeLikeConfirmDialog) {
-        runBlocking {
+        LaunchedEffect(playlistSongs) {
             playlistNotLikedSongs = playlistSongs.filter {
                 Database.songTable.isLiked( it.asSong.id ).first()
             }
+            totalMinutesToLike = formatAsDuration(playlistNotLikedSongs.size.toLong()*1000)
         }
-        totalMinutesToLike = formatAsDuration(playlistNotLikedSongs.size.toLong()*1000)
         ConfirmationDialog(
             text = "$totalMinutesToLike "+stringResource(R.string.do_you_really_want_to_like_all),
             onDismiss = { showYoutubeLikeConfirmDialog = false },

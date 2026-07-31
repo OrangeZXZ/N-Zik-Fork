@@ -14,7 +14,6 @@ import app.n_zik.android.download.utils.MyDownloadHelper
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import app.it.fast4x.rimusic.utils.isNetworkConnected
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import app.kreate.android.me.knighthat.utils.Toaster
 
 /**
@@ -46,9 +45,7 @@ object YouTubeSync {
         Database.insertIgnore( mediaItem )
         Database.songTable.toggleLike( mediaItem.mediaId )
 
-        val likeState = runBlocking {
-            Database.songTable.likeState( mediaItem.mediaId ).first()
-        }
+        val likeState = Database.songTable.likeState( mediaItem.mediaId ).first()
         MyDownloadHelper.downloadOnLike( mediaItem, likeState, context )
 
 

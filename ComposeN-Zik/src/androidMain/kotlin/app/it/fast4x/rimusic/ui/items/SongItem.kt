@@ -58,6 +58,8 @@ import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.ColorPaletteName
 import app.it.fast4x.rimusic.enums.DownloadedStateMedia
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import app.it.fast4x.rimusic.models.Song
 import app.n_zik.android.download.services.MyDownloadService
 import app.n_zik.android.playback.services.isLocal
@@ -113,7 +115,9 @@ fun SongItem(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         onDownloadClick = {
-            Database.upsert( song )
+            CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                Database.upsert( song )
+            }
             onDownloadClick()
         },
         downloadState = downloadState,

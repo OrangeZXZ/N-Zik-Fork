@@ -37,10 +37,8 @@ import app.it.fast4x.rimusic.utils.parseArtists
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import app.n_zik.android.core.database.AlbumTable
 import app.n_zik.android.core.database.ArtistTable
 import app.n_zik.android.core.database.Converters
@@ -107,7 +105,7 @@ object Database {
 
     //**********************************************
 
-    fun upsert( songItem: Innertube.SongItem ) = runBlocking {
+    suspend fun upsert( songItem: Innertube.SongItem ) {
         val song = songItem.asSong
 
         // Phase 1: Read existing data from DB (no lock held)
