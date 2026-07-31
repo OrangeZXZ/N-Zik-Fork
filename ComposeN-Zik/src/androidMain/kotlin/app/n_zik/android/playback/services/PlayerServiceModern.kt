@@ -8,8 +8,6 @@ import app.n_zik.android.playback.exceptions.*
 import app.n_zik.android.playback.utils.*
 import app.n_zik.android.utils.artistTextOrDb
 import app.n_zik.android.utils.albumTitleOrDb
-import kotlinx.coroutines.runBlocking
-
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.delay
 
@@ -204,13 +202,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
@@ -1401,14 +1397,9 @@ class PlayerServiceModern : MediaLibraryService(),
 
         val mediaMetadata = player.mediaMetadata
 
-        val artistText = runBlocking {
-            val mediaItem = binder?.player?.currentMediaItem
-            mediaItem?.artistTextOrDb() ?: ""
-        }
-        val albumText = runBlocking {
-            val mediaItem = binder?.player?.currentMediaItem
-            mediaItem?.albumTitleOrDb() ?: ""
-        }
+        val mediaItem = binder?.player?.currentMediaItem
+        val artistText = mediaItem?.artistTextOrDb() ?: ""
+        val albumText = mediaItem?.albumTitleOrDb() ?: ""
 
         // Load bitmap with proper fallback handling
         bitmapProvider.load(mediaMetadata.artworkUri) {

@@ -62,7 +62,7 @@ import app.it.fast4x.rimusic.utils.streamClientWebCreatorEnabledKey
 import app.it.fast4x.rimusic.utils.streamClientMobileEnabledKey
 import app.it.fast4x.rimusic.utils.streamClientAndroidEnabledKey
 import app.it.fast4x.rimusic.utils.preferredStreamClientKey
-import kotlinx.coroutines.flow.firstOrNull
+
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -1042,7 +1042,7 @@ fun DataSpec.process(
 
             val parentalControlEnabled = appContext().preferences.getBoolean(parentalControlEnabledKey, false)
             if (parentalControlEnabled) {
-                val song = Database.songTable.findById(videoId).firstOrNull()
+                val song = Database.songTable.findByIdDirect(videoId)
                 if (song?.title?.startsWith(EXPLICIT_PREFIX, true) == true) {
                     throw ExplicitContentException()
                 }

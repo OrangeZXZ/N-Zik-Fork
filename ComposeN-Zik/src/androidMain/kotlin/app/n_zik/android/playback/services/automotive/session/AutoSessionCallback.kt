@@ -246,7 +246,7 @@ class AutoSessionCallback(
         mediaId: String,
     ): ListenableFuture<LibraryResult<MediaItem>> = scope.future(Dispatchers.IO) {
         val songId = mediaId.split("/").lastOrNull() ?: mediaId
-        database.songTable.findById(songId).first()?.let { song -> 
+        database.songTable.findByIdDirect(songId)?.let { song -> 
             if (mediaId.contains("/")) {
                 SessionMediaItemMapper.mapSongToMediaItem(song, mediaId.substringBeforeLast("/"))
             } else {

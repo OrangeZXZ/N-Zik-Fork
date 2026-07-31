@@ -29,6 +29,11 @@ Fixed:
   - NZikRadio: replaced `Flow.first()` loops with `isMappedSync()` / `isLikedDirect()`.
   - SyncPipedUtils: replaced `runBlocking { Flow.first() }` inside `asyncTransaction` with `existsDirect()`.
   - SyncYTMusicUtils + LocalPlaylistSongs: moved network calls outside `asyncTransaction` blocks.
+- fix(playback): eliminate remaining DB lock sources in crossfade and notification paths
+  - StreamResolver `DataSpec.process()`: replaced `songTable.findById().firstOrNull()` Flow call with synchronous `findByIdDirect()` inside the `runBlocking(Dispatchers.IO)` block that ExoPlayer requires — this was the last Flow query in the critical stream resolution path triggered during crossfade.
+  - PlayerServiceModern `updateCustomNotification()`: removed unnecessary `runBlocking` wrappers around `artistTextOrDb()` / `albumTitleOrDb()` which are now synchronous.
+  - AutoSessionCallback `onGetItem()`: replaced `songTable.findById().first()` Flow call with synchronous `findByIdDirect()`.
+  - Removed unused `runBlocking` and `flow.first` imports from PlayerServiceModern.kt and StreamResolver.kt.
 - fix(playback): fix play time stats and history logging for songs played from albums/playlists
   - `PlaybackStatsListener` now correctly splits `mediaItem.mediaId` containing slashes (e.g. `albumId/videoId`) to extract the canonical `songId`, ensuring successful updates to the `Song` table and satisfying foreign key constraints for `Event` history entries.
 - fix(search): fix unsafe fallback search in GoToAlbum
