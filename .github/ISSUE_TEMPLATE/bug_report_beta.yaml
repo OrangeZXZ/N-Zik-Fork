@@ -10,8 +10,8 @@ body:
         ****
         ### ❗ READ BEFORE SUBMITTING ❗
 
-        This form is for bugs found specifically in the **Beta** build of N-Zik.
-        If you're on the **Full** or **Minified** or **Foss** build, please use the regular Bug report template instead.
+        This form is for bugs found specifically in the **Beta** and **Beta32** builds of N-Zik.
+        If you're on the **Full/Full32**, **Minified/Minified32** or **Foss** build, please use the regular Bug report template instead.
 
         * **Media cannot be played / Unknown Error / Login required:**
         YouTube is likely blocking you. Please **do not** open a ticket for this.
@@ -40,6 +40,17 @@ body:
       label: 🏷️ App Version
       description: Please specify the exact beta version of N-Zik.
       placeholder: 5.1.0-b
+    validations:
+      required: true
+
+  - type: dropdown
+    id: build-type
+    attributes:
+      label: 🏗️ Build Type
+      description: Select the beta build type you are currently using.
+      options:
+        - Beta
+        - Beta32
     validations:
       required: true
 
