@@ -669,10 +669,11 @@ class PlayerServiceModern : MediaLibraryService(),
             eventTime.timeline.getWindow(eventTime.windowIndex, Timeline.Window()).mediaItem
 
         val totalPlayTimeMs = playbackStats.totalPlayTimeMs
+        val songId = mediaItem.mediaId.split("/").lastOrNull() ?: mediaItem.mediaId
 
         if ( totalPlayTimeMs > 5000 )
             Database.asyncTransaction {
-                songTable.updateTotalPlayTime( mediaItem.mediaId, totalPlayTimeMs, true )
+                songTable.updateTotalPlayTime( songId, totalPlayTimeMs, true )
             }
 
 
@@ -686,7 +687,7 @@ class PlayerServiceModern : MediaLibraryService(),
                 
                 eventTable.insertIgnore(
                     Event(
-                        songId = mediaItem.mediaId,
+                        songId = songId,
                         timestamp = System.currentTimeMillis(),
                         playTime = totalPlayTimeMs
                     )

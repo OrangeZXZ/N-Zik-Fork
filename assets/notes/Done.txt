@@ -10,6 +10,10 @@ Fixed:
 - fix(playback): resolve database corruption/race condition on music playback initialization
   - Immediately persist complete `MediaItem` metadata to the database in `PlayerServiceModern.kt` during `onMediaItemTransition`.
   - Added a check in `StreamResolver.kt` to prevent inserting a blank placeholder `Song` if the song already exists in the database.
+- fix(playback): fix play time stats and history logging for songs played from albums/playlists
+  - `PlaybackStatsListener` now correctly splits `mediaItem.mediaId` containing slashes (e.g. `albumId/videoId`) to extract the canonical `songId`, ensuring successful updates to the `Song` table and satisfying foreign key constraints for `Event` history entries.
+- fix(search): fix unsafe fallback search in GoToAlbum
+  - Removed the unsafe `firstOrNull()` fallback in `GoToAlbum.kt` which resulted in navigating to wrong albums 100% of the time. Now only navigates if there is a strict match on the song ID, and displays a toast error otherwise.
 
 BETA V 7.2.9
 
