@@ -2,15 +2,16 @@
   <img alt="project's banner" src="./assets/design/ic_banner2.png" width="1080" />    
   
   <h3>🌐 <a href="https://n-zik.vercel.app/">Official Website</a></h3>
-
   <p>
     <b>N-Zik</b> is a multilingual fork of <a href="https://github.com/knighthat/Kreate">Kreate</a>, 
     built with performance improvements, UI/UX refinement, bug fixes, and new features in mind with long-term support.
   </p>
   <p>
     <strong>N-Zik</strong> may not yet be as stable as the original 
-    <a href="https://github.com/knighthat/Kreate">Kreate</a>, so feel free to use the original 
-    if you need a more mature alternative.
+    <a href="https://github.com/knighthat/Kreate">Kreate</a>, so feel free to use it or other 
+    solid alternatives like <a href="https://github.com/MetrolistGroup/Metrolist">Metrolist</a>, 
+    <a href="https://github.com/vivizzz007/vivi-music">VIVI Music</a>, or 
+    <a href="https://github.com/fast4x/RiPlay">RiPlay</a> — if you need a more mature option.
   </p>
   <p>
     <strong>N-Zik</strong> is a side project I originally built for myself and friends, not chasing glory. 
@@ -25,6 +26,7 @@
     If AI-assisted development isn't your thing, no hard feelings, 
     there are plenty of great alternatives.
   </p>
+</div>
 
   <br>
   
