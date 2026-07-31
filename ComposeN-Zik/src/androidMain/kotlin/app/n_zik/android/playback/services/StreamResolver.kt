@@ -335,7 +335,7 @@ private fun upsertSongFormat(
         // (e.g., already seeded by onMediaItemTransition with full metadata).
         // This avoids creating a blank row that would propagate empty data
         // to the UI via reactive Flows.
-        val songExists = runBlocking { Database.songTable.findById(videoId).firstOrNull() } != null
+        val songExists = Database.songTable.countById(videoId) > 0
         if (!songExists) {
             Database.asyncTransaction {
                 songTable.insertIgnore(Song.makePlaceholder(videoId))

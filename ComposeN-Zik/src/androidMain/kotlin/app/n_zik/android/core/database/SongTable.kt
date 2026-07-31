@@ -84,6 +84,9 @@ interface SongTable {
     @Query("SELECT DISTINCT * FROM Song WHERE id = :songId")
     fun findById( songId: String ): Flow<Song?>
 
+    @Query("SELECT DISTINCT * FROM Song WHERE id = :songId")
+    fun findByIdDirect( songId: String ): Song?
+
     @Query("SELECT COUNT(*) FROM Song WHERE id = :songId")
     fun countById( songId: String ): Int
 

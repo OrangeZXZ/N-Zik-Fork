@@ -234,7 +234,7 @@ object Database {
     fun insertIgnore( mediaItem: MediaItem ) {
         // Insert song with merge (preserve existing non-empty fields)
         val newSong = mediaItem.asSong
-        val dbSong = runBlocking { songTable.findById(newSong.id).first() }
+        val dbSong = songTable.findByIdDirect(newSong.id)
         val mergedSong = if (dbSong != null) {
             val newTitle = newSong.title
             val finalTitle = when {
