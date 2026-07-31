@@ -7,8 +7,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.nextPage
+import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.requests.searchPage
+import it.fast4x.innertube.utils.from
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.enums.NavRoutes
@@ -37,47 +41,104 @@ class GoToArtist(
         @Composable
         get() = stringResource(R.string.more_of) + " ${song.cleanArtistsText()}"
 
-    private var channelId: Optional<String> = Optional.empty()
 
-    init {
+
+    override fun onShortClick() {
+        menuState.hide()
+        
         CoroutineScope( Dispatchers.IO ).launch {
-            Database.artistTable
+            val id = Database.artistTable
                     .findBySongId( song.id )
                     .first()
                     .firstOrNull()
                     ?.id
-                    ?.also { channelId = Optional.of( it ) }
-        }
-    }
+                    
+            val isValid = id != null && id.length > 11 && id.matches("^[A-Za-z0-9_-]+\$".toRegex())
+            
+            kotlinx.coroutines.withContext(Dispatchers.Main) {
+                if (isValid) {
+                    NavRoutes.artist.navigateHere( navController, id!! )
+                } else {
+                    Toaster.i( R.string.looking_up_artist_online, song.cleanArtistsText() )
+                    
+                    CoroutineScope( Dispatchers.IO ).launch {
+                        try {
+                            val hasValidId = song.id.length == 11 && !song.id.startsWith("local:")
+                            
+                            var artistEndpoint: NavigationEndpoint.Endpoint.Browse? = null
+                            
+                            if (hasValidId) {
+                                artistEndpoint = Innertube.nextPage(NextBody(videoId = song.id))
+                                    ?.onFailure {
+                                        Timber.tag("go_to_artist").e( it, "nextPage failed" )
+                                    }
+                                    ?.getOrNull()
+                                    ?.itemsPage
+                                    ?.items
+                                    ?.firstOrNull { it.key == song.id }
+                                    ?.authors
+                                    ?.firstOrNull()
+                                    ?.endpoint
+                                    ?.takeIf { !it.browseId.isNullOrBlank() }
+                                    
+                                Timber.tag("go_to_artist").d("Up Next API artist endpoint: %s", artistEndpoint?.browseId)
+                            }
 
-    override fun onShortClick() {
-        menuState.hide()
-        channelId.ifPresentOrElse(
-            { NavRoutes.artist.navigateHere( navController, it ) },
-            {
-                Toaster.n( R.string.looking_up_artist_online, song.cleanArtistsText() )
-
-                CoroutineScope( Dispatchers.IO ).launch {
-                    Innertube.nextPage(NextBody(videoId = song.id))
-                             ?.onFailure {
-                                 Timber.tag("go_to_artist").e( it )
-                                 Toaster.e( R.string.failed_to_fetch_artist )
-                             }
-                             ?.getOrNull()
-                             ?.itemsPage
-                             ?.items
-                             ?.firstOrNull()
-                             ?.authors
-                             ?.firstOrNull()
-                             ?.endpoint
-                             ?.takeIf { !it.browseId.isNullOrBlank() }
-                             ?.let {
-                                 val path = "${it.browseId}?params=${it.params.orEmpty()}"
-                                 NavRoutes.artist.navigateHere( navController, path )
-                             }
+                            if (artistEndpoint != null) {
+                                val path = "${artistEndpoint.browseId}?params=${artistEndpoint.params.orEmpty()}"
+                                kotlinx.coroutines.withContext(Dispatchers.Main) {
+                                    Toaster.s( R.string.artist_found_online_verify )
+                                    NavRoutes.artist.navigateHere( navController, path )
+                                }
+                            } else {
+                                val query = song.cleanArtistsText().takeIf { it.isNotBlank() } ?: song.cleanTitle()
+                                val songQuery = "${song.cleanTitle()} ${song.cleanArtistsText()}".trim()
+                                Timber.tag("go_to_artist").d("Fallback search query: %s", songQuery)
+                                
+                                // 1. First, search for the song (more accurate for finding exact artists of a track)
+                                val songSearchResult = Innertube.searchPage<Innertube.SongItem>(
+                                    SearchBody(query = songQuery, params = Innertube.SearchFilter.Song.value),
+                                    { content -> Innertube.SongItem.from(content) }
+                                )?.getOrNull()
+                                
+                                val foundSong = songSearchResult?.items?.firstOrNull { it.key == song.id }
+                                    ?: songSearchResult?.items?.firstOrNull { it.title.equals(song.cleanTitle(), ignoreCase = true) }
+                                    ?: songSearchResult?.items?.firstOrNull()
+                                    
+                                var fallbackEndpoint = foundSong?.authors?.firstOrNull()?.endpoint
+                                
+                                // 2. If no author endpoint found via song search, fallback to direct artist search
+                                if (fallbackEndpoint == null || fallbackEndpoint.browseId.isNullOrBlank()) {
+                                    Timber.tag("go_to_artist").d("No artist found from song search, falling back to direct artist search")
+                                    val artistSearchResult = Innertube.searchPage<Innertube.ArtistItem>(
+                                        SearchBody(query = query, params = Innertube.SearchFilter.Artist.value),
+                                        { content -> Innertube.ArtistItem.from(content) }
+                                    )?.getOrNull()
+                                    fallbackEndpoint = artistSearchResult?.items?.firstOrNull()?.info?.endpoint
+                                }
+                                
+                                if (fallbackEndpoint != null && !fallbackEndpoint.browseId.isNullOrBlank()) {
+                                    Timber.tag("go_to_artist").d("Found artist ID in search: %s", fallbackEndpoint.browseId)
+                                    val path = "${fallbackEndpoint.browseId}?params=${fallbackEndpoint.params.orEmpty()}"
+                                    kotlinx.coroutines.withContext(Dispatchers.Main) {
+                                        Toaster.s( R.string.artist_found_online_verify )
+                                        NavRoutes.artist.navigateHere( navController, path )
+                                    }
+                                } else {
+                                    kotlinx.coroutines.withContext(Dispatchers.Main) {
+                                        Toaster.e( R.string.failed_to_fetch_artist )
+                                    }
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Timber.tag("go_to_artist").e( e, "Failed to fetch artist" )
+                            kotlinx.coroutines.withContext(Dispatchers.Main) {
+                                Toaster.e( R.string.failed_to_fetch_artist )
+                            }
+                        }
+                    }
                 }
             }
-        )
+        }
     }
 }
-

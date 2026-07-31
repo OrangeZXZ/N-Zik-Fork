@@ -141,6 +141,9 @@ import app.it.fast4x.rimusic.utils.bassboostLevelKey
 import app.it.fast4x.rimusic.utils.broadCastPendingIntent
 import app.it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import app.it.fast4x.rimusic.utils.collect
+import it.fast4x.innertube.requests.searchPage
+import it.fast4x.innertube.models.bodies.SearchBody
+import it.fast4x.innertube.utils.from
 import app.it.fast4x.rimusic.utils.discordPersonalAccessTokenKey
 import app.it.fast4x.rimusic.utils.enableWallpaperKey
 import app.it.fast4x.rimusic.utils.encryptedPreferences
@@ -842,10 +845,65 @@ class PlayerServiceModern : MediaLibraryService(),
         // This seeds the Song row with real data (title, artist, thumbnail)
         // before StreamResolver can insert a blank placeholder for FK satisfaction.
         // insertIgnore uses merge logic that preserves existing non-empty fields.
-        mediaItem?.let {
+        mediaItem?.let { item ->
             try {
-                Database.asyncTransaction {
-                    insertIgnore(it)
+                // Background Auto-Fix: Fetch missing album/artist metadata silently
+                // Uses the service's coroutineScope so it gets cancelled properly on service destroy
+                coroutineScope.launch(Dispatchers.IO) {
+                    // Immediately persist the full MediaItem metadata to the DB.
+                    // This seeds the Song row with real data (title, artist, thumbnail)
+                    // before StreamResolver can insert a blank placeholder for FK satisfaction.
+                    Database.transaction {
+                        insertIgnore(item)
+                    }
+
+                    try {
+                        val songId = item.mediaId
+                        // Skip local songs and invalid IDs
+                        if (songId.startsWith("local:") || songId.length != 11) return@launch
+                        
+                        val existingAlbum = Database.albumTable.findBySongIdDirect(songId)
+                        // Skip if album exists AND has a real YouTube album ID (valid Base64URL)
+                        val hasValidAlbum = existingAlbum?.id != null && existingAlbum.id.length > 11 && existingAlbum.id.matches("^[A-Za-z0-9_-]+\$".toRegex())
+                        if (hasValidAlbum) return@launch
+                        
+                        val dbSong = Database.songTable.findByIdDirect(songId) ?: return@launch
+                        Timber.tag("auto_fix").d("Song '%s' has no album, attempting background fix...", dbSong.title)
+                        
+                        // First try the official nextPage API (most reliable)
+                        val nextPageResult = Innertube.nextPage(NextBody(videoId = songId))
+                            ?.getOrNull()
+                            ?.itemsPage
+                            ?.items
+                            ?.firstOrNull { it.key == songId }
+                        
+                        if (nextPageResult?.album?.endpoint?.browseId != null) {
+                            Timber.tag("auto_fix").d("nextPage found album '%s' for song", nextPageResult.album?.name)
+                            Database.upsert(nextPageResult)
+                            return@launch
+                        }
+                        
+                        // Fallback: search by title + artist
+                        val query = "${dbSong.cleanTitle()} ${dbSong.cleanArtistsText()}".trim()
+                        Timber.tag("auto_fix").d("Falling back to search: %s", query)
+                        
+                        val searchResult = Innertube.searchPage<Innertube.SongItem>(
+                            SearchBody(query = query, params = Innertube.SearchFilter.Song.value),
+                            { content -> Innertube.SongItem.from(content) }
+                        )?.getOrNull()
+                        
+                        // ONLY use exact ID match to avoid false positives
+                        val foundSong = searchResult?.items?.firstOrNull { it.key == songId }
+                        
+                        if (foundSong?.album?.endpoint?.browseId != null) {
+                            Timber.tag("auto_fix").d("Search found album '%s' for song", foundSong.album?.name)
+                            Database.upsert(foundSong)
+                        } else {
+                            Timber.tag("auto_fix").d("No album found for song '%s'", dbSong.title)
+                        }
+                    } catch (e: Exception) {
+                        Timber.tag("auto_fix").e(e, "Error in background auto-fix")
+                    }
                 }
             } catch (e: Exception) {
                 Timber.tag("PlayerServiceModern").e(e, "Error in onMediaItemTransition DB insert")

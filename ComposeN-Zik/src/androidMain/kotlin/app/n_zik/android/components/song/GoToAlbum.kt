@@ -7,6 +7,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
+import it.fast4x.innertube.models.NavigationEndpoint
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.nextPage
 import it.fast4x.innertube.models.bodies.SearchBody
@@ -38,71 +39,92 @@ class GoToAlbum(
         @Composable
         get() = stringResource( messageId )
 
-    private var albumId: Optional<String> = Optional.empty()
 
-    init {
-        CoroutineScope( Dispatchers.IO ).launch {
-            Database.albumTable
-                    .findBySongId( song.id )
-                    .first()
-                    ?.id
-                    ?.let { albumId = Optional.of( it ) }
-        }
-    }
 
 
     override fun onShortClick() {
         menuState.hide()
-        albumId.ifPresentOrElse(
-            { NavRoutes.album.navigateHere( navController, it ) },
-            {
-                Toaster.i( R.string.looking_up_album_from_the_internet )
+        
+        CoroutineScope( Dispatchers.IO ).launch {
+            val id = Database.albumTable
+                    .findBySongId( song.id )
+                    .first()
+                    ?.id
+                    
+            val isValid = id != null && id.length > 11 && id.matches("^[A-Za-z0-9_-]+\$".toRegex())
+            
+            kotlinx.coroutines.withContext(Dispatchers.Main) {
+                if (isValid) {
+                    NavRoutes.album.navigateHere( navController, id!! )
+                } else {
+                    Toaster.i( R.string.looking_up_album_from_the_internet )
+                    
+                    CoroutineScope( Dispatchers.IO ).launch {
+                        try {
+                            val hasValidId = song.id.length == 11 && !song.id.startsWith("local:")
+                            
+                            var albumEndpoint: NavigationEndpoint.Endpoint.Browse? = null
+                            
+                            if (hasValidId) {
+                                albumEndpoint = Innertube.nextPage(NextBody(videoId = song.id))
+                                    ?.onFailure {
+                                        Timber.tag("go_to_album").e( it, "nextPage failed" )
+                                    }
+                                    ?.getOrNull()
+                                    ?.itemsPage
+                                    ?.items
+                                    ?.firstOrNull { it.key == song.id }
+                                    ?.album
+                                    ?.endpoint
+                                    ?.takeIf { !it.browseId.isNullOrBlank() }
+                                    
+                                Timber.tag("go_to_album").d("Up Next API album endpoint: %s", albumEndpoint?.browseId)
+                            }
 
-                CoroutineScope( Dispatchers.IO ).launch {
-                    val endpoint = Innertube.nextPage(NextBody(videoId = song.id))
-                             ?.onFailure {
-                                 Timber.tag("go_to_album").e(it, "nextPage failed")
-                                 Toaster.e( R.string.failed_to_fetch_original_property )
-                             }
-                             ?.getOrNull()
-                             ?.itemsPage
-                             ?.items
-                             ?.firstOrNull()
-                             ?.album
-                             ?.endpoint
-                             ?.takeIf { !it.browseId.isNullOrBlank() }
-
-                    Timber.tag("go_to_album").d("Up Next API album endpoint: %s", endpoint?.browseId)
-
-                    if (endpoint != null) {
-                        val path = "${endpoint.browseId}?params=${endpoint.params.orEmpty()}"
-                        NavRoutes.album.navigateHere( navController, path )
-                    } else {
-                        val query = "${song.title} ${song.artistsText ?: ""}".trim()
-                        Timber.tag("go_to_album").d("Fallback search query: %s", query)
-
-                        val searchResult = Innertube.searchPage<Innertube.SongItem>(
-                            SearchBody(query = query, params = Innertube.SearchFilter.Song.value),
-                            { content -> Innertube.SongItem.from(content) }
-                        )?.getOrNull()
-                        
-                        Timber.tag("go_to_album").d("Search result items count: %s", searchResult?.items?.size)
-                        
-                        val foundSong = searchResult?.items?.firstOrNull { it.key == song.id } ?: searchResult?.items?.firstOrNull()
-                        val albumEndpoint = foundSong?.album?.endpoint
-                        
-                        if (albumEndpoint != null && !albumEndpoint.browseId.isNullOrBlank()) {
-                            Timber.tag("go_to_album").d("Found album: %s (ID: %s)", foundSong.album?.name, albumEndpoint.browseId)
-                            val path = "${albumEndpoint.browseId}?params=${albumEndpoint.params.orEmpty()}"
-                            Toaster.s( R.string.album_found_online_verify )
-                            NavRoutes.album.navigateHere( navController, path )
-                        } else {
-                            Timber.tag("go_to_album").e("No album found in fallback search")
-                            Toaster.e( R.string.failed_to_fetch_album )
+                            if (albumEndpoint != null) {
+                                val path = "${albumEndpoint.browseId}?params=${albumEndpoint.params.orEmpty()}"
+                                kotlinx.coroutines.withContext(Dispatchers.Main) {
+                                    Toaster.s( R.string.album_found_online_verify )
+                                    NavRoutes.album.navigateHere( navController, path )
+                                }
+                            } else {
+                                val query = "${song.cleanTitle()} ${song.cleanArtistsText()}".trim()
+                                Timber.tag("go_to_album").d("Search query: %s", query)
+                                val searchResult = Innertube.searchPage<Innertube.SongItem>(
+                                    SearchBody(query = query, params = Innertube.SearchFilter.Song.value),
+                                    { content -> Innertube.SongItem.from(content) }
+                                )?.getOrNull()
+                                
+                                Timber.tag("go_to_album").d("Search result items count: %s", searchResult?.items?.size)
+                                
+                                val foundSong = searchResult?.items?.firstOrNull { it.key == song.id }
+                                    ?: searchResult?.items?.firstOrNull { it.title.equals(song.cleanTitle(), ignoreCase = true) }
+                                    ?: searchResult?.items?.firstOrNull()
+                                
+                                val fallbackEndpoint = foundSong?.album?.endpoint
+                                
+                                if (fallbackEndpoint != null && !fallbackEndpoint.browseId.isNullOrBlank()) {
+                                    Timber.tag("go_to_album").d("Found album ID: %s", fallbackEndpoint.browseId)
+                                    val path = "${fallbackEndpoint.browseId}?params=${fallbackEndpoint.params.orEmpty()}"
+                                    kotlinx.coroutines.withContext(Dispatchers.Main) {
+                                        Toaster.s( R.string.album_found_online_verify )
+                                        NavRoutes.album.navigateHere( navController, path )
+                                    }
+                                } else {
+                                    kotlinx.coroutines.withContext(Dispatchers.Main) {
+                                        Toaster.e( R.string.failed_to_fetch_album )
+                                    }
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Timber.tag("go_to_album").e( e, "Failed to fetch album" )
+                            kotlinx.coroutines.withContext(Dispatchers.Main) {
+                                Toaster.e( R.string.failed_to_fetch_album )
+                            }
                         }
                     }
                 }
             }
-        )
+        }
     }
 }
