@@ -1554,6 +1554,7 @@
   <string name="sync_no_items">Senkronizasyon edilecek öğe yok</string>
   <string name="sync_completed_with_errors">Senkronizasyon hatalarla tamamlandı</string>
   <string name="album_found_online_verify">Albüm internette bulundu! Lütfen doğru albüm olup olmadığını kontrol edin.</string>
+  <string name="artist_found_online_verify">Artist found online! Please verify it\'s the correct one.</string>
   <string name="error_music_not_fully_cached">Ses dalgalarını yenilemek için müziğin tamamen indirilmiş veya önbelleğe alınmış olması gerekir</string>
   <string name="updating_waveform_in_progress">Waveform güncelleniyor…</string>
   <string name="waveform_updated_successfully">Waveform başarıyla güncellendi</string>

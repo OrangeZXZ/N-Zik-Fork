@@ -1555,6 +1555,7 @@ Volume BAS : titre précédent</string>
   <string name="sync_no_items">Aucun élément à synchroniser</string>
   <string name="sync_completed_with_errors">La synchronisation s\'est terminée avec des erreurs</string>
   <string name="album_found_online_verify">J\'ai trouvé l\'album en ligne ! Merci de vérifier qu\'il s\'agit bien du bon.</string>
+  <string name="artist_found_online_verify">Artist found online! Please verify it\'s the correct one.</string>
   <string name="error_music_not_fully_cached">La musique doit être entièrement téléchargée ou mise en cache pour que les ondes sonores s\'actualisent</string>
   <string name="updating_waveform_in_progress">Mise à jour de la forme d\'onde en cours…</string>
   <string name="waveform_updated_successfully">La forme d\'onde a été mise à jour avec succès</string>
