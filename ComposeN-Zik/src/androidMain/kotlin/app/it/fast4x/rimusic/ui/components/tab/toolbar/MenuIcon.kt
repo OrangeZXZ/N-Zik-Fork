@@ -53,24 +53,36 @@ interface MenuIcon: Icon {
     }
 
     @Composable
-    fun GridMenuItem() = GridMenu.Entry(
-        text = menuIconTitle,
-        icon = { SettingIcon() },
-        modifier = modifier,
-        enabled = isEnabled,
-        onClick = ::onShortClick,
-        onLongClick = if (this is Clickable) ::onLongClick else { {} }
-    )
+    fun GridMenuItem() {
+        val menuState = app.it.fast4x.rimusic.ui.components.LocalMenuState.current
+        GridMenu.Entry(
+            text = menuIconTitle,
+            icon = { SettingIcon() },
+            modifier = modifier,
+            enabled = isEnabled,
+            onClick = {
+                onShortClick()
+                menuState.hide()
+            },
+            onLongClick = if (this is Clickable) { { onLongClick(); menuState.hide() } } else { {} }
+        )
+    }
 
     @Composable
-    fun ListMenuItem() = ListMenu.Entry(
-        text = menuIconTitle,
-        icon = { SettingIcon() },
-        modifier = modifier,
-        enabled = isEnabled,
-        onClick = ::onShortClick,
-        onLongClick = if (this is Clickable) ::onLongClick else { {} }
-    )
+    fun ListMenuItem() {
+        val menuState = app.it.fast4x.rimusic.ui.components.LocalMenuState.current
+        ListMenu.Entry(
+            text = menuIconTitle,
+            icon = { SettingIcon() },
+            modifier = modifier,
+            enabled = isEnabled,
+            onClick = {
+                onShortClick()
+                menuState.hide()
+            },
+            onLongClick = if (this is Clickable) { { onLongClick(); menuState.hide() } } else { {} }
+        )
+    }
 }
 
 

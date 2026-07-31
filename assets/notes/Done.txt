@@ -7,6 +7,8 @@ Added:
 - refactor(easter-egg): replace Pacman and Snake mini-games with static unknown easter egg images
 
 Fixed:
+- fix(ui): make all `MenuIcon` actions (like Shuffle) automatically close the overflow/bottom menu when clicked
+  - Updated `ListMenuItem` and `GridMenuItem` in `MenuIcon.kt` to automatically call `LocalMenuState.current.hide()` upon being clicked. This ensures buttons that don't explicitly hide the menu (like `SongShuffler`) correctly dismiss the menu when used.
 - fix(ui): fix queue search bar being hidden by the bottom toolbar and software keyboard
   - Added bottom padding (`64.dp`) to the SearchBar in `Queue.kt` when it is visible so it sits above the `QueueToolBar`.
   - Added `Modifier.imePadding()` to ensure the search bar is pushed up correctly when the software keyboard opens.
