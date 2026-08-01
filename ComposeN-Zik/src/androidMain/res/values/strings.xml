@@ -1048,6 +1048,7 @@
 <string name="blackcherrycosmos">Black Cherry Cosmos</string>
 <string name="gradienttype">Gradient Type</string>
 <string name="random">Random</string>
+<string name="randomizer">Randomizer</string>
 <string name="colorpalette">Color Palette</string>
 <string name="customcolor">Custom Color</string>
 <string name="lyricsanimate">Animate Lyrics Size</string>
@@ -1622,4 +1623,6 @@
 <string name="auto_backup_on_change_description">Trigger a backup when songs are added or removed</string>
 <string name="auto_backup_max_backups">Max Backups to Keep</string>
 <string name="auto_backup_target">Backup Target</string>
+<string name="toolbar">Toolbar</string>
+<string name="customize_toolbar">Customize the toolbar</string>
 </resources>
