@@ -1655,41 +1655,48 @@ if (search.inputValue.isBlank() || stringResource(R.string.queue_and_local_playl
         }
         /* Removed Spacer */
 
-        AnimatedVisibility(
-            visible = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true),
-            enter = fadeIn(animationSpec = tween(1100)) + scaleIn(animationSpec = tween(1100), initialScale = 0.9f)
+        
+        val searchCtx_Reset = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)
+        androidx.compose.animation.AnimatedVisibility(
+            visible = searchCtx_Reset,
+            enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1100)) + androidx.compose.animation.scaleIn(animationSpec = androidx.compose.animation.core.tween(1100), initialScale = 0.9f)
         ) {
             SettingsSectionCard(
                 title = stringResource(R.string.settings_reset),
                 icon = R.drawable.refresh,
                 content = {
-                    var resetToDefault by remember { mutableStateOf(false) }
-                    val context = LocalContext.current
-if (search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)) {
-                            OtherSettingsEntry(
+                    var resetToDefault by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                    val context = androidx.compose.ui.platform.LocalContext.current
+                    if (search.inputValue.isBlank() || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true) || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
                             title = stringResource(R.string.settings_reset),
                             text = stringResource(R.string.settings_restore_default_settings),
                             icon = R.drawable.refresh,
-                            onClick = { resetToDefault = true }
+                            onClick = { 
+                                resetToDefault = true
+                                // Reset all toggle list dialogs
+                                HomeTabsSettingsDialog.reset(context)
+                                HomeSongsSettingsDialog.reset(context)
+                                HomeArtistsSettingsDialog.reset(context)
+                                HomeAlbumsSettingsDialog.reset(context)
+                                HomePlaylistsSettingsDialog.reset(context)
+                                QuickPicksContentSettingsDialog.reset(context)
+                                HomeSongsToolbarSettingsDialog.reset(context)
+                                HomeArtistsToolbarSettingsDialog.reset(context)
+                                HomeAlbumsToolbarSettingsDialog.reset(context)
+                                HomeLibraryToolbarSettingsDialog.reset(context)
+                                PlayerActionBarSettingsDialog.reset(context)
+                                MiniPlayerButtonsSettingsDialog.reset(context)
+                                Toaster.done()
+                            }
                         )
-    }
+                    }
+
                     if (resetToDefault) {
                         DefaultUiSettings()
-                        // Reset all toggle list dialogs
-                        HomeTabsSettingsDialog.reset(context)
-                        HomeSongsSettingsDialog.reset(context)
-                        HomeArtistsSettingsDialog.reset(context)
-                        HomeAlbumsSettingsDialog.reset(context)
-                        HomePlaylistsSettingsDialog.reset(context)
-                        QuickPicksContentSettingsDialog.reset(context)
-                        HomeSongsToolbarSettingsDialog.reset(context)
-                        HomeArtistsToolbarSettingsDialog.reset(context)
-                        HomeAlbumsToolbarSettingsDialog.reset(context)
-                        HomeLibraryToolbarSettingsDialog.reset(context)
-                        PlayerActionBarSettingsDialog.reset(context)
-                        MiniPlayerButtonsSettingsDialog.reset(context)
-                        resetToDefault = false
-                        Toaster.done()
+                        androidx.compose.runtime.LaunchedEffect(Unit) {
+                            resetToDefault = false
+                        }
                     }
                 }
             )
