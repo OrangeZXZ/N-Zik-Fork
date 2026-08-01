@@ -308,15 +308,10 @@ object MyDownloadHelper {
 
         coroutineScope.launch {
             val artistTextRaw = mediaItem.artistTextOrDb()
-            val artistText = if (artistTextRaw == "null") "" else artistTextRaw
+            val artistText = if (artistTextRaw == "null" || artistTextRaw.isBlank()) context.getString(R.string.unknown_artist) else artistTextRaw
             val titleTextRaw = mediaItem.mediaMetadata.title?.toString() ?: ""
-            val titleText = if (titleTextRaw == "null") "" else titleTextRaw
-            val notificationTitle = when {
-                artistText.isNotBlank() && titleText.isNotBlank() -> "$artistText - $titleText"
-                artistText.isNotBlank() -> artistText
-                titleText.isNotBlank() -> titleText
-                else -> context.getString(R.string.unknown_title)
-            }
+            val titleText = if (titleTextRaw == "null" || titleTextRaw.isBlank()) context.getString(R.string.unknown_title) else titleTextRaw
+            val notificationTitle = "$artistText - $titleText"
 
             val downloadRequest = DownloadRequest
                 .Builder(
