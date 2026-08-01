@@ -1049,6 +1049,7 @@ Volume BAS : titre précédent</string>
   <string name="blackcherrycosmos">Cosmos à la cerise noire</string>
   <string name="gradienttype">Type de dégradé</string>
   <string name="random">Aléatoire</string>
+  <string name="randomizer">Randomizer</string>
   <string name="colorpalette">Palette de couleurs</string>
   <string name="customcolor">Couleur personnalisée</string>
   <string name="lyricsanimate">Taille des paroles animées</string>
@@ -1623,4 +1624,6 @@ Volume BAS : titre précédent</string>
   <string name="auto_backup_on_change_description">Lancer une sauvegarde lorsque des titres sont ajoutés ou supprimés</string>
   <string name="auto_backup_max_backups">Nombre maximal de sauvegardes à conserver</string>
   <string name="auto_backup_target">Destination de la sauvegarde</string>
+  <string name="toolbar">Toolbar</string>
+  <string name="customize_toolbar">Customize the toolbar</string>
 </resources>
