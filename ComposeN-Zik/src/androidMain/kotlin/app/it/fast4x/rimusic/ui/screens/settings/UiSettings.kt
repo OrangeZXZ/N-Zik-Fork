@@ -25,6 +25,8 @@ import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import app.n_zik.android.components.dialog.settings.HomeAlbumsToolbarSettingsDialog
 import app.n_zik.android.components.dialog.settings.HomeArtistsToolbarSettingsDialog
 import app.n_zik.android.components.dialog.settings.HomeLibraryToolbarSettingsDialog
+import app.n_zik.android.components.dialog.settings.PlayerActionBarSettingsDialog
+import app.n_zik.android.components.dialog.settings.MiniPlayerButtonsSettingsDialog
 import app.n_zik.android.components.dialog.settings.HomeSongsToolbarSettingsDialog
 import app.it.fast4x.rimusic.ui.screens.settings.ColorSettingEntry
 import app.it.fast4x.rimusic.ui.screens.settings.ButtonBarSettingEntry
@@ -42,21 +44,14 @@ import app.it.fast4x.rimusic.enums.BackgroundProgress
 import app.it.fast4x.rimusic.enums.CarouselSize
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.enums.ColorPaletteName
-import app.it.fast4x.rimusic.enums.DurationInMilliseconds
-import app.it.fast4x.rimusic.enums.DurationInMinutes
-import app.it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
 import app.it.fast4x.rimusic.enums.FontType
 import app.it.fast4x.rimusic.enums.HomeScreenTabs
 import app.it.fast4x.rimusic.enums.IconLikeType
-import app.it.fast4x.rimusic.enums.MaxSongs
-
-
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.enums.MessageType
 import app.it.fast4x.rimusic.enums.MiniPlayerType
 import app.it.fast4x.rimusic.enums.NavigationBarPosition
 import app.it.fast4x.rimusic.enums.NavigationBarType
-import app.it.fast4x.rimusic.enums.PauseBetweenSongs
 import app.it.fast4x.rimusic.enums.PlayerBackgroundColors
 import app.it.fast4x.rimusic.enums.PlayerControlsType
 import app.it.fast4x.rimusic.enums.PlayerInfoType
@@ -76,7 +71,6 @@ import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
 import app.it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
 import app.it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 import app.it.fast4x.rimusic.ui.styling.Dimensions
-
 import app.it.fast4x.rimusic.utils.UiTypeKey
 import app.it.fast4x.rimusic.utils.actionspacedevenlyKey
 import app.it.fast4x.rimusic.utils.albumSwipeLeftActionKey
@@ -88,8 +82,6 @@ import app.it.fast4x.rimusic.utils.buttonzoomoutKey
 import app.it.fast4x.rimusic.utils.carouselKey
 import app.it.fast4x.rimusic.utils.carouselSizeKey
 import app.it.fast4x.rimusic.utils.clickOnLyricsTextKey
-import app.it.fast4x.rimusic.utils.closeWithBackButtonKey
-import app.it.fast4x.rimusic.utils.closebackgroundPlayerKey
 import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import app.it.fast4x.rimusic.utils.colorPaletteNameKey
 import app.it.fast4x.rimusic.utils.customColorKey
@@ -113,41 +105,28 @@ import app.it.fast4x.rimusic.utils.customThemeLight_accentKey
 import app.it.fast4x.rimusic.utils.customThemeLight_iconButtonPlayerKey
 import app.it.fast4x.rimusic.utils.customThemeLight_textDisabledKey
 import app.it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
-import app.it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import app.it.fast4x.rimusic.utils.disableIconButtonOnTopKey
 import app.it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import app.it.fast4x.rimusic.utils.playerSwipeSensitivityKey
 import app.n_zik.android.enums.PlayerSwipeSensitivity
 import app.it.fast4x.rimusic.utils.disableScrollingTextKey
-import app.it.fast4x.rimusic.utils.discoverKey
 import app.it.fast4x.rimusic.utils.effectRotationKey
-
-import app.it.fast4x.rimusic.utils.excludeSongsWithDurationLimitKey
-import app.it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
 import app.it.fast4x.rimusic.utils.expandedplayertoggleKey
 import app.it.fast4x.rimusic.utils.fadingedgeKey
 import app.it.fast4x.rimusic.utils.fontTypeKey
 import app.it.fast4x.rimusic.utils.iconLikeTypeKey
 import app.it.fast4x.rimusic.utils.indexNavigationTabKey
-import app.it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
 import app.it.fast4x.rimusic.utils.isSwipeToActionEnabledKey
 import app.it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import app.it.fast4x.rimusic.utils.lastPlayerPlayButtonTypeKey
 import app.it.fast4x.rimusic.utils.thumbnailSizeDpKey
 import app.it.fast4x.rimusic.utils.lastThumbnailSizeDpKey
 import app.it.fast4x.rimusic.utils.lastPlayerTimelineTypeKey
-import app.it.fast4x.rimusic.utils.maxSongsInQueueKey
-
 import app.it.fast4x.rimusic.utils.menuStyleKey
 import app.it.fast4x.rimusic.utils.messageTypeKey
 import app.it.fast4x.rimusic.utils.miniPlayerTypeKey
-import app.it.fast4x.rimusic.utils.minimumSilenceDurationKey
 import app.it.fast4x.rimusic.utils.navigationBarPositionKey
 import app.it.fast4x.rimusic.utils.navigationBarTypeKey
-import app.it.fast4x.rimusic.utils.pauseBetweenSongsKey
-import app.it.fast4x.rimusic.utils.pauseListenHistoryKey
-import app.it.fast4x.rimusic.utils.persistentQueueKey
-import app.it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
 import app.it.fast4x.rimusic.utils.playerBackgroundColorsKey
 import app.it.fast4x.rimusic.utils.playerControlsTypeKey
 import app.it.fast4x.rimusic.utils.playerEnableLyricsPopupMessageKey
@@ -161,15 +140,11 @@ import app.it.fast4x.rimusic.utils.playerTimelineTypeKey
 import app.it.fast4x.rimusic.utils.playerTypeKey
 import app.it.fast4x.rimusic.utils.playlistSwipeLeftActionKey
 import app.it.fast4x.rimusic.utils.playlistSwipeRightActionKey
-import app.it.fast4x.rimusic.utils.playlistindicatorKey
 import app.it.fast4x.rimusic.utils.queueSwipeLeftActionKey
 import app.it.fast4x.rimusic.utils.queueSwipeRightActionKey
 import app.it.fast4x.rimusic.utils.queueTypeKey
-
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.rememberQueueScrollPositionKey
-import app.it.fast4x.rimusic.utils.resumePlaybackOnStartKey
-import app.it.fast4x.rimusic.utils.resumePlaybackWhenDeviceConnectedKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerAddToPlaylistKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerArrowKey
 import app.it.fast4x.rimusic.utils.showButtonPlayerDiscoverKey
@@ -184,22 +159,16 @@ import app.it.fast4x.rimusic.utils.showCachedPlaylistKey
 import app.it.fast4x.rimusic.utils.showDownloadedPlaylistKey
 import app.it.fast4x.rimusic.utils.showFavoritesPlaylistKey
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
-
-
 import app.it.fast4x.rimusic.utils.hideStatusBarKey
 import app.it.fast4x.rimusic.utils.showNextSongsInPlayerKey
 import app.it.fast4x.rimusic.utils.showOnDevicePlaylistKey
 import app.it.fast4x.rimusic.utils.showPinnedPlaylistsKey
-
 import app.it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import app.it.fast4x.rimusic.utils.showSearchTabKey
 import app.it.fast4x.rimusic.utils.showStatsInNavbarKey
-
 import app.it.fast4x.rimusic.utils.showTopActionsBarKey
 import app.it.fast4x.rimusic.utils.showTotalTimeQueueKey
 import app.it.fast4x.rimusic.utils.showthumbnailKey
-import app.it.fast4x.rimusic.utils.skipMediaOnErrorKey
-import app.it.fast4x.rimusic.utils.skipSilenceKey
 import app.it.fast4x.rimusic.utils.swipeUpQueueKey
 import app.it.fast4x.rimusic.utils.tapqueueKey
 import app.it.fast4x.rimusic.utils.thumbnailTapEnabledKey
@@ -207,9 +176,7 @@ import app.it.fast4x.rimusic.utils.thumbnailTypeKey
 import app.it.fast4x.rimusic.utils.transitionEffectKey
 import app.it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import app.it.fast4x.rimusic.utils.useSystemFontKey
-import app.it.fast4x.rimusic.utils.useVolumeKeysToChangeSongKey
 import app.it.fast4x.rimusic.utils.visualizerEnabledKey
-import app.it.fast4x.rimusic.utils.volumeNormalizationKey
 import app.n_zik.android.components.dialog.common.RestartAppDialog
 import app.n_zik.android.components.dialog.settings.HomePlaylistsSettingsDialog
 import app.n_zik.android.components.dialog.settings.HomeTabsSettingsDialog
@@ -225,34 +192,10 @@ import app.it.fast4x.rimusic.utils.searchDisplayOrderKey
 
 @Composable
 fun DefaultUiSettings() {
-    var exoPlayerMinTimeForEvent by rememberPreference(
-        exoPlayerMinTimeForEventKey,
-        ExoPlayerMinTimeForEvent.`20s`
-    )
-    exoPlayerMinTimeForEvent = ExoPlayerMinTimeForEvent.`20s`
-    var persistentQueue by rememberPreference(persistentQueueKey, false)
-    persistentQueue = false
-    var resumePlaybackOnStart by rememberPreference(resumePlaybackOnStartKey, false)
-    resumePlaybackOnStart = false
-    var closebackgroundPlayer by rememberPreference(closebackgroundPlayerKey, false)
-    closebackgroundPlayer = false
-    var closeWithBackButton by rememberPreference(closeWithBackButtonKey, true)
-    closeWithBackButton = true
-    var resumePlaybackWhenDeviceConnected by rememberPreference(
-        resumePlaybackWhenDeviceConnectedKey,
-        false
-    )
-    resumePlaybackWhenDeviceConnected = false
 
     var hideStatusBar by rememberPreference(hideStatusBarKey, false)
     hideStatusBar = false
 
-    var skipSilence by rememberPreference(skipSilenceKey, false)
-    skipSilence = false
-    var skipMediaOnError by rememberPreference(skipMediaOnErrorKey, false)
-    skipMediaOnError = false
-    var volumeNormalization by rememberPreference(volumeNormalizationKey, false)
-    volumeNormalization = false
 
     var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
     keepPlayerMinimized = false
@@ -266,8 +209,6 @@ fun DefaultUiSettings() {
     uiType = UiType.RiMusic
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
     disablePlayerHorizontalSwipe = false
-    var playerSwipeSensitivity by rememberPreference(playerSwipeSensitivityKey, PlayerSwipeSensitivity.Medium)
-    playerSwipeSensitivity = PlayerSwipeSensitivity.Medium
     var lastPlayerPlayButtonType by rememberPreference(lastPlayerPlayButtonTypeKey, PlayerPlayButtonType.Rectangular)
     lastPlayerPlayButtonType = PlayerPlayButtonType.Rectangular
     var colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
@@ -287,23 +228,16 @@ fun DefaultUiSettings() {
     applyFontPadding = false
     var isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
     isSwipeToActionEnabled = true
-    var disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, false)
-    disableClosingPlayerSwipingDown = false
     var showSearchTab by rememberPreference(showSearchTabKey, false)
     showSearchTab = false
     var showStatsInNavbar by rememberPreference(showStatsInNavbarKey, false)
     showStatsInNavbar = false
 
 
-
     var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.BottomFloating)
     navigationBarPosition = NavigationBarPosition.BottomFloating
     var navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconOnly)
     navigationBarType = NavigationBarType.IconOnly
-    var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
-    pauseBetweenSongs = PauseBetweenSongs.`0`
-    var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.Unlimited)
-    maxSongsInQueue = MaxSongs.Unlimited
     var showFavoritesPlaylist by rememberPreference(showFavoritesPlaylistKey, true)
     showFavoritesPlaylist = true
 
@@ -311,8 +245,6 @@ fun DefaultUiSettings() {
     showDownloadedPlaylist = true
     var showOnDevicePlaylist by rememberPreference(showOnDevicePlaylistKey, true)
     showOnDevicePlaylist = true
-    var useVolumeKeysToChangeSong by rememberPreference(useVolumeKeysToChangeSongKey, false)
-    useVolumeKeysToChangeSong = false
     var showFloatingIcon by rememberPreference(showFloatingIconKey, false)
     showFloatingIcon = false
     var menuStyle by rememberPreference(menuStyleKey, MenuStyle.List)
@@ -368,24 +300,10 @@ fun DefaultUiSettings() {
     resetCustomLightThemeDialog = false
     var resetCustomDarkThemeDialog by rememberSaveable { mutableStateOf(false) }
     resetCustomDarkThemeDialog = false
-    var playbackFadeAudioDuration by rememberPreference(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled)
-    playbackFadeAudioDuration = DurationInMilliseconds.Disabled
     var playerPosition by rememberPreference(playerPositionKey, PlayerPosition.Bottom)
     playerPosition = PlayerPosition.Bottom
-    var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
-    excludeSongWithDurationLimit = DurationInMinutes.Disabled
-    var playlistindicator by rememberPreference(playlistindicatorKey, false)
-    playlistindicator = false
-    var discoverIsEnabled by rememberPreference(discoverKey, false)
-    discoverIsEnabled = false
-    var isPauseOnVolumeZeroEnabled by rememberPreference(isPauseOnVolumeZeroEnabledKey, false)
-    isPauseOnVolumeZeroEnabled = false
     var messageType by rememberPreference(messageTypeKey, MessageType.Modern)
     messageType = MessageType.Modern
-    var minimumSilenceDuration by rememberPreference(minimumSilenceDurationKey, 2_000_000L)
-    minimumSilenceDuration = 2_000_000L
-    var pauseListenHistory by rememberPreference(pauseListenHistoryKey, false)
-    pauseListenHistory = false
     var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
     showTopActionsBar = true
     var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Essential)
@@ -523,10 +441,17 @@ fun DefaultUiSettings() {
     visualizerEnabled = false
     var showthumbnail by rememberPreference(showthumbnailKey, true)
     showthumbnail = true
-    var rememberQueueScrollPosition by rememberPreference(rememberQueueScrollPositionKey, true)
-    rememberQueueScrollPosition = true
     var searchDisplayOrder by rememberPreference(searchDisplayOrderKey, SearchDisplayOrder.SuggestionsFirst)
     searchDisplayOrder = SearchDisplayOrder.SuggestionsFirst
+    var customColor by rememberPreference(customColorKey, Color.Green.hashCode())
+    customColor = Color.Green.hashCode()
+    var disableBackStack by rememberPreference(app.it.fast4x.rimusic.utils.disableNavigationBackStackKey, false)
+    disableBackStack = false
+    var showCachedPlaylist by rememberPreference(showCachedPlaylistKey, true)
+    showCachedPlaylist = true
+    var rememberQueueScrollPosition by rememberPreference(rememberQueueScrollPositionKey, true)
+    rememberQueueScrollPosition = true
+
 }
 
 @ExperimentalAnimationApi
@@ -536,7 +461,6 @@ fun UiSettings(
     navController: NavController
 ) {
     val binder = LocalPlayerServiceBinder.current
-
 
 
     var uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
@@ -562,11 +486,6 @@ fun UiSettings(
     var isSwipeToActionEnabled by rememberPreference(isSwipeToActionEnabledKey, true)
     var showSearchTab by rememberPreference(showSearchTabKey, false)
     var showStatsInNavbar by rememberPreference(showStatsInNavbarKey, false)
-
-
-
-
-
 
 
     var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.BottomFloating)
@@ -928,13 +847,15 @@ fun UiSettings(
 
                     AnimatedVisibility(visible = colorPaletteName == ColorPaletteName.CustomColor) {
                         Column {
-                            ColorSettingEntry(
-                                title = stringResource(R.string.customcolor),
-                                text = "",
-                                color = Color(customColor),
-                                onColorSelected = { customColor = it.hashCode() },
-                                modifier = Modifier.padding(start = 25.dp)
-                            )
+if (search.inputValue.isBlank() || stringResource(R.string.customcolor).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.customcolor),
+                                    text = "",
+                                    color = Color(customColor),
+                                    onColorSelected = { customColor = it.hashCode() },
+                                    modifier = Modifier.padding(start = 25.dp)
+                                )
+    }
                         }
                     }
 
@@ -942,142 +863,186 @@ fun UiSettings(
                         Column(modifier = Modifier.padding(start = 25.dp)) {
                             // Using standard Custom Light colors
 
-                            ButtonBarSettingEntry(
-                                title = stringResource(R.string.title_reset_customized_light_colors),
-                                text = stringResource(R.string.info_click_to_reset_default_light_colors),
-                                icon = R.drawable.trash,
-                                onClick = { resetCustomLightThemeDialog = true }
-                            )
+if (search.inputValue.isBlank() || stringResource(R.string.info_click_to_reset_default_light_colors).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true) || stringResource(R.string.title_reset_customized_light_colors).contains(search.inputValue, true)) {
+                                    ButtonBarSettingEntry(
+                                    title = stringResource(R.string.title_reset_customized_light_colors),
+                                    text = stringResource(R.string.info_click_to_reset_default_light_colors),
+                                    icon = R.drawable.trash,
+                                    onClick = { resetCustomLightThemeDialog = true }
+                                )
+    }
 
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_background_1),
-                                text = stringResource(R.string._light),
-                                color = Color(customThemeLight_Background0),
-                                onColorSelected = { customThemeLight_Background0 = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_background_2),
-                                text = stringResource(R.string._light),
-                                color = Color(customThemeLight_Background1),
-                                onColorSelected = { customThemeLight_Background1 = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_background_3),
-                                text = stringResource(R.string._light),
-                                color = Color(customThemeLight_Background2),
-                                onColorSelected = { customThemeLight_Background2 = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_background_4),
-                                text = stringResource(R.string._light),
-                                color = Color(customThemeLight_Background3),
-                                onColorSelected = { customThemeLight_Background3 = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_background_5),
-                                text = stringResource(R.string._light),
-                                color = Color(customThemeLight_Background4),
-                                onColorSelected = { customThemeLight_Background4 = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_text),
-                                text = stringResource(R.string._light),
-                                color = Color(customThemeLight_Text),
-                                onColorSelected = { customThemeLight_Text= it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_text_secondary),
-                                text = stringResource(R.string._light),
-                                color = Color(customThemeLight_TextSecondary),
-                                onColorSelected = { customThemeLight_TextSecondary = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_text_disabled),
-                                text = stringResource(R.string._light),
-                                color = Color(customThemeLight_TextDisabled),
-                                onColorSelected = { customThemeLight_TextDisabled = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_icon_button_player),
-                                text = stringResource(R.string._light),
-                                color = Color(customThemeLight_IconButtonPlayer),
-                                onColorSelected = { customThemeLight_IconButtonPlayer = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_accent),
-                                text = stringResource(R.string._light),
-                                color = Color(customThemeLight_Accent),
-                                onColorSelected = { customThemeLight_Accent = it.hashCode() }
-                            )
+if (search.inputValue.isBlank() || stringResource(R.string._light).contains(search.inputValue, true) || stringResource(R.string.color_background_1).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_background_1),
+                                    text = stringResource(R.string._light),
+                                    color = Color(customThemeLight_Background0),
+                                    onColorSelected = { customThemeLight_Background0 = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string._light).contains(search.inputValue, true) || stringResource(R.string.color_background_2).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_background_2),
+                                    text = stringResource(R.string._light),
+                                    color = Color(customThemeLight_Background1),
+                                    onColorSelected = { customThemeLight_Background1 = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string._light).contains(search.inputValue, true) || stringResource(R.string.color_background_3).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_background_3),
+                                    text = stringResource(R.string._light),
+                                    color = Color(customThemeLight_Background2),
+                                    onColorSelected = { customThemeLight_Background2 = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string._light).contains(search.inputValue, true) || stringResource(R.string.color_background_4).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_background_4),
+                                    text = stringResource(R.string._light),
+                                    color = Color(customThemeLight_Background3),
+                                    onColorSelected = { customThemeLight_Background3 = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string._light).contains(search.inputValue, true) || stringResource(R.string.color_background_5).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_background_5),
+                                    text = stringResource(R.string._light),
+                                    color = Color(customThemeLight_Background4),
+                                    onColorSelected = { customThemeLight_Background4 = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string._light).contains(search.inputValue, true) || stringResource(R.string.color_text).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_text),
+                                    text = stringResource(R.string._light),
+                                    color = Color(customThemeLight_Text),
+                                    onColorSelected = { customThemeLight_Text= it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string._light).contains(search.inputValue, true) || stringResource(R.string.color_text_secondary).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_text_secondary),
+                                    text = stringResource(R.string._light),
+                                    color = Color(customThemeLight_TextSecondary),
+                                    onColorSelected = { customThemeLight_TextSecondary = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string._light).contains(search.inputValue, true) || stringResource(R.string.color_text_disabled).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_text_disabled),
+                                    text = stringResource(R.string._light),
+                                    color = Color(customThemeLight_TextDisabled),
+                                    onColorSelected = { customThemeLight_TextDisabled = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string._light).contains(search.inputValue, true) || stringResource(R.string.color_icon_button_player).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_icon_button_player),
+                                    text = stringResource(R.string._light),
+                                    color = Color(customThemeLight_IconButtonPlayer),
+                                    onColorSelected = { customThemeLight_IconButtonPlayer = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string._light).contains(search.inputValue, true) || stringResource(R.string.color_accent).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_accent),
+                                    text = stringResource(R.string._light),
+                                    color = Color(customThemeLight_Accent),
+                                    onColorSelected = { customThemeLight_Accent = it.hashCode() }
+                                )
+    }
 
 
-                            ButtonBarSettingEntry(
-                                title = stringResource(R.string.title_reset_customized_dark_colors),
-                                text = stringResource(R.string.click_to_reset_default_dark_colors),
-                                icon = R.drawable.trash,
-                                onClick = { resetCustomDarkThemeDialog = true }
-                            )
+if (search.inputValue.isBlank() || stringResource(R.string.click_to_reset_default_dark_colors).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true) || stringResource(R.string.title_reset_customized_dark_colors).contains(search.inputValue, true)) {
+                                    ButtonBarSettingEntry(
+                                    title = stringResource(R.string.title_reset_customized_dark_colors),
+                                    text = stringResource(R.string.click_to_reset_default_dark_colors),
+                                    icon = R.drawable.trash,
+                                    onClick = { resetCustomDarkThemeDialog = true }
+                                )
+    }
 
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_background_1),
-                                text = stringResource(R.string.dark),
-                                color = Color(customThemeDark_Background0),
-                                onColorSelected = { customThemeDark_Background0 = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_background_2),
-                                text = stringResource(R.string.dark),
-                                color = Color(customThemeDark_Background1),
-                                onColorSelected = { customThemeDark_Background1 = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_background_3),
-                                text = stringResource(R.string.dark),
-                                color = Color(customThemeDark_Background2),
-                                onColorSelected = { customThemeDark_Background2 = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_background_4),
-                                text = stringResource(R.string.dark),
-                                color = Color(customThemeDark_Background3),
-                                onColorSelected = { customThemeDark_Background3 = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_background_5),
-                                text = stringResource(R.string.dark),
-                                color = Color(customThemeDark_Background4),
-                                onColorSelected = { customThemeDark_Background4 = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_text),
-                                text = stringResource(R.string.dark),
-                                color = Color(customThemeDark_Text),
-                                onColorSelected = { customThemeDark_Text= it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_text_secondary),
-                                text = stringResource(R.string.dark),
-                                color = Color(customThemeDark_TextSecondary),
-                                onColorSelected = { customThemeDark_TextSecondary = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_text_disabled),
-                                text = stringResource(R.string.dark),
-                                color = Color(customThemeDark_TextDisabled),
-                                onColorSelected = { customThemeDark_TextDisabled = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_icon_button_player),
-                                text = stringResource(R.string.dark),
-                                color = Color(customThemeDark_IconButtonPlayer),
-                                onColorSelected = { customThemeDark_IconButtonPlayer = it.hashCode() }
-                            )
-                            ColorSettingEntry(
-                                title = stringResource(R.string.color_accent),
-                                text = stringResource(R.string.dark),
-                                color = Color(customThemeDark_Accent),
-                                onColorSelected = { customThemeDark_Accent = it.hashCode() }
-                            )
+if (search.inputValue.isBlank() || stringResource(R.string.color_background_1).contains(search.inputValue, true) || stringResource(R.string.dark).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_background_1),
+                                    text = stringResource(R.string.dark),
+                                    color = Color(customThemeDark_Background0),
+                                    onColorSelected = { customThemeDark_Background0 = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string.color_background_2).contains(search.inputValue, true) || stringResource(R.string.dark).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_background_2),
+                                    text = stringResource(R.string.dark),
+                                    color = Color(customThemeDark_Background1),
+                                    onColorSelected = { customThemeDark_Background1 = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string.color_background_3).contains(search.inputValue, true) || stringResource(R.string.dark).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_background_3),
+                                    text = stringResource(R.string.dark),
+                                    color = Color(customThemeDark_Background2),
+                                    onColorSelected = { customThemeDark_Background2 = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string.color_background_4).contains(search.inputValue, true) || stringResource(R.string.dark).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_background_4),
+                                    text = stringResource(R.string.dark),
+                                    color = Color(customThemeDark_Background3),
+                                    onColorSelected = { customThemeDark_Background3 = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string.color_background_5).contains(search.inputValue, true) || stringResource(R.string.dark).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_background_5),
+                                    text = stringResource(R.string.dark),
+                                    color = Color(customThemeDark_Background4),
+                                    onColorSelected = { customThemeDark_Background4 = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string.color_text).contains(search.inputValue, true) || stringResource(R.string.dark).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_text),
+                                    text = stringResource(R.string.dark),
+                                    color = Color(customThemeDark_Text),
+                                    onColorSelected = { customThemeDark_Text= it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string.color_text_secondary).contains(search.inputValue, true) || stringResource(R.string.dark).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_text_secondary),
+                                    text = stringResource(R.string.dark),
+                                    color = Color(customThemeDark_TextSecondary),
+                                    onColorSelected = { customThemeDark_TextSecondary = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string.color_text_disabled).contains(search.inputValue, true) || stringResource(R.string.dark).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_text_disabled),
+                                    text = stringResource(R.string.dark),
+                                    color = Color(customThemeDark_TextDisabled),
+                                    onColorSelected = { customThemeDark_TextDisabled = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string.color_icon_button_player).contains(search.inputValue, true) || stringResource(R.string.dark).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_icon_button_player),
+                                    text = stringResource(R.string.dark),
+                                    color = Color(customThemeDark_IconButtonPlayer),
+                                    onColorSelected = { customThemeDark_IconButtonPlayer = it.hashCode() }
+                                )
+    }
+if (search.inputValue.isBlank() || stringResource(R.string.color_accent).contains(search.inputValue, true) || stringResource(R.string.dark).contains(search.inputValue, true) || stringResource(R.string.theme).contains(search.inputValue, true)) {
+                                    ColorSettingEntry(
+                                    title = stringResource(R.string.color_accent),
+                                    text = stringResource(R.string.dark),
+                                    color = Color(customThemeDark_Accent),
+                                    onColorSelected = { customThemeDark_Accent = it.hashCode() }
+                                )
+    }
 
                         }
                     }
@@ -1336,8 +1301,6 @@ fun UiSettings(
                     }
 
 
-
-
                     if (search.inputValue.isBlank() || stringResource(R.string.show_floating_icon).contains(search.inputValue,true)) {
                         OtherSwitchSettingEntry(
                             title = stringResource(R.string.show_floating_icon),
@@ -1455,12 +1418,14 @@ fun UiSettings(
                     AnimatedVisibility(visible = isSwipeToActionEnabled) {
                         Column(modifier = Modifier.padding(start = 25.dp)) {
                             var showQSLeftDialog by remember { mutableStateOf(false) }
-                            OtherSettingsEntry(
-                                title = stringResource(R.string.queue_and_local_playlists_left_swipe),
-                                text = queueSwipeLeftAction.text,
-                                icon = R.drawable.arrow_left,
-                                onClick = { showQSLeftDialog = true }
-                            )
+if (search.inputValue.isBlank() || stringResource(R.string.queue_and_local_playlists_left_swipe).contains(search.inputValue, true) || stringResource(R.string.swipe_to_action).contains(search.inputValue, true)) {
+                                    OtherSettingsEntry(
+                                    title = stringResource(R.string.queue_and_local_playlists_left_swipe),
+                                    text = queueSwipeLeftAction.text,
+                                    icon = R.drawable.arrow_left,
+                                    onClick = { showQSLeftDialog = true }
+                                )
+    }
                             if (showQSLeftDialog) {
                                 ValueSelectorDialog(
                                     title = stringResource(R.string.queue_and_local_playlists_left_swipe),
@@ -1473,12 +1438,14 @@ fun UiSettings(
                             }
                             
                             var showPLLeftDialog by remember { mutableStateOf(false) }
-                            OtherSettingsEntry(
-                                title = stringResource(R.string.playlist_left_swipe),
-                                text = playlistSwipeLeftAction.text,
-                                icon = R.drawable.arrow_left,
-                                onClick = { showPLLeftDialog = true }
-                            )
+if (search.inputValue.isBlank() || stringResource(R.string.playlist_left_swipe).contains(search.inputValue, true) || stringResource(R.string.swipe_to_action).contains(search.inputValue, true)) {
+                                    OtherSettingsEntry(
+                                    title = stringResource(R.string.playlist_left_swipe),
+                                    text = playlistSwipeLeftAction.text,
+                                    icon = R.drawable.arrow_left,
+                                    onClick = { showPLLeftDialog = true }
+                                )
+    }
                             if (showPLLeftDialog) {
                                 ValueSelectorDialog(
                                     title = stringResource(R.string.playlist_left_swipe),
@@ -1491,12 +1458,14 @@ fun UiSettings(
                             }
 
                             var showPLRightDialog by remember { mutableStateOf(false) }
-                            OtherSettingsEntry(
-                                title = stringResource(R.string.playlist_right_swipe),
-                                text = playlistSwipeRightAction.text,
-                                icon = R.drawable.arrow_right,
-                                onClick = { showPLRightDialog = true }
-                            )
+if (search.inputValue.isBlank() || stringResource(R.string.playlist_right_swipe).contains(search.inputValue, true) || stringResource(R.string.swipe_to_action).contains(search.inputValue, true)) {
+                                    OtherSettingsEntry(
+                                    title = stringResource(R.string.playlist_right_swipe),
+                                    text = playlistSwipeRightAction.text,
+                                    icon = R.drawable.arrow_right,
+                                    onClick = { showPLRightDialog = true }
+                                )
+    }
                             if (showPLRightDialog) {
                                 ValueSelectorDialog(
                                     title = stringResource(R.string.playlist_right_swipe),
@@ -1509,12 +1478,14 @@ fun UiSettings(
                             }
 
                             var showALeftDialog by remember { mutableStateOf(false) }
-                            OtherSettingsEntry(
-                                title = stringResource(R.string.album_left_swipe),
-                                text = albumSwipeLeftAction.text,
-                                icon = R.drawable.arrow_left,
-                                onClick = { showALeftDialog = true }
-                            )
+if (search.inputValue.isBlank() || stringResource(R.string.album_left_swipe).contains(search.inputValue, true) || stringResource(R.string.swipe_to_action).contains(search.inputValue, true)) {
+                                    OtherSettingsEntry(
+                                    title = stringResource(R.string.album_left_swipe),
+                                    text = albumSwipeLeftAction.text,
+                                    icon = R.drawable.arrow_left,
+                                    onClick = { showALeftDialog = true }
+                                )
+    }
                             if (showALeftDialog) {
                                 ValueSelectorDialog(
                                     title = stringResource(R.string.album_left_swipe),
@@ -1527,12 +1498,14 @@ fun UiSettings(
                             }
 
                             var showARightDialog by remember { mutableStateOf(false) }
-                            OtherSettingsEntry(
-                                title = stringResource(R.string.album_right_swipe),
-                                text = albumSwipeRightAction.text,
-                                icon = R.drawable.arrow_right,
-                                onClick = { showARightDialog = true }
-                            )
+if (search.inputValue.isBlank() || stringResource(R.string.album_right_swipe).contains(search.inputValue, true) || stringResource(R.string.swipe_to_action).contains(search.inputValue, true)) {
+                                    OtherSettingsEntry(
+                                    title = stringResource(R.string.album_right_swipe),
+                                    text = albumSwipeRightAction.text,
+                                    icon = R.drawable.arrow_right,
+                                    onClick = { showARightDialog = true }
+                                )
+    }
                             if (showARightDialog) {
                                 ValueSelectorDialog(
                                     title = stringResource(R.string.album_right_swipe),
@@ -1545,12 +1518,14 @@ fun UiSettings(
                             }
 
                             var showQSRightDialog by remember { mutableStateOf(false) }
-                            OtherSettingsEntry(
-                                title = stringResource(R.string.queue_and_local_playlists_right_swipe),
-                                text = queueSwipeRightAction.text,
-                                icon = R.drawable.arrow_right,
-                                onClick = { showQSRightDialog = true }
-                            )
+if (search.inputValue.isBlank() || stringResource(R.string.queue_and_local_playlists_right_swipe).contains(search.inputValue, true) || stringResource(R.string.swipe_to_action).contains(search.inputValue, true)) {
+                                    OtherSettingsEntry(
+                                    title = stringResource(R.string.queue_and_local_playlists_right_swipe),
+                                    text = queueSwipeRightAction.text,
+                                    icon = R.drawable.arrow_right,
+                                    onClick = { showQSRightDialog = true }
+                                )
+    }
                             if (showQSRightDialog) {
                                 ValueSelectorDialog(
                                     title = stringResource(R.string.queue_and_local_playlists_right_swipe),
@@ -1681,7 +1656,7 @@ fun UiSettings(
         /* Removed Spacer */
 
         AnimatedVisibility(
-            visible = search.inputValue.isBlank(),
+            visible = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true),
             enter = fadeIn(animationSpec = tween(1100)) + scaleIn(animationSpec = tween(1100), initialScale = 0.9f)
         ) {
             SettingsSectionCard(
@@ -1690,14 +1665,29 @@ fun UiSettings(
                 content = {
                     var resetToDefault by remember { mutableStateOf(false) }
                     val context = LocalContext.current
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.settings_reset),
-                        text = stringResource(R.string.settings_restore_default_settings),
-                        icon = R.drawable.refresh,
-                        onClick = { resetToDefault = true }
-                    )
+if (search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)) {
+                            OtherSettingsEntry(
+                            title = stringResource(R.string.settings_reset),
+                            text = stringResource(R.string.settings_restore_default_settings),
+                            icon = R.drawable.refresh,
+                            onClick = { resetToDefault = true }
+                        )
+    }
                     if (resetToDefault) {
                         DefaultUiSettings()
+                        // Reset all toggle list dialogs
+                        HomeTabsSettingsDialog.reset(context)
+                        HomeSongsSettingsDialog.reset(context)
+                        HomeArtistsSettingsDialog.reset(context)
+                        HomeAlbumsSettingsDialog.reset(context)
+                        HomePlaylistsSettingsDialog.reset(context)
+                        QuickPicksContentSettingsDialog.reset(context)
+                        HomeSongsToolbarSettingsDialog.reset(context)
+                        HomeArtistsToolbarSettingsDialog.reset(context)
+                        HomeAlbumsToolbarSettingsDialog.reset(context)
+                        HomeLibraryToolbarSettingsDialog.reset(context)
+                        PlayerActionBarSettingsDialog.reset(context)
+                        MiniPlayerButtonsSettingsDialog.reset(context)
                         resetToDefault = false
                         navController.popBackStack()
                         Toaster.done()
@@ -1711,11 +1701,5 @@ fun UiSettings(
         )
     }
 }
-
-
-
-
-
-
 
 
