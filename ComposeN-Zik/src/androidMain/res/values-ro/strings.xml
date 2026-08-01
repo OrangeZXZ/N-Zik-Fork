@@ -343,8 +343,11 @@
   <string name="lang_hebrew">Hebrew (Ebraică)</string>
   <string name="customize_album">Personalizează albumul</string>
   <string name="update_title">Schimbă titlul</string>
-  <string name="update_authors">Schimbă numele autorilor</string>
+  <string name="update_authors">Change Authors</string>
   <string name="update_cover">Schimbă coperta</string>
+  <string name="update_album_browse_id">Change Album Browse ID</string>
+  <string name="update_artist_browse_id">Change Artist Browse ID</string>
+  <string name="update_playlist_browse_id">Change Playlist Browse ID</string>
   <string name="edit_metadata">Edit Metadata</string>
   <string name="pick_from_gallery">Pick from gallery</string>
   <string name="metadata_title">Titlu</string>
