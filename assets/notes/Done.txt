@@ -181,4 +181,5 @@ Improved:
   - Validates `PREF_URI` through the SAF content resolver; if the user deletes the folder externally, it clears the preference, disables the interval, and cancels the scheduled work to prevent silent failures
 
 - improve(lyrics): state management during fetch process
-  - `LyricsFetcher.kt` explicitly marks `onCheckedLrcUpdated(true)` and `onCheckedKugouUpdated(true)` alongside InnerTube checks to ensure UI state doesn't hang
+  - `LyricsFetcher.kt` explicitly marks `onCheckedLrcUpdated(true)` and `onCheckedKugouUpdated(true)` alongside InnerTube checks to ensure UI state doesn't hangF i x e d   s t r i n g   l i t e r a l   ' n u l l '   b e i n g   d i s p l a y e d   i n   A n d r o i d   A u t o ,   N o t i f i c a t i o n s ,   a n d   D i s c o r d   b y   m o d i f y i n g   U t i l s . k t   a n d   P l a y e r S e r v i c e M o d e r n . k t .  
+ 

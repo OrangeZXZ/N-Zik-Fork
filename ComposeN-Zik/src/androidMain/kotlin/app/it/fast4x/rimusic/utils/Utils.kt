@@ -208,9 +208,12 @@ val Song.asMediaItem: MediaItem
         val cleanedThumbnail = thumbnailUrl?.let { cleanPrefix(it) }
         val artworkUri = cleanedThumbnail?.thumbnail(1200)?.toUri() ?: AutoMediaItemMapper.drawableUri(app.n_zik.android.appContext(), R.drawable.ic_launcher_box)
 
+        val safeTitle = if (cleanedTitle == "null") "" else cleanedTitle
+        val safeArtist = if (cleanedArtist == "null") "" else cleanedArtist
+
         val metadataBuilder = MediaMetadata.Builder()
-            .setTitle(cleanedTitle)
-            .setArtist(cleanedArtist)
+            .setTitle(safeTitle)
+            .setArtist(safeArtist)
             .setArtworkUri(artworkUri)
             .setExtras(
                 bundleOf(
@@ -300,8 +303,8 @@ val Innertube.VideoItem.asSong: Song
 val MediaItem.asSong: Song
     get() = Song (
         id = mediaId.split("/").lastOrNull() ?: mediaId,
-        title = (if (mediaMetadata.extras?.getBoolean("isTitleModified") == true) MODIFIED_PREFIX else "") + (if (isExplicit) EXPLICIT_PREFIX else "") + mediaMetadata.title.toString(),
-        artistsText = (if (mediaMetadata.extras?.getBoolean("isArtistModified") == true) MODIFIED_PREFIX else "") + (mediaMetadata.artist?.toString()?.stripExplicitEmoji() ?: ""),
+        title = (if (mediaMetadata.extras?.getBoolean("isTitleModified") == true) MODIFIED_PREFIX else "") + (if (isExplicit) EXPLICIT_PREFIX else "") + (mediaMetadata.title?.toString()?.let { if (it == "null") "" else it } ?: ""),
+        artistsText = (if (mediaMetadata.extras?.getBoolean("isArtistModified") == true) MODIFIED_PREFIX else "") + (mediaMetadata.artist?.toString()?.let { if (it == "null") "" else it }?.stripExplicitEmoji() ?: ""),
         durationText = mediaMetadata.extras?.getString("durationText"),
         thumbnailUrl = mediaMetadata.artworkUri?.toString()?.let { artworkStr ->
             if (artworkStr != "null") {

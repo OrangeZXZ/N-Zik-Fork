@@ -1461,8 +1461,9 @@ class PlayerServiceModern : MediaLibraryService(),
         val mediaMetadata = player.mediaMetadata
 
         val mediaItem = binder?.player?.currentMediaItem
-        val artistText = mediaItem?.artistTextOrDb()?.ifBlank { null } ?: getString(R.string.unknown_artist)
-        val albumText = mediaItem?.albumTitleOrDb() ?: ""
+        val artistTextRaw = mediaItem?.artistTextOrDb()
+        val artistText = if (artistTextRaw.isNullOrBlank() || artistTextRaw == "null") getString(R.string.unknown_artist) else artistTextRaw
+        val albumText = mediaItem?.albumTitleOrDb()?.takeIf { it != "null" } ?: ""
 
         // Load bitmap with proper fallback handling
         bitmapProvider.load(mediaMetadata.artworkUri) {
@@ -1475,7 +1476,7 @@ class PlayerServiceModern : MediaLibraryService(),
             NotificationCompat.Builder(this)
         }
             .setContentTitle(
-                cleanPrefix(player.mediaMetadata.title.toString()).ifBlank { getString(R.string.unknown_title) }.let {
+                cleanPrefix(player.mediaMetadata.title?.toString() ?: "").let { if (it.isBlank() || it == "null") getString(R.string.unknown_title) else it }.let {
                     if (player.currentMediaItem?.mediaMetadata?.extras?.getBoolean("isExplicit") == true ||
                         player.currentMediaItem?.mediaMetadata?.extras?.getBoolean("androidx.media3.session.EXTRAS_KEY_IS_EXPLICIT") == true) {
                         "\uD83C\uDD74 $it"

@@ -302,7 +302,7 @@ fun SongItem(
                         override val iconId: Int = R.drawable.explicit
                     }.ToolBarButton()
 
-                val safeTitle = displaySong.title.ifBlank { stringResource(R.string.unknown_title) }
+                val safeTitle = if (displaySong.title.isBlank() || displaySong.title == "null") stringResource(R.string.unknown_title) else displaySong.title
                 // Song's name
                 SongText(
                     text = cleanPrefix( safeTitle ),
@@ -315,7 +315,8 @@ fun SongItem(
             }
 
             Row( verticalAlignment = Alignment.CenterVertically ) {
-                val safeArtists = displaySong.cleanArtistsText().ifBlank { stringResource(R.string.unknown_artist) }
+                val artistsText = displaySong.cleanArtistsText()
+                val safeArtists = if (artistsText.isBlank() || artistsText == "null") stringResource(R.string.unknown_artist) else artistsText
                 // Song's author
                 SongText(
                     text = safeArtists,
