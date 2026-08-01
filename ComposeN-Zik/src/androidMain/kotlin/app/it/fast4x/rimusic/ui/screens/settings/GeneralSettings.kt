@@ -39,6 +39,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import app.n_zik.android.BuildConfig
 import app.n_zik.android.R
+import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.LocalPlayerAwareWindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -1283,10 +1284,6 @@ fun GeneralSettings(
              )
          }
 
-        SettingsGroupSpacer(
-            modifier = Modifier.height(Dimensions.bottomSpacer)
-        )
-
         // Settings Reset Section
         val searchCtx_Reset = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)
         AnimatedVisibility(
@@ -1316,10 +1313,17 @@ fun GeneralSettings(
                         restartService = true
                         RestartPlayerService(restartService, onRestart = { restartService = false })
                         resetToDefault = false
+                        navController.popBackStack()
+                        Toaster.done()
                     }
                 }
             )
         }
+
+        SettingsGroupSpacer(
+            modifier = Modifier.height(Dimensions.bottomSpacer)
+        )
+
     }
 }   
 
