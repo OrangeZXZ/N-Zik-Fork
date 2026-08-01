@@ -2780,6 +2780,8 @@ fun AppearanceSettings(
                             onClick = { 
                                 resetToDefault = true
                                 restartService = true
+                                MiniPlayerButtonsSettingsDialog.reset(context)
+                                PlayerActionBarSettingsDialog.reset(context)
                                 Toaster.done()
                             }
                         )
