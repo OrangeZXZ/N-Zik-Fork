@@ -343,8 +343,11 @@
   <string name="lang_hebrew">হিব্রু</string>
   <string name="customize_album">এলবাম কাস্টমাইজ করুন</string>
   <string name="update_title">টাইটেল ঠিক করুন</string>
-  <string name="update_authors">অথোর ঠিক করুন</string>
+  <string name="update_authors">Change Authors</string>
   <string name="update_cover">কভার ঠিক করুন</string>
+  <string name="update_album_browse_id">Change Album Browse ID</string>
+  <string name="update_artist_browse_id">Change Artist Browse ID</string>
+  <string name="update_playlist_browse_id">Change Playlist Browse ID</string>
   <string name="edit_metadata">Edit Metadata</string>
   <string name="pick_from_gallery">Pick from gallery</string>
   <string name="metadata_title">টাইটেল</string>
