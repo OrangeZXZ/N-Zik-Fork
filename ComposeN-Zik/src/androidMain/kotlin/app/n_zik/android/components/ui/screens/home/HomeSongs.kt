@@ -327,23 +327,6 @@ fun HomeSongs(
         }
     }
 
-    LaunchedEffect( builtInPlaylist, songSort.sortBy, songSort.sortOrder, hasUnmatchedSongs ) {
-        buttons.removeAll { it is Sort<*> || it is PeriodSelector || it is PositionLock || it is DownloadAllSongsDialog || it is DeleteAllDownloadedSongsDialog || it is ExportSongsToCSVDialog || it === localMatchButton }
-        
-        val firstButton = if( builtInPlaylist == BuiltInPlaylist.Top ) topPlaylists else songSort
-        buttons.add( 0, firstButton )
-        if ( builtInPlaylist != BuiltInPlaylist.Top && songSort.sortBy == SongSortBy.Custom )
-            buttons.add( 1, positionLock )
-        if ( hasUnmatchedSongs && builtInPlaylist != BuiltInPlaylist.OnDevice ) {
-            val locatorIdx = buttons.indexOfFirst { it::class.simpleName == "Locator" }.takeIf { it >= 0 } ?: buttons.size
-            buttons.add( locatorIdx, localMatchButton )
-        }
-        val updatedLocatorIdx = buttons.indexOfFirst { it::class.simpleName == "Locator" }.takeIf { it >= 0 } ?: buttons.size
-        buttons.add( updatedLocatorIdx + 1, downloadAllDialog )
-        buttons.add( updatedLocatorIdx + 2, deleteDownloadsDialog )
-        buttons.add( exportDialog )
-    }
-
     exportDialog.Render()
     downloadAllDialog.Render()
     deleteDownloadsDialog.Render()

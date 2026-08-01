@@ -102,6 +102,10 @@ import app.it.fast4x.rimusic.utils.showPinnedPlaylistsKey
 
 import app.it.fast4x.rimusic.utils.showYtPlaylistsKey
 import app.it.fast4x.rimusic.utils.homePlaylistsOrderKey
+import app.it.fast4x.rimusic.utils.homeLibraryToolbarOrderKey
+import app.it.fast4x.rimusic.utils.homeLibraryYTPlaylistToolbarOrderKey
+import app.it.fast4x.rimusic.utils.homeLibraryPinnedPlaylistToolbarOrderKey
+import app.it.fast4x.rimusic.utils.homeLibraryMonthlyPlaylistToolbarOrderKey
 import app.it.fast4x.rimusic.utils.semiBold
 import org.json.JSONArray
 import kotlinx.coroutines.Dispatchers
@@ -384,19 +388,42 @@ fun HomeLibrary(
                     HeaderInfo( items.size.toString(), R.drawable.playlist )
                 }
 
+                val homeLibraryToolbarOrderPrefLibrary by rememberPreference(homeLibraryToolbarOrderKey, "")
+                val homeLibraryToolbarOrderPrefYT by rememberPreference(homeLibraryYTPlaylistToolbarOrderKey, "")
+                val homeLibraryToolbarOrderPrefPinned by rememberPreference(homeLibraryPinnedPlaylistToolbarOrderKey, "")
+                val homeLibraryToolbarOrderPrefMonthly by rememberPreference(homeLibraryMonthlyPlaylistToolbarOrderKey, "")
+
+                val currentToolbarOrderPref = when (playlistType) {
+                    PlaylistsType.YTPlaylist -> homeLibraryToolbarOrderPrefYT
+                    PlaylistsType.PinnedPlaylist -> homeLibraryToolbarOrderPrefPinned
+                    PlaylistsType.MonthlyPlaylist -> homeLibraryToolbarOrderPrefMonthly
+                    else -> homeLibraryToolbarOrderPrefLibrary
+                }
+
                 val toolbarButtons = remember { mutableStateListOf<Button>() }
 
-                LaunchedEffect(sort.sortBy, sort.sortOrder) {
+                LaunchedEffect(sort.sortBy, sort.sortOrder, currentToolbarOrderPref) {
+                    val defaultToolbarOrder = listOf("sort", "position_lock", "sync", "search", "shuffle", "new_playlist_dialog", "import_menu", "item_size")
+                    val order = try {
+                        if (currentToolbarOrderPref.isBlank()) defaultToolbarOrder else {
+                            val arr = JSONArray(currentToolbarOrderPref)
+                            (0 until arr.length()).map { arr.getString(it) }.distinct()
+                        }
+                    } catch (_: Exception) { defaultToolbarOrder }
+
                     toolbarButtons.clear()
-                    toolbarButtons.add(sort)
-                    if (sort.sortBy == PlaylistSortBy.Custom)
-                        toolbarButtons.add(positionLock)
-                    if (app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled()) toolbarButtons.add(sync)
-                    toolbarButtons.add(search)
-                    toolbarButtons.add(shuffle)
-                    toolbarButtons.add(newPlaylistDialog)
-                    toolbarButtons.add(importMenu)
-                    toolbarButtons.add(itemSize)
+                    order.forEach { id ->
+                        when(id) {
+                            "sort" -> toolbarButtons.add(sort)
+                            "position_lock" -> { if (sort.sortBy == PlaylistSortBy.Custom) toolbarButtons.add(positionLock) }
+                            "sync" -> { if (app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled()) toolbarButtons.add(sync) }
+                            "search" -> toolbarButtons.add(search)
+                            "shuffle" -> toolbarButtons.add(shuffle)
+                            "new_playlist_dialog" -> toolbarButtons.add(newPlaylistDialog)
+                            "import_menu" -> toolbarButtons.add(importMenu)
+                            "item_size" -> toolbarButtons.add(itemSize)
+                        }
+                    }
                 }
 
                 TabToolBar.Buttons( toolbarButtons )

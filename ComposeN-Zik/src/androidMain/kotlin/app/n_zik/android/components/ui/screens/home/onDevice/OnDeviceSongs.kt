@@ -167,8 +167,6 @@ fun OnDeviceSong(
                           }
     }
     LaunchedEffect( Unit ) {
-        buttons.add( 0, odSort )
-
         if( !isPermissionGranted )
             try {
                 permissionLauncher.launch( permission )

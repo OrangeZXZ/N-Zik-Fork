@@ -55,6 +55,10 @@ import app.n_zik.android.components.tab.ImportPlaylistsMenu
 import app.n_zik.android.components.tab.ImportSongsFromServices
 import app.n_zik.android.core.database.ImportSong
 import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
+import app.n_zik.android.components.Sort
+import app.kreate.android.themed.rimusic.component.playlist.PositionLock
+import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
+import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
 
 @RequiresApi(Build.VERSION_CODES.O)
 @UnstableApi
@@ -337,25 +341,87 @@ fun HomeSongsScreen(navController: NavController ) {
         itemsOnDisplay = { itemsOnDisplayState }
     )
 
-    val buttons = remember( builtInPlaylist ) {
-        itemSelector.isActive = false
-        mutableStateListOf<Button>().apply {
-            add( search )
-            add( locator )
-            add( shuffle )
-            add( smartShuffle )
-            add( itemSelector )
-            add( playNext )
-            add( enqueue )
-            add( addToFavorite )
-            add( addToPlaylist )
-            if (builtInPlaylist == BuiltInPlaylist.All || builtInPlaylist == BuiltInPlaylist.Favorites)
-                add( importMenu )
-            if (builtInPlaylist != BuiltInPlaylist.OnDevice)
-                add( exportDialog )
-            if (builtInPlaylist != BuiltInPlaylist.OnDevice)
-                add( smartTrash )
+    val songSort = when( builtInPlaylist ) {
+        BuiltInPlaylist.Favorites -> Sort( Preference.HOME_SONGS_FAVORITES_SORT_BY, Preference.HOME_SONGS_FAVORITES_SORT_ORDER )
+        BuiltInPlaylist.Offline -> Sort( Preference.HOME_SONGS_OFFLINE_SORT_BY, Preference.HOME_SONGS_OFFLINE_SORT_ORDER )
+        BuiltInPlaylist.Downloaded -> Sort( Preference.HOME_SONGS_DOWNLOADED_SORT_BY, Preference.HOME_SONGS_DOWNLOADED_SORT_ORDER )
+        BuiltInPlaylist.Top -> Sort( Preference.HOME_SONGS_TOP_SORT_BY, Preference.HOME_SONGS_TOP_SORT_ORDER )
+        BuiltInPlaylist.OnDevice -> Sort( Preference.HOME_ON_DEVICE_SONGS_SORT_BY, Preference.HOME_ON_DEVICE_SONGS_SORT_ORDER )
+        else -> Sort( Preference.HOME_SONGS_SORT_BY, Preference.HOME_SONGS_SORT_ORDER )
+    }
+    val positionLock = remember( songSort.sortOrder ) { PositionLock(songSort.sortOrder) }
+    val topPlaylists = app.n_zik.android.components.song.PeriodSelector( Preference.HOME_SONGS_TOP_PLAYLIST_PERIOD )
+    val downloadAllDialog = DownloadAllSongsDialog( ::getSongs )
+    val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog( ::getSongs )
+
+    val hasUnmatchedSongs by remember {
+        derivedStateOf {
+            itemsOnDisplayState.any { (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(LOCAL_KEY_PREFIX) }
         }
+    }
+
+    val localMatchButton = remember {
+        object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive {
+            override val iconId: Int = R.drawable.alert
+            override val messageId: Int = R.string.match_album_audio_version
+            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
+            override fun onShortClick() { showConfirmMatchAllDialog = true }
+            override fun onLongClick() {}
+        }
+    }
+
+    val homeSongsToolbarOrderPrefAll by rememberPreference( app.it.fast4x.rimusic.utils.homeSongsToolbarOrderKey, "" )
+    val homeSongsToolbarOrderPrefFavorites by rememberPreference( app.it.fast4x.rimusic.utils.homeSongsFavoritesToolbarOrderKey, "" )
+    val homeSongsToolbarOrderPrefOffline by rememberPreference( app.it.fast4x.rimusic.utils.homeSongsOfflineToolbarOrderKey, "" )
+    val homeSongsToolbarOrderPrefDownloaded by rememberPreference( app.it.fast4x.rimusic.utils.homeSongsDownloadedToolbarOrderKey, "" )
+    val homeSongsToolbarOrderPrefTop by rememberPreference( app.it.fast4x.rimusic.utils.homeSongsTopToolbarOrderKey, "" )
+    val homeSongsToolbarOrderPrefOnDevice by rememberPreference( app.it.fast4x.rimusic.utils.homeSongsOnDeviceToolbarOrderKey, "" )
+
+    val currentToolbarOrderPref = when(builtInPlaylist) {
+        BuiltInPlaylist.All -> homeSongsToolbarOrderPrefAll
+        BuiltInPlaylist.Favorites -> homeSongsToolbarOrderPrefFavorites
+        BuiltInPlaylist.Offline -> homeSongsToolbarOrderPrefOffline
+        BuiltInPlaylist.Downloaded -> homeSongsToolbarOrderPrefDownloaded
+        BuiltInPlaylist.Top -> homeSongsToolbarOrderPrefTop
+        BuiltInPlaylist.OnDevice -> homeSongsToolbarOrderPrefOnDevice
+    }
+
+    val buttons = remember( builtInPlaylist, currentToolbarOrderPref, songSort.sortBy, songSort.sortOrder, hasUnmatchedSongs ) {
+        itemSelector.isActive = false
+        val defaultToolbarOrder = listOf("search", "locator", "shuffle", "smart_shuffle", "item_selector", "play_next", "enqueue", "add_to_favorite", "add_to_playlist", "import_menu", "export_dialog", "smart_trash")
+        val order = try {
+            if (currentToolbarOrderPref.isBlank()) defaultToolbarOrder else {
+                val arr = org.json.JSONArray(currentToolbarOrderPref)
+                (0 until arr.length()).map { arr.getString(it) }.distinct()
+            }
+        } catch (_: Exception) { defaultToolbarOrder }
+
+        val list = mutableStateListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>()
+        order.forEach { id ->
+            when (id) {
+                "sort" -> list.add( if( builtInPlaylist == BuiltInPlaylist.Top ) topPlaylists else songSort )
+                "position_lock" -> if ( builtInPlaylist != BuiltInPlaylist.Top && songSort.sortBy == app.it.fast4x.rimusic.enums.SongSortBy.Custom ) list.add( positionLock )
+                "search" -> {
+                    if ( hasUnmatchedSongs && builtInPlaylist != BuiltInPlaylist.OnDevice ) list.add( localMatchButton )
+                    list.add( search )
+                }
+                "locator" -> list.add( locator )
+                "download_all" -> list.add( downloadAllDialog )
+                "delete_downloads" -> list.add( deleteDownloadsDialog )
+                "shuffle" -> list.add( shuffle )
+                "smart_shuffle" -> list.add( smartShuffle )
+                "item_selector" -> list.add( itemSelector )
+                "play_next" -> list.add( playNext )
+                "enqueue" -> list.add( enqueue )
+                "add_to_favorite" -> list.add( addToFavorite )
+                "add_to_playlist" -> list.add( addToPlaylist )
+                "import_menu" -> if (builtInPlaylist == BuiltInPlaylist.All || builtInPlaylist == BuiltInPlaylist.Favorites) list.add( importMenu )
+                "export_dialog" -> if (builtInPlaylist != BuiltInPlaylist.OnDevice) list.add( exportDialog )
+                "smart_trash" -> if (builtInPlaylist != BuiltInPlaylist.OnDevice) list.add( smartTrash )
+                "match" -> if ( hasUnmatchedSongs && builtInPlaylist != BuiltInPlaylist.OnDevice ) list.add( localMatchButton )
+            }
+        }
+        list
     }
 
     Box(

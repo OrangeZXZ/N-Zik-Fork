@@ -22,6 +22,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
+import app.n_zik.android.components.dialog.settings.HomeAlbumsToolbarSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeArtistsToolbarSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeLibraryToolbarSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeSongsToolbarSettingsDialog
 import app.it.fast4x.rimusic.ui.screens.settings.ColorSettingEntry
 import app.it.fast4x.rimusic.ui.screens.settings.ButtonBarSettingEntry
 import androidx.compose.ui.graphics.Color
@@ -212,6 +216,7 @@ import app.n_zik.android.components.dialog.settings.HomeTabsSettingsDialog
 import app.n_zik.android.components.dialog.settings.HomeSongsSettingsDialog
 import app.n_zik.android.components.dialog.settings.HomeArtistsSettingsDialog
 import app.n_zik.android.components.dialog.settings.HomeAlbumsSettingsDialog
+import app.n_zik.android.components.dialog.settings.QuickPicksContentSettingsDialog
 import app.n_zik.android.components.tab.Search
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.it.fast4x.rimusic.enums.SearchDisplayOrder
@@ -729,6 +734,11 @@ fun UiSettings(
         HomeSongsSettingsDialog.Render()
         HomeArtistsSettingsDialog.Render()
         HomeAlbumsSettingsDialog.Render()
+        QuickPicksContentSettingsDialog.Render()
+        HomeSongsToolbarSettingsDialog.Render()
+        HomeArtistsToolbarSettingsDialog.Render()
+        HomeAlbumsToolbarSettingsDialog.Render()
+        HomeLibraryToolbarSettingsDialog.Render()
 
         HeaderWithIcon(
             title = stringResource(R.string.user_interface),
@@ -1558,50 +1568,110 @@ fun UiSettings(
         }
         /* Removed Spacer */
 
-        val listsSearchContextMatch = search.inputValue.isBlank() || 
+        val homeTabsSearchContextMatch = search.inputValue.isBlank() || 
+            stringResource(R.string.home_tabs_settings).contains(search.inputValue, true) ||
+            stringResource(R.string.quick_picks).contains(search.inputValue, true) ||
             stringResource(R.string.songs).contains(search.inputValue, true) ||
             stringResource(R.string.artists).contains(search.inputValue, true) ||
             stringResource(R.string.albums).contains(search.inputValue, true) ||
-            stringResource(R.string.playlists).contains(search.inputValue, true) ||
-            stringResource(R.string.library).contains(search.inputValue, true)
+            stringResource(R.string.playlists).contains(search.inputValue, true)
 
         AnimatedVisibility(
-            visible = listsSearchContextMatch,
+            visible = homeTabsSearchContextMatch,
             enter = fadeIn(animationSpec = tween(1000)) + scaleIn(animationSpec = tween(1000), initialScale = 0.9f)
         ) {
             SettingsSectionCard(
-                title = stringResource(R.string.library),
+                title = stringResource(R.string.home_tabs_settings),
                 icon = R.drawable.library,
                 content = {
-                    if (search.inputValue.isBlank() || stringResource(R.string.home_songs_settings).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.quick_picks).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
-                            title = stringResource(R.string.home_songs_settings),
+                            title = stringResource(R.string.quick_picks),
+                            text = stringResource(R.string.library_visibility_description),
+                            onClick = { QuickPicksContentSettingsDialog.showDialog() },
+                            icon = R.drawable.sparkles
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.songs).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.songs),
                             text = stringResource(R.string.library_visibility_description),
                             onClick = { HomeSongsSettingsDialog.showDialog() },
                             icon = R.drawable.musical_notes
                         )
                     }
-                    if (search.inputValue.isBlank() || stringResource(R.string.home_artists_settings).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.artists).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
-                            title = stringResource(R.string.home_artists_settings),
+                            title = stringResource(R.string.artists),
                             text = stringResource(R.string.library_visibility_description),
                             onClick = { HomeArtistsSettingsDialog.showDialog() },
                             icon = R.drawable.people
                         )
                     }
-                    if (search.inputValue.isBlank() || stringResource(R.string.home_albums_settings).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.albums).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
-                            title = stringResource(R.string.home_albums_settings),
+                            title = stringResource(R.string.albums),
                             text = stringResource(R.string.library_visibility_description),
                             onClick = { HomeAlbumsSettingsDialog.showDialog() },
                             icon = R.drawable.album
                         )
                     }
-                    if (search.inputValue.isBlank() || stringResource(R.string.home_playlists_settings).contains(search.inputValue, true)) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.playlists).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
-                            title = stringResource(R.string.home_playlists_settings),
+                            title = stringResource(R.string.playlists),
                             text = stringResource(R.string.library_visibility_description),
                             onClick = { HomePlaylistsSettingsDialog.showDialog() },
+                            icon = R.drawable.library
+                        )
+                    }
+                }
+            )
+        }
+
+        val toolbarSearchContextMatch = search.inputValue.isBlank() || 
+            stringResource(R.string.toolbar).contains(search.inputValue, true) ||
+            stringResource(R.string.songs).contains(search.inputValue, true) ||
+            stringResource(R.string.artists).contains(search.inputValue, true) ||
+            stringResource(R.string.albums).contains(search.inputValue, true) ||
+            stringResource(R.string.playlists).contains(search.inputValue, true)
+
+        AnimatedVisibility(
+            visible = toolbarSearchContextMatch,
+            enter = fadeIn(animationSpec = tween(1000)) + scaleIn(animationSpec = tween(1000), initialScale = 0.9f)
+        ) {
+            SettingsSectionCard(
+                title = stringResource(R.string.toolbar),
+                icon = R.drawable.ellipsis_horizontal,
+                content = {
+                    if (search.inputValue.isBlank() || stringResource(R.string.songs).contains(search.inputValue, true) || stringResource(R.string.toolbar).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.songs),
+                            text = stringResource(R.string.customize_toolbar),
+                            onClick = { HomeSongsToolbarSettingsDialog.showDialog() },
+                            icon = R.drawable.musical_notes
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.artists).contains(search.inputValue, true) || stringResource(R.string.toolbar).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.artists),
+                            text = stringResource(R.string.customize_toolbar),
+                            onClick = { HomeArtistsToolbarSettingsDialog.showDialog() },
+                            icon = R.drawable.people
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.albums).contains(search.inputValue, true) || stringResource(R.string.toolbar).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.albums),
+                            text = stringResource(R.string.customize_toolbar),
+                            onClick = { HomeAlbumsToolbarSettingsDialog.showDialog() },
+                            icon = R.drawable.album
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.playlists).contains(search.inputValue, true) || stringResource(R.string.toolbar).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.playlists),
+                            text = stringResource(R.string.customize_toolbar),
+                            onClick = { HomeLibraryToolbarSettingsDialog.showDialog() },
                             icon = R.drawable.library
                         )
                     }

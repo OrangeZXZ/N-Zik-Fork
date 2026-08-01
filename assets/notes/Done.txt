@@ -1,10 +1,26 @@
 Added:
+- fix(toolbar-settings): fix toggle state shared across tabs in Albums, Artists, and Library toolbar settings dialogs
+  - Root cause: `getTabPrefix()` switch cases ("favorites", "pinned", "monthly") didn't match the actual tab keys ("favs", "pin", "mon"), so multiple tabs mapped to the same prefix → same preference key → shared checkbox state
+  - Fixed `getTabPrefix` in HomeAlbums, HomeArtists, and HomeLibrary dialogs to match actual tab keys
+- fix(toolbar-settings): prefix LazyColumn item IDs per tab in all toolbar settings dialogs (Songs, Albums, Artists, Library)
+  - Root cause: LazyColumn keys were bare IDs (e.g. "sort"), identical across tabs; Compose reused composites so `rememberPreference` never re-read the new tab's preference key
+  - Each dialog now prefixes item IDs with a tab-specific prefix (e.g. "all_sort", "favs_sort") to force unique composites per tab
+- fix(songs-toolbar): remove forced download/export/delete buttons that couldn't be toggled off
+  - Removed `LaunchedEffect` in `HomeSongs.kt` that unconditionally re-added `downloadAllDialog`, `deleteDownloadsDialog`, and `exportDialog` after every recomposition, ignoring user preferences
+  - These buttons are now fully controlled by the saved toolbar order, like all other buttons
+- fix(songs): fix duplicate sort button on OnDevice tab
+  - `OnDeviceSongs.kt` force-added `odSort` at position 0 via `LaunchedEffect(Unit)`, while the `remember` block in `HomeSongsScreen.kt` also added `songSort` from the saved order
+  - Removed the force-add from `OnDeviceSongs.kt` and added `BuiltInPlaylist.OnDevice` case to `songSort` in `HomeSongsScreen.kt` using the correct `HOME_ON_DEVICE_SONGS_SORT_*` preferences
 - feat(library): allow editing artist and album browse ID to fix incorrect auto-matches
   - Upgraded `ChangeArtistBrowseIdDialog` and `ChangeAlbumBrowseIdDialog` into online search pickers allowing users to search and select correct IDs.
   - Added "Unlink" (creates a LOCAL_ ID to prevent auto-match) and "Reset" buttons to easily correct manual overrides.
   - Updated network handlers (`UpdateYoutubeEntity`, `AlbumDetailHandler`, `ArtistDetailHandler`, etc.) to correctly strip the `M~` prefix and skip network calls for `LOCAL_` entities.
   - Integrated into `LocalArtistItemMenu`, `OnlineArtistItemMenu`, `AlbumItemMenu`, and `OnlineAlbumItemMenu`
   - Added `updateArtistId` and `updateAlbumId` in database transactions to correctly update ID maps and replace the old entity
+- feat(build): introduce 32-bit compatible builds (`full32`, `minified32`, `beta32`)
+  - Drops FFmpeg to support older 32-bit devices (`armeabi-v7a`), Media Export is disabled on these builds
+  - Updated GitHub CI/CD workflows to automatically assemble and release these new APKs
+  - Ensured seamless OTA update support in the native Updater for the new variants
 
 Removed:
 - remove(piped): drop Piped integration entirely from the project
@@ -22,16 +38,6 @@ Fixed:
 - fix(ui): fix "Change Browse ID" dialogs instantly closing upon clicking the menu action
   - The menu state was being hidden before the dialog could compose itself, causing the dialog to be destroyed immediately since it resided within the menu's composition context.
   - Moved the `menuState.hide()` calls into the `onConfirm` flow inside the dialogs (`ChangeArtistBrowseIdDialog`, `ChangeAlbumBrowseIdDialog`, `ChangePlaylistBrowseIdDialog`) so the menu closes at the same time as the dialog finishes, rather than preemptively.
-
-Added:
-- feat(build): introduce 32-bit compatible builds (`full32`, `minified32`, `beta32`)
-  - Drops FFmpeg to support older 32-bit devices (`armeabi-v7a`), Media Export is disabled on these builds
-  - Updated GitHub CI/CD workflows to automatically assemble and release these new APKs
-  - Ensured seamless OTA update support in the native Updater for the new variants
-
-- refactor(easter-egg): replace Pacman and Snake mini-games with static unknown easter egg images
-
-Fixed:
 - fix(ui): align HomeSongs empty state ("No items") and toolbar padding with HomeAlbum and HomeLibrary to maintain consistent UX across the app.
 - improve(ui): hide YouTube sync button in HomeAlbum, HomeArtist, and HomeLibrary when YouTube sync is disabled or disconnected.
 - fix(ui): make all `MenuIcon` actions (like Shuffle) automatically close the overflow/bottom menu when clicked
@@ -97,6 +103,8 @@ Fixed:
   - `PlaybackStatsListener` was never added to the secondary crossfade player, so after `player = nextPlayer` swap, `onPlaybackStatsReady` never fired again — no events, no play time updates.
   - Added `PlaybackStatsListener` to secondary player in `preloadCrossfade()`.
   - Removed duplicate `PlaybackStatsListener` registration on main player (was registered twice causing double callbacks).
+
+- refactor(easter-egg): replace Pacman and Snake mini-games with static unknown easter egg images
 
 BETA V 7.2.9
 

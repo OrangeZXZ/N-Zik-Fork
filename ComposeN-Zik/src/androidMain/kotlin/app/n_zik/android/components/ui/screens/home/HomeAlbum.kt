@@ -105,6 +105,8 @@ import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showFavoritesAlbumKey
 import app.it.fast4x.rimusic.utils.homeAlbumsOrderKey
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
+import app.it.fast4x.rimusic.utils.homeAlbumsLibraryToolbarOrderKey
+import app.it.fast4x.rimusic.utils.homeAlbumsFavoritesToolbarOrderKey
 import org.json.JSONArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -334,18 +336,37 @@ fun HomeAlbums(
                     HeaderInfo(items.size.toString(), R.drawable.album)
                 }
 
+                val homeAlbumsToolbarOrderPrefLibrary by rememberPreference(homeAlbumsLibraryToolbarOrderKey, "")
+                val homeAlbumsToolbarOrderPrefFavorites by rememberPreference(homeAlbumsFavoritesToolbarOrderKey, "")
+
+                val currentToolbarOrderPref = when (albumType) {
+                    AlbumsType.Favorites -> homeAlbumsToolbarOrderPrefFavorites
+                    else -> homeAlbumsToolbarOrderPrefLibrary
+                }
+
                 val toolbarButtons = remember { mutableStateListOf<Button>() }
 
-                LaunchedEffect(sort.sortBy, sort.sortOrder) {
+                LaunchedEffect(sort.sortBy, sort.sortOrder, currentToolbarOrderPref) {
+                    val defaultToolbarOrder = listOf("sort", "position_lock", "sync", "search", "randomizer", "shuffle", "item_size")
+                    val order = try {
+                        if (currentToolbarOrderPref.isBlank()) defaultToolbarOrder else {
+                            val arr = JSONArray(currentToolbarOrderPref)
+                            (0 until arr.length()).map { arr.getString(it) }.distinct()
+                        }
+                    } catch (_: Exception) { defaultToolbarOrder }
+
                     toolbarButtons.clear()
-                    toolbarButtons.add(sort)
-                    if (sort.sortBy == AlbumSortBy.Custom)
-                        toolbarButtons.add(positionLock)
-                    if (isYouTubeSyncEnabled()) toolbarButtons.add(sync)
-                    toolbarButtons.add(search)
-                    toolbarButtons.add(randomizer)
-                    toolbarButtons.add(shuffle)
-                    toolbarButtons.add(itemSize)
+                    order.forEach { id ->
+                        when(id) {
+                            "sort" -> toolbarButtons.add(sort)
+                            "position_lock" -> { if (sort.sortBy == AlbumSortBy.Custom) toolbarButtons.add(positionLock) }
+                            "sync" -> { if (isYouTubeSyncEnabled()) toolbarButtons.add(sync) }
+                            "search" -> toolbarButtons.add(search)
+                            "randomizer" -> toolbarButtons.add(randomizer)
+                            "shuffle" -> toolbarButtons.add(shuffle)
+                            "item_size" -> toolbarButtons.add(itemSize)
+                        }
+                    }
                 }
 
                 TabToolBar.Buttons( toolbarButtons )
