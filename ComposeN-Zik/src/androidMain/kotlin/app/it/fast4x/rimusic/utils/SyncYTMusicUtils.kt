@@ -37,7 +37,7 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             // Network call OUTSIDE transaction
             val remotePlaylist = plist.browseId?.let {
-                YtMusic.getPlaylist(playlistId = it).completed().getOrNull()
+                YtMusic.getPlaylist(playlistId = it.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)).completed().getOrNull()
             }
             remotePlaylist?.let { rp ->
                 Timber.tag("SyncYTMusicUtils").d("ytmPrivatePlaylistSync Remote playlist editable: ${rp.isEditable}")

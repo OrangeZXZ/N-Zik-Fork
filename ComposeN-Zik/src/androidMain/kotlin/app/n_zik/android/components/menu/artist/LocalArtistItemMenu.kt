@@ -59,6 +59,7 @@ import app.it.fast4x.rimusic.utils.asMediaItem
 import app.it.fast4x.rimusic.utils.forcePlayAtIndex
 import app.n_zik.android.components.dialog.artist.ChangeArtistTitleDialog
 import app.n_zik.android.components.dialog.artist.ChangeArtistCoverDialog
+import app.n_zik.android.components.dialog.artist.ChangeArtistBrowseIdDialog
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.LocalPlayerServiceBinder
 
@@ -88,11 +89,13 @@ class LocalArtistItemMenu private constructor(
         // Section: Playback
         SectionTitle(stringResource(R.string.playback))
         buttons.getOrNull(0)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
         // Section: Management
         SectionTitle(stringResource(R.string.management))
-        buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
         buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
     }
 
     @Composable
@@ -102,13 +105,15 @@ class LocalArtistItemMenu private constructor(
             SectionTitle(stringResource(R.string.playback))
         }
         buttons.getOrNull(0)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
         // Section: Management
         item(span = { GridItemSpan(maxLineSpan) }) {
             SectionTitle(stringResource(R.string.management))
         }
-        buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
     }
 
     @Composable
@@ -238,6 +243,7 @@ class LocalArtistItemMenu private constructor(
     override fun MenuComponent() {
         val changeTitle = ChangeArtistTitleDialog { artist }
         val changeCover = ChangeArtistCoverDialog { artist }
+        val changeId = ChangeArtistBrowseIdDialog(menuState = menuState) { artist }
 
         var displayTitle by remember { mutableStateOf(artist.name) }
         var displayThumbnailUrl by remember { mutableStateOf(artist.thumbnailUrl) }
@@ -270,10 +276,14 @@ class LocalArtistItemMenu private constructor(
             override fun onLongClick() {}
         }
 
+        val shuffle = app.n_zik.android.components.tab.SongShuffler { songs }
+
         buttons = mutableListOf<Button>().apply {
             add(playAll)
+            add(shuffle)
             add(changeTitle)
             add(changeCover)
+            add(changeId)
         }
 
         Column(
@@ -283,6 +293,7 @@ class LocalArtistItemMenu private constructor(
         ) {
             changeTitle.Render()
             changeCover.Render()
+            changeId.Render()
             ArtistItemDisplay(
                 title = displayTitle,
                 thumbnailUrl = displayThumbnailUrl,

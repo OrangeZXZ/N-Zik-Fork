@@ -161,7 +161,7 @@ fun Podcast(
     LaunchedEffect(Unit) {
         if (podcastPage == null) {
             podcastPage = withContext(Dispatchers.IO) {
-                Innertube.podcastPage(BrowseBody(browseId = browseId)).getOrNull()
+                Innertube.podcastPage(BrowseBody(browseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX))).getOrNull()
             }
         }
     }
@@ -304,7 +304,7 @@ fun Podcast(
                                     .align(Alignment.TopEnd)
                                     .padding(top = 5.dp, end= 5.dp),
                                 onClick = {
-                                    (ExternalUris.youtubeMusicPlaylist(browseId.removePrefix("VL"))).let { url ->
+                                    (ExternalUris.youtubeMusicPlaylist(browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX).removePrefix("VL"))).let { url ->
                                         val sendIntent = Intent().apply {
                                             action = Intent.ACTION_SEND
                                             type = "text/plain"

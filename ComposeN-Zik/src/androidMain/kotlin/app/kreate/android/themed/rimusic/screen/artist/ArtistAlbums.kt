@@ -75,7 +75,7 @@ fun ArtistAlbums(
     val albums = remember { mutableStateListOf<Innertube.AlbumItem>() }
     suspend fun fetchAlbums() {
         val response = runCatching {
-            Innertube.browse( browseId =  browseId, params = params ).body<BrowseResponse>()
+            Innertube.browse( browseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX), params = params ).body<BrowseResponse>()
         }
 
         response.fold(

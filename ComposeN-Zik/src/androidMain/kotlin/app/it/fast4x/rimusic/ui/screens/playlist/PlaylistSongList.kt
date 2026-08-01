@@ -194,7 +194,7 @@ fun PlaylistSongList(
 
     val updatedItemsPageProvider: suspend (String?) -> Result<PlaylistPage> by rememberUpdatedState {
         if( it == null )
-            YtMusic.getPlaylist( browseId )
+            YtMusic.getPlaylist( browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX) )
         else
             YtMusic.getPlaylistContinuation( it )
                    .map { fetchedPlaylist ->
@@ -209,7 +209,7 @@ fun PlaylistSongList(
         loadedSongsCount = 0
         if (playlistPage == null) {
             withContext(Dispatchers.IO) {
-                val firstPage = YtMusic.getPlaylist( browseId ).getOrNull() ?: return@withContext
+                val firstPage = YtMusic.getPlaylist( browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX) ).getOrNull() ?: return@withContext
                 val allSongs = firstPage.songs.toMutableList()
                 loadedSongsCount = allSongs.fastDistinctBy( Innertube.SongItem::key ).size
                 var cont = firstPage.songsContinuation
@@ -486,7 +486,7 @@ fun PlaylistSongList(
                                     .align(Alignment.TopEnd)
                                     .padding(top = 5.dp, end = 5.dp),
                                 onClick = {
-                                    ExternalUris.youtubeMusicPlaylist(browseId.removePrefix("VL")).let { url ->
+                                    ExternalUris.youtubeMusicPlaylist(browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX).removePrefix("VL")).let { url ->
                                         val sendIntent = Intent().apply {
                                             action = Intent.ACTION_SEND
                                             type = "text/plain"

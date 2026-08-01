@@ -608,7 +608,7 @@ fun ArtistHeader(
                 .align(Alignment.TopEnd)
                 .padding(top = 5.dp, end = 5.dp),
             onClick = {
-                val url = ExternalUris.youtubeMusicChannel(localArtist.id)
+                val url = ExternalUris.youtubeMusicChannel(localArtist.id.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX))
                 val sendIntent = Intent().apply {
                     action = Intent.ACTION_SEND
                     type = "text/plain"

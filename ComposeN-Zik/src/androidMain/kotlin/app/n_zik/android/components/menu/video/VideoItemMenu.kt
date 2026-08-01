@@ -88,6 +88,8 @@ import app.n_zik.android.components.menu.ListMenu
 import app.n_zik.android.components.dialog.song.ChangeCoverDialog
 import app.n_zik.android.components.dialog.song.RenameSongDialog
 import app.n_zik.android.components.dialog.song.ChangeAuthorDialog
+import app.n_zik.android.components.dialog.album.ChangeAlbumBrowseIdDialog
+import app.n_zik.android.components.dialog.artist.ChangeArtistBrowseIdDialog
 import app.n_zik.android.components.tab.Radio
 import app.kreate.android.me.knighthat.sync.YouTubeSync
 import timber.log.Timber
@@ -136,13 +138,17 @@ class VideoItemMenu private constructor(
         buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
         buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
         buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.filterIsInstance<ChangeAlbumBrowseIdDialog>().firstOrNull()?.let { it.ListMenuItem() }
+        buttons.filterIsInstance<ChangeArtistBrowseIdDialog>().firstOrNull()?.let { it.ListMenuItem() }
         buttons.getOrNull(7)?.let { if (it is MenuIcon) it.ListMenuItem() }
         refreshBtn?.let { if (it is MenuIcon) it.ListMenuItem() }
 
         // Section: Navigation
         SectionTitle(stringResource(R.string.navigation))
-        for (i in 8 until buttons.size) {
-            buttons.getOrNull(i)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        for (i in 10 until buttons.size) {
+            val btn = buttons.getOrNull(i)
+            if (btn is ChangeAlbumBrowseIdDialog || btn is ChangeArtistBrowseIdDialog) continue
+            btn?.let { if (it is MenuIcon) it.ListMenuItem() }
         }
     }
 
@@ -169,6 +175,8 @@ class VideoItemMenu private constructor(
         buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.filterIsInstance<ChangeAlbumBrowseIdDialog>().firstOrNull()?.let { item { it.GridMenuItem() } }
+        buttons.filterIsInstance<ChangeArtistBrowseIdDialog>().firstOrNull()?.let { item { it.GridMenuItem() } }
         buttons.getOrNull(7)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         refreshBtn?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
@@ -176,8 +184,10 @@ class VideoItemMenu private constructor(
         item(span = { GridItemSpan(maxLineSpan) }) {
             SectionTitle(stringResource(R.string.navigation))
         }
-        for (i in 8 until buttons.size) {
-            buttons.getOrNull(i)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        for (i in 10 until buttons.size) {
+            val btn = buttons.getOrNull(i)
+            if (btn is ChangeAlbumBrowseIdDialog || btn is ChangeArtistBrowseIdDialog) continue
+            btn?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         }
     }
 
@@ -304,6 +314,9 @@ class VideoItemMenu private constructor(
             GoToArtist( navController, song, menuState )
         }
 
+        val changeAlbumId = ChangeAlbumBrowseIdDialog(menuState = menuState) { albumForInfo }
+        val changeArtistId = ChangeArtistBrowseIdDialog(menuState = menuState) { artistsData.firstOrNull() }
+
         buttons = mutableListOf<Button>().apply {
             add( infoButton )
             add( renameVideo )
@@ -313,6 +326,8 @@ class VideoItemMenu private constructor(
             add( playNext )
             add( enqueue )
             add( addToPlaylist )
+            add( changeAlbumId )
+            add( changeArtistId )
             
             if (artistsData.isEmpty()) {
                 val artistNames = song.artistsText
@@ -383,6 +398,8 @@ class VideoItemMenu private constructor(
         renameVideo.Render()
         changeAuthor.Render()
         changeCover.Render()
+        changeAlbumId.Render()
+        changeArtistId.Render()
         if (showListenOnDialog) {
             ListenOnDialog(
                 mediaId = song.id,

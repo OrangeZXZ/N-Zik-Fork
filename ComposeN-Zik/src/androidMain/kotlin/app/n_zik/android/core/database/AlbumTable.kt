@@ -256,6 +256,9 @@ interface AlbumTable {
     """)
     fun deleteOrphaned(): Int
 
+    @Query("DELETE FROM Album WHERE id = :id")
+    fun deleteById(id: String): Int
+
     //<editor-fold defaultstate="collapsed" desc="Sort bookmarked">
     @Query("""
         SELECT DISTINCT *

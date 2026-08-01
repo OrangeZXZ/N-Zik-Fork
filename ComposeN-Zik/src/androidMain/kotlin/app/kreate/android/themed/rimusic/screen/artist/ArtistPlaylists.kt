@@ -73,7 +73,7 @@ fun ArtistPlaylists(
     suspend fun fetchPlaylists() {
         Timber.tag("ArtistPlaylists").d("fetching browseId=$browseId params=${params?.take(20)}..")
         val result = runCatching {
-            var currentBrowseId = browseId
+            var currentBrowseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)
             var currentParams = params.takeIf { !it.isNullOrBlank() }
             
             var responseText = Innertube.browse(

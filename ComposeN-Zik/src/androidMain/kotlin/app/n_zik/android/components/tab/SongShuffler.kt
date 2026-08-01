@@ -20,13 +20,14 @@ import kotlinx.coroutines.flow.Flow
 @UnstableApi
 class SongShuffler private constructor(
     private val binder: PlayerServiceModern.Binder?,
+    private val menuState: app.it.fast4x.rimusic.ui.components.MenuState?,
     private val songs: () -> List<Song>
 ): MenuIcon, Descriptive {
 
     companion object {
         @Composable
         operator fun invoke( songs: () -> List<Song> ) =
-            SongShuffler( LocalPlayerServiceBinder.current, songs )
+            SongShuffler( LocalPlayerServiceBinder.current, app.it.fast4x.rimusic.ui.components.LocalMenuState.current, songs )
 
         @Composable
         operator fun invoke(
@@ -37,7 +38,7 @@ class SongShuffler private constructor(
                 databaseCall( Int.MAX_VALUE )
             }.collectAsState( emptyList(), Dispatchers.IO )
 
-            return SongShuffler { songsToShuffle }
+            return SongShuffler( LocalPlayerServiceBinder.current, app.it.fast4x.rimusic.ui.components.LocalMenuState.current ) { songsToShuffle }
         }
 
         fun playShuffled(
@@ -63,5 +64,6 @@ class SongShuffler private constructor(
             this.binder ?: return,
             this.songs()
         )
+        menuState?.hide()
     }
 }

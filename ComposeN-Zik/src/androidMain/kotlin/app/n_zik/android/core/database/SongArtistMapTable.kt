@@ -97,6 +97,9 @@ interface SongArtistMapTable {
     @Query("UPDATE SongArtistMap SET songId = :newId WHERE songId = :oldId")
     fun updateSongId(oldId: String, newId: String)
 
+    @Query("UPDATE SongArtistMap SET artistId = :newId WHERE artistId = :oldId")
+    fun updateArtistId(oldId: String, newId: String)
+
     /**
      * Delete all mappings for a specific song
      *

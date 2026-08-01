@@ -107,7 +107,7 @@ fun AlbumScreen(
     var description by rememberSaveable { mutableStateOf("") }
     var loadedSongsCount by remember { mutableIntStateOf(0) }
     LaunchedEffect( Unit ) {
-        YtMusic.getAlbum( browseId, true, onProgress = { loadedSongsCount = it } )
+        YtMusic.getAlbum( browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX), true, onProgress = { loadedSongsCount = it } )
                .onSuccess { online ->
                    val onlineAlbum = online.album
                     val authorsText: String? = onlineAlbum.authors.parseArtists().joinToString(", ")

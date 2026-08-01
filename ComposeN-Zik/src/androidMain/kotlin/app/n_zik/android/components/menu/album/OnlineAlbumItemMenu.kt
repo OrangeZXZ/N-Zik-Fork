@@ -45,6 +45,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.components.dialog.album.ChangeAlbumTitleDialog
 import app.n_zik.android.components.dialog.album.ChangeAlbumAuthorsDialog
 import app.n_zik.android.components.dialog.album.ChangeAlbumCoverDialog
+import app.n_zik.android.components.dialog.album.ChangeAlbumBrowseIdDialog
 import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
 import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
 import app.it.fast4x.rimusic.models.Album
@@ -97,18 +98,19 @@ class OnlineAlbumItemMenu private constructor(
         SectionTitle(stringResource(R.string.playback))
         buttons.getOrNull(0)?.let { if (it is MenuIcon) it.ListMenuItem() }
         buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
         // Section: Management
         SectionTitle(stringResource(R.string.management))
-        buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
         buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
         buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
-        for (i in (buttons.size - 3) until buttons.size) {
+        buttons.getOrNull(5)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        for (i in (buttons.size - 4) until buttons.size) {
             buttons.getOrNull(i)?.let { if (it is MenuIcon) it.ListMenuItem() }
         }
 
         // Section: Navigation
-        val navRange = 5 until (buttons.size - 3)
+        val navRange = 6 until (buttons.size - 4)
         if (!navRange.isEmpty()) {
             SectionTitle(stringResource(R.string.navigation))
             for (i in navRange) {
@@ -125,20 +127,21 @@ class OnlineAlbumItemMenu private constructor(
         }
         buttons.getOrNull(0)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
         // Section: Management
         item(span = { GridItemSpan(maxLineSpan) }) {
             SectionTitle(stringResource(R.string.management))
         }
-        buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
-        for (i in (buttons.size - 3) until buttons.size) {
+        buttons.getOrNull(5)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        for (i in (buttons.size - 4) until buttons.size) {
             buttons.getOrNull(i)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         }
 
         // Section: Navigation
-        val navRange = 5 until (buttons.size - 3)
+        val navRange = 6 until (buttons.size - 4)
         if (!navRange.isEmpty()) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 SectionTitle(stringResource(R.string.navigation))
@@ -312,10 +315,16 @@ class OnlineAlbumItemMenu private constructor(
         val changeTitle = ChangeAlbumTitleDialog(albumProvider)
         val changeAuthors = ChangeAlbumAuthorsDialog(albumProvider)
         val changeCover = ChangeAlbumCoverDialog(albumProvider)
+        val changeId = ChangeAlbumBrowseIdDialog(menuState = menuState, getAlbum = albumProvider)
 
         LaunchedEffect(album.key) {
             withContext(Dispatchers.IO) {
-                val result = Innertube.albumPage(BrowseBody(browseId = album.key))?.getOrNull()
+                if (album.key.startsWith("LOCAL_ALBUM_")) {
+                    songs = emptyList()
+                    return@withContext
+                }
+                
+                val result = Innertube.albumPage(BrowseBody(browseId = album.key.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)))?.getOrNull()
                 if (result != null) {
                     displayTitle = result.title.takeIf { !it.isNullOrBlank() } ?: displayTitle
                     displayAuthors = result.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() } ?: displayAuthors
@@ -416,9 +425,28 @@ class OnlineAlbumItemMenu private constructor(
             override fun onLongClick() {}
         }
 
-
+        val shuffle = object : MenuIcon, Descriptive, Clickable {
+            override val iconId: Int = R.drawable.shuffle
+            override val color: androidx.compose.ui.graphics.Color
+                @Composable
+                get() = app.n_zik.android.colorPalette().text
+            override val messageId: Int = R.string.shuffle
+            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
+            override fun onShortClick() {
+                if (songs == null) {
+                    Toaster.w(R.string.opening_url)
+                } else if (songs!!.isNotEmpty()) {
+                    app.n_zik.android.components.tab.SongShuffler.playShuffled(binder ?: return, songs!!)
+                    menuState.hide()
+                } else {
+                    Toaster.e(R.string.no_song_found)
+                }
+            }
+            override fun onLongClick() {}
+        }
 
         buttons = mutableListOf<Button>().apply {
+            add(shuffle)
             add(playNext)
             add(enqueue)
             add(addToPlaylist)
@@ -446,6 +474,7 @@ class OnlineAlbumItemMenu private constructor(
             add(changeTitle)
             add(changeAuthors)
             add(changeCover)
+            add(changeId)
         }
 
         Column(
@@ -456,6 +485,7 @@ class OnlineAlbumItemMenu private constructor(
             changeTitle.Render()
             changeAuthors.Render()
             changeCover.Render()
+            changeId.Render()
             downloadAllDialog.Render()
             deleteAllDialog.Render()
             AlbumItemDisplay(

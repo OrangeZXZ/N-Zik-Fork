@@ -46,6 +46,7 @@ import app.n_zik.android.R
 import app.n_zik.android.colorPalette
 import app.n_zik.android.components.dialog.artist.ChangeArtistTitleDialog
 import app.n_zik.android.components.dialog.artist.ChangeArtistCoverDialog
+import app.n_zik.android.components.dialog.artist.ChangeArtistBrowseIdDialog
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.uiRoundnessShape
@@ -95,11 +96,13 @@ class OnlineArtistItemMenu private constructor(
         // Section: Playback
         SectionTitle(stringResource(R.string.playback))
         buttons.getOrNull(0)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
         // Section: Management
         SectionTitle(stringResource(R.string.management))
-        buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
         buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
+        buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
     }
 
     @Composable
@@ -109,13 +112,15 @@ class OnlineArtistItemMenu private constructor(
             SectionTitle(stringResource(R.string.playback))
         }
         buttons.getOrNull(0)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
         // Section: Management
         item(span = { GridItemSpan(maxLineSpan) }) {
             SectionTitle(stringResource(R.string.management))
         }
-        buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
         buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+        buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
     }
 
     @Composable
@@ -259,6 +264,7 @@ class OnlineArtistItemMenu private constructor(
         }
         val changeTitle = ChangeArtistTitleDialog(artistProvider)
         val changeCover = ChangeArtistCoverDialog(artistProvider)
+        val changeId = ChangeArtistBrowseIdDialog(menuState = menuState, getArtist = artistProvider)
 
         LaunchedEffect(dbArtist) {
             dbArtist?.let {
@@ -274,7 +280,11 @@ class OnlineArtistItemMenu private constructor(
 
         LaunchedEffect(artist.key) {
             withContext(kotlinx.coroutines.Dispatchers.IO) {
-                artistPage = YtMusic.getArtistPage(artist.key).getOrNull()
+                if (artist.key.startsWith("LOCAL_ARTIST_")) {
+                    artistPage = null
+                } else {
+                    artistPage = YtMusic.getArtistPage(artist.key.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)).getOrNull()
+                }
             }
             isFetching = false
         }
@@ -312,14 +322,49 @@ class OnlineArtistItemMenu private constructor(
             override fun onLongClick() {}
         }
 
+        val shuffle = object : MenuIcon, Descriptive, Clickable {
+            override val iconId: Int = R.drawable.shuffle
+            override val color: androidx.compose.ui.graphics.Color
+                @Composable
+                get() = app.n_zik.android.colorPalette().text
+            override val messageId: Int = R.string.shuffle
+            @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
+            override fun onShortClick() {
+                if (isFetching) {
+                    Toaster.w(R.string.opening_url)
+                } else {
+                    val allMediaItems = mutableListOf<MediaItem>()
+                    artistPage?.sections?.forEach { section ->
+                        section.items.forEach { item ->
+                            if (item is Innertube.SongItem) {
+                                item.asSong?.asMediaItem?.let { allMediaItems.add(it) }
+                            } else if (item is Innertube.VideoItem) {
+                                allMediaItems.add(item.asMediaItem)
+                            }
+                        }
+                    }
+                    if (allMediaItems.isNotEmpty()) {
+                        app.n_zik.android.playback.utils.Shuffler.play(binder ?: return, allMediaItems)
+                        menuState.hide()
+                    } else {
+                        Toaster.e(R.string.no_song_found)
+                    }
+                }
+            }
+            override fun onLongClick() {}
+        }
+
         buttons = mutableListOf<Button>().apply {
             add(playRadio)
+            add(shuffle)
             add(changeTitle)
             add(changeCover)
+            add(changeId)
         }
 
         changeTitle.Render()
         changeCover.Render()
+        changeId.Render()
 
         Column(
             modifier = Modifier

@@ -391,7 +391,7 @@ fun HomeLibrary(
                     toolbarButtons.add(sort)
                     if (sort.sortBy == PlaylistSortBy.Custom)
                         toolbarButtons.add(positionLock)
-                    toolbarButtons.add(sync)
+                    if (app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled()) toolbarButtons.add(sync)
                     toolbarButtons.add(search)
                     toolbarButtons.add(shuffle)
                     toolbarButtons.add(newPlaylistDialog)

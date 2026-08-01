@@ -33,6 +33,8 @@ fun UpdateYoutubeArtist(browseId: String) {
     val tabIndex by rememberPreference(artistScreenTabIndexKey, defaultValue = 0)
 
     LaunchedEffect(browseId) {
+        if (browseId.startsWith("LOCAL_ARTIST_")) return@LaunchedEffect
+        
         Database.artistTable
                 .findById( browseId )
                 .combine(snapshotFlow { tabIndex }.map { it != 4 }) { artist, mustFetch -> artist to mustFetch }
@@ -42,7 +44,7 @@ fun UpdateYoutubeArtist(browseId: String) {
 
                     if (artistPage == null && (currentArtist?.timestamp == null || mustFetch)) {
                         withContext(Dispatchers.IO) {
-                            Innertube.artistPage(BrowseBody(browseId = browseId))
+                            Innertube.artistPage(BrowseBody(browseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)))
                                 ?.onSuccess { currentArtistPage ->
                                     artistPage = currentArtistPage
 
@@ -70,6 +72,8 @@ fun UpdateYoutubeAlbum (browseId: String) {
     var albumPage by persist<Innertube.PlaylistOrAlbumPage?>("album/$browseId/albumPage")
     val tabIndex by rememberSaveable {mutableStateOf(0)}
     LaunchedEffect(browseId) {
+        if (browseId.startsWith("LOCAL_ALBUM_")) return@LaunchedEffect
+        
         Database.albumTable
                 .findById( browseId )
                 .combine(snapshotFlow { tabIndex }) { album, tabIndex -> album to tabIndex }
@@ -78,7 +82,7 @@ fun UpdateYoutubeAlbum (browseId: String) {
 
                     if (albumPage == null && (currentAlbum?.timestamp == null || tabIndex == 1)) {
                         withContext(Dispatchers.IO) {
-                            Innertube.albumPage(BrowseBody(browseId = browseId))
+                            Innertube.albumPage(BrowseBody(browseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)))
                                 ?.onSuccess { currentAlbumPage ->
                                     albumPage = currentAlbumPage
 

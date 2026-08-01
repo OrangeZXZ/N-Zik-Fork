@@ -367,34 +367,21 @@ fun HomeSongs(
         }
     }
 
-    LazyColumn(
-        state = lazyListState,
-        userScrollEnabled = !isLoading,
-        contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer ),
-        modifier = Modifier
-            .background(colorPalette().background0)
-            .fillMaxSize()
-    ) {
-        if( isLoading ) {
-            items(
-                count = 20,
-                key = { it }
-            ) { SongItemPlaceholder() }
-        } else if (showNoItems) {
-            item {
-                Box(
-                    modifier = Modifier.fillParentMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    BasicText(
-                        text = stringResource(R.string.no_items),
-                        style = typography().m.semiBold.copy(
-                            color = colorPalette().textSecondary
-                        )
-                    )
-                }
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            state = lazyListState,
+            userScrollEnabled = !isLoading,
+            contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer ),
+            modifier = Modifier
+                .background(colorPalette().background0)
+                .fillMaxSize()
+        ) {
+            if( isLoading ) {
+                items(
+                    count = 20,
+                    key = { it }
+                ) { SongItemPlaceholder() }
             }
-        }
 
         itemsIndexed(
             items = itemsOnDisplay.distinctBy { it.id },
@@ -522,4 +509,19 @@ fun HomeSongs(
             }
         }
     }
+
+    if (showNoItems) {
+        Box(
+            modifier = Modifier.fillMaxSize().padding(bottom = 47.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            BasicText(
+                text = stringResource(R.string.no_items),
+                style = typography().m.semiBold.copy(
+                    color = colorPalette().textSecondary
+                )
+            )
+        }
+    }
+}
 }

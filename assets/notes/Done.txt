@@ -1,4 +1,26 @@
 Added:
+- feat(library): allow editing artist and album browse ID to fix incorrect auto-matches
+  - Upgraded `ChangeArtistBrowseIdDialog` and `ChangeAlbumBrowseIdDialog` into online search pickers allowing users to search and select correct IDs.
+  - Added "Unlink" (creates a LOCAL_ ID to prevent auto-match) and "Reset" buttons to easily correct manual overrides.
+  - Updated network handlers (`UpdateYoutubeEntity`, `AlbumDetailHandler`, `ArtistDetailHandler`, etc.) to correctly strip the `M~` prefix and skip network calls for `LOCAL_` entities.
+  - Integrated into `LocalArtistItemMenu`, `OnlineArtistItemMenu`, `AlbumItemMenu`, and `OnlineAlbumItemMenu`
+  - Added `updateArtistId` and `updateAlbumId` in database transactions to correctly update ID maps and replace the old entity
+
+Removed:
+- remove(piped): drop Piped integration entirely from the project
+  - Deleted the entire `extensions/piped/` module and removed its inclusion from `settings.gradle.kts`
+  - Removed all Piped session models and utils: `PipedResponse.kt`, `GetPipedSession.kt`, `SyncPipedUtils.kt`, `PipedSession.kt`
+  - Removed Piped dependencies from `ComposeN-Zik` and `innertube` modules' `build.gradle.kts`
+  - Removed all Piped login, sync, and playlist logic from UI components including `AccountsSettings`, `PlayerMenu`, `NewPlaylistDialog`, and `RenamePlaylistDialog`
+  - Removed Piped toggle and filtering logic from `HomeLibrary`
+  - Removed `Piped.fetchInstances()` initialization from `MainActivity`
+
+Fixed:
+- fix(ui): fix "Change Browse ID" dialogs instantly closing upon clicking the menu action
+  - The menu state was being hidden before the dialog could compose itself, causing the dialog to be destroyed immediately since it resided within the menu's composition context.
+  - Moved the `menuState.hide()` calls into the `onConfirm` flow inside the dialogs (`ChangeArtistBrowseIdDialog`, `ChangeAlbumBrowseIdDialog`, `ChangePlaylistBrowseIdDialog`) so the menu closes at the same time as the dialog finishes, rather than preemptively.
+
+Added:
 - feat(build): introduce 32-bit compatible builds (`full32`, `minified32`, `beta32`)
   - Drops FFmpeg to support older 32-bit devices (`armeabi-v7a`), Media Export is disabled on these builds
   - Updated GitHub CI/CD workflows to automatically assemble and release these new APKs
@@ -7,8 +29,13 @@ Added:
 - refactor(easter-egg): replace Pacman and Snake mini-games with static unknown easter egg images
 
 Fixed:
+- fix(ui): align HomeSongs empty state ("No items") and toolbar padding with HomeAlbum and HomeLibrary to maintain consistent UX across the app.
+- improve(ui): hide YouTube sync button in HomeAlbum, HomeArtist, and HomeLibrary when YouTube sync is disabled or disconnected.
 - fix(ui): make all `MenuIcon` actions (like Shuffle) automatically close the overflow/bottom menu when clicked
-  - Updated `ListMenuItem` and `GridMenuItem` in `MenuIcon.kt` to automatically call `LocalMenuState.current.hide()` upon being clicked. This ensures buttons that don't explicitly hide the menu (like `SongShuffler`) correctly dismiss the menu when used.
+  - Fixed `SongShuffler` component when used within `ListMenuItem` to force the menu to close on click.
+- fix(ui): revert automatic menu closing for `MenuIcon` to fix dialogs instantly unmounting when clicked.
+- fix(ui): eliminate duplicate "Browse ID" text on the Edit ID menu options (now just says "Change ID").
+- feat(library): add Shuffle button to Album and Artist contextual menus (both local and online).
 - fix(ui): fix queue search bar being hidden by the bottom toolbar and software keyboard
   - Added bottom padding (`64.dp`) to the SearchBar in `Queue.kt` when it is visible so it sits above the `QueueToolBar`.
   - Added `Modifier.imePadding()` to ensure the search bar is pushed up correctly when the software keyboard opens.

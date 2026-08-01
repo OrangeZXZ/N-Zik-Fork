@@ -149,7 +149,7 @@ fun ArtistVideos(
             },
             itemsPageProvider = { continuation ->
                 if (continuation == null) {
-                    YtMusic.getArtistItemsPage(BrowseEndpoint(browseId, params)).map {
+                    YtMusic.getArtistItemsPage(BrowseEndpoint(browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX), params)).map {
                         Innertube.ItemsPage(it.items, it.continuation, it.title)
                     }
                 } else {

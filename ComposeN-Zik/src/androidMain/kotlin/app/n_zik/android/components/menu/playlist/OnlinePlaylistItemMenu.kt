@@ -56,6 +56,7 @@ import app.it.fast4x.rimusic.models.Playlist
 import app.it.fast4x.rimusic.ui.components.themed.Enqueue
 import app.it.fast4x.rimusic.ui.components.themed.PlayNext
 import app.n_zik.android.components.dialog.playlist.ImportPlaylistDialog
+import app.n_zik.android.components.dialog.playlist.ChangePlaylistBrowseIdDialog
 import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
 import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
 import app.n_zik.android.core.coil.ImageCacheFactory
@@ -247,9 +248,15 @@ class OnlinePlaylistItemMenu private constructor(
         var displayAuthor by remember { mutableStateOf(playlist.channel?.name) }
         var displayThumbnailUrl by remember { mutableStateOf(playlist.thumbnail?.url) }
 
+        val localPlaylistFlow = remember(playlist.key) { Database.playlistTable.findByBrowseId(playlist.key) }
+        val localPlaylist by localPlaylistFlow.collectAsState(null, Dispatchers.IO)
+        val changePlaylistId = localPlaylist?.let { lp ->
+            ChangePlaylistBrowseIdDialog(menuState = menuState) { lp }
+        }
+
         LaunchedEffect(playlist.key) {
             withContext(Dispatchers.IO) {
-                val result = YtMusic.getPlaylist(playlist.key).getOrNull()
+                val result = YtMusic.getPlaylist(playlist.key.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)).getOrNull()
                 if (result != null) {
                     displayTitle = result.playlist.title.takeIf { !it.isNullOrBlank() } ?: displayTitle
                     displayAuthor = result.playlist.channel?.name.takeIf { !it.isNullOrBlank() } ?: displayAuthor
@@ -367,14 +374,19 @@ class OnlinePlaylistItemMenu private constructor(
             override fun onLongClick() {}
         }
 
-        buttons = mutableListOf<Button>().apply {
-            add(playNext)
-            add(enqueue)
-            add(addToPlaylist)
-            add(downloadAll)
-            add(deleteAll)
-            add(importPlaylist)
-            
+        val shuffle = app.n_zik.android.components.tab.SongShuffler { songs ?: emptyList() }
+        
+        val list = mutableListOf<MenuIcon>()
+        list.add(playNext)
+        list.add(enqueue)
+        list.add(shuffle)
+        if (changePlaylistId != null) list.add(changePlaylistId)
+        list.add(addToPlaylist)
+        list.add(importPlaylist)
+        list.add(downloadAll)
+        list.add(deleteAll)
+        
+        buttons = list.apply {
             val artistName = playlist.channel?.name
             val browseId = playlist.channel?.endpoint?.browseId
             if (!artistName.isNullOrBlank() && !browseId.isNullOrBlank()) {
@@ -404,6 +416,8 @@ class OnlinePlaylistItemMenu private constructor(
                 }
                 override fun onLongClick() {}
             })
+            
+            list
         }
 
         Column(
@@ -413,6 +427,7 @@ class OnlinePlaylistItemMenu private constructor(
         ) {
             downloadAllDialog.Render()
             deleteAllDialog.Render()
+            changePlaylistId?.Render()
             PlaylistItemDisplay(
                 title = displayTitle,
                 authorText = displayAuthor,

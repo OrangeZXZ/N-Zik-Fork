@@ -227,6 +227,9 @@ interface ArtistTable {
     """)
     fun deleteOrphaned(): Int
 
+    @Query("DELETE FROM Artist WHERE id = :id")
+    fun deleteById(id: String): Int
+
     //<editor-fold defaultstate="collapsed" desc="Sort all">
     @Query("""
         SELECT DISTINCT * 

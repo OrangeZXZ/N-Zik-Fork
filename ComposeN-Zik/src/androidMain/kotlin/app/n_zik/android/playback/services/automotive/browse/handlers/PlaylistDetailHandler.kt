@@ -116,7 +116,7 @@ class PlaylistDetailHandler : BrowseHandler {
                     val sortOrder = context.preferences.getEnum("PlaylistSongsSortOrder_$playlistId", SortOrder.Ascending)
                     database.songPlaylistMapTable.sortSongs(playlistId.toLong(), sortBy, sortOrder)
                 } else {
-                    val playlistPage = Innertube.playlistPage(BrowseBody(browseId = playlistId))?.getOrNull()
+                    val playlistPage = Innertube.playlistPage(BrowseBody(browseId = playlistId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)))?.getOrNull()
                     val songs = playlistPage?.songsPage?.items?.toList()?.map { item -> item.asSong } ?: emptyList()
                     AutoSearchState.searchedSongs = (AutoSearchState.searchedSongs + songs).distinctBy { s -> s.id }
                     kotlinx.coroutines.flow.flowOf(songs)

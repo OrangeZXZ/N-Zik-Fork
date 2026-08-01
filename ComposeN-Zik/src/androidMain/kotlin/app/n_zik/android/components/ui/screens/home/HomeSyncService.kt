@@ -177,7 +177,7 @@ class HomeSyncService : Service() {
 
             var status = 0
             for (attempt in 1..3) {
-                YtMusic.getArtistPage(artist.id).onSuccess { online ->
+                YtMusic.getArtistPage(artist.id.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)).onSuccess { online ->
                     val a = online.artist
                     Timber.tag("HomeSyncService").d("[ARTIST|YT_DIRECT] ✓ name='${a.title}' thumbnail='${a.thumbnail?.url}'")
                     Database.asyncTransaction {
@@ -226,7 +226,7 @@ class HomeSyncService : Service() {
             var status = 0
             for (attempt in 1..3) {
                 if (hasValidId) {
-                    YtMusic.getArtistPage(artist.id).onSuccess { online ->
+                    YtMusic.getArtistPage(artist.id.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)).onSuccess { online ->
                         val a = online.artist
                         Timber.tag("HomeSyncService").d("[ARTIST|$method] ✓ name='${a.title}' thumbnail='${a.thumbnail?.url}'")
                         Database.asyncTransaction {
@@ -259,7 +259,7 @@ class HomeSyncService : Service() {
                         val onlineName = searchResult?.items?.firstOrNull()?.title
                         if (remoteId != null) {
                             Timber.tag("HomeSyncService").d("[ARTIST|FALLBACK_SEARCH] ✓ Found: remoteId='$remoteId' onlineName='$onlineName'")
-                            YtMusic.getArtistPage(remoteId).onSuccess { online ->
+                            YtMusic.getArtistPage(remoteId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)).onSuccess { online ->
                                 val a = online.artist
                                 Timber.tag("HomeSyncService").d("[ARTIST|FALLBACK_SEARCH] ✓ Fetched: name='${a.title}' thumbnail='${a.thumbnail?.url}'")
                                 Database.asyncTransaction {
@@ -377,7 +377,7 @@ class HomeSyncService : Service() {
 
             var status = 0
             for (attempt in 1..3) {
-                YtMusic.getAlbum(album.id, true).onSuccess { online ->
+                YtMusic.getAlbum(album.id.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX), true).onSuccess { online ->
                     val a = online.album
                     val songCount = online.songs.size
                     Timber.tag("HomeSyncService").d("[ALBUM|YT_DIRECT] ✓ title='${a.title}' year='${a.year}' authors='${a.authors?.joinToString { it.name.orEmpty() }}' thumbnail='${a.thumbnail?.url}' songs=$songCount url='${online.url}'")
@@ -437,7 +437,7 @@ class HomeSyncService : Service() {
             var status = 0
             for (attempt in 1..3) {
                 if (hasValidId) {
-                    YtMusic.getAlbum(album.id, true).onSuccess { online ->
+                    YtMusic.getAlbum(album.id.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX), true).onSuccess { online ->
                         val a = online.album
                         val songCount = online.songs.size
                         Timber.tag("HomeSyncService").d("[ALBUM|$method] ✓ title='${a.title}' year='${a.year}' authors='${a.authors?.joinToString { it.name.orEmpty() }}' thumbnail='${a.thumbnail?.url}' songs=$songCount url='${online.url}'")
@@ -483,7 +483,7 @@ class HomeSyncService : Service() {
                         val onlineThumbnail = searchResult?.items?.firstOrNull()?.thumbnail?.url
                         if (remoteId != null) {
                             Timber.tag("HomeSyncService").d("[ALBUM|FALLBACK_SEARCH] ✓ Found: remoteId='$remoteId' onlineTitle='$onlineTitle' year='$onlineYear' thumbnail='$onlineThumbnail'")
-                            YtMusic.getAlbum(remoteId, true).onSuccess { online ->
+                            YtMusic.getAlbum(remoteId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX), true).onSuccess { online ->
                                 val a = online.album
                                 val songCount = online.songs.size
                                 Timber.tag("HomeSyncService").d("[ALBUM|FALLBACK_SEARCH] ✓ Fetched: title='${a.title}' year='${a.year}' authors='${a.authors?.joinToString { it.name.orEmpty() }}' songs=$songCount url='${online.url}'")

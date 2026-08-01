@@ -683,7 +683,7 @@ inline fun SelectorArtistsDialog(
                         LaunchedEffect(Unit) {
                             if (artist?.thumbnailUrl == null) {
                                 withContext(Dispatchers.IO) {
-                                    YtMusic.getArtistPage(browseId = browseId)
+                                    YtMusic.getArtistPage(browseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX))
                                            .onSuccess { currentArtistPage ->
                                                artist?.copy(
                                                    thumbnailUrl = currentArtistPage.artist.thumbnail?.url

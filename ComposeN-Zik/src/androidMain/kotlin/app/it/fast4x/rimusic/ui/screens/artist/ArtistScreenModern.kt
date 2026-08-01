@@ -75,7 +75,7 @@ fun ArtistScreenModern(
     var artistPage: ArtistPage? by remember { mutableStateOf( null ) }
 
     LaunchedEffect( Unit ) {
-        YtMusic.getArtistPage( browseId )
+        YtMusic.getArtistPage( browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX) )
                .onSuccess { online ->
                    artistPage = online
 

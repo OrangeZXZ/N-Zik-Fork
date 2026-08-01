@@ -45,12 +45,13 @@ class ArtistDetailHandler : BrowseHandler {
         val actualParentId = parts[0]
         val artistId = parts[1]
         
-        if (artistId.startsWith(LOCAL_KEY_PREFIX)) {
+        if (artistId.startsWith(LOCAL_KEY_PREFIX) || artistId.startsWith("LOCAL_ARTIST_")) {
             return database.songArtistMapTable.allSongsBy(artistId).first().map { song -> SessionMediaItemMapper.mapSongToMediaItem(song, actualParentId) }
         } else {
+            val cleanArtistId = artistId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)
             val sectionItems = mutableListOf<MediaItem>()
             if (parts.size == 2) {
-                val artistPage = YtMusic.getArtistPage(artistId).getOrNull()
+                val artistPage = YtMusic.getArtistPage(cleanArtistId).getOrNull()
                 Timber.tag("ArtistDetailHandler").i("AA artist sections: page=${artistPage != null}")
                 artistPage?.sections?.forEach { section ->
                     val type = when {
@@ -66,7 +67,7 @@ class ArtistDetailHandler : BrowseHandler {
             } else {
                 val sectionTitle = Uri.decode(parts[2])
                 Timber.tag("ArtistDetailHandler").i("AA browsing section: title=\"$sectionTitle\"")
-                val artistPage = YtMusic.getArtistPage(artistId).getOrNull()
+                val artistPage = YtMusic.getArtistPage(cleanArtistId).getOrNull()
                 val section = artistPage?.sections?.firstOrNull { it.title == sectionTitle }
                 if (section != null) {
                     Timber.tag("ArtistDetailHandler").i("AA section found: items=${section.items.size} more=${section.moreEndpoint?.browseId}")

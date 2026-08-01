@@ -413,7 +413,7 @@ fun HomeSongsScreen(navController: NavController ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding( horizontal = 12.dp )
+                modifier = Modifier.padding( horizontal = 16.dp )
                     .padding( bottom = 8.dp )
                     .fillMaxWidth()
             ) {
@@ -460,7 +460,8 @@ fun HomeSongsScreen(navController: NavController ) {
                     ButtonsRow(
                         chips = chips,
                         currentValue = builtInPlaylist,
-                        onValueUpdate = { builtInPlaylist = it }
+                        onValueUpdate = { builtInPlaylist = it },
+                        modifier = Modifier.padding(end = 12.dp)
                     )
 
                     when (builtInPlaylist) {

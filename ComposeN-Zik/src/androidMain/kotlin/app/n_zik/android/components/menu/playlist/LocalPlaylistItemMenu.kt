@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 import app.it.fast4x.rimusic.cleanPrefix
 import app.it.fast4x.rimusic.enums.MenuStyle
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
@@ -55,6 +56,7 @@ import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.models.Song
 import app.it.fast4x.rimusic.ui.components.themed.Enqueue
 import app.it.fast4x.rimusic.ui.components.themed.PlayNext
+import app.n_zik.android.components.dialog.playlist.ChangePlaylistBrowseIdDialog
 import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
 import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
 import app.n_zik.android.core.coil.ImageCacheFactory
@@ -302,6 +304,7 @@ class LocalPlaylistItemMenu private constructor(
         }
 
         val renamePlaylist = RenamePlaylistDialog { playlistPreview.playlist }
+        val changePlaylistId = ChangePlaylistBrowseIdDialog(menuState = menuState) { playlistPreview.playlist }
 
         val rename = object : MenuIcon, Descriptive, Clickable {
             override val iconId: Int = R.drawable.title_edit
@@ -312,6 +315,7 @@ class LocalPlaylistItemMenu private constructor(
         }
 
         renamePlaylist.Render()
+        changePlaylistId.Render()
         downloadAllDialog.Render()
         deleteAllDialog.Render()
 
@@ -337,10 +341,13 @@ class LocalPlaylistItemMenu private constructor(
             }
         }
 
+        val shuffle = app.n_zik.android.components.tab.SongShuffler { songs ?: emptyList() }
+
         // Define buttons
         buttons = remember(playlistPreview) {
             val list = mutableListOf<Button>()
             
+            list.add(shuffle)
             list.add(playNext)
             list.add(enqueue)
             list.add(downloadAll)
@@ -349,6 +356,9 @@ class LocalPlaylistItemMenu private constructor(
 
             if (playlistPreview.playlist.isEditable) {
                 list.add(rename)
+                if (playlistPreview.playlist.isYoutubePlaylist || playlistPreview.playlist.browseId?.startsWith(MODIFIED_PREFIX) == true || playlistPreview.playlist.browseId?.startsWith("VL") == true) {
+                    list.add(changePlaylistId)
+                }
                 
                 list.add(object : MenuIcon, Descriptive, Clickable {
                     override val iconId: Int = R.drawable.trash

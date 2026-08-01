@@ -343,7 +343,7 @@
   <string name="lang_hebrew">Hebrew (עִברִית)</string>
   <string name="customize_album">Customize album</string>
   <string name="update_title">Change Title</string>
-  <string name="update_authors">Change Authors name</string>
+  <string name="update_authors">Change Authors</string>
   <string name="update_cover">Change Cover</string>
   <string name="edit_metadata">Edit Metadata</string>
   <string name="pick_from_gallery">Pick from gallery</string>

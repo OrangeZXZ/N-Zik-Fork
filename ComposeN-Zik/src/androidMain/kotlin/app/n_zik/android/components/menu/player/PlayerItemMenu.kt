@@ -100,7 +100,8 @@ import timber.log.Timber
 import app.it.fast4x.rimusic.ui.screens.info.VideoOrSongInfoScreen
 import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
 import app.n_zik.android.download.utils.MyDownloadHelper
-
+import app.n_zik.android.components.dialog.album.ChangeAlbumBrowseIdDialog
+import app.n_zik.android.components.dialog.artist.ChangeArtistBrowseIdDialog
 
 @UnstableApi
 @ExperimentalFoundationApi
@@ -163,8 +164,10 @@ class PlayerItemMenu private constructor(
             buttons.getOrNull(4)?.let { if (it is MenuIcon) it.ListMenuItem() }
             buttons.getOrNull(5)?.let { if (it is MenuIcon) it.ListMenuItem() }
             buttons.getOrNull(6)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(7)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(8)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
-            for (i in 7 until buttons.size) {
+            for (i in 9 until buttons.size) {
                 buttons.getOrNull(i)?.let { if (it is MenuIcon) it.ListMenuItem() }
             }
         } else {
@@ -184,10 +187,15 @@ class PlayerItemMenu private constructor(
             buttons.getOrNull(8)?.let { if (it is MenuIcon) it.ListMenuItem() }
             buttons.getOrNull(9)?.let { if (it is MenuIcon) it.ListMenuItem() }
             buttons.getOrNull(10)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(11)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.getOrNull(12)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            buttons.filterIsInstance<DeleteSongDialog>().firstOrNull()?.let { it.ListMenuItem() }
 
             SectionTitle(stringResource(R.string.navigation))
-            for (i in 11 until buttons.size) {
-                buttons.getOrNull(i)?.let { if (it is MenuIcon) it.ListMenuItem() }
+            for (i in 13 until buttons.size) {
+                val btn = buttons.getOrNull(i)
+                if (btn is DeleteSongDialog) continue
+                btn?.let { if (it is MenuIcon) it.ListMenuItem() }
             }
         }
         }
@@ -220,8 +228,10 @@ class PlayerItemMenu private constructor(
             buttons.getOrNull(4)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
             buttons.getOrNull(5)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
             buttons.getOrNull(6)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(7)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(8)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
 
-            for (i in 7 until buttons.size) {
+            for (i in 9 until buttons.size) {
                 buttons.getOrNull(i)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
             }
         } else {
@@ -244,12 +254,17 @@ class PlayerItemMenu private constructor(
             buttons.getOrNull(8)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
             buttons.getOrNull(9)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
             buttons.getOrNull(10)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(11)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.getOrNull(12)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            buttons.filterIsInstance<DeleteSongDialog>().firstOrNull()?.let { item { it.GridMenuItem() } }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
                 SectionTitle(stringResource(R.string.navigation))
             }
-            for (i in 11 until buttons.size) {
-                buttons.getOrNull(i)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
+            for (i in 13 until buttons.size) {
+                val btn = buttons.getOrNull(i)
+                if (btn is DeleteSongDialog) continue
+                btn?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
             }
         }
         }
@@ -442,7 +457,7 @@ class PlayerItemMenu private constructor(
                             navController = navController,
                             onNavigateUp = { menuState.pop() },
                             onClose = { menuState.hide() },
-                            onPlay = { binder?.player?.forcePlay(song.asMediaItem) }
+                            onPlay = { binder.player.forcePlay(song.asMediaItem) }
                         )
                     }
                 }
@@ -454,6 +469,9 @@ class PlayerItemMenu private constructor(
             this.song = Optional.of(this@PlayerItemMenu.mediaItem.asSong)
         }
         val exportCacheDialog = ExportCacheDialog(binder) { song }
+        
+        val changeAlbumId = ChangeAlbumBrowseIdDialog(menuState = menuState) { albumData }
+        val changeArtistId = ChangeArtistBrowseIdDialog(menuState = menuState) { artistsData.firstOrNull() }
 
         // Re-order to match SongItemMenu layout exactly
         buttons = remember(song, albumData, artistsData) {
@@ -468,6 +486,10 @@ class PlayerItemMenu private constructor(
                     add(sleepTimerButton)    // 4
                     add(addToFavorite)       // 5
                     add(addToPlaylist)       // 6
+                    
+                    add(changeAlbumId)       // 7
+                    add(changeArtistId)      // 8
+                    
                     if (app.n_zik.android.BuildConfig.ENABLE_FFMPEG) add(exportCacheDialog)
                 } else {
                     // Remote songs
@@ -480,6 +502,9 @@ class PlayerItemMenu private constructor(
                     add(addToFavorite)       // 8
                     add(addToPlaylist)       // 9
                     add(refetchButton)       // 10
+                    
+                    add(changeAlbumId)       // 11
+                    add(changeArtistId)      // 12
 
                     // Go to Album
                     add(object : MenuIcon, Descriptive, Clickable {
@@ -598,6 +623,9 @@ class PlayerItemMenu private constructor(
             changeCover.Render()
             deleteSongDialog.Render()
         }
+        
+        changeAlbumId.Render()
+        changeArtistId.Render()
         
         if (showRefetchDialog) {
             ConfirmationDialog(

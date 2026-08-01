@@ -230,7 +230,7 @@ fun HomeArtists(
             withContext(Dispatchers.IO) {
                 items.filter { it.thumbnailUrl == null }.forEach { artist ->
                     coroutineScope.launch(Dispatchers.IO) {
-                        val artistThumbnail = YtMusic.getArtistPage(artist.id).getOrNull()?.artist?.thumbnail?.url
+                        val artistThumbnail = YtMusic.getArtistPage(artist.id.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)).getOrNull()?.artist?.thumbnail?.url
                         Database.asyncTransaction {
                             artistTable.update( artist.copy(thumbnailUrl = artistThumbnail) )
                         }
@@ -255,6 +255,7 @@ fun HomeArtists(
         }
         val targetItems = itemsToRefresh ?: itemsOnDisplay
         val ids = java.util.ArrayList(targetItems.map { it.id })
+        if (ids.isEmpty()) return
         
         val intent = android.content.Intent(appContext(), HomeSyncService::class.java).apply {
             action = HomeSyncService.ACTION_SYNC_ARTISTS
@@ -312,7 +313,7 @@ fun HomeArtists(
                     toolbarButtons.add(sort)
                     if (sort.sortBy == ArtistSortBy.Custom)
                         toolbarButtons.add(positionLock)
-                    toolbarButtons.add(sync)
+                    if (isYouTubeSyncEnabled()) toolbarButtons.add(sync)
                     toolbarButtons.add(search)
                     toolbarButtons.add(randomizer)
                     toolbarButtons.add(shuffle)

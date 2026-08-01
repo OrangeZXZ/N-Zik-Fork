@@ -723,7 +723,7 @@ fun LocalPlaylistSongs(
         playlist?.let {
             CoroutineScope(Dispatchers.IO).launch {
                 val remotePlaylist = Innertube.playlistPage(
-                    BrowseBody(browseId = it.browseId ?: "")
+                    BrowseBody(browseId = it.browseId?.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX) ?: "")
                 )?.completed()?.getOrNull()
                 remotePlaylist?.let { rp ->
                     val mediaItems = rp.songsPage
@@ -742,7 +742,7 @@ fun LocalPlaylistSongs(
     }
     val syncComponent = Synchronize { sync() }
     val listenOnYT = ListenOnYouTube {
-        val browseId = playlist?.browseId?.removePrefix( "VL" )
+        val browseId = playlist?.browseId?.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)?.removePrefix( "VL" )
 
         binder?.player?.pause()
         uriHandler.openUri( ExternalUris.youtubePlaylist(browseId ?: "") )

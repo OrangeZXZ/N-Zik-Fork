@@ -42,7 +42,24 @@ class AlbumDetailHandler : BrowseHandler {
         val albumId = parts[1]
         var onlineSongs: List<Song>? = null
         
-        val online = YtMusic.getAlbum(albumId, true).getOrNull()
+        if (albumId.startsWith("LOCAL_ALBUM_")) {
+            val localSongs = database.songAlbumMapTable.allSongsOf(albumId).first()
+            return localSongs.mapIndexed { index, song ->
+                SessionMediaItemMapper.mapSongToMediaItem(song, actualParentId).let { item ->
+                    item.buildUpon()
+                        .setMediaMetadata(
+                            item.mediaMetadata.buildUpon()
+                                .setTrackNumber(index + 1)
+                                .build()
+                        )
+                        .build()
+                }
+            }
+        }
+        
+        val cleanAlbumId = albumId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)
+        
+        val online = YtMusic.getAlbum(cleanAlbumId, true).getOrNull()
         if (online != null) {
             val onlineAlbum = online.album
             val authorsText: String? = onlineAlbum.authors.parseArtists().joinToString(", ")
@@ -78,7 +95,7 @@ class AlbumDetailHandler : BrowseHandler {
                 }
             }
         } else {
-            val albumPage = Innertube.albumPage(BrowseBody(browseId = albumId))?.getOrNull()
+            val albumPage = Innertube.albumPage(BrowseBody(browseId = cleanAlbumId))?.getOrNull()
             onlineSongs = albumPage?.songsPage?.items?.toList()?.map { item -> item.asSong }
         }
         

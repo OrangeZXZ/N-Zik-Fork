@@ -864,7 +864,7 @@ class PlayerServiceModern : MediaLibraryService(),
                         
                         val existingAlbum = Database.albumTable.findBySongIdDirect(songId)
                         // Skip if album exists AND has a real YouTube album ID (valid Base64URL)
-                        val hasValidAlbum = existingAlbum?.id != null && existingAlbum.id.length > 11 && existingAlbum.id.matches("^[A-Za-z0-9_-]+\$".toRegex())
+                        val hasValidAlbum = existingAlbum?.id != null && existingAlbum.id.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX).let { it.length > 11 && it.matches("^[A-Za-z0-9_-]+\$".toRegex()) }
                         if (hasValidAlbum) return@launch
                         
                         val dbSong = Database.songTable.findByIdDirect(songId) ?: return@launch

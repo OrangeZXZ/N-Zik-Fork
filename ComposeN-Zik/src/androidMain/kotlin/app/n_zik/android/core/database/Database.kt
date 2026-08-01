@@ -558,6 +558,20 @@ object Database {
     fun artistSongs(browseId: String): Flow<List<Song>> {
         return songTable.artistSongs(browseId)
     }
+
+    fun updateArtistId(oldId: String, newId: String) = asyncTransaction {
+        val oldEntity = artistTable.findByIdDirect(oldId) ?: return@asyncTransaction
+        artistTable.insertIgnore(oldEntity.copy(id = newId))
+        songArtistMapTable.updateArtistId(oldId, newId)
+        artistTable.deleteById(oldId)
+    }
+
+    fun updateAlbumId(oldId: String, newId: String) = asyncTransaction {
+        val oldEntity = albumTable.findByIdDirect(oldId) ?: return@asyncTransaction
+        albumTable.insertIgnore(oldEntity.copy(id = newId))
+        songAlbumMapTable.updateAlbumId(oldId, newId)
+        albumTable.deleteById(oldId)
+    }
 }
 
 @androidx.room.Database(

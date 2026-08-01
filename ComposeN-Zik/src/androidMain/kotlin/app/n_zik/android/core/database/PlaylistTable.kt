@@ -247,6 +247,9 @@ interface PlaylistTable {
     @Query("UPDATE Playlist SET position = :position WHERE id = :playlistId")
     fun updatePosition( playlistId: Long, position: Int ): Int
 
+    @Query("UPDATE Playlist SET browseId = :browseId WHERE id = :playlistId")
+    fun updateBrowseId( playlistId: Long, browseId: String? ): Int
+
     //<editor-fold defaultstate="collapsed" desc="Sort as preview">
     @Query("""
         SELECT DISTINCT P.*, COUNT(spm.songId) as songCount

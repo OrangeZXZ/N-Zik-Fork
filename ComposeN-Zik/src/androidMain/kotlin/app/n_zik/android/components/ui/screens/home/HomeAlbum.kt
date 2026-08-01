@@ -284,6 +284,7 @@ fun HomeAlbums(
         }
         val targetItems = itemsToRefresh ?: itemsOnDisplay
         val ids = java.util.ArrayList(targetItems.map { it.id })
+        if (ids.isEmpty()) return
         
         val intent = android.content.Intent(appContext(), HomeSyncService::class.java).apply {
             action = HomeSyncService.ACTION_SYNC_ALBUMS
@@ -340,7 +341,7 @@ fun HomeAlbums(
                     toolbarButtons.add(sort)
                     if (sort.sortBy == AlbumSortBy.Custom)
                         toolbarButtons.add(positionLock)
-                    toolbarButtons.add(sync)
+                    if (isYouTubeSyncEnabled()) toolbarButtons.add(sync)
                     toolbarButtons.add(search)
                     toolbarButtons.add(randomizer)
                     toolbarButtons.add(shuffle)

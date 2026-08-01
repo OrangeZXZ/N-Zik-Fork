@@ -51,7 +51,7 @@ class GoToAlbum(
                     .first()
                     ?.id
                     
-            val isValid = id != null && id.length > 11 && id.matches("^[A-Za-z0-9_-]+\$".toRegex())
+            val isValid = id != null && id.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX).let { it.length > 11 && it.matches("^[A-Za-z0-9_-]+\$".toRegex()) }
             
             kotlinx.coroutines.withContext(Dispatchers.Main) {
                 if (isValid) {
