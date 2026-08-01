@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -43,9 +44,7 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.unit.sp
 import app.n_zik.android.LocalPlayerServiceBinder
-
 import app.n_zik.android.colorPalette
-
 import app.it.fast4x.rimusic.enums.DurationInMilliseconds
 import app.it.fast4x.rimusic.enums.DurationInMinutes
 import app.it.fast4x.rimusic.enums.ExoPlayerMinTimeForEvent
@@ -61,39 +60,15 @@ import app.it.fast4x.rimusic.enums.PresetsReverb
 import app.n_zik.android.typography
 import app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
 import app.it.fast4x.rimusic.ui.components.themed.HeaderWithIcon
-import app.it.fast4x.rimusic.ui.styling.DefaultDarkColorPalette
-import app.it.fast4x.rimusic.ui.styling.DefaultLightColorPalette
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.RestartActivity
 import app.it.fast4x.rimusic.utils.RestartPlayerService
-
 import app.it.fast4x.rimusic.utils.audioReverbPresetKey
-
 import app.it.fast4x.rimusic.utils.autoLoadSongsInQueueKey
 import app.it.fast4x.rimusic.utils.bassboostEnabledKey
 import app.it.fast4x.rimusic.utils.bassboostLevelKey
 import app.it.fast4x.rimusic.utils.closeWithBackButtonKey
 import app.it.fast4x.rimusic.utils.closebackgroundPlayerKey
-import app.it.fast4x.rimusic.utils.customThemeDark_Background0Key
-import app.it.fast4x.rimusic.utils.customThemeDark_Background1Key
-import app.it.fast4x.rimusic.utils.customThemeDark_Background2Key
-import app.it.fast4x.rimusic.utils.customThemeDark_Background3Key
-import app.it.fast4x.rimusic.utils.customThemeDark_Background4Key
-import app.it.fast4x.rimusic.utils.customThemeDark_TextKey
-import app.it.fast4x.rimusic.utils.customThemeDark_accentKey
-import app.it.fast4x.rimusic.utils.customThemeDark_iconButtonPlayerKey
-import app.it.fast4x.rimusic.utils.customThemeDark_textDisabledKey
-import app.it.fast4x.rimusic.utils.customThemeDark_textSecondaryKey
-import app.it.fast4x.rimusic.utils.customThemeLight_Background0Key
-import app.it.fast4x.rimusic.utils.customThemeLight_Background1Key
-import app.it.fast4x.rimusic.utils.customThemeLight_Background2Key
-import app.it.fast4x.rimusic.utils.customThemeLight_Background3Key
-import app.it.fast4x.rimusic.utils.customThemeLight_Background4Key
-import app.it.fast4x.rimusic.utils.customThemeLight_TextKey
-import app.it.fast4x.rimusic.utils.customThemeLight_accentKey
-import app.it.fast4x.rimusic.utils.customThemeLight_iconButtonPlayerKey
-import app.it.fast4x.rimusic.utils.customThemeLight_textDisabledKey
-import app.it.fast4x.rimusic.utils.customThemeLight_textSecondaryKey
 import app.it.fast4x.rimusic.utils.disableClosingPlayerSwipingDownKey
 import app.it.fast4x.rimusic.utils.discoverKey
 import app.it.fast4x.rimusic.utils.enablePictureInPictureAutoKey
@@ -103,22 +78,17 @@ import app.it.fast4x.rimusic.utils.exoPlayerMinTimeForEventKey
 import app.it.fast4x.rimusic.utils.handleAudioFocusEnabledKey
 import app.it.fast4x.rimusic.utils.isAtLeastAndroid12
 import app.it.fast4x.rimusic.utils.isAtLeastAndroid6
-
 import app.it.fast4x.rimusic.utils.isPauseOnVolumeZeroEnabledKey
 import app.it.fast4x.rimusic.utils.jumpPreviousKey
 import app.it.fast4x.rimusic.utils.keepPlayerMinimizedKey
 import app.it.fast4x.rimusic.utils.languageAppKey
-
 import app.it.fast4x.rimusic.utils.loudnessBaseGainKey
 import app.it.fast4x.rimusic.utils.maxSongsInQueueKey
 import app.it.fast4x.rimusic.utils.maxSongsInQueueAndroidAutoKey
 import app.it.fast4x.rimusic.utils.minimumSilenceDurationKey
-import app.it.fast4x.rimusic.utils.navigationBarPositionKey
-import app.it.fast4x.rimusic.utils.navigationBarTypeKey
 import app.it.fast4x.rimusic.utils.notificationTypeKey
 import app.it.fast4x.rimusic.utils.nowPlayingIndicatorKey
 import app.it.fast4x.rimusic.utils.pauseBetweenSongsKey
-
 import app.it.fast4x.rimusic.utils.persistentQueueKey
 import app.it.fast4x.rimusic.utils.pipModuleKey
 import app.it.fast4x.rimusic.utils.playbackFadeAudioDurationKey
@@ -135,10 +105,86 @@ import app.it.fast4x.rimusic.utils.volumeNormalizationKey
 import app.it.fast4x.rimusic.utils.volumeBoostLevelKey
 import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import app.n_zik.android.components.dialog.settings.SettingsInputDialog
-
 import app.n_zik.android.components.dialog.common.RestartAppDialog
 import app.n_zik.android.components.tab.Search
 
+@Composable
+fun DefaultGeneralSettings(context: android.content.Context) {
+    var languageApp by rememberPreference(languageAppKey, Languages.System)
+    languageApp = Languages.System
+    var exoPlayerMinTimeForEvent by rememberPreference(exoPlayerMinTimeForEventKey, ExoPlayerMinTimeForEvent.`20s`)
+    exoPlayerMinTimeForEvent = ExoPlayerMinTimeForEvent.`20s`
+    var persistentQueue by rememberPreference(persistentQueueKey, false)
+    persistentQueue = false
+    var resumePlaybackOnStart by rememberPreference(resumePlaybackOnStartKey, false)
+    resumePlaybackOnStart = false
+    var closebackgroundPlayer by rememberPreference(closebackgroundPlayerKey, false)
+    closebackgroundPlayer = false
+    var closeWithBackButton by rememberPreference(closeWithBackButtonKey, true)
+    closeWithBackButton = true
+    var resumePlaybackWhenDeviceConnected by rememberPreference(resumePlaybackWhenDeviceConnectedKey, false)
+    resumePlaybackWhenDeviceConnected = false
+    var skipSilence by rememberPreference(skipSilenceKey, false)
+    skipSilence = false
+    var skipMediaOnError by rememberPreference(skipMediaOnErrorKey, false)
+    skipMediaOnError = false
+    var volumeNormalization by rememberPreference(volumeNormalizationKey, false)
+    volumeNormalization = false
+    var volumeBoostLevel by rememberPreference(volumeBoostLevelKey, 0f)
+    volumeBoostLevel = 0f
+    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey, false)
+    keepPlayerMinimized = false
+    var disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, false)
+    disableClosingPlayerSwipingDown = false
+    var pauseBetweenSongs by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
+    pauseBetweenSongs = PauseBetweenSongs.`0`
+    var maxSongsInQueue by rememberPreference(maxSongsInQueueKey, MaxSongs.Unlimited)
+    maxSongsInQueue = MaxSongs.Unlimited
+    var maxSongsInQueueAndroidAuto by rememberPreference(maxSongsInQueueAndroidAutoKey, MaxSongs.Unlimited)
+    maxSongsInQueueAndroidAuto = MaxSongs.Unlimited
+    var crossfadeEnabled by rememberPreference(app.it.fast4x.rimusic.utils.crossfadeEnabledKey, false)
+    crossfadeEnabled = false
+    var crossfadeDuration by rememberPreference(app.it.fast4x.rimusic.utils.crossfadeDurationKey, 3000)
+    crossfadeDuration = 3000
+    var crossfadeGapless by rememberPreference(app.it.fast4x.rimusic.utils.crossfadeGaplessKey, false)
+    crossfadeGapless = false
+    var useVolumeKeysToChangeSong by rememberPreference(useVolumeKeysToChangeSongKey, false)
+    useVolumeKeysToChangeSong = false
+    var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
+    excludeSongWithDurationLimit = DurationInMinutes.Disabled
+    var playlistindicator by rememberPreference(playlistindicatorKey, false)
+    playlistindicator = false
+    var nowPlayingIndicator by rememberPreference(nowPlayingIndicatorKey, MusicAnimationType.Bubbles)
+    nowPlayingIndicator = MusicAnimationType.Bubbles
+    var discoverIsEnabled by rememberPreference(discoverKey, false)
+    discoverIsEnabled = false
+    var isPauseOnVolumeZeroEnabled by rememberPreference(isPauseOnVolumeZeroEnabledKey, false)
+    isPauseOnVolumeZeroEnabled = false
+    var minimumSilenceDuration by rememberPreference(minimumSilenceDurationKey, 2_000_000L)
+    minimumSilenceDuration = 2_000_000L
+    var loudnessBaseGain by rememberPreference(loudnessBaseGainKey, 5.00f)
+    loudnessBaseGain = 5.00f
+    var autoLoadSongsInQueue by rememberPreference(autoLoadSongsInQueueKey, true)
+    autoLoadSongsInQueue = true
+    var bassboostEnabled by rememberPreference(bassboostEnabledKey, false)
+    bassboostEnabled = false
+    var bassboostLevel by rememberPreference(bassboostLevelKey, 0f)
+    bassboostLevel = 0f
+    var audioReverb by rememberPreference(audioReverbPresetKey, PresetsReverb.NONE)
+    audioReverb = PresetsReverb.NONE
+    var audioFocusEnabled by rememberPreference(handleAudioFocusEnabledKey, true)
+    audioFocusEnabled = true
+    var enablePictureInPicture by rememberPreference(enablePictureInPictureKey, false)
+    enablePictureInPicture = false
+    var enablePictureInPictureAuto by rememberPreference(enablePictureInPictureAutoKey, false)
+    enablePictureInPictureAuto = false
+    var pipModule by rememberPreference(pipModuleKey, PipModule.Cover)
+    pipModule = PipModule.Cover
+    var jumpPrevious by rememberPreference(jumpPreviousKey, "3")
+    jumpPrevious = "3"
+    var notificationType by rememberPreference(notificationTypeKey, NotificationType.Default)
+    notificationType = NotificationType.Default
+}
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -172,9 +218,6 @@ fun GeneralSettings(
     var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
 
     var disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, false)
-
-    var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.BottomFloating)
-    var navigationBarType by rememberPreference(navigationBarTypeKey, NavigationBarType.IconOnly)
     var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
     var maxSongsInQueue  by rememberPreference(maxSongsInQueueKey, MaxSongs.Unlimited)
     var maxSongsInQueueAndroidAuto by rememberPreference(maxSongsInQueueAndroidAutoKey, MaxSongs.Unlimited)
@@ -185,32 +228,6 @@ fun GeneralSettings(
     val search = Search()
 
     var useVolumeKeysToChangeSong by rememberPreference(useVolumeKeysToChangeSongKey, false)
-
-    var customThemeLight_Background0 by rememberPreference(customThemeLight_Background0Key, DefaultLightColorPalette.background0.hashCode())
-    var customThemeLight_Background1 by rememberPreference(customThemeLight_Background1Key, DefaultLightColorPalette.background1.hashCode())
-    var customThemeLight_Background2 by rememberPreference(customThemeLight_Background2Key, DefaultLightColorPalette.background2.hashCode())
-    var customThemeLight_Background3 by rememberPreference(customThemeLight_Background3Key, DefaultLightColorPalette.background3.hashCode())
-    var customThemeLight_Background4 by rememberPreference(customThemeLight_Background4Key, DefaultLightColorPalette.background4.hashCode())
-    var customThemeLight_Text by rememberPreference(customThemeLight_TextKey, DefaultLightColorPalette.text.hashCode())
-    var customThemeLight_TextSecondary by rememberPreference(customThemeLight_textSecondaryKey, DefaultLightColorPalette.textSecondary.hashCode())
-    var customThemeLight_TextDisabled by rememberPreference(customThemeLight_textDisabledKey, DefaultLightColorPalette.textDisabled.hashCode())
-    var customThemeLight_IconButtonPlayer by rememberPreference(customThemeLight_iconButtonPlayerKey, DefaultLightColorPalette.iconButtonPlayer.hashCode())
-    var customThemeLight_Accent by rememberPreference(customThemeLight_accentKey, DefaultLightColorPalette.accent.hashCode())
-
-    var customThemeDark_Background0 by rememberPreference(customThemeDark_Background0Key, DefaultDarkColorPalette.background0.hashCode())
-    var customThemeDark_Background1 by rememberPreference(customThemeDark_Background1Key, DefaultDarkColorPalette.background1.hashCode())
-    var customThemeDark_Background2 by rememberPreference(customThemeDark_Background2Key, DefaultDarkColorPalette.background2.hashCode())
-    var customThemeDark_Background3 by rememberPreference(customThemeDark_Background3Key, DefaultDarkColorPalette.background3.hashCode())
-    var customThemeDark_Background4 by rememberPreference(customThemeDark_Background4Key, DefaultDarkColorPalette.background4.hashCode())
-    var customThemeDark_Text by rememberPreference(customThemeDark_TextKey, DefaultDarkColorPalette.text.hashCode())
-    var customThemeDark_TextSecondary by rememberPreference(customThemeDark_textSecondaryKey, DefaultDarkColorPalette.textSecondary.hashCode())
-    var customThemeDark_TextDisabled by rememberPreference(customThemeDark_textDisabledKey, DefaultDarkColorPalette.textDisabled.hashCode())
-    var customThemeDark_IconButtonPlayer by rememberPreference(customThemeDark_iconButtonPlayerKey, DefaultDarkColorPalette.iconButtonPlayer.hashCode())
-    var customThemeDark_Accent by rememberPreference(customThemeDark_accentKey, DefaultDarkColorPalette.accent.hashCode())
-
-    var resetCustomLightThemeDialog by rememberSaveable { mutableStateOf(false) }
-    var resetCustomDarkThemeDialog by rememberSaveable { mutableStateOf(false) }
-    var playbackFadeAudioDuration by rememberPreference(playbackFadeAudioDurationKey, DurationInMilliseconds.Disabled)
     var excludeSongWithDurationLimit by rememberPreference(excludeSongsWithDurationLimitKey, DurationInMinutes.Disabled)
     var playlistindicator by rememberPreference(playlistindicatorKey, false)
     var nowPlayingIndicator by rememberPreference(nowPlayingIndicatorKey, MusicAnimationType.Bubbles)
@@ -266,46 +283,6 @@ fun GeneralSettings(
         // Search Section
         search.ToolBarButton()
         search.SearchBar( this )
-
-        if (resetCustomLightThemeDialog) {
-            ConfirmationDialog(
-                text = stringResource(R.string.do_you_really_want_to_reset_the_custom_light_theme_colors),
-                onDismiss = { resetCustomLightThemeDialog = false },
-                onConfirm = {
-                    resetCustomLightThemeDialog = false
-                    customThemeLight_Background0 = DefaultLightColorPalette.background0.hashCode()
-                    customThemeLight_Background1 = DefaultLightColorPalette.background1.hashCode()
-                    customThemeLight_Background2 = DefaultLightColorPalette.background2.hashCode()
-                    customThemeLight_Background3 = DefaultLightColorPalette.background3.hashCode()
-                    customThemeLight_Background4 = DefaultLightColorPalette.background4.hashCode()
-                    customThemeLight_Text = DefaultLightColorPalette.text.hashCode()
-                    customThemeLight_TextSecondary = DefaultLightColorPalette.textSecondary.hashCode()
-                    customThemeLight_TextDisabled = DefaultLightColorPalette.textDisabled.hashCode()
-                    customThemeLight_IconButtonPlayer = DefaultLightColorPalette.iconButtonPlayer.hashCode()
-                    customThemeLight_Accent = DefaultLightColorPalette.accent.hashCode()
-                }
-            )
-        }
-
-        if (resetCustomDarkThemeDialog) {
-            ConfirmationDialog(
-                text = stringResource(R.string.do_you_really_want_to_reset_the_custom_dark_theme_colors),
-                onDismiss = { resetCustomDarkThemeDialog = false },
-                onConfirm = {
-                    resetCustomDarkThemeDialog = false
-                    customThemeDark_Background0 = DefaultDarkColorPalette.background0.hashCode()
-                    customThemeDark_Background1 = DefaultDarkColorPalette.background1.hashCode()
-                    customThemeDark_Background2 = DefaultDarkColorPalette.background2.hashCode()
-                    customThemeDark_Background3 = DefaultDarkColorPalette.background3.hashCode()
-                    customThemeDark_Background4 = DefaultDarkColorPalette.background4.hashCode()
-                    customThemeDark_Text = DefaultDarkColorPalette.text.hashCode()
-                    customThemeDark_TextSecondary = DefaultDarkColorPalette.textSecondary.hashCode()
-                    customThemeDark_TextDisabled = DefaultDarkColorPalette.textDisabled.hashCode()
-                    customThemeDark_IconButtonPlayer = DefaultDarkColorPalette.iconButtonPlayer.hashCode()
-                    customThemeDark_Accent = DefaultDarkColorPalette.accent.hashCode()
-                }
-            )
-        }
 
                  // Language Section
          val searchCtx_0 = search.inputValue.isBlank() || stringResource(R.string.languages).contains(search.inputValue, true) || stringResource(R.string.app_language).contains(search.inputValue, true)
@@ -1310,9 +1287,39 @@ fun GeneralSettings(
             modifier = Modifier.height(Dimensions.bottomSpacer)
         )
 
+        // Settings Reset Section
+        val searchCtx_Reset = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)
+        AnimatedVisibility(
+            visible = searchCtx_Reset,
+            enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1100)) + androidx.compose.animation.scaleIn(
+                animationSpec = androidx.compose.animation.core.tween(1100),
+                initialScale = 0.9f
+            )
+        ) {
+            SettingsSectionCard(
+                title = stringResource(R.string.settings_reset),
+                icon = R.drawable.refresh,
+                content = {
+                    var resetToDefault by androidx.compose.runtime.remember { mutableStateOf(false) }
+                    val context = androidx.compose.ui.platform.LocalContext.current
+                    if (search.inputValue.isBlank() || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true) || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.settings_reset),
+                            text = stringResource(R.string.settings_restore_default_settings),
+                            icon = R.drawable.refresh,
+                            onClick = { resetToDefault = true }
+                        )
+                    }
+
+                    if (resetToDefault) {
+                        DefaultGeneralSettings(context)
+                        restartService = true
+                        RestartPlayerService(restartService, onRestart = { restartService = false })
+                        resetToDefault = false
+                    }
+                }
+            )
+        }
     }
 }   
-
-
-
 
