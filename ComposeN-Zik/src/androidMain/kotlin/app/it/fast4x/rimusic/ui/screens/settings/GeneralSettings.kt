@@ -677,22 +677,24 @@ fun GeneralSettings(
                              onClick = { showMaxSongsDialog = true },
                              icon = R.drawable.music_file
                          )
-                         OtherSettingsEntry(
-                             title = stringResource(R.string.max_songs_in_queue_android_auto),
-                             text = when (maxSongsInQueueAndroidAuto) {
-                                 MaxSongs.Unlimited -> stringResource(R.string.unlimited)
-                                 MaxSongs.`50` -> MaxSongs.`50`.name
-                                 MaxSongs.`100` -> MaxSongs.`100`.name
-                                 MaxSongs.`200` -> MaxSongs.`200`.name
-                                 MaxSongs.`300` -> MaxSongs.`300`.name
-                                 MaxSongs.`500` -> MaxSongs.`500`.name
-                                 MaxSongs.`1000` -> MaxSongs.`1000`.name
-                                 MaxSongs.`2000` -> MaxSongs.`2000`.name
-                                 MaxSongs.`3000` -> MaxSongs.`3000`.name
-                             },
-                             onClick = { showMaxSongsAndroidAutoDialog = true },
-                             icon = R.drawable.music_file
-                         )
+if (search.inputValue.isBlank() || stringResource(R.string.max_songs_in_queue_android_auto).contains(search.inputValue, true) || stringResource(R.string.queue_management).contains(search.inputValue, true) || stringResource(R.string.unlimited).contains(search.inputValue, true)) {
+                                 OtherSettingsEntry(
+                                 title = stringResource(R.string.max_songs_in_queue_android_auto),
+                                 text = when (maxSongsInQueueAndroidAuto) {
+                                     MaxSongs.Unlimited -> stringResource(R.string.unlimited)
+                                     MaxSongs.`50` -> MaxSongs.`50`.name
+                                     MaxSongs.`100` -> MaxSongs.`100`.name
+                                     MaxSongs.`200` -> MaxSongs.`200`.name
+                                     MaxSongs.`300` -> MaxSongs.`300`.name
+                                     MaxSongs.`500` -> MaxSongs.`500`.name
+                                     MaxSongs.`1000` -> MaxSongs.`1000`.name
+                                     MaxSongs.`2000` -> MaxSongs.`2000`.name
+                                     MaxSongs.`3000` -> MaxSongs.`3000`.name
+                                 },
+                                 onClick = { showMaxSongsAndroidAutoDialog = true },
+                                 icon = R.drawable.music_file
+                             )
+    }
                      }
                      
                      if (showMaxSongsDialog) {
@@ -1286,38 +1288,40 @@ fun GeneralSettings(
 
         // Settings Reset Section
         val searchCtx_Reset = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)
-        AnimatedVisibility(
+        androidx.compose.animation.AnimatedVisibility(
             visible = searchCtx_Reset,
-            enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1100)) + androidx.compose.animation.scaleIn(
-                animationSpec = androidx.compose.animation.core.tween(1100),
-                initialScale = 0.9f
-            )
+            enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1100)) + androidx.compose.animation.scaleIn(animationSpec = androidx.compose.animation.core.tween(1100), initialScale = 0.9f)
         ) {
             SettingsSectionCard(
                 title = stringResource(R.string.settings_reset),
                 icon = R.drawable.refresh,
                 content = {
-                    var resetToDefault by androidx.compose.runtime.remember { mutableStateOf(false) }
+                    var resetToDefault by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
                     val context = androidx.compose.ui.platform.LocalContext.current
                     if (search.inputValue.isBlank() || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true) || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
                             title = stringResource(R.string.settings_reset),
                             text = stringResource(R.string.settings_restore_default_settings),
                             icon = R.drawable.refresh,
-                            onClick = { resetToDefault = true }
+                            onClick = { 
+                                resetToDefault = true
+                                restartService = true
+                                Toaster.done()
+                            }
                         )
                     }
 
                     if (resetToDefault) {
                         DefaultGeneralSettings(context)
-                        restartService = true
-                        RestartPlayerService(restartService, onRestart = { restartService = false })
-                        resetToDefault = false
-                        Toaster.done()
+                        androidx.compose.runtime.LaunchedEffect(Unit) {
+                            resetToDefault = false
+                        }
                     }
                 }
             )
         }
+
+        RestartPlayerService(restartService, onRestart = { restartService = false })
 
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)
