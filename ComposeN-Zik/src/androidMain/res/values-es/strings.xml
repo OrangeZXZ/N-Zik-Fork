@@ -1048,6 +1048,7 @@
   <string name="blackcherrycosmos">Cosmos de cereza negra</string>
   <string name="gradienttype">Tipo de degradado</string>
   <string name="random">Aleatorio</string>
+  <string name="randomizer">Randomizer</string>
   <string name="colorpalette">Paleta de colores</string>
   <string name="customcolor">Color personalizado</string>
   <string name="lyricsanimate">Animar tamaño de letra</string>
@@ -1622,4 +1623,6 @@
   <string name="auto_backup_on_change_description">Trigger a backup when songs are added or removed</string>
   <string name="auto_backup_max_backups">Max Backups to Keep</string>
   <string name="auto_backup_target">Backup Target</string>
+  <string name="toolbar">Toolbar</string>
+  <string name="customize_toolbar">Customize the toolbar</string>
 </resources>
