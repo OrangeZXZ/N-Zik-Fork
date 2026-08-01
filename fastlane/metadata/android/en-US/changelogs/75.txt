@@ -1,0 +1,14 @@
+Added:
+- Edit artist/album IDs to fix wrong auto-matches
+- Shuffle button in Album/Artist menus
+- 32-bit compatible builds (armeabi-v7a)
+
+Fixed:
+- Toolbar settings no longer shared across tabs
+- Removed stuck/forced toolbar buttons, duplicate sort button
+- Menus/dialogs animate closed properly
+- Playback freezes, crashes & DB lock issues
+- Queue search bar hidden by keyboard
+
+Removed:
+- Piped integration

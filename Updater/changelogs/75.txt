@@ -1,0 +1,108 @@
+Added:
+- Edit artist and album browse ID to fix incorrect auto-matches
+  - Upgraded ChangeArtistBrowseIdDialog and ChangeAlbumBrowseIdDialog into online search pickers allowing users to search and select correct IDs.
+  - Added "Unlink" (creates a LOCAL_ ID to prevent auto-match) and "Reset" buttons to easily correct manual overrides.
+  - Updated network handlers (UpdateYoutubeEntity, AlbumDetailHandler, ArtistDetailHandler, etc.) to correctly strip the M~ prefix and skip network calls for LOCAL_ entities.
+  - Integrated into LocalArtistItemMenu, OnlineArtistItemMenu, AlbumItemMenu, and OnlineAlbumItemMenu.
+  - Added updateArtistId and updateAlbumId in database transactions to correctly update ID maps and replace the old entity.
+- Introduce 32-bit compatible builds (full32, minified32, beta32)
+  - Drops FFmpeg to support older 32-bit devices (armeabi-v7a); Media Export is disabled on these builds.
+  - Updated GitHub CI/CD workflows to automatically assemble and release these new APKs.
+  - Ensured seamless OTA update support in the native Updater for the new variants.
+- Add Shuffle button to Album and Artist contextual menus (both local and online).
+
+Removed:
+- Drop Piped integration entirely from the project
+  - Deleted the entire extensions/piped/ module and removed its inclusion from settings.gradle.kts.
+  - Removed all Piped session models and utils: PipedResponse.kt, GetPipedSession.kt, SyncPipedUtils.kt, PipedSession.kt.
+  - Removed Piped dependencies from ComposeN-Zik and innertube modules' build.gradle.kts.
+  - Removed all Piped login, sync, and playlist logic from UI components including AccountsSettings, PlayerMenu, NewPlaylistDialog, and RenamePlaylistDialog.
+  - Removed Piped toggle and filtering logic from HomeLibrary.
+  - Removed Piped.fetchInstances() initialization from MainActivity.
+
+Fixed:
+- Fix toggle state shared across tabs in Albums, Artists, and Library toolbar settings dialogs
+  - Root cause: getTabPrefix() switch cases ("favorites", "pinned", "monthly") didn't match the actual tab keys ("favs", "pin", "mon"), so multiple tabs mapped to the same prefix → same preference key → shared checkbox state.
+  - Fixed getTabPrefix in HomeAlbums, HomeArtists, and HomeLibrary dialogs to match actual tab keys.
+- Prefix LazyColumn item IDs per tab in all toolbar settings dialogs (Songs, Albums, Artists, Library)
+  - Root cause: LazyColumn keys were bare IDs (e.g. "sort"), identical across tabs; Compose reused composites so rememberPreference never re-read the new tab's preference key.
+  - Each dialog now prefixes item IDs with a tab-specific prefix (e.g. "all_sort", "favs_sort") to force unique composites per tab.
+- Remove forced download/export/delete buttons that couldn't be toggled off
+  - Removed a LaunchedEffect in HomeSongs.kt that unconditionally re-added downloadAllDialog, deleteDownloadsDialog, and exportDialog after every recomposition, ignoring user preferences.
+  - These buttons are now fully controlled by the saved toolbar order, like all other buttons.
+- Fix duplicate sort button on OnDevice tab
+  - OnDeviceSongs.kt force-added odSort at position 0 via LaunchedEffect(Unit), while the remember block in HomeSongsScreen.kt also added songSort from the saved order.
+  - Removed the force-add from OnDeviceSongs.kt and added BuiltInPlaylist.OnDevice case to songSort in HomeSongsScreen.kt using the correct HOME_ON_DEVICE_SONGS_SORT_* preferences.
+- Animate menus and dialogs sliding down when closed instead of disappearing instantly
+  - Modified CustomModalBottomSheet to orchestrate the sheetState.hide() animation before removing itself from the Compose tree.
+  - Removed the key wrapper around rememberModalBottomSheetState in MainActivity.kt to ensure the menu's state is preserved during its exit animation.
+- Fix "Change Browse ID" dialogs instantly closing upon clicking the menu action
+  - The menu state was being hidden before the dialog could compose itself, causing the dialog to be destroyed immediately since it resided within the menu's composition context.
+  - Moved the menuState.hide() calls into the onConfirm flow inside the dialogs (ChangeArtistBrowseIdDialog, ChangeAlbumBrowseIdDialog, ChangePlaylistBrowseIdDialog) so the menu closes at the same time as the dialog finishes, rather than preemptively.
+- Align HomeSongs empty state ("No items") and toolbar padding with HomeAlbum and HomeLibrary to maintain consistent UX across the app.
+- Hide YouTube sync button in HomeAlbum, HomeArtist, and HomeLibrary when YouTube sync is disabled or disconnected.
+- Make all MenuIcon actions (like Shuffle) automatically close the overflow/bottom menu when clicked
+  - Fixed SongShuffler component when used within ListMenuItem to force the menu to close on click.
+- Revert automatic menu closing for MenuIcon to fix dialogs instantly unmounting when clicked.
+- Eliminate duplicate "Browse ID" text on the Edit ID menu options (now just says "Change ID").
+- Fix queue search bar being hidden by the bottom toolbar and software keyboard
+  - Added bottom padding (64.dp) to the SearchBar in Queue.kt when it is visible so it sits above the QueueToolBar.
+  - Added Modifier.imePadding() to ensure the search bar is pushed up correctly when the software keyboard opens.
+- Resolve auto-fix race conditions and missing UI updates
+  - Fixed an issue where the background auto-fix would silently abort on the very first playback because it queried the database before the async song insertion transaction completed. Moved insertIgnore(item) into the same coroutine block for synchronous execution.
+  - Fixed an issue where the "Go to Artist" and "Go to Album" buttons required restarting the music to function. Removed the Compose remember caching (init block) from GoToArtist.kt and GoToAlbum.kt so they always fetch the freshest ID from the database at the exact moment of click, eliminating the need to restart after an auto-fix.
+- Resolve database corruption/race condition on music playback initialization
+  - Immediately persist complete MediaItem metadata to the database in PlayerServiceModern.kt during onMediaItemTransition.
+  - Added a check in StreamResolver.kt to prevent inserting a blank placeholder Song if the song already exists in the database.
+- Resolve Room transaction deadlocks by replacing runBlocking/Flow calls with synchronous DAO queries (findByIdDirect, countById) to prevent database freezes during playback.
+- Resolve database lock caused by network calls inside Room transactions
+  - Moved Innertube.searchPage() network calls outside Database.upsert() transaction block — network I/O was holding Room's write lock for seconds, blocking all other DB operations.
+  - Replaced runBlocking { artistTable.findByName().first() } with synchronous findByNameDirect() in Database.insertIgnore() to prevent blocking the single-threaded transaction executor.
+- Comprehensive database locking audit and fixes across 12 files
+  - Added retry logic with exponential backoff to Database.asyncTransaction for SQLiteDatabaseLockedException.
+  - Added synchronous DAO query methods across all tables (findByIdDirect, findByNameDirect, isLikedDirect, findBySongIdDirect, allDirect, allSongsOfDirect, existsDirect) to eliminate runBlocking { Flow.first() } patterns.
+  - StreamResolver: replaced runBlocking { Flow.firstOrNull() } with direct findByIdDirect() / findBySongIdDirect() queries.
+  - StreamResolver: converted upsertSongInfo to suspend fun to eliminate blocking wrapper.
+  - PlayerServiceModern: replaced runBlocking in maybeRestorePlayerQueue / maybeRestoreFromDiskPlayerQueue with allDirect() + CoroutineScope(Main).launch.
+  - PlayerServiceModern: merged duplicate asyncTransaction calls in onPlaybackStatsReady into a single transaction.
+  - MediaItemUtils: replaced runBlocking { Flow.first() } in artistTextOrDb() / albumTitleOrDb() with direct synchronous queries.
+  - Player.kt: replaced triple runBlocking { Flow.first() } with direct DAO queries.
+  - HomeAlbum.kt: replaced runBlocking { Flow.first() } in Composable with allSongsOfDirect().
+  - MyDownloadHelper: replaced runBlocking { Flow.first() } with isLikedDirect().
+  - MatchAlbumUtils: replaced Flow.first() inside withTransaction with findByIdDirect().
+  - NZikRadio: replaced Flow.first() loops with isMappedSync() / isLikedDirect().
+  - SyncPipedUtils: replaced runBlocking { Flow.first() } inside asyncTransaction with existsDirect().
+  - SyncYTMusicUtils + LocalPlaylistSongs: moved network calls outside asyncTransaction blocks.
+- Eliminate remaining DB lock sources in crossfade and notification paths
+  - StreamResolver DataSpec.process(): replaced songTable.findById().firstOrNull() Flow call with synchronous findByIdDirect() inside the runBlocking(Dispatchers.IO) block that ExoPlayer requires — this was the last Flow query in the critical stream resolution path triggered during crossfade.
+  - PlayerServiceModern updateCustomNotification(): removed unnecessary runBlocking wrappers around artistTextOrDb() / albumTitleOrDb() which are now synchronous.
+  - AutoSessionCallback onGetItem(): replaced songTable.findById().first() Flow call with synchronous findByIdDirect().
+  - Removed unused runBlocking and flow.first imports from PlayerServiceModern.kt and StreamResolver.kt.
+- Convert Database.upsert() to suspend fun, eliminating runBlocking wrapper
+  - Removed runBlocking wrapper from Database.upsert(SongItem) — this was the most dangerous pattern: runBlocking wrapping withTransaction + network calls, blocking the calling thread for the entire DB read + Innertube search + DB write duration. Now properly suspend fun so callers use coroutine context.
+  - Player.kt forcePlayAtIndex(): replaced runBlocking { upsertSongInfo() } with direct suspend call (already inside CoroutineScope(Dispatchers.Default).launch).
+  - SongItem.kt download click: moved Database.upsert() into CoroutineScope(Dispatchers.IO).launch to prevent main thread blocking.
+  - YouTubeSync.kt toggleSongLike(): replaced runBlocking { likeState().first() } with direct suspend .first() call.
+  - PlaylistSongList.kt: replaced runBlocking { isLiked().first() } in Composable with LaunchedEffect to prevent main thread blocking.
+  - Removed unused runBlocking and flow.first imports from Database.kt, Player.kt, YouTubeSync.kt, PlaylistSongList.kt.
+- Prevent permanent DB lock from unhandled exceptions during crossfade
+  - Database.asyncTransaction(): added broad catch (e: Exception) around transaction execution — previously only SQLiteDatabaseLockedException was caught; any other exception (FK violation, NPE, etc.) would kill the transaction executor thread permanently, causing all subsequent asyncTransaction calls to queue forever.
+  - PlayerServiceModern.onPlaybackStatsReady(): wrapped entire callback body in try-catch(Exception) to prevent exceptions from propagating and killing the transaction executor.
+  - PlayerServiceModern.onMediaItemTransition(): wrapped asyncTransaction { insertIgnore(it) } in try-catch(Exception) to prevent exceptions during crossfade from killing the executor.
+  - Removed unused runBlocking and flow.first imports from PlayerServiceModern.kt and AutoSessionCallback.kt.
+- Fix play time stats and history logging for songs played from albums/playlists
+  - PlaybackStatsListener now correctly splits mediaItem.mediaId containing slashes (e.g. albumId/videoId) to extract the canonical songId, ensuring successful updates to the Song table and satisfying foreign key constraints for Event history entries.
+- Fix unsafe fallback search in GoToAlbum
+  - Removed the unsafe firstOrNull() fallback in GoToAlbum.kt which resulted in navigating to wrong albums 100% of the time. Now only navigates if there is a strict match on the song ID, and displays a toast error otherwise.
+- Update Artists and Albums library queries to match Songs behavior
+  - Changed Room queries in ArtistTable.kt and AlbumTable.kt so that 'All' library screens fetch based on whether at least one song is liked or played (totalPlayTimeMs >= 1) instead of requiring songs to be mapped to a playlist.
+- Resolve missing album release year
+  - Updated Database.insertIgnore(mediaItem) to merge new album metadata with existing DB records on song transitions instead of ignoring.
+  - Added background resolution: if a song's album does not have a release year in the database, a lightweight background coroutine is launched to fetch the album page and populate the year, description, and share URL automatically.
+- Resolve DB stuck after crossfade — history and play stats stopped recording
+  - PlaybackStatsListener was never added to the secondary crossfade player, so after player = nextPlayer swap, onPlaybackStatsReady never fired again — no events, no play time updates.
+  - Added PlaybackStatsListener to secondary player in preloadCrossfade().
+  - Removed duplicate PlaybackStatsListener registration on main player (was registered twice causing double callbacks).
+
+Refactor:
+- Replace Pacman and Snake mini-games easter egg with static unknown easter egg images.
