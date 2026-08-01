@@ -174,4 +174,9 @@ object HomeTabsSettingsDialog : Dialog {
             }
         )
     }
+    fun reset(context: android.content.Context) {
+        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        val defaultToggles = buildHomeTabDefs().mapValues { it.value.defaultValue }
+        savePrefs(prefs, defaultHomeTabsOrder, defaultToggles)
+    }
 }

@@ -222,4 +222,9 @@ object MiniPlayerButtonsSettingsDialog : Dialog {
             }
         )
     }
+    fun reset(context: android.content.Context) {
+        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        val defaultToggles = buildButtonDefs().mapValues { it.value.defaultValue }
+        savePrefs(prefs, defaultButtonOrder, defaultToggles)
+    }
 }

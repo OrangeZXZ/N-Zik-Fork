@@ -21,19 +21,19 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import androidx.compose.ui.unit.dp
-
-private val allButtonIds = listOf(
-    "sort", "position_lock", "sync", "search", "randomizer", "shuffle", "item_size"
-)
-
-private val lockedIds = setOf("sort", "sync", "position_lock")
-
-private fun getTabPrefix(tab: String): String = when (tab) {
-    "favs" -> "favs"
-    else -> "lib"
-}
-
 object HomeArtistsToolbarSettingsDialog : Dialog {
+
+    val allButtonIds = listOf(
+        "sort", "position_lock", "sync", "search", "randomizer", "shuffle", "item_size"
+    )
+
+    private val lockedIds = setOf("sort", "sync", "position_lock")
+
+    private fun getTabPrefix(tab: String): String = when (tab) {
+        "favs" -> "favs"
+        else -> "all"
+    }
+
     override val dialogTitle: String @Composable get() = stringResource(R.string.artists) + " - Toolbar"
     override var isActive: Boolean by mutableStateOf(false)
 
@@ -72,8 +72,20 @@ object HomeArtistsToolbarSettingsDialog : Dialog {
             )
         }
 
+        var workingToggles by remember {
+            mutableStateOf(
+                tabs.associate { (tab, _) ->
+                    val tp = getTabPrefix(tab)
+                    tab to allButtonIds.associateWith { id ->
+                        prefs.getBoolean("${tp}_art_$id", true)
+                    }.toMutableMap()
+                }.toMutableMap()
+            )
+        }
+
         val currentTabKey = tabs[selectedTabIndex].first
         val currentWorkingOrder = workingOrders[currentTabKey]!!
+        val currentWorkingToggles = workingToggles[currentTabKey]!!
         val tabPrefix = getTabPrefix(currentTabKey)
 
         val sortLabel = stringResource(R.string.sorting_order)
@@ -133,12 +145,16 @@ object HomeArtistsToolbarSettingsDialog : Dialog {
                 items = items, lazyListState = lazyListState, reorderableState = reorderableState,
                 enforceMinOneChecked = false,
                 lockedCheckedIds = currentLockedIds,
+                checkedStatesOverride = items.map { currentWorkingToggles[it.id.removePrefix("${tabPrefix}_")] ?: true },
+                onCheckedChange = { index, newValue ->
+                    val id = items[index].id.removePrefix("${tabPrefix}_")
+                    val m = workingToggles[currentTabKey]!!.toMutableMap()
+                    m[id] = newValue
+                    workingToggles = workingToggles.toMutableMap().apply { this[currentTabKey] = m }
+                },
                 onReset = {
-                    val edit = prefs.edit()
-                    for (id in allButtonIds) {
-                        edit.putBoolean("${tabPrefix}_art_$id", true)
-                    }
-                    edit.apply()
+                    val m = allButtonIds.associateWith { true }.toMutableMap()
+                    workingToggles = workingToggles.toMutableMap().apply { this[currentTabKey] = m }
                     workingOrders = workingOrders.toMutableMap().apply { this[currentTabKey] = allButtonIds.toMutableList() }
                 },
                 onCancel = { hideDialog() },
@@ -147,8 +163,14 @@ object HomeArtistsToolbarSettingsDialog : Dialog {
                     tabs.forEach { (tab, key) ->
                         val tp = getTabPrefix(tab)
                         val order = workingOrders[tab]!!
+                        val toggles = workingToggles[tab]!!
+                        
+                        toggles.forEach { (id, isChecked) ->
+                            edit.putBoolean("${tp}_art_$id", isChecked)
+                        }
+                        
                         val finalOrder = order.filter { id ->
-                            prefs.getBoolean("${tp}_art_$id", true) || id in lockedIds
+                            toggles[id] == true || id in lockedIds
                         }
                         edit.putString(key, serializeOrder(finalOrder))
                     }
@@ -157,5 +179,22 @@ object HomeArtistsToolbarSettingsDialog : Dialog {
                 }
             )
         }
+    }
+
+    fun reset(context: android.content.Context) {
+        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        val edit = prefs.edit()
+        val tabs = listOf(
+            "favs" to homeArtistsFavoritesToolbarOrderKey,
+            "all" to homeArtistsToolbarOrderKey
+        )
+        tabs.forEach { (tab, key) ->
+            val tp = getTabPrefix(tab)
+            allButtonIds.forEach { id ->
+                edit.putBoolean("${tp}_art_$id", true)
+            }
+            edit.putString(key, serializeOrder(allButtonIds))
+        }
+        edit.apply()
     }
 }

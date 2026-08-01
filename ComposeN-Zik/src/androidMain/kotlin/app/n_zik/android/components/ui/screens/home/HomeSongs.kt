@@ -57,9 +57,7 @@ import app.n_zik.android.components.SongItem
 import app.n_zik.android.components.Sort
 import app.n_zik.android.components.song.PeriodSelector
 import app.n_zik.android.components.tab.*
-import app.n_zik.android.components.dialog.export.ExportSongsToCSVDialog
-import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
-import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
+
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.core.database.ext.FormatWithSong
 import app.n_zik.android.download.utils.MyDownloadHelper
@@ -122,12 +120,6 @@ fun HomeSongs(
     val positionLock = remember( songSort.sortOrder ) { PositionLock(songSort.sortOrder) }
     val topPlaylists = PeriodSelector( HOME_SONGS_TOP_PLAYLIST_PERIOD )
     val hiddenSongs = HiddenSongs()
-    val exportDialog = ExportSongsToCSVDialog(
-        playlistName = builtInPlaylist.text,
-        songs = getSongs
-    )
-    val downloadAllDialog = DownloadAllSongsDialog( getSongs )
-    val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog( getSongs )
 
     var isLoading by remember { mutableStateOf(true) }
 
@@ -327,9 +319,7 @@ fun HomeSongs(
         }
     }
 
-    exportDialog.Render()
-    downloadAllDialog.Render()
-    deleteDownloadsDialog.Render()
+
 
     val hapticFeedback = LocalHapticFeedback.current
     val reorderableLazyListState = rememberReorderableLazyListState(

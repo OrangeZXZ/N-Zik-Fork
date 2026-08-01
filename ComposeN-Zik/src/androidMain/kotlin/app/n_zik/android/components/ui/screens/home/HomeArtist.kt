@@ -123,6 +123,7 @@ import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.components.dialog.common.RetrySyncDialog
+import app.n_zik.android.components.dialog.settings.HomeArtistsToolbarSettingsDialog
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -319,7 +320,7 @@ fun HomeArtists(
                 val toolbarButtons = remember { mutableStateListOf<Button>() }
 
                 LaunchedEffect(sort.sortBy, sort.sortOrder, currentToolbarOrderPref) {
-                    val defaultToolbarOrder = listOf("sort", "position_lock", "sync", "search", "randomizer", "shuffle", "item_size")
+                    val defaultToolbarOrder = HomeArtistsToolbarSettingsDialog.allButtonIds
                     val order = try {
                         if (currentToolbarOrderPref.isBlank()) defaultToolbarOrder else {
                             val arr = JSONArray(currentToolbarOrderPref)

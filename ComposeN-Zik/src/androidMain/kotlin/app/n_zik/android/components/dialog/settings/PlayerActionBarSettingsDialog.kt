@@ -174,4 +174,14 @@ object PlayerActionBarSettingsDialog : Dialog {
             }
         )
     }
+
+    fun reset(context: android.content.Context) {
+        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        val editor = prefs.edit()
+        editor.putString(playerActionBarButtonOrderKey, serializeOrder(defaultButtonOrder))
+        buildButtonDefs().forEach { (_, def) ->
+            editor.putBoolean(def.preferenceKey, def.defaultValue)
+        }
+        editor.apply()
+    }
 }

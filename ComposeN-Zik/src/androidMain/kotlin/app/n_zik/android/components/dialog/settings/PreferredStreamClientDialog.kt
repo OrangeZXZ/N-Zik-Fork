@@ -181,4 +181,9 @@ object PreferredStreamClientDialog : Dialog {
             }
         }
     }
+
+    fun reset(context: android.content.Context) {
+        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        prefs.edit().putString(preferredStreamClientKey, "WEB_REMIX").apply()
+    }
 }

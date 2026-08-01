@@ -250,4 +250,9 @@ object QuickPicksContentSettingsDialog : Dialog {
             }
         )
     }
+    fun reset(context: android.content.Context) {
+        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        val defaultToggles = buildSectionDefs().mapValues { it.value.defaultValue }
+        savePrefs(prefs, defaultSectionOrder, defaultToggles)
+    }
 }

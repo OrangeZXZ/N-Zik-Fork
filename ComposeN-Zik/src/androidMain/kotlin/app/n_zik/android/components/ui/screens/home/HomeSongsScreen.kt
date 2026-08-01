@@ -57,6 +57,7 @@ import app.n_zik.android.core.database.ImportSong
 import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
 import app.n_zik.android.components.Sort
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
+import app.n_zik.android.components.dialog.settings.HomeSongsToolbarSettingsDialog
 import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
 import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
 
@@ -388,7 +389,7 @@ fun HomeSongsScreen(navController: NavController ) {
 
     val buttons = remember( builtInPlaylist, currentToolbarOrderPref, songSort.sortBy, songSort.sortOrder, hasUnmatchedSongs ) {
         itemSelector.isActive = false
-        val defaultToolbarOrder = listOf("search", "locator", "shuffle", "smart_shuffle", "item_selector", "play_next", "enqueue", "add_to_favorite", "add_to_playlist", "import_menu", "export_dialog", "smart_trash")
+        val defaultToolbarOrder = HomeSongsToolbarSettingsDialog.tabAvailableIds[builtInPlaylist] ?: HomeSongsToolbarSettingsDialog.allButtonIds
         val order = try {
             if (currentToolbarOrderPref.isBlank()) defaultToolbarOrder else {
                 val arr = org.json.JSONArray(currentToolbarOrderPref)
@@ -472,6 +473,8 @@ fun HomeSongsScreen(navController: NavController ) {
 
             importMenu.Render()
             exportDialog.Render()
+            downloadAllDialog.Render()
+            deleteDownloadsDialog.Render()
             smartTrash.Render()
 
             TabToolBar.Buttons( buttons )

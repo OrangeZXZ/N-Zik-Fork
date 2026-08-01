@@ -136,6 +136,7 @@ import app.n_zik.android.typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import app.n_zik.android.components.dialog.common.RetrySyncDialog
+import app.n_zik.android.components.dialog.settings.HomeLibraryToolbarSettingsDialog
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -403,7 +404,7 @@ fun HomeLibrary(
                 val toolbarButtons = remember { mutableStateListOf<Button>() }
 
                 LaunchedEffect(sort.sortBy, sort.sortOrder, currentToolbarOrderPref) {
-                    val defaultToolbarOrder = listOf("sort", "position_lock", "sync", "search", "shuffle", "new_playlist_dialog", "import_menu", "item_size")
+                    val defaultToolbarOrder = HomeLibraryToolbarSettingsDialog.allButtonIds
                     val order = try {
                         if (currentToolbarOrderPref.isBlank()) defaultToolbarOrder else {
                             val arr = JSONArray(currentToolbarOrderPref)

@@ -22,37 +22,37 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import androidx.compose.ui.unit.dp
-
-private val allButtonIds = listOf(
-    "sort", "position_lock", "match", "search", "locator",
-    "download_all", "delete_downloads",
-    "shuffle", "smart_shuffle", "item_selector",
-    "play_next", "enqueue", "add_to_favorite", "add_to_playlist",
-    "import_menu", "export_dialog", "smart_trash"
-)
-
-private val tabAvailableIds = mapOf(
-    BuiltInPlaylist.All to allButtonIds,
-    BuiltInPlaylist.Favorites to allButtonIds,
-    BuiltInPlaylist.Offline to allButtonIds.filter { it != "import_menu" },
-    BuiltInPlaylist.Downloaded to allButtonIds.filter { it != "import_menu" },
-    BuiltInPlaylist.Top to allButtonIds.filter { it != "import_menu" && it != "position_lock" },
-    BuiltInPlaylist.OnDevice to allButtonIds.filter { it !in setOf("import_menu", "export_dialog", "smart_trash", "match") }
-)
-
-private val lockedIds = setOf("sort", "position_lock", "match")
-
-private fun getTabPrefix(tab: BuiltInPlaylist): String = when (tab) {
-    BuiltInPlaylist.All -> "all"
-    BuiltInPlaylist.Favorites -> "favs"
-    BuiltInPlaylist.Offline -> "off"
-    BuiltInPlaylist.Downloaded -> "dl"
-    BuiltInPlaylist.Top -> "top"
-    BuiltInPlaylist.OnDevice -> "dev"
-    else -> "x"
-}
-
 object HomeSongsToolbarSettingsDialog : Dialog {
+
+    val allButtonIds = listOf(
+        "sort", "position_lock", "match", "search", "locator",
+        "download_all", "delete_downloads",
+        "shuffle", "smart_shuffle", "item_selector",
+        "play_next", "enqueue", "add_to_favorite", "add_to_playlist",
+        "import_menu", "export_dialog", "smart_trash"
+    )
+
+    val tabAvailableIds = mapOf(
+        BuiltInPlaylist.All to allButtonIds,
+        BuiltInPlaylist.Favorites to allButtonIds,
+        BuiltInPlaylist.Offline to allButtonIds.filter { it != "import_menu" },
+        BuiltInPlaylist.Downloaded to allButtonIds.filter { it != "import_menu" },
+        BuiltInPlaylist.Top to allButtonIds.filter { it != "import_menu" && it != "position_lock" },
+        BuiltInPlaylist.OnDevice to allButtonIds.filter { it !in setOf("import_menu", "export_dialog", "smart_trash", "match") }
+    )
+
+    private val lockedIds = setOf("sort", "position_lock", "match")
+
+    private fun getTabPrefix(tab: BuiltInPlaylist): String = when (tab) {
+        BuiltInPlaylist.All -> "all"
+        BuiltInPlaylist.Favorites -> "favs"
+        BuiltInPlaylist.Offline -> "off"
+        BuiltInPlaylist.Downloaded -> "dl"
+        BuiltInPlaylist.Top -> "top"
+        BuiltInPlaylist.OnDevice -> "dev"
+        else -> "x"
+    }
+
     override val dialogTitle: String @Composable get() = stringResource(R.string.home_songs_settings) + " - Toolbar"
     override var isActive: Boolean by mutableStateOf(false)
 
@@ -96,8 +96,21 @@ object HomeSongsToolbarSettingsDialog : Dialog {
             )
         }
 
+        var workingToggles by remember {
+            mutableStateOf(
+                tabs.associate { (tab, _) ->
+                    val tp = getTabPrefix(tab)
+                    val available = tabAvailableIds[tab] ?: allButtonIds
+                    tab to available.associateWith { id ->
+                        prefs.getBoolean("${tp}_ts_$id", true)
+                    }.toMutableMap()
+                }.toMutableMap()
+            )
+        }
+
         val currentTab = tabs[selectedTabIndex].first
         val currentWorkingOrder = workingOrders[currentTab]!!
+        val currentWorkingToggles = workingToggles[currentTab]!!
         val isTopTab = currentTab == BuiltInPlaylist.Top
         val tabPrefix = getTabPrefix(currentTab)
 
@@ -180,13 +193,17 @@ object HomeSongsToolbarSettingsDialog : Dialog {
                 items = items, lazyListState = lazyListState, reorderableState = reorderableState,
                 enforceMinOneChecked = false,
                 lockedCheckedIds = currentLockedIds,
+                checkedStatesOverride = items.map { currentWorkingToggles[it.id.removePrefix("${tabPrefix}_")] ?: true },
+                onCheckedChange = { index, newValue ->
+                    val id = items[index].id.removePrefix("${tabPrefix}_")
+                    val m = workingToggles[currentTab]!!.toMutableMap()
+                    m[id] = newValue
+                    workingToggles = workingToggles.toMutableMap().apply { this[currentTab] = m }
+                },
                 onReset = {
                     val available = tabAvailableIds[currentTab] ?: allButtonIds
-                    val edit = prefs.edit()
-                    for (id in available) {
-                        edit.putBoolean("${tabPrefix}_ts_$id", true)
-                    }
-                    edit.apply()
+                    val m = available.associateWith { true }.toMutableMap()
+                    workingToggles = workingToggles.toMutableMap().apply { this[currentTab] = m }
                     workingOrders = workingOrders.toMutableMap().apply { this[currentTab] = available.toMutableList() }
                 },
                 onCancel = { hideDialog() },
@@ -195,8 +212,14 @@ object HomeSongsToolbarSettingsDialog : Dialog {
                     tabs.forEach { (tab, key) ->
                         val tp = getTabPrefix(tab)
                         val order = workingOrders[tab]!!
+                        val toggles = workingToggles[tab]!!
+                        
+                        toggles.forEach { (id, isChecked) ->
+                            edit.putBoolean("${tp}_ts_$id", isChecked)
+                        }
+                        
                         val finalOrder = order.filter { id ->
-                            prefs.getBoolean("${tp}_ts_$id", true) || id in lockedIds
+                            toggles[id] == true || id in lockedIds
                         }
                         edit.putString(key, serializeOrder(finalOrder))
                     }
@@ -205,5 +228,27 @@ object HomeSongsToolbarSettingsDialog : Dialog {
                 }
             )
         }
+    }
+
+    fun reset(context: android.content.Context) {
+        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        val edit = prefs.edit()
+        val tabs = listOf(
+            BuiltInPlaylist.All to homeSongsToolbarOrderKey,
+            BuiltInPlaylist.Favorites to homeSongsFavoritesToolbarOrderKey,
+            BuiltInPlaylist.Offline to homeSongsOfflineToolbarOrderKey,
+            BuiltInPlaylist.Downloaded to homeSongsDownloadedToolbarOrderKey,
+            BuiltInPlaylist.Top to homeSongsTopToolbarOrderKey,
+            BuiltInPlaylist.OnDevice to homeSongsOnDeviceToolbarOrderKey
+        )
+        tabs.forEach { (tab, key) ->
+            val tp = getTabPrefix(tab)
+            val available = tabAvailableIds[tab] ?: allButtonIds
+            available.forEach { id ->
+                edit.putBoolean("${tp}_ts_$id", true)
+            }
+            edit.putString(key, serializeOrder(available))
+        }
+        edit.apply()
     }
 }

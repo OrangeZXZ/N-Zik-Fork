@@ -38,6 +38,21 @@ object HomePlaylistsSettingsDialog : Dialog {
         val prefs = remember { ctx.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
         var workingOrder by remember { mutableStateOf(parseOrder(prefs.getString(homePlaylistsOrderKey, "") ?: "").toMutableList()) }
 
+        val prefKeys = mapOf(
+            "yt_playlists" to showYtPlaylistsKey,
+            "pinned_playlists" to showPinnedPlaylistsKey,
+            "monthly_playlists" to showMonthlyPlaylistsKey
+        )
+
+        var workingToggles by remember {
+            mutableStateOf(
+                playlistsDefaultOrder.associateWith { id ->
+                    val pk = prefKeys[id]
+                    if (pk != null) prefs.getBoolean(pk, true) else true
+                }.toMutableMap()
+            )
+        }
+
         val allLabel = stringResource(R.string.all)
         val ytLabel = stringResource(R.string.yt_playlists)
 
@@ -65,20 +80,38 @@ object HomePlaylistsSettingsDialog : Dialog {
             items = items, lazyListState = lazyListState, reorderableState = reorderableState,
             enforceMinOneChecked = true,
             lockedCheckedIds = setOf("all"),
+            checkedStatesOverride = items.map { workingToggles[it.id] ?: true },
+            onCheckedChange = { index, newValue ->
+                val id = items[index].id
+                val m = workingToggles.toMutableMap()
+                m[id] = newValue
+                workingToggles = m
+            },
             onReset = {
                 workingOrder = playlistsDefaultOrder.toMutableList()
-                prefs.edit()
-                    .putBoolean(showYtPlaylistsKey, true)
-
-                    .putBoolean(showPinnedPlaylistsKey, true)
-                    .putBoolean(showMonthlyPlaylistsKey, true)
-                    .apply()
+                val m = playlistsDefaultOrder.associateWith { true }.toMutableMap()
+                workingToggles = m
             },
             onCancel = { hideDialog() },
             onConfirm = {
-                prefs.edit().putString(homePlaylistsOrderKey, serializeOrder(workingOrder)).apply()
+                val edit = prefs.edit()
+                edit.putString(homePlaylistsOrderKey, serializeOrder(workingOrder))
+                prefKeys.forEach { (id, pk) ->
+                    edit.putBoolean(pk, workingToggles[id] ?: true)
+                }
+                edit.apply()
                 Toaster.s(R.string.toast_preference_saved); hideDialog()
             }
         )
+    }
+
+    fun reset(context: android.content.Context) {
+        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        prefs.edit()
+            .putString(homePlaylistsOrderKey, serializeOrder(playlistsDefaultOrder))
+            .putBoolean(showYtPlaylistsKey, true)
+            .putBoolean(showPinnedPlaylistsKey, true)
+            .putBoolean(showMonthlyPlaylistsKey, true)
+            .apply()
     }
 }
