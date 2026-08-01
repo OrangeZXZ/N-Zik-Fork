@@ -302,23 +302,32 @@ object MyDownloadHelper {
             }
         }
 
-        val downloadRequest = DownloadRequest
-            .Builder(
-                /* id      = */ mediaItem.mediaId,
-                /* uri     = */ mediaItem.requestMetadata.mediaUri
-                    ?: Uri.parse(ExternalUris.youtubeMusic(mediaItem.mediaId))
-            )
-            .setCustomCacheKey(mediaItem.mediaId)
-            .setData("${mediaItem.artistTextOrDb()} - ${mediaItem.mediaMetadata.title ?: ""}".encodeToByteArray()) // Title in notification
-            .build()
-
         Database.asyncTransaction {
-            insertIgnore( mediaItem )
+            insertIgnore( mediaItem, autoFix = false )
         }
 
-        val imageUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(1000)
-
         coroutineScope.launch {
+            val artistText = mediaItem.artistTextOrDb()
+            val titleText = mediaItem.mediaMetadata.title?.toString() ?: ""
+            val notificationTitle = when {
+                artistText.isNotBlank() && titleText.isNotBlank() -> "$artistText - $titleText"
+                artistText.isNotBlank() -> artistText
+                titleText.isNotBlank() -> titleText
+                else -> context.getString(R.string.unknown_title)
+            }
+
+            val downloadRequest = DownloadRequest
+                .Builder(
+                    /* id      = */ mediaItem.mediaId,
+                    /* uri     = */ mediaItem.requestMetadata.mediaUri
+                        ?: Uri.parse(ExternalUris.youtubeMusic(mediaItem.mediaId))
+                )
+                .setCustomCacheKey(mediaItem.mediaId)
+                .setData(notificationTitle.encodeToByteArray()) // Title in notification
+                .build()
+
+            val imageUrl = mediaItem.mediaMetadata.artworkUri.thumbnail(1000)
+
             context.download<MyDownloadService>(downloadRequest).exceptionOrNull()?.let {
                 if (it is CancellationException) throw it
 

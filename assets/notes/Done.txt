@@ -9,7 +9,10 @@ Added:
 - feat(settings): add `reset(context)` function to all settings dialogs for programmatic full reset
   - Each dialog can now reset its order and toggle preferences to factory defaults via a single call
   - Added to: HomeSongsSettingsDialog, HomeAlbumsSettingsDialog, HomeArtistsSettingsDialog, HomePlaylistsSettingsDialog, HomeSongsToolbarSettingsDialog, HomeAlbumsToolbarSettingsDialog, HomeArtistsToolbarSettingsDialog, HomeLibraryToolbarSettingsDialog, PlayerActionBarSettingsDialog, StreamClientsSettingsDialog, PreferredStreamClientDialog
-
+- fix(download): prevent missing artist/album background fetches from blocking downloads and crashing the app
+  - Added `autoFix` parameter to `Database.insertIgnore` (defaulting to true) and set it to false in `MyDownloadHelper.kt` to disable background fetches that cause downloads to randomly fail
+  - Moved the Database fallback query for missing artist names (`mediaItem.artistTextOrDb()`) inside a background coroutine to resolve a `NetworkOnMainThreadException` crash on the UI thread
+  - Refactored notification title generation to elegantly handle missing artist and/or title metadata (defaulting to `unknown_title`)
 
 BETA V 7.3.1
 Added:

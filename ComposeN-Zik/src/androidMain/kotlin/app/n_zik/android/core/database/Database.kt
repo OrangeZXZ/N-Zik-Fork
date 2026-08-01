@@ -220,7 +220,7 @@ object Database {
      * If [mediaItem] comes with album and artist(s) then
      * this method handles the insertion automatically.
      */
-    fun insertIgnore( mediaItem: MediaItem ) {
+    fun insertIgnore( mediaItem: MediaItem, autoFix: Boolean = true ) {
         val cleanSongId = mediaItem.mediaId.split("/").lastOrNull() ?: mediaItem.mediaId
         val newSong = mediaItem.asSong
         val dbSong = songTable.findByIdDirect(cleanSongId)
@@ -290,7 +290,7 @@ object Database {
             albumTable.upsert(mergedAlbum)
 
             // Background fetch album page metadata if year is missing online
-            if (mergedAlbum.year.isNullOrBlank()) {
+            if (autoFix && mergedAlbum.year.isNullOrBlank()) {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         Innertube.albumPage(BrowseBody(browseId = albumId))
@@ -341,7 +341,7 @@ object Database {
                 val existingArtist = artistTable.findByNameDirect(name)
                 if (existingArtist != null) {
                     songArtistMapTable.insertIgnore(SongArtistMap(cleanSongId, existingArtist.id))
-                } else {
+                } else if (autoFix) {
                     // Search online for the artist in background (non-blocking)
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
