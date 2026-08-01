@@ -343,8 +343,11 @@
   <string name="lang_hebrew">Hebrew (עִברִית)</string>
   <string name="customize_album">Прилагоди албум</string>
   <string name="update_title">Change Title</string>
-  <string name="update_authors">Change Authors name</string>
+  <string name="update_authors">Change Authors</string>
   <string name="update_cover">Change Cover</string>
+  <string name="update_album_browse_id">Change Album Browse ID</string>
+  <string name="update_artist_browse_id">Change Artist Browse ID</string>
+  <string name="update_playlist_browse_id">Change Playlist Browse ID</string>
   <string name="edit_metadata">Edit Metadata</string>
   <string name="pick_from_gallery">Pick from gallery</string>
   <string name="metadata_title">Наслов</string>

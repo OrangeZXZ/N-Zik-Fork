@@ -2,7 +2,7 @@
 <resources>
   <string name="cancel">Annuler</string>
   <string name="reset">Réinitialiser</string>
-  <string name="done">Fait</string>
+  <string name="done">Terminé</string>
   <string name="hidesong">Voulez-vous vraiment masquer ce titre ? Son temps de lecture et son cache seront effacés. Cette action est irréversible.</string>
   <string name="new_playlist">Nouvelle playlist</string>
   <string name="start_radio">Écouter la radio</string>
@@ -343,8 +343,11 @@
   <string name="lang_hebrew">Hébreu (עִברִית)</string>
   <string name="customize_album">Personnaliser l\'album</string>
   <string name="update_title">Mettre à jour le titre</string>
-  <string name="update_authors">Mettre à jour les auteurs</string>
+  <string name="update_authors">Change Authors</string>
   <string name="update_cover">Mettre à jour la pochette</string>
+  <string name="update_album_browse_id">Change Album Browse ID</string>
+  <string name="update_artist_browse_id">Change Artist Browse ID</string>
+  <string name="update_playlist_browse_id">Change Playlist Browse ID</string>
   <string name="edit_metadata">Modifier les métadonnées</string>
   <string name="pick_from_gallery">Choisissez une photo dans la galerie</string>
   <string name="metadata_title">Titre</string>
@@ -1555,7 +1558,7 @@ Volume BAS : titre précédent</string>
   <string name="sync_no_items">Aucun élément à synchroniser</string>
   <string name="sync_completed_with_errors">La synchronisation s\'est terminée avec des erreurs</string>
   <string name="album_found_online_verify">J\'ai trouvé l\'album en ligne ! Merci de vérifier qu\'il s\'agit bien du bon.</string>
-  <string name="artist_found_online_verify">Artist found online! Please verify it\'s the correct one.</string>
+  <string name="artist_found_online_verify">Artiste trouvé en ligne ! Veuillez vérifier qu\'il s\'agit bien de la bonne personne.</string>
   <string name="error_music_not_fully_cached">La musique doit être entièrement téléchargée ou mise en cache pour que les ondes sonores s\'actualisent</string>
   <string name="updating_waveform_in_progress">Mise à jour de la forme d\'onde en cours…</string>
   <string name="waveform_updated_successfully">La forme d\'onde a été mise à jour avec succès</string>

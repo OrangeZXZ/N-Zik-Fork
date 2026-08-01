@@ -343,8 +343,11 @@
   <string name="lang_hebrew">Hebraisk</string>
   <string name="customize_album">Tilpas album</string>
   <string name="update_title">Opdater titel</string>
-  <string name="update_authors">Opdater forfattere</string>
+  <string name="update_authors">Change Authors</string>
   <string name="update_cover">Opdater cover</string>
+  <string name="update_album_browse_id">Change Album Browse ID</string>
+  <string name="update_artist_browse_id">Change Artist Browse ID</string>
+  <string name="update_playlist_browse_id">Change Playlist Browse ID</string>
   <string name="edit_metadata">Edit Metadata</string>
   <string name="pick_from_gallery">Pick from gallery</string>
   <string name="metadata_title">Titel</string>
