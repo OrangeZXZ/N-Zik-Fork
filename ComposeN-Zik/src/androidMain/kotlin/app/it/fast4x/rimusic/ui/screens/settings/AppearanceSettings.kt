@@ -192,194 +192,382 @@ fun DefaultAppearanceSettings() {
         true
     )
     isShowingThumbnailInLockscreen = true
+
     var showthumbnail by rememberPreference(showthumbnailKey, true)
     showthumbnail = true
+
     var transparentbar by rememberPreference(transparentbarKey, true)
     transparentbar = true
+
     var blackgradient by rememberPreference(blackgradientKey, false)
     blackgradient = false
+
     var showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     showlyricsthumbnail = true
+
+    var expandedplayer by rememberPreference(expandedplayerKey, false)
+    expandedplayer = false
+
     var playerPlayButtonType by rememberPreference(
         playerPlayButtonTypeKey,
         PlayerPlayButtonType.CircularRibbed
     )
     playerPlayButtonType = PlayerPlayButtonType.CircularRibbed
+
     var bottomgradient by rememberPreference(bottomgradientKey, false)
     bottomgradient = false
+
     var textoutline by rememberPreference(textoutlineKey, false)
     textoutline = false
+
     var lastPlayerPlayButtonType by rememberPreference(
         lastPlayerPlayButtonTypeKey,
         PlayerPlayButtonType.Rectangular
     )
-    lastPlayerPlayButtonType = PlayerPlayButtonType.CircularRibbed
+    lastPlayerPlayButtonType = PlayerPlayButtonType.Rectangular
+
     var disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
     disablePlayerHorizontalSwipe = false
+
+    var playerSwipeSensitivity by rememberPreference(playerSwipeSensitivityKey, PlayerSwipeSensitivity.Medium)
+    playerSwipeSensitivity = PlayerSwipeSensitivity.Medium
+
     var disableScrollingText by rememberPreference(disableScrollingTextKey, false)
     disableScrollingText = false
+
     var showLikeButtonBackgroundPlayer by rememberPreference(
         showLikeButtonBackgroundPlayerKey,
         true
     )
     showLikeButtonBackgroundPlayer = true
+
     var showDownloadButtonBackgroundPlayer by rememberPreference(
         showDownloadButtonBackgroundPlayerKey,
         true
     )
     showDownloadButtonBackgroundPlayer = true
+
     var visualizerEnabled by rememberPreference(visualizerEnabledKey, false)
     visualizerEnabled = false
-    var visualizerWhiteColorOption by rememberPreference(app.it.fast4x.rimusic.utils.visualizerWhiteColorOptionKey, enums.VisualizerWhiteColorOption.White)
+
+    var visualizerWhiteColorOption by rememberPreference(
+        app.it.fast4x.rimusic.utils.visualizerWhiteColorOptionKey,
+        enums.VisualizerWhiteColorOption.White
+    )
     visualizerWhiteColorOption = enums.VisualizerWhiteColorOption.White
-    var visualizerCustomColor by rememberPreference(app.it.fast4x.rimusic.utils.visualizerCustomColorKey, android.graphics.Color.WHITE)
+
+    var visualizerCustomColor by rememberPreference(
+        app.it.fast4x.rimusic.utils.visualizerCustomColorKey,
+        android.graphics.Color.WHITE
+    )
     visualizerCustomColor = android.graphics.Color.WHITE
+
+    var playerVisualizerType by rememberPreference(
+        playerVisualizerTypeKey,
+        PlayerVisualizerType.Disabled
+    )
+    playerVisualizerType = PlayerVisualizerType.Disabled
+
+    var visualizerLineThickness by rememberPreference(
+        app.it.fast4x.rimusic.utils.visualizerLineThicknessKey,
+        6f
+    )
+    visualizerLineThickness = 6f
+
     var playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
     playerTimelineType = PlayerTimelineType.Wavy
+
     var thumbnailSizeDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 90f)
     thumbnailSizeDp = 90f
+
+    var thumbnailSizeLDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeLDpKey, 0f)
+    thumbnailSizeLDp = 0f
+
     var playerTimelineSize by rememberPreference(
         playerTimelineSizeKey,
         PlayerTimelineSize.Biggest
     )
     playerTimelineSize = PlayerTimelineSize.Biggest
+
     var effectRotationEnabled by rememberPreference(effectRotationKey, false)
     effectRotationEnabled = false
+
     var thumbnailTapEnabled by rememberPreference(thumbnailTapEnabledKey, true)
     thumbnailTapEnabled = true
+
     var showButtonPlayerAddToPlaylist by rememberPreference(showButtonPlayerAddToPlaylistKey, true)
     showButtonPlayerAddToPlaylist = true
+
     var showButtonPlayerArrow by rememberPreference(showButtonPlayerArrowKey, true)
     showButtonPlayerArrow = true
+
     var showButtonPlayerDownload by rememberPreference(showButtonPlayerDownloadKey, true)
     showButtonPlayerDownload = true
+
     var showButtonPlayerLoop by rememberPreference(showButtonPlayerLoopKey, false)
     showButtonPlayerLoop = false
+
     var showButtonPlayerLyrics by rememberPreference(showButtonPlayerLyricsKey, true)
     showButtonPlayerLyrics = true
+
     var expandedplayertoggle by rememberPreference(expandedplayertoggleKey, false)
     expandedplayertoggle = false
+
     var showButtonPlayerShuffle by rememberPreference(showButtonPlayerShuffleKey, true)
     showButtonPlayerShuffle = true
+
     var showButtonPlayerSleepTimer by rememberPreference(showButtonPlayerSleepTimerKey, false)
     showButtonPlayerSleepTimer = false
+
     var showButtonPlayerMenu by rememberPreference(showButtonPlayerMenuKey, false)
     showButtonPlayerMenu = false
+
+    var showButtonPlayerStartradio by rememberPreference(showButtonPlayerStartRadioKey, false)
+    showButtonPlayerStartradio = false
+
     var showButtonPlayerSystemEqualizer by rememberPreference(
         showButtonPlayerSystemEqualizerKey,
         false
     )
     showButtonPlayerSystemEqualizer = false
+
     var showButtonPlayerDiscover by rememberPreference(showButtonPlayerDiscoverKey, false)
     showButtonPlayerDiscover = false
+
     var showButtonPlayerVideo by rememberPreference(showButtonPlayerVideoKey, true)
     showButtonPlayerVideo = true
-    var navigationBarPosition by rememberPreference(
-        navigationBarPositionKey,
-        NavigationBarPosition.BottomFloating
-    )
-    navigationBarPosition = NavigationBarPosition.BottomFloating
+
     var showTotalTimeQueue by rememberPreference(showTotalTimeQueueKey, true)
     showTotalTimeQueue = true
+
     var backgroundProgress by rememberPreference(
         backgroundProgressKey,
         BackgroundProgress.MiniPlayer
     )
     backgroundProgress = BackgroundProgress.MiniPlayer
+
     var showNextSongsInPlayer by rememberPreference(showNextSongsInPlayerKey, false)
     showNextSongsInPlayer = false
+
     var showRemainingSongTime by rememberPreference(showRemainingSongTimeKey, true)
-    var showSkipTimeButtons by rememberPreference(showSkipTimeButtonsKey, true)
     showRemainingSongTime = true
+
+    var showSkipTimeButtons by rememberPreference(showSkipTimeButtonsKey, true)
+    showSkipTimeButtons = true
+
     var clickLyricsText by rememberPreference(clickOnLyricsTextKey, true)
     clickLyricsText = true
+
     var lyricsColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsColorKey, LyricsColor.White)
     lyricsColor = LyricsColor.White
+
     var lyricsCustomColor by rememberPreference(app.it.fast4x.rimusic.utils.lyricsCustomColorKey, android.graphics.Color.WHITE)
     lyricsCustomColor = android.graphics.Color.WHITE
+
     var showBackgroundLyrics by rememberPreference(showBackgroundLyricsKey, false)
     showBackgroundLyrics = false
+
     var thumbnailRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 12f)
-    var uiRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.uiRoundnessDpKey, 25f)
     thumbnailRoundnessDp = 12f
+
+    var uiRoundnessDp by rememberPreference(app.it.fast4x.rimusic.utils.uiRoundnessDpKey, 25f)
+    uiRoundnessDp = 25f
+
     var miniPlayerType by rememberPreference(
         miniPlayerTypeKey,
         MiniPlayerType.Essential
     )
     miniPlayerType = MiniPlayerType.Essential
+
     var playerBackgroundColors by rememberPreference(
         playerBackgroundColorsKey,
         PlayerBackgroundColors.AnimatedGradient
     )
     playerBackgroundColors = PlayerBackgroundColors.AnimatedGradient
+
     var showTopActionsBar by rememberPreference(showTopActionsBarKey, true)
     showTopActionsBar = true
+
     var playerControlsType by rememberPreference(playerControlsTypeKey, PlayerControlsType.Essential)
-    playerControlsType = PlayerControlsType.Modern
+    playerControlsType = PlayerControlsType.Essential
+
+    var playerControlsColors by rememberPreference(playerControlsColorsKey, PlayerControlsColors.Monochrome)
+    playerControlsColors = PlayerControlsColors.Monochrome
+
     var playerInfoType by rememberPreference(playerInfoTypeKey, PlayerInfoType.Modern)
     playerInfoType = PlayerInfoType.Modern
+
     var transparentBackgroundActionBarPlayer by rememberPreference(
         transparentBackgroundPlayerActionBarKey,
         true
     )
     transparentBackgroundActionBarPlayer = true
+
     var iconLikeType by rememberPreference(iconLikeTypeKey, IconLikeType.Essential)
     iconLikeType = IconLikeType.Essential
+
     var playerSwapControlsWithTimeline by rememberPreference(
         playerSwapControlsWithTimelineKey,
         false
     )
     playerSwapControlsWithTimeline = false
+
     var playerEnableLyricsPopupMessage by rememberPreference(
         playerEnableLyricsPopupMessageKey,
         true
     )
     playerEnableLyricsPopupMessage = true
+
     var actionspacedevenly by rememberPreference(actionspacedevenlyKey, true)
     actionspacedevenly = true
+
     var thumbnailType by rememberPreference(thumbnailTypeKey, ThumbnailType.Modern)
     thumbnailType = ThumbnailType.Modern
+
     var showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
     showvisthumbnail = true
+
     var blackBackgroundForVisThumbnail by rememberPreference(blackBackgroundForVisThumbnailKey, true)
     blackBackgroundForVisThumbnail = true
+
+    var showVisualizerButtons by rememberPreference(showVisualizerButtonsKey, true)
+    showVisualizerButtons = true
+
     var buttonzoomout by rememberPreference(buttonzoomoutKey, true)
     buttonzoomout = true
+
     var thumbnailpause by rememberPreference(thumbnailpauseKey, true)
     thumbnailpause = true
+
+    var cropVideoThumbnails by rememberPreference(cropVideoThumbnailsKey, true)
+    cropVideoThumbnails = true
+
     var showsongs by rememberPreference(showsongsKey, SongsNumber.`2`)
     showsongs = SongsNumber.`2`
+
     var showalbumcover by rememberPreference(showalbumcoverKey, true)
     showalbumcover = true
+
     var prevNextSongs by rememberPreference(prevNextSongsKey, PrevNextSongs.twosongs)
     prevNextSongs = PrevNextSongs.twosongs
+
     var tapqueue by rememberPreference(tapqueueKey, true)
     tapqueue = true
+
     var swipeUpQueue by rememberPreference(swipeUpQueueKey, true)
     swipeUpQueue = true
+
     var statsfornerds by rememberPreference(statsfornerdsKey, false)
     statsfornerds = false
+
     var playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
     playerType = PlayerType.Essential
+
     var queueType by rememberPreference(queueTypeKey, QueueType.Modern)
     queueType = QueueType.Modern
+
     var noblur by rememberPreference(noblurKey, true)
     noblur = true
+
     var fadingedge by rememberPreference(fadingedgeKey, false)
     fadingedge = false
+
     var carousel by rememberPreference(carouselKey, true)
     carousel = true
+
     var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
     carouselSize = CarouselSize.Biggest
+
     var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,false)
     keepPlayerMinimized = false
+
     var playerInfoShowIcons by rememberPreference(playerInfoShowIconsKey, true)
     playerInfoShowIcons = true
+
+    var queueDurationExpanded by rememberPreference(queueDurationExpandedKey, true)
+    queueDurationExpanded = true
+
+    var titleExpanded by rememberPreference(titleExpandedKey, true)
+    titleExpanded = true
+
+    var timelineExpanded by rememberPreference(timelineExpandedKey, true)
+    timelineExpanded = true
+
+    var controlsExpanded by rememberPreference(controlsExpandedKey, true)
+    controlsExpanded = true
+
+    var miniQueueExpanded by rememberPreference(miniQueueExpandedKey, true)
+    miniQueueExpanded = true
+
+    var statsExpanded by rememberPreference(statsExpandedKey, true)
+    statsExpanded = true
+
+    var actionExpanded by rememberPreference(actionExpandedKey, true)
+    actionExpanded = true
+
+    var showCoverThumbnailAnimation by rememberPreference(showCoverThumbnailAnimationKey, false)
+    showCoverThumbnailAnimation = false
+
+    var coverThumbnailAnimation by rememberPreference(coverThumbnailAnimationKey, ThumbnailCoverType.Vinyl)
+    coverThumbnailAnimation = ThumbnailCoverType.Vinyl
+
+    var showLyricsStateKey by rememberPreference(showLyricsStateKey, false)
+    showLyricsStateKey = false
+
+    var showVisualizerStateKey by rememberPreference(showVisualizerStateKey, false)
+    showVisualizerStateKey = false
+
+    var notificationPlayerFirstIcon by rememberPreference(notificationPlayerFirstIconKey, NotificationButtons.Download)
+    notificationPlayerFirstIcon = NotificationButtons.Download
+
+    var notificationPlayerSecondIcon by rememberPreference(notificationPlayerSecondIconKey, NotificationButtons.Favorites)
+    notificationPlayerSecondIcon = NotificationButtons.Favorites
+
+    var enableWallpaper by rememberPreference(enableWallpaperKey, false)
+    enableWallpaper = false
+
+    var wallpaperType by rememberPreference(wallpaperTypeKey, WallpaperType.Lockscreen)
+    wallpaperType = WallpaperType.Lockscreen
+
+    var topPadding by rememberPreference(topPaddingKey, true)
+    topPadding = true
+
     var animatedGradient by rememberPreference(
         animatedGradientKey,
         AnimatedGradient.M3EMorphingCover
     )
     animatedGradient = AnimatedGradient.M3EMorphingCover
+
+    var shakeSensitivityTheme by rememberPreference(shakeSensitivityThemeKey, ShakeSensitivityTheme.High)
+    shakeSensitivityTheme = ShakeSensitivityTheme.High
+
+    var albumCoverRotation by rememberPreference(albumCoverRotationKey, false)
+    albumCoverRotation = false
+
+    var blurStrength by rememberPreference(blurStrengthKey, 25f)
+    blurStrength = 25f
+
+    var thumbnailFadeEx  by rememberPreference(thumbnailFadeExKey, 5f)
+    thumbnailFadeEx = 5f
+
+    var thumbnailFade  by rememberPreference(thumbnailFadeKey, 5f)
+    thumbnailFade = 5f
+
+    var thumbnailSpacing  by rememberPreference(thumbnailSpacingKey, 0f)
+    thumbnailSpacing = 0f
+
+    var colorPaletteName by rememberPreference(colorPaletteNameKey, ColorPaletteName.Dynamic)
+    colorPaletteName = ColorPaletteName.Dynamic
+
+    var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.Dark)
+    colorPaletteMode = ColorPaletteMode.Dark
+
+    var swipeAnimationNoThumbnail by rememberPreference(swipeAnimationsNoThumbnailKey, SwipeAnimationNoThumbnail.Sliding)
+    swipeAnimationNoThumbnail = SwipeAnimationNoThumbnail.Sliding
+
+    var isRotatingCoverEnabled by rememberPreference( rotatingAlbumCoverKey, false )
+    isRotatingCoverEnabled = false
+
 }
 
 @ExperimentalAnimationApi
@@ -2022,21 +2210,23 @@ fun AppearanceSettings(
                     AnimatedVisibility(visible = visualizerWhiteColorOption == enums.VisualizerWhiteColorOption.Custom) {
                         var showColorPicker by remember { mutableStateOf(false) }
                         val customColorString = stringResource(R.string.color_custom)
-                        OtherSettingsEntry(
-                            title = customColorString,
-                            text = "",
-                            icon = R.drawable.color_palette,
-                            onClick = { showColorPicker = true },
-                            modifier = Modifier.padding(start = 40.dp),
-                            trailingContent = {
-                                Box(
-                                    modifier = Modifier
-                                        .size(20.dp)
-                                        .background(androidx.compose.ui.graphics.Color(visualizerCustomColor))
-                                        .border(BorderStroke(1.dp, androidx.compose.ui.graphics.Color.LightGray))
-                                )
-                            }
-                        )
+                        if (search.inputValue.isBlank() || true) {
+                            OtherSettingsEntry(
+                                title = customColorString,
+                                text = "",
+                                icon = R.drawable.color_palette,
+                                onClick = { showColorPicker = true },
+                                modifier = Modifier.padding(start = 40.dp),
+                                trailingContent = {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                            .background(androidx.compose.ui.graphics.Color(visualizerCustomColor))
+                                            .border(BorderStroke(1.dp, androidx.compose.ui.graphics.Color.LightGray))
+                                    )
+                                }
+                            )
+                        }
                         if (showColorPicker) {
                             DialogColorPicker(onDismiss = { showColorPicker = false }) {
                                 visualizerCustomColor = it.toArgb()
@@ -2156,21 +2346,23 @@ fun AppearanceSettings(
             AnimatedVisibility(visible = lyricsColor == LyricsColor.Custom) {
                 var showColorPicker by remember { mutableStateOf(false) }
                 val customColorString = stringResource(R.string.color_custom)
-                OtherSettingsEntry(
-                    title = customColorString,
-                    text = "",
-                    icon = R.drawable.color_palette,
-                    onClick = { showColorPicker = true },
-                    modifier = Modifier.padding(start = 25.dp),
-                    trailingContent = {
-                        Box(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .background(androidx.compose.ui.graphics.Color(lyricsCustomColor))
-                                .border(BorderStroke(1.dp, androidx.compose.ui.graphics.Color.LightGray))
-                        )
-                    }
-                )
+                if (search.inputValue.isBlank() || true) {
+                    OtherSettingsEntry(
+                        title = customColorString,
+                        text = "",
+                        icon = R.drawable.color_palette,
+                        onClick = { showColorPicker = true },
+                        modifier = Modifier.padding(start = 25.dp),
+                        trailingContent = {
+                            Box(
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .background(androidx.compose.ui.graphics.Color(lyricsCustomColor))
+                                    .border(BorderStroke(1.dp, androidx.compose.ui.graphics.Color.LightGray))
+                            )
+                        }
+                    )
+                }
                 if (showColorPicker) {
                     DialogColorPicker(onDismiss = { showColorPicker = false }) {
                         lyricsCustomColor = it.toArgb()
@@ -2569,33 +2761,41 @@ fun AppearanceSettings(
 
         /* Removed Spacer */
         val searchCtx_5 = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)
-        AnimatedVisibility(
-            visible = searchCtx_5,
-            enter = fadeIn(animationSpec = tween(1100)) + scaleIn(animationSpec = tween(1100), initialScale = 0.9f)
+                val searchCtx_Reset = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)
+        androidx.compose.animation.AnimatedVisibility(
+            visible = searchCtx_Reset,
+            enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1100)) + androidx.compose.animation.scaleIn(animationSpec = androidx.compose.animation.core.tween(1100), initialScale = 0.9f)
         ) {
             SettingsSectionCard(
                 title = stringResource(R.string.settings_reset),
                 icon = R.drawable.refresh,
                 content = {
-                    var resetToDefault by remember { mutableStateOf(false) }
-                    val context = LocalContext.current
-                    if (search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || (stringResource(R.string.settings_restore_default_settings)).contains(search.inputValue, true)) {
+                    var resetToDefault by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                    val context = androidx.compose.ui.platform.LocalContext.current
+                    if (search.inputValue.isBlank() || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true) || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
                             title = stringResource(R.string.settings_reset),
                             text = stringResource(R.string.settings_restore_default_settings),
                             icon = R.drawable.refresh,
-                            onClick = { resetToDefault = true }
+                            onClick = { 
+                                resetToDefault = true
+                                restartService = true
+                                Toaster.done()
+                            }
                         )
                     }
+
                     if (resetToDefault) {
                         DefaultAppearanceSettings()
-                        resetToDefault = false
-                        navController.popBackStack()
-                        Toaster.done()
+                        androidx.compose.runtime.LaunchedEffect(Unit) {
+                            resetToDefault = false
+                        }
                     }
                 }
             )
         }
+        
+        RestartPlayerService(restartService, onRestart = { restartService = false })
 
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)
