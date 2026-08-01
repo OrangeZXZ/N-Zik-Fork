@@ -1048,6 +1048,7 @@
   <string name="blackcherrycosmos">Siyah Kiraz Kozmosu</string>
   <string name="gradienttype">Gradyan Türü</string>
   <string name="random">Rastgele</string>
+  <string name="randomizer">Randomizer</string>
   <string name="colorpalette">Renk Paleti</string>
   <string name="customcolor">Özel Renk</string>
   <string name="lyricsanimate">Şarkı Sözleri Boyutunu Canlandır</string>
@@ -1622,4 +1623,6 @@
   <string name="auto_backup_on_change_description">Şarkılar eklendiğinde veya kaldırıldığında yedekleme işlemini başlat</string>
   <string name="auto_backup_max_backups">Saklanacak Maksimum Yedekleme Sayısı</string>
   <string name="auto_backup_target">Yedekleme Hedefi</string>
+  <string name="toolbar">Toolbar</string>
+  <string name="customize_toolbar">Customize the toolbar</string>
 </resources>

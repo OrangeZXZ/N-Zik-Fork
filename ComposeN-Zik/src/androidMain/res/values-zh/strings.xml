@@ -1048,6 +1048,7 @@
   <string name="blackcherrycosmos">Black Cherry Cosmos</string>
   <string name="gradienttype">渐变类型</string>
   <string name="random">随机</string>
+  <string name="randomizer">Randomizer</string>
   <string name="colorpalette">调色板</string>
   <string name="customcolor">自定义颜色</string>
   <string name="lyricsanimate">动态歌词大小</string>
@@ -1622,4 +1623,6 @@
   <string name="auto_backup_on_change_description">Trigger a backup when songs are added or removed</string>
   <string name="auto_backup_max_backups">Max Backups to Keep</string>
   <string name="auto_backup_target">Backup Target</string>
+  <string name="toolbar">Toolbar</string>
+  <string name="customize_toolbar">Customize the toolbar</string>
 </resources>

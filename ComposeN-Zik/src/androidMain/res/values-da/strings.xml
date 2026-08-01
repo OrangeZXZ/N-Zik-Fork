@@ -1048,6 +1048,7 @@
   <string name="blackcherrycosmos">Sort kirsebær-kosmos</string>
   <string name="gradienttype">Gradienttype</string>
   <string name="random">Tilfældig</string>
+  <string name="randomizer">Randomizer</string>
   <string name="colorpalette">Farvepalet</string>
   <string name="customcolor">Tilpasset farve</string>
   <string name="lyricsanimate">Animer sangtekststørrelse</string>
@@ -1622,4 +1623,6 @@
   <string name="auto_backup_on_change_description">Trigger a backup when songs are added or removed</string>
   <string name="auto_backup_max_backups">Max Backups to Keep</string>
   <string name="auto_backup_target">Backup Target</string>
+  <string name="toolbar">Toolbar</string>
+  <string name="customize_toolbar">Customize the toolbar</string>
 </resources>
