@@ -1048,6 +1048,7 @@
   <string name="blackcherrycosmos">Schwarzer Kirschkosmos</string>
   <string name="gradienttype">Farbverlaufs Typ</string>
   <string name="random">Zufällig</string>
+  <string name="randomizer">Randomizer</string>
   <string name="colorpalette">Farbpalette</string>
   <string name="customcolor">Benutzerdefinierte Farbe</string>
   <string name="lyricsanimate">Animiere Songtextgröße</string>
@@ -1622,4 +1623,6 @@
   <string name="auto_backup_on_change_description">Ein Backup auslösen, wenn Lieder hinzugefügt oder entfernt werden</string>
   <string name="auto_backup_max_backups">Maximale Backups zum Behalten</string>
   <string name="auto_backup_target">Backup-Ziel</string>
+  <string name="toolbar">Toolbar</string>
+  <string name="customize_toolbar">Customize the toolbar</string>
 </resources>
