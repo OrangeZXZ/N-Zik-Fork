@@ -111,7 +111,7 @@ fun Controls(
         mediaItem.toUiMedia(duration())
     },
     mediaId = mediaItem.mediaId,
-    title = cleanPrefix( mediaItem.mediaMetadata.title.toString() ),
+    title = cleanPrefix( mediaItem.mediaMetadata.title?.toString() ?: "" ).let { if (it == "null") "" else it },
     artist = cleanPrefix( mediaItem.artistTextWithFallback() ),
     artistIds = artistIds,
     albumId = albumId,

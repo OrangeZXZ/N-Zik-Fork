@@ -653,7 +653,7 @@ fun LyricsScreen(
                                                     Intent(Intent.ACTION_WEB_SEARCH).apply {
                                                         putExtra(
                                                             SearchManager.QUERY,
-                                                            "${cleanPrefix(mediaMetadata.title.toString())} ${mediaMetadata.artist} lyrics"
+                                                            "${cleanPrefix(mediaMetadata.title?.toString() ?: "").let { if (it == "null") "" else it }} ${mediaMetadata.artist?.toString()?.let { if (it == "null") "" else it } ?: ""} lyrics"
                                                         )
                                                     }
                                                 )

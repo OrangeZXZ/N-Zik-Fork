@@ -2464,7 +2464,7 @@ fun Player(
             SearchYoutubeEntity(
                 navController = navController,
                 onDismiss = { showSearchEntity = false },
-                query = "${mediaItem.artistTextWithFallback()} - ${mediaItem.mediaMetadata.title.toString()}",
+                query = "${mediaItem.artistTextWithFallback()} - ${mediaItem.mediaMetadata.title?.toString()?.takeIf { it != "null" } ?: ""}",
                 disableScrollingText = disableScrollingText
             )
         }

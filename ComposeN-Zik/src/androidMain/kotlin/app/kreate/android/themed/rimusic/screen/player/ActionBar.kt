@@ -376,7 +376,7 @@ fun BoxScope.ActionBar(
                                 Box {
                                     val titleText by remember {
                                         derivedStateOf {
-                                            cleanPrefix( mediaItemAtIndex.mediaMetadata.title.toString() )
+                                            cleanPrefix( mediaItemAtIndex.mediaMetadata.title?.toString() ?: "" ).let { if (it == "null") "" else it }
                                         }
                                     }
 
@@ -412,7 +412,7 @@ fun BoxScope.ActionBar(
                                 Box {
                                     val artistsText by remember {
                                         derivedStateOf {
-                                            cleanPrefix( mediaItemAtIndex.mediaMetadata.artist.toString() )
+                                            cleanPrefix( mediaItemAtIndex.mediaMetadata.artist?.toString() ?: "" ).let { if (it == "null") "" else it }
                                         }
                                     }
 
