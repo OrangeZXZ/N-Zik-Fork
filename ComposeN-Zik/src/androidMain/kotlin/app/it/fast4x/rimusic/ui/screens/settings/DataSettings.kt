@@ -1,7 +1,7 @@
 package app.it.fast4x.rimusic.ui.screens.settings
 
+import app.n_zik.android.components.tab.Search
 import app.n_zik.android.core.database.*
-
 import android.annotation.SuppressLint
 import android.text.format.Formatter
 import androidx.compose.animation.AnimatedVisibility
@@ -24,7 +24,6 @@ import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.database.Database
-
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.CacheType
@@ -66,11 +65,56 @@ import app.n_zik.android.components.dialog.backup.ImportBackupDialog
 import app.kreate.android.me.knighthat.utils.Toaster
 
 
+@androidx.compose.runtime.Composable
+fun DefaultDataSettings() {
+
+    var coilDiskCacheMaxSize by rememberPreference(
+        coilDiskCacheMaxSizeKey,
+        CoilDiskCacheMaxSize.`128MB`
+    )
+    coilDiskCacheMaxSize = CoilDiskCacheMaxSize.`128MB`
+
+    var exoPlayerDiskCacheMaxSize by rememberPreference(
+        exoPlayerDiskCacheMaxSizeKey,
+        ExoPlayerDiskCacheMaxSize.`2GB`
+    )
+    exoPlayerDiskCacheMaxSize = ExoPlayerDiskCacheMaxSize.`2GB`
+
+    var exoPlayerDiskDownloadCacheMaxSize by rememberPreference(
+        exoPlayerDiskDownloadCacheMaxSizeKey,
+        ExoPlayerDiskDownloadCacheMaxSize.`2GB`
+    )
+    exoPlayerDiskDownloadCacheMaxSize = ExoPlayerDiskDownloadCacheMaxSize.`2GB`
+
+    var exoPlayerCacheLocation by rememberPreference(
+        exoPlayerCacheLocationKey, ExoPlayerCacheLocation.System
+    )
+    exoPlayerCacheLocation = ExoPlayerCacheLocation.System
+
+    var exoPlayerCustomCache by rememberPreference(
+        exoPlayerCustomCacheKey,32
+    )
+    exoPlayerCustomCache = 32
+
+    var coilCustomDiskCache by rememberPreference(
+        coilCustomDiskCacheKey,32
+    )
+    coilCustomDiskCache = 32
+
+    var pauseSearchHistory by rememberPreference(pauseSearchHistoryKey, false)
+    pauseSearchHistory = false
+
+    var pauseListenHistory by rememberPreference(pauseListenHistoryKey, false)
+    pauseListenHistory = false
+}
+
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalAnimationApi
 @UnstableApi
 @Composable
 fun DataSettings() {
+    val search = Search()
+
 
     val context = LocalContext.current
     val binder = LocalPlayerServiceBinder.current
@@ -213,6 +257,8 @@ fun DataSettings() {
         ) 
         /* Removed Spacer */
 
+        search.ToolBarButton()
+        search.SearchBar( this )
 
         // Cache Section
         AnimatedVisibility(
@@ -388,12 +434,14 @@ fun DataSettings() {
                     }
 
                     var showCacheLocationDialog by remember { mutableStateOf(false) }
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.set_cache_location),
-                        text = exoPlayerCacheLocation.text,
-                        icon = R.drawable.folder,
-                        onClick = { showCacheLocationDialog = true }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.set_cache_location).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.set_cache_location),
+                            text = exoPlayerCacheLocation.text,
+                            icon = R.drawable.folder,
+                            onClick = { showCacheLocationDialog = true }
+                        )
+                    }
                     
                     SettingsDescription(stringResource(R.string.info_private_cache_location_can_t_cleaned))
 
@@ -437,22 +485,26 @@ fun DataSettings() {
                     ExportBackupDialog.Render()
                     ImportBackupDialog.Render()
 
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.export_backup),
-                        text = stringResource(R.string.export_backup_description),
-                        icon = R.drawable.export_outline,
-                        onClick = { ExportBackupDialog.showDialog() }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.export_backup).contains(search.inputValue, true) || stringResource(R.string.export_backup_description).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.export_backup),
+                            text = stringResource(R.string.export_backup_description),
+                            icon = R.drawable.export_outline,
+                            onClick = { ExportBackupDialog.showDialog() }
+                        )
+                    }
                     ImportantSettingsDescription(text = stringResource(
                         R.string.personal_preference
                     ))
 
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.import_backup),
-                        text = stringResource(R.string.import_backup_description),
-                        icon = R.drawable.import_outline,
-                        onClick = { ImportBackupDialog.showDialog() }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.import_backup).contains(search.inputValue, true) || stringResource(R.string.import_backup_description).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.import_backup),
+                            text = stringResource(R.string.import_backup_description),
+                            icon = R.drawable.import_outline,
+                            onClick = { ImportBackupDialog.showDialog() }
+                        )
+                    }
                     ImportantSettingsDescription(text = stringResource(
                         R.string.existing_data_will_be_overwritten,
                         context.applicationInfo.nonLocalizedLabel
@@ -460,12 +512,14 @@ fun DataSettings() {
 
                     val importMigration = ImportMigration(context, binder)
 
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.title_import_settings_migration),
-                        text = stringResource(R.string.description_import_settings_migration),
-                        icon = R.drawable.data_migration,
-                        onClick = importMigration::onShortClick
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.title_import_settings_migration).contains(search.inputValue, true) || stringResource(R.string.description_import_settings_migration).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.title_import_settings_migration),
+                            text = stringResource(R.string.description_import_settings_migration),
+                            icon = R.drawable.data_migration,
+                            onClick = importMigration::onShortClick
+                        )
+                    }
                 }
             )
         }
@@ -516,45 +570,83 @@ fun DataSettings() {
                         Database.eventTable.countAll()
                     }.collectAsState(0L, Dispatchers.IO)
 
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.clear_search_history),
-                        text = if (queriesCount > 0) {
-                            "${stringResource(R.string.delete)} " + queriesCount + stringResource(R.string.search_queries)
-                        } else {
-                            stringResource(R.string.history_is_empty)
-                        },
-                        icon = R.drawable.trash,
-                        onClick = {
-                            Database.asyncTransaction {
-                                searchTable.deleteAll()
+                    if (search.inputValue.isBlank() || stringResource(R.string.clear_search_history).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.clear_search_history),
+                            text = if (queriesCount > 0) {
+                                "${stringResource(R.string.delete)} " + queriesCount + stringResource(R.string.search_queries)
+                            } else {
+                                stringResource(R.string.history_is_empty)
+                            },
+                            icon = R.drawable.trash,
+                            onClick = {
+                                Database.asyncTransaction {
+                                    searchTable.deleteAll()
+                                }
+                                Toaster.done()
                             }
-                            Toaster.done()
-                        }
-                    )
+                        )
+                    }
 
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.clear_listen_history),
-                        text = if (eventsCount > 0) {
-                            stringResource(R.string.delete_playback_events, eventsCount.toString())
-                        } else {
-                            stringResource(R.string.history_is_empty)
-                        },
-                        icon = R.drawable.trash,
-                        onClick = {
-                            Database.asyncTransaction {
-                                eventTable.deleteAll()
+                    if (search.inputValue.isBlank() || stringResource(R.string.clear_listen_history).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.clear_listen_history),
+                            text = if (eventsCount > 0) {
+                                stringResource(R.string.delete_playback_events, eventsCount.toString())
+                            } else {
+                                stringResource(R.string.history_is_empty)
+                            },
+                            icon = R.drawable.trash,
+                            onClick = {
+                                Database.asyncTransaction {
+                                    eventTable.deleteAll()
+                                }
+                                java.io.File(context.filesDir, "waveforms").deleteRecursively()
+                                WaveformExtractor.refreshSignal.tryEmit(System.currentTimeMillis())
+                                Toaster.done()
                             }
-                            java.io.File(context.filesDir, "waveforms").deleteRecursively()
-                            WaveformExtractor.refreshSignal.tryEmit(System.currentTimeMillis())
-                            Toaster.done()
-                        }
-                    )
+                        )
+                    }
                     
                     RestartPlayerService(restartService, onRestart = { restartService = false })
                 }
             )
         }
 
+        
+        val searchCtx_Reset = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)
+        androidx.compose.animation.AnimatedVisibility(
+            visible = searchCtx_Reset,
+            enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1100)) + androidx.compose.animation.scaleIn(animationSpec = androidx.compose.animation.core.tween(1100), initialScale = 0.9f)
+        ) {
+            SettingsSectionCard(
+                title = stringResource(R.string.settings_reset),
+                icon = R.drawable.refresh,
+                content = {
+                    var resetToDefault by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                    
+                    if (search.inputValue.isBlank() || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true) || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.settings_reset),
+                            text = stringResource(R.string.settings_restore_default_settings),
+                            icon = R.drawable.refresh,
+                            onClick = { 
+                                resetToDefault = true
+                                app.kreate.android.me.knighthat.utils.Toaster.done()
+                            }
+                        )
+                    }
+
+                    if (resetToDefault) {
+                        DefaultDataSettings()
+                        androidx.compose.runtime.LaunchedEffect(Unit) {
+                            resetToDefault = false
+                        }
+                    }
+                }
+            )
+        }
+        
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)
         )
