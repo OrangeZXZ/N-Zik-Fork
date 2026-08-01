@@ -1313,7 +1313,6 @@ fun GeneralSettings(
                         restartService = true
                         RestartPlayerService(restartService, onRestart = { restartService = false })
                         resetToDefault = false
-                        navController.popBackStack()
                         Toaster.done()
                     }
                 }

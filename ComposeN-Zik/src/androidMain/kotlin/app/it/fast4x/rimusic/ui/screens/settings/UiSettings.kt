@@ -1689,7 +1689,6 @@ if (search.inputValue.isBlank() || stringResource(R.string.settings_reset).conta
                         PlayerActionBarSettingsDialog.reset(context)
                         MiniPlayerButtonsSettingsDialog.reset(context)
                         resetToDefault = false
-                        navController.popBackStack()
                         Toaster.done()
                     }
                 }
