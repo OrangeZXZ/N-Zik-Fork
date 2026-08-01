@@ -1180,9 +1180,7 @@ class MainActivity :
                             }
 
                             val menuState = LocalMenuState.current
-                            val menuSheetState = key(menuState.isDisplayed) {
-                                rememberModalBottomSheetState(skipPartiallyExpanded = false)
-                            }
+                            val menuSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
                             CustomModalBottomSheet(
                                 showSheet = menuState.isDisplayed,
                                 onDismissRequest = menuState::hide,

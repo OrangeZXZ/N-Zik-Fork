@@ -16,6 +16,9 @@ Removed:
   - Removed `Piped.fetchInstances()` initialization from `MainActivity`
 
 Fixed:
+- fix(ui): animate menus and dialogs sliding down when closed instead of disappearing instantly
+  - Modified `CustomModalBottomSheet` to orchestrate the `sheetState.hide()` animation before removing itself from the Compose tree.
+  - Removed the `key` wrapper around `rememberModalBottomSheetState` in `MainActivity.kt` to ensure the menu's state is preserved during its exit animation.
 - fix(ui): fix "Change Browse ID" dialogs instantly closing upon clicking the menu action
   - The menu state was being hidden before the dialog could compose itself, causing the dialog to be destroyed immediately since it resided within the menu's composition context.
   - Moved the `menuState.hide()` calls into the `onConfirm` flow inside the dialogs (`ChangeArtistBrowseIdDialog`, `ChangeAlbumBrowseIdDialog`, `ChangePlaylistBrowseIdDialog`) so the menu closes at the same time as the dialog finishes, rather than preemptively.
