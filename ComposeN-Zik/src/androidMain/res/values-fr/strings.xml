@@ -343,8 +343,11 @@
   <string name="lang_hebrew">Hébreu (עִברִית)</string>
   <string name="customize_album">Personnaliser l\'album</string>
   <string name="update_title">Mettre à jour le titre</string>
-  <string name="update_authors">Mettre à jour les auteurs</string>
+  <string name="update_authors">Change Authors</string>
   <string name="update_cover">Mettre à jour la pochette</string>
+  <string name="update_album_browse_id">Change Album Browse ID</string>
+  <string name="update_artist_browse_id">Change Artist Browse ID</string>
+  <string name="update_playlist_browse_id">Change Playlist Browse ID</string>
   <string name="edit_metadata">Modifier les métadonnées</string>
   <string name="pick_from_gallery">Choisissez une photo dans la galerie</string>
   <string name="metadata_title">Titre</string>
