@@ -4,7 +4,7 @@ package app.it.fast4x.rimusic.ui.items
 import app.n_zik.android.core.database.*
 import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.utils.artistTextWithFallback
-
+import app.n_zik.android.utils.titleWithFallback
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -356,7 +356,7 @@ fun SongItem(
     downloadedStateMedia = if (!mediaItem.isLocal) downloadedStateMedia(mediaItem.mediaId)
     else DownloadedStateMedia.DOWNLOADED
 
-    val title = mediaItem.mediaMetadata.title.toString()
+    val title = mediaItem.titleWithFallback()
     val authors = mediaItem.artistTextWithFallback()
     val duration = mediaItem.mediaMetadata.extras?.getString("durationText")
 

@@ -7,6 +7,7 @@ import app.n_zik.android.core.database.*
 import app.n_zik.android.utils.artistIdsWithFallback
 import app.n_zik.android.utils.albumIdWithFallback
 import app.n_zik.android.utils.artistTextWithFallback
+import app.n_zik.android.utils.titleWithFallback
 
 import app.it.fast4x.rimusic.ui.components.themed.SleepTimerDialog
 import android.annotation.SuppressLint
@@ -1803,8 +1804,8 @@ fun Player(
                                                 mediaItem.toUiMedia(durationState.value)
                                             },
                                             mediaId = mediaItem.mediaId,
-                                            title = mediaItems.getOrNull(it)?.mediaMetadata?.title?.toString() ?: "",
-                                            artist = cleanPrefix( mediaItems.getOrNull(it)?.mediaMetadata?.artist.toString() ),
+                                            title = mediaItems.getOrNull(it)?.titleWithFallback() ?: "",
+                                            artist = cleanPrefix( mediaItems.getOrNull(it)?.artistTextWithFallback() ?: "" ),
                                             artistIds = artistInfos,
                                             albumId = albumId,
                                             shouldBePlaying = shouldBePlaying,

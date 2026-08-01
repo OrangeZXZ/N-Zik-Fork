@@ -4,7 +4,7 @@ package app.it.fast4x.rimusic.ui.screens.player
 import app.n_zik.android.core.database.*
 import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.utils.artistTextWithFallback
-
+import app.n_zik.android.utils.titleWithFallback
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloatAsState
@@ -50,7 +50,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.draw.drawBehind
 import app.n_zik.android.uiRoundnessShape
-
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -564,7 +563,7 @@ fun MiniPlayer(
                                 .size(14.dp)
                         )
                     BasicText(
-                        text = cleanPrefix( mediaItem.mediaMetadata.title.toString() ),
+                        text = cleanPrefix( mediaItem.titleWithFallback() ),
                         style = typography().xxs.semiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,

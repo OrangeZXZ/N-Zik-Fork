@@ -13,6 +13,8 @@ Added:
   - Added `autoFix` parameter to `Database.insertIgnore` (defaulting to true) and set it to false in `MyDownloadHelper.kt` to disable background fetches that cause downloads to randomly fail
   - Moved the Database fallback query for missing artist names (`mediaItem.artistTextOrDb()`) inside a background coroutine to resolve a `NetworkOnMainThreadException` crash on the UI thread
   - Refactored notification title generation to elegantly handle missing artist and/or title metadata (defaulting to `unknown_title`)
+  - Safely fallback to `unknown_title` and `unknown_artist` in `Player`, `MiniPlayer`, and `SongItem` without modifying database state to preserve Discord RPC functionality
+  - Updated `Modern.kt` player to dynamically display `unknown.xml` icon when title or artist strings match the unknown fallbacks
 
 BETA V 7.3.1
 Added:

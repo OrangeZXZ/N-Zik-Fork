@@ -3,6 +3,7 @@ package app.n_zik.android.components
 
 import app.n_zik.android.core.database.*
 import app.n_zik.android.uiRoundnessShape
+import androidx.compose.ui.res.stringResource
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -301,9 +302,10 @@ fun SongItem(
                         override val iconId: Int = R.drawable.explicit
                     }.ToolBarButton()
 
+                val safeTitle = displaySong.title.ifBlank { stringResource(R.string.unknown_title) }
                 // Song's name
                 SongText(
-                    text = cleanPrefix( displaySong.title ),
+                    text = cleanPrefix( safeTitle ),
                     style = typography().xs.semiBold,
                     modifier = Modifier.weight( 1f )
                                        .conditional( !disableScrollingText ) {
@@ -313,9 +315,10 @@ fun SongItem(
             }
 
             Row( verticalAlignment = Alignment.CenterVertically ) {
+                val safeArtists = displaySong.cleanArtistsText().ifBlank { stringResource(R.string.unknown_artist) }
                 // Song's author
                 SongText(
-                    text = displaySong.cleanArtistsText(),
+                    text = safeArtists,
                     style = typography().xs.semiBold.secondary,
                     overflow = TextOverflow.Clip,
                     modifier = Modifier.weight( 1f )

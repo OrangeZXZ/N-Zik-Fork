@@ -1461,7 +1461,7 @@ class PlayerServiceModern : MediaLibraryService(),
         val mediaMetadata = player.mediaMetadata
 
         val mediaItem = binder?.player?.currentMediaItem
-        val artistText = mediaItem?.artistTextOrDb() ?: ""
+        val artistText = mediaItem?.artistTextOrDb()?.ifBlank { null } ?: getString(R.string.unknown_artist)
         val albumText = mediaItem?.albumTitleOrDb() ?: ""
 
         // Load bitmap with proper fallback handling
@@ -1475,7 +1475,7 @@ class PlayerServiceModern : MediaLibraryService(),
             NotificationCompat.Builder(this)
         }
             .setContentTitle(
-                cleanPrefix(player.mediaMetadata.title.toString()).let {
+                cleanPrefix(player.mediaMetadata.title.toString()).ifBlank { getString(R.string.unknown_title) }.let {
                     if (player.currentMediaItem?.mediaMetadata?.extras?.getBoolean("isExplicit") == true ||
                         player.currentMediaItem?.mediaMetadata?.extras?.getBoolean("androidx.media3.session.EXTRAS_KEY_IS_EXPLICIT") == true) {
                         "\uD83C\uDD74 $it"
@@ -1915,11 +1915,11 @@ class PlayerServiceModern : MediaLibraryService(),
     }
 
     @UnstableApi
-    class CustomMediaNotificationProvider(context: Context) : DefaultMediaNotificationProvider(context) {
+    class CustomMediaNotificationProvider(private val context: Context) : DefaultMediaNotificationProvider(context) {
         override fun getNotificationContentTitle(metadata: MediaMetadata): CharSequence? {
             val isExplicit = metadata.extras?.getBoolean("isExplicit") == true ||
                              metadata.extras?.getBoolean("androidx.media3.session.EXTRAS_KEY_IS_EXPLICIT") == true
-            val title = cleanPrefix(metadata.title?.toString() ?: "").let {
+            val title = cleanPrefix(metadata.title?.toString() ?: "").ifBlank { context.getString(R.string.unknown_title) }.let {
                 if (isExplicit) "\uD83C\uDD74 $it" else it
             }
             val customMetadata = MediaMetadata.Builder()
@@ -1933,7 +1933,7 @@ class PlayerServiceModern : MediaLibraryService(),
             if (cleaned.isNotBlank() && cleaned != "null") return cleaned
             val albumCleaned = cleanPrefix(metadata.albumTitle?.toString() ?: "")
             if (albumCleaned.isNotBlank() && albumCleaned != "null") return albumCleaned
-            return null
+            return context.getString(R.string.unknown_artist)
         }
     }
 

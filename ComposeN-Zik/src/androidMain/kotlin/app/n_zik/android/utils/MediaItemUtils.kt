@@ -10,6 +10,8 @@ import app.it.fast4x.rimusic.models.Info
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import androidx.compose.ui.res.stringResource
+import app.n_zik.android.R
 
 // ─── Composable fallbacks (for UI) ───
 
@@ -22,7 +24,19 @@ fun MediaItem.artistTextWithFallback(): String {
     }.collectAsState(null, Dispatchers.IO)
     val dbText = dbSong?.artistsText
     if (!dbText.isNullOrBlank() && dbText != "null") return app.it.fast4x.rimusic.cleanPrefix(dbText)
-    return artist
+    return stringResource(R.string.unknown_artist)
+}
+
+@Composable
+fun MediaItem.titleWithFallback(): String {
+    val title = mediaMetadata.title?.toString() ?: ""
+    if (title.isNotBlank() && title != "null") return title
+    val dbSong by remember(mediaId) {
+        Database.songTable.findById(mediaId)
+    }.collectAsState(null, Dispatchers.IO)
+    val dbTitle = dbSong?.title
+    if (!dbTitle.isNullOrBlank() && dbTitle != "null") return dbTitle
+    return stringResource(R.string.unknown_title)
 }
 
 @Composable
