@@ -1048,6 +1048,7 @@
   <string name="blackcherrycosmos">검은 체리 코스모스</string>
   <string name="gradienttype">그라데이션 유형</string>
   <string name="random">무작위</string>
+  <string name="randomizer">Randomizer</string>
   <string name="colorpalette">색상 팔레트</string>
   <string name="customcolor">맞춤 색상</string>
   <string name="lyricsanimate">가사 크기 애니메이션</string>
@@ -1622,4 +1623,6 @@
   <string name="auto_backup_on_change_description">Trigger a backup when songs are added or removed</string>
   <string name="auto_backup_max_backups">Max Backups to Keep</string>
   <string name="auto_backup_target">Backup Target</string>
+  <string name="toolbar">Toolbar</string>
+  <string name="customize_toolbar">Customize the toolbar</string>
 </resources>
