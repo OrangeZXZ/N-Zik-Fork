@@ -1593,11 +1593,11 @@
   <string name="miniplayer_buttons_config">Mini-Player-Schaltflächen</string>
   <string name="miniplayer_buttons_config_description">Konfigurieren Sie die 4 Tasten im Mini-Player</string>
   <string name="miniplayer_slot">Platz %1$d</string>
-  <string name="miniplayer_slot_fixed">Fixed</string>
-  <string name="miniplayer_slot_vide">Empty</string>
-  <string name="available_on_android_10_or_higher">Available on Android 10 or higher</string>
-  <string name="home_tabs_settings">Home page</string>
-  <string name="home_tabs_settings_description">Reorder and show/hide tabs</string>
+  <string name="miniplayer_slot_fixed">Fixiert</string>
+  <string name="miniplayer_slot_vide">Leer</string>
+  <string name="available_on_android_10_or_higher">Verfügbar für Android 10 oder höher</string>
+  <string name="home_tabs_settings">Startseite</string>
+  <string name="home_tabs_settings_description">Tabs neu anordnen und ein-/ausblenden</string>
   <string name="auto_backup_title">Automatisches Backup</string>
   <string name="auto_backup_description">Einstellungen für automatisches Datenbank-Backup</string>
   <string name="auto_backup_interval">Auto-Backup-Intervall</string>
@@ -1626,6 +1626,6 @@
   <string name="auto_backup_on_change_description">Ein Backup auslösen, wenn Lieder hinzugefügt oder entfernt werden</string>
   <string name="auto_backup_max_backups">Maximale Backups zum Behalten</string>
   <string name="auto_backup_target">Backup-Ziel</string>
-  <string name="toolbar">Toolbar</string>
-  <string name="customize_toolbar">Customize the toolbar</string>
+  <string name="toolbar">Symbolleiste</string>
+  <string name="customize_toolbar">Symbolleiste anpassen</string>
 </resources>
