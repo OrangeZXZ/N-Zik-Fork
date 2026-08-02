@@ -1180,6 +1180,9 @@ Volume BAS : titre précédent</string>
   <string name="view_changelog_settings_text">Voir le journal des modifications de la version actuellement installée</string>
   <string name="artist_songs_count_duration">Titres %1$d • %2$s</string>
   <string name="beta_title">BETA</string>
+  <string name="dev_title">DEV</string>
+  <string name="debug_title">DEBUG</string>
+  <string name="full_title">FULL</string>
   <string name="stable_title">STABLE</string>
   <string name="minified_title">MINIFIÉ</string>
   <string name="update_file_size">Taille du fichier : %s</string>
