@@ -20,6 +20,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -200,12 +201,17 @@ fun UpdateScreen(navController: NavController) {
                                             val extraInfo = if (fileSize.isNotEmpty()) "$currentBuildTypeLabel - $fileSize" else currentBuildTypeLabel
                                             stringResource(R.string.downloading_actual_version, currentVersion, extraInfo)
                                         }
-                                        BasicText(
-                                            text = downloadStr,
-                                            style = typography().s.bold.copy(color = colorPalette().text)
-                                        )
+                                        Box(modifier = Modifier.weight(1f)) {
+                                            BasicText(
+                                                text = downloadStr,
+                                                modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                                                maxLines = 1,
+                                                style = typography().s.bold.copy(color = colorPalette().text)
+                                            )
+                                        }
                                         BasicText(
                                             text = "${(state.progress * 100).toInt()}%",
+                                            modifier = Modifier.padding(start = 8.dp),
                                             style = typography().s.copy(color = colorPalette().accent)
                                         )
                                     }
@@ -232,6 +238,8 @@ fun UpdateScreen(navController: NavController) {
                                         ) {
                                             BasicText(
                                                 text = stringResource(R.string.cancel),
+                                                modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                                                maxLines = 1,
                                                 style = typography().s.semiBold.copy(color = colorPalette().red)
                                             )
                                         }
@@ -242,12 +250,16 @@ fun UpdateScreen(navController: NavController) {
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        BasicText(
-                                            text = stringResource(R.string.starting),
-                                            style = typography().s.bold.copy(color = colorPalette().text)
-                                        )
+                                        Box(modifier = Modifier.weight(1f)) {
+                                            BasicText(
+                                                text = stringResource(R.string.starting),
+                                                modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                                                maxLines = 1,
+                                                style = typography().s.bold.copy(color = colorPalette().text)
+                                            )
+                                        }
                                         CircularWavyProgressIndicator(
-                                            modifier = Modifier.size(20.dp),
+                                            modifier = Modifier.padding(start = 8.dp).size(20.dp),
                                             color = colorPalette().accent,
                                         )
                                     }
@@ -278,6 +290,8 @@ fun UpdateScreen(navController: NavController) {
                                             Spacer(modifier = Modifier.width(8.dp))
                                             BasicText(
                                                 text = stringResource(R.string.install),
+                                                modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                                                maxLines = 1,
                                                 style = typography().s.bold.copy(color = Color.White)
                                             )
                                         }
@@ -332,6 +346,8 @@ fun UpdateScreen(navController: NavController) {
                                                         stringResource(R.string.retry)
                                                     else
                                                         stringResource(R.string.download),
+                                                    modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                                                    maxLines = 1,
                                                     style = typography().s.bold.copy(color = Color.White)
                                                 )
                                             }
@@ -365,6 +381,8 @@ fun UpdateScreen(navController: NavController) {
                                                 Spacer(modifier = Modifier.width(8.dp))
                                                 BasicText(
                                                     text = stringResource(R.string.check_update),
+                                                    modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                                                    maxLines = 1,
                                                     style = typography().s.semiBold.copy(color = colorPalette().accent)
                                                 )
                                             }
@@ -405,6 +423,8 @@ fun UpdateScreen(navController: NavController) {
                                             Spacer(modifier = Modifier.width(8.dp))
                                             BasicText(
                                                 text = stringResource(R.string.github),
+                                                modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                                                maxLines = 1,
                                                 style = typography().s.semiBold.copy(color = colorPalette().text)
                                             )
                                         }
@@ -594,12 +614,16 @@ fun UpdateScreen(navController: NavController) {
                                         Spacer(modifier = Modifier.height(16.dp))
                                         BasicText(
                                             text = if (isReinstalling) stringResource(R.string.reinstalling_update) else "$updateBuildTypeLabel ${stringResource(R.string.update_available)}",
-                                            style = typography().l.bold.copy(color = colorPalette().text)
+                                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                                            maxLines = 1,
+                                            style = typography().l.bold.copy(color = colorPalette().text, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         BasicText(
                                             text = if (isReinstalling) currentVersion else newVersion,
-                                            style = typography().s.copy(color = colorPalette().textSecondary)
+                                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                                            maxLines = 1,
+                                            style = typography().s.copy(color = colorPalette().textSecondary, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                                         )
                                         if (fileSize.isNotEmpty()) {
                                             Spacer(modifier = Modifier.height(2.dp))
@@ -626,12 +650,16 @@ fun UpdateScreen(navController: NavController) {
                                         Spacer(modifier = Modifier.height(16.dp))
                                         BasicText(
                                             text = stringResource(R.string.up_to_date),
-                                            style = typography().l.bold.copy(color = colorPalette().text)
+                                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                                            maxLines = 1,
+                                            style = typography().l.bold.copy(color = colorPalette().text, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         BasicText(
                                             text = "${UpdaterConstants.PREFIX_VERSION}$currentVersion",
-                                            style = typography().s.copy(color = colorPalette().textSecondary)
+                                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                                            maxLines = 1,
+                                            style = typography().s.copy(color = colorPalette().textSecondary, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                                         )
                                         // No file size displayed when up to date
                                     } else {
@@ -652,7 +680,9 @@ fun UpdateScreen(navController: NavController) {
                                         Spacer(modifier = Modifier.height(16.dp))
                                         BasicText(
                                             text = BuildConfig.APP_NAME,
-                                            style = typography().l.bold.copy(color = colorPalette().text)
+                                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                                            maxLines = 1,
+                                            style = typography().l.bold.copy(color = colorPalette().text, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         val stateStr = when(checkUpdateState) {
@@ -662,7 +692,9 @@ fun UpdateScreen(navController: NavController) {
                                         }
                                         BasicText(
                                             text = "${UpdaterConstants.PREFIX_VERSION}$currentVersion • $stateStr",
-                                            style = typography().s.copy(color = colorPalette().textSecondary)
+                                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
+                                            maxLines = 1,
+                                            style = typography().s.copy(color = colorPalette().textSecondary, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                                         )
                                     }
                                     val lastCheckTime by rememberPreference(app.it.fast4x.rimusic.utils.lastUpdateCheckKey, 0L)
@@ -772,9 +804,10 @@ fun UpdateScreen(navController: NavController) {
                                     Spacer(modifier = Modifier.width(8.dp))
                                     BasicText(
                                         text = stringResource(R.string.whats_new_in, if (hasUpdate && !isReinstalling) newVersion else "${UpdaterConstants.PREFIX_VERSION}$currentVersion"),
+                                        modifier = Modifier.weight(1f).padding(end = 8.dp).basicMarquee(iterations = Int.MAX_VALUE),
+                                        maxLines = 1,
                                         style = typography().m.bold.copy(color = colorPalette().text)
                                     )
-                                    Spacer(modifier = Modifier.weight(1f))
                                     Box(
                                         modifier = Modifier
                                             .clip(uiRoundnessShape())

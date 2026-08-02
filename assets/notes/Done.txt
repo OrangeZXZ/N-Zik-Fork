@@ -1,3 +1,8 @@
+Fixed:
+- fix(updater): apply infinite marquee to handle long translation texts and missing center alignment
+  - Applied `basicMarquee(iterations = Int.MAX_VALUE)` to all texts in `UpdateScreen.kt` that can overflow, including app versions, download statuses, and buttons
+  - Restored horizontal centering for texts modified by the marquee by using `TextAlign.Center` directly in the `TextStyle`
+
 BETA V 7.3.2
 Added:
 - feat(settings): implement search functionality across all settings screens

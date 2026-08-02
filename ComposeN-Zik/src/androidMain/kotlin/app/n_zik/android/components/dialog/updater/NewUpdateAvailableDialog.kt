@@ -1,4 +1,4 @@
-﻿package app.n_zik.android.components.dialog.updater
+package app.n_zik.android.components.dialog.updater
 
 import androidx.compose.ui.draw.clip
 
@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -228,9 +229,9 @@ object NewUpdateAvailableDialog {
                                     Spacer(modifier = Modifier.width(4.dp))
                                     BasicText(
                                         text = stringResource(R.string.cancel),
+                                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
                                         style = typography().xs.semiBold.copy(color = colorPalette().textSecondary),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
+                                        maxLines = 1
                                     )
                                 }
                             }
@@ -259,9 +260,9 @@ object NewUpdateAvailableDialog {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     BasicText(
                                         text = stringResource(R.string.go_to_download),
+                                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
                                         style = typography().xs.semiBold.copy(color = Color.White),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
+                                        maxLines = 1
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Icon(
