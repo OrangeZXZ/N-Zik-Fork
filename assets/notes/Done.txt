@@ -1,5 +1,13 @@
 BETA V 7.3.2
 Added:
+- feat(settings): implement search functionality across all settings screens
+  - Integrated search.ToolBarButton() and search.SearchBar(this) in Data, Network, Appearance, Other, Accounts, UI, General, and AIRecommendation settings.
+  - Placed the search bar uniformly below the page description.
+- feat(settings): add universal Reset to Default feature for all individual settings screens
+  - Created centralized Default...Settings() functions for each screen that properly initialize default states without duplicating variable instantiation.
+  - Included a Reset block that clears preferences (excluding sensitive info like cookies/tokens) and calls reset(context) on associated dialogs.
+- style(settings): cleanup and standardize imports across all settings files
+  - Removed fully qualified inline packages in favor of proper top-level imports to adhere to project conventions.
 - fix(settings): sync toolbar settings dialog defaults with actual screen defaults
   - Replaced hardcoded default lists in HomeSongsScreen, HomeAlbum, HomeArtist, and HomeLibrary with references to their respective SettingsDialogs (`allButtonIds` and `tabAvailableIds`)
   - Ensures all toolbar buttons (like downloads or match) are correctly displayed upon a fresh install without needing to trigger a reset
