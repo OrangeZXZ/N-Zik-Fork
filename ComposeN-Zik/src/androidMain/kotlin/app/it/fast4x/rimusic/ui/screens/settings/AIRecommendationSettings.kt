@@ -579,7 +579,8 @@ fun AIRecommendationSettings(
                             title = stringResource(R.string.settings_reset),
                             text = stringResource(R.string.settings_restore_default_settings),
                             icon = R.drawable.refresh,
-                            onClick = { resetToDefault = true }
+                            onClick = { resetToDefault = true
+                                app.n_zik.android.components.dialog.settings.QuickPicksContentSettingsDialog.reset(context) }
                         )
                     }
                     if (resetToDefault) {
