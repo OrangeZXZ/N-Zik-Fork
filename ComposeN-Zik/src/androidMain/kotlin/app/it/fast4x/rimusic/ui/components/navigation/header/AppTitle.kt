@@ -125,9 +125,11 @@ fun AppTitle(
         AppLogo(navController, context)
         AppLogoText(navController)
 
-        // Version badge (beta/minified only)
+        // Version badge
         val versionSuffix = Updater.extractVersionSuffix(BuildConfig.VERSION_NAME)
-        if (versionSuffix == "b" || versionSuffix == "m") {
+        val isFoss = BuildConfig.BUILD_TYPE.equals("foss", ignoreCase = true)
+        
+        if (isFoss || (versionSuffix.isNotEmpty() && versionSuffix != "f")) {
             Box(
                 modifier = Modifier
                     .background(
@@ -136,10 +138,16 @@ fun AppTitle(
                     )
                     .padding(horizontal = 4.dp, vertical = 1.dp)
             ) {
-                val badgeText = when (versionSuffix) {
+                val badgeText = if (isFoss) "FOSS" else when (versionSuffix) {
                     "b" -> stringResource(R.string.beta_title)
                     "m" -> stringResource(R.string.minified_title)
-                    else -> ""
+                    "b32" -> "${stringResource(R.string.beta_title)} 32"
+                    "m32" -> "${stringResource(R.string.minified_title)} 32"
+                    "f32" -> "${stringResource(R.string.full_title)} 32"
+                    "debug" -> stringResource(R.string.debug_title)
+                    "dev" -> stringResource(R.string.dev_title)
+                    "dev32" -> "${stringResource(R.string.dev_title)} 32"
+                    else -> versionSuffix.uppercase()
                 }
                 BasicText(
                     text = badgeText,
@@ -161,20 +169,28 @@ fun AppTitle(
             ).Draw()
 
         if (Preference.debugLog())
-            BasicText(
-                text = stringResource(R.string.info_debug_mode_enabled),
-                style = TextStyle(
-                    fontSize = typography().xxs.semiBold.fontSize,
-                    fontWeight = typography().xxs.semiBold.fontWeight,
-                    fontFamily = typography().xxs.semiBold.fontFamily,
-                    color = colorPalette().red
-                ),
+            Box(
                 modifier = Modifier
+                    .background(
+                        color = colorPalette().red.copy(alpha = 0.2f),
+                        shape = uiRoundnessShape()
+                    )
+                    .clip(uiRoundnessShape())
                     .clickable {
                         Toaster.s(R.string.info_debug_mode_is_enabled)
                         navController.navigate(NavRoutes.settings.name)
                     }
-            )
+                    .padding(horizontal = 4.dp, vertical = 1.dp)
+            ) {
+                BasicText(
+                    text = "DEBUG",
+                    style = TextStyle(
+                        fontSize = typography().xxs.bold.fontSize,
+                        fontWeight = typography().xxs.bold.fontWeight,
+                        color = colorPalette().red
+                    )
+                )
+            }
     }
 // END
 }

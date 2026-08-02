@@ -1,3 +1,6 @@
+Improvement:
+- Improved app header (added 32-bit tags and replaced "debug enabled" message with an elegant tag).
+
 Fixed:
 - fix(updater): apply infinite marquee to handle long translation texts and missing center alignment
   - Applied `basicMarquee(iterations = Int.MAX_VALUE)` to all texts in `UpdateScreen.kt` that can overflow, including app versions, download statuses, and buttons

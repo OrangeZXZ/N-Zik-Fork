@@ -211,8 +211,11 @@ fun UpdateScreen(navController: NavController) {
                                         }
                                         BasicText(
                                             text = "${(state.progress * 100).toInt()}%",
-                                            modifier = Modifier.padding(start = 8.dp),
-                                            style = typography().s.copy(color = colorPalette().accent)
+                                            modifier = Modifier.padding(start = 8.dp).width(40.dp),
+                                            style = typography().s.copy(
+                                                color = colorPalette().accent,
+                                                textAlign = androidx.compose.ui.text.style.TextAlign.End
+                                            )
                                         )
                                     }
                                     Spacer(modifier = Modifier.height(12.dp))

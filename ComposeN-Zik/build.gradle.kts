@@ -142,6 +142,7 @@ android {
     buildTypes {
         debug {
             manifestPlaceholders += mapOf("appName" to "$APP_NAME-debug")
+            versionNameSuffix = "-debug"
             applicationIdSuffix = ".debug"
 
             buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
@@ -189,7 +190,6 @@ android {
         create( "beta" ) {
             initWith( maybeCreate("full") )
             versionNameSuffix = "-b"
-            signingConfig = signingConfigs.getByName("debug")
             // Fallback for modules that don't have a 'beta' build type (like :discordrpc)
             matchingFallbacks += listOf("release")
         }
@@ -197,7 +197,6 @@ android {
         create( "beta32" ) {
             initWith( maybeCreate("beta") )
             versionNameSuffix = "-b32"
-            signingConfig = signingConfigs.getByName("debug")
             // Fallback for modules that don't have a 'beta32' build type
             matchingFallbacks += listOf("release")
         }
@@ -213,6 +212,29 @@ android {
             matchingFallbacks += listOf("release")
         }
 
+        create( "dev" ) {
+            // App's properties
+            manifestPlaceholders += mapOf("appName" to "$APP_NAME-dev")
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
+
+            // Fallback for modules that don't have a 'dev' build type (like :discordrpc)
+            matchingFallbacks += listOf("release")
+        }
+
+        create( "dev32" ) {
+            // App's properties
+            manifestPlaceholders += mapOf("appName" to "$APP_NAME-dev32")
+            applicationIdSuffix = ".dev"
+            initWith( maybeCreate("dev") )
+            versionNameSuffix = "-dev32"
+            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
+
+            // Fallback for modules that don't have a 'dev32' build type
+            matchingFallbacks += listOf("release")
+        }
+
         /**
          * For convenience only.
          * "Forkers" want to change app name across builds
@@ -220,7 +242,7 @@ android {
          */
         forEach {
             it.manifestPlaceholders.putIfAbsent( "appName", APP_NAME )
-            if (it.name == "full32" || it.name == "minified32" || it.name == "beta32") {
+            if (it.name == "full32" || it.name == "minified32" || it.name == "beta32" || it.name == "dev32") {
                 it.buildConfigField("Boolean", "ENABLE_FFMPEG", "false")
             } else {
                 it.buildConfigField("Boolean", "ENABLE_FFMPEG", "true")
