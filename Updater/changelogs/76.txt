@@ -1,0 +1,25 @@
+Added:
+- feat(settings): implement search functionality across all settings screens
+  - Integrated search.ToolBarButton() and search.SearchBar(this) in Data, Network, Appearance, Other, Accounts, UI, General, and AIRecommendation settings.
+  - Placed the search bar uniformly below the page description.
+- feat(settings): add universal Reset to Default feature for all individual settings screens
+  - Created centralized Default...Settings() functions for each screen that properly initialize default states without duplicating variable instantiation.
+  - Included a Reset block that clears preferences (excluding sensitive info like cookies/tokens) and calls reset(context) on associated dialogs.
+- style(settings): cleanup and standardize imports across all settings files
+  - Removed fully qualified inline packages in favor of proper top-level imports to adhere to project conventions.
+- fix(settings): sync toolbar settings dialog defaults with actual screen defaults
+  - Replaced hardcoded default lists in HomeSongsScreen, HomeAlbum, HomeArtist, and HomeLibrary with references to their respective SettingsDialogs (`allButtonIds` and `tabAvailableIds`)
+  - Ensures all toolbar buttons (like downloads or match) are correctly displayed upon a fresh install without needing to trigger a reset
+  - Root cause: toggles were writing directly to SharedPreferences on every click, so Cancel still persisted the changes in memory
+  - Introduced `workingToggles` local state (Map/List) in all toolbar and section settings dialogs, only committing to SharedPreferences on Confirm
+  - Applied to: HomeSongsToolbarSettingsDialog, HomeAlbumsToolbarSettingsDialog, HomeArtistsToolbarSettingsDialog, HomeLibraryToolbarSettingsDialog, HomeSongsSettingsDialog, HomeAlbumsSettingsDialog, HomeArtistsSettingsDialog, HomePlaylistsSettingsDialog
+- feat(settings): add `reset(context)` function to all settings dialogs for programmatic full reset
+  - Each dialog can now reset its order and toggle preferences to factory defaults via a single call
+  - Added to: HomeSongsSettingsDialog, HomeAlbumsSettingsDialog, HomeArtistsSettingsDialog, HomePlaylistsSettingsDialog, HomeSongsToolbarSettingsDialog, HomeAlbumsToolbarSettingsDialog, HomeArtistsToolbarSettingsDialog, HomeLibraryToolbarSettingsDialog, PlayerActionBarSettingsDialog, StreamClientsSettingsDialog, PreferredStreamClientDialog
+- fix(download): prevent missing artist/album background fetches from blocking downloads and crashing the app
+  - Added `autoFix` parameter to `Database.insertIgnore` (defaulting to true) and set it to false in `MyDownloadHelper.kt` to disable background fetches that cause downloads to randomly fail
+  - Moved the Database fallback query for missing artist names (`mediaItem.artistTextOrDb()`) inside a background coroutine to resolve a `NetworkOnMainThreadException` crash on the UI thread
+  - Refactored notification title generation to elegantly handle missing artist and/or title metadata (defaulting to `unknown_title`)
+  - Safely fallback to `unknown_title` and `unknown_artist` in `Player`, `MiniPlayer`, and `SongItem` without modifying database state to preserve Discord RPC functionality
+  - Updated `Modern.kt` player to dynamically display `unknown.xml` icon when title or artist strings match the unknown fallbacks
+

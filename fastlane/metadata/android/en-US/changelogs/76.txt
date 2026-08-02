@@ -1,0 +1,8 @@
+Added:
+- Global search functionality across all settings screens
+- Universal Reset to Default feature for settings screens
+
+Fixed:
+- Sync toolbar settings dialog defaults with actual screen defaults
+- Prevent missing artist/album background fetches from blocking downloads
+- Animate menus and dialogs sliding down when closed instead of disappearing instantly
