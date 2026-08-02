@@ -584,9 +584,10 @@ fun AIRecommendationSettings(
                     }
                     if (resetToDefault) {
                         DefaultAIRecommendationSettings()
-                        resetToDefault = false
-                        navController.popBackStack()
-                        Toaster.done()
+                        androidx.compose.runtime.LaunchedEffect(Unit) {
+                            resetToDefault = false
+                        }
+                        app.kreate.android.me.knighthat.utils.Toaster.done()
                     }
                 }
             )
