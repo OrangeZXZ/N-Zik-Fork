@@ -165,14 +165,14 @@ fun OtherSettings() {
             onClick = {}
         )
 
-        search.ToolBarButton()
-        search.SearchBar( this )
-
         SettingsDescription(
             text = stringResource(R.string.other_settings_description),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         ) 
+
+        search.ToolBarButton()
+        search.SearchBar( this )
 
         /* Removed Spacer */
 

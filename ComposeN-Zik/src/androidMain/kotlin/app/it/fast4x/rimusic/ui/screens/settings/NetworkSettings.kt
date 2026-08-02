@@ -138,14 +138,14 @@ fun NetworkSettings(
             onClick = {}
         )
 
-        search.ToolBarButton()
-        search.SearchBar( this )
-
         SettingsDescription(
             text = stringResource(R.string.network_settings_description),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         ) 
+
+        search.ToolBarButton()
+        search.SearchBar( this )
 
         /* Removed Spacer */
 
