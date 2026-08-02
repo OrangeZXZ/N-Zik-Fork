@@ -1179,6 +1179,9 @@
   <string name="view_changelog_settings_text">Zobacz dzienniki zmian aktualnie zainstalowanej wersji</string>
   <string name="artist_songs_count_duration">%1$d Utwory • %2$s</string>
   <string name="beta_title">BETA</string>
+  <string name="dev_title">DEV</string>
+  <string name="debug_title">DEBUG</string>
+  <string name="full_title">FULL</string>
   <string name="stable_title">STABILNY</string>
   <string name="minified_title">ZAKOŃCZONO</string>
   <string name="update_file_size">Rozmiar pliku: %s</string>
