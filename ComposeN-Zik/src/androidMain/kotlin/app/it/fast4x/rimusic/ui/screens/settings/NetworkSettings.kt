@@ -427,9 +427,9 @@ fun NetworkSettings(
                             onClick = { 
                                 resetToDefault = true
                                 restartService = true
-                                PreferredStreamClientDialog.reset(context)
-                                StreamClientsSettingsDialog.reset(context)
-                                Toaster.done()
+                                app.n_zik.android.components.dialog.settings.PreferredStreamClientDialog.reset(context)
+                                app.n_zik.android.components.dialog.settings.StreamClientsSettingsDialog.reset(context)
+                                app.kreate.android.me.knighthat.utils.Toaster.done()
                             }
                         )
                     }

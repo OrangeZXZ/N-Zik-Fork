@@ -1,5 +1,6 @@
 package app.it.fast4x.rimusic.ui.screens.settings
 
+import app.n_zik.android.components.tab.Search
 import app.n_zik.android.uiRoundnessShape
 
 import android.annotation.SuppressLint
@@ -72,12 +73,48 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import java.io.File
 import java.net.Proxy
 
+@androidx.compose.runtime.Composable
+fun DefaultOtherSettings() {
+
+    var isProxyEnabled by rememberPreference(isProxyEnabledKey, false)
+    isProxyEnabled = false
+
+    var proxyHost by rememberPreference(proxyHostnameKey, "")
+    proxyHost = ""
+
+    var proxyPort by rememberPreference(proxyPortKey, 1080)
+    proxyPort = 1080
+
+    var proxyMode by rememberPreference(proxyModeKey, Proxy.Type.HTTP)
+    proxyMode = Proxy.Type.HTTP
+
+    var defaultFolder by rememberPreference(defaultFolderKey, "/")
+    defaultFolder = "/"
+
+    var isKeepScreenOnEnabled by rememberPreference(isKeepScreenOnEnabledKey, false)
+    isKeepScreenOnEnabled = false
+
+    var showFolders by rememberPreference(showFoldersOnDeviceKey, true)
+    showFolders = true
+
+    var parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
+    parentalControlEnabled = false
+
+    var logDebugEnabled by rememberPreference(logDebugEnabledKey, false)
+    logDebugEnabled = false
+
+    var extraspace by rememberPreference(extraspaceKey, false)
+    extraspace = false
+}
+
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("BatteryLife")
 @ExperimentalAnimationApi
 @Composable
 fun OtherSettings() {
+    val search = Search()
+
     val context = LocalContext.current
 
     var isIgnoringBatteryOptimizations by remember {
@@ -128,6 +165,9 @@ fun OtherSettings() {
             onClick = {}
         )
 
+        search.ToolBarButton()
+        search.SearchBar( this )
+
         SettingsDescription(
             text = stringResource(R.string.other_settings_description),
             modifier = Modifier.fillMaxWidth(),
@@ -150,12 +190,14 @@ fun OtherSettings() {
                 content = {
                     // Modern wrapper with icon
                     var showBlacklistDialog by remember { mutableStateOf(false) }
-                    OtherSettingsEntry(
-                        title = stringResource(R.string.blacklisted_folders),
-                        text = stringResource(R.string.edit_blacklist_for_on_device_songs),
-                        icon = R.drawable.blacklisted_folder,
-                        onClick = { showBlacklistDialog = true }
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.blacklisted_folders).contains(search.inputValue, true) || stringResource(R.string.edit_blacklist_for_on_device_songs).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.blacklisted_folders),
+                            text = stringResource(R.string.edit_blacklist_for_on_device_songs),
+                            icon = R.drawable.blacklisted_folder,
+                            onClick = { showBlacklistDialog = true }
+                        )
+                    }
                     
                     // Only the dialog, not the old component
                     if (showBlacklistDialog) {
@@ -186,23 +228,27 @@ fun OtherSettings() {
                     
 
 
-                    OtherSwitchSettingEntry(
-                        title = stringResource(R.string.folders),
-                        text = stringResource(R.string.show_folders_in_on_device_page),
-                        isChecked = showFolders,
-                        onCheckedChange = { showFolders = it },
-                        icon = R.drawable.playlist
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.folders).contains(search.inputValue, true) || stringResource(R.string.show_folders_in_on_device_page).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = stringResource(R.string.folders),
+                            text = stringResource(R.string.show_folders_in_on_device_page),
+                            isChecked = showFolders,
+                            onCheckedChange = { showFolders = it },
+                            icon = R.drawable.playlist
+                        )
+                    }
                     
                     AnimatedVisibility(visible = showFolders) {
                         // Modern wrapper with icon
                         var showFolderDialog by remember { mutableStateOf(false) }
-                        OtherSettingsEntry(
-                            title = stringResource(R.string.folder_that_will_show_when_you_open_on_device_page),
-                            text = defaultFolder,
-                            icon = R.drawable.music_file,
-                            onClick = { showFolderDialog = true }
-                        )
+                        if (search.inputValue.isBlank() || stringResource(R.string.folder_that_will_show_when_you_open_on_device_page).contains(search.inputValue, true)) {
+                            OtherSettingsEntry(
+                                title = stringResource(R.string.folder_that_will_show_when_you_open_on_device_page),
+                                text = defaultFolder,
+                                icon = R.drawable.music_file,
+                                onClick = { showFolderDialog = true }
+                            )
+                        }
                         
                         // Only the dialog, not the old component
                         if (showFolderDialog) {
@@ -236,13 +282,15 @@ fun OtherSettings() {
                 title = stringResource(R.string.androidheadunit),
                 icon = R.drawable.car,
                 content = {
-                    OtherSwitchSettingEntry(
-                        title = stringResource(R.string.extra_space),
-                        text = "",
-                        isChecked = extraspace,
-                        onCheckedChange = { extraspace = it },
-                        icon = R.drawable.space
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.extra_space).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = stringResource(R.string.extra_space),
+                            text = "",
+                            isChecked = extraspace,
+                            onCheckedChange = { extraspace = it },
+                            icon = R.drawable.space
+                        )
+                    }
                 }
             )
         }
@@ -261,13 +309,15 @@ fun OtherSettings() {
                 title = stringResource(R.string.service_lifetime),
                 icon = R.drawable.battery,
                 content = {
-                    OtherSwitchSettingEntry(
-                        title = stringResource(R.string.keep_screen_on),
-                        text = stringResource(R.string.prevents_screen_timeout),
-                        isChecked = isKeepScreenOnEnabled,
-                        onCheckedChange = { isKeepScreenOnEnabled = it },
-                        icon = R.drawable.devices
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.keep_screen_on).contains(search.inputValue, true) || stringResource(R.string.prevents_screen_timeout).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = stringResource(R.string.keep_screen_on),
+                            text = stringResource(R.string.prevents_screen_timeout),
+                            isChecked = isKeepScreenOnEnabled,
+                            onCheckedChange = { isKeepScreenOnEnabled = it },
+                            icon = R.drawable.devices
+                        )
+                    }
 
                     ImportantSettingsDescription(text = stringResource(R.string.battery_optimizations_applied))
 
@@ -277,34 +327,36 @@ fun OtherSettings() {
 
                     val msgNoBatteryOptim = stringResource(R.string.not_find_battery_optimization_settings)
 
-                                            OtherSettingsEntry(
-                            title = stringResource(R.string.ignore_battery_optimizations),
-                            text = if (isIgnoringBatteryOptimizations) {
-                                stringResource(R.string.already_unrestricted)
-                            } else {
-                                stringResource(R.string.disable_background_restrictions)
-                            },
-                            icon = R.drawable.battery_opti,
-                        onClick = {
-                            if (!isAtLeastAndroid6) return@OtherSettingsEntry
+                                            if (search.inputValue.isBlank() || stringResource(R.string.ignore_battery_optimizations).contains(search.inputValue, true)) {
+                                                OtherSettingsEntry(
+                                title = stringResource(R.string.ignore_battery_optimizations),
+                                text = if (isIgnoringBatteryOptimizations) {
+                                    stringResource(R.string.already_unrestricted)
+                                } else {
+                                    stringResource(R.string.disable_background_restrictions)
+                                },
+                                icon = R.drawable.battery_opti,
+                            onClick = {
+                                if (!isAtLeastAndroid6) return@OtherSettingsEntry
 
-                            try {
-                                activityResultLauncher.launch(
-                                    Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                                        data = Uri.parse("package:${context.packageName}")
-                                    }
-                                )
-                            } catch (e: ActivityNotFoundException) {
                                 try {
                                     activityResultLauncher.launch(
-                                        Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                                        Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                                            data = Uri.parse("package:${context.packageName}")
+                                        }
                                     )
                                 } catch (e: ActivityNotFoundException) {
-                                    Toaster.i(R.string.battery_optimization_msg, formatArgs = arrayOf(msgNoBatteryOptim, BuildConfig.APP_NAME))
+                                    try {
+                                        activityResultLauncher.launch(
+                                            Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                                        )
+                                    } catch (e: ActivityNotFoundException) {
+                                        Toaster.i(R.string.battery_optimization_msg, formatArgs = arrayOf(msgNoBatteryOptim, BuildConfig.APP_NAME))
+                                    }
                                 }
                             }
-                        }
-                    )
+                        )
+                                            }
                 }
             )
         }
@@ -325,24 +377,28 @@ fun OtherSettings() {
                 content = {
                     SettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
                     
-                    OtherSwitchSettingEntry(
-                        title = stringResource(R.string.enable_proxy),
-                        text = "",
-                        isChecked = isProxyEnabled,
-                        onCheckedChange = { isProxyEnabled = it },
-                        icon = R.drawable.server
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.enable_proxy).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = stringResource(R.string.enable_proxy),
+                            text = "",
+                            isChecked = isProxyEnabled,
+                            onCheckedChange = { isProxyEnabled = it },
+                            icon = R.drawable.server
+                        )
+                    }
 
                     AnimatedVisibility(visible = isProxyEnabled) {
                         Column {
                             // Modern wrapper with icon
                             var showProxyModeDialog by remember { mutableStateOf(false) }
-                            OtherSettingsEntry(
-                                title = stringResource(R.string.proxy_mode),
-                                text = proxyMode.name,
-                                icon = R.drawable.server,
-                                onClick = { showProxyModeDialog = true }
-                            )
+                            if (search.inputValue.isBlank() || stringResource(R.string.proxy_mode).contains(search.inputValue, true)) {
+                                OtherSettingsEntry(
+                                    title = stringResource(R.string.proxy_mode),
+                                    text = proxyMode.name,
+                                    icon = R.drawable.server,
+                                    onClick = { showProxyModeDialog = true }
+                                )
+                            }
                             
                             // Only the dialog, not the old component
                             if (showProxyModeDialog) {
@@ -357,12 +413,14 @@ fun OtherSettings() {
                             }
                             // Modern wrapper with icon
                             var showProxyHostDialog by remember { mutableStateOf(false) }
-                            OtherSettingsEntry(
-                                title = stringResource(R.string.proxy_host),
-                                text = proxyHost,
-                                icon = R.drawable.server,
-                                onClick = { showProxyHostDialog = true }
-                            )
+                            if (search.inputValue.isBlank() || stringResource(R.string.proxy_host).contains(search.inputValue, true)) {
+                                OtherSettingsEntry(
+                                    title = stringResource(R.string.proxy_host),
+                                    text = proxyHost,
+                                    icon = R.drawable.server,
+                                    onClick = { showProxyHostDialog = true }
+                                )
+                            }
                             
                             // Only the dialog, not the old component
                             if (showProxyHostDialog) {
@@ -379,12 +437,14 @@ fun OtherSettings() {
                             }
                             // Modern wrapper with icon
                             var showProxyPortDialog by remember { mutableStateOf(false) }
-                            OtherSettingsEntry(
-                                title = stringResource(R.string.proxy_port),
-                                text = proxyPort.toString(),
-                                icon = R.drawable.server,
-                                onClick = { showProxyPortDialog = true }
-                            )
+                            if (search.inputValue.isBlank() || stringResource(R.string.proxy_port).contains(search.inputValue, true)) {
+                                OtherSettingsEntry(
+                                    title = stringResource(R.string.proxy_port),
+                                    text = proxyPort.toString(),
+                                    icon = R.drawable.server,
+                                    onClick = { showProxyPortDialog = true }
+                                )
+                            }
                             
                             // Only the dialog, not the old component
                             if (showProxyPortDialog) {
@@ -419,13 +479,15 @@ fun OtherSettings() {
                 title = stringResource(R.string.parental_control),
                 icon = R.drawable.shield_checkmark,
                 content = {
-                    OtherSwitchSettingEntry(
-                        title = stringResource(R.string.parental_control),
-                        text = stringResource(R.string.info_prevent_play_songs_with_age_limitation),
-                        isChecked = parentalControlEnabled,
-                        onCheckedChange = { parentalControlEnabled = it },
-                        icon = R.drawable.parental_control
-                    )
+                    if (search.inputValue.isBlank() || stringResource(R.string.parental_control).contains(search.inputValue, true) || stringResource(R.string.info_prevent_play_songs_with_age_limitation).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = stringResource(R.string.parental_control),
+                            text = stringResource(R.string.info_prevent_play_songs_with_age_limitation),
+                            isChecked = parentalControlEnabled,
+                            onCheckedChange = { parentalControlEnabled = it },
+                            icon = R.drawable.parental_control
+                        )
+                    }
                 }
             )
         }
@@ -446,40 +508,78 @@ fun OtherSettings() {
                 content = {
                     CopyLogsDialog.Render()
 
-                    OtherSwitchSettingEntry(
-                        title = stringResource(R.string.enable_log_debug),
-                        text = stringResource(R.string.if_enabled_create_a_log_file_to_highlight_errors),
-                        isChecked = logDebugEnabled,
-                        onCheckedChange = {
-                            logDebugEnabled = it
-                            if (!it) {
-                                val file = File(context.filesDir.resolve("logs"), "N-Zik_log.txt")
-                                if (file.exists())
-                                    file.delete()
+                    if (search.inputValue.isBlank() || stringResource(R.string.enable_log_debug).contains(search.inputValue, true) || stringResource(R.string.if_enabled_create_a_log_file_to_highlight_errors).contains(search.inputValue, true)) {
+                        OtherSwitchSettingEntry(
+                            title = stringResource(R.string.enable_log_debug),
+                            text = stringResource(R.string.if_enabled_create_a_log_file_to_highlight_errors),
+                            isChecked = logDebugEnabled,
+                            onCheckedChange = {
+                                logDebugEnabled = it
+                                if (!it) {
+                                    val file = File(context.filesDir.resolve("logs"), "N-Zik_log.txt")
+                                    if (file.exists())
+                                        file.delete()
 
-                                val filec = File(context.filesDir.resolve("logs"), "N-Zik_crash_log.txt")
-                                if (filec.exists())
-                                    filec.delete()
-                            } else
-                                Toaster.i(R.string.restarting_rimusic_is_required)
-                        },
-                        icon = R.drawable.information
-                    )
+                                    val filec = File(context.filesDir.resolve("logs"), "N-Zik_crash_log.txt")
+                                    if (filec.exists())
+                                        filec.delete()
+                                } else
+                                    Toaster.i(R.string.restarting_rimusic_is_required)
+                            },
+                            icon = R.drawable.information
+                        )
+                    }
                     
                     ImportantSettingsDescription(text = stringResource(R.string.restarting_rimusic_is_required))
                     
                     if (logDebugEnabled) {
-                        OtherSettingsEntry(
-                            title = stringResource(R.string.copy_logs),
-                            text = stringResource(R.string.copy_logs_description),
-                            icon = R.drawable.copy,
-                            onClick = { CopyLogsDialog.showDialog() }
-                        )
+                        if (search.inputValue.isBlank() || stringResource(R.string.copy_logs).contains(search.inputValue, true) || stringResource(R.string.copy_logs_description).contains(search.inputValue, true)) {
+                            OtherSettingsEntry(
+                                title = stringResource(R.string.copy_logs),
+                                text = stringResource(R.string.copy_logs_description),
+                                icon = R.drawable.copy,
+                                onClick = { CopyLogsDialog.showDialog() }
+                            )
+                        }
                     }
                 }
             )
         }
 
+        
+        val searchCtx_Reset = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)
+        androidx.compose.animation.AnimatedVisibility(
+            visible = searchCtx_Reset,
+            enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1100)) + androidx.compose.animation.scaleIn(animationSpec = androidx.compose.animation.core.tween(1100), initialScale = 0.9f)
+        ) {
+            SettingsSectionCard(
+                title = stringResource(R.string.settings_reset),
+                icon = R.drawable.refresh,
+                content = {
+                    var resetToDefault by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                    
+                    if (search.inputValue.isBlank() || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true) || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.settings_reset),
+                            text = stringResource(R.string.settings_restore_default_settings),
+                            icon = R.drawable.refresh,
+                            onClick = { 
+                                resetToDefault = true
+                                Toaster.done()
+                            }
+                        )
+                    }
+
+                    if (resetToDefault) {
+                        DefaultOtherSettings()
+                        androidx.compose.runtime.LaunchedEffect(Unit) {
+                            resetToDefault = false
+                        }
+                    }
+                }
+            )
+        }
+        
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)
         )
