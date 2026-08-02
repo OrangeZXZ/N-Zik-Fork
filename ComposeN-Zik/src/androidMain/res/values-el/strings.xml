@@ -1179,6 +1179,9 @@
   <string name="view_changelog_settings_text">Προβολή αλλαγών της εγκατεστημένης έκδοσης</string>
   <string name="artist_songs_count_duration">%1$d Τραγούδια • %2$s</string>
   <string name="beta_title">ΒΗΤΑ</string>
+  <string name="dev_title">DEV</string>
+  <string name="debug_title">DEBUG</string>
+  <string name="full_title">FULL</string>
   <string name="stable_title">STABLE</string>
   <string name="minified_title">ΕΛΑΧΙΣΤΟ</string>
   <string name="update_file_size">Μέγεθος αρχείου: %s</string>

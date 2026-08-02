@@ -1179,6 +1179,9 @@
   <string name="view_changelog_settings_text">Se changelogs for den version der er installeret i øjeblikket</string>
   <string name="artist_songs_count_duration">%1$d Sange • %2$s</string>
   <string name="beta_title">INDSATS</string>
+  <string name="dev_title">DEV</string>
+  <string name="debug_title">DEBUG</string>
+  <string name="full_title">FULL</string>
   <string name="stable_title">STABEL</string>
   <string name="minified_title">MINIFIKERET</string>
   <string name="update_file_size">Filstørrelse: %s</string>
