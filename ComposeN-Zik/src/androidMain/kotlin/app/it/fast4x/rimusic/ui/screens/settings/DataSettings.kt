@@ -63,6 +63,10 @@ import app.n_zik.android.components.import.ImportSettings
 import app.n_zik.android.components.dialog.export.ExportBackupDialog
 import app.n_zik.android.components.dialog.backup.ImportBackupDialog
 import app.kreate.android.me.knighthat.utils.Toaster
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 
 @androidx.compose.runtime.Composable
@@ -623,7 +627,7 @@ fun DataSettings() {
                 title = stringResource(R.string.settings_reset),
                 icon = R.drawable.refresh,
                 content = {
-                    var resetToDefault by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                    var resetToDefault by remember { mutableStateOf(false) }
                     
                     if (search.inputValue.isBlank() || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true) || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
                         OtherSettingsEntry(

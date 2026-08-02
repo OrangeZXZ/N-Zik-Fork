@@ -55,6 +55,7 @@ import app.it.fast4x.rimusic.utils.RestartPlayerService
 import androidx.compose.runtime.produceState
 import app.n_zik.android.core.coil.ImageCacheFactory
 import kotlinx.coroutines.delay
+import androidx.compose.runtime.remember
 
 @androidx.compose.runtime.Composable
 fun DefaultNetworkSettings() {
@@ -417,7 +418,7 @@ fun NetworkSettings(
                 title = stringResource(R.string.settings_reset),
                 icon = R.drawable.refresh,
                 content = {
-                    var resetToDefault by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                    var resetToDefault by remember { mutableStateOf(false) }
                     
                     if (search.inputValue.isBlank() || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true) || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
@@ -427,8 +428,8 @@ fun NetworkSettings(
                             onClick = { 
                                 resetToDefault = true
                                 restartService = true
-                                app.n_zik.android.components.dialog.settings.PreferredStreamClientDialog.reset(context)
-                                app.n_zik.android.components.dialog.settings.StreamClientsSettingsDialog.reset(context)
+                                PreferredStreamClientDialog.reset(context)
+                                StreamClientsSettingsDialog.reset(context)
                                 app.kreate.android.me.knighthat.utils.Toaster.done()
                             }
                         )

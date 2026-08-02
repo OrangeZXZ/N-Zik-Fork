@@ -2770,7 +2770,7 @@ fun AppearanceSettings(
                 title = stringResource(R.string.settings_reset),
                 icon = R.drawable.refresh,
                 content = {
-                    var resetToDefault by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                    var resetToDefault by remember { mutableStateOf(false) }
                     val context = androidx.compose.ui.platform.LocalContext.current
                     if (search.inputValue.isBlank() || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true) || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
                         OtherSettingsEntry(

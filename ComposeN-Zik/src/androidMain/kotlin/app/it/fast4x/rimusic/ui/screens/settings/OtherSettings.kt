@@ -72,6 +72,10 @@ import app.it.fast4x.rimusic.utils.textCopyToClipboard
 import app.kreate.android.me.knighthat.utils.Toaster
 import java.io.File
 import java.net.Proxy
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @androidx.compose.runtime.Composable
 fun DefaultOtherSettings() {
@@ -556,7 +560,7 @@ fun OtherSettings() {
                 title = stringResource(R.string.settings_reset),
                 icon = R.drawable.refresh,
                 content = {
-                    var resetToDefault by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                    var resetToDefault by remember { mutableStateOf(false) }
                     
                     if (search.inputValue.isBlank() || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true) || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
