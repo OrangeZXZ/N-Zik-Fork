@@ -1,5 +1,6 @@
 package app.it.fast4x.rimusic.ui.screens.settings
 
+import app.n_zik.android.components.tab.Search
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
@@ -55,12 +56,50 @@ import androidx.compose.runtime.produceState
 import app.n_zik.android.core.coil.ImageCacheFactory
 import kotlinx.coroutines.delay
 
+@androidx.compose.runtime.Composable
+fun DefaultNetworkSettings() {
+
+    var isConnectionMeteredEnabled by rememberPreference(isConnectionMeteredEnabledKey, false)
+    isConnectionMeteredEnabled = false
+
+    var autoDownloadSong by rememberPreference(autoDownloadSongKey, false)
+    autoDownloadSong = false
+
+    var autoDownloadSongWhenLiked by rememberPreference(autoDownloadSongWhenLikedKey, false)
+    autoDownloadSongWhenLiked = false
+
+    var autoDownloadSongWhenAlbumBookmarked by rememberPreference(autoDownloadSongWhenAlbumBookmarkedKey, false)
+    autoDownloadSongWhenAlbumBookmarked = false
+
+    var audioQualityFormat by rememberPreference(audioQualityFormatKey, AudioQualityFormat.Auto)
+    audioQualityFormat = AudioQualityFormat.Auto
+
+    var imageQualityFormat by rememberPreference(imageQualityFormatKey, ImageQualityFormat.Auto)
+    imageQualityFormat = ImageQualityFormat.Auto
+
+    var navigationBarPosition by rememberPreference(navigationBarPositionKey, NavigationBarPosition.BottomFloating)
+    navigationBarPosition = NavigationBarPosition.BottomFloating
+
+    var isWebRemixEnabled by rememberPreference(streamClientWebRemixEnabledKey, true)
+    isWebRemixEnabled = true
+
+    var isAndroidVrEnabled by rememberPreference(streamClientAndroidVrEnabledKey, true)
+    isAndroidVrEnabled = true
+
+    var isStreamRestartNeeded by rememberPreference(streamClientRestartNeededKey, false)
+    isStreamRestartNeeded = false
+}
+
 @ExperimentalAnimationApi
 @UnstableApi
 @Composable
 fun NetworkSettings(
     navController: NavController
 ) {
+    val search = Search()
+    val context = androidx.compose.ui.platform.LocalContext.current
+
+
     var isConnectionMeteredEnabled by rememberPreference(isConnectionMeteredEnabledKey, false)
     var autoDownloadSong by rememberPreference(autoDownloadSongKey, false)
     var autoDownloadSongWhenLiked by rememberPreference(autoDownloadSongWhenLikedKey, false)
@@ -98,6 +137,9 @@ fun NetworkSettings(
             modifier = Modifier,
             onClick = {}
         )
+
+        search.ToolBarButton()
+        search.SearchBar( this )
 
         SettingsDescription(
             text = stringResource(R.string.network_settings_description),
@@ -164,32 +206,38 @@ fun NetworkSettings(
             icon = R.drawable.audio_quality,
             content = {
                 // Audio Quality Entry
-                OtherSettingsEntry(
-                    title = stringResource(R.string.audio_quality_format),
-                    text = when (audioQualityFormat) {
-                        AudioQualityFormat.Auto -> stringResource(R.string.audio_quality_automatic)
-                        AudioQualityFormat.High -> stringResource(R.string.audio_quality_format_high)
-                        AudioQualityFormat.Medium -> stringResource(R.string.audio_quality_format_medium)
-                        AudioQualityFormat.Low -> stringResource(R.string.audio_quality_format_low)
-                    },
-                    icon = R.drawable.speaker,
-                    onClick = { showAudioQualityDialog = true }
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.audio_quality_format).contains(search.inputValue, true)) {
+                    OtherSettingsEntry(
+                        title = stringResource(R.string.audio_quality_format),
+                        text = when (audioQualityFormat) {
+                            AudioQualityFormat.Auto -> stringResource(R.string.audio_quality_automatic)
+                            AudioQualityFormat.High -> stringResource(R.string.audio_quality_format_high)
+                            AudioQualityFormat.Medium -> stringResource(R.string.audio_quality_format_medium)
+                            AudioQualityFormat.Low -> stringResource(R.string.audio_quality_format_low)
+                        },
+                        icon = R.drawable.speaker,
+                        onClick = { showAudioQualityDialog = true }
+                    )
+                }
                 
                 // Image Quality Entry
-                OtherSettingsEntry(
-                    title = stringResource(R.string.image_quality_format),
-                    text = when (imageQualityFormat) {
-                        ImageQualityFormat.Auto -> stringResource(R.string.audio_quality_automatic)
-                        ImageQualityFormat.High -> stringResource(R.string.audio_quality_format_high)
-                        ImageQualityFormat.Medium -> stringResource(R.string.audio_quality_format_medium)
-                        ImageQualityFormat.Low -> stringResource(R.string.audio_quality_format_low)
-                    },
-                    icon = R.drawable.image,
-                    onClick = { showImageQualityDialog = true }
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.image_quality_format).contains(search.inputValue, true)) {
+                    OtherSettingsEntry(
+                        title = stringResource(R.string.image_quality_format),
+                        text = when (imageQualityFormat) {
+                            ImageQualityFormat.Auto -> stringResource(R.string.audio_quality_automatic)
+                            ImageQualityFormat.High -> stringResource(R.string.audio_quality_format_high)
+                            ImageQualityFormat.Medium -> stringResource(R.string.audio_quality_format_medium)
+                            ImageQualityFormat.Low -> stringResource(R.string.audio_quality_format_low)
+                        },
+                        icon = R.drawable.image,
+                        onClick = { showImageQualityDialog = true }
+                    )
+                }
                 
-                RestartPlayerService(restartService, onRestart = { restartService = false })
+                if (search.inputValue.isBlank() || stringResource(R.string.audio_quality_format).contains(search.inputValue, true)) {
+                    RestartPlayerService(restartService, onRestart = { restartService = false })
+                }
             }
         )
 
@@ -243,15 +291,17 @@ fun NetworkSettings(
             title = stringResource(R.string.connection_settings),
             icon = R.drawable.network,
             content = {
-                OtherSwitchSettingEntry(
-                    title = stringResource(R.string.enable_connection_metered),
-                    text = stringResource(R.string.info_enable_connection_metered),
-                    isChecked = isConnectionMeteredEnabled,
-                    onCheckedChange = {
-                        isConnectionMeteredEnabled = it
-                    },
-                    icon = R.drawable.wifi
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.enable_connection_metered).contains(search.inputValue, true) || stringResource(R.string.info_enable_connection_metered).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                        title = stringResource(R.string.enable_connection_metered),
+                        text = stringResource(R.string.info_enable_connection_metered),
+                        isChecked = isConnectionMeteredEnabled,
+                        onCheckedChange = {
+                            isConnectionMeteredEnabled = it
+                        },
+                        icon = R.drawable.wifi
+                    )
+                }
             }
         )
 
@@ -263,25 +313,31 @@ fun NetworkSettings(
             icon = R.drawable.musical_notes,
             content = {
                 if (isWebRemixEnabled && isAndroidVrEnabled) {
+                    if (search.inputValue.isBlank() || stringResource(R.string.preferred_stream_client).contains(search.inputValue, true) || stringResource(R.string.preferred_stream_client_description).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.preferred_stream_client),
+                            text = stringResource(R.string.preferred_stream_client_description),
+                            icon = R.drawable.musical_notes,
+                            onClick = { PreferredStreamClientDialog.showDialog() }
+                        )
+                    }
+                }
+                if (search.inputValue.isBlank() || stringResource(R.string.disabled_stream_clients).contains(search.inputValue, true) || stringResource(R.string.configure_which_stream_clients_are_enabled).contains(search.inputValue, true)) {
                     OtherSettingsEntry(
-                        title = stringResource(R.string.preferred_stream_client),
-                        text = stringResource(R.string.preferred_stream_client_description),
+                        title = stringResource(R.string.disabled_stream_clients),
+                        text = stringResource(R.string.configure_which_stream_clients_are_enabled),
                         icon = R.drawable.musical_notes,
-                        onClick = { PreferredStreamClientDialog.showDialog() }
+                        onClick = { StreamClientsSettingsDialog.showDialog() }
                     )
                 }
-                OtherSettingsEntry(
-                    title = stringResource(R.string.disabled_stream_clients),
-                    text = stringResource(R.string.configure_which_stream_clients_are_enabled),
-                    icon = R.drawable.musical_notes,
-                    onClick = { StreamClientsSettingsDialog.showDialog() }
-                )
-                RestartPlayerService(
-                    restartService = isStreamRestartNeeded,
-                    onRestart = {
-                        appContext().preferences.edit().putBoolean(streamClientRestartNeededKey, false).apply()
-                    }
-                )
+                if (search.inputValue.isBlank() || true) {
+                    RestartPlayerService(
+                        restartService = isStreamRestartNeeded,
+                        onRestart = {
+                            appContext().preferences.edit().putBoolean(streamClientRestartNeededKey, false).apply()
+                        }
+                    )
+                }
             }
         )
 
@@ -297,15 +353,17 @@ fun NetworkSettings(
             title = stringResource(R.string.download),
             icon = R.drawable.arrow_down,
             content = {
-                OtherSwitchSettingEntry(
-                    title = stringResource(R.string.settings_enable_autodownload_song),
-                    text = stringResource(R.string.auto_download_song_description),
-                    isChecked = autoDownloadSong,
-                    onCheckedChange = {
-                        autoDownloadSong = it
-                    },
-                    icon = R.drawable.download
-                )
+                if (search.inputValue.isBlank() || stringResource(R.string.settings_enable_autodownload_song).contains(search.inputValue, true) || stringResource(R.string.auto_download_song_description).contains(search.inputValue, true)) {
+                    OtherSwitchSettingEntry(
+                        title = stringResource(R.string.settings_enable_autodownload_song),
+                        text = stringResource(R.string.auto_download_song_description),
+                        isChecked = autoDownloadSong,
+                        onCheckedChange = {
+                            autoDownloadSong = it
+                        },
+                        icon = R.drawable.download
+                    )
+                }
 
                 AnimatedVisibility(
                     visible = autoDownloadSong,
@@ -321,30 +379,71 @@ fun NetworkSettings(
                     Column(
                         modifier = Modifier.padding(start = 16.dp)
                     ) {
-                        OtherSwitchSettingEntry(
-                            title = stringResource(R.string.settings_enable_autodownload_song_when_liked),
-                            text = stringResource(R.string.auto_download_when_liked_description),
-                            isChecked = autoDownloadSongWhenLiked,
-                            onCheckedChange = {
-                                autoDownloadSongWhenLiked = it
-                            },
-                            icon = R.drawable.heart
-                        )
+                        if (search.inputValue.isBlank() || stringResource(R.string.settings_enable_autodownload_song_when_liked).contains(search.inputValue, true) || stringResource(R.string.auto_download_when_liked_description).contains(search.inputValue, true)) {
+                            OtherSwitchSettingEntry(
+                                title = stringResource(R.string.settings_enable_autodownload_song_when_liked),
+                                text = stringResource(R.string.auto_download_when_liked_description),
+                                isChecked = autoDownloadSongWhenLiked,
+                                onCheckedChange = {
+                                    autoDownloadSongWhenLiked = it
+                                },
+                                icon = R.drawable.heart
+                            )
+                        }
 
-                        OtherSwitchSettingEntry(
-                            title = stringResource(R.string.settings_enable_autodownload_song_when_album_bookmarked),
-                            text = stringResource(R.string.auto_download_when_album_bookmarked_description),
-                            isChecked = autoDownloadSongWhenAlbumBookmarked,
-                            onCheckedChange = {
-                                autoDownloadSongWhenAlbumBookmarked = it
-                            },
-                            icon = R.drawable.bookmark
-                        )
+                        if (search.inputValue.isBlank() || stringResource(R.string.settings_enable_autodownload_song_when_album_bookmarked).contains(search.inputValue, true) || stringResource(R.string.auto_download_when_album_bookmarked_description).contains(search.inputValue, true)) {
+                            OtherSwitchSettingEntry(
+                                title = stringResource(R.string.settings_enable_autodownload_song_when_album_bookmarked),
+                                text = stringResource(R.string.auto_download_when_album_bookmarked_description),
+                                isChecked = autoDownloadSongWhenAlbumBookmarked,
+                                onCheckedChange = {
+                                    autoDownloadSongWhenAlbumBookmarked = it
+                                },
+                                icon = R.drawable.bookmark
+                            )
+                        }
                     }
                 }
             }
         )
 
+        
+        val searchCtx_Reset = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)
+        androidx.compose.animation.AnimatedVisibility(
+            visible = searchCtx_Reset,
+            enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1100)) + androidx.compose.animation.scaleIn(animationSpec = androidx.compose.animation.core.tween(1100), initialScale = 0.9f)
+        ) {
+            SettingsSectionCard(
+                title = stringResource(R.string.settings_reset),
+                icon = R.drawable.refresh,
+                content = {
+                    var resetToDefault by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                    
+                    if (search.inputValue.isBlank() || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true) || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.settings_reset),
+                            text = stringResource(R.string.settings_restore_default_settings),
+                            icon = R.drawable.refresh,
+                            onClick = { 
+                                resetToDefault = true
+                                restartService = true
+                                PreferredStreamClientDialog.reset(context)
+                                StreamClientsSettingsDialog.reset(context)
+                                Toaster.done()
+                            }
+                        )
+                    }
+
+                    if (resetToDefault) {
+                        DefaultNetworkSettings()
+                        androidx.compose.runtime.LaunchedEffect(Unit) {
+                            resetToDefault = false
+                        }
+                    }
+                }
+            )
+        }
+        
         SettingsGroupSpacer(
             modifier = Modifier.height(Dimensions.bottomSpacer)
         )
