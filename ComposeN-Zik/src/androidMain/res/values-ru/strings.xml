@@ -1179,6 +1179,9 @@
   <string name="view_changelog_settings_text">Просмотреть список изменений установленной версии</string>
   <string name="artist_songs_count_duration">%1$d треки • %2$s</string>
   <string name="beta_title">БЕТА</string>
+  <string name="dev_title">DEV</string>
+  <string name="debug_title">DEBUG</string>
+  <string name="full_title">FULL</string>
   <string name="stable_title">СТАБИЛЬНЫЙ</string>
   <string name="minified_title">ВНИМАНО</string>
   <string name="update_file_size">Размер файла: %s</string>
