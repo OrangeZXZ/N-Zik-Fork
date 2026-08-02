@@ -3,7 +3,7 @@
   <string name="cancel">Abbrechen</string>
   <string name="reset">Zurücksetzen</string>
   <string name="done">Fertig</string>
-  <string name="hidesong">Soll der Titel wirklich ausblendet werden? Die Wiedergabezeit und der Cache werden zurückgesetzt. Diese Aktion kann nicht rückgängig gemacht werden.</string>
+  <string name="hidesong">Soll der Song wirklich gelöscht werden? Die Wiedergabezeit und der Cache werden zurückgesetzt. Diese Aktion kann nicht rückgängig gemacht werden.</string>
   <string name="new_playlist">Neue Playlist</string>
   <string name="start_radio">Radio starten</string>
   <string name="stop_radio">Radio stoppen</string>
@@ -45,7 +45,7 @@
   <string name="favorites">Favoriten</string>
   <string name="quick_picks">Startseite</string>
   <string name="lucky_shuffle">Ich fühle mich glücklich</string>
-  <string name="songs">Titel</string>
+  <string name="songs">Songs</string>
   <string name="other_versions">Alternative Versionen</string>
   <string name="album_no_alternative_version">Dieses Album hat keine alternative Version</string>
   <string name="enqueue">Zur Warteschlange hinzufügen</string>
@@ -126,7 +126,7 @@
   <string name="persistent_queue">Dauerhafter Spieler</string>
   <string name="remember_queue_scroll_position">Scrollposition der Warteschlange merken</string>
   <string name="remember_queue_scroll_position_description">Behalte die Scrollposition beim Schließen und erneuten Öffnen der Player-Warteschlange</string>
-  <string name="save_and_restore_playing_songs">Speichern und Wiederherstellen der wiederzugebenden Titel</string>
+  <string name="save_and_restore_playing_songs">Speichern und Wiederherstellen der wiederzugebenden Songs</string>
   <string name="resume_playback">Wiedergabe fortsetzen</string>
   <string name="when_device_is_connected">Wenn ein kabelgebundenes oder Bluetooth-Gerät verbunden wird</string>
   <string name="skip_silence">Stille überspringen</string>
@@ -144,7 +144,7 @@
   <string name="synchronized_lyrics">Synchronisierte Songtexte</string>
   <string name="karaoke_lyrics">karaoke Songtexte</string>
   <string name="auto_lyrics">Auto</string>
-  <string name="current_lyrics_state">Current state: %1$s</string>
+  <string name="current_lyrics_state">Aktueller Status: %1$s</string>
   <string name="provided_by">Bereitgestellt von</string>
   <string name="delete_playback_events">%1$s Wiedergabeereignisse löschen</string>
   <string name="existing_data_will_be_overwritten">Vorhandene Daten werden überschrieben. %1$s schließt sich automatisch nach dem Wiederherstellen der Datenbank.</string>
@@ -161,7 +161,7 @@
   <string name="are_not_available_for_this_song">sind für dieses Lied nicht verfügbar</string>
   <string name="error_a_network_error_has_occurred">Ein Netzwerkfehler ist aufgetreten</string>
   <string name="error_couldn_t_find_a_playable_audio_format">Kein abspielbares Audio-Format gefunden</string>
-  <string name="error_the_original_video_source_of_this_song_has_been_deleted">Die ursprüngliche Videoquelle zu diesem Titel wurde gelöscht</string>
+  <string name="error_the_original_video_source_of_this_song_has_been_deleted">Die ursprüngliche Videoquelle zu diesem Song wurde gelöscht</string>
   <string name="error_this_song_cannot_be_played_due_to_server_restrictions">Dieser Titel kann aufgrund von Serverbeschränkungen nicht abgespielt werden</string>
   <string name="error_the_returned_video_id_doesn_t_match_the_requested_one">Die zurückgegebene Video-ID stimmt nicht mit der angeforderten überein</string>
   <string name="error_an_unknown_playback_error_has_occurred">Ein unbekannter Wiedergabefehler ist aufgetreten</string>
@@ -343,11 +343,11 @@
   <string name="lang_hebrew">Hebräisch (עִבְרִית)</string>
   <string name="customize_album">Album anpassen</string>
   <string name="update_title">Titel aktualisieren</string>
-  <string name="update_authors">Change Authors</string>
+  <string name="update_authors">Künstler ändern</string>
   <string name="update_cover">Cover aktualisieren</string>
-  <string name="update_album_browse_id">Change Album Browse ID</string>
-  <string name="update_artist_browse_id">Change Artist Browse ID</string>
-  <string name="update_playlist_browse_id">Change Playlist Browse ID</string>
+  <string name="update_album_browse_id">Album-ID ändern</string>
+  <string name="update_artist_browse_id">Künstler-ID ändern</string>
+  <string name="update_playlist_browse_id">Playlist-ID ändern</string>
   <string name="edit_metadata">Metadaten bearbeiten</string>
   <string name="pick_from_gallery">Aus der Galerie auswählen</string>
   <string name="metadata_title">Titel</string>
@@ -448,7 +448,7 @@
   <string name="are_you_sure_you_want_to_remove_this_folder_from_the_blacklist">Sind Sie sicher, dass Sie diesen Ordner von der Blacklist entfernen möchten?</string>
   <string name="player_appearance">Erscheinungsbild</string>
   <string name="player_action_bar">Player-Aktionsleiste</string>
-  <string name="player_action_bar_buttons">Button visibility</string>
+  <string name="player_action_bar_buttons">Sichtbarkeit der Schaltflächen</string>
   <string name="player_action_bar_buttons_description">Konfiguriere die Schaltflächen in der Player-Aktionsleiste</string>
   <string name="quick_picks_content">Schnellauswahl-Bereiche</string>
   <string name="quick_picks_content_description">Wählen Sie aus, welche Bereiche auf der Startseite angezeigt werden</string>
@@ -456,7 +456,7 @@
   <string name="generic_ytm_sections">Andere Bereiche</string>
   <string name="library_visibility">Bibliotheks-Playlisten</string>
   <string name="library_visibility_description">Wählen Sie aus, welche Bereiche in der Bibliothek angezeigt werden</string>
-  <string name="home_songs_settings">Home Songs</string>
+  <string name="home_songs_settings">Songs</string>
   <string name="home_artists_settings">Home Artists</string>
   <string name="home_albums_settings">Home Albums</string>
   <string name="home_playlists_settings">Home Playists</string>
@@ -467,7 +467,7 @@
   <string name="export_both">Exportiere beides</string>
   <string name="include_youtube_credentials">YouTube-Zugangsdaten einbeziehen</string>
   <string name="include_discord_credentials">Discord-Zugangsdaten einbeziehen</string>
-  <string name="import_both">Exportiere beides</string>
+  <string name="import_both">Importiere beides</string>
   <string name="export_database_description">Exportiere Datenbank mit Songs, Wiedergabelisten und Verlauf</string>
   <string name="export_settings_description">Einstellungen und Einstellungen der App exportieren</string>
   <string name="export_both_description">Datenbank und Einstellungen als separate Dateien exportieren</string>
