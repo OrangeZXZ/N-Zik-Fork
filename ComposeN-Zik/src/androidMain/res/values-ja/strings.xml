@@ -1179,6 +1179,9 @@
   <string name="view_changelog_settings_text">現在インストールされているバージョンの更新履歴を表示</string>
   <string name="artist_songs_count_duration">%1$d 曲 • %2$s</string>
   <string name="beta_title">BETA</string>
+  <string name="dev_title">DEV</string>
+  <string name="debug_title">DEBUG</string>
+  <string name="full_title">FULL</string>
   <string name="stable_title">安定版</string>
   <string name="minified_title">分割済み</string>
   <string name="update_file_size">ファイルサイズ: %s</string>

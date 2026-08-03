@@ -343,11 +343,11 @@
   <string name="lang_hebrew">İbranice (עִברִית)</string>
   <string name="customize_album">Albümü özelleştir</string>
   <string name="update_title">Başlığı Değiştir</string>
-  <string name="update_authors">Change Authors</string>
+  <string name="update_authors">Yazarları değiştir</string>
   <string name="update_cover">Kapağı Değiştir</string>
-  <string name="update_album_browse_id">Change Album Browse ID</string>
-  <string name="update_artist_browse_id">Change Artist Browse ID</string>
-  <string name="update_playlist_browse_id">Change Playlist Browse ID</string>
+  <string name="update_album_browse_id">Albüm Gözatma Kimliğini Değiştir</string>
+  <string name="update_artist_browse_id">Sanatçı Gözatma Kimliğini Değiştir</string>
+  <string name="update_playlist_browse_id">Çalma Listesi Gözatma Kimliğini Değiştir</string>
   <string name="edit_metadata">Meta Verilerini Düzenle</string>
   <string name="pick_from_gallery">Galeriden seçin</string>
   <string name="metadata_title">Başlık</string>
@@ -1048,7 +1048,7 @@
   <string name="blackcherrycosmos">Siyah Kiraz Kozmosu</string>
   <string name="gradienttype">Gradyan Türü</string>
   <string name="random">Rastgele</string>
-  <string name="randomizer">Randomizer</string>
+  <string name="randomizer">Rastgeleleştirme</string>
   <string name="colorpalette">Renk Paleti</string>
   <string name="customcolor">Özel Renk</string>
   <string name="lyricsanimate">Şarkı Sözleri Boyutunu Canlandır</string>
@@ -1179,6 +1179,9 @@
   <string name="view_changelog_settings_text">Şu anda yüklü olan sürümün değişiklik günlüğünü görüntüle</string>
   <string name="artist_songs_count_duration">%1$d Songs • %2$s</string>
   <string name="beta_title">BETA</string>
+  <string name="dev_title">GELİŞTİRİCİ</string>
+  <string name="debug_title">HATA AYIKLAMA</string>
+  <string name="full_title">DOLU</string>
   <string name="stable_title">STABLE</string>
   <string name="minified_title">MINIFIED</string>
   <string name="update_file_size">Dosya boyutu: %s</string>
@@ -1558,7 +1561,7 @@
   <string name="sync_no_items">Senkronizasyon edilecek öğe yok</string>
   <string name="sync_completed_with_errors">Senkronizasyon hatalarla tamamlandı</string>
   <string name="album_found_online_verify">Albüm internette bulundu! Lütfen doğru albüm olup olmadığını kontrol edin.</string>
-  <string name="artist_found_online_verify">Artist found online! Please verify it\'s the correct one.</string>
+  <string name="artist_found_online_verify">Sanatçı internette bulundu! Lütfen doğru kişi olup olmadığını kontrol edin.</string>
   <string name="error_music_not_fully_cached">Ses dalgalarını yenilemek için müziğin tamamen indirilmiş veya önbelleğe alınmış olması gerekir</string>
   <string name="updating_waveform_in_progress">Waveform güncelleniyor…</string>
   <string name="waveform_updated_successfully">Waveform başarıyla güncellendi</string>
@@ -1623,6 +1626,6 @@
   <string name="auto_backup_on_change_description">Şarkılar eklendiğinde veya kaldırıldığında yedekleme işlemini başlat</string>
   <string name="auto_backup_max_backups">Saklanacak Maksimum Yedekleme Sayısı</string>
   <string name="auto_backup_target">Yedekleme Hedefi</string>
-  <string name="toolbar">Toolbar</string>
-  <string name="customize_toolbar">Customize the toolbar</string>
+  <string name="toolbar">Araç çubuğu</string>
+  <string name="customize_toolbar">Araç çubuğunu özelleştir</string>
 </resources>
