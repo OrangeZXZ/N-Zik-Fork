@@ -283,7 +283,7 @@ interface SongPlaylistMapTable {
         LEFT JOIN Song S ON S.id = spm.songId
         LEFT JOIN Event E ON E.songId = S.id
         WHERE spm.playlistId = :playlistId
-        ORDER BY E.timestamp
+        ORDER BY E.timestamp ASC
         LIMIT :limit
     """)
     fun sortSongsByDatePlayed( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
@@ -297,6 +297,18 @@ interface SongPlaylistMapTable {
         allSongsOf( playlistId, limit ).map { list ->
             list.sortedBy( Song::relativePlayTime )
         }
+
+    @Query("""
+        SELECT S.id, S.title, S.artistsText, S.durationText, S.thumbnailUrl, S.likedAt, S.totalPlayTimeMs, S.position, COUNT(E.songId) as playCount
+        FROM SongPlaylistMap spm
+        LEFT JOIN Song S ON S.id = spm.songId
+        LEFT JOIN Event E ON E.songId = S.id
+        WHERE spm.playlistId = :playlistId
+        GROUP BY S.id
+        ORDER BY playCount ASC
+        LIMIT :limit
+    """)
+    fun sortSongsByPlayCount( playlistId: Long, limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     @Query("""
         SELECT S.*
@@ -355,6 +367,7 @@ interface SongPlaylistMapTable {
         PlaylistSongSortBy.DatePlayed       -> sortSongsByDatePlayed( playlistId )
         PlaylistSongSortBy.PlayTime         -> sortSongsByPlayTime( playlistId )
         PlaylistSongSortBy.RelativePlayTime -> sortSongsByRelativePlayTime( playlistId )
+        PlaylistSongSortBy.PlayCount        -> sortSongsByPlayCount( playlistId )
         PlaylistSongSortBy.Custom           -> sortSongsByPosition( playlistId )
         PlaylistSongSortBy.Title            -> sortSongsByTitle( playlistId )
         PlaylistSongSortBy.Duration         -> sortSongsByDuration( playlistId )

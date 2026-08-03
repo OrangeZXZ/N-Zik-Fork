@@ -36,6 +36,7 @@ import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.onOverlay
 import app.it.fast4x.rimusic.ui.styling.overlay
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.ui.draw.clip
 import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_SORT_BY
 import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_SORT_ORDER
 import app.it.fast4x.rimusic.utils.Preference.HOME_SONGS_FAVORITES_SORT_BY
@@ -412,8 +413,12 @@ fun HomeSongs(
                                     Box( Modifier.width( 24.dp ) )
                             },
                             thumbnailOverlay = {
-                                if ( songSort.sortBy == SongSortBy.PlayTime || builtInPlaylist == BuiltInPlaylist.Top ) {
-                                    var text = song.formattedTotalPlayTime
+                                if ( songSort.sortBy == SongSortBy.PlayTime || songSort.sortBy == SongSortBy.RelativePlayTime || songSort.sortBy == SongSortBy.PlayCount || builtInPlaylist == BuiltInPlaylist.Top ) {
+                                    var text = if (songSort.sortBy == SongSortBy.PlayCount) {
+                                        song.playCount.toString()
+                                    } else {
+                                        song.formattedTotalPlayTime
+                                    }
                                     var typography = typography().xxs
                                     var alignment = Alignment.BottomCenter
                                     if( builtInPlaylist == BuiltInPlaylist.Top ) {
@@ -421,25 +426,23 @@ fun HomeSongs(
                                         typography = typography().m
                                         alignment = Alignment.Center
                                     }
-                                    BasicText(
-                                        text = text,
-                                        style = typography.semiBold.center.color(colorPalette().onOverlay),
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
+                                    Box(
                                         modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                                            .align(alignment)
-                                            .background(
-                                                brush = Brush.verticalGradient(
-                                                    colors = listOf(
-                                                        Color.Transparent,
-                                                        colorPalette().overlay
-                                                    )
-                                                ),
-                                                shape = thumbnailShape()
-                                            )
-                                    )
+                                            .fillMaxSize()
+                                            .clip(thumbnailShape())
+                                            .background(colorPalette().overlay)
+                                    ) {
+                                        BasicText(
+                                            text = text,
+                                            style = typography.semiBold.center.color(colorPalette().onOverlay),
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                                                .align(alignment)
+                                        )
+                                    }
                                 }
                             },
                             onClick = {
@@ -481,20 +484,20 @@ fun HomeSongs(
                 }
             }
         }
-    }
+        }
 
-    if (showNoItems) {
-        Box(
-            modifier = Modifier.fillMaxSize().padding(bottom = 47.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            BasicText(
-                text = stringResource(R.string.no_items),
-                style = typography().m.semiBold.copy(
-                    color = colorPalette().textSecondary
+        if (showNoItems) {
+            Box(
+                modifier = Modifier.fillMaxSize().padding(bottom = 47.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                BasicText(
+                    text = stringResource(R.string.no_items),
+                    style = typography().m.semiBold.copy(
+                        color = colorPalette().textSecondary
+                    )
                 )
-            )
+            }
         }
     }
-}
 }

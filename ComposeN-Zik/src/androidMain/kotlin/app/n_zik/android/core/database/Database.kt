@@ -69,6 +69,7 @@ import app.n_zik.android.core.database.migration.From8To9Migration
 import app.n_zik.android.core.database.migration.From27To28Migration
 import app.n_zik.android.core.database.migration.From29To30Migration
 import app.n_zik.android.core.database.migration.From30To31Migration
+import app.n_zik.android.core.database.migration.From31To32Migration
 import app.kreate.android.me.knighthat.utils.PropUtils
 
 object Database {
@@ -593,7 +594,7 @@ object Database {
     views = [
         SortedSongPlaylistMap::class
     ],
-    version = 31,
+    version = 32,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -651,7 +652,8 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
                     From26To27Migration(),
                     From27To28Migration(),
                     From29To30Migration(),
-                    From30To31Migration()
+                    From30To31Migration(),
+                    From31To32Migration()
                 )
                 .build()
             

@@ -291,10 +291,34 @@ interface AlbumTable {
         JOIN SongAlbumMap sam ON sam.albumId = A.id 
         WHERE A.bookmarkedAt IS NOT NULL
         GROUP BY A.id
-        ORDER BY COUNT(sam.songId)
+        ORDER BY COUNT(sam.songId) ASC
         LIMIT :limit
     """)
     fun sortBookmarkedBySongsCount( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
+
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM Album A
+        JOIN SongAlbumMap sam ON sam.albumId = A.id
+        JOIN Event E ON E.songId = sam.songId
+        WHERE A.bookmarkedAt IS NOT NULL
+        GROUP BY A.id
+        ORDER BY SUM(E.playtime) ASC
+        LIMIT :limit
+    """)
+    fun sortBookmarkedByListeningTime( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
+
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM Album A
+        JOIN SongAlbumMap sam ON sam.albumId = A.id
+        JOIN Event E ON E.songId = sam.songId
+        WHERE A.bookmarkedAt IS NOT NULL
+        GROUP BY A.id
+        ORDER BY COUNT(E.id) ASC
+        LIMIT :limit
+    """)
+    fun sortBookmarkedByPlayCount( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
 
     @Query("""
         SELECT DISTINCT A.*
@@ -315,7 +339,7 @@ interface AlbumTable {
                     (SUBSTR(S.durationText, INSTR(S.durationText, ':') + 1))
                 )
             END 
-        )
+        ) ASC
         LIMIT :limit
     """)
     // Duration conversion is baked into SQL syntax to reduce code complexity
@@ -352,6 +376,8 @@ interface AlbumTable {
         AlbumSortBy.Artist      -> sortBookmarkedByArtist()
         AlbumSortBy.Songs       -> sortBookmarkedBySongsCount()
         AlbumSortBy.Duration    -> sortBookmarkedByDuration()
+        AlbumSortBy.PlayCount   -> sortBookmarkedByPlayCount( limit )
+        AlbumSortBy.ListeningTime -> sortBookmarkedByListeningTime( limit )
         AlbumSortBy.Custom      -> sortBookmarkedByPosition( limit )
     }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
@@ -391,10 +417,36 @@ interface AlbumTable {
         JOIN Album A ON A.id = sam.albumId
         WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL
         GROUP BY A.id
-        ORDER BY COUNT(sam.songId)
+        ORDER BY COUNT(sam.songId) ASC
         LIMIT :limit
     """)
     fun sortInLibraryBySongsCount( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
+
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM Album A
+        JOIN SongAlbumMap sam ON sam.albumId = A.id
+        JOIN Song S ON S.id = sam.songId
+        JOIN Event E ON E.songId = sam.songId
+        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL
+        GROUP BY A.id
+        ORDER BY SUM(E.playtime) ASC
+        LIMIT :limit
+    """)
+    fun sortInLibraryByListeningTime( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
+
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM Album A
+        JOIN SongAlbumMap sam ON sam.albumId = A.id
+        JOIN Song S ON S.id = sam.songId
+        JOIN Event E ON E.songId = sam.songId
+        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL
+        GROUP BY A.id
+        ORDER BY COUNT(E.id) ASC
+        LIMIT :limit
+    """)
+    fun sortInLibraryByPlayCount( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
 
     @Query("""
         SELECT DISTINCT A.*
@@ -415,7 +467,7 @@ interface AlbumTable {
                     (SUBSTR(S.durationText, INSTR(S.durationText, ':') + 1))
                 )
             END 
-        )
+        ) ASC
         LIMIT :limit
     """)
     fun sortInLibraryByDuration( limit: Int = Int.MAX_VALUE ): Flow<List<Album>>
@@ -451,6 +503,8 @@ interface AlbumTable {
         AlbumSortBy.Artist      -> sortInLibraryByArtist()
         AlbumSortBy.Songs       -> sortInLibraryBySongsCount()
         AlbumSortBy.Duration    -> sortInLibraryByDuration()
+        AlbumSortBy.PlayCount   -> sortInLibraryByPlayCount( limit )
+        AlbumSortBy.ListeningTime -> sortInLibraryByListeningTime( limit )
         AlbumSortBy.Custom      -> sortInLibraryByPosition( limit )
     }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>

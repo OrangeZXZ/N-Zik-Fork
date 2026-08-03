@@ -30,6 +30,13 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import app.it.fast4x.rimusic.ui.styling.overlay
+import app.it.fast4x.rimusic.ui.styling.onOverlay
+import app.it.fast4x.rimusic.utils.center
+import app.it.fast4x.rimusic.utils.color
+import app.it.fast4x.rimusic.utils.semiBold
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -596,7 +603,46 @@ fun HomeLibrary(
                                         ),
                                     disableScrollingText = disableScrollingText,
                                     isYoutubePlaylist = preview.playlist.isYoutubePlaylist,
-                                    isEditable = preview.playlist.isEditable
+                                    isEditable = preview.playlist.isEditable,
+                                    thumbnailOverlay = {
+                                        if (sort.sortBy == PlaylistSortBy.PlayCount) {
+                                            val playCount by Database.eventTable.getPlaylistPlayCount(preview.playlist.id).collectAsState(0, Dispatchers.IO)
+                                            if (playCount > 0) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .fillMaxSize()
+                                                        .clip(app.n_zik.android.thumbnailShape())
+                                                        .background(colorPalette().overlay)
+                                                ) {
+                                                    BasicText(
+                                                        text = playCount.toString(),
+                                                        style = typography().s.semiBold.center.color(colorPalette().onOverlay),
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis,
+                                                        modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
+                                                    )
+                                                }
+                                            }
+                                        } else if (sort.sortBy == PlaylistSortBy.ListeningTime) {
+                                            val playTime by Database.eventTable.getPlaylistTotalPlayTime(preview.playlist.id).collectAsState(0L, Dispatchers.IO)
+                                            if (playTime > 0) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .fillMaxSize()
+                                                        .clip(app.n_zik.android.thumbnailShape())
+                                                        .background(colorPalette().overlay)
+                                                ) {
+                                                    BasicText(
+                                                        text = app.it.fast4x.rimusic.utils.formatAsTime(playTime),
+                                                        style = typography().s.semiBold.center.color(colorPalette().onOverlay),
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis,
+                                                        modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
                                 )
                             }
                         }

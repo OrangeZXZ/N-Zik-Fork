@@ -1,7 +1,9 @@
 package app.it.fast4x.rimusic.models
 
 import androidx.compose.runtime.Immutable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import app.it.fast4x.rimusic.cleanPrefix
 import app.it.fast4x.rimusic.utils.durationTextToMillis
@@ -21,6 +23,8 @@ data class Song(
     val totalPlayTimeMs: Long = 0,
     val position: Int = -1
 ) {
+    @ColumnInfo(name = "playCount", defaultValue = "0")
+    var playCount: Int = 0
     companion object {
         fun makePlaceholder( id: String ) =
             Song(

@@ -78,6 +78,8 @@ import app.it.fast4x.rimusic.ui.screens.settings.SettingsEntry
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.px
 import app.it.fast4x.rimusic.ui.styling.shimmer
+import app.it.fast4x.rimusic.ui.styling.overlay
+import app.it.fast4x.rimusic.ui.styling.onOverlay
 import app.it.fast4x.rimusic.utils.UpdateYoutubeAlbum
 import app.it.fast4x.rimusic.utils.UpdateYoutubeArtist
 import app.it.fast4x.rimusic.utils.asMediaItem
@@ -335,15 +337,21 @@ fun StatisticsPage(
                                     )
                                 },
                                 thumbnailOverlay = {
-                                    BasicText(
-                                        text = "${it + 1}",
-                                        style = typography().s.semiBold.center.color(colorPalette().text),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
+                                    Box(
                                         modifier = Modifier
-                                            .width(thumbnailSizeDp)
-                                            .align(Alignment.Center)
-                                    )
+                                            .fillMaxSize()
+                                            .clip(app.n_zik.android.thumbnailShape())
+                                            .background(colorPalette().overlay)
+                                    ) {
+                                        BasicText(
+                                            text = "${it + 1}",
+                                            style = typography().s.semiBold.center.color(colorPalette().onOverlay),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier
+                                                .align(Alignment.Center)
+                                        )
+                                    }
                                 }
                             )
                         }
@@ -360,7 +368,7 @@ fun StatisticsPage(
 
                         ArtistItem(
                             thumbnailUrl = artists[it].thumbnailUrl,
-                            name = "${it+1}. ${cleanPrefix(artists[it].name ?: "")}",
+                            name = cleanPrefix(artists[it].name ?: ""),
                             showName = true,
                             subscribersCount = null,
                             thumbnailSizePx = artistThumbnailSizePx,
@@ -379,7 +387,24 @@ fun StatisticsPage(
                                         }
                                     }
                                 ),
-                            disableScrollingText = disableScrollingText
+                            disableScrollingText = disableScrollingText,
+                            thumbnailOverlay = {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(app.n_zik.android.thumbnailShape())
+                                        .background(colorPalette().overlay)
+                                ) {
+                                    BasicText(
+                                        text = "${it + 1}",
+                                        style = typography().s.semiBold.center.color(colorPalette().onOverlay),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .align(Alignment.Center)
+                                    )
+                                }
+                            }
                         )
                     }
 
@@ -399,7 +424,7 @@ fun StatisticsPage(
 
                         AlbumItem(
                             thumbnailUrl = albums[it].thumbnailUrl,
-                            title = "${it+1}. ${albums[it].title}",
+                            title = albums[it].title,
                             authors = albums[it].authorsText,
                             year = albums[it].year,
                             thumbnailSizePx = albumThumbnailSizePx,
@@ -422,7 +447,24 @@ fun StatisticsPage(
                                         }
                                     }
                                 ),
-                            disableScrollingText = disableScrollingText
+                            disableScrollingText = disableScrollingText,
+                            thumbnailOverlay = {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(app.n_zik.android.thumbnailShape())
+                                        .background(colorPalette().overlay)
+                                ) {
+                                    BasicText(
+                                        text = "${it + 1}",
+                                        style = typography().s.semiBold.center.color(colorPalette().onOverlay),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier
+                                            .align(Alignment.Center)
+                                    )
+                                }
+                            }
                         )
                     }
 
@@ -443,6 +485,7 @@ fun StatisticsPage(
 
                         PlaylistItem(
                             thumbnailContent = {
+                                Box(modifier = Modifier.fillMaxSize()) {
                                 if (thumbnails.toSet().size == 1) {
                                     ImageCacheFactory.AsyncImage(
                                         thumbnailUrl = thumbnails.first(),
@@ -478,14 +521,29 @@ fun StatisticsPage(
                                                 )
                                         }
                                     }
-                                }
-                            },
-                            songCount = playlists[it].songCount,
-                            name = "${it+1}. ${playlists[it].playlist.name}",
-                            channelName = null,
-                            thumbnailSizeDp = playlistThumbnailSizeDp,
-                            alternative = true,
-                            modifier = Modifier
+                                    } // end if-else
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clip(app.n_zik.android.thumbnailShape())
+                                            .background(colorPalette().overlay)
+                                    ) {
+                                        BasicText(
+                                            text = "${it + 1}",
+                                            style = typography().s.semiBold.center.color(colorPalette().onOverlay),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier.align(Alignment.Center)
+                                        )
+                                    }
+                                    } // end outer Box
+                                },
+                                songCount = playlists[it].songCount,
+                                name = playlists[it].playlist.name,
+                                channelName = null,
+                                thumbnailSizeDp = playlistThumbnailSizeDp,
+                                alternative = true,
+                                modifier = Modifier
                                 .clip(uiRoundnessShape()).combinedClickable(
                                     onClick = {
                                         val playlistId: String = playlists[it].playlist.id.toString()

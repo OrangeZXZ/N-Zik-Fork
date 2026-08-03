@@ -73,8 +73,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import app.it.fast4x.rimusic.enums.PlaylistSortBy
 import app.it.fast4x.rimusic.enums.SortOrder
-import app.it.fast4x.rimusic.utils.playlistSortByKey
-import app.it.fast4x.rimusic.utils.playlistSortOrderKey
+import app.it.fast4x.rimusic.utils.Preference
 import androidx.compose.runtime.collectAsState
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
@@ -273,8 +272,8 @@ fun AddToPlaylistItemMenu(
 
     newPlaylistDialog.Render()
 
-    val sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
-    val sortOrder by rememberPreference(playlistSortOrderKey, SortOrder.Descending)
+    val sortBy by rememberPreference(Preference.HOME_LIBRARY_PLAYLIST_SORT_BY.key, PlaylistSortBy.SongCount)
+    val sortOrder by rememberPreference(Preference.HOME_LIBRARY_PLAYLIST_SORT_ORDER.key, SortOrder.Ascending)
     val playlistPreviews by remember {
         Database.playlistTable.sortPreviews( sortBy, sortOrder )
     }.collectAsState( emptyList(), Dispatchers.IO )
@@ -509,8 +508,8 @@ fun AddToPlaylistArtistSongsMenu(
 
     newPlaylistDialog.Render()
 
-    val sortBy by rememberPreference(playlistSortByKey, PlaylistSortBy.DateAdded)
-    val sortOrder by rememberPreference(playlistSortOrderKey, SortOrder.Descending)
+    val sortBy by rememberPreference(Preference.HOME_LIBRARY_PLAYLIST_SORT_BY.key, PlaylistSortBy.SongCount)
+    val sortOrder by rememberPreference(Preference.HOME_LIBRARY_PLAYLIST_SORT_ORDER.key, SortOrder.Ascending)
     val playlistPreviews by remember {
         Database.playlistTable.sortPreviews( sortBy, sortOrder )
     }.collectAsState( emptyList(), Dispatchers.IO )

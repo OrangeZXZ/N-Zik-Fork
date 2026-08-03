@@ -1,3 +1,26 @@
+Fixed:
+- fix(sort): fix 34 inverted SQL sort queries across 6 database tables
+  - All sort methods for PlayCount, PlayTime, RelativePlayTime, DatePlayed, SongsCount, ListeningTime, Duration now correctly return ASC order instead of DESC
+  - Affected tables: SongTable, SongPlaylistMapTable, AlbumTable, ArtistTable, PlaylistTable, FormatTable
+  - Root cause: methods used `sortedByDescending` or `ORDER BY ... DESC` but `SortOrder.applyTo()` assumes ASC input, causing user's sort direction to be inverted
+- fix(sort): fix HistoryList.kt DATE sort double-reversal bug
+  - Removed extra `.reversed()` that was canceling the sort direction for DATE history sorting
+- fix(sort): fix OnDeviceSongSortBy.DateAdded wrong label (was showing "Date Played" instead of "Date Added")
+- fix(sort): align Android Auto defaults with Preference.kt
+  - Fixed TOP/ALL/FAVORITES/DOWNLOADED defaults from mismatched values to correct Title+Ascending
+  - Replaced in-memory sorts with BDD sort methods in SongsBrowseHandler, PlaylistsBrowseHandler, PlaylistDetailHandler, AutoSessionCallback
+- fix(sort): replace old-style preference keys in PlayerMenu.kt
+  - Changed `playlistSortByKey`/`playlistSortOrderKey` to `Preference.HOME_LIBRARY_PLAYLIST_SORT_BY`/`HOME_LIBRARY_PLAYLIST_SORT_ORDER`
+- fix(favorites): change default favorites sort from Title to DateLiked+Ascending
+- feat(sort): reorder enum declarations for logical menu grouping
+  - All sort enums now group by type: Text → Numbers → Dates → Other
+  - SongSortBy, PlaylistSongSortBy, AlbumSortBy, PlaylistSortBy, ArtistSortBy
+- feat(sort): add visual highlight for selected sort option in sort menu
+  - Currently selected option now shows accent color background (alpha 0.2f on icon, 0.1f on row)
+- feat(thumbnail): add overlay background to StatisticsPage and AlbumDetails track numbers
+- fix(deps): extract FilterMenu from deleted SortMenu.kt into new FilterMenu.kt
+  - Updated imports in HomeAlbum.kt and HomeArtist.kt to use new location
+
 Improvement:
 - Improved app header (added 32-bit tags and replaced "debug enabled" message with an elegant tag).
 

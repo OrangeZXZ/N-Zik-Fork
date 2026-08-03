@@ -16,7 +16,7 @@ enum class OnDeviceSongSortBy(
 
     Title( MediaStore.Audio.Media.TITLE, R.string.sort_title, R.drawable.text ),
 
-    DateAdded( MediaStore.Audio.Media.DATE_ADDED, R.string.sort_date_played, R.drawable.calendar ),
+    DateAdded( MediaStore.Audio.Media.DATE_ADDED, R.string.sort_date_added, R.drawable.calendar ),
 
     Artist( MediaStore.Audio.Media.ARTIST, R.string.sort_artist, R.drawable.artist ),
 

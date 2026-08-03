@@ -209,6 +209,60 @@ interface EventTable {
     @Query("SELECT IFNULL(SUM(E.playtime), 0) FROM Event E WHERE E.songId = :songId AND E.timestamp BETWEEN :from AND :to")
     fun getSongPlayTimeBetween(songId: String, from: Long, to: Long = System.currentTimeMillis()): Flow<Long>
 
+    @Query("SELECT COUNT(*) FROM Event E WHERE E.songId = :songId")
+    fun getPlayCount(songId: String): Flow<Int>
+
+    @Query("SELECT E.songId, COUNT(*) as playCount FROM Event E GROUP BY E.songId")
+    fun getAllPlayCounts(): Flow<List<PlayCountTuple>>
+
+    @Query("""
+        SELECT IFNULL(SUM(E.playtime), 0)
+        FROM Event E
+        JOIN SongArtistMap SAM ON SAM.songId = E.songId
+        WHERE SAM.artistId = :artistId
+    """)
+    fun getArtistTotalPlayTime(artistId: String): Flow<Long>
+
+    @Query("""
+        SELECT COUNT(E.id)
+        FROM Event E
+        JOIN SongArtistMap SAM ON SAM.songId = E.songId
+        WHERE SAM.artistId = :artistId
+    """)
+    fun getArtistPlayCount(artistId: String): Flow<Int>
+
+    @Query("""
+        SELECT IFNULL(SUM(E.playtime), 0)
+        FROM Event E
+        JOIN SongAlbumMap SAM ON SAM.songId = E.songId
+        WHERE SAM.albumId = :albumId
+    """)
+    fun getAlbumTotalPlayTime(albumId: String): Flow<Long>
+
+    @Query("""
+        SELECT COUNT(E.id)
+        FROM Event E
+        JOIN SongAlbumMap SAM ON SAM.songId = E.songId
+        WHERE SAM.albumId = :albumId
+    """)
+    fun getAlbumPlayCount(albumId: String): Flow<Int>
+
+    @Query("""
+        SELECT IFNULL(SUM(E.playtime), 0)
+        FROM Event E
+        JOIN SongPlaylistMap SPM ON SPM.songId = E.songId
+        WHERE SPM.playlistId = :playlistId
+    """)
+    fun getPlaylistTotalPlayTime(playlistId: Long): Flow<Long>
+
+    @Query("""
+        SELECT COUNT(E.id)
+        FROM Event E
+        JOIN SongPlaylistMap SPM ON SPM.songId = E.songId
+        WHERE SPM.playlistId = :playlistId
+    """)
+    fun getPlaylistPlayCount(playlistId: Long): Flow<Int>
+
     @Query("UPDATE Event SET songId = :newId WHERE songId = :oldId")
     fun updateSongId(oldId: String, newId: String)
 
@@ -218,5 +272,10 @@ interface EventTable {
     @Query("DELETE FROM Event WHERE songId = :songId")
     fun deleteBySongId(songId: String): Int
 }
+
+data class PlayCountTuple(
+    val songId: String,
+    val playCount: Int
+)
 
 

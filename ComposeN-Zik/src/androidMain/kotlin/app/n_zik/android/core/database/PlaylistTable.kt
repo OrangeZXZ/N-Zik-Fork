@@ -257,10 +257,21 @@ interface PlaylistTable {
         JOIN Playlist P ON P.id = spm.playlistId
         JOIN Song S ON S.id = spm.songId
         GROUP BY P.id
-        ORDER BY SUM(S.totalPlayTimeMs)
+        ORDER BY SUM(S.totalPlayTimeMs) ASC
         LIMIT :limit
     """)
-    fun sortPreviewsByMostPlayed( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>>
+    fun sortPreviewsByListeningTime( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>>
+
+    @Query("""
+        SELECT DISTINCT P.*, COUNT(spm.songId) as songCount
+        FROM SongPlaylistMap spm
+        JOIN Playlist P ON P.id = spm.playlistId
+        JOIN Song S ON S.id = spm.songId
+        GROUP BY P.id
+        ORDER BY SUM(S.playCount) ASC
+        LIMIT :limit
+    """)
+    fun sortPreviewsByPlayCount( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>>
 
     @Query("""
         SELECT DISTINCT 
@@ -312,7 +323,8 @@ interface PlaylistTable {
         sortOrder: SortOrder,
         limit: Int = Int.MAX_VALUE
     ): Flow<List<PlaylistPreview>> = when( sortBy ) {
-        PlaylistSortBy.MostPlayed   -> sortPreviewsByMostPlayed()
+        PlaylistSortBy.ListeningTime -> sortPreviewsByListeningTime( limit )
+        PlaylistSortBy.PlayCount              -> sortPreviewsByPlayCount()
         PlaylistSortBy.Name         -> sortPreviewsByName()
         PlaylistSortBy.DateAdded    -> allAsPreview()       // Already sorted by ROWID
         PlaylistSortBy.SongCount    -> sortPreviewsBySongCount()

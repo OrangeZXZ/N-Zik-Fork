@@ -24,7 +24,7 @@ object Preference {
 
     //<editor-fold defaultstate="collapsed" desc="Sort by">
     val HOME_SONGS_SORT_BY = Key( "HomeSongsSortBy", SongSortBy.Title )
-    val HOME_SONGS_FAVORITES_SORT_BY = Key( "HomeSongsFavoritesSortBy", SongSortBy.Title )
+    val HOME_SONGS_FAVORITES_SORT_BY = Key( "HomeSongsFavoritesSortBy", SongSortBy.DateLiked )
     val HOME_SONGS_OFFLINE_SORT_BY = Key( "HomeSongsOfflineSortBy", SongSortBy.Title )
     val HOME_SONGS_DOWNLOADED_SORT_BY = Key( "HomeSongsDownloadedSortBy", SongSortBy.Title )
     val HOME_SONGS_TOP_SORT_BY = Key( "HomeSongsTopSortBy", SongSortBy.Title )

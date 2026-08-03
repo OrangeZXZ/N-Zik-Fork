@@ -121,6 +121,18 @@ interface FormatTable {
             list.sortedBy { it.song.relativePlayTime() }
         }
 
+    @Query("""
+        SELECT DISTINCT F.*, S.id, S.title, S.artistsText, S.durationText, S.thumbnailUrl, S.likedAt, S.totalPlayTimeMs, S.position, COUNT(E.songId) as playCount
+        FROM Format F
+        JOIN Song S ON S.id = F.songId
+        LEFT JOIN Event E ON E.songId = F.songId
+        WHERE S.totalPlayTimeMs >= :excludeHidden
+        GROUP BY F.songId
+        ORDER BY playCount ASC
+        LIMIT :limit
+    """)
+    fun sortAllWithSongsByPlayCount( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<FormatWithSong>>
+
     fun sortAllWithSongsByTitle( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<FormatWithSong>> =
         allWithSongs( limit, excludeHidden ).map { list ->
             list.sortedBy { it.song.cleanTitle() }
@@ -132,7 +144,7 @@ interface FormatTable {
         JOIN Song S ON S.id = F.songId
         LEFT JOIN Event E ON E.songId = F.songId 
         WHERE totalPlayTimeMs >= :excludeHidden
-        ORDER BY E.timestamp
+        ORDER BY E.timestamp ASC
         LIMIT :limit
     """)
     fun sortAllWithSongsByDatePlayed( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<FormatWithSong>>
@@ -215,6 +227,7 @@ interface FormatTable {
     ): Flow<List<FormatWithSong>> = when( sortBy ){
         SongSortBy.PlayTime         -> sortAllWithSongsByPlayTime( limit, excludeHidden )
         SongSortBy.RelativePlayTime -> sortAllWithSongsByRelativePlayTime( limit, excludeHidden )
+        SongSortBy.PlayCount        -> sortAllWithSongsByPlayCount( limit, excludeHidden )
         SongSortBy.Title            -> sortAllWithSongsByTitle( limit, excludeHidden )
         SongSortBy.DateAdded        -> allWithSongs( limit, excludeHidden )      // Already sorted by ROWID
         SongSortBy.DatePlayed       -> sortAllWithSongsByDatePlayed( limit, excludeHidden )

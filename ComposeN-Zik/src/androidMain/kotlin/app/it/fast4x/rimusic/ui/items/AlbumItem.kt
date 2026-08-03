@@ -1,4 +1,4 @@
-﻿@file:UnstableApi
+@file:UnstableApi
 package app.it.fast4x.rimusic.ui.items
 
 import androidx.annotation.OptIn
@@ -63,7 +63,8 @@ fun AlbumItem(
     showAuthors: Boolean = false,
     disableScrollingText: Boolean,
     showInfo: Boolean = true,
-    isYoutubeAlbum: Boolean = false
+    isYoutubeAlbum: Boolean = false,
+    thumbnailOverlay: @Composable () -> Unit = {}
 ) {
     AlbumItem(
         thumbnailUrl = album.thumbnailUrl,
@@ -78,7 +79,8 @@ fun AlbumItem(
         modifier = modifier,
         disableScrollingText = disableScrollingText,
         showInfo = showInfo,
-        isYoutubeAlbum = isYoutubeAlbum
+        isYoutubeAlbum = isYoutubeAlbum,
+        thumbnailOverlay = thumbnailOverlay
     )
 }
 
@@ -93,7 +95,8 @@ fun AlbumItem(
     showAuthors: Boolean? = false,
     isYoutubeAlbum: Boolean = false,
     showInfo: Boolean = true,
-    disableScrollingText: Boolean
+    disableScrollingText: Boolean,
+    thumbnailOverlay: @Composable () -> Unit = {}
 ) {
     AlbumItem(
         thumbnailUrl = album.thumbnail?.url,
@@ -107,7 +110,8 @@ fun AlbumItem(
         modifier = modifier,
         disableScrollingText = disableScrollingText,
         showInfo = showInfo,
-        isYoutubeAlbum = isYoutubeAlbum
+        isYoutubeAlbum = isYoutubeAlbum,
+        thumbnailOverlay = thumbnailOverlay
     )
 }
 
@@ -125,7 +129,8 @@ fun AlbumItem(
     showAuthors: Boolean? = false,
     disableScrollingText: Boolean,
     showInfo: Boolean = true,
-    isYoutubeAlbum: Boolean = false
+    isYoutubeAlbum: Boolean = false,
+    thumbnailOverlay: @Composable () -> Unit = {}
 ) {
     ItemContainer(
         alternative = alternative,
@@ -143,6 +148,7 @@ fun AlbumItem(
                 thumbnailUrl = thumbnailUrl,
                 contentScale = if (alternative) ContentScale.FillWidth else ContentScale.Crop
             )
+            thumbnailOverlay()
 
             if (isYoutubeAlbum) {
                 Image(

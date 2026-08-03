@@ -84,6 +84,7 @@ open class Sort<T: Enum<T>> (
     @Composable
     override fun ListMenu() = ListMenu.Menu(title = menuIconTitle) {
         sortBy.javaClass.enumConstants?.forEach {
+            val isSelected = it == sortBy
             ListMenu.Entry(
                 text = if (it is TextView) it.text else it.name,
                 icon = {
@@ -91,7 +92,7 @@ open class Sort<T: Enum<T>> (
                         modifier = Modifier
                             .size(32.dp)
                             .background(
-                                color = colorPalette().accent.copy(alpha = 0.1f),
+                                color = if (isSelected) colorPalette().accent.copy(alpha = 0.2f) else colorPalette().accent.copy(alpha = 0.1f),
                                 shape = uiRoundnessShape()
                             ),
                         contentAlignment = Alignment.Center
@@ -108,6 +109,7 @@ open class Sort<T: Enum<T>> (
                         )
                     }
                 },
+                modifier = if (isSelected) Modifier.background(colorPalette().accent.copy(alpha = 0.1f), uiRoundnessShape()) else Modifier,
                 onClick = {
                     menuState.hide()
                     sortBy = it
@@ -122,6 +124,7 @@ open class Sort<T: Enum<T>> (
             items = sortBy.javaClass.enumConstants ?: emptyArray(),
             key = Enum<T>::ordinal
         ) {
+            val isSelected = it == sortBy
             GridMenu.Entry(
                 text = if (it is TextView) it.text else it.name,
                 icon = {
@@ -129,7 +132,7 @@ open class Sort<T: Enum<T>> (
                         modifier = Modifier
                             .size(32.dp)
                             .background(
-                                color = colorPalette().accent.copy(alpha = 0.1f),
+                                color = if (isSelected) colorPalette().accent.copy(alpha = 0.2f) else colorPalette().accent.copy(alpha = 0.1f),
                                 shape = uiRoundnessShape()
                             ),
                         contentAlignment = Alignment.Center

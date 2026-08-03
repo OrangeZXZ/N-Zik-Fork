@@ -80,7 +80,7 @@ import app.it.fast4x.rimusic.ui.components.tab.TabHeader
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Randomizer
 import app.n_zik.android.components.menu.album.AlbumItemMenu
-import app.it.fast4x.rimusic.ui.components.themed.FilterMenu
+import app.n_zik.android.components.menu.FilterMenu
 import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import app.it.fast4x.rimusic.ui.components.themed.HeaderInfo
@@ -102,6 +102,9 @@ import app.it.fast4x.rimusic.utils.filterByKey
 import app.it.fast4x.rimusic.utils.importYTMLikedAlbums
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
+import app.it.fast4x.rimusic.utils.formatAsTime
+import app.it.fast4x.rimusic.utils.center
+import app.it.fast4x.rimusic.utils.color
 import app.it.fast4x.rimusic.utils.showFavoritesAlbumKey
 import app.it.fast4x.rimusic.utils.homeAlbumsOrderKey
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
@@ -127,6 +130,8 @@ import it.fast4x.innertube.utils.from
 import app.kreate.android.me.knighthat.utils.PropUtils
 import app.it.fast4x.rimusic.utils.parseArtists
 import app.it.fast4x.rimusic.models.SongAlbumMap
+import app.it.fast4x.rimusic.ui.styling.onOverlay
+import app.it.fast4x.rimusic.ui.styling.overlay
 import app.it.fast4x.rimusic.utils.asMediaItem
 import kotlinx.coroutines.CoroutineScope
 import app.n_zik.android.appContext
@@ -576,7 +581,46 @@ fun HomeAlbums(
                                 )
                                 .clip(thumbnailShape()),
                             disableScrollingText = disableScrollingText,
-                            isYoutubeAlbum = album.isYoutubeAlbum
+                            isYoutubeAlbum = album.isYoutubeAlbum,
+                            thumbnailOverlay = {
+                                if (sort.sortBy == AlbumSortBy.PlayCount) {
+                                    val playCount by Database.eventTable.getAlbumPlayCount(album.id).collectAsState(0, Dispatchers.IO)
+                                    if (playCount > 0) {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .clip(app.n_zik.android.thumbnailShape())
+                                                .background(colorPalette().overlay)
+                                        ) {
+                                            BasicText(
+                                                text = playCount.toString(),
+                                                style = typography.s.semiBold.center.color(colorPalette().onOverlay),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
+                                            )
+                                        }
+                                    }
+                                } else if (sort.sortBy == AlbumSortBy.ListeningTime) {
+                                    val playTime by Database.eventTable.getAlbumTotalPlayTime(album.id).collectAsState(0L, Dispatchers.IO)
+                                    if (playTime > 0) {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .clip(app.n_zik.android.thumbnailShape())
+                                                .background(colorPalette().overlay)
+                                        ) {
+                                            BasicText(
+                                                text = formatAsTime(playTime),
+                                                style = typography.s.semiBold.center.color(colorPalette().onOverlay),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                         )
                             }
                         }

@@ -17,6 +17,7 @@ import app.it.fast4x.rimusic.models.Song
 import app.n_zik.android.playback.services.LOCAL_KEY_PREFIX
 import app.it.fast4x.rimusic.utils.durationToMillis
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
 
@@ -403,6 +404,17 @@ interface SongTable {
             list.sortedBy( Song::relativePlayTime )
         }
 
+    @Query("""
+        SELECT DISTINCT S.id, S.title, S.artistsText, S.durationText, S.thumbnailUrl, S.likedAt, S.totalPlayTimeMs, S.position, COUNT(E.songId) as playCount
+        FROM Song S
+        LEFT JOIN Event E ON E.songId = S.id
+        WHERE S.totalPlayTimeMs >= :excludeHidden
+        GROUP BY S.id
+        ORDER BY playCount ASC
+        LIMIT :limit
+    """)
+    fun sortAllByPlayCount( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>>
+
     fun sortAllByTitle( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>> =
         all( limit, excludeHidden ).map { list ->
             list.sortedBy( Song::cleanTitle )
@@ -413,7 +425,7 @@ interface SongTable {
         FROM Song S 
         LEFT JOIN Event E ON E.songId = S.id 
         WHERE totalPlayTimeMs >= :excludeHidden
-        ORDER BY E.timestamp
+        ORDER BY E.timestamp ASC
         LIMIT :limit
     """)
     fun sortAllByDatePlayed( limit: Int = Int.MAX_VALUE, excludeHidden: Boolean = false ): Flow<List<Song>>
@@ -483,6 +495,7 @@ interface SongTable {
     ): Flow<List<Song>> = when( sortBy ){
         SongSortBy.PlayTime         -> sortAllByPlayTime( limit, excludeHidden )
         SongSortBy.RelativePlayTime -> sortAllByRelativePlayTime( limit, excludeHidden )
+        SongSortBy.PlayCount        -> sortAllByPlayCount( limit, excludeHidden )
         SongSortBy.Title            -> sortAllByTitle( limit, excludeHidden )
         SongSortBy.DateAdded        -> all( limit, excludeHidden )      // Already sorted by ROWID
         SongSortBy.DatePlayed       -> sortAllByDatePlayed( limit, excludeHidden )
@@ -521,6 +534,17 @@ interface SongTable {
             list.sortedBy( Song::relativePlayTime )
         }
 
+    @Query("""
+        SELECT DISTINCT S.id, S.title, S.artistsText, S.durationText, S.thumbnailUrl, S.likedAt, S.totalPlayTimeMs, S.position, COUNT(E.songId) as playCount
+        FROM Song S
+        LEFT JOIN Event E ON E.songId = S.id
+        WHERE S.likedAt IS NOT NULL AND S.likedAt > 0
+        GROUP BY S.id
+        ORDER BY playCount ASC
+        LIMIT :limit
+    """)
+    fun sortFavoritesByPlayCount( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
+
     fun sortFavoritesByTitle( limit: Int = Int.MAX_VALUE ): Flow<List<Song>> =
         allFavorites( limit ).map { list ->
             list.sortedBy( Song::cleanTitle )
@@ -536,7 +560,7 @@ interface SongTable {
         FROM Song S 
         LEFT JOIN Event E ON E.songId = S.id 
         WHERE likedAt IS NOT NULL AND likedAt > 0
-        ORDER BY E.timestamp
+        ORDER BY E.timestamp ASC
         LIMIT :limit
     """)
     fun sortFavoritesByDatePlayed( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
@@ -588,6 +612,7 @@ interface SongTable {
     ): Flow<List<Song>> = when( sortBy ) {
         SongSortBy.PlayTime         -> sortFavoritesByPlayTime()
         SongSortBy.RelativePlayTime -> sortFavoritesByRelativePlayTime()
+        SongSortBy.PlayCount        -> sortFavoritesByPlayCount()
         SongSortBy.Title            -> sortFavoritesByTitle()
         SongSortBy.DateAdded        -> allFavorites()      // Already sorted by ROWID
         SongSortBy.DatePlayed       -> sortFavoritesByDatePlayed()

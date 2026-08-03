@@ -1,4 +1,4 @@
-﻿package app.it.fast4x.rimusic.ui.items
+package app.it.fast4x.rimusic.ui.items
 
 import androidx.compose.foundation.Image
 import app.n_zik.android.uiRoundnessShape
@@ -60,7 +60,8 @@ fun ArtistItem(
     alternative: Boolean = false,
     showName: Boolean = true,
     disableScrollingText: Boolean,
-    isYoutubeArtist : Boolean = false
+    isYoutubeArtist : Boolean = false,
+    thumbnailOverlay: @Composable () -> Unit = {}
 ) {
     ArtistItem(
         thumbnailUrl = artist.thumbnailUrl,
@@ -72,7 +73,8 @@ fun ArtistItem(
         alternative = alternative,
         showName = showName,
         disableScrollingText = disableScrollingText,
-        isYoutubeArtist = isYoutubeArtist
+        isYoutubeArtist = isYoutubeArtist,
+        thumbnailOverlay = thumbnailOverlay
     )
 }
 
@@ -86,7 +88,8 @@ fun ArtistItem(
     showName: Boolean = true,
     disableScrollingText: Boolean,
     isYoutubeArtist : Boolean = false,
-    smallThumbnail: Boolean = false
+    smallThumbnail: Boolean = false,
+    thumbnailOverlay: @Composable () -> Unit = {}
 ) {
     ArtistItem(
         thumbnailUrl = artist.thumbnail?.url,
@@ -99,7 +102,8 @@ fun ArtistItem(
         showName = showName,
         disableScrollingText = disableScrollingText,
         isYoutubeArtist = isYoutubeArtist,
-        smallThumbnail = smallThumbnail
+        smallThumbnail = smallThumbnail,
+        thumbnailOverlay = thumbnailOverlay
     )
 }
 
@@ -115,7 +119,8 @@ fun ArtistItem(
     showName: Boolean = true,
     disableScrollingText: Boolean,
     isYoutubeArtist : Boolean = false,
-    smallThumbnail: Boolean = false
+    smallThumbnail: Boolean = false,
+    thumbnailOverlay: @Composable () -> Unit = {}
 ) {
     ItemContainer(
         alternative = alternative,
@@ -133,6 +138,7 @@ fun ArtistItem(
                 thumbnailUrl = thumbnailUrl,
                 contentScale = if (alternative) ContentScale.FillWidth else ContentScale.Crop
             )
+            thumbnailOverlay()
             if (isYoutubeArtist) {
                 Image(
                     painter = painterResource(R.drawable.ytmusic),

@@ -45,6 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -80,7 +81,7 @@ import app.it.fast4x.rimusic.ui.components.tab.ItemSize
 import app.it.fast4x.rimusic.ui.components.tab.TabHeader
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Randomizer
-import app.it.fast4x.rimusic.ui.components.themed.FilterMenu
+import app.n_zik.android.components.menu.FilterMenu
 import app.it.fast4x.rimusic.ui.components.themed.FloatingActionsContainerWithScrollToTop
 import app.it.fast4x.rimusic.ui.components.themed.HeaderIconButton
 import app.it.fast4x.rimusic.ui.components.themed.HeaderInfo
@@ -89,6 +90,8 @@ import app.it.fast4x.rimusic.ui.items.ArtistItem
 import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.ui.styling.LocalAppearance
+import app.it.fast4x.rimusic.ui.styling.onOverlay
+import app.it.fast4x.rimusic.ui.styling.overlay
 import app.it.fast4x.rimusic.utils.Preference.HOME_ARTISTS_FAVORITES_SORT_BY
 import app.it.fast4x.rimusic.utils.Preference.HOME_ARTISTS_FAVORITES_SORT_ORDER
 import app.it.fast4x.rimusic.utils.Preference.HOME_ARTISTS_LIBRARY_SORT_BY
@@ -102,6 +105,9 @@ import app.it.fast4x.rimusic.utils.filterByKey
 import app.it.fast4x.rimusic.utils.importYTMSubscribedChannels
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
+import app.it.fast4x.rimusic.utils.formatAsTime
+import app.it.fast4x.rimusic.utils.center
+import app.it.fast4x.rimusic.utils.color
 import app.it.fast4x.rimusic.utils.showFavoritesArtistKey
 import app.it.fast4x.rimusic.utils.homeArtistsOrderKey
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
@@ -524,7 +530,46 @@ fun HomeArtists(
                                         }
                                     ),
                                     disableScrollingText = disableScrollingText,
-                                    isYoutubeArtist = artist.isYoutubeArtist
+                                    isYoutubeArtist = artist.isYoutubeArtist,
+                                    thumbnailOverlay = {
+                                        if (sort.sortBy == ArtistSortBy.PlayCount) {
+                                            val playCount by Database.eventTable.getArtistPlayCount(artist.id).collectAsState(0, Dispatchers.IO)
+                                            if (playCount > 0) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .fillMaxSize()
+                                                        .clip(app.n_zik.android.thumbnailShape())
+                                                        .background(colorPalette().overlay)
+                                                ) {
+                                                    BasicText(
+                                                        text = playCount.toString(),
+                                                        style = typography.s.semiBold.center.color(colorPalette().onOverlay),
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis,
+                                                        modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
+                                                    )
+                                                }
+                                            }
+                                        } else if (sort.sortBy == ArtistSortBy.ListeningTime) {
+                                            val playTime by Database.eventTable.getArtistTotalPlayTime(artist.id).collectAsState(0L, Dispatchers.IO)
+                                            if (playTime > 0) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .fillMaxSize()
+                                                        .clip(app.n_zik.android.thumbnailShape())
+                                                        .background(colorPalette().overlay)
+                                                ) {
+                                                    BasicText(
+                                                        text = formatAsTime(playTime),
+                                                        style = typography.s.semiBold.center.color(colorPalette().onOverlay),
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis,
+                                                        modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
                                 )
                             }
                         }

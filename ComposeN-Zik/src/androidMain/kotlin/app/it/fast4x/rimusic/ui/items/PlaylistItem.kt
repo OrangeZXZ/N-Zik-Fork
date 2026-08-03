@@ -159,7 +159,8 @@ fun PlaylistItem(
     disableScrollingText: Boolean,
     isYoutubePlaylist: Boolean,
     showInfo: Boolean = true,
-    isEditable: Boolean
+    isEditable: Boolean,
+    thumbnailOverlay: @Composable () -> Unit = {}
 ) {
     val context = LocalContext.current
 
@@ -191,7 +192,8 @@ fun PlaylistItem(
         disableScrollingText = disableScrollingText,
         isYoutubePlaylist = isYoutubePlaylist,
         showInfo = showInfo,
-        isEditable = isEditable
+        isEditable = isEditable,
+        thumbnailOverlay = thumbnailOverlay
     )
 }
 
@@ -251,7 +253,8 @@ fun PlaylistItem(
     disableScrollingText: Boolean,
     isYoutubePlaylist : Boolean = false,
     showInfo: Boolean = true,
-    isEditable : Boolean = false
+    isEditable : Boolean = false,
+    thumbnailOverlay: @Composable () -> Unit = {}
 ) {
     ItemContainer(
         alternative = alternative,
@@ -266,6 +269,7 @@ fun PlaylistItem(
                 .background(colorPalette().background4)
         ) {
             thumbnailContent()
+            thumbnailOverlay()
 
             name ?: return@BoxWithConstraints
             val (icon, color) = when {

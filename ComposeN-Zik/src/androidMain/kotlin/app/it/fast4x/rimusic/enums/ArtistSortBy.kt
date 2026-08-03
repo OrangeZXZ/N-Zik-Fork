@@ -12,6 +12,10 @@ enum class ArtistSortBy(
 
     Name( R.string.sort_artist, R.drawable.text ),
 
+    PlayCount( R.string.sort_play_count, R.drawable.play ),
+
+    ListeningTime( R.string.sort_listening_time, R.drawable.trending ),
+
     DateAdded( R.string.sort_date_added, R.drawable.time ),
 
     Custom( R.string.sort_custom_order, R.drawable.position );

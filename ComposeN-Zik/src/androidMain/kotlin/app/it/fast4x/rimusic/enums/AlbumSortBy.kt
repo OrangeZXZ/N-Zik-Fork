@@ -12,15 +12,19 @@ enum class AlbumSortBy(
 
     Title( R.string.sort_album, R.drawable.text ),
 
-    Year( R.string.sort_album_year, R.drawable.calendar ),
-
-    DateAdded( R.string.sort_date_added, R.drawable.time ),
-
     Artist( R.string.sort_artist, R.drawable.artist ),
 
     Songs( R.string.sort_songs_number, R.drawable.medical ),
 
     Duration( R.string.sort_duration, R.drawable.time ),
+
+    PlayCount( R.string.sort_play_count, R.drawable.play ),
+
+    ListeningTime( R.string.sort_listening_time, R.drawable.trending ),
+
+    DateAdded( R.string.sort_date_added, R.drawable.time ),
+
+    Year( R.string.sort_album_year, R.drawable.calendar ),
 
     Custom( R.string.sort_custom_order, R.drawable.position );
 }

@@ -57,18 +57,8 @@ class PlaylistsBrowseHandler : BrowseHandler {
                 val shuffleItem = AutoSessionConstants.shuffleItem(context, AutoSessionConstants.ID_PLAYLISTS_LOCAL_SHUFFLE)
                 val sortBy = context.preferences.getEnum(Preference.HOME_LIBRARY_PLAYLIST_SORT_BY.key, PlaylistSortBy.SongCount)
                 val sortOrder = context.preferences.getEnum(Preference.HOME_LIBRARY_PLAYLIST_SORT_ORDER.key, SortOrder.Ascending)
-                val playlists = database.playlistTable.allAsPreview().first()
+                val playlists = database.playlistTable.sortPreviews(sortBy, sortOrder).first()
                     .filter { !it.playlist.isYoutubePlaylist && !it.playlist.name.startsWith(PINNED_PREFIX, true) && !it.playlist.name.startsWith(MONTHLY_PREFIX, true) }
-                    .let { list ->
-                        when (sortBy) {
-                            PlaylistSortBy.Name -> list.sortedBy { it.playlist.cleanName() }
-                            PlaylistSortBy.SongCount -> list.sortedBy { it.songCount }
-                            PlaylistSortBy.DateAdded -> list.sortedByDescending { it.playlist.id }
-                            PlaylistSortBy.Custom -> list.sortedBy { it.playlist.position }
-                            else -> list.sortedBy { it.songCount }
-                        }
-                    }
-                    .let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
                     .map { preview -> browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
                 listOf(shuffleItem) + playlists
             }
@@ -76,18 +66,8 @@ class PlaylistsBrowseHandler : BrowseHandler {
                 val shuffleItem = AutoSessionConstants.shuffleItem(context, AutoSessionConstants.ID_PLAYLISTS_YT_SHUFFLE)
                 val sortBy = context.preferences.getEnum(Preference.HOME_LIBRARY_YT_PLAYLIST_SORT_BY.key, PlaylistSortBy.SongCount)
                 val sortOrder = context.preferences.getEnum(Preference.HOME_LIBRARY_YT_PLAYLIST_SORT_ORDER.key, SortOrder.Ascending)
-                val playlists = database.playlistTable.allAsPreview().first()
+                val playlists = database.playlistTable.sortPreviews(sortBy, sortOrder).first()
                     .filter { it.playlist.isYoutubePlaylist }
-                    .let { list ->
-                        when (sortBy) {
-                            PlaylistSortBy.Name -> list.sortedBy { it.playlist.cleanName() }
-                            PlaylistSortBy.SongCount -> list.sortedBy { it.songCount }
-                            PlaylistSortBy.DateAdded -> list.sortedByDescending { it.playlist.id }
-                            PlaylistSortBy.Custom -> list.sortedBy { it.playlist.position }
-                            else -> list.sortedBy { it.songCount }
-                        }
-                    }
-                    .let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
                     .map { preview -> browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
                 listOf(shuffleItem) + playlists
             }
@@ -96,18 +76,8 @@ class PlaylistsBrowseHandler : BrowseHandler {
                 val shuffleItem = AutoSessionConstants.shuffleItem(context, AutoSessionConstants.ID_PLAYLISTS_PINNED_SHUFFLE)
                 val sortBy = context.preferences.getEnum(Preference.HOME_LIBRARY_PINNED_PLAYLIST_SORT_BY.key, PlaylistSortBy.SongCount)
                 val sortOrder = context.preferences.getEnum(Preference.HOME_LIBRARY_PINNED_PLAYLIST_SORT_ORDER.key, SortOrder.Ascending)
-                val playlists = database.playlistTable.allAsPreview().first()
+                val playlists = database.playlistTable.sortPreviews(sortBy, sortOrder).first()
                     .filter { it.playlist.name.startsWith(PINNED_PREFIX, true) }
-                    .let { list ->
-                        when (sortBy) {
-                            PlaylistSortBy.Name -> list.sortedBy { it.playlist.cleanName() }
-                            PlaylistSortBy.SongCount -> list.sortedBy { it.songCount }
-                            PlaylistSortBy.DateAdded -> list.sortedByDescending { it.playlist.id }
-                            PlaylistSortBy.Custom -> list.sortedBy { it.playlist.position }
-                            else -> list.sortedBy { it.songCount }
-                        }
-                    }
-                    .let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
                     .map { preview -> browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
                 listOf(shuffleItem) + playlists
             }
@@ -115,18 +85,8 @@ class PlaylistsBrowseHandler : BrowseHandler {
                 val shuffleItem = AutoSessionConstants.shuffleItem(context, AutoSessionConstants.ID_PLAYLISTS_MONTHLY_SHUFFLE)
                 val sortBy = context.preferences.getEnum(Preference.HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_BY.key, PlaylistSortBy.SongCount)
                 val sortOrder = context.preferences.getEnum(Preference.HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_ORDER.key, SortOrder.Ascending)
-                val playlists = database.playlistTable.allAsPreview().first()
+                val playlists = database.playlistTable.sortPreviews(sortBy, sortOrder).first()
                     .filter { it.playlist.name.startsWith(MONTHLY_PREFIX, true) }
-                    .let { list ->
-                        when (sortBy) {
-                            PlaylistSortBy.Name -> list.sortedBy { it.playlist.cleanName() }
-                            PlaylistSortBy.SongCount -> list.sortedBy { it.songCount }
-                            PlaylistSortBy.DateAdded -> list.sortedByDescending { it.playlist.id }
-                            PlaylistSortBy.Custom -> list.sortedBy { it.playlist.position }
-                            else -> list.sortedBy { it.songCount }
-                        }
-                    }
-                    .let { list -> if (sortOrder == SortOrder.Descending) list.reversed() else list }
                     .map { preview -> browsableMediaItem("${PlayerServiceModern.PLAYLIST}/${preview.playlist.id}", preview.playlist.name, preview.songCount.toString(), drawableUri(context, R.drawable.library), MediaMetadata.MEDIA_TYPE_PLAYLIST) }
                 listOf(shuffleItem) + playlists
             }

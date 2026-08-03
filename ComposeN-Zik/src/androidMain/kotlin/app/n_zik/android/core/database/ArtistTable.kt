@@ -246,6 +246,30 @@ interface ArtistTable {
             list.sortedBy( Artist::cleanName )
         }
 
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM Artist A
+        JOIN SongArtistMap SAM ON SAM.artistId = A.id
+        JOIN Event E ON E.songId = SAM.songId
+        WHERE A.bookmarkedAt IS NOT NULL
+        GROUP BY A.id
+        ORDER BY SUM(E.playtime) ASC
+        LIMIT :limit
+    """)
+    fun sortFollowingByListeningTime( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>>
+
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM Artist A
+        JOIN SongArtistMap SAM ON SAM.artistId = A.id
+        JOIN Event E ON E.songId = SAM.songId
+        WHERE A.bookmarkedAt IS NOT NULL
+        GROUP BY A.id
+        ORDER BY COUNT(E.id) ASC
+        LIMIT :limit
+    """)
+    fun sortFollowingByPlayCount( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>>
+
     /**
      * Fetch all following artists and sort
      * them according to [sortBy] and [sortOrder].
@@ -272,7 +296,9 @@ interface ArtistTable {
     ): Flow<List<Artist>> = when( sortBy ) {
         ArtistSortBy.Name       -> sortFollowingByName()
         ArtistSortBy.DateAdded  -> allFollowing()
-        ArtistSortBy.Custom     -> sortFollowingByPosition( limit )
+        ArtistSortBy.PlayCount -> sortFollowingByPlayCount( limit )
+        ArtistSortBy.ListeningTime -> sortFollowingByListeningTime( limit )
+        ArtistSortBy.Custom    -> sortFollowingByPosition( limit )
     }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 
@@ -293,6 +319,32 @@ interface ArtistTable {
         allInLibrary( limit ).map { list ->
             list.sortedBy( Artist::cleanName )
         }
+
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM Artist A
+        JOIN SongArtistMap sam ON sam.artistId = A.id
+        JOIN Song S ON S.id = sam.songId
+        JOIN Event E ON E.songId = sam.songId
+        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL
+        GROUP BY A.id
+        ORDER BY SUM(E.playtime) ASC
+        LIMIT :limit
+    """)
+    fun sortInLibraryByListeningTime( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>>
+
+    @Query("""
+        SELECT DISTINCT A.*
+        FROM Artist A
+        JOIN SongArtistMap sam ON sam.artistId = A.id
+        JOIN Song S ON S.id = sam.songId
+        JOIN Event E ON E.songId = sam.songId
+        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL
+        GROUP BY A.id
+        ORDER BY COUNT(E.id) ASC
+        LIMIT :limit
+    """)
+    fun sortInLibraryByPlayCount( limit: Int = Int.MAX_VALUE ): Flow<List<Artist>>
 
     /**
      * Fetch all artists that have their songs mapped to
@@ -321,7 +373,9 @@ interface ArtistTable {
     ): Flow<List<Artist>> = when( sortBy ) {
         ArtistSortBy.Name       -> sortInLibraryByName()
         ArtistSortBy.DateAdded  -> allInLibrary()     // Already sorted by ROWID
-        ArtistSortBy.Custom     -> sortInLibraryByPosition( limit )
+        ArtistSortBy.PlayCount -> sortInLibraryByPlayCount( limit )
+        ArtistSortBy.ListeningTime -> sortInLibraryByListeningTime( limit )
+        ArtistSortBy.Custom    -> sortInLibraryByPosition( limit )
     }.map( sortOrder::applyTo ).take( limit )
     //</editor-fold>
 }

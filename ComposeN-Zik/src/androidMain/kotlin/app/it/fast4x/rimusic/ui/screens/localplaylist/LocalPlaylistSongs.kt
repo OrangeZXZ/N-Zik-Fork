@@ -1291,27 +1291,31 @@ fun LocalPlaylistSongs(
                                     Box( Modifier.width( 24.dp ) )
                             },
                             thumbnailOverlay = {
-                                if (sort.sortBy == PlaylistSongSortBy.PlayTime) {
-                                    BasicText(
-                                        text = song.formattedTotalPlayTime,
-                                        style = typography().xxs.semiBold.center.color(
-                                            colorPalette().onOverlay
-                                        ),
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier.fillMaxWidth()
-                                                           .background(
-                                                               brush = Brush.verticalGradient(
-                                                                   colors = listOf(
-                                                                       Color.Transparent,
-                                                                       colorPalette().overlay
-                                                                   )
-                                                               ),
-                                                               shape = thumbnailShape()
-                                                           )
-                                                           .padding( horizontal = 8.dp, vertical = 4.dp )
-                                                           .align( Alignment.BottomCenter )
-                                    )
+                                if (sort.sortBy == PlaylistSongSortBy.PlayTime || sort.sortBy == PlaylistSongSortBy.RelativePlayTime || sort.sortBy == PlaylistSongSortBy.PlayCount) {
+                                    val text = if (sort.sortBy == PlaylistSongSortBy.PlayCount) {
+                                        song.playCount.toString()
+                                    } else {
+                                        song.formattedTotalPlayTime
+                                    }
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clip(thumbnailShape())
+                                            .background(colorPalette().overlay)
+                                    ) {
+                                        BasicText(
+                                            text = text,
+                                            style = typography().xxs.semiBold.center.color(
+                                                colorPalette().onOverlay
+                                            ),
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                                                .align(Alignment.BottomCenter)
+                                        )
+                                    }
                                 }
                             },
                             onClick = {

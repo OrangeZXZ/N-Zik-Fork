@@ -120,7 +120,7 @@ fun HistoryList(
                         HistorySortOrder.DATE -> {
                             val today = java.time.LocalDate.now()
                             val yesterday = today.minusDays(1)
-                            sorted.reversed().groupBy { event ->
+                            sorted.groupBy { event ->
                                 val eventDate = java.time.Instant.ofEpochMilli(event.event.timestamp)
                                     .atZone(java.time.ZoneId.systemDefault())
                                     .toLocalDate()
