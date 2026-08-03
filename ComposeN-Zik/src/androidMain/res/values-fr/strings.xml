@@ -430,6 +430,7 @@
   <string name="sort_name">Nom</string>
   <string name="sort_songs_number">Numéro du titre</string>
   <string name="sort_relative_listening_time">Temps d\'écoute relatif</string>
+  <string name="sort_play_count">Play Count</string>
   <string name="follow">Suivre</string>
   <string name="following">Suit</string>
   <string name="artist_subscribers">%s abonnés</string>
