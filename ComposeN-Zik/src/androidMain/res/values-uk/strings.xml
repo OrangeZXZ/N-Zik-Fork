@@ -430,6 +430,7 @@
   <string name="sort_name">Ім’я</string>
   <string name="sort_songs_number">Кількість пісень</string>
   <string name="sort_relative_listening_time">Відносний час прослуховування</string>
+  <string name="sort_play_count">Play Count</string>
   <string name="follow">Підписатися</string>
   <string name="following">Підписаний</string>
   <string name="artist_subscribers">%s Підписників</string>
