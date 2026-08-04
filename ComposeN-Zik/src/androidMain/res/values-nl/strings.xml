@@ -426,6 +426,9 @@
   <string name="sort_listening_time">Luistertijd</string>
   <string name="sort_date_added">Toevoegdatum</string>
   <string name="sorting_order">Sorteervolgorde</string>
+  <string name="sort_menu">Sort Menu</string>
+  <string name="customize_sort_options">Customize sort options</string>
+  <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">Jaar</string>
   <string name="sort_name">Naam</string>
   <string name="sort_songs_number">Nummers aantal</string>
