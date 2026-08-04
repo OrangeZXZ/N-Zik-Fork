@@ -426,6 +426,9 @@
   <string name="sort_listening_time">Durée d’écoute</string>
   <string name="sort_date_added">Date d’ajout</string>
   <string name="sorting_order">Ordre de tri</string>
+  <string name="sort_menu">Sort Menu</string>
+  <string name="customize_sort_options">Customize sort options</string>
+  <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">Année</string>
   <string name="sort_name">Nom</string>
   <string name="sort_songs_number">Numéro du titre</string>
