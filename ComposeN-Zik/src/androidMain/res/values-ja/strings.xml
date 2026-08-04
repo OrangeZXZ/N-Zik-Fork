@@ -426,6 +426,9 @@
   <string name="sort_listening_time">視聴時間</string>
   <string name="sort_date_added">追加日</string>
   <string name="sorting_order">並べ替えの順序</string>
+  <string name="sort_menu">Sort Menu</string>
+  <string name="customize_sort_options">Customize sort options</string>
+  <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">年</string>
   <string name="sort_name">名前</string>
   <string name="sort_songs_number">曲数</string>
