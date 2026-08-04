@@ -426,6 +426,9 @@
   <string name="sort_listening_time">শোনার সময়ে</string>
   <string name="sort_date_added">এড করার তারিখে</string>
   <string name="sorting_order">সাজানোর অর্ডার</string>
+  <string name="sort_menu">Sort Menu</string>
+  <string name="customize_sort_options">Customize sort options</string>
+  <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">বছর</string>
   <string name="sort_name">নাম</string>
   <string name="sort_songs_number">গানের ক্রম</string>
