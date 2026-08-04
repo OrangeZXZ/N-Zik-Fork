@@ -18,6 +18,7 @@ import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.MenuState
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.menuStyleKey
+import app.it.fast4x.rimusic.utils.localPlaylistSortMenuOrderKey
 import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.components.Sort
 
@@ -26,7 +27,11 @@ class PlaylistSongsSort private constructor(
     sortByState: MutableState<PlaylistSongSortBy>,
     sortOrderState: MutableState<SortOrder>,
     styleState: MutableState<MenuStyle>
-): Sort<PlaylistSongSortBy>(menuState, sortByState, sortOrderState, styleState) {
+): Sort<PlaylistSongSortBy>(
+    menuState, sortByState, sortOrderState, styleState,
+    sortMenuOrderKey = localPlaylistSortMenuOrderKey,
+    sortMenuPrefix = "pl"
+) {
 
     companion object {
         @Composable
@@ -53,8 +58,3 @@ class PlaylistSongsSort private constructor(
         )
     }
 }
-
-
-
-
-

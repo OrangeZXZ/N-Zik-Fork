@@ -85,6 +85,7 @@ import java.util.Locale
 import app.it.fast4x.rimusic.enums.SortOrder
 import app.n_zik.android.components.SongItem
 import app.n_zik.android.components.menu.song.SongItemMenu
+import app.it.fast4x.rimusic.utils.historySortMenuOrderKey
 
 @kotlin.OptIn(ExperimentalTextApi::class)
 @OptIn(UnstableApi::class)
@@ -104,7 +105,7 @@ fun HistoryList(
 
     val search = Search(lazyListState)
 
-    val sort = Sort<HistorySortOrder>(Preference.HISTORY_SORT_BY, Preference.HISTORY_SORT_ORDER)
+    val sort = Sort<HistorySortOrder>(Preference.HISTORY_SORT_BY, Preference.HISTORY_SORT_ORDER, historySortMenuOrderKey, "hist")
 
     val events by remember(sort.sortBy, sort.sortOrder, parentalControlEnabled) {
         Database.eventTable
@@ -366,7 +367,4 @@ fun HistoryList(
         }
     }
 }
-
-
-
 

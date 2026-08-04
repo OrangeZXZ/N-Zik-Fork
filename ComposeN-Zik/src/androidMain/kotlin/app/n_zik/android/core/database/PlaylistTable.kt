@@ -253,22 +253,22 @@ interface PlaylistTable {
     //<editor-fold defaultstate="collapsed" desc="Sort as preview">
     @Query("""
         SELECT DISTINCT P.*, COUNT(spm.songId) as songCount
-        FROM SongPlaylistMap spm
-        JOIN Playlist P ON P.id = spm.playlistId
-        JOIN Song S ON S.id = spm.songId
+        FROM Playlist P
+        LEFT JOIN SongPlaylistMap spm ON P.id = spm.playlistId
+        LEFT JOIN Song S ON S.id = spm.songId
         GROUP BY P.id
-        ORDER BY SUM(S.totalPlayTimeMs) ASC
+        ORDER BY COALESCE(SUM(S.totalPlayTimeMs), 0) ASC
         LIMIT :limit
     """)
     fun sortPreviewsByListeningTime( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>>
 
     @Query("""
         SELECT DISTINCT P.*, COUNT(spm.songId) as songCount
-        FROM SongPlaylistMap spm
-        JOIN Playlist P ON P.id = spm.playlistId
-        JOIN Song S ON S.id = spm.songId
+        FROM Playlist P
+        LEFT JOIN SongPlaylistMap spm ON P.id = spm.playlistId
+        LEFT JOIN Song S ON S.id = spm.songId
         GROUP BY P.id
-        ORDER BY SUM(S.playCount) ASC
+        ORDER BY COALESCE(SUM(S.playCount), 0) ASC
         LIMIT :limit
     """)
     fun sortPreviewsByPlayCount( limit: Int = Int.MAX_VALUE ): Flow<List<PlaylistPreview>>

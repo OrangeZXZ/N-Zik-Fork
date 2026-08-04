@@ -146,6 +146,7 @@ import androidx.core.net.toUri
 import app.it.fast4x.rimusic.utils.asSong
 import app.it.fast4x.rimusic.utils.parseArtists
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.localPlaylistToolbarOrderKey
 import app.it.fast4x.rimusic.utils.preferences
 import app.it.fast4x.rimusic.utils.Preference
 
@@ -1119,45 +1120,60 @@ fun LocalPlaylistSongs(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                val toolbarButtons = remember { mutableStateListOf<Button>() }
+                val toolbarOrderPref by rememberPreference(localPlaylistToolbarOrderKey, "")
+
+                val toolbarButtons = remember {
+                    mutableStateListOf<Button>()
+                }
 
                 val hasUnmatchedSongs = remember(items) { items.any { (it.id.length != 11 || (it.durationText == "00:00" && it.totalPlayTimeMs == 1L)) && !it.id.startsWith(LOCAL_KEY_PREFIX) } }
 
-                LaunchedEffect(
-                    playlistNotMonthlyType,
+                val toolbarButtonList = remember(
+                    toolbarOrderPref,
+                    playlist,
                     sort.sortBy,
                     sort.sortOrder,
-                    playlist?.browseId,
                     hasUnmatchedSongs
                 ) {
-                    toolbarButtons.clear()
-                    if (playlistNotMonthlyType)
-                        toolbarButtons.add( pin )
-                    if (hasUnmatchedSongs)
-                        toolbarButtons.add( matchAlbumButton )
-                    if ( sort.sortBy == PlaylistSongSortBy.Custom ) {
-                        toolbarButtons.add( positionLock )
-                        toolbarButtons.add( renumberDialog )
-                    }
+                    val defaultOrder = app.n_zik.android.components.dialog.settings.LocalPlaylistToolbarSettingsDialog.allButtonIds
+                    val order = try {
+                        if (toolbarOrderPref.isBlank()) defaultOrder else {
+                            val arr = org.json.JSONArray(toolbarOrderPref)
+                            (0 until arr.length()).map { arr.getString(it) }.distinct()
+                        }
+                    } catch (_: Exception) { defaultOrder }
 
-                    toolbarButtons.add( downloadAllDialog )
-                    toolbarButtons.add( deleteDownloadsDialog )
-                    toolbarButtons.add( itemSelector )
-                    toolbarButtons.add( playNext )
-                    toolbarButtons.add( enqueue )
-                    toolbarButtons.add( addToFavorite )
-                    toolbarButtons.add( addToPlaylist )
-                    if( !playlist?.browseId.isNullOrBlank() ) {
-                        toolbarButtons.add( syncComponent )
-                        toolbarButtons.add( listenOnYT )
+                    val list = mutableStateListOf<Button>()
+                    order.forEach { id ->
+                        when (id) {
+                            "pin" -> if (playlistNotMonthlyType) list.add( pin )
+                            "position_lock" -> if ( sort.sortBy == PlaylistSongSortBy.Custom ) list.add( positionLock )
+                            "match" -> if ( hasUnmatchedSongs ) list.add( matchAlbumButton )
+                            "renumber" -> if ( sort.sortBy == PlaylistSongSortBy.Custom ) list.add( renumberDialog )
+                            "download_all" -> list.add( downloadAllDialog )
+                            "delete_downloads" -> list.add( deleteDownloadsDialog )
+                            "item_selector" -> list.add( itemSelector )
+                            "play_next" -> list.add( playNext )
+                            "enqueue" -> list.add( enqueue )
+                            "add_to_favorite" -> list.add( addToFavorite )
+                            "add_to_playlist" -> list.add( addToPlaylist )
+                            "sync" -> if ( !playlist?.browseId.isNullOrBlank() ) list.add( syncComponent )
+                            "listen_on_yt" -> if ( !playlist?.browseId.isNullOrBlank() ) list.add( listenOnYT )
+                            "import_menu" -> list.add( importMenu )
+                            "rename" -> list.add( renameDialog )
+                            "delete" -> list.add( deleteDialog )
+                            "export" -> list.add( exportDialog )
+                            "thumbnail_picker" -> list.add( thumbnailPicker )
+                            "reset_thumbnail" -> list.add( resetThumbnail )
+                            "reset_cache" -> list.add( resetCache )
+                        }
                     }
-                    toolbarButtons.add( importMenu )
-                    toolbarButtons.add( renameDialog )
-                    toolbarButtons.add( deleteDialog )
-                    toolbarButtons.add( exportDialog )
-                    toolbarButtons.add( thumbnailPicker )
-                    toolbarButtons.add( resetThumbnail )
-                    toolbarButtons.add( resetCache )
+                    list
+                }
+
+                LaunchedEffect(toolbarButtonList) {
+                    toolbarButtons.clear()
+                    toolbarButtons.addAll(toolbarButtonList)
                 }
 
                 TabToolBar.Buttons( toolbarButtons )

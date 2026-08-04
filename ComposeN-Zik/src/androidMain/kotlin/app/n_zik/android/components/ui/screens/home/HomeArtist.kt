@@ -113,6 +113,8 @@ import app.it.fast4x.rimusic.utils.homeArtistsOrderKey
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
 import app.it.fast4x.rimusic.utils.homeArtistsLibraryToolbarOrderKey
 import app.it.fast4x.rimusic.utils.homeArtistsFavoritesToolbarOrderKey
+import app.it.fast4x.rimusic.utils.homeArtistsFavoritesSortMenuOrderKey
+import app.it.fast4x.rimusic.utils.homeArtistsLibrarySortMenuOrderKey
 import org.json.JSONArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -164,8 +166,8 @@ fun HomeArtists(
     val search = Search(lazyGridState)
 
     val sort = when( artistType ) {
-        ArtistsType.Favorites -> Sort( HOME_ARTISTS_FAVORITES_SORT_BY, HOME_ARTISTS_FAVORITES_SORT_ORDER )
-        ArtistsType.Library -> Sort( HOME_ARTISTS_LIBRARY_SORT_BY, HOME_ARTISTS_LIBRARY_SORT_ORDER )
+        ArtistsType.Favorites -> Sort( HOME_ARTISTS_FAVORITES_SORT_BY, HOME_ARTISTS_FAVORITES_SORT_ORDER, homeArtistsFavoritesSortMenuOrderKey, "art_fav" )
+        ArtistsType.Library -> Sort( HOME_ARTISTS_LIBRARY_SORT_BY, HOME_ARTISTS_LIBRARY_SORT_ORDER, homeArtistsLibrarySortMenuOrderKey, "art_lib" )
     }
     val positionLock = remember( sort.sortOrder ) { PositionLock(sort.sortOrder) }
 
@@ -534,39 +536,35 @@ fun HomeArtists(
                                     thumbnailOverlay = {
                                         if (sort.sortBy == ArtistSortBy.PlayCount) {
                                             val playCount by Database.eventTable.getArtistPlayCount(artist.id).collectAsState(0, Dispatchers.IO)
-                                            if (playCount > 0) {
-                                                Box(
-                                                    modifier = Modifier
-                                                        .fillMaxSize()
-                                                        .clip(app.n_zik.android.thumbnailShape())
-                                                        .background(colorPalette().overlay)
-                                                ) {
-                                                    BasicText(
-                                                        text = playCount.toString(),
-                                                        style = typography.s.semiBold.center.color(colorPalette().onOverlay),
-                                                        maxLines = 1,
-                                                        overflow = TextOverflow.Ellipsis,
-                                                        modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
-                                                    )
-                                                }
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .clip(app.n_zik.android.thumbnailShape())
+                                                    .background(colorPalette().overlay)
+                                            ) {
+                                                BasicText(
+                                                    text = playCount.toString(),
+                                                    style = typography.s.semiBold.center.color(colorPalette().onOverlay),
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
+                                                )
                                             }
                                         } else if (sort.sortBy == ArtistSortBy.ListeningTime) {
                                             val playTime by Database.eventTable.getArtistTotalPlayTime(artist.id).collectAsState(0L, Dispatchers.IO)
-                                            if (playTime > 0) {
-                                                Box(
-                                                    modifier = Modifier
-                                                        .fillMaxSize()
-                                                        .clip(app.n_zik.android.thumbnailShape())
-                                                        .background(colorPalette().overlay)
-                                                ) {
-                                                    BasicText(
-                                                        text = formatAsTime(playTime),
-                                                        style = typography.s.semiBold.center.color(colorPalette().onOverlay),
-                                                        maxLines = 1,
-                                                        overflow = TextOverflow.Ellipsis,
-                                                        modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
-                                                    )
-                                                }
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .clip(app.n_zik.android.thumbnailShape())
+                                                    .background(colorPalette().overlay)
+                                            ) {
+                                                BasicText(
+                                                    text = formatAsTime(playTime),
+                                                    style = typography.s.semiBold.center.color(colorPalette().onOverlay),
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
+                                                )
                                             }
                                         }
                                     }

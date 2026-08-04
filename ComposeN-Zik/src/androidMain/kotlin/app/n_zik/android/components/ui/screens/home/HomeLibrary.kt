@@ -113,6 +113,10 @@ import app.it.fast4x.rimusic.utils.homeLibraryToolbarOrderKey
 import app.it.fast4x.rimusic.utils.homeLibraryYTPlaylistToolbarOrderKey
 import app.it.fast4x.rimusic.utils.homeLibraryPinnedPlaylistToolbarOrderKey
 import app.it.fast4x.rimusic.utils.homeLibraryMonthlyPlaylistToolbarOrderKey
+import app.it.fast4x.rimusic.utils.homeLibraryPlaylistSortMenuOrderKey
+import app.it.fast4x.rimusic.utils.homeLibraryYTPlaylistSortMenuOrderKey
+import app.it.fast4x.rimusic.utils.homeLibraryPinnedPlaylistSortMenuOrderKey
+import app.it.fast4x.rimusic.utils.homeLibraryMonthlyPlaylistSortMenuOrderKey
 import app.it.fast4x.rimusic.utils.semiBold
 import org.json.JSONArray
 import kotlinx.coroutines.Dispatchers
@@ -173,11 +177,11 @@ fun HomeLibrary(
     val search = Search(lazyGridState)
 
     val sort = when( playlistType ) {
-        PlaylistsType.Playlist -> Sort( HOME_LIBRARY_PLAYLIST_SORT_BY, HOME_LIBRARY_PLAYLIST_SORT_ORDER )
-        PlaylistsType.YTPlaylist -> Sort( HOME_LIBRARY_YT_PLAYLIST_SORT_BY, HOME_LIBRARY_YT_PLAYLIST_SORT_ORDER )
+        PlaylistsType.Playlist -> Sort( HOME_LIBRARY_PLAYLIST_SORT_BY, HOME_LIBRARY_PLAYLIST_SORT_ORDER, homeLibraryPlaylistSortMenuOrderKey, "lib_pl" )
+        PlaylistsType.YTPlaylist -> Sort( HOME_LIBRARY_YT_PLAYLIST_SORT_BY, HOME_LIBRARY_YT_PLAYLIST_SORT_ORDER, homeLibraryYTPlaylistSortMenuOrderKey, "lib_yt" )
 
-        PlaylistsType.PinnedPlaylist -> Sort( HOME_LIBRARY_PINNED_PLAYLIST_SORT_BY, HOME_LIBRARY_PINNED_PLAYLIST_SORT_ORDER )
-        PlaylistsType.MonthlyPlaylist -> Sort( HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_BY, HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_ORDER )
+        PlaylistsType.PinnedPlaylist -> Sort( HOME_LIBRARY_PINNED_PLAYLIST_SORT_BY, HOME_LIBRARY_PINNED_PLAYLIST_SORT_ORDER, homeLibraryPinnedPlaylistSortMenuOrderKey, "lib_pin" )
+        PlaylistsType.MonthlyPlaylist -> Sort( HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_BY, HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_ORDER, homeLibraryMonthlyPlaylistSortMenuOrderKey, "lib_mon" )
     }
     val positionLock = remember( sort.sortOrder ) { PositionLock(sort.sortOrder) }
     val itemSize = ItemSize.init( HOME_LIBRARY_ITEM_SIZE )
@@ -605,41 +609,52 @@ fun HomeLibrary(
                                     isYoutubePlaylist = preview.playlist.isYoutubePlaylist,
                                     isEditable = preview.playlist.isEditable,
                                     thumbnailOverlay = {
-                                        if (sort.sortBy == PlaylistSortBy.PlayCount) {
+                                        if (sort.sortBy == PlaylistSortBy.SongCount) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .clip(app.n_zik.android.thumbnailShape())
+                                                    .background(colorPalette().overlay)
+                                            ) {
+                                                BasicText(
+                                                    text = preview.songCount.toString(),
+                                                    style = typography().s.semiBold.center.color(colorPalette().onOverlay),
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
+                                                )
+                                            }
+                                        } else if (sort.sortBy == PlaylistSortBy.PlayCount) {
                                             val playCount by Database.eventTable.getPlaylistPlayCount(preview.playlist.id).collectAsState(0, Dispatchers.IO)
-                                            if (playCount > 0) {
-                                                Box(
-                                                    modifier = Modifier
-                                                        .fillMaxSize()
-                                                        .clip(app.n_zik.android.thumbnailShape())
-                                                        .background(colorPalette().overlay)
-                                                ) {
-                                                    BasicText(
-                                                        text = playCount.toString(),
-                                                        style = typography().s.semiBold.center.color(colorPalette().onOverlay),
-                                                        maxLines = 1,
-                                                        overflow = TextOverflow.Ellipsis,
-                                                        modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
-                                                    )
-                                                }
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .clip(app.n_zik.android.thumbnailShape())
+                                                    .background(colorPalette().overlay)
+                                            ) {
+                                                BasicText(
+                                                    text = playCount.toString(),
+                                                    style = typography().s.semiBold.center.color(colorPalette().onOverlay),
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
+                                                )
                                             }
                                         } else if (sort.sortBy == PlaylistSortBy.ListeningTime) {
                                             val playTime by Database.eventTable.getPlaylistTotalPlayTime(preview.playlist.id).collectAsState(0L, Dispatchers.IO)
-                                            if (playTime > 0) {
-                                                Box(
-                                                    modifier = Modifier
-                                                        .fillMaxSize()
-                                                        .clip(app.n_zik.android.thumbnailShape())
-                                                        .background(colorPalette().overlay)
-                                                ) {
-                                                    BasicText(
-                                                        text = app.it.fast4x.rimusic.utils.formatAsTime(playTime),
-                                                        style = typography().s.semiBold.center.color(colorPalette().onOverlay),
-                                                        maxLines = 1,
-                                                        overflow = TextOverflow.Ellipsis,
-                                                        modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
-                                                    )
-                                                }
+                                            Box(
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .clip(app.n_zik.android.thumbnailShape())
+                                                    .background(colorPalette().overlay)
+                                            ) {
+                                                BasicText(
+                                                    text = app.it.fast4x.rimusic.utils.formatAsTime(playTime),
+                                                    style = typography().s.semiBold.center.color(colorPalette().onOverlay),
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
+                                                )
                                             }
                                         }
                                     }

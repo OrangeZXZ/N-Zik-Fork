@@ -112,11 +112,11 @@ fun HomeSongs(
     var items by remember { mutableStateOf(emptyList<Song>()) }
 
     val songSort = when( builtInPlaylist ) {
-        BuiltInPlaylist.Favorites -> Sort( HOME_SONGS_FAVORITES_SORT_BY, HOME_SONGS_FAVORITES_SORT_ORDER )
-        BuiltInPlaylist.Offline -> Sort( HOME_SONGS_OFFLINE_SORT_BY, HOME_SONGS_OFFLINE_SORT_ORDER )
-        BuiltInPlaylist.Downloaded -> Sort( HOME_SONGS_DOWNLOADED_SORT_BY, HOME_SONGS_DOWNLOADED_SORT_ORDER )
-        BuiltInPlaylist.Top -> Sort( HOME_SONGS_TOP_SORT_BY, HOME_SONGS_TOP_SORT_ORDER )
-        else -> Sort( HOME_SONGS_SORT_BY, HOME_SONGS_SORT_ORDER )
+        BuiltInPlaylist.Favorites -> Sort( HOME_SONGS_FAVORITES_SORT_BY, HOME_SONGS_FAVORITES_SORT_ORDER, homeSongsFavoritesSortMenuOrderKey, "favs" )
+        BuiltInPlaylist.Offline -> Sort( HOME_SONGS_OFFLINE_SORT_BY, HOME_SONGS_OFFLINE_SORT_ORDER, homeSongsCachedSortMenuOrderKey, "off" )
+        BuiltInPlaylist.Downloaded -> Sort( HOME_SONGS_DOWNLOADED_SORT_BY, HOME_SONGS_DOWNLOADED_SORT_ORDER, homeSongsDownloadedSortMenuOrderKey, "dl" )
+        BuiltInPlaylist.Top -> Sort( HOME_SONGS_TOP_SORT_BY, HOME_SONGS_TOP_SORT_ORDER, homeSongsTopSortMenuOrderKey, "top" )
+        else -> Sort( HOME_SONGS_SORT_BY, HOME_SONGS_SORT_ORDER, homeSongsAllSortMenuOrderKey, "all" )
     }
     val positionLock = remember( songSort.sortOrder ) { PositionLock(songSort.sortOrder) }
     val topPlaylists = PeriodSelector( HOME_SONGS_TOP_PLAYLIST_PERIOD )

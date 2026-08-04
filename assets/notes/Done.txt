@@ -1,3 +1,34 @@
+feat(sort settings): add sort menu customization and Local Playlist toolbar
+- feat(sort settings): add sort menu customization dialogs for all screens
+  - Created HomeSongsSortSettingsDialog (6 tabs), HomeAlbumsSortSettingsDialog (2 tabs), HomeArtistsSortSettingsDialog (2 tabs), HomeLibrarySortSettingsDialog (4 tabs), HistorySortSettingsDialog, LocalPlaylistSortSettingsDialog
+  - All dialogs reuse exact same string resources (textId) and drawable resources (iconId) from their corresponding sort enums
+  - Users can reorder and hide sort options per screen, minimum 1 visible enforced
+- feat(sort settings): integrate sort settings into UiSettings screen
+  - Added "Sort Menu" section with 6 entries (Songs, Artists, Albums, Playlists, History, Local Playlist)
+  - All dialogs .Render() and .reset() wired in UiSettings.kt
+- feat(toolbar settings): add LocalPlaylist toolbar customization
+  - Created LocalPlaylistToolbarSettingsDialog with 21 buttons (sort, shuffle, search, position_lock, match, download_all, delete_downloads, item_selector, play_next, enqueue, add_to_favorite, add_to_playlist, sync, listen_on_yt, import_menu, rename, delete, export, thumbnail_picker, reset_thumbnail, reset_cache)
+  - Added "Local Playlist" entry in Toolbar section of UiSettings
+  - Modified LocalPlaylistSongs.kt to read saved toolbar order from preferences
+- feat(sort): wire sort menu order keys into all Sort instances across home screens
+  - Added `sortMenuOrderKey` and `sortMenuPrefix` parameters to Sort.kt constructor
+  - Updated HomeSongs, HomeSongsScreen, HomeAlbum, HomeArtist, HomeLibrary, OnDeviceSongs, PlaylistSongsSort to pass per-tab sort menu preferences
+  - Sort menu now reads saved order from SharedPreferences and filters hidden options
+- feat(thumbnail): always show overlay on album/artist/playlist thumbnails
+  - Removed `if (count > 0)` checks — overlay now displays even when play count or listening time is 0
+  - Added SongCount overlay for playlists in HomeLibrary
+- feat(ui): improve ToggleListDialog drag handle and row layout
+  - Increased drag icon size to 24.dp with 4.dp padding for better touch target
+  - Restructured row layout: inner clickable Row wraps icon+label+checkbox, outer Row adds drag handle
+- fix(sort): fix Sort.kt Kotlin 2.4 generic type inference for enum reflection
+  - Added explicit type annotation `Map<String, T>` for enumMap
+  - Added missing `import androidx.compose.runtime.remember`
+- fix(history): restore missing closing brace in HistoryList.kt
+- fix(sort): remove unused `sort_date_modified` string reference (not in any enum)
+- fix(database): fix PlaylistTable queries to include empty playlists
+  - Changed JOIN to LEFT JOIN in `sortPreviewsByListeningTime` and `sortPreviewsByPlayCount`
+  - Added COALESCE for null sums so playlists with no songs return 0 instead of being excluded
+
 Fixed:
 - fix(sort): fix 34 inverted SQL sort queries across 6 database tables
   - All sort methods for PlayCount, PlayTime, RelativePlayTime, DatePlayed, SongsCount, ListeningTime, Duration now correctly return ASC order instead of DESC

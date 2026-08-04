@@ -110,6 +110,8 @@ import app.it.fast4x.rimusic.utils.homeAlbumsOrderKey
 import app.it.fast4x.rimusic.utils.showFloatingIconKey
 import app.it.fast4x.rimusic.utils.homeAlbumsLibraryToolbarOrderKey
 import app.it.fast4x.rimusic.utils.homeAlbumsFavoritesToolbarOrderKey
+import app.it.fast4x.rimusic.utils.homeAlbumsFavoritesSortMenuOrderKey
+import app.it.fast4x.rimusic.utils.homeAlbumsLibrarySortMenuOrderKey
 import org.json.JSONArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -173,8 +175,8 @@ fun HomeAlbums(
     val search = Search(lazyGridState)
 
     val sort = when( albumType ) {
-        AlbumsType.Favorites -> Sort( HOME_ALBUMS_FAVORITES_SORT_BY, HOME_ALBUMS_FAVORITES_SORT_ORDER )
-        AlbumsType.Library -> Sort( HOME_ALBUMS_LIBRARY_SORT_BY, HOME_ALBUMS_LIBRARY_SORT_ORDER )
+        AlbumsType.Favorites -> Sort( HOME_ALBUMS_FAVORITES_SORT_BY, HOME_ALBUMS_FAVORITES_SORT_ORDER, homeAlbumsFavoritesSortMenuOrderKey, "alb_fav" )
+        AlbumsType.Library -> Sort( HOME_ALBUMS_LIBRARY_SORT_BY, HOME_ALBUMS_LIBRARY_SORT_ORDER, homeAlbumsLibrarySortMenuOrderKey, "alb_lib" )
     }
     val positionLock = remember( sort.sortOrder ) { PositionLock(sort.sortOrder) }
 
@@ -585,39 +587,35 @@ fun HomeAlbums(
                             thumbnailOverlay = {
                                 if (sort.sortBy == AlbumSortBy.PlayCount) {
                                     val playCount by Database.eventTable.getAlbumPlayCount(album.id).collectAsState(0, Dispatchers.IO)
-                                    if (playCount > 0) {
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .clip(app.n_zik.android.thumbnailShape())
-                                                .background(colorPalette().overlay)
-                                        ) {
-                                            BasicText(
-                                                text = playCount.toString(),
-                                                style = typography.s.semiBold.center.color(colorPalette().onOverlay),
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
-                                            )
-                                        }
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clip(app.n_zik.android.thumbnailShape())
+                                            .background(colorPalette().overlay)
+                                    ) {
+                                        BasicText(
+                                            text = playCount.toString(),
+                                            style = typography.s.semiBold.center.color(colorPalette().onOverlay),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
+                                        )
                                     }
                                 } else if (sort.sortBy == AlbumSortBy.ListeningTime) {
                                     val playTime by Database.eventTable.getAlbumTotalPlayTime(album.id).collectAsState(0L, Dispatchers.IO)
-                                    if (playTime > 0) {
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxSize()
-                                                .clip(app.n_zik.android.thumbnailShape())
-                                                .background(colorPalette().overlay)
-                                        ) {
-                                            BasicText(
-                                                text = formatAsTime(playTime),
-                                                style = typography.s.semiBold.center.color(colorPalette().onOverlay),
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
-                                                modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
-                                            )
-                                        }
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .clip(app.n_zik.android.thumbnailShape())
+                                            .background(colorPalette().overlay)
+                                    ) {
+                                        BasicText(
+                                            text = formatAsTime(playTime),
+                                            style = typography.s.semiBold.center.color(colorPalette().onOverlay),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier.align(Alignment.Center).basicMarquee(iterations = Int.MAX_VALUE)
+                                        )
                                     }
                                 }
                             }

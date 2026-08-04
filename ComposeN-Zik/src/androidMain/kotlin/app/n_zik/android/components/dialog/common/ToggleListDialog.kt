@@ -226,72 +226,78 @@ private fun ToggleRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 35.dp)
-            .clip(uiRoundnessShape())
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = {
-                    if (enabled) {
-                        if (useLocalState) {
-                            onCheckedChange?.invoke(!isChecked)
-                        } else {
-                            val prefs = ctx.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
-                            prefs.edit().putBoolean(preferenceKey, !isChecked).apply()
+            .heightIn(min = 35.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .clip(uiRoundnessShape())
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {
+                        if (enabled) {
+                            if (useLocalState) {
+                                onCheckedChange?.invoke(!isChecked)
+                            } else {
+                                val prefs = ctx.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+                                prefs.edit().putBoolean(preferenceKey, !isChecked).apply()
+                            }
                         }
                     }
-                }
-            )
-            .padding(horizontal = 16.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Icon(
-            painter = painterResource(icon),
-            contentDescription = null,
-            tint = if (enabled) colorPalette().accent else colorPalette().textDisabled,
-            modifier = Modifier.size(22.dp)
-        )
-
-        Column(
-            modifier = Modifier.weight(1f)
+                )
+                .padding(horizontal = 16.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            BasicText(
-                text = label,
-                maxLines = 1,
-                style = typography().xs.semiBold.copy(
-                    color = if (isDragging) colorPalette().accent 
-                           else if (enabled) colorPalette().text 
-                           else colorPalette().textDisabled
-                ),
-                modifier = Modifier.basicMarquee()
+            Icon(
+                painter = painterResource(icon),
+                contentDescription = null,
+                tint = if (enabled) colorPalette().accent else colorPalette().textDisabled,
+                modifier = Modifier.size(22.dp)
             )
-            if (description != null) {
+
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 BasicText(
-                    text = description,
+                    text = label,
                     maxLines = 1,
-                    style = typography().xxs.copy(
-                        color = colorPalette().textDisabled
+                    style = typography().xs.semiBold.copy(
+                        color = if (isDragging) colorPalette().accent
+                               else if (enabled) colorPalette().text
+                               else colorPalette().textDisabled
                     ),
                     modifier = Modifier.basicMarquee()
                 )
+                if (description != null) {
+                    BasicText(
+                        text = description,
+                        maxLines = 1,
+                        style = typography().xxs.copy(
+                            color = colorPalette().textDisabled
+                        ),
+                        modifier = Modifier.basicMarquee()
+                    )
+                }
             }
-        }
 
-        Checkbox(
-            checked = isChecked,
-            onCheckedChange = null,
-            enabled = enabled,
-            modifier = Modifier.size(20.dp),
-            colors = CheckboxDefaults.colors(
-                checkedColor = colorPalette().accent,
-                uncheckedColor = colorPalette().textDisabled,
-                checkmarkColor = colorPalette().onAccent,
-                disabledIndeterminateColor = Color.Transparent,
-                disabledCheckedColor = colorPalette().textDisabled,
-                disabledUncheckedColor = colorPalette().textDisabled
+            Checkbox(
+                checked = isChecked,
+                onCheckedChange = null,
+                enabled = enabled,
+                modifier = Modifier.size(20.dp),
+                colors = CheckboxDefaults.colors(
+                    checkedColor = colorPalette().accent,
+                    uncheckedColor = colorPalette().textDisabled,
+                    checkmarkColor = colorPalette().onAccent,
+                    disabledIndeterminateColor = Color.Transparent,
+                    disabledCheckedColor = colorPalette().textDisabled,
+                    disabledUncheckedColor = colorPalette().textDisabled
+                )
             )
-        )
+        }
 
         if (showReorder) {
             Icon(
@@ -299,7 +305,8 @@ private fun ToggleRow(
                 contentDescription = null,
                 tint = if (isDragging) colorPalette().accent else colorPalette().textDisabled,
                 modifier = Modifier
-                    .size(16.dp)
+                    .size(24.dp)
+                    .padding(4.dp)
                     .then(dragModifier)
             )
         }

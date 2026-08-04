@@ -28,6 +28,13 @@ import app.n_zik.android.components.dialog.settings.HomeLibraryToolbarSettingsDi
 import app.n_zik.android.components.dialog.settings.PlayerActionBarSettingsDialog
 import app.n_zik.android.components.dialog.settings.MiniPlayerButtonsSettingsDialog
 import app.n_zik.android.components.dialog.settings.HomeSongsToolbarSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeSongsSortSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeAlbumsSortSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeArtistsSortSettingsDialog
+import app.n_zik.android.components.dialog.settings.HomeLibrarySortSettingsDialog
+import app.n_zik.android.components.dialog.settings.HistorySortSettingsDialog
+import app.n_zik.android.components.dialog.settings.LocalPlaylistSortSettingsDialog
+import app.n_zik.android.components.dialog.settings.LocalPlaylistToolbarSettingsDialog
 import app.it.fast4x.rimusic.ui.screens.settings.ColorSettingEntry
 import app.it.fast4x.rimusic.ui.screens.settings.ButtonBarSettingEntry
 import androidx.compose.ui.graphics.Color
@@ -658,6 +665,13 @@ fun UiSettings(
         HomeArtistsToolbarSettingsDialog.Render()
         HomeAlbumsToolbarSettingsDialog.Render()
         HomeLibraryToolbarSettingsDialog.Render()
+        HomeSongsSortSettingsDialog.Render()
+        HomeAlbumsSortSettingsDialog.Render()
+        HomeArtistsSortSettingsDialog.Render()
+        HomeLibrarySortSettingsDialog.Render()
+        HistorySortSettingsDialog.Render()
+        LocalPlaylistSortSettingsDialog.Render()
+        LocalPlaylistToolbarSettingsDialog.Render()
 
         HeaderWithIcon(
             title = stringResource(R.string.user_interface),
@@ -1603,7 +1617,75 @@ if (search.inputValue.isBlank() || stringResource(R.string.queue_and_local_playl
             )
         }
 
-        val toolbarSearchContextMatch = search.inputValue.isBlank() || 
+        val sortMenuSearchContextMatch = search.inputValue.isBlank() ||
+            "sort".contains(search.inputValue, true) ||
+            stringResource(R.string.songs).contains(search.inputValue, true) ||
+            stringResource(R.string.artists).contains(search.inputValue, true) ||
+            stringResource(R.string.albums).contains(search.inputValue, true) ||
+            stringResource(R.string.playlists).contains(search.inputValue, true) ||
+            stringResource(R.string.history).contains(search.inputValue, true)
+
+        AnimatedVisibility(
+            visible = sortMenuSearchContextMatch,
+            enter = fadeIn(animationSpec = tween(1000)) + scaleIn(animationSpec = tween(1000), initialScale = 0.9f)
+        ) {
+            SettingsSectionCard(
+                title = stringResource(R.string.sort_menu),
+                icon = R.drawable.arrow_up,
+                content = {
+                    if (search.inputValue.isBlank() || stringResource(R.string.songs).contains(search.inputValue, true) || stringResource(R.string.sort_menu).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.songs),
+                            text = stringResource(R.string.customize_sort_options),
+                            onClick = { HomeSongsSortSettingsDialog.showDialog() },
+                            icon = R.drawable.musical_notes
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.artists).contains(search.inputValue, true) || stringResource(R.string.sort_menu).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.artists),
+                            text = stringResource(R.string.customize_sort_options),
+                            onClick = { HomeArtistsSortSettingsDialog.showDialog() },
+                            icon = R.drawable.people
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.albums).contains(search.inputValue, true) || stringResource(R.string.sort_menu).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.albums),
+                            text = stringResource(R.string.customize_sort_options),
+                            onClick = { HomeAlbumsSortSettingsDialog.showDialog() },
+                            icon = R.drawable.album
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.playlists).contains(search.inputValue, true) || stringResource(R.string.sort_menu).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.playlists),
+                            text = stringResource(R.string.customize_sort_options),
+                            onClick = { HomeLibrarySortSettingsDialog.showDialog() },
+                            icon = R.drawable.library
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.playlists).contains(search.inputValue, true) || stringResource(R.string.sort_menu).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.local_playlist_sort),
+                            text = stringResource(R.string.customize_sort_options),
+                            onClick = { LocalPlaylistSortSettingsDialog.showDialog() },
+                            icon = R.drawable.playlist
+                        )
+                    }
+                    if (search.inputValue.isBlank() || stringResource(R.string.history).contains(search.inputValue, true) || stringResource(R.string.sort_menu).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.history),
+                            text = stringResource(R.string.customize_sort_options),
+                            onClick = { HistorySortSettingsDialog.showDialog() },
+                            icon = R.drawable.time
+                        )
+                    }
+                }
+            )
+        }
+
+        val toolbarSearchContextMatch = search.inputValue.isBlank() ||
             stringResource(R.string.toolbar).contains(search.inputValue, true) ||
             stringResource(R.string.songs).contains(search.inputValue, true) ||
             stringResource(R.string.artists).contains(search.inputValue, true) ||
@@ -1650,6 +1732,14 @@ if (search.inputValue.isBlank() || stringResource(R.string.queue_and_local_playl
                             icon = R.drawable.library
                         )
                     }
+                    if (search.inputValue.isBlank() || stringResource(R.string.playlists).contains(search.inputValue, true) || stringResource(R.string.toolbar).contains(search.inputValue, true)) {
+                        OtherSettingsEntry(
+                            title = stringResource(R.string.local_playlist_sort),
+                            text = stringResource(R.string.customize_toolbar),
+                            onClick = { LocalPlaylistToolbarSettingsDialog.showDialog() },
+                            icon = R.drawable.playlist
+                        )
+                    }
                 }
             )
         }
@@ -1685,8 +1775,14 @@ if (search.inputValue.isBlank() || stringResource(R.string.queue_and_local_playl
                                 HomeArtistsToolbarSettingsDialog.reset(context)
                                 HomeAlbumsToolbarSettingsDialog.reset(context)
                                 HomeLibraryToolbarSettingsDialog.reset(context)
+                                LocalPlaylistToolbarSettingsDialog.reset(context)
                                 PlayerActionBarSettingsDialog.reset(context)
                                 MiniPlayerButtonsSettingsDialog.reset(context)
+                                HomeSongsSortSettingsDialog.reset(context)
+                                HomeAlbumsSortSettingsDialog.reset(context)
+                                HomeArtistsSortSettingsDialog.reset(context)
+                                HomeLibrarySortSettingsDialog.reset(context)
+                                LocalPlaylistSortSettingsDialog.reset(context)
                                 Toaster.done()
                             }
                         )
