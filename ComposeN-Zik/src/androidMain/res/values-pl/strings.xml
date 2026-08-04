@@ -426,6 +426,9 @@
   <string name="sort_listening_time">Czas odtwarzania</string>
   <string name="sort_date_added">Data dodania</string>
   <string name="sorting_order">Kolejność sortowania</string>
+  <string name="sort_menu">Sort Menu</string>
+  <string name="customize_sort_options">Customize sort options</string>
+  <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">Rok</string>
   <string name="sort_name">Nazwa</string>
   <string name="sort_songs_number">Liczba utworów</string>
