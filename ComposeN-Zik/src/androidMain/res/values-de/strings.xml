@@ -426,10 +426,14 @@
   <string name="sort_listening_time">Wiedergabedauer</string>
   <string name="sort_date_added">Hinzufüge Datum</string>
   <string name="sorting_order">Sortierreihenfolge</string>
+  <string name="sort_menu">Sort Menu</string>
+  <string name="customize_sort_options">Customize sort options</string>
+  <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">Jahr</string>
   <string name="sort_name">Namen</string>
   <string name="sort_songs_number">Anzahl der Songs</string>
   <string name="sort_relative_listening_time">Relative Wiedergabedauer</string>
+  <string name="sort_play_count">Play Count</string>
   <string name="follow">Folgen</string>
   <string name="following">Gefolgt</string>
   <string name="artist_subscribers">%s Abonnenten</string>

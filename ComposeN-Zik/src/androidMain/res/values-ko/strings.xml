@@ -426,10 +426,14 @@
   <string name="sort_listening_time">재생 시간</string>
   <string name="sort_date_added">추가된 날짜</string>
   <string name="sorting_order">순서 정렬</string>
+  <string name="sort_menu">Sort Menu</string>
+  <string name="customize_sort_options">Customize sort options</string>
+  <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">연도</string>
   <string name="sort_name">이름</string>
   <string name="sort_songs_number">Number of songs</string>
   <string name="sort_relative_listening_time">상대적 청취 시간</string>
+  <string name="sort_play_count">Play Count</string>
   <string name="follow">팔로우</string>
   <string name="following">팔로잉</string>
   <string name="artist_subscribers">%s Subscribers</string>

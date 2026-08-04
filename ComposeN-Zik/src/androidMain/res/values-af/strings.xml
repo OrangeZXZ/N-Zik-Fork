@@ -426,10 +426,14 @@
   <string name="sort_listening_time">Luister Tyd</string>
   <string name="sort_date_added">Datum Bygevoeg</string>
   <string name="sorting_order">Sorteer volgorde</string>
+  <string name="sort_menu">Sort Menu</string>
+  <string name="customize_sort_options">Customize sort options</string>
+  <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">Jaar</string>
   <string name="sort_name">Naam</string>
   <string name="sort_songs_number">Liedjie Nommer</string>
   <string name="sort_relative_listening_time">Relative Listening Time</string>
+  <string name="sort_play_count">Play Count</string>
   <string name="follow">Volg</string>
   <string name="following">Word Gevolg</string>
   <string name="artist_subscribers">%s volgelinge</string>

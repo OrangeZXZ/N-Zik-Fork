@@ -426,10 +426,14 @@
   <string name="sort_listening_time">Време слушања</string>
   <string name="sort_date_added">Датум додавања</string>
   <string name="sorting_order">Редослед сортирања</string>
+  <string name="sort_menu">Sort Menu</string>
+  <string name="customize_sort_options">Customize sort options</string>
+  <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">Година</string>
   <string name="sort_name">Име</string>
   <string name="sort_songs_number">Number of songs</string>
   <string name="sort_relative_listening_time">Релативно време слушања</string>
+  <string name="sort_play_count">Play Count</string>
   <string name="follow">Прати</string>
   <string name="following">Следећи</string>
   <string name="artist_subscribers">%s Subscribers</string>

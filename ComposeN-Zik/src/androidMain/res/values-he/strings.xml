@@ -426,10 +426,14 @@
   <string name="sort_listening_time">זמן האזנה</string>
   <string name="sort_date_added">תאריך הוספה</string>
   <string name="sorting_order">סדר מיון</string>
+  <string name="sort_menu">Sort Menu</string>
+  <string name="customize_sort_options">Customize sort options</string>
+  <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">שנה</string>
   <string name="sort_name">שם</string>
   <string name="sort_songs_number">Number of songs</string>
   <string name="sort_relative_listening_time">Relative Listening Time</string>
+  <string name="sort_play_count">Play Count</string>
   <string name="follow">עקוב</string>
   <string name="following">במעקב</string>
   <string name="artist_subscribers">%s Subscribers</string>

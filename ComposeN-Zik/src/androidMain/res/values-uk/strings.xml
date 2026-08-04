@@ -426,10 +426,14 @@
   <string name="sort_listening_time">Час прослуховування</string>
   <string name="sort_date_added">Дата додавання</string>
   <string name="sorting_order">Порядок сортування</string>
+  <string name="sort_menu">Sort Menu</string>
+  <string name="customize_sort_options">Customize sort options</string>
+  <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">Рік</string>
   <string name="sort_name">Ім’я</string>
   <string name="sort_songs_number">Кількість пісень</string>
   <string name="sort_relative_listening_time">Відносний час прослуховування</string>
+  <string name="sort_play_count">Play Count</string>
   <string name="follow">Підписатися</string>
   <string name="following">Підписаний</string>
   <string name="artist_subscribers">%s Підписників</string>
