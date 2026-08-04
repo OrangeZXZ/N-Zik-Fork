@@ -426,6 +426,9 @@
   <string name="sort_listening_time">Lyttetid</string>
   <string name="sort_date_added">Dato lagt til</string>
   <string name="sorting_order">Sorteringsrekkefølge</string>
+  <string name="sort_menu">Sort Menu</string>
+  <string name="customize_sort_options">Customize sort options</string>
+  <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">År</string>
   <string name="sort_name">Navn</string>
   <string name="sort_songs_number">Antall sanger</string>
