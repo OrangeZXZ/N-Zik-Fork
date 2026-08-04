@@ -426,6 +426,9 @@
   <string name="sort_listening_time">Doba poslechu</string>
   <string name="sort_date_added">Datum přidání</string>
   <string name="sorting_order">Pořadí řazení</string>
+  <string name="sort_menu">Sort Menu</string>
+  <string name="customize_sort_options">Customize sort options</string>
+  <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">Rok</string>
   <string name="sort_name">Název</string>
   <string name="sort_songs_number">Číslo skladby</string>
