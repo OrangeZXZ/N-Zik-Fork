@@ -308,6 +308,7 @@ dependencies {
     "fullImplementation"(libs.ffmpeg.kit.audio)
     "minifiedImplementation"(libs.ffmpeg.kit.audio)
     "betaImplementation"(libs.ffmpeg.kit.audio)
+    "devImplementation"(libs.ffmpeg.kit.audio)
     "fossImplementation"(libs.ffmpeg.kit.audio)
     implementation(libs.monetcompat)
     implementation(libs.androidmaterial)
