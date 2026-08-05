@@ -53,7 +53,8 @@ jobs:
           TODAY_DISPLAY=$(date +'%Y-%m-%d')
           
           # Check in actual GitHub releases if today's tag already exists
-          ALREADY_BUILT=$(gh release list --limit 15 | grep "-dev-$TODAY_TAG" || true)
+          # L'ajout de '-e' empêche grep de confondre le tiret de '-dev-' avec une option
+          ALREADY_BUILT=$(gh release list --limit 15 | grep -e "-dev-$TODAY_TAG" || true)
           
           if [ -n "$ALREADY_BUILT" ]; then
             echo "changed=false" >> $GITHUB_OUTPUT
