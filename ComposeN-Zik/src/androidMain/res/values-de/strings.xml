@@ -744,6 +744,8 @@
   <string name="stream_client_android_vr">Android VR</string>
   <string name="stream_client_visionos">visionOS</string>
   <string name="stream_client_tv_embedded">TV Embedded</string>
+  <string name="client_tv_simply_desc">TV Simply client. Lightweight TV variant.</string>
+  <string name="stream_client_tv_simply">TV Simply</string>
   <string name="stream_client_tv_html5">TV HTML5</string>
   <string name="stream_client_android_creator">Android-Entwickler</string>
   <string name="stream_client_android">Android</string>
