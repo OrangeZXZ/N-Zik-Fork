@@ -52,11 +52,13 @@ jobs:
           TODAY_TAG=$(date +'%Y%m%d')
           TODAY_DISPLAY=$(date +'%Y-%m-%d')
           
-          # Check in actual GitHub releases if today's tag already exists
-          # L'ajout de '-e' empêche grep de confondre le tiret de '-dev-' avec une option
-          ALREADY_BUILT=$(gh release list --limit 15 | grep -e "-dev-$TODAY_TAG" || true)
+          # Force gh cli to act non-interactively
+          export GH_PROMPT_DISABLED=1
           
-          if [ -n "$ALREADY_BUILT" ]; then
+          # We use mapfile to safely capture output without triggering exit codes on empty results
+          ALREADY_BUILT=$(gh release list --limit 15 | grep -e "-dev-$TODAY_TAG" || echo "")
+          
+          if [ ! -z "$ALREADY_BUILT" ]; then
             echo "changed=false" >> $GITHUB_OUTPUT
             echo "⏭️ A dev build has already been released today ($TODAY_DISPLAY). Skipping build."
             exit 0
@@ -66,7 +68,7 @@ jobs:
           if [ "${{ github.event_name }}" = "schedule" ]; then
             # For the cron job, check if there are new commits in the last 3 days
             COMMITS=$(git log --since="3 days ago" --oneline)
-            if [ -n "$COMMITS" ]; then
+            if [ ! -z "$COMMITS" ]; then
               echo "changed=true" >> $GITHUB_OUTPUT
               echo "✅ New commits in the last 3 days. Building."
             else
