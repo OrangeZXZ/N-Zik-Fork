@@ -16,15 +16,27 @@ jobs:
         uses: actions/github-script@v9
         with:
           script: |
-            const buildTypeLabels = ["full", "minified", "foss"];
+            const buildTypeLabels = [
+              "full", "minified", "full32", "minified32", 
+              "beta", "beta32", "foss", "dev", "dev32"
+            ];
 
             function detectLabel(body) {
               const match = (body || "").match(/###\s*🏗️\s*Build Type\s*\n+\s*(.+)/);
               if (!match) return null;
               const value = match[1].trim();
+              
+              // Les versions 32 bits sont vérifiées en premier pour éviter les faux positifs 
+              if (/^Full32/i.test(value)) return "full32";
               if (/^Full/i.test(value)) return "full";
+              if (/^Minified32/i.test(value)) return "minified32";
               if (/^Minified/i.test(value)) return "minified";
+              if (/^Beta32/i.test(value)) return "beta32";
+              if (/^Beta/i.test(value)) return "beta";
               if (/^Foss/i.test(value)) return "foss";
+              if (/^Dev32/i.test(value)) return "dev32";
+              if (/^Dev/i.test(value)) return "dev";
+              
               return null;
             }
 
