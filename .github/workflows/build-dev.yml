@@ -132,6 +132,13 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
 
+      - name: Create placeholder release notes
+        run: |
+          mkdir -p ComposeN-Zik/src/androidMain/res/raw
+          cat > ComposeN-Zik/src/androidMain/res/raw/release_notes.txt <<EOF
+          Development Build
+          EOF
+
       - name: Build with Gradle
         run: ./gradlew assembleDev
 
@@ -169,6 +176,20 @@ jobs:
             ./ComposeN-Zik/build
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: gradle-${{ runner.os }}-
+
+      - name: Create placeholder release notes
+        run: |
+          mkdir -p ComposeN-Zik/src/androidMain/res/raw
+          cat > ComposeN-Zik/src/androidMain/res/raw/release_notes.txt <<EOF
+          Development Build
+          EOF
+
+      - name: Create placeholder release notes
+        run: |
+          mkdir -p ComposeN-Zik/src/androidMain/res/raw
+          cat > ComposeN-Zik/src/androidMain/res/raw/release_notes.txt <<EOF
+          Development Build
+          EOF
 
       - name: Build with Gradle
         run: ./gradlew assembleDev32
