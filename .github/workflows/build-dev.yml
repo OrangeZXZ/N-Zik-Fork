@@ -1,0 +1,364 @@
+name: Build Dev
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 12 * * *' 
+
+concurrency:
+  group: 'dev-deploy'
+  cancel-in-progress: false
+
+jobs:
+  check-author:
+    name: Check if push is from NEVARLeVrai
+    runs-on: ubuntu-latest
+    outputs:
+      should-build: ${{ steps.check.outputs.should-build }}
+    steps:
+      - name: Check author
+        id: check
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "should-build=true" >> $GITHUB_OUTPUT
+          elif [ "${{ github.actor }}" = "NEVARLeVrai" ]; then
+            echo "should-build=true" >> $GITHUB_OUTPUT
+          else
+            echo "should-build=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Push not from NEVARLeVrai, skipping build"
+          fi
+
+  check-changes:
+    name: Check if there are changes
+    needs: [check-author]
+    if: needs.check-author.outputs.should-build == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.diff.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+          submodules: true
+
+      - name: Check for changes since last commit
+        id: diff
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            # Pour le schedule, on check juste s'il y a des commits
+            LAST_BUILD_DATE=$(git log --grep="Dev build" --format=%ci -n 1 2>/dev/null || echo "2000-01-01")
+            LAST_COMMIT_DATE=$(git log -1 --format=%ci)
+            
+            if [[ "$LAST_COMMIT_DATE" > "$LAST_BUILD_DATE" ]]; then
+              echo "changed=true" >> $GITHUB_OUTPUT
+              echo "✅ Nouveaux commits détectés depuis le dernier build"
+            else
+              echo "changed=false" >> $GITHUB_OUTPUT
+              echo "⏭️ Aucun changement depuis le dernier build"
+            fi
+          else
+            # Pour un push manuel, on build toujours
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "✅ Push détecté, build lancé"
+          fi
+
+  build_time:
+    name: Capture current time
+    needs: [check-changes]
+    if: needs.check-changes.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      date: ${{ steps.date.outputs.date }}
+      timestamp: ${{ steps.date.outputs.timestamp }}
+    steps:
+      - name: Get date
+        id: date
+        run: |
+          echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+          echo "timestamp=$(date +'%H:%M UTC')" >> $GITHUB_OUTPUT
+
+  versioning:
+    name: Extract version
+    needs: [check-changes]
+    if: needs.check-changes.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      downstream: ${{ steps.downstream.outputs.version }}
+      code: ${{ steps.downstream.outputs.code }}
+    env:
+      GITHUB_REPOSITORY: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - name: Get downstream (local) version
+        id: downstream
+        run: |
+          versionCode=$(grep -E '^\s*versionCode\s*=' ComposeN-Zik/build.gradle.kts | sed 's/[^0-9]*//g')
+          versionName=$(grep -E '^\s*versionName\s*=' ComposeN-Zik/build.gradle.kts | sed -E 's/.*"(.+)".*/\1/')
+
+          echo "version=$versionName" >> $GITHUB_OUTPUT
+          echo "code=$versionCode" >> $GITHUB_OUTPUT
+
+  build-dev:
+    needs: [versioning, check-changes]
+    if: needs.check-changes.outputs.changed == 'true'
+    name: Build Dev
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v5.6.0
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+
+      - name: Restore Gradle dependencies & build cache
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ./build
+            ./ComposeN-Zik/build
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+
+      - name: Build with Gradle
+        run: ./gradlew assembleDev
+
+      - name: Upload artifacts for signing
+        uses: actions/upload-artifact@v7
+        with:
+          name: unsigned-dev
+          path: ComposeN-Zik/build/outputs/apk/dev/*.apk
+
+  build-dev32:
+    needs: [versioning, check-changes]
+    if: needs.check-changes.outputs.changed == 'true'
+    name: Build Dev32
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: true
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v5.6.0
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+
+      - name: Restore Gradle dependencies & build cache
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ./build
+            ./ComposeN-Zik/build
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-${{ runner.os }}-
+
+      - name: Build with Gradle
+        run: ./gradlew assembleDev32
+
+      - name: Upload artifacts for signing
+        uses: actions/upload-artifact@v7
+        with:
+          name: unsigned-dev32
+          path: ComposeN-Zik/build/outputs/apk/dev32/*.apk
+
+  sign-apks:
+    name: Sign APK
+    needs: [build-dev, build-dev32]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v8.0.1
+        with:
+          path: upstream/unsigned
+          merge-multiple: true
+
+      - name: Sign APK
+        uses: Tlaster/android-sign@v1.2.2
+        with:
+          releaseDirectory: upstream/unsigned
+          signingKeyBase64: '${{ secrets.RELEASE_KEYSTORE }}'
+          keyStorePassword: '${{ secrets.RELEASE_KEYSTORE_PASSWD }}'
+          alias: '${{ secrets.RELEASE_KEY_ALIAS }}'
+          keyPassword: '${{ secrets.RELEASE_KEY_PASSWD }}'
+          output: signed
+        env:
+          BUILD_TOOLS_VERSION: '34.0.0'
+
+      - name: Remove trails
+        run: |
+          for filename in signed/*.apk; do mv "$filename" "${filename//-signed}"; done
+
+      - name: Upload for release
+        uses: actions/upload-artifact@v7
+        with:
+          name: signed-apk
+          path: signed/*.apk
+
+  upload-to-release:
+    needs: [build_time, versioning, sign-apks]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  
+    steps:
+      - name: Download signed APK
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: signed-apk
+
+      - name: Upload built APK to pre-release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: '*.apk'
+          name: v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }} | 🔨 DEV Build
+          tag_name: v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}
+          prerelease: true
+          make_latest: false
+          body: |
+            ## 🔨 Dev Build v${{ needs.versioning.outputs.downstream }}-dev
+            ---
+            <div align="center">
+              <img alt="N-Zik Logo" src="https://github.com/N-Zik-Group/N-Zik/blob/main/assets/design/ic_banner2.png?raw=true" width="1000" />
+              <p><b>N-Zik</b> - Development Build</p>
+              <p><i>Built from latest commits. For testing & development only.</i></p>
+            </div>
+
+            ## 🔎 Verification
+
+            > Always verify the signature before installing any APK downloaded from GitHub or other distributors.
+
+            ### Public key hashes
+
+            | Algorithm | Hash digest                                                        |
+            |-----------|--------------------------------------------------------------------|
+            | SHA-256   | 504cdeb65e52070f0515f9ad295a288a4894d0924e9ef5d6080fdea5bdf841d6 |
+            | SHA-1     | 16e766c566e511c7d83f40e30850be27b7040a43                         |
+            | MD5       | 16e2bdf083316967c6a2dd5a0391bb76                                   |
+
+            ### Certificate hashes
+
+            | Algorithm | Hash digest                                                        |
+            |-----------|--------------------------------------------------------------------|
+            | SHA-256   | b473991ec08a17996a9ef2405934ce35d333ea38135ebfc1b6f4d2ab953132aa |
+            | SHA-1     | ec57f7d61cf2382aecff7444e815e37a601cb1f1                           |
+            | MD5       | 5ae0045983899ab7ca5db38ef785d6ab                                   |
+
+            ## 📲 Installation
+
+            ⚠️ This is a **DEV build**, not a stable version.  
+            It is intended **only for testing and development feedback**.
+
+            1. Download the **Dev build** below.  
+            2. Verify its signature using the hashes provided.  
+            3. Install on your device (you may need to allow installation from unknown sources).
+
+            ⚠️ **WARNING:** This build may contain bugs, experimental features, and incomplete functionality. Use only for development testing.
+
+            Please report any crashes, bugs, or unexpected behavior.
+
+            ## 📦 Available Builds
+
+            - **Dev** – Full dev build with all components (`arm64-v8a`, 64-bit only).  
+            - **Dev32** – Dev build without FFmpeg (`armeabi-v7a` + `arm64-v8a`, 32-bit & 64-bit).
+
+            > ℹ️ Standard builds (Dev) are 64-bit only because they bundle FFmpeg. The "Dev32" build drops FFmpeg, so it works on both 32-bit and 64-bit devices.
+
+            ## 🔄 Features
+
+            - 🔧 Built from the latest code commits
+            - ⚡ Latest features and improvements (unstable)
+            - 🐛 May contain bugs and experimental code
+            - 📝 Auto-update is **disabled** (dev builds don't auto-update)
+
+            ## 🔗 Download & Info
+
+            - 📥 **Dev APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}/N-Zik-dev.apk
+            - 📥 **Dev32 APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}/N-Zik-dev32.apk
+            - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}>
+
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
+
+  notify-discord:
+    needs: [build_time, versioning, upload-to-release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔨 Dev Build Notification
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          CONTENT: |
+            🔨 **<@&1534516569240109106> NEW DEV BUILD v${{ needs.versioning.outputs.downstream }}-dev!**
+
+            Testing & development snapshot ready!
+          DESCRIPTION: |
+            ## 📲 Installation
+
+            ⚠️ This is a **DEV build**, not a stable version.  
+            It is intended **only for testing and development feedback**.
+
+            1. Download the **Dev build** below.  
+            2. Verify its signature.  
+            3. Install on your device (you may need to allow installation from outside the Play Store).
+
+            ⚠️ **WARNING:** This build may contain bugs, experimental features, and incomplete functionality. Use only for development testing.
+
+            Please report any crashes, bugs, or unexpected behavior.
+
+            ## 📦 Available Builds
+
+            - **Dev** – Full dev build with all components (`arm64-v8a`, 64-bit only).  
+            - **Dev32** – Dev build without FFmpeg (`armeabi-v7a` + `arm64-v8a`, 32-bit & 64-bit).
+
+            > ℹ️ Standard builds (Dev) are 64-bit only because they bundle FFmpeg. The "Dev32" build drops FFmpeg, so it works on both 32-bit and 64-bit devices.
+
+            ## 🔄 Features
+
+            - 🔧 Built from the latest code commits
+            - ⚡ Latest features and improvements (unstable)
+            - 🐛 May contain bugs and experimental code
+            - 📝 Auto-update is **disabled** (dev builds don't auto-update)
+
+            ## 🔗 Download & Info
+
+            - 📥 **Dev APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}/N-Zik-dev.apk
+            - 📥 **Dev32 APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}/N-Zik-dev32.apk
+            - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}>
+        run: |
+          jq -n \
+            --arg content "$CONTENT" \
+            --arg username "N-Zik Dev" \
+            --arg avatar "https://raw.githubusercontent.com/N-Zik-Group/N-Zik/main/assets/discord/fallback_app.png" \
+            --arg desc "$DESCRIPTION" \
+            '{
+              content: $content,
+              username: $username,
+              avatar_url: $avatar,
+              embeds: [{
+                color: 16776960,
+                description: $desc,
+                footer: {
+                  text: "N-Zik DEV • Testing & Development Snapshot",
+                  icon_url: $avatar
+                }
+              }]
+            }' > payload.json
+
+          curl -X POST -H "Content-Type: application/json" -d @payload.json $WEBHOOK_URL
