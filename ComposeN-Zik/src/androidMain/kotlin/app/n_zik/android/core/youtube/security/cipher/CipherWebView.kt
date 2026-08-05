@@ -9,6 +9,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -27,7 +28,6 @@ import kotlin.coroutines.resumeWithException
  */
 class CipherWebView private constructor(
     context: Context,
-    private val playerJs: String,
     private val sigInfo: FunctionNameExtractor.SigFunctionInfo?,
     private val nFuncInfo: FunctionNameExtractor.NFunctionInfo?,
     initContinuation: Continuation<CipherWebView>,
@@ -173,95 +173,13 @@ class CipherWebView private constructor(
         runCatching { block(this) }
     }
 
-    private fun loadPlayerJsFromFile() {
-        val sigFuncName = sigInfo?.name
-        val nFuncName = nFuncInfo?.name
-        val nArrayIdx = nFuncInfo?.arrayIndex
-        val isHardcoded = sigInfo?.isHardcoded == true || nFuncInfo?.isHardcoded == true
-
-        Timber.tag(TAG).d("=== LOADING PLAYER.JS INTO WEBVIEW ===")
-        Timber.tag(TAG).d("Player.js size: ${playerJs.length} chars")
-        Timber.tag(TAG).d("Export mode: ${if (isHardcoded) "HARDCODED" else "EXTRACTED"}")
-        Timber.tag(TAG).d("Sig function: $sigFuncName (constantArg=${sigInfo?.constantArg})")
-        Timber.tag(TAG).d("N function: $nFuncName (arrayIdx=$nArrayIdx)")
-
-        usingHardcodedMode = isHardcoded
-
-        val exports = buildList {
-            val sigJsExpr = sigInfo?.jsExpression
-            if (sigJsExpr != null) {
-                val expr = sigJsExpr.replace("INPUT", "sig")
-                Timber.tag(TAG).d("Sig: expression-based export: $expr")
-                add("window._cipherSigFunc = function(sig) { try { return $expr; } catch(e) { return null; } };")
-            } else if (sigFuncName != null) {
-                val sigConstArgs = sigInfo.constantArgs
-                val preprocessFunc = sigInfo.preprocessFunc
-                val preprocessArgs = sigInfo.preprocessArgs
-
-                if (!sigConstArgs.isNullOrEmpty() && preprocessFunc != null && !preprocessArgs.isNullOrEmpty()) {
-                    val mainArgsStr = sigConstArgs.joinToString(", ")
-                    val prepArgsStr = preprocessArgs.joinToString(", ")
-                    Timber.tag(TAG).d("Sig function needs full wrapper:")
-                    Timber.tag(TAG).d("  $sigFuncName($mainArgsStr, $preprocessFunc($prepArgsStr, sig))")
-                    add("window._cipherSigFunc = function(sig) { return $sigFuncName($mainArgsStr, $preprocessFunc($prepArgsStr, sig)); };")
-                } else if (!sigConstArgs.isNullOrEmpty()) {
-                    val argsStr = sigConstArgs.joinToString(", ")
-                    Timber.tag(TAG).d("Sig function needs wrapper with constant args: $argsStr")
-                    add("window._cipherSigFunc = function(sig) { return $sigFuncName($argsStr, sig); };")
-                } else if (isHardcoded) {
-                    Timber.tag(TAG).d("Will export sig function $sigFuncName in hardcoded mode (legacy)")
-                    add("window._cipherSigFunc = typeof $sigFuncName !== 'undefined' ? $sigFuncName : null;")
-                } else {
-                    add("window._cipherSigFunc = typeof $sigFuncName !== 'undefined' ? $sigFuncName : null;")
-                }
-            }
-            val nJsExpr = nFuncInfo?.jsExpression
-            if (nJsExpr != null) {
-                val expr = nJsExpr.replace("INPUT", "n")
-                Timber.tag(TAG).d("N: expression-based export: ${expr.take(80)}")
-                add("window._nTransformFunc = function(n) { try { return $expr; } catch(e) { return n; } };")
-            } else if (nFuncName != null) {
-                val nConstArgs = nFuncInfo.constantArgs
-                if (!nConstArgs.isNullOrEmpty()) {
-                    val argsStr = nConstArgs.joinToString(", ")
-                    Timber.tag(TAG).d("N-function needs wrapper with constant args: $argsStr")
-                    add("window._nTransformFunc = function(n) { return $nFuncName($argsStr, n); };")
-                } else {
-                    val nExpr = if (nArrayIdx != null) {
-                        "$nFuncName[$nArrayIdx]"
-                    } else {
-                        nFuncName
-                    }
-                    add("window._nTransformFunc = typeof $nFuncName !== 'undefined' ? $nExpr : null;")
-                }
-            }
-        }
-
-        Timber.tag(TAG).d("Export statements: ${exports.size}")
-        exports.forEachIndexed { idx, stmt ->
-            Timber.tag(TAG).v("  Export[$idx]: ${stmt.take(80)}...")
-        }
-
-        val modifiedJs = if (exports.isNotEmpty()) {
-            val exportCode = "; " + exports.joinToString(" ")
-            val modified = playerJs.replace("})(_yt_player);", "$exportCode })(_yt_player);")
-            if (modified == playerJs) {
-                Timber.tag(TAG).w("Export injection point '})(_yt_player);' not found, appending exports")
-                playerJs + "\n" + exportCode
-            } else {
-                Timber.tag(TAG).d("Exports injected into IIFE closure")
-                modified
-            }
-        } else {
-            Timber.tag(TAG).w("No exports to inject")
-            playerJs
-        }
-
-        val cacheDir = File(webView.context.cacheDir, "cipher")
-        cacheDir.mkdirs()
-        val playerJsFile = File(cacheDir, "player.js")
-        playerJsFile.writeText(modifiedJs)
-        Timber.tag(TAG).d("Player.js written to cache: ${playerJsFile.absolutePath} (${modifiedJs.length} chars)")
+    /**
+     * Loads the already-prepared player.js (written by create() on an IO dispatcher via
+     * [buildModifiedPlayerJsImpl]) into the WebView. Only the cheap WebView work happens here
+     * on Main.
+     */
+    private fun loadPreparedPlayerJs(cacheDir: File) {
+        usingHardcodedMode = sigInfo?.isHardcoded == true || nFuncInfo?.isHardcoded == true
 
         val html = buildDiscoveryHtml()
         Timber.tag(TAG).d("Discovery HTML built (${html.length} chars)")
@@ -677,6 +595,98 @@ function discoverAndInit() {
         // hasn't answered after this long is dead or wedged.
         private const val CREATE_TIMEOUT_MS = 30_000L
 
+        /**
+         * Builds the export-injected player.js. This scans and copies a ~2.8 MB string — it MUST run
+         * off the main thread (create() calls it on Dispatchers.IO before any WebView work), or every
+         * WebView (re)build would freeze the UI thread for the duration.
+         */
+        private fun buildModifiedPlayerJsImpl(
+            playerJs: String,
+            sigInfo: FunctionNameExtractor.SigFunctionInfo?,
+            nFuncInfo: FunctionNameExtractor.NFunctionInfo?,
+        ): String {
+            val sigFuncName = sigInfo?.name
+            val nFuncName = nFuncInfo?.name
+            val nArrayIdx = nFuncInfo?.arrayIndex
+            val isHardcoded = sigInfo?.isHardcoded == true || nFuncInfo?.isHardcoded == true
+
+            Timber.tag(TAG).d("=== PREPARING PLAYER.JS FOR WEBVIEW ===")
+            Timber.tag(TAG).d("Player.js size: ${playerJs.length} chars")
+            Timber.tag(TAG).d("Export mode: ${if (isHardcoded) "HARDCODED" else "EXTRACTED"}")
+            Timber.tag(TAG).d("Sig function: $sigFuncName (constantArg=${sigInfo?.constantArg})")
+            Timber.tag(TAG).d("N function: $nFuncName (arrayIdx=$nArrayIdx)")
+
+            val exports = buildList {
+                val sigJsExpr = sigInfo?.jsExpression
+                if (sigJsExpr != null) {
+                    val expr = sigJsExpr.replace("INPUT", "sig")
+                    Timber.tag(TAG).d("Sig: expression-based export: $expr")
+                    add("window._cipherSigFunc = function(sig) { try { return $expr; } catch(e) { return null; } };")
+                } else if (sigFuncName != null) {
+                    val sigConstArgs = sigInfo?.constantArgs
+                    val preprocessFunc = sigInfo?.preprocessFunc
+                    val preprocessArgs = sigInfo?.preprocessArgs
+
+                    if (!sigConstArgs.isNullOrEmpty() && preprocessFunc != null && !preprocessArgs.isNullOrEmpty()) {
+                        val mainArgsStr = sigConstArgs.joinToString(", ")
+                        val prepArgsStr = preprocessArgs.joinToString(", ")
+                        Timber.tag(TAG).d("Sig function needs full wrapper:")
+                        Timber.tag(TAG).d("  $sigFuncName($mainArgsStr, $preprocessFunc($prepArgsStr, sig))")
+                        add("window._cipherSigFunc = function(sig) { return $sigFuncName($mainArgsStr, $preprocessFunc($prepArgsStr, sig)); };")
+                    } else if (!sigConstArgs.isNullOrEmpty()) {
+                        val argsStr = sigConstArgs.joinToString(", ")
+                        Timber.tag(TAG).d("Sig function needs wrapper with constant args: $argsStr")
+                        add("window._cipherSigFunc = function(sig) { return $sigFuncName($argsStr, sig); };")
+                    } else if (isHardcoded) {
+                        Timber.tag(TAG).d("Will export sig function $sigFuncName in hardcoded mode (legacy)")
+                        add("window._cipherSigFunc = typeof $sigFuncName !== 'undefined' ? $sigFuncName : null;")
+                    } else {
+                        add("window._cipherSigFunc = typeof $sigFuncName !== 'undefined' ? $sigFuncName : null;")
+                    }
+                }
+                val nJsExpr = nFuncInfo?.jsExpression
+                if (nJsExpr != null) {
+                    val expr = nJsExpr.replace("INPUT", "n")
+                    Timber.tag(TAG).d("N: expression-based export: ${expr.take(80)}")
+                    add("window._nTransformFunc = function(n) { try { return $expr; } catch(e) { return n; } };")
+                } else if (nFuncName != null) {
+                    val nConstArgs = nFuncInfo?.constantArgs
+                    if (!nConstArgs.isNullOrEmpty()) {
+                        val argsStr = nConstArgs.joinToString(", ")
+                        Timber.tag(TAG).d("N-function needs wrapper with constant args: $argsStr")
+                        add("window._nTransformFunc = function(n) { return $nFuncName($argsStr, n); };")
+                    } else {
+                        val nExpr = if (nArrayIdx != null) {
+                            "$nFuncName[$nArrayIdx]"
+                        } else {
+                            nFuncName
+                        }
+                        add("window._nTransformFunc = typeof $nFuncName !== 'undefined' ? $nExpr : null;")
+                    }
+                }
+            }
+
+            Timber.tag(TAG).d("Export statements: ${exports.size}")
+            exports.forEachIndexed { idx, stmt ->
+                Timber.tag(TAG).v("  Export[$idx]: ${stmt.take(80)}...")
+            }
+
+            return if (exports.isNotEmpty()) {
+                val exportCode = "; " + exports.joinToString(" ")
+                val modified = playerJs.replace("})(_yt_player);", "$exportCode })(_yt_player);")
+                if (modified == playerJs) {
+                    Timber.tag(TAG).w("Export injection point '})(_yt_player);' not found, appending exports")
+                    playerJs + "\n" + exportCode
+                } else {
+                    Timber.tag(TAG).d("Exports injected into IIFE closure")
+                    modified
+                }
+            } else {
+                Timber.tag(TAG).w("No exports to inject")
+                playerJs
+            }
+        }
+
         suspend fun create(
             context: Context,
             playerJs: String,
@@ -688,18 +698,30 @@ function discoverAndInit() {
             Timber.tag(TAG).d("sigInfo: $sigInfo")
             Timber.tag(TAG).d("nFuncInfo: $nFuncInfo")
 
+            // Heavy prep (multi-MB string transform + disk write) runs on IO; only WebView
+            // construction and the load call happen on the main thread below.
+            val cacheDir = withContext(Dispatchers.IO) {
+                val modifiedJs = buildModifiedPlayerJsImpl(playerJs, sigInfo, nFuncInfo)
+                val dir = File(context.cacheDir, "cipher")
+                dir.mkdirs()
+                val playerJsFile = File(dir, "player.js")
+                playerJsFile.writeText(modifiedJs)
+                Timber.tag(TAG).d("Player.js written to cache: ${playerJsFile.absolutePath} (${modifiedJs.length} chars)")
+                dir
+            }
+
             var created: CipherWebView? = null
             try {
                 return withTimeout(CREATE_TIMEOUT_MS) {
                     withContext(Dispatchers.Main) {
                         suspendCancellableCoroutine { cont ->
-                            val wv = CipherWebView(context, playerJs, sigInfo, nFuncInfo, cont)
+                            val wv = CipherWebView(context, sigInfo, nFuncInfo, cont)
                             created = wv
                             cont.invokeOnCancellation {
                                 Timber.tag(TAG).w("CipherWebView.create() cancelled, cleaning up")
                                 wv.close()
                             }
-                            wv.loadPlayerJsFromFile()
+                            wv.loadPreparedPlayerJs(cacheDir)
                         }
                     }
                 }
@@ -715,9 +737,11 @@ function discoverAndInit() {
 
         private suspend fun destroyQuietly(wv: CipherWebView?) {
             if (wv == null) return
-            wv.isDead = true
-            wv.takeInitContinuation()
-            wv.destroyWebView()
+            withContext(NonCancellable + Dispatchers.Main) {
+                wv.isDead = true
+                wv.takeInitContinuation()
+                wv.destroyWebView()
+            }
         }
     }
 }

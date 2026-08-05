@@ -25,6 +25,8 @@ object CipherDeobfuscator {
     fun initialize(context: Context) {
         Timber.tag(TAG).d("CipherDeobfuscator initializing...")
         appContext = context.applicationContext
+        // PlayerConfigStore, scheduleStartupRefresh, and PlayerDatesStore are initialized
+        // in MainApplication.onCreate() — do NOT duplicate here to avoid race conditions.
         Timber.tag(TAG).d("CipherDeobfuscator initialized")
     }
 
@@ -184,9 +186,10 @@ object CipherDeobfuscator {
             return null
         }
 
+        Timber.tag(TAG).d("Calling getOrCreateWebView(forceRefresh=$isRetry)...")
         val webView = getOrCreateWebView(forceRefresh = isRetry)
         if (webView == null) {
-            Timber.tag(TAG).e("Failed to get/create CipherWebView")
+            Timber.tag(TAG).e("Failed to get/create CipherWebView — rendererRecoveryPolicy.consecutiveFailures=${rendererRecoveryPolicy.consecutiveFailures}, configEpoch=${PlayerConfigStore.configEpoch}, knownHashes=${PlayerConfigStore.knownHashes().size}")
             return null
         }
 
@@ -263,7 +266,7 @@ object CipherDeobfuscator {
         if (!rendererRecoveryPolicy.shouldAttempt(nowMs)) {
             Timber.tag(TAG).w(
                 "Skipping cipher WebView creation: ${rendererRecoveryPolicy.consecutiveFailures} " +
-                    "consecutive renderer deaths, in backoff window"
+                    "consecutive renderer deaths, in backoff window (backoffUntilMs=${rendererRecoveryPolicy.backoffUntilMs})"
             )
             return null
         }
@@ -283,10 +286,10 @@ object CipherDeobfuscator {
         }
 
         // Fetch player JS
-        Timber.tag(TAG).d("Fetching player JS...")
+        Timber.tag(TAG).d("Fetching player JS (forceRefresh=$forceRefresh)...")
         val result = PlayerJsFetcher.getPlayerJs(forceRefresh = forceRefresh)
         if (result == null) {
-            Timber.tag(TAG).e("Failed to get player JS")
+            Timber.tag(TAG).e("Failed to get player JS — check PlayerJsFetcher logs")
             return null
         }
         val (playerJs, hash) = result

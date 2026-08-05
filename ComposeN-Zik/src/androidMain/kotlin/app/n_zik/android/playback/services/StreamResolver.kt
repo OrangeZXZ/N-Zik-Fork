@@ -52,6 +52,7 @@ import app.it.fast4x.rimusic.utils.disabledStreamClientsKey
 import app.it.fast4x.rimusic.utils.streamClientWebRemixEnabledKey
 import app.it.fast4x.rimusic.utils.streamClientVisionosEnabledKey
 import app.it.fast4x.rimusic.utils.streamClientTvEmbeddedEnabledKey
+import app.it.fast4x.rimusic.utils.streamClientTvSimplyEnabledKey
 import app.it.fast4x.rimusic.utils.streamClientTvHtml5EnabledKey
 import app.it.fast4x.rimusic.utils.streamClientAndroidVrEnabledKey
 import app.it.fast4x.rimusic.utils.streamClientAndroidCreatorEnabledKey
@@ -88,15 +89,19 @@ private const val INITIAL_RETRY_DELAY_MS = 1500L
 // Singleton PoTokenGenerator to reuse across resolve calls (avoids recreating WebView each time)
 private val poTokenGenerator = PoTokenGenerator()
 
-// Clients to try in order - mirrors Metrolist's YTPlayerUtils fallback chain
+// Content-aware fallback: selects client order based on content type (live, explicit, kids, uploaded)
+private val contentFallbackStrategy = it.fast4x.innertube.strategy.ContentAwareFallbackStrategy()
+
+// Full client list for fallback when content-aware list is exhausted
 // VISIONOS: CDN URL has no spc throttle gate, streams whole songs with no poToken/cipher
 private val FALLBACK_CLIENTS = listOf(
     YouTubeClient.WEB_REMIX,
     YouTubeClient.VISIONOS,
     YouTubeClient.WEB_CREATOR,
     YouTubeClient.TVHTML5,
+    YouTubeClient.ANDROID_VR_1_65_10,
     YouTubeClient.ANDROID_VR_1_43_32,
-    YouTubeClient.ANDROID_VR_1_61_48,
+    YouTubeClient.TVHTML5_SIMPLY,
     YouTubeClient.TVHTML5_SIMPLY_EMBEDDED_PLAYER,
     YouTubeClient.IOS,
     YouTubeClient.IPADOS,
@@ -107,7 +112,7 @@ private val FALLBACK_CLIENTS = listOf(
     YouTubeClient.WEB,
 )
 
-private val WEB_CLIENTS = setOf("WEB", "WEB_REMIX", "WEB_CREATOR", "TVHTML5", "TVHTML5_SIMPLY_EMBEDDED_PLAYER")
+private val WEB_CLIENTS = setOf("WEB", "WEB_REMIX", "WEB_CREATOR", "TVHTML5", "TVHTML5_SIMPLY", "TVHTML5_SIMPLY_EMBEDDED_PLAYER")
 
 // Age-restricted playability statuses
 private val AGE_RESTRICTED_STATUSES = setOf("AGE_CHECK_REQUIRED", "AGE_VERIFICATION_REQUIRED", "LOGIN_REQUIRED", "CONTENT_CHECK_REQUIRED")
@@ -609,6 +614,7 @@ private suspend fun resolveStreamUriInternal(
         if (!prefs.getBoolean(streamClientWebRemixEnabledKey, true)) add("WEB_REMIX")
         if (!prefs.getBoolean(streamClientVisionosEnabledKey, true)) add("VISIONOS")
         if (!prefs.getBoolean(streamClientTvEmbeddedEnabledKey, true)) add("TVHTML5_SIMPLY_EMBEDDED_PLAYER")
+        if (!prefs.getBoolean(streamClientTvSimplyEnabledKey, true)) add("TVHTML5_SIMPLY")
         if (!prefs.getBoolean(streamClientTvHtml5EnabledKey, true)) add("TVHTML5")
         if (!prefs.getBoolean(streamClientAndroidVrEnabledKey, true)) add("ANDROID_VR")
         if (!prefs.getBoolean(streamClientAndroidCreatorEnabledKey, true)) add("ANDROID_CREATOR")
@@ -620,9 +626,24 @@ private suspend fun resolveStreamUriInternal(
         if (!prefs.getBoolean(streamClientAndroidEnabledKey, true)) add("ANDROID")
     }
     
+    // Content-aware client ordering: reorder based on content type hints
+    // This ensures live streams, kids content, explicit, and uploaded tracks get optimal client order
+    val contentAwareBase = contentFallbackStrategy.resolveClients(
+        it.fast4x.innertube.strategy.ContentHints(
+            isExplicit = parentalControlEnabled,
+            isLive = false,
+            isKidsContent = false,
+            isUploaded = false,
+        )
+    )
+    // Merge content-aware order with full fallback list: content-aware clients first, then remaining
+    val contentAwareOrder = contentAwareBase.map { it.clientName } + FALLBACK_CLIENTS.map { it.clientName }
+    val deduplicatedOrder = contentAwareOrder.distinct()
+    val baseClients = deduplicatedOrder.mapNotNull { name -> FALLBACK_CLIENTS.find { it.clientName == name } }
+
     // Get preferred client and prioritize it
     val preferredClientName = prefs.getString(preferredStreamClientKey, "WEB_REMIX") ?: "WEB_REMIX"
-    val filteredClients = FALLBACK_CLIENTS.filter { it.clientName !in disabledClients }
+    val filteredClients = baseClients.filter { it.clientName !in disabledClients }
     val preferredClient = filteredClients.find { it.clientName == preferredClientName }
     val clientsToTry = if (preferredClient != null) {
         Timber.tag(TAG).d("Preferred client: $preferredClientName — will be tried first")
@@ -801,19 +822,15 @@ private suspend fun resolveStreamUriInternal(
             }
 
             // Validate (HEAD request)
-            // WEB_REMIX authenticated CDN URLs can 403 on HEAD yet serve fine on the byte-range
-            // GET that ExoPlayer makes. Skip HEAD validation for WEB_REMIX unless it previously
-            // failed for this videoId — let ExoPlayer try directly.
+            // WEB_REMIX CDN URLs can sometimes 403 on HEAD yet serve fine on byte-range GET.
+            // Validate anyway to detect real 403s early and trigger cipher refresh,
+            // but don't skip the stream on HEAD failure — let ExoPlayer try directly.
             // Also skip for last fallback client to guarantee at least one stream reaches ExoPlayer.
             val streamUrl = uri.toString()
             val isLastClient = index == clientsToTry.size - 1
-            val shouldSkipValidation = (ytClient.clientName == "WEB_REMIX" && videoId !in webRemixFailedIds) || isLastClient
+            val shouldSkipValidation = isLastClient
             val isValid = if (shouldSkipValidation) {
-                if (isLastClient) {
-                    Timber.tag(TAG).d("Last fallback client ${ytClient.clientName} — skipping HEAD validation, letting ExoPlayer try directly")
-                } else {
-                    Timber.tag(TAG).d("WEB_REMIX — skipping HEAD validation, letting ExoPlayer try directly")
-                }
+                Timber.tag(TAG).d("Last fallback client ${ytClient.clientName} — skipping HEAD validation, letting ExoPlayer try directly")
                 true
             } else {
                 // Pass cookie for private tracks when logged in
@@ -821,9 +838,9 @@ private suspend fun resolveStreamUriInternal(
                 NetworkClientFactory.validateStreamUrl(streamUrl, ytClient.userAgent, cookie)
             }
             if (!isValid) {
-                lastFailureReason = "${ytClient.clientName}: stream URL validation failed (403/expired?) for $videoId"
+                lastFailureReason = "${ytClient.clientName}: HEAD validation failed (403/expired?) for $videoId — letting ExoPlayer try anyway"
                 Timber.tag(TAG).w(lastFailureReason)
-                // Track WEB_REMIX failures to skip HEAD on next attempt
+                // Track WEB_REMIX failures so next resolve falls through to fallback clients faster
                 if (ytClient.clientName == "WEB_REMIX") {
                     webRemixFailedIds.add(videoId)
                 }
@@ -836,7 +853,8 @@ private suspend fun resolveStreamUriInternal(
                         }
                     }
                 }
-                continue
+                // Don't continue — let ExoPlayer try the URL despite HEAD failure
+                // (HEAD can give false 403s for WEB_REMIX CDN URLs)
             }
 
             // Check if metadata is missing. If so, save as fallback and try next client.
@@ -851,7 +869,15 @@ private suspend fun resolveStreamUriInternal(
             }
 
             // Success!
-            Timber.tag(TAG).d("${ytClient.clientName}: stream resolved successfully for $videoId")
+            // Validate stream expiry — null means incomplete player response
+            val streamExpiresInSeconds = responseToUse.streamingData?.expiresInSeconds?.toLong()
+            if (streamExpiresInSeconds == null) {
+                lastFailureReason = "${ytClient.clientName}: stream expiration time not found for $videoId"
+                Timber.tag(TAG).w(lastFailureReason)
+                continue
+            }
+
+            Timber.tag(TAG).d("${ytClient.clientName}: stream resolved successfully for $videoId (expires in ${streamExpiresInSeconds}s)")
             val audioLoudnessDb = responseToUse.playerConfig?.audioConfig?.loudnessDb
             val perceptualLoudness = responseToUse.playerConfig?.audioConfig?.perceptualLoudnessDb
             val playbackUrl = responseToUse.playbackTracking?.videostatsPlaybackUrl?.baseUrl
@@ -864,7 +890,7 @@ private suspend fun resolveStreamUriInternal(
                 loudnessDb = responseToUse.playerConfig?.audioConfig?.loudnessDb,
                 videoDetails = responseToUse.videoDetails,
                 playbackTracking = responseToUse.playbackTracking,
-                streamExpiresInSeconds = responseToUse.streamingData?.expiresInSeconds?.toLong(),
+                streamExpiresInSeconds = streamExpiresInSeconds,
                 streamClient = ytClient.clientName,
             )
             PlaybackDataStore.saveStreamClient(appContext(), videoId, ytClient.clientName)
@@ -967,8 +993,9 @@ fun clearStreamCaches() {
     playbackDataCache.clear()
     webRemixFailedIds.clear()
     fetchedFormatIds.clear()
+    MyDownloadHelper.songUrlCache.clear()
     PlaybackDataStore.clearStreamClients(appContext())
-    Timber.tag("StreamResolver").d("All stream caches cleared (format + playback data + webRemix failures)")
+    Timber.tag("StreamResolver").d("All stream caches cleared (format + playback data + webRemix failures + URL cache)")
 }
 
 /**
@@ -1136,6 +1163,27 @@ fun MyDownloadHelper.createDataSourceFactory(): DataSource.Factory {
 
     val resolvingDataSourceFactory = ResolvingDataSource.Factory(upstreamFactory) { dataSpec ->
         val videoId = dataSpec.uri.toString().substringAfter("watch?v=")
+        val length = if (dataSpec.length >= 0) dataSpec.length else 1
+
+        // Cache-first: if download cache already has this range, skip resolution entirely
+        if (downloadCache.isCached(videoId, dataSpec.position, length)) {
+            return@Factory dataSpec
+        }
+
+        fun resolveFresh(): DataSpec {
+            fetchFormatIfMissing(videoId)
+            CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch { upsertSongInfo(videoId) }
+            val resolvedSpec = dataSpec.process(videoId, audioQualityFormat, appContext().isConnectionMetered())
+            val resolvedUrl = resolvedSpec.uri.toString()
+            val expireSeconds = resolvedUrl.substringAfter("expire=").substringBefore("&").toLongOrNull()
+            val expiryMs = if (expireSeconds != null) {
+                expireSeconds * 1000 - 60_000
+            } else {
+                System.currentTimeMillis() + 6 * 60 * 60 * 1000L
+            }
+            songUrlCache[videoId] = resolvedUrl to expiryMs
+            return resolvedSpec.buildUpon().setKey(videoId).build()
+        }
 
         // Check URL cache first
         val cached = songUrlCache[videoId]
@@ -1146,24 +1194,15 @@ fun MyDownloadHelper.createDataSourceFactory(): DataSource.Factory {
                 .build()
         }
 
-        fetchFormatIfMissing(videoId)
-        CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch { upsertSongInfo(videoId) }
-
-        val resolvedSpec = dataSpec.process(videoId, audioQualityFormat, appContext().isConnectionMetered())
-
-        // Cache the resolved URL with expiry (extract from URL or use default 6h)
-        val resolvedUrl = resolvedSpec.uri.toString()
-        val expireSeconds = resolvedUrl.substringAfter("expire=").substringBefore("&").toLongOrNull()
-        val expiryMs = if (expireSeconds != null) {
-            expireSeconds * 1000 - 60_000 // 1 minute margin
-        } else {
-            System.currentTimeMillis() + 6 * 60 * 60 * 1000L // 6 hours default
+        try {
+            resolveFresh()
+        } catch (e: Exception) {
+            Timber.tag("StreamResolver").w(e, "Download resolve failed for $videoId, invalidating URL cache and retrying")
+            songUrlCache.remove(videoId)
+            formatCache.remove(videoId)
+            try { downloadCache.removeResource(videoId) } catch (_: Exception) {}
+            resolveFresh()
         }
-        songUrlCache[videoId] = resolvedUrl to expiryMs
-
-        resolvedSpec.buildUpon()
-            .setKey(videoId)
-            .build()
     }
 
     return CacheDataSource.Factory()

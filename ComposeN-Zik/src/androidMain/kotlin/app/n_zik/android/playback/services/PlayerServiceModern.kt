@@ -234,6 +234,8 @@ import app.n_zik.android.playback.exceptions.PlayableFormatNonSupported
 import app.n_zik.android.playback.exceptions.UnmatchedSongException
 import app.n_zik.android.playback.exceptions.UnplayableException
 import app.n_zik.android.playback.exceptions.VideoIdMismatchException
+import app.n_zik.android.core.security.cipher.CipherDeobfuscator
+import app.n_zik.android.playback.utils.PlaybackDispatchers
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 
@@ -1011,6 +1013,91 @@ class PlayerServiceModern : MediaLibraryService(),
      */
     private val recoveryAttempts = mutableMapOf<String, Int>()
     private val MAX_RECOVERY_ATTEMPTS = 7
+    private val MAX_RETRY_PER_SONG = 3
+    private val RETRY_DELAY_MS = 1000L
+    private val recentlyFailedSongs = mutableSetOf<String>()
+
+    // --- Error classification helpers (mirrors Metrolist's MusicService) ---
+
+    private fun getHttpResponseCode(error: PlaybackException): Int? {
+        val rootCause = generateSequence<Throwable>(error) { it.cause }.firstOrNull {
+            it is androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException
+        }
+        return (rootCause as? androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException)?.responseCode
+    }
+
+    private fun isExpiredUrlError(error: PlaybackException): Boolean = getHttpResponseCode(error) == 403
+
+    private fun isRangeNotSatisfiableError(error: PlaybackException): Boolean = getHttpResponseCode(error) == 416
+
+    private fun isPageReloadError(error: PlaybackException): Boolean {
+        val reloadKeywords = listOf(
+            "page needs to be reloaded",
+            "page must be reloaded",
+            "reload",
+        )
+        val errorMessage = error.message?.lowercase() ?: ""
+        val causeMessage = error.cause?.message?.lowercase() ?: ""
+        val innerCauseMessage = error.cause?.cause?.message?.lowercase() ?: ""
+        return reloadKeywords.any { keyword ->
+            errorMessage.contains(keyword) || causeMessage.contains(keyword) || innerCauseMessage.contains(keyword)
+        }
+    }
+
+    private fun isRemotePlaybackError(error: PlaybackException): Boolean =
+        error.errorCode == PlaybackException.ERROR_CODE_REMOTE_ERROR
+
+    private fun isAudioRendererError(error: PlaybackException): Boolean =
+        error.errorCode == PlaybackException.ERROR_CODE_AUDIO_TRACK_WRITE_FAILED ||
+            error.errorCode == PlaybackException.ERROR_CODE_AUDIO_TRACK_INIT_FAILED ||
+            (error.cause as? PlaybackException)?.errorCode == PlaybackException.ERROR_CODE_AUDIO_TRACK_WRITE_FAILED ||
+            (error.cause as? PlaybackException)?.errorCode == PlaybackException.ERROR_CODE_AUDIO_TRACK_INIT_FAILED
+
+    private fun isFileNotFoundError(error: PlaybackException): Boolean =
+        error.errorCode == PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND
+
+    private fun isNetworkRelatedError(error: PlaybackException): Boolean {
+        if (isExpiredUrlError(error) || isRangeNotSatisfiableError(error) || isPageReloadError(error)) return false
+        return error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED ||
+            error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT ||
+            error.errorCode == PlaybackException.ERROR_CODE_IO_INVALID_HTTP_CONTENT_TYPE ||
+            error.cause is java.net.ConnectException ||
+            error.cause is java.net.UnknownHostException ||
+            (error.cause as? PlaybackException)?.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
+    }
+
+    private fun hasExceededRetryLimit(mediaId: String): Boolean {
+        val currentRetries = recoveryAttempts.getOrDefault(mediaId, 0)
+        return currentRetries >= MAX_RETRY_PER_SONG || mediaId in recentlyFailedSongs
+    }
+
+    private fun markSongAsFailed(mediaId: String) {
+        recentlyFailedSongs.add(mediaId)
+        recoveryAttempts.remove(mediaId)
+    }
+
+    private fun performAggressiveCacheClear(mediaId: String) {
+        Timber.tag("PlayerServiceModern").d("Performing aggressive cache clear for $mediaId")
+        formatCache.remove(mediaId)
+        try {
+            cache.removeResource(mediaId)
+            Timber.tag("PlayerServiceModern").d("Cleared player cache for $mediaId")
+        } catch (e: Exception) {
+            Timber.tag("PlayerServiceModern").w(e, "Failed to clear player cache for $mediaId")
+        }
+        try {
+            MyDownloadHelper.songUrlCache.remove(mediaId)
+            Timber.tag("PlayerServiceModern").d("Cleared download URL cache for $mediaId")
+        } catch (e: Exception) {
+            Timber.tag("PlayerServiceModern").w(e, "Failed to clear download URL cache for $mediaId")
+        }
+        try {
+            clearStreamCaches()
+            Timber.tag("PlayerServiceModern").d("Cleared stream caches for $mediaId")
+        } catch (e: Exception) {
+            Timber.tag("PlayerServiceModern").w(e, "Failed to clear stream caches for $mediaId")
+        }
+    }
 
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
@@ -1021,6 +1108,20 @@ class PlayerServiceModern : MediaLibraryService(),
             ?: error.cause?.cause?.message
             ?: error.errorCodeName
         Timber.tag("PlayerServiceModern").e("onPlayerError code=${error.errorCode} (${error.errorCodeName}) detail=[$errorDetail] cause=${error.cause} rootCause=${error.cause?.cause}")
+
+        val currentMediaId = player.currentMediaItem?.mediaId
+
+        // Per-song retry limit — prevents infinite loops on permanently broken streams
+        if (currentMediaId != null && hasExceededRetryLimit(currentMediaId)) {
+            Timber.tag("PlayerServiceModern").w("Song $currentMediaId exceeded retry limit, skipping")
+            markSongAsFailed(currentMediaId)
+            if (player.hasNextMediaItem()) {
+                player.playNext()
+            } else {
+                player.pause()
+            }
+            return
+        }
 
         val playbackConnectionExeptionList = listOf(
             PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED, //primary error code to manage
@@ -1051,15 +1152,16 @@ class PlayerServiceModern : MediaLibraryService(),
             return
         }
 
-        // Recoverable errors: try pause+prepare+play before giving up
+        // Recoverable errors: specialized handling per error type
         val recoverableErrors = listOf(
             PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS,
             PlaybackException.ERROR_CODE_IO_READ_POSITION_OUT_OF_RANGE,
-            PlaybackException.ERROR_CODE_REMOTE_ERROR,        // UnplayableException lands here
+            PlaybackException.ERROR_CODE_REMOTE_ERROR,
             PlaybackException.ERROR_CODE_IO_UNSPECIFIED,
+            PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND,
+            PlaybackException.ERROR_CODE_AUDIO_TRACK_WRITE_FAILED,
+            PlaybackException.ERROR_CODE_AUDIO_TRACK_INIT_FAILED,
         )
-
-        val currentMediaId = player.currentMediaItem?.mediaId
 
         if (error.errorCode in recoverableErrors && currentMediaId != null) {
             val attempts = recoveryAttempts.getOrDefault(currentMediaId, 0)
@@ -1068,27 +1170,106 @@ class PlayerServiceModern : MediaLibraryService(),
                 recoveryAttempts[currentMediaId] = attempts + 1
                 Timber.tag("PlayerServiceModern").e("onPlayerError attempting recovery ${attempts + 1}/$MAX_RECOVERY_ATTEMPTS for ${error.errorCodeName} cause ${error.cause?.cause}")
 
-                // Invalidate cached stream URL so next resolve fetches a fresh one
-                formatCache.remove(currentMediaId)
+                // --- Specialized error handling (mirrors Metrolist) ---
 
-                // Mark WEB_REMIX as failed for this videoId so next resolve skips HEAD validation
-                if (error.errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS) {
-                    markWebRemixFailed(currentMediaId)
+                when {
+                    // 403 Forbidden — expired/forbidden stream URL
+                    isExpiredUrlError(error) -> {
+                        Timber.tag("PlayerServiceModern").d("Handling 403 expired URL error for $currentMediaId")
+                        formatCache.remove(currentMediaId)
+                        try {
+                            cache.removeResource(currentMediaId)
+                        } catch (_: Exception) {}
+                        markWebRemixFailed(currentMediaId)
+                        // Synchronously refresh cipher config — this is the critical fix
+                        val configChanged = runCatching {
+                            kotlinx.coroutines.runBlocking(PlaybackDispatchers.STREAM_RESOLVER) {
+                                CipherDeobfuscator.onStreamRejected()
+                            }
+                        }.getOrNull() ?: false
+                        if (configChanged) {
+                            Timber.tag("PlayerServiceModern").d("Player config changed after stream rejection — restoring WEB_REMIX")
+                            clearWebRemixFailures()
+                        }
+                    }
+
+                    // 416 Range Not Satisfiable — cached data doesn't match stream size
+                    isRangeNotSatisfiableError(error) -> {
+                        Timber.tag("PlayerServiceModern").d("Handling 416 range error for $currentMediaId — retrying from position 0")
+                        performAggressiveCacheClear(currentMediaId)
+                    }
+
+                    // Page reload error — YouTube internal state issue
+                    isPageReloadError(error) -> {
+                        Timber.tag("PlayerServiceModern").d("Handling page reload error for $currentMediaId")
+                        performAggressiveCacheClear(currentMediaId)
+                    }
+
+                    // Remote playback error — treat as expired URL
+                    isRemotePlaybackError(error) -> {
+                        Timber.tag("PlayerServiceModern").d("Handling remote playback error for $currentMediaId — treating as expired URL")
+                        formatCache.remove(currentMediaId)
+                        try { cache.removeResource(currentMediaId) } catch (_: Exception) {}
+                        markWebRemixFailed(currentMediaId)
+                        val configChanged = runCatching {
+                            kotlinx.coroutines.runBlocking(PlaybackDispatchers.STREAM_RESOLVER) {
+                                CipherDeobfuscator.onStreamRejected()
+                            }
+                        }.getOrNull() ?: false
+                        if (configChanged) {
+                            Timber.tag("PlayerServiceModern").d("Player config changed after stream rejection — restoring WEB_REMIX")
+                            clearWebRemixFailures()
+                        }
+                    }
+
+                    // Audio renderer error — corrupted audio track state
+                    isAudioRendererError(error) -> {
+                        Timber.tag("PlayerServiceModern").d("Handling audio renderer error for $currentMediaId — extra delay")
+                        formatCache.remove(currentMediaId)
+                        try { cache.removeResource(currentMediaId) } catch (_: Exception) {}
+                    }
+
+                    // File not found — cache eviction or corruption
+                    isFileNotFoundError(error) -> {
+                        Timber.tag("PlayerServiceModern").d("Handling file-not-found error for $currentMediaId")
+                        performAggressiveCacheClear(currentMediaId)
+                    }
+
+                    // Generic recoverable error
+                    else -> {
+                        performAggressiveCacheClear(currentMediaId)
+                    }
                 }
+
+                // Delay varies by error type: audio renderer needs longer, page reload needs 2x
+                val retryDelay = when {
+                    isAudioRendererError(error) -> RETRY_DELAY_MS * 3
+                    isPageReloadError(error) -> RETRY_DELAY_MS * 2
+                    else -> RETRY_DELAY_MS
+                }
+
+                // 416 and file-not-found: seek to 0 to avoid range issues
+                val seekToZero = isRangeNotSatisfiableError(error) || isFileNotFoundError(error)
 
                 // Save playWhenReady BEFORE pausing - pause() clears it
                 val wasPlaying = player.playWhenReady
                 player.pause()
-                player.prepare()
-                if (wasPlaying) {
-                    player.play()
+                CoroutineScope(Dispatchers.IO).launch {
+                    delay(retryDelay)
+                    val currentIndex = player.currentMediaItemIndex
+                    if (currentIndex != C.INDEX_UNSET) {
+                        player.seekTo(currentIndex, if (seekToZero) 0 else player.currentPosition)
+                    }
+                    player.prepare()
+                    if (wasPlaying) {
+                        player.play()
+                    }
                 }
                 Toaster.w(R.string.stream_error_retrying, formatArgs = arrayOf(errorDetail.take(80)))
                 return
             } else {
                 Timber.tag("PlayerServiceModern").e("onPlayerError recovery exhausted ($MAX_RECOVERY_ATTEMPTS attempts) for $currentMediaId")
                 recoveryAttempts.remove(currentMediaId)
-                // Fall through - but if skipMediaOnError is OFF, we still won't skip (handled below) is OFF, we still won't skip (handled below)
             }
         }
 

@@ -26,6 +26,10 @@ class RendererRecoveryPolicy {
 
     private var backoffWindowOpenedAt: Long = 0L
 
+    /** Timestamp (elapsedRealtime) when the current backoff window ends, or 0 if not in backoff. */
+    val backoffUntilMs: Long
+        get() = if (consecutiveFailures >= FAILURE_THRESHOLD) backoffWindowOpenedAt + BACKOFF_WINDOW_MS else 0L
+
     /**
      * Should we attempt to create a cipher WebView right now?
      * Returns false during the backoff window after repeated renderer deaths.

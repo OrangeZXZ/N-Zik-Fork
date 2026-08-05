@@ -96,6 +96,16 @@ data class YouTubeClient(
             useSignatureTimestamp = true,
         )
 
+        val TVHTML5_SIMPLY = YouTubeClient(
+            clientName = "TVHTML5_SIMPLY",
+            clientVersion = "1.0",
+            api_key = "AIzaSyDCU8hByM-4DrUqRUYnGn-3llEO78bcxq8",
+            clientId = "75",
+            userAgent = "Mozilla/5.0(SMART-TV; Linux; Tizen 4.0.0.2) AppleWebkit/605.1.15 (KHTML, like Gecko) SamsungBrowser/9.2 TV Safari/605.1.15",
+            useSignatureTimestamp = true,
+            useWebPoTokens = true,
+        )
+
         val MOBILE = YouTubeClient(
             clientName = "ANDROID",
             clientVersion = "21.03.38",
@@ -164,6 +174,21 @@ data class YouTubeClient(
             api_key = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
             userAgent = "com.google.android.apps.youtube.vr.oculus/1.61.48 (Linux; U; Android 12; en_US; Quest 3; Build/SQ3A.220605.009.A1; Cronet/132.0.6808.3)",
             osVersion = "12",
+            xClientName = 28,
+            loginSupported = false,
+            useSignatureTimestamp = false,
+        )
+
+        val ANDROID_VR_1_65_10 = YouTubeClient(
+            osName = "Android",
+            deviceMake = "Oculus",
+            deviceModel = "Quest 3",
+            androidSdkVersion = "32",
+            clientName = "ANDROID_VR",
+            clientVersion = "1.65.10",
+            api_key = "AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w",
+            userAgent = "com.google.android.apps.youtube.vr.oculus/1.65.10 (Linux; U; Android 12L; eureka-user Build/SQ3A.220605.009.A1) gzip",
+            osVersion = "12L",
             xClientName = 28,
             loginSupported = false,
             useSignatureTimestamp = false,

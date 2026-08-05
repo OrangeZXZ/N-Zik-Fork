@@ -98,8 +98,14 @@ object MyDownloadHelper {
     private lateinit var downloadManager: DownloadManager
     lateinit var audioQualityFormat: AudioQualityFormat
 
-    // URL cache with expiry: videoId -> (url, expiryTimestamp)
-    internal val songUrlCache = HashMap<String, Pair<String, Long>>()
+    // URL cache with LRU eviction (max 500 entries): videoId -> (url, expiryTimestamp)
+    internal val songUrlCache = java.util.Collections.synchronizedMap(
+        object : LinkedHashMap<String, Pair<String, Long>>(0, 0.75f, true) {
+            override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, Pair<String, Long>>): Boolean {
+                return size > 500
+            }
+        }
+    )
 
 
     var downloads = MutableStateFlow<Map<String, Download>>(emptyMap())

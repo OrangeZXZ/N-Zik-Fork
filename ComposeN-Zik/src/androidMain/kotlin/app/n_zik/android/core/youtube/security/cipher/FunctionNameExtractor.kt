@@ -52,6 +52,10 @@ object FunctionNameExtractor {
 
     // ==================== DETECTION PATTERNS ====================
 
+    // See extractSignatureTimestamp for why these two are tried in different precedence tiers.
+    private val ANCHORED_STS_PATTERN = Regex("""signatureTimestamp['":\s]+(\d+)""")
+    private val LOOSE_STS_PATTERN = Regex("""sts['":\s]+(\d+)""")
+
     // Detect Q-array obfuscation: var Q="...".split("}")
     private val Q_ARRAY_PATTERN = Regex("""var\s+Q\s*=\s*"[^"]+"\s*\.\s*split\s*\(\s*"\}"\s*\)""")
 
@@ -165,7 +169,9 @@ object FunctionNameExtractor {
      *
      * Validated config FIRST, legacy regex heuristics only as a fallback: config entries are
      * proven against the live CDN (HTTP 206) before they ship, while the patterns below are
-     * unanchored heuristics that can false-match anywhere in the ~2 MB player JS.
+     * unanchored heuristics that can false-match anywhere in the ~2 MB player JS. A heuristic
+     * must never shadow a validated config — and a false positive here must not block the
+     * unknown-player forced refresh in CipherDeobfuscator.
      * @param playerJs The player.js content
      * @param knownHash Optional hash for config lookup
      */
@@ -173,8 +179,9 @@ object FunctionNameExtractor {
         Timber.tag(TAG).d("========== EXTRACTING SIG FUNCTION ==========")
         Timber.tag(TAG).d("Player.js size: ${playerJs.length} chars")
 
-        // Validated config first — never let a heuristic shadow a proven config.
+        // Validated config first.
         val hashToUse = knownHash ?: extractPlayerHash(playerJs)
+        Timber.tag(TAG).d("Using hash for config lookup: $hashToUse (knownHash=$knownHash)")
         if (hashToUse != null) {
             val config = getHardcodedConfig(hashToUse)
             if (config != null) {
@@ -201,8 +208,7 @@ object FunctionNameExtractor {
             }
         }
 
-        // Fallback: regex heuristics (unanchored, can false-match)
-        Timber.tag(TAG).d("No validated config for sig, trying regex patterns...")
+        Timber.tag(TAG).w("No config for hash $hashToUse, trying legacy sig patterns...")
         for ((index, pattern) in SIG_FUNCTION_PATTERNS.withIndex()) {
             Timber.tag(TAG).v("Trying sig pattern $index: ${pattern.pattern.take(60)}...")
             val match = pattern.find(playerJs)
@@ -211,6 +217,7 @@ object FunctionNameExtractor {
                 val constArg = if (match.groupValues.size > 2) match.groupValues[2].toIntOrNull() else null
                 Timber.tag(TAG).d("SIG FUNCTION FOUND via pattern $index:")
                 Timber.tag(TAG).d("  name=$name, constantArg=$constArg")
+                Timber.tag(TAG).d("  match context: ...${playerJs.substring(maxOf(0, match.range.first - 20), minOf(playerJs.length, match.range.last + 20))}...")
                 return SigFunctionInfo(name, constArg, isHardcoded = false)
             }
         }
@@ -223,7 +230,8 @@ object FunctionNameExtractor {
     /**
      * Extract N-transform function info from player.js.
      *
-     * Validated config FIRST, regex heuristics as fallback.
+     * Validated config FIRST, legacy regex heuristics only as a fallback — same precedence
+     * rationale as [extractSigFunctionInfo].
      * @param playerJs The player.js content
      * @param knownHash Optional hash for config lookup
      */
@@ -231,24 +239,23 @@ object FunctionNameExtractor {
         Timber.tag(TAG).d("========== EXTRACTING N-FUNCTION ==========")
         Timber.tag(TAG).d("Player.js size: ${playerJs.length} chars")
 
-        // Validated config first
+        // Validated config first.
         val hashToUse = knownHash ?: extractPlayerHash(playerJs)
+        Timber.tag(TAG).d("Using hash for config lookup: $hashToUse (knownHash=$knownHash)")
         if (hashToUse != null) {
             val config = getHardcodedConfig(hashToUse)
             if (config != null) {
                 if (config.nJsExpression != null) {
                     Timber.tag(TAG).d("USING EXPRESSION-BASED N-FUNCTION: ${config.nJsExpression.take(60)}")
-                    return NFunctionInfo(config.nFuncName, config.nArrayIndex, config.nConstantArgs, config.nJsExpression, isHardcoded = true)
-                }
-                if (config.nFuncName.isNotEmpty()) {
+                } else {
                     Timber.tag(TAG).d("USING HARDCODED N-FUNCTION: ${config.nFuncName}[${config.nArrayIndex}]")
-                    return NFunctionInfo(config.nFuncName, config.nArrayIndex, config.nConstantArgs, isHardcoded = true)
+                    Timber.tag(TAG).d("N-function constant args: ${config.nConstantArgs}")
                 }
+                return NFunctionInfo(config.nFuncName, config.nArrayIndex, config.nConstantArgs, config.nJsExpression, isHardcoded = true)
             }
         }
 
-        // Fallback: regex heuristics
-        Timber.tag(TAG).d("No validated config for n-func, trying regex patterns...")
+        Timber.tag(TAG).w("No config for hash $hashToUse, trying legacy n-func patterns...")
         for ((index, pattern) in N_FUNCTION_PATTERNS.withIndex()) {
             Timber.tag(TAG).v("Trying n-func pattern $index: ${pattern.pattern.take(60)}...")
             val match = pattern.find(playerJs)
@@ -269,6 +276,9 @@ object FunctionNameExtractor {
                         return NFunctionInfo(name, arrayIdx, isHardcoded = false)
                     }
                     else -> {
+                        // Skip patterns that match but don't expose a usable function name.
+                        // E.g. the `.get("n");if(...){var M=n.match...` April 2026 variant has
+                        // no capturing groups and reading groupValues[1] would throw.
                         if (pattern.toPattern().matcher("").groupCount() < 1) {
                             Timber.tag(TAG).d("N-pattern $index matched but has no capture groups; skipping")
                             continue
@@ -288,50 +298,36 @@ object FunctionNameExtractor {
     }
 
     /**
-     * Extract signatureTimestamp from player.js.
-     * Config-first, then anchored regex, then loose regex.
+     * Extract signatureTimestamp from player.js
      */
     fun extractSignatureTimestamp(playerJs: String, knownHash: String? = null): Int? {
         Timber.tag(TAG).d("Extracting signatureTimestamp...")
 
-        // Config first
-        val hashToUse = knownHash ?: extractPlayerHash(playerJs)
-        if (hashToUse != null) {
-            val config = getHardcodedConfig(hashToUse)
+        // Precedence: (1) the anchored `signatureTimestamp` literal in the JS itself — it is
+        // the player's own embedded field and the source config sts values are copied from
+        // at authoring time, so it is immune to config typos, stale aliases, and bad remote
+        // pushes (configs' sts is NOT CDN-validated, unlike sig/n); (2) the config, for
+        // players lacking the literal; (3) the loose `sts` pattern, which can false-match
+        // anywhere in ~2 MB of JS and must never shadow the other two.
+        val anchored = ANCHORED_STS_PATTERN.find(playerJs)?.groupValues?.get(1)?.toIntOrNull()
+        if (anchored != null) {
+            Timber.tag(TAG).d("signatureTimestamp from player JS literal: $anchored")
+            return anchored
+        }
+
+        val playerHash = knownHash ?: extractPlayerHash(playerJs)
+        if (playerHash != null) {
+            val config = getHardcodedConfig(playerHash)
             if (config != null) {
-                Timber.tag(TAG).d("Using config signatureTimestamp: ${config.signatureTimestamp}")
+                Timber.tag(TAG).d("Using hardcoded signatureTimestamp: ${config.signatureTimestamp}")
                 return config.signatureTimestamp
             }
         }
 
-        // Anchored pattern first (signatureTimestamp = exact key)
-        val anchoredPattern = Regex("""signatureTimestamp['":\s]+(\d+)""")
-        anchoredPattern.find(playerJs)?.let { match ->
-            val sts = match.groupValues[1].toIntOrNull()
-            if (sts != null) {
-                Timber.tag(TAG).d("signatureTimestamp found via anchored pattern: $sts")
-                return sts
-            }
-        }
-
-        // JSON pattern
-        val jsonPattern = Regex(""""signatureTimestamp"\s*:\s*(\d+)""")
-        jsonPattern.find(playerJs)?.let { match ->
-            val sts = match.groupValues[1].toIntOrNull()
-            if (sts != null) {
-                Timber.tag(TAG).d("signatureTimestamp found via JSON pattern: $sts")
-                return sts
-            }
-        }
-
-        // Loose pattern last (can false-match)
-        val loosePattern = Regex("""sts['":\s]+(\d+)""")
-        loosePattern.find(playerJs)?.let { match ->
-            val sts = match.groupValues[1].toIntOrNull()
-            if (sts != null) {
-                Timber.tag(TAG).d("signatureTimestamp found via loose pattern: $sts")
-                return sts
-            }
+        val loose = LOOSE_STS_PATTERN.find(playerJs)?.groupValues?.get(1)?.toIntOrNull()
+        if (loose != null) {
+            Timber.tag(TAG).d("signatureTimestamp via loose sts pattern: $loose")
+            return loose
         }
 
         Timber.tag(TAG).w("Could not extract signatureTimestamp")

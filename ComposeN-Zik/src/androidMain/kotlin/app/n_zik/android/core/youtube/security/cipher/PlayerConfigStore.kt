@@ -31,7 +31,7 @@ object PlayerConfigStore {
     private const val ASSET_NAME = "player_configs.json"
 
     private val REMOTE_URL by lazy {
-        val encoded = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL01ldHJvbGlzdEdyb3VwL01ldHJvbGlzdC9tYWluL2FwcC9zcmMvbWFpbi9hc3NldHMvcGxheWVyX2NvbmZpZ3MuanNvbg=="
+        val encoded = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL1plbWVyVGVhbS96ZW1lci1jaXBoZXIvbWFzdGVyL2xpYnJhcnkvc3JjL21haW4vYXNzZXRzL3BsYXllcl9jb25maWdzLmpzb24="
         String(Base64.decode(encoded, Base64.DEFAULT), StandardCharsets.UTF_8)
     }
 
@@ -206,7 +206,7 @@ object PlayerConfigStore {
                     return false
                 }
 
-                val body = response.body.string()
+                val body = response.body?.string()
                 if (body.isNullOrEmpty()) {
                     Timber.tag(TAG).w("Remote config fetch returned empty body — keeping previous configs")
                     return false
@@ -316,8 +316,14 @@ object PlayerConfigStore {
         val tmp = File(file.parentFile, "${file.name}.tmp")
         tmp.writeText(content)
         if (!tmp.renameTo(file)) {
-            file.writeText(content)
-            tmp.delete()
+            // renameTo won't overwrite an existing target on some filesystems — retry after
+            // deleting it (two cheap metadata ops, still atomic) before the last-resort direct
+            // write, which is both non-atomic and a second full write of the content.
+            file.delete()
+            if (!tmp.renameTo(file)) {
+                file.writeText(content)
+                tmp.delete()
+            }
         }
     }
 }

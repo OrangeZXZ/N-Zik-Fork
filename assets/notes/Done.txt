@@ -1,3 +1,55 @@
+Metrolist Parity Sync:
+
+Added:
+- feat(cipher): port Metrolist cipher pipeline improvements
+  - CipherWebView: moved player.js heavy processing (2.8MB string transform + disk write) off Main thread to Dispatchers.IO, preventing UI freezes during WebView rebuilds
+  - CipherWebView: added NonCancellable context in destroyQuietly to ensure cleanup completes even on cancellation
+  - FunctionNameExtractor: safer STS precedence — anchored `signatureTimestamp` literal first (immune to config typos), then config, then loose `sts` pattern
+  - FunctionNameExtractor: added match context logging and hash lookup debug logging
+  - PlayerJsFetcher: invalidateCache now only deletes player_* files, preserving configs_remote.json and its ETag
+  - PlayerJsFetcher: added cacheWriteLock synchronized to prevent concurrent cache write corruption
+  - PlayerJsFetcher: HTTP responses wrapped in .use{} to prevent connection leaks on error paths
+  - PlayerJsFetcher: withinWindow() for NTP-safe TTL checks instead of raw subtraction
+  - PlayerJsFetcher: writeAtomic for cache writes to prevent truncation on process death
+  - PlayerConfigStore: NPE fix — response.body?.string() instead of response.body.string()
+  - PlayerConfigStore: writeAtomic adds target-delete before rename for filesystem compatibility
+  - PlayerConfigStore/PlayerDatesStore: REMOTE_URL changed from MetrolistGroup/Metrolist to ZemerTeam/zemer-cipher (configs up to sts 20669)
+  - Updated bundled player_configs.json from ZemerTeam/zemer-cipher (includes ea6f527e)
+
+- feat(stream clients): add ANDROID_VR_1_65_10 and TVHTML5_SIMPLY clients
+  - Added ANDROID_VR_1_65_10 client definition (newer Android VR version, Android 12L)
+  - Added TVHTML5_SIMPLY client definition (lightweight TV variant)
+  - Added streamClientTvSimplyEnabledKey preference key
+  - Added TV Simply toggle in StreamClientsSettingsDialog
+  - Added TVHTML5_SIMPLY disable logic in StreamResolver
+  - Added ANDROID_VR_1_65_10 and TVHTML5_SIMPLY to FALLBACK_CLIENTS
+  - Added TVHTML5_SIMPLY to WEB_CLIENTS set
+  - Added "TV Simply" string resources (name + description)
+
+- feat(content-aware): add ContentAwareFallbackStrategy
+  - New file with ContentHints data class and 5 content-specific client lists (default, uploaded, live, kids, explicit)
+  - Uses ANDROID_VR_1_65_10 and TVHTML5_SIMPLY in default list
+  - Integrated into StreamResolver for content-aware client ordering
+
+- feat(settings): wire all client descriptions in StreamClientsSettingsDialog
+  - All 13 stream clients now show descriptions in the settings dialog
+  - Added client_tv_simply_desc string resource
+
+- feat(error handling): per-song error classification in PlayerServiceModern
+  - Added isPageReloadError, isRemotePlaybackError, isNetworkRelatedError classifiers
+  - MAX_RETRY_PER_SONG=3 with recentlyFailedSongs tracking
+  - Retry delays: 1s default, 3s audio renderer, 2s page reload
+  - Seek to 0 for 416/file-not-found errors
+  - isRemotePlaybackError mapped to expired URL handler with cipher refresh
+  - performAggressiveCacheClear includes songUrlCache.remove()
+
+- feat(download): LRU URL cache and cache-first downloads
+  - songUrlCache changed to LRU LinkedHashMap (max 500 entries)
+  - Download factory checks downloadCache.isCached() before network
+  - ContentAwareFallbackStrategy integrated for client reordering
+  - Download 403 retry with URL cache invalidation
+  - clearStreamCaches includes songUrlCache.clear()
+
 Added:
 - feat(stats): add scroll support and live data refresh to StatsForNerds overlay
   - Added `clipToBounds()` and `nestedScroll` to prevent scroll gestures from propagating to parent and closing the player
