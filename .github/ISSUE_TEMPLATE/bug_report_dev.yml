@@ -1,7 +1,7 @@
 name: 👷 Dev Bug report
 description: Report a bug found while testing the N-Zik Dev build
 title: "[DEV BUG]: "
-labels: ["bug", "dev-feedback"]
+labels: ["bug", "dev"]
 
 body:
   - type: markdown
