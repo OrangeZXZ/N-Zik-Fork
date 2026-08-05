@@ -221,19 +221,7 @@ private fun fetchFormatIfMissing(videoId: String) {
         try {
             val existing = Database.formatTable.findBySongIdDirect(videoId)
             if (existing != null) {
-                val complete = (existing.contentLength ?: 0L) > 0L &&
-                    existing.loudnessDb != null &&
-                    existing.perceptualLoudnessDb != null &&
-                    (existing.bitrate ?: 0L) > 0L &&
-                    existing.sampleRate != null &&
-                    existing.audioChannels != null &&
-                    !existing.codecs.isNullOrEmpty()
-                if (complete) {
-                    Timber.tag(TAG).d("fetchFormatIfMissing: skip $videoId (complete)")
-                    fetchedFormatIds.add(videoId)
-                    return@launch
-                }
-                Timber.tag(TAG).d("fetchFormatIfMissing: re-fetch $videoId missing contentLength=${existing.contentLength} loudness=${existing.loudnessDb} perceptual=${existing.perceptualLoudnessDb}")
+                Timber.tag(TAG).d("fetchFormatIfMissing: re-fetch $videoId (existing in DB)")
             } else {
                 Timber.tag(TAG).d("fetchFormatIfMissing: new $videoId (no format in DB)")
             }

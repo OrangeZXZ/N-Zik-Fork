@@ -10,7 +10,7 @@ enum class AlbumSortBy(
     @field:DrawableRes override val iconId: Int
 ): Drawable, TextView {
 
-    Title( R.string.sort_album, R.drawable.text ),
+    Title( R.string.sort_name, R.drawable.text ),
 
     Artist( R.string.sort_artist, R.drawable.artist ),
 

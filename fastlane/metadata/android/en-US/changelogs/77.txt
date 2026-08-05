@@ -1,0 +1,1 @@
+Stats for Nerds: scrollable overlay with live data refresh. Default playlist sort changed to Name. Sort labels updated for Artists and Albums.

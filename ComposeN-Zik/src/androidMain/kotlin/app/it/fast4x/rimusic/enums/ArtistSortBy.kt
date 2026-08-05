@@ -10,7 +10,7 @@ enum class ArtistSortBy(
     @field:DrawableRes override val iconId: Int
 ): TextView, Drawable {
 
-    Name( R.string.sort_artist, R.drawable.text ),
+    Name( R.string.sort_name, R.drawable.text ),
 
     PlayCount( R.string.sort_play_count, R.drawable.play ),
 

@@ -35,12 +35,12 @@ object Preference {
     val HOME_ALBUMS_SORT_BY = Key( "HomeAlbumsSortBy", AlbumSortBy.Title )
     val HOME_ALBUMS_FAVORITES_SORT_BY = Key( "HomeAlbumsFavoritesSortBy", AlbumSortBy.Title )
     val HOME_ALBUMS_LIBRARY_SORT_BY = Key( "HomeAlbumsLibrarySortBy", AlbumSortBy.Title )
-    val HOME_LIBRARY_SORT_BY = Key( "HomeLibrarySortBy", PlaylistSortBy.SongCount )
-    val HOME_LIBRARY_PLAYLIST_SORT_BY = Key( "HomeLibraryPlaylistSortBy", PlaylistSortBy.SongCount )
-    val HOME_LIBRARY_YT_PLAYLIST_SORT_BY = Key( "HomeLibraryYTPlaylistSortBy", PlaylistSortBy.SongCount )
+    val HOME_LIBRARY_SORT_BY = Key( "HomeLibrarySortBy", PlaylistSortBy.Name )
+    val HOME_LIBRARY_PLAYLIST_SORT_BY = Key( "HomeLibraryPlaylistSortBy", PlaylistSortBy.Name )
+    val HOME_LIBRARY_YT_PLAYLIST_SORT_BY = Key( "HomeLibraryYTPlaylistSortBy", PlaylistSortBy.Name )
 
-    val HOME_LIBRARY_PINNED_PLAYLIST_SORT_BY = Key( "HomeLibraryPinnedPlaylistSortBy", PlaylistSortBy.SongCount )
-    val HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_BY = Key( "HomeLibraryMonthlyPlaylistSortBy", PlaylistSortBy.SongCount )
+    val HOME_LIBRARY_PINNED_PLAYLIST_SORT_BY = Key( "HomeLibraryPinnedPlaylistSortBy", PlaylistSortBy.Name )
+    val HOME_LIBRARY_MONTHLY_PLAYLIST_SORT_BY = Key( "HomeLibraryMonthlyPlaylistSortBy", PlaylistSortBy.Name )
     val PLAYLIST_SONGS_SORT_BY = Key( "PlaylistSongsSortBy", PlaylistSongSortBy.Title )
     val HISTORY_SORT_BY = Key( "HistorySortBy", HistorySortOrder.DATE )
     //</editor-fold>

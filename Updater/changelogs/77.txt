@@ -1,0 +1,15 @@
+Added:
+- feat(stats): add scroll support and live data refresh to StatsForNerds overlay
+  - Added clipToBounds() and nestedScroll to prevent scroll gestures from closing the player
+  - Replaced collectAsState with LaunchedEffect polling for playbackDataCache, cache, downloadCache, and formatTable
+  - StatsForNerds now auto-refreshes when stream client or link changes during playback
+- feat(sort): change default playlist sort from SongCount to Name
+  - Updated HOME_LIBRARY_*_SORT_BY defaults in Preference.kt to PlaylistSortBy.Name
+- feat(sort): change artist/album sort labels to "Name" for clarity
+  - Changed ArtistSortBy.Name and AlbumSortBy.Title textId to R.string.sort_name
+  - Updated HomeArtistsSortSettingsDialog and HomeAlbumsSortSettingsDialog accordingly
+
+Fixed:
+- fix(stats): remove format "complete" skip in StreamResolver to ensure fresh data on client change
+  - fetchFormatIfMissing no longer skips re-fetch when format exists in Room DB
+  - Ensures codec/bitrate/sample-rate data updates when stream client changes

@@ -59,7 +59,7 @@ object HomeArtistsSortSettingsDialog : Dialog {
     }
     @Composable
     private fun getSortLabel(id: String): String = when (id) {
-        "Name" -> stringResource(R.string.sort_artist)
+        "Name" -> stringResource(R.string.sort_name)
         "PlayCount" -> stringResource(R.string.sort_play_count)
         "ListeningTime" -> stringResource(R.string.sort_listening_time)
         "DateAdded" -> stringResource(R.string.sort_date_added)

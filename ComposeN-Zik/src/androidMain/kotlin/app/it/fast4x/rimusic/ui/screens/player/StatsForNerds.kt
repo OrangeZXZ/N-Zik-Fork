@@ -22,18 +22,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -94,6 +102,7 @@ fun StatsForNerds(
     ) {
         val cleanMediaId = remember(mediaId) { mediaId.split("/").lastOrNull() ?: mediaId }
 
+        var playbackData by remember(cleanMediaId) { mutableStateOf(playbackDataCache[cleanMediaId]) }
         var cachedBytes by remember(cleanMediaId) {
             mutableStateOf(binder.cache.getCachedBytes(cleanMediaId, 0, -1))
         }
@@ -102,8 +111,19 @@ fun StatsForNerds(
             mutableStateOf(binder.downloadCache.getCachedBytes(cleanMediaId, 0, -1))
         }
 
-        val format by Database.formatTable.findBySongId( cleanMediaId )
-            .collectAsState( null, Dispatchers.IO )
+        var format by remember(cleanMediaId) { mutableStateOf<app.it.fast4x.rimusic.models.Format?>(null) }
+        LaunchedEffect(cleanMediaId) {
+            while (true) {
+                playbackDataCache[cleanMediaId]?.let { if (it != playbackData) playbackData = it }
+                cachedBytes = binder.cache.getCachedBytes(cleanMediaId, 0, -1)
+                downloadCachedBytes = binder.downloadCache.getCachedBytes(cleanMediaId, 0, -1)
+                val dbFormat = kotlinx.coroutines.withContext(Dispatchers.IO) {
+                    Database.formatTable.findBySongIdDirect(cleanMediaId)
+                }
+                if (dbFormat != format) format = dbFormat
+                delay(1000)
+            }
+        }
         val showThumbnail by rememberPreference(showthumbnailKey, true)
         val statsForNerds by rememberPreference(statsfornerdsKey, false)
         val playerType by rememberPreference(playerTypeKey, PlayerType.Essential)
@@ -144,6 +164,16 @@ fun StatsForNerds(
         }
 
     if (showThumbnail && (!statsForNerds || playerType == PlayerType.Essential)) {
+        val scrollConnection = remember {
+            object : NestedScrollConnection {
+                override fun onPreScroll(available: androidx.compose.ui.geometry.Offset, source: NestedScrollSource): androidx.compose.ui.geometry.Offset {
+                    return if (source == NestedScrollSource.UserInput) available.copy(x = 0f) else androidx.compose.ui.geometry.Offset.Zero
+                }
+                override fun onPostScroll(consumed: androidx.compose.ui.geometry.Offset, available: androidx.compose.ui.geometry.Offset, source: NestedScrollSource): androidx.compose.ui.geometry.Offset {
+                    return if (source == NestedScrollSource.UserInput) available.copy(x = 0f) else androidx.compose.ui.geometry.Offset.Zero
+                }
+            }
+        }
         Box(
             modifier = modifier
                 .pointerInput(Unit) {
@@ -154,13 +184,19 @@ fun StatsForNerds(
                     )
                 }
                 .background(colorPalette().overlay)
+                .clipToBounds()
                 .fillMaxSize()
         ) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .nestedScroll(scrollConnection)
+                    .verticalScroll(rememberScrollState())
+            ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                 verticalAlignment = Alignment.Top,
                 modifier = Modifier
-                    .align(Alignment.Center)
                     .wrapContentSize(Alignment.Center)
                     .padding(all = 16.dp)
             ) {
@@ -427,9 +463,9 @@ fun StatsForNerds(
                         text = if (downloadCachedBytes != 0L) {
                             stringResource(R.string.downloaded)
                         } else if (cachedBytes > 0) {
-                            stringResource(R.string.cached) + " : " + (playbackDataCache[cleanMediaId]?.streamClient ?: stringResource(R.string.audio_quality_format_unknown))
+                            stringResource(R.string.cached) + " : " + (playbackData?.streamClient ?: stringResource(R.string.audio_quality_format_unknown))
                         } else {
-                            playbackDataCache[cleanMediaId]?.streamClient ?: stringResource(R.string.audio_quality_format_unknown)
+                            playbackData?.streamClient ?: stringResource(R.string.audio_quality_format_unknown)
                         },
                         maxLines = 1,
                         modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
@@ -458,14 +494,15 @@ fun StatsForNerds(
                             overflow = TextOverflow.Visible,
                             style = typography().xs.medium.color(colorPalette().onOverlay).copy(textAlign = TextAlign.Start)
                         )
-                    }
                 }
             }
         }
     }
+        }
+    }
         if ((statsForNerds) && (!showThumbnail || playerType == PlayerType.Modern)) {
             Column(
-
+                modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
 
                 Row(
@@ -718,9 +755,9 @@ fun StatsForNerds(
                                          text = stringResource(R.string.stream_client) + " : " + if (downloadCachedBytes != 0L) {
                                              stringResource(R.string.downloaded)
                                          } else if (cachedBytes > 0) {
-                                             stringResource(R.string.cached) + " : " + (playbackDataCache[cleanMediaId]?.streamClient ?: stringResource(R.string.audio_quality_format_unknown))
+                                             stringResource(R.string.cached) + " : " + (playbackData?.streamClient ?: stringResource(R.string.audio_quality_format_unknown))
                                          } else {
-                                             playbackDataCache[cleanMediaId]?.streamClient ?: stringResource(R.string.audio_quality_format_unknown)
+                                             playbackData?.streamClient ?: stringResource(R.string.audio_quality_format_unknown)
                                          },
                                          maxLines = 1,
                                          modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),

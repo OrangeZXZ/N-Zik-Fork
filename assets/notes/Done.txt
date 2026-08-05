@@ -1,3 +1,20 @@
+Added:
+- feat(stats): add scroll support and live data refresh to StatsForNerds overlay
+  - Added `clipToBounds()` and `nestedScroll` to prevent scroll gestures from propagating to parent and closing the player
+  - Replaced `collectAsState` with `LaunchedEffect` polling every 1s for `playbackDataCache`, `binder.cache`, `binder.downloadCache`, and `Database.formatTable`
+  - StatsForNerds now auto-refreshes when stream client or link changes during playback
+- feat(sort): change default playlist sort from SongCount to Name
+  - Updated `HOME_LIBRARY_*_SORT_BY` defaults in `Preference.kt` to `PlaylistSortBy.Name`
+- feat(sort): change artist/album sort labels to "Name" for clarity
+  - Changed `ArtistSortBy.Name` textId from `R.string.sort_artist` to `R.string.sort_name`
+  - Changed `AlbumSortBy.Title` textId from `R.string.sort_album` to `R.string.sort_name`
+  - Updated `HomeArtistsSortSettingsDialog` and `HomeAlbumsSortSettingsDialog` getSortLabel accordingly
+
+Fixed:
+- fix(stats): remove format "complete" skip in StreamResolver to ensure fresh data on client change
+  - `fetchFormatIfMissing` no longer skips re-fetch when format exists and is "complete" in Room DB
+  - Ensures codec/bitrate/sample-rate data updates when stream client changes
+
 feat(sort settings): add sort menu customization and Local Playlist toolbar
 - feat(sort settings): add sort menu customization dialogs for all screens
   - Created HomeSongsSortSettingsDialog (6 tabs), HomeAlbumsSortSettingsDialog (2 tabs), HomeArtistsSortSettingsDialog (2 tabs), HomeLibrarySortSettingsDialog (4 tabs), HistorySortSettingsDialog, LocalPlaylistSortSettingsDialog

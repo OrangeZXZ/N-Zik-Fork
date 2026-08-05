@@ -70,7 +70,7 @@ object HomeAlbumsSortSettingsDialog : Dialog {
 
     @Composable
     private fun getSortLabel(id: String): String = when (id) {
-        "AlbumName" -> stringResource(R.string.sort_album)
+        "AlbumName" -> stringResource(R.string.sort_name)
         "Artist" -> stringResource(R.string.sort_artist)
         "Year" -> stringResource(R.string.sort_album_year)
         "DateAdded" -> stringResource(R.string.sort_date_added)
