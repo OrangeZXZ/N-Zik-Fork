@@ -1,7 +1,7 @@
 name: 🧪 Beta Bug report
 description: Report a bug found while testing the N-Zik Beta build
 title: "[BETA BUG]: "
-labels: ["bug", "beta-feedback"]
+labels: ["bug", "beta"]
 
 body:
   - type: markdown
