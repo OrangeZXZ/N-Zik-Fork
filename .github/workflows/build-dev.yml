@@ -46,38 +46,50 @@ jobs:
       - name: Check for changes since last commit
         id: diff
         run: |
+          # 1. Get the date of the last build commit (from release history)
+          LAST_BUILD_DATE=$(git log --grep="Dev build" --format=%ci -n 1 2>/dev/null || echo "2000-01-01")
+          LAST_BUILD_DAY=$(date -d "$LAST_BUILD_DATE" +'%Y-%m-%d')
+          
+          # 2. Get today's date
+          TODAY=$(date +'%Y-%m-%d')
+          
+          # 3. If a build was already triggered TODAY, block it, regardless of the source
+          if [ "$LAST_BUILD_DAY" = "$TODAY" ]; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "⏭️ A build has already been performed today ($LAST_BUILD_DAY). Skipping build."
+            exit 0
+          fi
+
+          # 4. If no build occurred today, check for new commits (schedule) or authorize directly (push)
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            LAST_BUILD_DATE=$(git log --grep="Dev build" --format=%ci -n 1 2>/dev/null || echo "2000-01-01")
             LAST_COMMIT_DATE=$(git log -1 --format=%ci)
-            
             if [[ "$LAST_COMMIT_DATE" > "$LAST_BUILD_DATE" ]]; then
               echo "changed=true" >> $GITHUB_OUTPUT
-              echo "✅ Nouveaux commits détectés depuis le dernier build"
+              echo "✅ New commits detected since the last build."
             else
               echo "changed=false" >> $GITHUB_OUTPUT
-              echo "⏭️ Aucun changement depuis le dernier build"
+              echo "⏭️ No changes since the last build."
             fi
           else
+            # It's a manual push, and it's the first of the day
             echo "changed=true" >> $GITHUB_OUTPUT
-            echo "✅ Push détecté, build lancé"
+            echo "✅ Push detected, first build of the day launched."
           fi
 
   build_time:
-    name: Capture current time & commit
+    name: Capture current time
     needs: [check-changes]
     if: needs.check-changes.outputs.changed == 'true'
     runs-on: ubuntu-latest
     outputs:
       date: ${{ steps.date.outputs.date }}
       timestamp: ${{ steps.date.outputs.timestamp }}
-      short_sha: ${{ steps.date.outputs.short_sha }}
     steps:
-      - name: Get date and sha
+      - name: Get date
         id: date
         run: |
           echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
           echo "timestamp=$(date +'%H:%M UTC')" >> $GITHUB_OUTPUT
-          echo "short_sha=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
 
   versioning:
     name: Extract version
@@ -242,8 +254,8 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: '*.apk'
-          name: v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.short_sha }} | 🔨 DEV Build
-          tag_name: v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.short_sha }}
+          name: v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }} | 🔨 DEV Build
+          tag_name: v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}
           prerelease: true
           make_latest: false
           body: |
@@ -252,7 +264,7 @@ jobs:
             <div align="center">
               <img alt="N-Zik Logo" src="https://github.com/N-Zik-Group/N-Zik/blob/main/assets/design/ic_banner2.png?raw=true" width="1000" />
               <p><b>N-Zik</b> - Development Build</p>
-              <p><i>Built from commit ${{ needs.build_time.outputs.short_sha }}. For testing & development only.</i></p>
+              <p><i>Built from latest commits. For testing & development only.</i></p>
             </div>
 
             ## 🔎 Verification
@@ -297,16 +309,16 @@ jobs:
 
             ## 🔄 Features
 
-            - 🔧 Built from commit `${{ needs.build_time.outputs.short_sha }}`
+            - 🔧 Built from the latest code commits
             - ⚡ Latest features and improvements (unstable)
             - 🐛 May contain bugs and experimental code
             - 📝 Auto-update is **disabled** (dev builds don't auto-update)
 
             ## 🔗 Download & Info
 
-            - 📥 **Dev APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.short_sha }}/N-Zik-dev.apk
-            - 📥 **Dev32 APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.short_sha }}/N-Zik-dev32.apk
-            - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.short_sha }}>
+            - 📥 **Dev APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}/N-Zik-dev.apk
+            - 📥 **Dev32 APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}/N-Zik-dev32.apk
+            - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}>
 
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
@@ -345,16 +357,16 @@ jobs:
 
             ## 🔄 Features
 
-            - 🔧 Built from commit `${{ needs.build_time.outputs.short_sha }}`
+            - 🔧 Built from the latest code commits
             - ⚡ Latest features and improvements (unstable)
             - 🐛 May contain bugs and experimental code
             - 📝 Auto-update is **disabled** (dev builds don't auto-update)
 
             ## 🔗 Download & Info
 
-            - 📥 **Dev APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.short_sha }}/N-Zik-dev.apk
-            - 📥 **Dev32 APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.short_sha }}/N-Zik-dev32.apk
-            - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.short_sha }}>
+            - 📥 **Dev APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}/N-Zik-dev.apk
+            - 📥 **Dev32 APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}/N-Zik-dev32.apk
+            - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}>
         run: |
           jq -n \
             --arg content "$CONTENT" \
