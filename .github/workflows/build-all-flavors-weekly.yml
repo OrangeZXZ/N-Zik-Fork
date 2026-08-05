@@ -82,6 +82,21 @@ jobs:
             exit 1
           fi
 
+      - name: Check if Dev release exists
+        run: |
+          repo="${GITHUB_REPOSITORY}"
+          dev_tag="${{ needs.versioning.outputs.downstream }}-dev"
+
+          echo "Checking if dev $dev_tag already exists..."
+          dev_exists=$(curl -s "https://api.github.com/repos/$repo/releases" \
+            | jq -r '.[] | select(.prerelease==true) | .tag_name | ltrimstr("v")' \
+            | grep "$dev_tag" || true)
+
+          if [ -n "$dev_exists" ]; then
+            echo "Dev $dev_tag already exists. Skipping build."
+            exit 1
+          fi
+
   build-full:
     needs: [versioning, verify-version]
     name: Build full version
