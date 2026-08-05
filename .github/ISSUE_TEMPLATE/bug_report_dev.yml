@@ -1,0 +1,192 @@
+name: 👷 Dev Bug report
+description: Report a bug found while testing the N-Zik Dev build
+title: "[DEV BUG]: "
+labels: ["bug", "dev-feedback"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ****
+        ### ❗ READ BEFORE SUBMITTING ❗
+
+        This form is for bugs found specifically in the **Dev** and **Dev32** builds of N-Zik.
+        If you're on the **Beta/Beta32**, **Full/Full32**, **Minified/Minified32** or **Foss** build, please use the corresponding Bug report template instead.
+
+        * **Media cannot be played / Unknown Error / Login required:**
+        YouTube is likely blocking you. Please **do not** open a ticket for this.
+        * **Download unsuccessful:**
+        If *some* songs download but others fail, YouTube may be blocking you (try again later).
+        * **Playback issues?**
+        Try re-downloading the song, clearing the app cache, or playing a song physically stored before opening a ticket.
+        ****
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: 📝 Before submitting
+      description: Please verify the following steps before submitting your issue. Completing these steps may fix problems!
+      options:
+        - label: I have tested the latest dev version.
+          required: true
+        - label: I have checked for already existing issues.
+          required: true
+        - label: I have tried reinstalling/resetting the app, with all combinations (with/without database backup, with/without settings, or a full reset with nothing restored).
+          required: true
+
+  - type: input
+    id: version-number
+    attributes:
+      label: 🏷️ App Version
+      description: Please specify the exact dev version of N-Zik.
+      placeholder: 5.1.0-dev-20260805
+    validations:
+      required: true
+
+  - type: dropdown
+    id: build-type
+    attributes:
+      label: 🏗️ Build Type
+      description: Select the dev build type you are currently using.
+      options:
+        - Dev
+        - Dev32
+    validations:
+      required: true
+
+  - type: dropdown
+    id: android-version
+    attributes:
+      label: 🤖 Platform
+      description: On which Android platform does the issue occur?
+      options:
+        - Android
+        - Android Auto
+        - Android Automotive
+        - Android TV
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: platform-version
+    attributes:
+      label: 🔢 Platform Version
+      description: Please specify the exact version of the platform selected above.
+      placeholder: Android X, Android Auto/Automotive X, ...
+    validations:
+      required: true
+
+  - type: input
+    id: device-model
+    attributes:
+      label: 📱 Device
+      description: Specify the phone/tablet, car model, or TV model. Specify multiple if needed.
+      placeholder: Smartphone Brand & Model, Car Brand & Model Year, ...
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ****
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 👾 Bug description
+      description: Clearly describe the bug you are experiencing.
+      placeholder: |
+        I want to use the '...' feature but '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 🔄 How to reproduce
+      description: Provide step-by-step instructions on how to trigger the bug.
+      placeholder: |
+        1. Open N-Zik
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. Boom! Error happens
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: ✨ Expected Behavior
+      description: What do you expect to happen instead?
+      placeholder: |
+        I expected that the '...' feature would '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: media
+    attributes:
+      label: 📸 Media (Optional)
+      description: Add screenshots or screen recordings to help us see the bug in action.
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ****
+
+  - type: dropdown
+    id: crash-occurred
+    attributes:
+      label: 💥 Did the app crash?
+      description: Select "Yes" if the app crashed or closed unexpectedly. If so, crash logs become mandatory below.
+      options:
+        - "No"
+        - "Yes"
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ****
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📜 Logs
+      description: |
+        To get your logs, go to Settings > Misc (at the bottom), enable Debug Mode, then restart the app.
+        Reproduce the action or crash you're reporting, then reopen the app, go back to Settings > Misc, and copy the logs from there (operation logs and/or crash logs).
+        **If you answered "Yes" above, crash logs are mandatory**: enable the "reproduce logs" option, reproduce the crash, then come back and copy the crash logs.
+        If the logs are too large to paste directly, attach them as a file, or upload them to https://pastebin.com/ and share the link.
+      placeholder: |
+        Paste your logs here (operation logs and/or crash logs), or a file/Pastebin link if too large
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ****
+
+  - type: textarea
+    id: db-settings-export
+    attributes:
+      label: 🗄️ Database & Settings export (Optional)
+      description: |
+        If relevant to the bug, you can attach a database and/or settings export (Settings > Backup > Export) to help us reproduce the issue.
+
+        > [!CAUTION]
+        > When exporting, **DO NOT check the option that includes your YouTube/Discord account credentials**. Leave it unchecked, otherwise your credentials/tokens will be included in the export and leaked if attached here.
+      placeholder: |
+        Attach the exported .sqlite/.csv file(s) here, or a Pastebin/file-hosting link
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ****
