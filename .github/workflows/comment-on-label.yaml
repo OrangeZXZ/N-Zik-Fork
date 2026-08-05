@@ -29,9 +29,9 @@ jobs:
         run: gh issue comment "$NUMBER" --body "$BODY"
         env:
           BODY: >
-            This issue is patched in recent commits, please wait for next release.
+            This issue is patched in recent commits, please wait for the next **STABLE** release.
 
-            > Please DO NOT close this issue, a bot will handle this automatically when new release drops.
+            > Please DO NOT close this issue, a bot will handle this automatically when the new stable release drops.
 
   # Label "patched BETA": same message, but will NEVER be auto-closed.
   # The beta workflow (build-beta-flavor.yaml) will just post the beta
@@ -49,9 +49,27 @@ jobs:
         run: gh issue comment "$NUMBER" --body "$BODY"
         env:
           BODY: >
-            This issue is patched in recent commits, please wait for next release.
+            This issue is patched in recent commits, please wait for the next **BETA** update.
 
-            > Please DO NOT close this issue, a bot will handle this automatically when new release drops.
+            > Please DO NOT close this issue, a bot will handle this automatically when the new beta release drops.
+
+  # Label "patched DEV": notify user that the fix is available in the next dev update.
+  patched-dev:
+    if: github.event.label.name == 'patched DEV'
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      issues: write
+
+    steps:
+      - name: Add comment
+        run: gh issue comment "$NUMBER" --body "$BODY"
+        env:
+          BODY: >
+            This problem is fully fixed, available in the next **DEV** build.
+
+            > Please DO NOT close this issue, a bot will handle this automatically when the new dev release drops.
 
   # Handle PR that contains implemented code
   pr-implemented:
