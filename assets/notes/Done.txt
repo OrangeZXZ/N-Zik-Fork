@@ -1,3 +1,12 @@
+feat(updater): add OTA support for dev builds
+- Added dev channel to Updater (SUFFIX_DEV, TYPE_DEV, CHANGELOG_DEV)
+- Enabled IS_AUTOUPDATE for dev/dev32 build types
+- findBestRelease: dev builds only accept dev releases
+- isVersionNewer: compare date suffix for dev tags (v7.3.2-dev-20260806)
+- ChangelogCard: Dev section with sparkles icon and yellow dot
+- build-dev.yml: copy Updater/changelogs/dev.txt into APK
+- Add Updater/changelogs/dev.txt with generic dev message and report links
+
 BETA TAG CHANGE:
 - Changed beta release tag from `-b` to `-beta` (e.g. `v7.3.2-beta` instead of `v7.3.2-b`)
   - Updated GitHub Actions workflow (build-beta-flavor.yaml): tag_name, release name, download URLs
