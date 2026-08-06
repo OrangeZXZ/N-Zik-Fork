@@ -1597,6 +1597,11 @@ Volume BAS : titre précédent</string>
   <string name="audio_output_title">Sortie audio</string>
   <string name="audio_output_no_devices">Aucun périphérique audio disponible</string>
   <string name="audio_output_not_supported">La sélection de la sortie audio n\'est pas prise en charge sur cet appareil.</string>
+  <string name="audio_devices">Audio devices</string>
+  <string name="bluetooth_permission_required">Bluetooth permission is required to list audio devices</string>
+  <string name="wired_headphones">Wired headphones</string>
+  <string name="phone_speaker">Phone speaker</string>
+  <string name="this_phone">This phone</string>
   <string name="miniplayer_buttons_config">Boutons du mini-lecteur</string>
   <string name="miniplayer_buttons_config_description">Configurer les 4 boutons du mini-lecteur</string>
   <string name="miniplayer_slot">Emplacement %1$d</string>
@@ -1633,6 +1638,7 @@ Volume BAS : titre précédent</string>
   <string name="auto_backup_on_change_description">Lancer une sauvegarde lorsque des titres sont ajoutés ou supprimés</string>
   <string name="auto_backup_max_backups">Nombre maximal de sauvegardes à conserver</string>
   <string name="auto_backup_target">Destination de la sauvegarde</string>
+  <string name="unlink">Unlink</string>
   <string name="toolbar">Barre d\'outils</string>
   <string name="customize_toolbar">Personnaliser la barre d\'outils</string>
 </resources>
