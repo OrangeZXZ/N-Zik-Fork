@@ -426,14 +426,14 @@
   <string name="sort_listening_time">Wiedergabedauer</string>
   <string name="sort_date_added">Hinzufüge Datum</string>
   <string name="sorting_order">Sortierreihenfolge</string>
-  <string name="sort_menu">Sort Menu</string>
+  <string name="sort_menu">Sortiermenü</string>
   <string name="customize_sort_options">Customize sort options</string>
   <string name="local_playlist_sort">Local Playlist</string>
   <string name="sort_year">Jahr</string>
   <string name="sort_name">Namen</string>
   <string name="sort_songs_number">Anzahl der Songs</string>
   <string name="sort_relative_listening_time">Relative Wiedergabedauer</string>
-  <string name="sort_play_count">Play Count</string>
+  <string name="sort_play_count">Wiedergabeanzahl</string>
   <string name="follow">Folgen</string>
   <string name="following">Gefolgt</string>
   <string name="artist_subscribers">%s Abonnenten</string>
@@ -1156,7 +1156,7 @@
   <string name="title_import_migration_file">Migrationsdatei importieren</string>
   <string name="description_import_migration_file">Für alte Benutzer vor der Konvertierung. \nDie alte App verwenden, um ein Backup für die Migration zu erstellen</string>
   <string name="description_app_not_installed_by_apk">Wenn du diese Nachricht siehst, bedeutet dies, dass bei deinem Build keine automatische Aktualisierung aktiviert ist, pls die App manuell von github aktualisieren</string>
-  <string name="relative_listening_time">Wiedergabeanzahl</string>
+  <string name="relative_listening_time">Relative Wiedergabedauer</string>
   <string name="added_to_dislikes">%s gefällt mir nicht</string>
   <string name="removed_from_dislikes">%s von \"Gefällt mir nicht\" entfernt</string>
   <string name="artist_featured_on">Vorgestellt auf</string>
