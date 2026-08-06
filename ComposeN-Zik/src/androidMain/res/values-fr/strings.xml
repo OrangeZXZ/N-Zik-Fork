@@ -1597,11 +1597,11 @@ Volume BAS : titre précédent</string>
   <string name="audio_output_title">Sortie audio</string>
   <string name="audio_output_no_devices">Aucun périphérique audio disponible</string>
   <string name="audio_output_not_supported">La sélection de la sortie audio n\'est pas prise en charge sur cet appareil.</string>
-  <string name="audio_devices">Audio devices</string>
-  <string name="bluetooth_permission_required">Bluetooth permission is required to list audio devices</string>
-  <string name="wired_headphones">Wired headphones</string>
-  <string name="phone_speaker">Phone speaker</string>
-  <string name="this_phone">This phone</string>
+  <string name="audio_devices">Périphériques audio</string>
+  <string name="bluetooth_permission_required">L\'autorisation Bluetooth est requise pour afficher la liste des périphériques audio</string>
+  <string name="wired_headphones">Casque filaire</string>
+  <string name="phone_speaker">Haut-parleur du téléphone</string>
+  <string name="this_phone">Ce téléphone</string>
   <string name="miniplayer_buttons_config">Boutons du mini-lecteur</string>
   <string name="miniplayer_buttons_config_description">Configurer les 4 boutons du mini-lecteur</string>
   <string name="miniplayer_slot">Emplacement %1$d</string>
