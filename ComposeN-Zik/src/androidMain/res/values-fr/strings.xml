@@ -744,7 +744,7 @@
   <string name="stream_client_android_vr">Android VR</string>
   <string name="stream_client_visionos">visionOS</string>
   <string name="stream_client_tv_embedded">Télévision intégrée</string>
-  <string name="client_tv_simply_desc">TV Simply client. Lightweight TV variant.</string>
+  <string name="client_tv_simply_desc">Client TV Simply. Version allégée de l\'application TV.</string>
   <string name="stream_client_tv_simply">TV Simply</string>
   <string name="stream_client_tv_html5">Télévision HTML5</string>
   <string name="stream_client_android_creator">Créateur d\'applications Android</string>
@@ -1597,6 +1597,11 @@ Volume BAS : titre précédent</string>
   <string name="audio_output_title">Sortie audio</string>
   <string name="audio_output_no_devices">Aucun périphérique audio disponible</string>
   <string name="audio_output_not_supported">La sélection de la sortie audio n\'est pas prise en charge sur cet appareil.</string>
+  <string name="audio_devices">Périphériques audio</string>
+  <string name="bluetooth_permission_required">L\'autorisation Bluetooth est requise pour afficher la liste des périphériques audio</string>
+  <string name="wired_headphones">Casque filaire</string>
+  <string name="phone_speaker">Haut-parleur du téléphone</string>
+  <string name="this_phone">Ce téléphone</string>
   <string name="miniplayer_buttons_config">Boutons du mini-lecteur</string>
   <string name="miniplayer_buttons_config_description">Configurer les 4 boutons du mini-lecteur</string>
   <string name="miniplayer_slot">Emplacement %1$d</string>
@@ -1633,6 +1638,7 @@ Volume BAS : titre précédent</string>
   <string name="auto_backup_on_change_description">Lancer une sauvegarde lorsque des titres sont ajoutés ou supprimés</string>
   <string name="auto_backup_max_backups">Nombre maximal de sauvegardes à conserver</string>
   <string name="auto_backup_target">Destination de la sauvegarde</string>
+  <string name="unlink">Dissocier</string>
   <string name="toolbar">Barre d\'outils</string>
   <string name="customize_toolbar">Personnaliser la barre d\'outils</string>
 </resources>
