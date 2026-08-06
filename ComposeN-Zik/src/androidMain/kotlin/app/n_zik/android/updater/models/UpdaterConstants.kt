@@ -6,11 +6,11 @@ import app.n_zik.android.updater.ui.*
 
 object UpdaterConstants {
     const val SUFFIX_FULL = "-f"
-    const val SUFFIX_BETA = "-b"
+    const val SUFFIX_BETA = "-beta"
     const val SUFFIX_MINIFIED = "-m"
 
     const val SUFFIX_CHAR_FULL = "f"
-    const val SUFFIX_CHAR_BETA = "b"
+    const val SUFFIX_CHAR_BETA = "beta"
     const val SUFFIX_CHAR_MINIFIED = "m"
 
     const val TYPE_FULL = "full"

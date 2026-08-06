@@ -70,7 +70,7 @@ jobs:
       - name: Check if Beta release exists
         run: |
           repo="${GITHUB_REPOSITORY}"
-          beta_tag="${{ needs.versioning.outputs.downstream }}-b"
+          beta_tag="${{ needs.versioning.outputs.downstream }}-beta"
 
           echo "Checking if beta $beta_tag already exists..."
           beta_exists=$(curl -s "https://api.github.com/repos/$repo/releases" \

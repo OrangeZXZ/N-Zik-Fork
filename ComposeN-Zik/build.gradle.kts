@@ -189,14 +189,14 @@ android {
 
         create( "beta" ) {
             initWith( maybeCreate("full") )
-            versionNameSuffix = "-b"
+            versionNameSuffix = "-beta"
             // Fallback for modules that don't have a 'beta' build type (like :discordrpc)
             matchingFallbacks += listOf("release")
         }
 
         create( "beta32" ) {
             initWith( maybeCreate("beta") )
-            versionNameSuffix = "-b32"
+            versionNameSuffix = "-beta32"
             // Fallback for modules that don't have a 'beta32' build type
             matchingFallbacks += listOf("release")
         }

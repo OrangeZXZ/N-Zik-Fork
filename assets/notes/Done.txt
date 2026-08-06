@@ -1,3 +1,11 @@
+BETA TAG CHANGE:
+- Changed beta release tag from `-b` to `-beta` (e.g. `v7.3.2-beta` instead of `v7.3.2-b`)
+  - Updated GitHub Actions workflow (build-beta-flavor.yaml): tag_name, release name, download URLs
+  - Updated weekly workflow (build-all-flavors-weekly.yml): beta tag check
+  - Updated Gradle build types: versionNameSuffix `-b` → `-beta`, `-b32` → `-beta32`
+  - Updated UpdaterConstants.kt: SUFFIX_BETA = "-beta", SUFFIX_CHAR_BETA = "beta"
+  - Updated Skeleton.kt: default beta preference check
+
 Metrolist Parity Sync:
 
 Added:

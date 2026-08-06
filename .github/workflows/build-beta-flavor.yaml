@@ -199,8 +199,8 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: '*.apk'
-          name: v${{ needs.versioning.outputs.downstream }}-b-${{ needs.build_time.outputs.date }} | 🚀 BETA Build
-          tag_name: v${{ needs.versioning.outputs.downstream }}-b
+          name: v${{ needs.versioning.outputs.downstream }}-beta-${{ needs.build_time.outputs.date }} | 🚀 BETA Build
+          tag_name: v${{ needs.versioning.outputs.downstream }}-beta
           prerelease: true
           make_latest: false
           body: |
@@ -251,7 +251,7 @@ jobs:
 
             ## 🔄 Update Policy
 
-            - 🟡 **Beta & Beta32 Builds (-b / -b32)**  
+            - 🟡 **Beta & Beta32 Builds (-b / -b32)**
               - **Default:** Update notifications for **Beta** are **enabled by default**.  
               - **User options:**  
                 - You can **disable Beta updates** in **Settings > About > Beta update disabled**.  
@@ -289,7 +289,7 @@ jobs:
               per_page: 100,
             });
 
-            const version = '${{ needs.versioning.outputs.downstream }}-b';
+            const version = '${{ needs.versioning.outputs.downstream }}-beta';
             const body = [
               `🧪 This issue is fixed in the **BETA** build **v${version}** 🧪`,
               `➤ Download: https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/v${version}`,
@@ -350,10 +350,10 @@ jobs:
 
             ## 🔗 Changelog & Downloads
 
-            - 📥 **Full BETA APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-b/N-Zik-beta.apk
-            - 📥 **Beta32 APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-b/N-Zik-beta32.apk
+            - 📥 **Full BETA APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-beta/N-Zik-beta.apk
+            - 📥 **Beta32 APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-beta/N-Zik-beta32.apk
             - 📄 **Changelog:** <https://github.com/N-Zik-Group/N-Zik/blob/main/Updater/changelogs/${{ needs.versioning.outputs.code }}.txt>
-            - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-b>
+            - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-beta>
         run: |
           jq -n \
             --arg content "$CONTENT" \

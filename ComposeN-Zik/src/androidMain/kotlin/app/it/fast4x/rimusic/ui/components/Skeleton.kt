@@ -271,7 +271,7 @@ fun Skeleton(
         }
 
         val check4UpdateState by rememberPreference( checkUpdateStateKey, CheckUpdateState.Enabled )
-        val checkBetaUpdates by rememberPreference( checkBetaUpdatesKey, extractVersionSuffix(BuildConfig.VERSION_NAME) == "b" )
+        val checkBetaUpdates by rememberPreference( checkBetaUpdatesKey, extractVersionSuffix(BuildConfig.VERSION_NAME) == "beta" )
         
         // Reset update state when beta preferences change
         LaunchedEffect( checkBetaUpdates ) {
