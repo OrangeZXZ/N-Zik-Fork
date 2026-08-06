@@ -322,13 +322,7 @@ jobs:
             - ⚡ Latest features and improvements (unstable)
             - 🐛 May contain bugs and experimental code
             - 📝 Auto-update is **disabled** (dev builds don't auto-update)
-
-            ## 🔗 Download & Info
-
-            - 📥 **Dev APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}/N-Zik-dev.apk
-            - 📥 **Dev32 APK:** https://github.com/${{ github.repository }}/releases/download/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}/N-Zik-dev32.apk
-            - 🚀 **Release page:** <https://github.com/${{ github.repository }}/releases/tag/v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}>
-
+            
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
 
