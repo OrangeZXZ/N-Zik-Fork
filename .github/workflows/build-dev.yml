@@ -155,9 +155,7 @@ jobs:
           if [ -f "Updater/changelogs/dev.txt" ]; then
             cp "Updater/changelogs/dev.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
           else
-            cat > ComposeN-Zik/src/androidMain/res/raw/release_notes.txt <<EOF
-            Development Build - Report bugs on Discord
-            EOF
+            echo "Development Build - Report bugs on Discord" > ComposeN-Zik/src/androidMain/res/raw/release_notes.txt
           fi
 
       - name: Build with Gradle
@@ -204,9 +202,7 @@ jobs:
           if [ -f "Updater/changelogs/dev.txt" ]; then
             cp "Updater/changelogs/dev.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
           else
-            cat > ComposeN-Zik/src/androidMain/res/raw/release_notes.txt <<EOF
-            Development Build - Report bugs on Discord
-            EOF
+            echo "Development Build - Report bugs on Discord" > ComposeN-Zik/src/androidMain/res/raw/release_notes.txt
           fi
 
       - name: Build with Gradle
