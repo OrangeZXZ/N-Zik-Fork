@@ -1638,7 +1638,7 @@ Volume BAS : titre précédent</string>
   <string name="auto_backup_on_change_description">Lancer une sauvegarde lorsque des titres sont ajoutés ou supprimés</string>
   <string name="auto_backup_max_backups">Nombre maximal de sauvegardes à conserver</string>
   <string name="auto_backup_target">Destination de la sauvegarde</string>
-  <string name="unlink">Unlink</string>
+  <string name="unlink">Dissocier</string>
   <string name="toolbar">Barre d\'outils</string>
   <string name="customize_toolbar">Personnaliser la barre d\'outils</string>
 </resources>
