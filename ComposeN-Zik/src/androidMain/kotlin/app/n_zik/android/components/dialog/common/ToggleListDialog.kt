@@ -174,7 +174,7 @@ fun ToggleListDialog(
                     BasicText(
                         text = stringResource(R.string.cancel),
                         style = typography().xs.medium.copy(
-                            color = Color(android.graphics.Color.RED).copy(alpha = 0.3f),
+                            color = colorPalette().red.copy(alpha = 0.3f),
                             textAlign = TextAlign.Center
                         ),
                         modifier = Modifier

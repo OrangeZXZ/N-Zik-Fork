@@ -56,7 +56,7 @@ interface Dialog {
          *
          * Larger number may cause accessibility issue
          */
-        const val MAX_HEIGHT_PORTRAIT = .5f
+        const val MAX_HEIGHT_PORTRAIT = .8f
 
         /**
          * Represents the maximum width allowed
@@ -64,7 +64,7 @@ interface Dialog {
          *
          * Larger number may cause accessibility issue
          */
-        const val MAX_HEIGHT_LANDSCAPE = .7f
+        const val MAX_HEIGHT_LANDSCAPE = .8f
 
         /**
          * Space between sections in dialog.

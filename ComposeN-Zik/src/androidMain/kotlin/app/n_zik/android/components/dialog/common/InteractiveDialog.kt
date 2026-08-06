@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import app.n_zik.android.R
@@ -53,7 +52,7 @@ interface InteractiveDialog: Dialog {
             style = typography().xs
                                 .medium
                                 .copy(
-                                    color = Color(android.graphics.Color.RED).copy( alpha = .3f ),
+                                    color = colorPalette().red.copy( alpha = .3f ),
                                     textAlign = TextAlign.Center
                                 ),
             modifier = modifier.clip(uiRoundnessShape()).clickable( onClick = onCancel )

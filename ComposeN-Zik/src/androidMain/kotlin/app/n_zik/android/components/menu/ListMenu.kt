@@ -30,7 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,6 +41,11 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.typography
 import app.n_zik.android.components.menu.MenuConstants.CONTENT_HEIGHT_FRACTION
+import app.n_zik.android.components.menu.MenuConstants.DRAG_HANDLE_BOTTOM_PADDING
+import app.n_zik.android.components.menu.MenuConstants.DRAG_HANDLE_CORNER_RADIUS
+import app.n_zik.android.components.menu.MenuConstants.DRAG_HANDLE_HEIGHT
+import app.n_zik.android.components.menu.MenuConstants.DRAG_HANDLE_TOP_PADDING
+import app.n_zik.android.components.menu.MenuConstants.DRAG_HANDLE_WIDTH
 import androidx.compose.foundation.shape.CornerSize
 
 object ListMenu {
@@ -70,10 +74,10 @@ object ListMenu {
                         if (showDragHandle) {
                             Box(
                                 modifier = Modifier
-                                    .padding(top = 18.dp, bottom = 6.dp)
-                                    .size(width = 40.dp, height = 4.dp)
-                                    .clip(RoundedCornerShape(2.dp))
-                                    .background(Color.White)
+                                    .padding(top = DRAG_HANDLE_TOP_PADDING.dp, bottom = DRAG_HANDLE_BOTTOM_PADDING.dp)
+                                    .size(width = DRAG_HANDLE_WIDTH.dp, height = DRAG_HANDLE_HEIGHT.dp)
+                                    .clip(RoundedCornerShape(DRAG_HANDLE_CORNER_RADIUS.dp))
+                                    .background(colorPalette().text)
                             )
                         }
 

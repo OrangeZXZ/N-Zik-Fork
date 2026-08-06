@@ -14,5 +14,11 @@ object MenuConstants {
     const val CONTENT_HORIZONTAL_PADDING = 8
 
     const val CONTENT_TOP_PADDING = 20
+
+    const val DRAG_HANDLE_TOP_PADDING = 18
+    const val DRAG_HANDLE_BOTTOM_PADDING = 6
+    const val DRAG_HANDLE_WIDTH = 40
+    const val DRAG_HANDLE_HEIGHT = 4
+    const val DRAG_HANDLE_CORNER_RADIUS = 2
 }
 

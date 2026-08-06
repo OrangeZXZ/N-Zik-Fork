@@ -14,7 +14,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -196,7 +195,7 @@ class ChangeAlbumBrowseIdDialog private constructor(
                     .fillMaxWidth(.98f)
                     .border(
                         width = 2.dp,
-                        color = Color(android.graphics.Color.RED).copy(alpha = .3f),
+                        color = colorPalette().red.copy(alpha = .3f),
                         shape = uiRoundnessShape()
                     )
                     .padding(vertical = 10.dp),
@@ -207,7 +206,7 @@ class ChangeAlbumBrowseIdDialog private constructor(
             if (album.id.startsWith(MODIFIED_PREFIX) || album.id.startsWith("LOCAL_ALBUM_")) {
                 Spacer(modifier = Modifier.width(4.dp))
                 BasicText(
-                    text = "Reset",
+                    text = stringResource(R.string.reset),
                     style = typography().xs.medium.copy(color = colorPalette().text, textAlign = TextAlign.Center),
                     modifier = InteractiveDialog.ButtonModifier()
                         .weight(1f)
@@ -231,7 +230,7 @@ class ChangeAlbumBrowseIdDialog private constructor(
             Spacer(modifier = Modifier.width(4.dp))
             // Unlink Button
             BasicText(
-                text = "Unlink",
+                text = stringResource(R.string.unlink),
                 style = typography().xs.medium.copy(color = colorPalette().onAccent, textAlign = TextAlign.Center),
                 modifier = InteractiveDialog.ButtonModifier()
                     .weight(1f)

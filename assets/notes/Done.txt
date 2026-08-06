@@ -15,6 +15,14 @@ BETA TAG CHANGE:
   - Updated UpdaterConstants.kt: SUFFIX_BETA = "-beta", SUFFIX_CHAR_BETA = "beta"
   - Updated Skeleton.kt: default beta preference check
 
+refactor(dialogs): increase dialog height to 80% and remove hardcoded values
+- Dialog.kt: MAX_HEIGHT_PORTRAIT/LANDSCAPE → .8f (was .5f/.7f)
+- Strings: replace hardcoded "Reset", "Unlink", "All" with stringResource (R.string.reset, R.string.unlink, R.string.all)
+- Colors: replace Color(android.graphics.Color.RED) with colorPalette().red in cancel buttons (InteractiveDialog, ToggleListDialog, 3 BrowseId dialogs)
+- Colors: replace Color.White drag handle with colorPalette().text (ListMenu, GridMenu)
+- Dimensions: extract drag handle constants into MenuConstants (DRAG_HANDLE_*)
+- Cleaned up unused imports across modified files
+
 Metrolist Parity Sync (cipher completion):
 - feat(cipher): complete Metrolist cipher parity — all 8 cipher files now synced
   - FunctionNameExtractor: expression-based sig now propagates all config fields (constantArg, constantArgs, preprocessFunc, preprocessArgs) in a single SigFunctionInfo return, matching Metrolist's single-return pattern
