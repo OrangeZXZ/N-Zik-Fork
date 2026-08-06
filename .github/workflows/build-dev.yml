@@ -326,6 +326,51 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
 
+  comment-dev-issues:
+    needs: [upload-to-release, versioning]
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Comment issues marked as "patched BETA" and remove label
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'patched BETA',
+              per_page: 100,
+            });
+
+            const version = '${{ needs.versioning.outputs.downstream }}-beta';
+            const body = [
+              `🧪 This issue is fixed in the **DEV** build **v${version}** 🧪`,
+              `➤ Download: https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/v${version}`,
+              '',
+              '> This is a dev release, the ticket stays open until the stable version confirms the fix.'
+            ].join('\n');
+
+            for (const issue of issues) {
+              if (issue.pull_request) continue;
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body,
+              });
+              
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                name: 'patched BETA'
+              });
+              
+              console.log(`Commented on issue #${issue.number} and removed label`);
+            }
+
   notify-discord:
     needs: [build_time, versioning, upload-to-release]
     runs-on: ubuntu-latest
