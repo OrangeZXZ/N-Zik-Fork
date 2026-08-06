@@ -152,9 +152,13 @@ jobs:
       - name: Create placeholder release notes
         run: |
           mkdir -p ComposeN-Zik/src/androidMain/res/raw
-          cat > ComposeN-Zik/src/androidMain/res/raw/release_notes.txt <<EOF
-          Development Build
-          EOF
+          if [ -f "Updater/changelogs/dev.txt" ]; then
+            cp "Updater/changelogs/dev.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
+          else
+            cat > ComposeN-Zik/src/androidMain/res/raw/release_notes.txt <<EOF
+            Development Build - Report bugs on Discord
+            EOF
+          fi
 
       - name: Build with Gradle
         run: ./gradlew assembleDev
@@ -197,9 +201,13 @@ jobs:
       - name: Create placeholder release notes
         run: |
           mkdir -p ComposeN-Zik/src/androidMain/res/raw
-          cat > ComposeN-Zik/src/androidMain/res/raw/release_notes.txt <<EOF
-          Development Build
-          EOF
+          if [ -f "Updater/changelogs/dev.txt" ]; then
+            cp "Updater/changelogs/dev.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
+          else
+            cat > ComposeN-Zik/src/androidMain/res/raw/release_notes.txt <<EOF
+            Development Build - Report bugs on Discord
+            EOF
+          fi
 
       - name: Build with Gradle
         run: ./gradlew assembleDev32

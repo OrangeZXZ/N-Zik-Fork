@@ -69,6 +69,7 @@ object Updater {
         return when {
             versionStr.endsWith(UpdaterConstants.SUFFIX_BETA) -> UpdaterConstants.TYPE_BETA
             versionStr.endsWith(UpdaterConstants.SUFFIX_MINIFIED) -> UpdaterConstants.TYPE_MINIFIED
+            versionStr.endsWith(UpdaterConstants.SUFFIX_DEV) -> UpdaterConstants.TYPE_DEV
             else -> UpdaterConstants.TYPE_FULL
         }
     }
@@ -92,6 +93,7 @@ object Updater {
         return when {
             build.name.contains(UpdaterConstants.TYPE_BETA, ignoreCase = true) -> R.string.beta_title
             build.name.contains(UpdaterConstants.TYPE_MINIFIED, ignoreCase = true) -> R.string.minified_title
+            build.name.contains(UpdaterConstants.TYPE_DEV, ignoreCase = true) -> R.string.dev_title
             else -> R.string.stable_title
         }
     }
@@ -104,6 +106,7 @@ object Updater {
         return when {
             build.name.contains(UpdaterConstants.TYPE_BETA, ignoreCase = true) -> UpdaterConstants.SUFFIX_BETA
             build.name.contains(UpdaterConstants.TYPE_MINIFIED, ignoreCase = true) -> UpdaterConstants.SUFFIX_MINIFIED
+            build.name.contains(UpdaterConstants.TYPE_DEV, ignoreCase = true) -> UpdaterConstants.SUFFIX_DEV
             else -> UpdaterConstants.SUFFIX_FULL
         }
     }
@@ -127,6 +130,8 @@ object Updater {
 
         // Determine which build types to look for based on current build and beta preferences
         val targetBuildTypes = when {
+            // Dev users: check only dev
+            currentSuffix == UpdaterConstants.SUFFIX_CHAR_DEV -> listOf(UpdaterConstants.TYPE_DEV)
             // Full users with beta enabled: check beta and full
             currentSuffix == UpdaterConstants.SUFFIX_CHAR_FULL && checkBetaUpdates -> listOf(UpdaterConstants.TYPE_BETA, UpdaterConstants.TYPE_FULL)
             // Full users with beta disabled: check only full
@@ -185,7 +190,14 @@ object Updater {
             }
         }
         
-        return false // Versions are equal
+        // Base versions are equal — compare date suffix for dev builds
+        // Dev tag format: "v7.3.2-dev-20260806", dev versionName: "7.3.2-dev"
+        val date1 = version1.removePrefix(UpdaterConstants.PREFIX_VERSION)
+            .split("-").getOrNull(2)?.toIntOrNull() ?: 0
+        val date2 = version2.removePrefix(UpdaterConstants.PREFIX_VERSION)
+            .split("-").getOrNull(2)?.toIntOrNull() ?: 0
+        
+        return date1 > date2
     }
 
     /**
@@ -237,20 +249,33 @@ object Updater {
             tagName = bestRelease.tagName
 
             try {
-                // Find the exact version code linked in the release body
-                val regex = """${Repository.CHANGELOGS_PATH}/(\d+)\.txt""".toRegex()
-                val match = regex.find(bestRelease.body)
+                val isDevRelease = bestRelease.tagName.contains(UpdaterConstants.SUFFIX_CHAR_DEV)
                 
-                if (match != null) {
+                if (isDevRelease) {
+                    // Dev builds use a single generic changelog file
                     isFetchingChangelog = true
-                    val versionCodeStr = match.groupValues[1]
-                    latestVersionCode = versionCodeStr.toIntOrNull()
-                    val downloadUrl = "${Repository.CHANGELOGS_URL}/$versionCodeStr.txt"
-                    
+                    val downloadUrl = "${Repository.CHANGELOGS_URL}/dev.txt"
                     val txtReq = Request.Builder().url(downloadUrl).build()
                     val txtRes = NetworkClientFactory.getClient().newCall(txtReq).execute()
                     if (txtRes.isSuccessful) {
                         latestChangelog = txtRes.body?.string()
+                    }
+                } else {
+                    // Stable/beta: find the exact version code linked in the release body
+                    val regex = """${Repository.CHANGELOGS_PATH}/(\d+)\.txt""".toRegex()
+                    val match = regex.find(bestRelease.body)
+                    
+                    if (match != null) {
+                        isFetchingChangelog = true
+                        val versionCodeStr = match.groupValues[1]
+                        latestVersionCode = versionCodeStr.toIntOrNull()
+                        val downloadUrl = "${Repository.CHANGELOGS_URL}/$versionCodeStr.txt"
+                        
+                        val txtReq = Request.Builder().url(downloadUrl).build()
+                        val txtRes = NetworkClientFactory.getClient().newCall(txtReq).execute()
+                        if (txtRes.isSuccessful) {
+                            latestChangelog = txtRes.body?.string()
+                        }
                     }
                 }
             } catch (e: Exception) {
@@ -270,7 +295,12 @@ object Updater {
         try {
             isFetchingChangelog = true
             val versionCode = BuildConfig.VERSION_CODE
-            val downloadUrl = "${Repository.CHANGELOGS_URL}/$versionCode.txt"
+            val isDev = extractVersionSuffix(BuildConfig.VERSION_NAME) == UpdaterConstants.SUFFIX_CHAR_DEV
+            val downloadUrl = if (isDev) {
+                "${Repository.CHANGELOGS_URL}/dev.txt"
+            } else {
+                "${Repository.CHANGELOGS_URL}/$versionCode.txt"
+            }
             
             val txtReq = Request.Builder().url(downloadUrl).build()
             val txtRes = NetworkClientFactory.getClient().newCall(txtReq).execute()
@@ -321,20 +351,24 @@ object Updater {
             val releaseSuffix = extractVersionSuffix(release.tagName)
             
             when {
+                // Dev users: only accept dev releases
+                currentSuffix == UpdaterConstants.SUFFIX_CHAR_DEV -> releaseSuffix.startsWith(UpdaterConstants.SUFFIX_CHAR_DEV)
                 // Full users with beta enabled: accept both beta and full
-                currentSuffix == UpdaterConstants.SUFFIX_FULL.removePrefix("-") && checkBetaUpdates -> releaseSuffix == "" || releaseSuffix == UpdaterConstants.SUFFIX_BETA.removePrefix("-")
+                currentSuffix == UpdaterConstants.SUFFIX_CHAR_FULL && checkBetaUpdates -> releaseSuffix == "" || releaseSuffix == UpdaterConstants.SUFFIX_BETA.removePrefix("-")
                 // Full users with beta disabled: only accept full
-                currentSuffix == UpdaterConstants.SUFFIX_FULL.removePrefix("-") && !checkBetaUpdates -> releaseSuffix == ""
+                currentSuffix == UpdaterConstants.SUFFIX_CHAR_FULL && !checkBetaUpdates -> releaseSuffix == ""
                 // Beta users with beta enabled: accept both beta and full
-                currentSuffix == UpdaterConstants.SUFFIX_BETA.removePrefix("-") && checkBetaUpdates -> releaseSuffix == UpdaterConstants.SUFFIX_BETA.removePrefix("-") || releaseSuffix == ""
+                currentSuffix == UpdaterConstants.SUFFIX_CHAR_BETA && checkBetaUpdates -> releaseSuffix == UpdaterConstants.SUFFIX_BETA.removePrefix("-") || releaseSuffix == ""
                 // Beta users with beta disabled: only accept full
-                currentSuffix == UpdaterConstants.SUFFIX_BETA.removePrefix("-") && !checkBetaUpdates -> releaseSuffix == ""
+                currentSuffix == UpdaterConstants.SUFFIX_CHAR_BETA && !checkBetaUpdates -> releaseSuffix == ""
                 // Minified users: only accept minified
                 currentSuffix == UpdaterConstants.SUFFIX_MINIFIED.removePrefix("-") -> releaseSuffix == ""
                 // Default case: only accept full releases
                 else -> releaseSuffix == ""
             }
         }
+        
+        if (eligibleReleases.isEmpty()) return null
         
         // Find the release with the highest version number
         // Find the maximum number of version parts to normalize all versions
@@ -353,10 +387,21 @@ object Updater {
                 normalizedParts.add(0)
             }
             
-            // Create a comparable version number (e.g., 1.2.3 -> 1002003)
-            normalizedParts.foldIndexed(0L) { index, acc, part ->
+            // Base comparable version number (e.g., 1.2.3 -> 1002003)
+            val baseScore = normalizedParts.foldIndexed(0L) { index, acc, part ->
                 acc + (part * (1000.0.pow(maxParts - 1 - index)).toLong())
             }
+            
+            // For dev releases, add the date as a fractional bonus
+            // Dev tag format: "v7.3.2-dev-20260806"
+            val dateBonus = if (currentSuffix == UpdaterConstants.SUFFIX_CHAR_DEV) {
+                val dateStr = release.tagName.split("-").lastOrNull()?.toLongOrNull() ?: 0L
+                dateStr  // e.g., 20260806 — enough to排序 by date
+            } else {
+                0L
+            }
+            
+            baseScore * 100_000_000L + dateBonus
         }
         
         return bestRelease

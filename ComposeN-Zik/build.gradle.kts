@@ -217,7 +217,7 @@ android {
             manifestPlaceholders += mapOf("appName" to "$APP_NAME-dev")
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
-            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
+            buildConfigField( "Boolean", "IS_AUTOUPDATE", "true" )
 
             // Fallback for modules that don't have a 'dev' build type (like :discordrpc)
             matchingFallbacks += listOf("release")
@@ -229,7 +229,7 @@ android {
             applicationIdSuffix = ".dev"
             initWith( maybeCreate("dev") )
             versionNameSuffix = "-dev32"
-            buildConfigField( "Boolean", "IS_AUTOUPDATE", "false" )
+            buildConfigField( "Boolean", "IS_AUTOUPDATE", "true" )
 
             // Fallback for modules that don't have a 'dev32' build type
             matchingFallbacks += listOf("release")

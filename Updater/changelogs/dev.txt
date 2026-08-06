@@ -1,0 +1,8 @@
+Dev:
+- Development snapshot built from the latest commits
+- For testing and development only
+- May contain bugs, experimental features, and incomplete functionality
+
+Report:
+- GitHub: https://github.com/N-Zik-Group/N-Zik/issues/new?template=bug_report_dev.yml
+- Discord: https://discord.gg/QM6PZzkyBa

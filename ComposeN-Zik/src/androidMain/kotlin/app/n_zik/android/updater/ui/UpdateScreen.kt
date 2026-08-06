@@ -954,6 +954,7 @@ fun ChangelogCard(rawText: String, translatedText: String?, colorPaletteMode: Co
                                     UpdaterConstants.CHANGELOG_CHANGED -> R.drawable.pencil
                                     UpdaterConstants.CHANGELOG_IMPROVED -> R.drawable.refresh_circle
                                     UpdaterConstants.CHANGELOG_FIXED -> R.drawable.alert
+                                    UpdaterConstants.CHANGELOG_DEV -> R.drawable.sparkles
                                     else -> R.drawable.information
                                 }
                             ),
@@ -997,6 +998,7 @@ fun ChangelogCard(rawText: String, translatedText: String?, colorPaletteMode: Co
                                                     UpdaterConstants.CHANGELOG_CHANGED -> Color(0xFFFF9800)
                                                     UpdaterConstants.CHANGELOG_IMPROVED -> Color(0xFF2196F3)
                                                     UpdaterConstants.CHANGELOG_FIXED -> Color(0xFFF44336)
+                                                    UpdaterConstants.CHANGELOG_DEV -> Color(0xFFFFEB3B)
                                                     else -> colorPalette().accent
                                                 }
                                             )
