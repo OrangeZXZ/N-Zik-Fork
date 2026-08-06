@@ -142,7 +142,6 @@ object CipherDeobfuscator {
 
         try {
             transformNInternal(url)
-                .also { rendererRecoveryPolicy.onSuccess() }
         } catch (e: CancellationException) {
             throw e // request superseded/cancelled — propagate
         } catch (e: CipherRendererGoneException) {
@@ -239,6 +238,7 @@ object CipherDeobfuscator {
 
         Timber.tag(TAG).d("Calling webView.transformN()...")
         val transformedN = webView.transformN(nValue)
+        rendererRecoveryPolicy.onSuccess()
 
         Timber.tag(TAG).d("=== N-TRANSFORM SUCCESS ===")
         Timber.tag(TAG).d("N-param: $nValue -> $transformedN")

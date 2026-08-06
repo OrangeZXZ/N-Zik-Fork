@@ -6,6 +6,14 @@ BETA TAG CHANGE:
   - Updated UpdaterConstants.kt: SUFFIX_BETA = "-beta", SUFFIX_CHAR_BETA = "beta"
   - Updated Skeleton.kt: default beta preference check
 
+Metrolist Parity Sync (cipher completion):
+- feat(cipher): complete Metrolist cipher parity — all 8 cipher files now synced
+  - FunctionNameExtractor: expression-based sig now propagates all config fields (constantArg, constantArgs, preprocessFunc, preprocessArgs) in a single SigFunctionInfo return, matching Metrolist's single-return pattern
+  - PlayerConfigStore: added 3 test helpers (armForcedCooldownForTest, armRejectionCooldownForTest, setTableForTest) for unit testing cooldowns and config injection
+  - RendererRecoveryPolicy: constructor now parameterizable with maxConsecutiveFailures and backoffMs defaults (backed by companion object constants); backoffUntilMs exposed as public var for CipherDeobfuscator logging
+  - CipherDeobfuscator: rendererRecoveryPolicy.onSuccess() now called inside transformNInternal() after successful n-transform (was in transformNParamInUrl), matching Metrolist's placement exactly — ensures policy resets on n-transform-only devices
+  - Full line-by-line comparison: 0 meaningful gaps remaining across all 8 cipher files, ContentAwareFallbackStrategy, and YouTubeClient
+
 Metrolist Parity Sync:
 
 Added:

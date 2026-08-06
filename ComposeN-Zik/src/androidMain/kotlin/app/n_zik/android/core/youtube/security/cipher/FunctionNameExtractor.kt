@@ -187,24 +187,19 @@ object FunctionNameExtractor {
             if (config != null) {
                 if (config.sigJsExpression != null) {
                     Timber.tag(TAG).d("USING EXPRESSION-BASED SIG: ${config.sigJsExpression}")
-                    return SigFunctionInfo(
-                        name = "_expr_sig",
-                        constantArg = null,
-                        jsExpression = config.sigJsExpression,
-                        isHardcoded = true
-                    )
-                }
-                if (config.sigFuncName.isNotEmpty()) {
+                } else {
                     Timber.tag(TAG).d("USING HARDCODED SIG FUNCTION: ${config.sigFuncName}(${config.sigConstantArgs}, ...)")
-                    return SigFunctionInfo(
-                        name = config.sigFuncName,
-                        constantArg = config.sigConstantArg,
-                        constantArgs = config.sigConstantArgs,
-                        preprocessFunc = config.sigPreprocessFunc,
-                        preprocessArgs = config.sigPreprocessArgs,
-                        isHardcoded = true
-                    )
+                    Timber.tag(TAG).d("Sig preprocess: ${config.sigPreprocessFunc}(${config.sigPreprocessArgs}, sig)")
                 }
+                return SigFunctionInfo(
+                    name = config.sigFuncName,
+                    constantArg = config.sigConstantArg,
+                    constantArgs = config.sigConstantArgs,
+                    preprocessFunc = config.sigPreprocessFunc,
+                    preprocessArgs = config.sigPreprocessArgs,
+                    jsExpression = config.sigJsExpression,
+                    isHardcoded = true
+                )
             }
         }
 

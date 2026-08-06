@@ -68,6 +68,11 @@ object PlayerConfigStore {
 
     internal fun rejectionCooldownActive(now: Long) = withinWindow(now, lastRejectionAttemptMs, FORCE_REFRESH_COOLDOWN_MS)
 
+    // Test-only: arm a cooldown stamp without invoking the network refresh paths.
+    internal fun armForcedCooldownForTest(ms: Long) { lastForcedAttemptMs = ms }
+
+    internal fun armRejectionCooldownForTest(ms: Long) { lastRejectionAttemptMs = ms }
+
     /**
      * Clock-safe window check: true when [stampMs] is within [windowMs] of [now].
      * Handles backward clock adjustments (NTP corrections) by requiring the delta
@@ -136,6 +141,11 @@ object PlayerConfigStore {
     }
 
     fun knownHashes(): Set<String> = mergedConfigs.keys
+
+    /** Test-only: swaps the in-memory table without touching disk, context, or network. */
+    internal fun setTableForTest(configs: Map<String, FunctionNameExtractor.HardcodedPlayerConfig>) {
+        mergedConfigs = configs
+    }
 
     suspend fun forceRefresh(missingHash: String): Boolean = withContext(Dispatchers.IO) {
         refreshMutex.withLock {
