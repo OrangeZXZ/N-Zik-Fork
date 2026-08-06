@@ -1596,6 +1596,11 @@
 <string name="audio_output_title">Audio output</string>
 <string name="audio_output_no_devices">No audio devices available</string>
 <string name="audio_output_not_supported">Audio output selection is not supported on this device</string>
+<string name="audio_devices">Audio devices</string>
+<string name="bluetooth_permission_required">Bluetooth permission is required to list audio devices</string>
+<string name="wired_headphones">Wired headphones</string>
+<string name="phone_speaker">Phone speaker</string>
+<string name="this_phone">This phone</string>
 <string name="miniplayer_buttons_config">MiniPlayer buttons</string>
 <string name="miniplayer_buttons_config_description">Configure the 4 buttons in the miniplayer</string>
 <string name="miniplayer_slot">Slot %1$d</string>
@@ -1632,6 +1637,7 @@
 <string name="auto_backup_on_change_description">Trigger a backup when songs are added or removed</string>
 <string name="auto_backup_max_backups">Max Backups to Keep</string>
 <string name="auto_backup_target">Backup Target</string>
+<string name="unlink">Unlink</string>
 <string name="toolbar">Toolbar</string>
 <string name="customize_toolbar">Customize the toolbar</string>
 </resources>
