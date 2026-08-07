@@ -379,7 +379,7 @@ jobs:
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           CONTENT: |
-            🔨 **<@&1534516569240109106> NEW DEV BUILD v${{ needs.versioning.outputs.downstream }}-dev!**
+            🔨 **||<@&1534516569240109106>|| NEW DEV BUILD v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}!**
 
             Testing & development snapshot ready!
           DESCRIPTION: |
