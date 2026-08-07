@@ -86,7 +86,7 @@ jobs:
         run: cp "Updater/changelogs/${{ needs.versioning.outputs.code }}.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
-        uses: actions/setup-java@v5.6.0
+        uses: actions/setup-java@v5.7.0
         with:
           java-version: '21'
           distribution: 'corretto'
@@ -126,7 +126,7 @@ jobs:
         run: cp "Updater/changelogs/${{ needs.versioning.outputs.code }}.txt" "ComposeN-Zik/src/androidMain/res/raw/release_notes.txt"
 
       - name: Setup Java 21
-        uses: actions/setup-java@v5.6.0
+        uses: actions/setup-java@v5.7.0
         with:
           java-version: '21'
           distribution: 'corretto'
@@ -277,7 +277,7 @@ jobs:
     permissions:
       issues: write
     steps:
-      - name: Comment issues marked as "patched BETA" (no close)
+      - name: Comment issues marked as "patched BETA" and remove label
         uses: actions/github-script@v9
         with:
           script: |
@@ -305,7 +305,15 @@ jobs:
                 issue_number: issue.number,
                 body,
               });
-              console.log(`Commented on issue #${issue.number}`);
+              
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                name: 'patched BETA'
+              });
+              
+              console.log(`Commented on issue #${issue.number} and removed label`);
             }
 
   notify-discord:

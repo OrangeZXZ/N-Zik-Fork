@@ -419,21 +419,21 @@
   <string name="action_bar_show_sleep_timer_button">Schlaf-Timer Button anzeigen</string>
   <string name="sort_album_year">Album-Jahr</string>
   <string name="sort_position">Position</string>
-  <string name="sort_custom_order">Eigene Bestellung</string>
+  <string name="sort_custom_order">Benutzerdefinierte Reinfolge</string>
   <string name="sort_title">Song</string>
   <string name="sort_date_played">Wiedergabedatum</string>
   <string name="sort_artist">Künstler</string>
   <string name="sort_listening_time">Wiedergabedauer</string>
   <string name="sort_date_added">Hinzufüge Datum</string>
   <string name="sorting_order">Sortierreihenfolge</string>
-  <string name="sort_menu">Sort Menu</string>
-  <string name="customize_sort_options">Customize sort options</string>
-  <string name="local_playlist_sort">Local Playlist</string>
+  <string name="sort_menu">Sortiermenü</string>
+  <string name="customize_sort_options">Sortieroptionen anpassen</string>
+  <string name="local_playlist_sort">Lokale Playlist</string>
   <string name="sort_year">Jahr</string>
   <string name="sort_name">Namen</string>
   <string name="sort_songs_number">Anzahl der Songs</string>
   <string name="sort_relative_listening_time">Relative Wiedergabedauer</string>
-  <string name="sort_play_count">Play Count</string>
+  <string name="sort_play_count">Wiedergabeanzahl</string>
   <string name="follow">Folgen</string>
   <string name="following">Gefolgt</string>
   <string name="artist_subscribers">%s Abonnenten</string>
@@ -1156,7 +1156,7 @@
   <string name="title_import_migration_file">Migrationsdatei importieren</string>
   <string name="description_import_migration_file">Für alte Benutzer vor der Konvertierung. \nDie alte App verwenden, um ein Backup für die Migration zu erstellen</string>
   <string name="description_app_not_installed_by_apk">Wenn du diese Nachricht siehst, bedeutet dies, dass bei deinem Build keine automatische Aktualisierung aktiviert ist, pls die App manuell von github aktualisieren</string>
-  <string name="relative_listening_time">Wiedergabeanzahl</string>
+  <string name="relative_listening_time">Relative Wiedergabedauer</string>
   <string name="added_to_dislikes">%s gefällt mir nicht</string>
   <string name="removed_from_dislikes">%s von \"Gefällt mir nicht\" entfernt</string>
   <string name="artist_featured_on">Vorgestellt auf</string>
@@ -1535,7 +1535,7 @@
   <string name="syncing_progress">%1$d / %2$d</string>
   <string name="syncing_failed">+ %1$d fehlgeschlagen</string>
   <string name="refreshing_artists">Aktualisiere %1$d Künstler</string>
-  <string name="failed_artists">Failed to find %1$d artists, retrying</string>
+  <string name="failed_artists">Fehler beim Finden von %1$d Playlisten, erneut versuchen</string>
   <string name="found_all_artists">Alle Künstler gefunden</string>
   <string name="refreshing_albums">Aktualisiere %1$d Künstler</string>
   <string name="failed_albums">Fehler beim Finden von %1$d Alben, erneut versuchen</string>
@@ -1556,8 +1556,8 @@
   <string name="sync_notifications">Sychronisierungsbenachrichtigung</string>
   <string name="sync_failed_notification_artists">Die Synchronisierung von %1$d Künstlern ist fehlgeschlagen. Kehren Sie zur Registerkarte „Künstler“ zurück, um es erneut zu versuchen.</string>
   <string name="sync_failed_notification_albums">Die Synchronisierung von %1$d Alben ist fehlgeschlagen. Kehren Sie zur Registerkarte „Alben“ zurück, um es erneut zu versuchen.</string>
-  <string name="sync_failed_notification_playlists">Failed to sync %1$d playlists. Go back to the Playlists tab to retry.</string>
-  <string name="sync_success_notification_artists">Successfully synchronized all artists.</string>
+  <string name="sync_failed_notification_playlists">Die Synchronisierung von %1$d Künstlern ist fehlgeschlagen. Kehren Sie zur Registerkarte „Künstler“ zurück, um es erneut zu versuchen.</string>
+  <string name="sync_success_notification_artists">Alle Künstler erfolgreich synchronisiert.</string>
   <string name="sync_success_notification_albums">Alle Alben erfolgreich synchronisiert.</string>
   <string name="sync_success_notification_playlists">Alle Playlisten erfolgreich synchronisiert.</string>
   <string name="sync_progress_artists">Synchronisiere Künstler... (%1$d/%2$d)</string>
@@ -1596,6 +1596,11 @@
   <string name="audio_output_title">Audioausgabe</string>
   <string name="audio_output_no_devices">Es sind keine Audiogeräte verfügbar</string>
   <string name="audio_output_not_supported">Die Auswahl des Audioausgangs wird auf diesem Gerät nicht unterstützt.</string>
+  <string name="audio_devices">Audio devices</string>
+  <string name="bluetooth_permission_required">Bluetooth-Berechtigung ist erforderlich, um Audiogeräte aufzulisten</string>
+  <string name="wired_headphones">Kabelgebundene Kopfhörer</string>
+  <string name="phone_speaker">Telefon-Lautsprecher</string>
+  <string name="this_phone">Dieses Telefon</string>
   <string name="miniplayer_buttons_config">Mini-Player-Schaltflächen</string>
   <string name="miniplayer_buttons_config_description">Konfigurieren Sie die 4 Tasten im Mini-Player</string>
   <string name="miniplayer_slot">Platz %1$d</string>
@@ -1632,6 +1637,7 @@
   <string name="auto_backup_on_change_description">Ein Backup auslösen, wenn Lieder hinzugefügt oder entfernt werden</string>
   <string name="auto_backup_max_backups">Maximale Backups zum Behalten</string>
   <string name="auto_backup_target">Backup-Ziel</string>
+  <string name="unlink">Verknüpfung aufheben</string>
   <string name="toolbar">Symbolleiste</string>
   <string name="customize_toolbar">Symbolleiste anpassen</string>
 </resources>
