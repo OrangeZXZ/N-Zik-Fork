@@ -201,13 +201,12 @@ fun About(navController: androidx.navigation.NavController) {
                                                                                      // Version
                             // Version and Badge
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth().basicMarquee(iterations = Int.MAX_VALUE),
                                 horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 BasicText(
                                     text = "v${getVersionName()}",
-                                    modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
                                     style = typography().xs.secondary.copy(
                                         textAlign = TextAlign.Center
                                     )
@@ -225,7 +224,7 @@ fun About(navController: androidx.navigation.NavController) {
                                             .padding(horizontal = 6.dp, vertical = 2.dp)
                                     ) {
                                         val buildTypeRes = when (currentSuffix) {
-                                            "b" -> R.string.beta_title
+                                            "beta" -> R.string.beta_title
                                             "m" -> R.string.minified_title
                                             "dev" -> R.string.dev_title
                                             else -> R.string.stable_title
