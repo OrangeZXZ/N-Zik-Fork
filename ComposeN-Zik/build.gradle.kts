@@ -212,7 +212,7 @@ android {
             matchingFallbacks += listOf("release")
         }
 
-        val devDate = java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"))
+        val devDate = java.text.SimpleDateFormat("yyyyMMdd").format(java.util.Date())
 
         create( "dev" ) {
             // App's properties
