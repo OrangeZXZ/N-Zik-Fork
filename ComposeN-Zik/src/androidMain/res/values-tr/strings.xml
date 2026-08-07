@@ -723,7 +723,7 @@
   <string name="channels">Kanallar</string>
   <string name="perceptual_loudness">Algısal Ses Yüksekliği</string>
   <string name="stream_client">Akış İstemcisi</string>
-  <string name="player_hash">Oyuncu Hash\'i</string>
+  <string name="player_hash">Oyuncu Kimliği</string>
   <string name="cipher_since">Şifreleme Tarihi</string>
   <string name="loudness_level">Ses Yüksekliği Seviyesi</string>
   <string name="volume">Ses</string>
@@ -1596,11 +1596,11 @@
   <string name="audio_output_title">Ses çıkışı</string>
   <string name="audio_output_no_devices">Kullanılabilir ses aygıtı yok</string>
   <string name="audio_output_not_supported">Bu cihazda ses çıkışı seçimi desteklenmemektedir</string>
-  <string name="audio_devices">Audio devices</string>
-  <string name="bluetooth_permission_required">Bluetooth permission is required to list audio devices</string>
-  <string name="wired_headphones">Wired headphones</string>
-  <string name="phone_speaker">Phone speaker</string>
-  <string name="this_phone">This phone</string>
+  <string name="audio_devices">Ses cihazları</string>
+  <string name="bluetooth_permission_required">Ses cihazlarını listelemek için bluetooth izni gereklidir</string>
+  <string name="wired_headphones">Kablolu kulaklıklar</string>
+  <string name="phone_speaker">Telefon hoparlörü</string>
+  <string name="this_phone">Bu telefon</string>
   <string name="miniplayer_buttons_config">Mini Oynatıcı düğmeleri</string>
   <string name="miniplayer_buttons_config_description">Mini oynatıcıdaki 4 düğmeyi yapılandırın</string>
   <string name="miniplayer_slot">Slot %1$d</string>
@@ -1637,7 +1637,7 @@
   <string name="auto_backup_on_change_description">Şarkılar eklendiğinde veya kaldırıldığında yedekleme işlemini başlat</string>
   <string name="auto_backup_max_backups">Saklanacak Maksimum Yedekleme Sayısı</string>
   <string name="auto_backup_target">Yedekleme Hedefi</string>
-  <string name="unlink">Unlink</string>
+  <string name="unlink">Bağlantıyı kaldır</string>
   <string name="toolbar">Araç çubuğu</string>
   <string name="customize_toolbar">Araç çubuğunu özelleştir</string>
 </resources>
