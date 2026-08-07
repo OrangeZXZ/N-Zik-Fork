@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Repo's path in format {OWNER}/{REPO}
-      GITHUB_REPOSITORY: ${{ github.action_repository }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
       # ref/heads/{branch}
       GITHUB_REF: ${{ github.ref }}
 

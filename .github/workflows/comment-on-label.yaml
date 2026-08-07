@@ -85,7 +85,7 @@ jobs:
         run: gh pr comment "$NUMBER" --body "$BODY"
         env:
           BODY: >
-            This feature is already existed in codebase.
+            This feature already exists in the codebase.
 
             > Ticket will be closed. If you have any further question, feel free to comment below
 
@@ -106,7 +106,7 @@ jobs:
         run: gh issue comment "$NUMBER" --body "$BODY"
         env:
           BODY: >
-            This feature is already existed in codebase.
+            This feature already exists in the codebase.
 
             > Ticket will be closed. If you have any further question, feel free to comment below
 

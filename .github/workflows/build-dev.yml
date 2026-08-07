@@ -327,12 +327,12 @@ jobs:
           generate_release_notes: true
 
   comment-dev-issues:
-    needs: [upload-to-release, versioning]
+    needs: [upload-to-release, versioning, build_time]
     runs-on: ubuntu-latest
     permissions:
       issues: write
     steps:
-      - name: Comment issues marked as "patched BETA" and remove label
+      - name: Comment issues marked as "patched DEV" and remove label
         uses: actions/github-script@v9
         with:
           script: |
@@ -340,11 +340,11 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
-              labels: 'patched BETA',
+              labels: 'patched DEV',
               per_page: 100,
             });
 
-            const version = '${{ needs.versioning.outputs.downstream }}-beta';
+            const version = '${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}';
             const body = [
               `🧪 This issue is fixed in the **DEV** build **v${version}** 🧪`,
               `➤ Download: https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/v${version}`,
@@ -365,7 +365,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issue.number,
-                name: 'patched BETA'
+                name: 'patched DEV'
               });
               
               console.log(`Commented on issue #${issue.number} and removed label`);

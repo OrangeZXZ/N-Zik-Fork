@@ -27,8 +27,6 @@ jobs:
       downstream: ${{ steps.downstream.outputs.version }}
       code: ${{ steps.downstream.outputs.code }}
       upstream: ${{ steps.upstream.outputs.version }}
-    env:
-      GITHUB_REPOSITORY: ${{ github.action_repository }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -41,7 +39,7 @@ jobs:
       - name: Get upstream version
         id: upstream
         run: |
-          tag_name="$(curl -s https://api.github.com/repos/$GITHUB_REPOSITORY/releases/latest | jq -r .tag_name)"
+          tag_name="$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)"
           echo "version=${tag_name#v}" >> $GITHUB_OUTPUT
 
   verify-version:

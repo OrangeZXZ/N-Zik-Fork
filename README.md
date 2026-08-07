@@ -58,8 +58,9 @@
 - **Minified** – Lightweight build, recommended for low-end devices (`arm64-v8a`, 64-bit only).
 - **Minified32** – Lightweight build without FFmpeg (`armeabi-v7a` + `arm64-v8a`, 32-bit & 64-bit).
 - **FOSS** (`com.nevar.nzik.foss`) – Full build without auto-updater, suitable for alternative stores (`arm64-v8a`, 64-bit only).
+- **Dev** & **Dev32** – Development builds from latest commits, for testing only (`arm64-v8a` / `armeabi-v7a` + `arm64-v8a`).
 
-> ℹ️ Standard builds (Full, Minified, Beta, FOSS) are 64-bit only because they bundle FFmpeg. The "32" builds (Full32, Minified32, Beta32) drop FFmpeg, so they work on both 32-bit and 64-bit devices. (`armeabi-v7a` + `arm64-v8a`).
+> ℹ️ Standard builds (Full, Minified, Beta, FOSS, Dev) are 64-bit only because they bundle FFmpeg. The "32" builds (Full32, Minified32, Beta32, Dev32) drop FFmpeg, so they work on both 32-bit and 64-bit devices. (`armeabi-v7a` + `arm64-v8a`).
 
 ---
 
@@ -292,6 +293,7 @@ New:
 
 [![Build Full and Minified](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-all-flavors-weekly.yml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-all-flavors-weekly.yml)  
 [![Build Beta](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-beta-flavor.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-beta-flavor.yaml)  
+[![Build Dev](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-dev.yml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/build-dev.yml)  
 [![Automatic Cache Builder](https://github.com/N-Zik-Group/N-Zik/actions/workflows/cache-builder.yaml/badge.svg)](https://github.com/N-Zik-Group/N-Zik/actions/workflows/cache-builder.yaml)
 
 ## 🔄 Automation & Maintenance

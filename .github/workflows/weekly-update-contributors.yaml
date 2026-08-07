@@ -29,7 +29,7 @@ jobs:
       - name: Run get_developers.py script
         env:
           # Repo's path in format {OWNER}/{REPO}
-          GITHUB_REPOSITORY: ${{ github.action_repository }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: python .github/get_developers.py
 
       - name: Copy generated contributors.json to its correct place
