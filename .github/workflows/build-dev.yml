@@ -321,7 +321,7 @@ jobs:
             - 🔧 Built from the latest code commits
             - ⚡ Latest features and improvements (unstable)
             - 🐛 May contain bugs and experimental code
-            - 📝 Auto-update is **disabled** (dev builds don't auto-update)
+            - 📝 Auto-update is **enabled** (dev builds auto-update to latest dev version)
             
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
@@ -408,7 +408,7 @@ jobs:
             - 🔧 Built from the latest code commits
             - ⚡ Latest features and improvements (unstable)
             - 🐛 May contain bugs and experimental code
-            - 📝 Auto-update is **disabled** (dev builds don't auto-update)
+            - 📝 Auto-update is **enabled** (dev builds auto-update to latest dev version)
 
             ## 🔗 Download & Info
 
