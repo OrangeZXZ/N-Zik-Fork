@@ -63,6 +63,7 @@ import app.n_zik.android.uiRoundnessShape
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.kreate.android.me.knighthat.utils.Toaster
 import androidx.compose.runtime.remember
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -206,6 +207,7 @@ fun About(navController: androidx.navigation.NavController) {
                             ) {
                                 BasicText(
                                     text = "v${getVersionName()}",
+                                    modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
                                     style = typography().xs.secondary.copy(
                                         textAlign = TextAlign.Center
                                     )
@@ -225,6 +227,7 @@ fun About(navController: androidx.navigation.NavController) {
                                         val buildTypeRes = when (currentSuffix) {
                                             "b" -> R.string.beta_title
                                             "m" -> R.string.minified_title
+                                            "dev" -> R.string.dev_title
                                             else -> R.string.stable_title
                                         }
                                         BasicText(
