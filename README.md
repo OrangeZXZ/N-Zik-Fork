@@ -262,7 +262,6 @@ New:
 - [**Kreate**](https://github.com/knighthat/Kreate)
 - [**RiMusic**](https://github.com/fast4x/RiMusic)
 - [**ViMusic**](https://github.com/vfsfitvnm/ViMusic)
-- [**ZemerTeam/zemer-cipher**](https://github.com/ZemerTeam/zemer-cipher) – Cipher configs
 
 ### 🎨 Design & UI Contributions:
 
@@ -285,6 +284,7 @@ New:
 - [**compose-markdown**](https://github.com/jeziellago/compose-markdown): Markdown rendering in app.
 - [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): Shader effects for Compose.
 - [**Metrolist**](https://github.com/metrolistgroup/metrolist): Has helped a lot with bug fixes and feature expansion!
+- [**ZemerTeam/zemer-cipher**](https://github.com/ZemerTeam/zemer-cipher) – Cipher configs
 
 # 👀 Status
 
