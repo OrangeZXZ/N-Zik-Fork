@@ -1,6 +1,8 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.text.SimpleDateFormat
+import java.util.Date
 
 val APP_NAME = "N-Zik"
 
@@ -212,10 +214,10 @@ android {
             matchingFallbacks += listOf("release")
         }
 
-        val devDate = project.findProperty("devDate")?.toString() ?: "00000000"
+        val devDate = project.findProperty("devDate")?.toString()
+            ?: SimpleDateFormat("yyyyMMdd").format(Date())
 
         create( "dev" ) {
-            // App's properties
             manifestPlaceholders += mapOf("appName" to "$APP_NAME-dev")
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev-$devDate"
