@@ -34,6 +34,7 @@ import android.media.audiofx.AudioEffect
 import android.media.audiofx.BassBoost
 import android.media.audiofx.LoudnessEnhancer
 import android.media.audiofx.PresetReverb
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -313,6 +314,8 @@ class PlayerServiceModern : MediaLibraryService(),
     private var connectivityJob: Job? = null
     private val isNetworkAvailable = MutableStateFlow(true)
     private val waitingForNetwork = MutableStateFlow(false)
+
+    var preferredDeviceId: Int? = null
 
     private var notificationManager: NotificationManager? = null
 
@@ -2261,6 +2264,27 @@ class PlayerServiceModern : MediaLibraryService(),
 
         fun stopRadio() {
             nzikRadio.stopRadio(showToast = false)
+        }
+
+        fun setPreferredAudioDevice(deviceId: Int?) {
+            preferredDeviceId = deviceId
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val am = audioManager ?: (getSystemService(AUDIO_SERVICE) as? AudioManager) ?: return
+                // Always clear first to force ExoPlayer to re-evaluate
+                player.setPreferredAudioDevice(null)
+                if (deviceId != null) {
+                    val devices = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
+                    val deviceInfo = devices.find { it.id == deviceId }
+                    if (deviceInfo != null) {
+                        Timber.tag("PlayerServiceModern").d("setPreferredAudioDevice: switching to id=$deviceId type=${deviceInfo.type} name=${deviceInfo.productName}")
+                        player.setPreferredAudioDevice(deviceInfo)
+                    } else {
+                        Timber.tag("PlayerServiceModern").w("setPreferredAudioDevice: deviceId=$deviceId NOT FOUND. Available: ${devices.map { "id=${it.id} type=${it.type} name=${it.productName}" }}")
+                    }
+                } else {
+                    Timber.tag("PlayerServiceModern").d("setPreferredAudioDevice: cleared (null)")
+                }
+            }
         }
 
         /**

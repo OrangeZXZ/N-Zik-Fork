@@ -74,9 +74,29 @@ fun IconButton(
     )
 }
 
-
-
-
-
-
-
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun IconButton(
+    onClick: () -> Unit,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    color: Color,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    indication: Indication? = null,
+    onLongClick: (() -> Unit)? = null
+) {
+    Image(
+        imageVector = icon,
+        contentDescription = null,
+        colorFilter = ColorFilter.tint(color),
+        modifier = modifier
+            .clip(uiRoundnessShape())
+            .combinedClickable(
+                indication = indication ?: ripple(bounded = false),
+                interactionSource = remember { MutableInteractionSource() },
+                enabled = enabled,
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
+    )
+}

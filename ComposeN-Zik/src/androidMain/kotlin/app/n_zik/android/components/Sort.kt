@@ -176,6 +176,22 @@ open class Sort<T: Enum<T>> (
                         }
                     },
                     modifier = if (isSelected) Modifier.background(colorPalette().accent.copy(alpha = 0.1f), uiRoundnessShape()) else Modifier,
+                    trailingContent = {
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = isSelected,
+                            enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.scaleIn(),
+                            exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.scaleOut()
+                        ) {
+                            androidx.compose.material3.RadioButton(
+                                selected = true,
+                                onClick = null,
+                                colors = androidx.compose.material3.RadioButtonDefaults.colors(
+                                    selectedColor = colorPalette().accent,
+                                    unselectedColor = colorPalette().textSecondary
+                                )
+                            )
+                        }
+                    },
                     onClick = {
                         menuState.hide()
                         sortBy = it
@@ -215,6 +231,22 @@ open class Sort<T: Enum<T>> (
                                 contentDescription = it.name,
                                 tint = colorPalette().accent,
                                 modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    },
+                    trailingContent = {
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = isSelected,
+                            enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.scaleIn(),
+                            exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.scaleOut()
+                        ) {
+                            androidx.compose.material3.RadioButton(
+                                selected = true,
+                                onClick = null,
+                                colors = androidx.compose.material3.RadioButtonDefaults.colors(
+                                    selectedColor = colorPalette().accent,
+                                    unselectedColor = colorPalette().textSecondary
+                                )
                             )
                         }
                     },

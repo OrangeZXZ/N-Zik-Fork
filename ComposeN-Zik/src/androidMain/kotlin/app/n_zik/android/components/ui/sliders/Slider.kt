@@ -115,8 +115,9 @@ fun Slider(
                     finalValue = defaultValue
                 }
             }
-            
-            setState(finalValue)
+            if (isInteracting) {
+                setState(finalValue)
+            }
         },
         onValueChangeFinished = {
             onSlideComplete()

@@ -93,7 +93,7 @@ import app.n_zik.android.enums.PendingMiniPlayerAction
 import app.n_zik.android.LocalPendingMiniPlayerAction
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.n_zik.android.components.menu.player.AddToPlaylistPlayerMenu
-// import app.n_zik.android.components.menu.player.AudioOutputMenu
+import app.n_zik.android.components.menu.player.AudioDeviceMenu
 import app.n_zik.android.playback.services.AudioOutputManager
 import android.content.Intent
 import timber.log.Timber
@@ -181,6 +181,7 @@ fun MiniPlayer(
 
     val context = LocalContext.current
     val menuState = LocalMenuState.current
+
     val pendingMiniPlayerAction = LocalPendingMiniPlayerAction.current
     
     val playerUpdateTrigger by binder.playerUpdateTrigger.collectAsState()
@@ -639,31 +640,38 @@ fun MiniPlayer(
                             controlsColorText = controlsColorText,
                             rotationAngle = rotationAngle,
                             onLikeClick = ::toggleLike,
-                            onAudioOutputClick = { 
-                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                                    val intent = Intent("android.settings.panel.action.MEDIA_OUTPUT").apply {
-                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    }
-                                    kotlin.runCatching {
-                                        context.startActivity(intent)
-                                    }.onFailure { e ->
-                                        Timber.tag("MiniPlayer").w(e, "MEDIA_OUTPUT panel not available, trying broadcast fallback")
-                                        val broadcastIntent = Intent("com.android.systemui.action.LAUNCH_MEDIA_OUTPUT_DIALOG").apply {
-                                            setPackage("com.android.systemui")
-                                            putExtra("package_name", context.packageName)
-                                        }
-                                        // Check if SystemUI has a receiver before broadcasting
-                                        @Suppress("DEPRECATION")
-                                        val receivers = context.packageManager.queryBroadcastReceivers(broadcastIntent, 0)
-                                        if (receivers.isNotEmpty()) {
-                                            context.sendBroadcast(broadcastIntent)
-                                        } else {
-                                            Timber.tag("MiniPlayer").w("No broadcast receiver found for LAUNCH_MEDIA_OUTPUT_DIALOG — panel unsupported on this device")
-                                            Toaster.w(R.string.audio_output_not_supported)
+                            onAudioOutputClick = {
+                                when {
+                                    android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU -> {
+                                        menuState.display {
+                                            AudioDeviceMenu(onDismiss = menuState::hide)
                                         }
                                     }
-                                } else {
-                                    Toaster.w(R.string.available_on_android_10_or_higher)
+                                    android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q -> {
+                                        val intent = Intent("android.settings.panel.action.MEDIA_OUTPUT").apply {
+                                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        }
+                                        kotlin.runCatching {
+                                            context.startActivity(intent)
+                                        }.onFailure { e ->
+                                            Timber.tag("MiniPlayer").w(e, "MEDIA_OUTPUT panel not available, trying broadcast fallback")
+                                            val broadcastIntent = Intent("com.android.systemui.action.LAUNCH_MEDIA_OUTPUT_DIALOG").apply {
+                                                setPackage("com.android.systemui")
+                                                putExtra("package_name", context.packageName)
+                                            }
+                                            @Suppress("DEPRECATION")
+                                            val receivers = context.packageManager.queryBroadcastReceivers(broadcastIntent, 0)
+                                            if (receivers.isNotEmpty()) {
+                                                context.sendBroadcast(broadcastIntent)
+                                            } else {
+                                                Timber.tag("MiniPlayer").w("No broadcast receiver found for LAUNCH_MEDIA_OUTPUT_DIALOG")
+                                                Toaster.w(R.string.audio_output_not_supported)
+                                            }
+                                        }
+                                    }
+                                    else -> {
+                                        Toaster.w(R.string.available_on_android_10_or_higher)
+                                    }
                                 }
                             },
                             onShowPlayer = showPlayer,
@@ -688,6 +696,7 @@ fun MiniPlayer(
             )
         }
         /*****  */
+
 
     }
 }
@@ -855,7 +864,7 @@ private fun MiniPlayerSlotButton(
 
             val isExternal = activeDevice != null && activeDevice?.type != android.media.AudioDeviceInfo.TYPE_BUILTIN_SPEAKER && activeDevice?.type != android.media.AudioDeviceInfo.TYPE_BUILTIN_EARPIECE
             
-            val iconRes = activeDevice?.icon ?: R.drawable.devices
+            val iconVal = activeDevice?.icon ?: R.drawable.devices
 
             val isAudioOutputEnabled = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
             val finalColor = if (!isAudioOutputEnabled) {
@@ -866,13 +875,24 @@ private fun MiniPlayerSlotButton(
                 controlsColorText
             }
 
-            IconButton(
-                icon = if (isExternal) iconRes else R.drawable.devices,
-                color = finalColor,
-                enabled = true,
-                onClick = onAudioOutputClick,
-                modifier = modifier
-            )
+            val finalIcon = if (isExternal) iconVal else R.drawable.devices
+            if (finalIcon is androidx.compose.ui.graphics.vector.ImageVector) {
+                IconButton(
+                    icon = finalIcon,
+                    color = finalColor,
+                    enabled = true,
+                    onClick = onAudioOutputClick,
+                    modifier = modifier
+                )
+            } else {
+                IconButton(
+                    icon = finalIcon as Int,
+                    color = finalColor,
+                    enabled = true,
+                    onClick = onAudioOutputClick,
+                    modifier = modifier
+                )
+            }
         }
         MiniPlayerButton.SleepTimer -> {
             IconButton(

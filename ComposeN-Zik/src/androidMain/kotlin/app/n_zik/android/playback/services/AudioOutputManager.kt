@@ -16,23 +16,11 @@ class AudioOutputManager(private val context: Context, private val audioManager:
     data class AudioDevice(
         val id: Int,
         val type: Int,
+        val name: String?,
         val isCurrentlyActive: Boolean
     ) {
-        val icon: Int
-            get() = when (type) {
-                AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
-                AudioDeviceInfo.TYPE_BLUETOOTH_SCO,
-                26, 27, 30 -> app.n_zik.android.R.drawable.bluetooth // TYPE_BLE_HEADSET, TYPE_BLE_SPEAKER, TYPE_BLE_BROADCAST
-                
-                AudioDeviceInfo.TYPE_WIRED_HEADSET,
-                AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
-                AudioDeviceInfo.TYPE_USB_HEADSET,
-                AudioDeviceInfo.TYPE_USB_DEVICE -> app.n_zik.android.R.drawable.headphones
-                
-                AudioDeviceInfo.TYPE_BUS -> app.n_zik.android.R.drawable.car
-                
-                else -> app.n_zik.android.R.drawable.devices
-            }
+        val icon: Any
+            get() = app.n_zik.android.utils.getAudioDeviceIcon(type, name)
     }
 
     private val handler = Handler(Looper.getMainLooper())
@@ -183,6 +171,7 @@ class AudioOutputManager(private val context: Context, private val audioManager:
             AudioDevice(
                 id = device.id,
                 type = device.type,
+                name = device.productName?.toString(),
                 isCurrentlyActive = device.id == activeRouteId
             )
         }.sortedByDescending { it.isCurrentlyActive }
