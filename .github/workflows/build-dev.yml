@@ -381,7 +381,7 @@ jobs:
           CONTENT: |
             🔨 **||<@&1534516569240109106>|| NEW DEV BUILD v${{ needs.versioning.outputs.downstream }}-dev-${{ needs.build_time.outputs.date }}!**
 
-            Testing & development snapshot ready!
+            🧪 Testing & development snapshot ready!
           DESCRIPTION: |
             ## 📲 Installation
 
