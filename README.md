@@ -93,7 +93,9 @@ As a **Free and Open Source Software (FOSS)** project, **N‑Zik** and his **dev
 
 Join the N-Zik Discord:
 
-[![Discord](https://discord.com/api/guilds/1345079801324634193/widget.png?style=banner3)](https://discord.gg/bneHC7QRje)
+<a href="https://discord.gg/bneHC7QRje">
+  <img src="https://discord.com/api/guilds/1345079801324634193/widget.png?style=banner2" alt="Discord Server">
+</a>
 
 <br>
 
