@@ -69,7 +69,7 @@ object Updater {
         return when {
             versionStr.endsWith(UpdaterConstants.SUFFIX_BETA) -> UpdaterConstants.TYPE_BETA
             versionStr.endsWith(UpdaterConstants.SUFFIX_MINIFIED) -> UpdaterConstants.TYPE_MINIFIED
-            versionStr.endsWith(UpdaterConstants.SUFFIX_DEV) -> UpdaterConstants.TYPE_DEV
+            versionStr.contains(UpdaterConstants.SUFFIX_DEV) -> UpdaterConstants.TYPE_DEV
             else -> UpdaterConstants.TYPE_FULL
         }
     }

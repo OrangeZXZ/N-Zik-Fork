@@ -212,11 +212,13 @@ android {
             matchingFallbacks += listOf("release")
         }
 
+        val devDate = java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"))
+
         create( "dev" ) {
             // App's properties
             manifestPlaceholders += mapOf("appName" to "$APP_NAME-dev")
             applicationIdSuffix = ".dev"
-            versionNameSuffix = "-dev"
+            versionNameSuffix = "-dev-$devDate"
             buildConfigField( "Boolean", "IS_AUTOUPDATE", "true" )
 
             // Fallback for modules that don't have a 'dev' build type (like :discordrpc)
@@ -228,7 +230,7 @@ android {
             manifestPlaceholders += mapOf("appName" to "$APP_NAME-dev32")
             applicationIdSuffix = ".dev"
             initWith( maybeCreate("dev") )
-            versionNameSuffix = "-dev32"
+            versionNameSuffix = "-dev32-$devDate"
             buildConfigField( "Boolean", "IS_AUTOUPDATE", "true" )
 
             // Fallback for modules that don't have a 'dev32' build type
