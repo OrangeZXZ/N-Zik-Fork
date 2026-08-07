@@ -322,6 +322,19 @@ jobs:
             - ⚡ Latest features and improvements (unstable)
             - 🐛 May contain bugs and experimental code
             - 📝 Auto-update is **enabled** (dev builds auto-update to latest dev version)
+
+            ## 🔄 Update Policy
+
+            - 🔴 **Dev & Dev32 Builds (`com.nevar.nzik.dev`)**
+              - **Separate APK:** Installs alongside Stable/Beta as a distinct app (different application ID).
+              - **Default:** Auto-update is **enabled by default**.
+              - **User options:**
+                - You can **disable auto update** in **Settings > About > Auto update enabled**.
+              - **Behavior:**
+                - Dev builds auto-update to the latest **Dev** release only.
+                - Does **not** receive Stable or Beta updates.
+                - Does **not** interfere with your Stable or Beta installation.
+              - ⚠️ **Note:** This build is for testing and development only. May contain bugs and experimental features.
             
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
@@ -409,6 +422,19 @@ jobs:
             - ⚡ Latest features and improvements (unstable)
             - 🐛 May contain bugs and experimental code
             - 📝 Auto-update is **enabled** (dev builds auto-update to latest dev version)
+
+            ## 🔄 Update Policy
+
+            - 🔴 **Dev & Dev32 Builds (`com.nevar.nzik.dev`)**
+              - **Separate APK:** Installs alongside Stable/Beta as a distinct app (different application ID).
+              - **Default:** Auto-update is **enabled by default**.
+              - **User options:**
+                - You can **disable auto update** in **Settings > About > Auto update enabled**.
+              - **Behavior:**
+                - Dev builds auto-update to the latest **Dev** release only.
+                - Does **not** receive Stable or Beta updates.
+                - Does **not** interfere with your Stable or Beta installation.
+              - ⚠️ **Note:** This build is for testing and development only. May contain bugs and experimental features.
 
             ## 🔗 Download & Info
 
