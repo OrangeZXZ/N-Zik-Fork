@@ -159,7 +159,7 @@ jobs:
           fi
 
       - name: Build with Gradle
-        run: ./gradlew assembleDev
+        run: ./gradlew assembleDev -PdevDate=${{ needs.build_time.outputs.date }}
 
       - name: Upload artifacts for signing
         uses: actions/upload-artifact@v7
@@ -206,7 +206,7 @@ jobs:
           fi
 
       - name: Build with Gradle
-        run: ./gradlew assembleDev32
+        run: ./gradlew assembleDev32 -PdevDate=${{ needs.build_time.outputs.date }}
 
       - name: Upload artifacts for signing
         uses: actions/upload-artifact@v7
