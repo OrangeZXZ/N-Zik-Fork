@@ -260,7 +260,7 @@
   <string name="vt_full">Tam</string>
   <string name="new_albums_of_your_artists">Sanatçılarınızdan yeni albümler</string>
   <string name="timeline">Zaman çizelgesi</string>
-  <string name="song_cache_by_player">OYUNCUYA GÖRE ŞARKI ÖNBELLEĞİ</string>
+  <string name="song_cache_by_player">ŞARKI ÖNBELLEĞİ (Oynatma)</string>
   <string name="song_cache_by_download">İNDİRMEYE GÖRE ŞARKI ÖNBELLEĞİ</string>
   <string name="visualizer">Görselleştirme</string>
   <string name="visualizer_white_color_option">Görselleştirici rengi</string>
@@ -309,7 +309,7 @@
   <string name="do_you_really_want_to_delete_download">İndirmeyi gerçekten silmek istiyor musunuz?</string>
   <string name="enqueue_all">Tümünü sıraya ekle</string>
   <string name="enqueue_selected">Seçileni sıraya ekle</string>
-  <string name="greek">Greek (Ελληνικά)</string>
+  <string name="greek">Yunanca (Ελληνικά)</string>
   <string name="catalan">Katalanca (Catalan)</string>
   <string name="disable_scrolling_text">Kaydırılan metni devre dışı bırak</string>
   <string name="scrolling_text_is_used_for_long_texts">Kaydırılan metin uzun metinler için kullanılır</string>
