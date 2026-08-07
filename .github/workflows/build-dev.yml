@@ -362,8 +362,8 @@ jobs:
 
             console.log(`📊 Found ${devReleases.length} dev releases`);
 
-            // Keep only the last 5 dev releases
-            const releasesToDelete = devReleases.slice(5);
+            // Keep only the last 2 dev releases
+            const releasesToDelete = devReleases.slice(2);
 
             if (releasesToDelete.length === 0) {
               console.log('✅ Nothing to clean up. Keep all old releases.');
@@ -393,7 +393,7 @@ jobs:
               }
             }
 
-            console.log(`✨ Cleanup complete. Kept ${Math.min(devReleases.length, 5)} latest dev releases.`);
+            console.log(`✨ Cleanup complete. Kept ${Math.min(devReleases.length, 2)} latest dev releases.`);
 
   comment-dev-issues:
     needs: [upload-to-release, versioning, build_time]
