@@ -245,7 +245,7 @@ Use this command to clone the repo
 git clone -b main --single-branch --recursive https://github.com/N-Zik-Group/N-Zik.git
 ```
 
-Don't forget to add 'release_notes.txt' in ComposeApp/res/raw/release_notes.txt
+Don't forget to add 'release_notes.txt' in ComposeN-Zik/src/androidMain/res/raw/release_notes.txt
 Add in the file
 
 ```
@@ -262,6 +262,7 @@ New:
 - [**Kreate**](https://github.com/knighthat/Kreate)
 - [**RiMusic**](https://github.com/fast4x/RiMusic)
 - [**ViMusic**](https://github.com/vfsfitvnm/ViMusic)
+- [**ZemerTeam/zemer-cipher**](https://github.com/ZemerTeam/zemer-cipher) – Cipher configs
 
 ### 🎨 Design & UI Contributions:
 

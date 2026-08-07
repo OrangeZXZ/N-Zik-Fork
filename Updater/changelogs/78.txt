@@ -1,0 +1,42 @@
+Added:
+- New stream clients: ANDROID_VR_1_65_10 and TVHTML5_SIMPLY with toggle in settings
+- Content-aware fallback strategy for smarter client ordering based on content type
+- Per-song error classification with automatic retry (max 3 retries per song)
+- LRU URL cache (500 entries) for faster stream resolution
+- Sort menu customization for all screens (Songs, Artists, Albums, Playlists, History, Local Playlist)
+- Local Playlist toolbar customization with 21 configurable buttons
+- Visual highlight for selected sort option in sort menus
+- Always-visible overlay on album, artist, and playlist thumbnails
+- Sort enums reordered for logical grouping (Text, Numbers, Dates, Other)
+
+Changed:
+- Beta release tag changed from `-b` to `-beta` (e.g. v7.3.2-beta)
+- Default favorites sort changed from Title to DateLiked+Ascending
+- Default playlist sort changed from SongCount to Name
+- Artist/album sort labels changed to "Name" for clarity
+- App header redesigned with 32-bit tags
+
+Improved:
+- ToggleListDialog drag handle enlarged for better touch target
+- Dialog height increased to 80% of screen
+- StatsForNerds overlay now scrollable with live data refresh
+
+Fixed:
+- 34 inverted SQL sort queries across 6 database tables (SongTable, SongPlaylistMapTable, AlbumTable, ArtistTable, PlaylistTable, FormatTable)
+- PlaylistTable queries now include empty playlists with LEFT JOIN
+- History list DATE sort double-reversal bug
+- OnDeviceSongSortBy.DateAdded showing wrong label
+- Android Auto sort defaults now match main app
+- Old-style preference keys replaced in PlayerMenu.kt
+- FilterMenu extracted from deleted SortMenu.kt into new file
+- Infinite marquee applied to long translation texts in UpdateScreen
+- Menu close bug in ContextualMenu
+
+Refactor:
+- Completed cipher parity across all 8 cipher files
+- Replaced Pacman and Snake easter egg mini-games with static images
+- Removed hardcoded dialog strings in favor of string resources
+
+Acknowledgments:
+- Cipher pipeline improvements inspired by Metrolist (https://github.com/Metrolist/Metrolist)
+- Cipher configs sourced from ZemerTeam/zemer-cipher (https://github.com/ZemerTeam/zemer-cipher)
