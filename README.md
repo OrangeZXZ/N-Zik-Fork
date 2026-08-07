@@ -273,9 +273,9 @@ New:
 
 ### 🎵 Lyrics & Media:
 
-- [**KuGou**](https://www.kugou.com) – Lyrics provider
-- [**LrcLib**](https://lrclib.net) – Lyrics provider
-- [**Better Lyrics**](https://betterlyrics.org/) – Lyrics provider
+- [**KuGou**](https://www.kugou.com): Lyrics provider
+- [**LrcLib**](https://lrclib.net): Lyrics provider
+- [**Better Lyrics**](https://betterlyrics.org/): Lyrics provider
 
 ### 🧠 Features & Tools:
 
@@ -284,7 +284,7 @@ New:
 - [**compose-markdown**](https://github.com/jeziellago/compose-markdown): Markdown rendering in app.
 - [**HypnoticCanvas**](https://mikepenz.github.io/HypnoticCanvas/): Shader effects for Compose.
 - [**Metrolist**](https://github.com/metrolistgroup/metrolist): Has helped a lot with bug fixes and feature expansion!
-- [**ZemerTeam/zemer-cipher**](https://github.com/ZemerTeam/zemer-cipher) – Cipher configs
+- [**ZemerTeam/zemer-cipher**](https://github.com/ZemerTeam/zemer-cipher): Cipher configs
 
 # 👀 Status
 
