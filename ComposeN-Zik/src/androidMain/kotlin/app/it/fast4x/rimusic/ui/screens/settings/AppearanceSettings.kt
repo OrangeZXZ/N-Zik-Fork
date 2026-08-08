@@ -478,8 +478,8 @@ fun DefaultAppearanceSettings() {
     var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
     carouselSize = CarouselSize.Biggest
 
-    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,false)
-    keepPlayerMinimized = false
+    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,true)
+    keepPlayerMinimized = true
 
     var playerInfoShowIcons by rememberPreference(playerInfoShowIconsKey, true)
     playerInfoShowIcons = true
@@ -730,7 +730,7 @@ fun AppearanceSettings(
     var fadingedge by rememberPreference(fadingedgeKey, false)
     var carousel by rememberPreference(carouselKey, true)
     var carouselSize by rememberPreference(carouselSizeKey, CarouselSize.Biggest)
-    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,false)
+    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,true)
     var playerInfoShowIcons by rememberPreference(playerInfoShowIconsKey, true)
     var queueDurationExpanded by rememberPreference(queueDurationExpandedKey, true)
     var titleExpanded by rememberPreference(titleExpandedKey, true)

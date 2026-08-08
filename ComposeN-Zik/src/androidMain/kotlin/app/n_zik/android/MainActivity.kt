@@ -1233,7 +1233,7 @@ class MainActivity :
                         } else {
                             if (launchedFromNotification) {
                                 intent.replaceExtras(Bundle())
-                                if (preferences.getBoolean(keepPlayerMinimizedKey, false))
+                                if (preferences.getBoolean(keepPlayerMinimizedKey, true))
                                     showPlayer = false
                                 else showPlayer = true
                             } else {
@@ -1246,7 +1246,7 @@ class MainActivity :
                         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                             if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_PLAYLIST_CHANGED && mediaItem != null) {
                                 if (mediaItem.mediaMetadata.extras?.getBoolean("isFromPersistentQueue") != true) {
-                                    if (preferences.getBoolean(keepPlayerMinimizedKey, false))
+                                    if (preferences.getBoolean(keepPlayerMinimizedKey, true))
                                         showPlayer = false
                                     else showPlayer = true
                                 }

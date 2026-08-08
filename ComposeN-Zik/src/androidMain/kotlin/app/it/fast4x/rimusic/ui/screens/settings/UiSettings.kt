@@ -204,8 +204,8 @@ fun DefaultUiSettings() {
     hideStatusBar = false
 
 
-    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
-    keepPlayerMinimized = false
+    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   true)
+    keepPlayerMinimized = true
     var disableIconButtonOnTop by rememberPreference(disableIconButtonOnTopKey, false)
     disableIconButtonOnTop = false
     var lastPlayerTimelineType by rememberPreference(lastPlayerTimelineTypeKey, PlayerTimelineType.Default)
@@ -471,7 +471,7 @@ fun UiSettings(
 
 
     var uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
-    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
+    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   true)
 
     var disableIconButtonOnTop by rememberPreference(disableIconButtonOnTopKey, false)
     var hideStatusBar by rememberPreference(hideStatusBarKey, false)

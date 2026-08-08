@@ -133,8 +133,8 @@ fun DefaultGeneralSettings(context: android.content.Context) {
     volumeNormalization = false
     var volumeBoostLevel by rememberPreference(volumeBoostLevelKey, 0f)
     volumeBoostLevel = 0f
-    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey, false)
-    keepPlayerMinimized = false
+    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey, true)
+    keepPlayerMinimized = true
     var disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, false)
     disableClosingPlayerSwipingDown = false
     var pauseBetweenSongs by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
@@ -216,7 +216,7 @@ fun GeneralSettings(
     var volumeNormalization by rememberPreference(volumeNormalizationKey, false)
     var volumeBoostLevel by rememberPreference(volumeBoostLevelKey, 0f)
 
-    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   false)
+    var keepPlayerMinimized by rememberPreference(keepPlayerMinimizedKey,   true)
 
     var disableClosingPlayerSwipingDown by rememberPreference(disableClosingPlayerSwipingDownKey, false)
     var pauseBetweenSongs  by rememberPreference(pauseBetweenSongsKey, PauseBetweenSongs.`0`)
