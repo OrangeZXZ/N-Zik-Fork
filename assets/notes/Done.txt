@@ -4,6 +4,10 @@ Changed:
   - Affects new installations and after "reset all settings"
   - Modified in `MainActivity.kt`, `GeneralSettings.kt`, `UiSettings.kt`, `AppearanceSettings.kt`
 
+- fix(settings): crossfade duration and gapless options hidden when crossfade disabled
+  - `GeneralSettings.kt`: wrapped duration selector and gapless toggle inside `if (crossfadeEnabled)` block
+  - Clean sub-settings behavior: only relevant options shown when feature is active
+
 Added:
 - feat(player): add custom audio device menu with device switching, volume control, and audio quality selection
   - New `AudioDeviceMenu.kt` composable that lists all connected audio devices (Bluetooth, wired, USB, phone speaker)
