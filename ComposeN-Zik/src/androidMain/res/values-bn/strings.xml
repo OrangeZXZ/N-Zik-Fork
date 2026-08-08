@@ -1640,4 +1640,18 @@
   <string name="unlink">Unlink</string>
   <string name="toolbar">Toolbar</string>
   <string name="customize_toolbar">Customize the toolbar</string>
+  <string name="album_art">Album art</string>
+  <string name="play_pause">Play / Pause</string>
+  <string name="not_playing">Not playing</string>
+  <string name="tap_to_play">Tap to play</string>
+  <string name="like">Like</string>
+  <string name="previous">Previous</string>
+  <string name="next">Next</string>
+  <string name="choose_something_below">Choose something below</string>
+  <string name="widget_playlists">প্লে-লিস্ট গুলো</string>
+  <string name="liked_songs">Liked songs</string>
+  <string name="downloaded_songs">Downloaded songs</string>
+  <string name="widget_description">N-Zik Music player</string>
+  <string name="widget_playlists_description">N-Zik Playlists</string>
+  <string name="turntable_widget_description">N-Zik Turntable</string>
 </resources>

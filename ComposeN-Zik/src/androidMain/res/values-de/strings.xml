@@ -325,7 +325,7 @@
   <string name="by_most_played_song">Nach meistgespieltem Lied</string>
   <string name="by_last_played_song">Nach zuletzt gespieltem Lied</string>
   <string name="audio_quality_automatic">Automatisch</string>
-  <string name="statistics_songs_heard">gehörte Lieder</string>
+  <string name="statistics_songs_heard">gehörte Songs</string>
   <string name="statistics_of_time_taken">Wiedergabezeit</string>
   <string name="statistics_max_number_of_items">Max. Anzahl der Elemente</string>
   <string name="arabic">Arabisch (اَلْعَرَبِيَّة)</string>
@@ -521,7 +521,7 @@
   <string name="locked">Gesperrt</string>
   <string name="sort_duration">Dauer</string>
   <string name="lang_serbian_cyrillic">Serbisch - Kyrillisch (Вуковица)</string>
-  <string name="pause_between_songs">Pause zwischen Liedern</string>
+  <string name="pause_between_songs">Pause zwischen Songs</string>
   <string name="navigation_bar_type">Typ der Navigationsleiste</string>
   <string name="icon_and_text">Symbole und Text</string>
   <string name="only_icon">Nur Symbole</string>
@@ -536,7 +536,7 @@
   <string name="minimized_player">Minimierter Player</string>
   <string name="both">Beides</string>
   <string name="max_songs_in_queue">Maximale Songs in der Warteschlange</string>
-  <string name="max_songs_in_queue_android_auto">Max. Lieder in der Warteschlange (Android Auto)</string>
+  <string name="max_songs_in_queue_android_auto">Max. Songs in der Warteschlange (Android Auto)</string>
   <string name="back">Zurück</string>
   <string name="folders">Ordner</string>
   <string name="show_folders_in_on_device_page">Zeige Ordner unter \"Lokal\" im Register \"Bibliothek\" an</string>
@@ -691,7 +691,7 @@
   <string name="pinfo_type">Kopfzeilen-Stil</string>
   <string name="pinfo_album_and_artist_name">Album und Interpreten Header</string>
   <string name="show_player_top_actions_bar">Obere Aktionsleiste anzeigen</string>
-  <string name="icon_like_button">\"Gefällt mir\" Button</string>
+  <string name="icon_like_button">\"Like\" Button</string>
   <string name="icon_like_apple">Apfel</string>
   <string name="icon_like_breaked">Zerbrochen</string>
   <string name="icon_like_gift">Geschenk</string>
@@ -706,13 +706,13 @@
   <string name="enable_quick_picks_page">Schnellauswahl-Seite aktiveren</string>
   <string name="lang_vietnamese">Vietnamesisch (tiếng Việt)</string>
   <string name="parental_control">Jugendschutz</string>
-  <string name="info_prevent_play_songs_with_age_limitation">Verhindere die Wiedergabe von Liedern mit Altersbegrenzung</string>
+  <string name="info_prevent_play_songs_with_age_limitation">Verhindere die Wiedergabe von Songs mit Altersbegrenzung</string>
   <string name="stream_clients">Stream-Clients</string>
   <string name="preferred_stream_client">Bevorzugter Stream Client</string>
   <string name="preferred_stream_client_title">Bevorzugter Stream Client</string>
   <string name="preferred_stream_client_description">Wählen Sie den Stream-Client aus, der zuerst versucht wird</string>
   <string name="preferred_stream_client_changed">Bevorzugter Client geändert. Wird für den nächsten Track angewendet.</string>
-  <string name="stream_client_redownload_recommendation">Lieder für neue Qualität erneut herunterladen (insbesondere mit Web Remix/ YTB Premium Account)</string>
+  <string name="stream_client_redownload_recommendation">Songs für neue Qualität erneut herunterladen (insbesondere mit Web Remix/ YTB Premium Account)</string>
   <string name="disabled_stream_clients">Deaktivierte Stream-Clients</string>
   <string name="all_clients_enabled">Alle Clienten aktiviert</string>
   <string name="n_clients_disabled">%d Client(en) deaktiviert</string>
@@ -772,7 +772,7 @@
   <string name="fake_audio_bar">Falsche Wellenform</string>
   <string name="copy_crash_log_to_clipboard">Absturzprotokoll in Zwischenablage kopieren</string>
   <string name="title_backup_and_restore">Backup und Wiederherstellen</string>
-  <string name="message_excluded_s_songs">%s Lieder ausgeschlossen</string>
+  <string name="message_excluded_s_songs">%s Songs ausgeschlossen</string>
   <string name="show_thumbnail">Miniaturansicht anzeigen</string>
   <string name="show_lyrics_thumbnail">Miniaturansicht für Liedtexte anzeigen</string>
   <string name="large">Groß</string>
@@ -876,7 +876,7 @@
   <string name="message_type">Nachrichtentyp</string>
   <string name="message_type_modern">Modern</string>
   <string name="message_type_essential">Essenziell</string>
-  <string name="discoverinforadio">Entfernt die mit \"Gefällt mir\" markierten Lieder und die Lieder der Wiedergabelisten aus dem Radio</string>
+  <string name="discoverinforadio">Entfernt die mit \"Like\" markierten Songs und die Songs der Playlisten aus dem Radio</string>
   <string name="discover_has_been_applied_to_radio">Entdecken wurde auf das Radio angewendet, entfernte Songs: %s</string>
   <string name="songs_number_to_show">Anzahl der anzuzeigenden Titel</string>
   <string name="discover_has_been_applied_to_queue">Entdecken wurde auf die Warteschlange angewandt, entfernte Songs: %s</string>
@@ -955,7 +955,7 @@
   <string name="translators">Übersetzer</string>
   <string name="lang_tamil">Tamil (தமிழ்)</string>
   <string name="player_auto_load_songs_in_queue">Titel automatisch in die Warteschlange laden</string>
-  <string name="player_auto_load_songs_in_queue_description">Fügt Lieder hinzu, wenn sich die Warteschlange dem Ende nähert</string>
+  <string name="player_auto_load_songs_in_queue_description">Fügt weitere Songs hinzu, wenn sich die Warteschlange dem Ende nähert</string>
   <string name="show_vinyl_thumbnail_animation">Zeige Vinyl-Animation als Thumbnail</string>
   <string name="toggle_romanization">Transkription umschalten</string>
   <string name="edit_thumbnail">Thumbnail bearbeiten</string>
@@ -987,7 +987,7 @@
   <string name="repeat">Wiederholen</string>
   <string name="views">Aufrufe</string>
   <string name="subscribers">Abonnenten</string>
-  <string name="likes">Gefällt</string>
+  <string name="likes">Likes</string>
   <string name="dislikes">Dislikes</string>
   <string name="description">Beschreibung</string>
   <string name="original_lyrics">Originaler Songtext</string>
@@ -1068,7 +1068,7 @@
   <string name="enable_connection_metered">Getaktete Verbindung verwenden, um Daten zu sparen</string>
   <string name="info_enable_connection_metered">Datensparen mindert die Qualität, nur bei Verbindung mit eingeschränkten Daten verwenden</string>
   <string name="use_ytm_login_only_for_browse">Benutze YouTube Music Login nur zum Browsen</string>
-  <string name="info_use_ytm_login_only_for_browse">Zu verwenden, wenn Lieder nicht abgespielt werden, während man eingeloggt ist</string>
+  <string name="info_use_ytm_login_only_for_browse">Zu verwenden, wenn Musik nicht abgespielt wird, während man eingeloggt ist</string>
   <string name="disliked_this_song">Diese Aktion kann nicht mit den mit \"Mag ich nicht\" markierten Titeln durchgeführt werden</string>
   <string name="removed_from_disliked">Von \"Gefällt mir nicht\" entfernt</string>
   <string name="disliked_this_collection">Diese Aktion kann nicht ausgeführt werden, wenn alle Lieder nicht gefällt werden</string>
@@ -1640,4 +1640,18 @@
   <string name="unlink">Verknüpfung aufheben</string>
   <string name="toolbar">Symbolleiste</string>
   <string name="customize_toolbar">Symbolleiste anpassen</string>
+  <string name="album_art">Album art</string>
+  <string name="play_pause">Play / Pause</string>
+  <string name="not_playing">Not playing</string>
+  <string name="tap_to_play">Tap to play</string>
+  <string name="like">Like</string>
+  <string name="previous">Zurück</string>
+  <string name="next">Weiter</string>
+  <string name="choose_something_below">Choose something below</string>
+  <string name="widget_playlists">Playlisten</string>
+  <string name="liked_songs">Liked songs</string>
+  <string name="downloaded_songs">Downloaded songs</string>
+  <string name="widget_description">N-Zik Music player</string>
+  <string name="widget_playlists_description">N-Zik Playlists</string>
+  <string name="turntable_widget_description">N-Zik Turntable</string>
 </resources>
