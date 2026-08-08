@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Compact 2x2 Widget - Album art with play button overlay -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/Theme.Widget.NZikWidget">
+    <ImageView
+        android:id="@+id/widget_compact_bg_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/widget_background"
+        android:scaleType="fitXY" />
+    <FrameLayout
+        android:id="@android:id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="12dp">
+
+    <!-- Album Art Container -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/widget_compact_album_art"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/album_art" />
+
+        <!-- Like Button Overlay - Top Right -->
+        <FrameLayout
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp">
+            <ImageView
+                android:id="@+id/widget_compact_like_button_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/widget_like_button_bg"
+                android:scaleType="fitXY" />
+            <ImageButton
+                android:id="@+id/widget_compact_like_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_widget_heart_outline_nav"
+                android:contentDescription="@string/like" />
+        </FrameLayout>
+
+        <!-- Controls Container - Bottom Center -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="8dp">
+            <ImageView
+                android:id="@+id/widget_compact_play_pill_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/widget_play_pill_bg"
+                android:scaleType="fitXY" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="4dp">
+
+            <FrameLayout
+                android:id="@+id/widget_compact_prev_container"
+                android:layout_width="32dp"
+                android:layout_height="32dp">
+                <ImageView
+                    android:id="@+id/widget_compact_prev_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_widget_skip_previous"
+                    android:contentDescription="@string/previous" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/widget_compact_play_container"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp">
+                <ImageView
+                    android:id="@+id/widget_compact_play_pause"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_widget_play"
+                    android:contentDescription="@string/play_pause" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/widget_compact_next_container"
+                android:layout_width="32dp"
+                android:layout_height="32dp">
+                <ImageView
+                    android:id="@+id/widget_compact_next_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_widget_skip_next"
+                    android:contentDescription="@string/next" />
+            </FrameLayout>
+        </LinearLayout>
+        </FrameLayout>
+
+    </FrameLayout>
+
+</FrameLayout>
+</FrameLayout>

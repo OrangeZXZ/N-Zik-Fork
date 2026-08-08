@@ -192,6 +192,7 @@ import app.it.fast4x.rimusic.utils.disablePlayerHorizontalSwipeKey
 import app.it.fast4x.rimusic.utils.effectRotationKey
 import app.it.fast4x.rimusic.utils.fontTypeKey
 import app.it.fast4x.rimusic.utils.forcePlay
+import app.it.fast4x.rimusic.utils.forcePlayFromBeginning
 import app.it.fast4x.rimusic.utils.getEnum
 import app.it.fast4x.rimusic.utils.intent
 import app.it.fast4x.rimusic.utils.invokeOnReady
@@ -1296,12 +1297,33 @@ class MainActivity :
                             try {
                                 navController.navigate(route = "${NavRoutes.artist.name}/$channelId")
                             } catch (e: Exception) {
-                                Timber.tag("MainActivity").e("onCreate intentUriData ${e.stackTraceToString()}")
+                            Timber.tag("MainActivity").e("onCreate intentUriData ${e.stackTraceToString()}")
                             }
                         }
 
                         "search" -> uri.getQueryParameter("q")?.let { query ->
                             navController.navigate(route = "${NavRoutes.searchResults.name}/$query")
+                        }
+
+                        "localPlaylist" -> uri.lastPathSegment?.let { playlistId ->
+                            navController.navigate(route = "${NavRoutes.localPlaylist.name}/$playlistId")
+                        }
+
+                        "playFavorites" -> {
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                val favorites = app.n_zik.android.core.database.Database.songTable.allFavorites().first()
+                                if (favorites.isNotEmpty()) {
+                                    val mediaItems = favorites.map { it.asMediaItem }
+                                    withContext(Dispatchers.Main) {
+                                        val validBinder = snapshotFlow { binder }.filterNotNull().first()
+                                        validBinder.player.forcePlayFromBeginning(mediaItems)
+                                    }
+                                }
+                            }
+                        }
+
+                        "album" -> uri.lastPathSegment?.let { albumId ->
+                            navController.navigate(route = "${NavRoutes.album.name}/$albumId")
                         }
 
                         else -> when {

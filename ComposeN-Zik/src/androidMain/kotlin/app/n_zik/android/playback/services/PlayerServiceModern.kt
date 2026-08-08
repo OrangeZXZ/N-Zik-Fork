@@ -93,7 +93,7 @@ import app.n_zik.android.R
 import app.n_zik.android.playback.services.createDataSourceFactory
 import app.n_zik.android.playback.services.formatCache
 import app.n_zik.android.playback.services.markWebRemixFailed
-import app.n_zik.android.widget.Widget
+
 import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.MoreExecutors
 import it.fast4x.innertube.Innertube
@@ -299,6 +299,7 @@ class PlayerServiceModern : MediaLibraryService(),
     lateinit var imageQualityFormat: ImageQualityFormat
     lateinit var sleepTimer: SleepTimer
     private var timerJob: TimerJob? = null
+    private var widgetProgressJob: Job? = null
     lateinit var nzikRadio: NZikRadio
 
     val currentMediaItem = MutableStateFlow<MediaItem?>(null)
@@ -324,6 +325,7 @@ class PlayerServiceModern : MediaLibraryService(),
     @kotlin.OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     override fun onCreate() {
         super.onCreate()
+        isRunning = true
 
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -567,6 +569,7 @@ class PlayerServiceModern : MediaLibraryService(),
         val filter = IntentFilter().apply {
             addAction(Action.play.value)
             addAction(Action.pause.value)
+            addAction(Action.playPause.value)
             addAction(Action.next.value)
             addAction(Action.previous.value)
             addAction(Action.like.value)
@@ -712,6 +715,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
     @UnstableApi
     override fun onDestroy() {
+        isRunning = false
         runCatching {
             /**
              * Discord presence cleanup
@@ -984,7 +988,12 @@ class PlayerServiceModern : MediaLibraryService(),
      */
     @UnstableApi
     override fun onIsPlayingChanged(isPlaying: Boolean) {
-        if (isPlaying) scheduleCrossfade()
+        if (isPlaying) {
+            scheduleCrossfade()
+            startWidgetUpdates()
+        } else {
+            stopWidgetUpdates()
+        }
         
         val item = player.currentMediaItem
         val title = item?.mediaMetadata?.title ?: "<none>"
@@ -1008,6 +1017,25 @@ class PlayerServiceModern : MediaLibraryService(),
             }
         }
         updateWidgets()
+
+        // Start/stop the per-second widget progress refresh
+        if (isPlaying) {
+            if (widgetProgressJob?.isActive != true) {
+                widgetProgressJob = coroutineScope.launch(Dispatchers.Main) {
+                    while (true) {
+                        delay(1000)
+                        if (player.isPlaying) {
+                            updateWidgets()
+                        } else {
+                            break
+                        }
+                    }
+                }
+            }
+        } else {
+            widgetProgressJob?.cancel()
+            widgetProgressJob = null
+        }
     }
 
     /**
@@ -1815,11 +1843,37 @@ class PlayerServiceModern : MediaLibraryService(),
 
     private fun showSmartMessage( message: String ) = Toaster.i(message)
 
-    @MainThread
+    private var widgetUpdateJob: kotlinx.coroutines.Job? = null
+
+    private fun startWidgetUpdates() {
+        widgetUpdateJob?.cancel()
+        widgetUpdateJob = coroutineScope.launch(Dispatchers.Main) {
+            while (isActive) {
+                if (player.isPlaying) {
+                    updateWidgets()
+                }
+                kotlinx.coroutines.delay(1000)
+            }
+        }
+    }
+
+    private fun stopWidgetUpdates() {
+        widgetUpdateJob?.cancel()
+    }
+
+    @androidx.annotation.MainThread
     fun updateWidgets() {
+        val currentMediaId = binder.player.currentMediaItem?.mediaId
+        if (currentMediaId == null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                app.n_zik.android.widget.NZikWidgetManager.updateIdleWidgets(applicationContext)
+            }
+            return
+        }
+
         val status = Triple(
-            cleanPrefix(binder.player.mediaMetadata.title.toString()),
-            cleanPrefix(binder.player.mediaMetadata.artist.toString()),
+            binder.player.mediaMetadata.title?.toString() ?: "",
+            binder.player.mediaMetadata.artist?.toString() ?: "",
             binder.player.isPlaying
         )
 
@@ -1829,17 +1883,35 @@ class PlayerServiceModern : MediaLibraryService(),
             binder.player::seekToNext
         )
 
+        val playerDuration = binder.player.duration.coerceAtLeast(0)
+        val playerPosition = binder.player.currentPosition.coerceAtLeast(0)
+        val currentBitmap = bitmapProvider.bitmap
+
         CoroutineScope( Dispatchers.IO ).launch {
-            // Save bitmap to file
+            // Save bitmap to file for backward compatibility or other widgets
             val file = File( cacheDir, "widget_thumbnail.png" )
             FileOutputStream(file).use { outStream ->
-                bitmapProvider.bitmap.compress( Bitmap.CompressFormat.PNG, 50, outStream )
+                currentBitmap.compress( Bitmap.CompressFormat.PNG, 50, outStream )
             }
+            
+            // New Widget architecture (NZik)
+            val songId = currentMediaId?.split("/")?.lastOrNull() ?: currentMediaId
+            val currentSong = if (songId != null) Database.songTable.findByIdDirect(songId) else null
+            val isLiked = currentSong?.likedAt != null
 
-            withContext( Dispatchers.Default ) {
-                Widget.Vertical.update( applicationContext, actions, status, file )
-                Widget.Horizontal.update( applicationContext, actions, status, file )
-            }
+            app.n_zik.android.widget.NZikWidgetManager.updateWidgets(
+                context = applicationContext,
+                title = status.first,
+                artist = status.second,
+                artworkBitmap = currentBitmap,
+                isPlaying = status.third,
+                isLiked = isLiked,
+                duration = playerDuration,
+                currentPosition = playerPosition
+            )
+
+            // Remove old widget update calls when deleting old widgets.
+            // (Widget.Horizontal and Widget.Vertical were deleted)
         }
     }
 
@@ -2147,6 +2219,9 @@ class PlayerServiceModern : MediaLibraryService(),
             when (intent.action) {
                 Action.pause.value -> binder.gracefulPause()
                 Action.play.value -> binder.gracefulPlay()
+                Action.playPause.value -> {
+                    if (player.isPlaying) binder.gracefulPause() else binder.gracefulPlay()
+                }
                 Action.next.value -> player.playNext()
                 Action.previous.value -> player.playPrevious()
                 Action.like.value -> {
@@ -2317,8 +2392,9 @@ class PlayerServiceModern : MediaLibraryService(),
             val song = currentSong.value ?: return
 
             Database.asyncTransaction {
-                songTable.rotateLikeState( song.id )
+                songTable.toggleLike( song.id )
                 updateDefaultNotification()
+                updateWidgets()
             }
 
             val newLikeState = song.likedAt == null
@@ -2366,6 +2442,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
             val pause = Action("app.it.fast4x.rimusic.pause")
             val play = Action("app.it.fast4x.rimusic.play")
+            val playPause = Action("app.it.fast4x.rimusic.playPause")
             val next = Action("app.it.fast4x.rimusic.next")
             val previous = Action("app.it.fast4x.rimusic.previous")
             val like = Action("app.it.fast4x.rimusic.like")
@@ -2682,6 +2759,7 @@ class PlayerServiceModern : MediaLibraryService(),
     // --- End Crossfade Logic ---
 
     companion object {
+        var isRunning = false
         const val NotificationId = 1001
         const val NotificationChannelId = "default_channel_id"
 

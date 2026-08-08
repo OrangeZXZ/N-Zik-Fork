@@ -34,3 +34,36 @@ Improved:
 Other:
 - chore(manifest): added `android.permission.BLUETOOTH_CONNECT` for device discovery on Android 12+
 - chore(resources): added `buds.xml` drawable for earbuds device icon
+
+- fix(widget): complete widget theme system rewrite - all 4 widget types now use dynamic colors from album art
+  - `NZikWidgetManager.kt`: palette extracted once from ORIGINAL bitmap (before 300x300 scaling), passed to all widget creation functions
+  - `PlaylistWidgetManager.kt`: now receives palette from NZikWidgetManager instead of extracting its own; added `extractPalette()` for idle state
+  - Light mode: black text + black icons, accent-colored button backgrounds
+  - Dark mode: white text + white icons, accent-colored button backgrounds
+  - Turntable time text: black/white based on `isBitmapLight()`
+  - Compact wide: added `widget_wide_like_button_bg` ImageView behind heart, tinted with accent
+
+- fix(widget): all widget background drawables changed to `#FFFFFF` base
+  - `widget_background.xml`, `widget_like_button_bg.xml`, `widget_turntable_nav_bg.xml`, `widget_turntable_play_bg.xml`, `widget_play_pill_bg.xml` (was purple), `widget_play_button_circular.xml` (was dark)
+  - This ensures `setColorFilter(accentArgb)` produces clean accent colors
+
+- fix(widget): all vector icon drawables - `android:tint="#FFFFFF"` removed
+  - Icons now tinted programmatically via `setColorFilter(iconTintArgb)` (black in light, white in dark)
+
+- fix(widget): all widgets load idle state immediately on placement
+  - `MusicWidgetReceiver.kt`: `onUpdate` + `onAppWidgetOptionsChanged` now call `updateIdleWidgets` first, then notify service if running
+  - `TurntableWidgetReceiver.kt`: same pattern added, including `onAppWidgetOptionsChanged` (was missing entirely)
+  - Previously only `PlaylistWidgetReceiver` loaded idle; music/turntable were empty until service responded
+
+- fix(widget): playlist idle state text
+  - `NZikWidgetManager.updateWidgets` passes `R.string.choose_something_below` to `PlaylistWidgetManager.updateWidgets` when `artworkBitmap == null`
+  - Music/compact idle uses `R.string.tap_to_play`
+  - `PlaylistWidgetManager.lastWidgetState` changed from hardcoded defaults to nullable; `updateIdleWidget` falls back to `updateIdleWidgets` when null
+
+- feat(widget): preview images for widget picker
+  - Added dark/light preview webp images for all 3 widget types (compact, turntable, playlist)
+  - Light in `drawable/`, dark in `drawable-night/` (auto-selected by system)
+  - `previewLayout` removed from all widget info XMLs (was overriding `previewImage`)
+
+- fix(widget): `goAsync()` added to `MusicWidgetReceiver` and `TurntableWidgetReceiver`
+  - Matches `PlaylistWidgetReceiver` pattern so widgets load properly on placement
