@@ -122,8 +122,13 @@ private val WEB_CLIENTS = setOf("WEB", "WEB_REMIX", "WEB_CREATOR", "TVHTML5", "T
 private val AGE_RESTRICTED_STATUSES = setOf("AGE_CHECK_REQUIRED", "AGE_VERIFICATION_REQUIRED", "LOGIN_REQUIRED", "CONTENT_CHECK_REQUIRED")
 
 // Track videoIds already fetched by fetchFormatIfMissing (avoid redundant API calls)
-private val fetchedFormatIds = Collections.synchronizedSet(mutableSetOf<String>())
-private val webRemixFailedIds = Collections.synchronizedSet(mutableSetOf<String>())
+private val fetchedFormatIds = java.util.Collections.synchronizedSet(mutableSetOf<String>())
+private val webRemixFailedIds = java.util.Collections.synchronizedSet(mutableSetOf<String>())
+
+// Track ongoing background fetches to prevent concurrent duplicate API calls
+private val fetchingSongInfos = java.util.Collections.synchronizedSet(mutableSetOf<String>())
+private val fetchingArtists = java.util.Collections.synchronizedSet(mutableSetOf<String>())
+private val fetchingAlbums = java.util.Collections.synchronizedSet(mutableSetOf<String>())
 
 // Warmup video ID for PoToken pre-generation (first YouTube video)
 private const val POTOKEN_WARMUP_VIDEO_ID = "jNQXAC9IVRw"
@@ -172,8 +177,14 @@ private val jsonParser = Json {
 
 suspend fun upsertSongInfo(videoId: String) {
     if (videoId == justInserted) return
-    Innertube.nextPage(NextBody(videoId = videoId))?.fold(
-        onSuccess = { nextPage ->
+    if (!fetchingSongInfos.add(videoId)) {
+        timber.log.Timber.tag(TAG).d("upsertSongInfo already in progress for $videoId, skipping duplicate.")
+        return
+    }
+
+    try {
+        Innertube.nextPage(NextBody(videoId = videoId))?.fold(
+            onSuccess = { nextPage ->
             val songItem = nextPage.itemsPage?.items?.firstOrNull() ?: return@fold
             Database.upsert(songItem)
             timber.log.Timber.tag(TAG).d("Upserted song info for $videoId")
@@ -191,7 +202,7 @@ suspend fun upsertSongInfo(videoId: String) {
                         val msAgo = currentTime - (lastFetchTime ?: currentTime)
                         val daysAgo = msAgo / 86400000L
                         timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId was fetched $daysAgo days ago ($msAgo ms), skipping network fetch.")
-                    } else {
+                    } else if (fetchingArtists.add(artistId)) {
                         timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId is incomplete or outdated (lastFetch=$lastFetchTime), fetching artist page in parallel.")
                         CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
                             try {
@@ -210,8 +221,12 @@ suspend fun upsertSongInfo(videoId: String) {
                                 }
                             } catch (e: Exception) {
                                 timber.log.Timber.tag(TAG).w(e, "Failed to fetch artist page for $artistId in background")
+                            } finally {
+                                fetchingArtists.remove(artistId)
                             }
                         }
+                    } else {
+                        timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId fetch already in progress, skipping duplicate.")
                     }
                 }
             }
@@ -228,11 +243,17 @@ suspend fun upsertSongInfo(videoId: String) {
                     val msAgo = currentTime - (lastFetchTime ?: currentTime)
                     val daysAgo = msAgo / 86400000L
                     timber.log.Timber.tag(TAG).d("[Album Cache] $albumId was fetched $daysAgo days ago ($msAgo ms), skipping network fetch.")
-                } else {
+                } else if (fetchingAlbums.add(albumId)) {
                     timber.log.Timber.tag(TAG).d("[Album Cache] $albumId is incomplete or outdated (lastFetch=$lastFetchTime), fetching album songs in parallel.")
                     CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
-                        fetchAndSaveAlbumSongs(albumId)
+                        try {
+                            fetchAndSaveAlbumSongs(albumId)
+                        } finally {
+                            fetchingAlbums.remove(albumId)
+                        }
                     }
+                } else {
+                    timber.log.Timber.tag(TAG).d("[Album Cache] $albumId fetch already in progress, skipping duplicate.")
                 }
             } else {
                 timber.log.Timber.tag(TAG).d("[Album Cache] No album found for $videoId, skipping album fetch")
@@ -240,11 +261,14 @@ suspend fun upsertSongInfo(videoId: String) {
         },
         onFailure = {
             when (it) {
-                is UnknownHostException -> justInserted = videoId
+                is java.net.UnknownHostException -> justInserted = videoId
                 else -> timber.log.Timber.tag(TAG).w(it, "Failed to upsert song info for $videoId")
             }
         }
     )
+    } finally {
+        fetchingSongInfos.remove(videoId)
+    }
 }
 
 /**
