@@ -209,14 +209,16 @@ suspend fun upsertSongInfo(videoId: String) {
                                 val artistPage = Innertube.artistPage(BrowseBody(browseId = artistId))?.getOrNull()
                                 
                                 if (artistPage != null) {
-                                    val existingArtist = Database.artistTable.findByIdDirect(artistId)
-                                    if (existingArtist != null) {
-                                        Database.artistTable.upsert(existingArtist.copy(
-                                            name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.name, artistPage.name) ?: artistPage.name,
-                                            thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.thumbnailUrl, artistPage.thumbnail?.url),
-                                            lastFetch = System.currentTimeMillis()
-                                        ))
-                                        timber.log.Timber.tag(TAG).d("[Artist Cache] Updated artist $artistId metadata in background")
+                                    Database.asyncTransaction {
+                                        val existingArtist = Database.artistTable.findByIdDirect(artistId)
+                                        if (existingArtist != null) {
+                                            Database.artistTable.upsert(existingArtist.copy(
+                                                name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.name, artistPage.name) ?: artistPage.name,
+                                                thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.thumbnailUrl, artistPage.thumbnail?.url),
+                                                lastFetch = System.currentTimeMillis()
+                                            ))
+                                            timber.log.Timber.tag(TAG).d("[Artist Cache] Updated artist $artistId metadata in background")
+                                        }
                                     }
                                 }
                             } catch (e: Exception) {
@@ -303,18 +305,20 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
         
         // Mark album as completely fetched so we don't spam the API for 30 days
         // Also update its metadata while protecting manual modifications
-        Database.albumTable.findByIdDirect(albumId)?.let { existingAlbum ->
-            Database.albumTable.upsert(existingAlbum.copy(
-                title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.title, albumPage.title),
-                thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.thumbnailUrl, albumPage.thumbnail?.url),
-                authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
-                year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
-                shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
-                lastFetch = System.currentTimeMillis()
-            ))
+        Database.asyncTransaction {
+            Database.albumTable.findByIdDirect(albumId)?.let { existingAlbum ->
+                Database.albumTable.upsert(existingAlbum.copy(
+                    title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.title, albumPage.title),
+                    thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.thumbnailUrl, albumPage.thumbnail?.url),
+                    authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
+                    year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
+                    shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
+                    lastFetch = System.currentTimeMillis()
+                ))
+            }
+            Database.songAlbumMapTable.clear(albumId)
+            Database.songAlbumMapTable.upsert(songAlbumMaps)
         }
-        Database.songAlbumMapTable.clear(albumId)
-        Database.songAlbumMapTable.upsert(songAlbumMaps)
         timber.log.Timber.tag(TAG).d("[Album Cache] Finished saving ${songs.size} songs from album $albumId with correct ordering")
     } catch (e: Exception) {
         timber.log.Timber.tag(TAG).w(e, "[Album Cache] Failed to fetch and save album songs for $albumId")
