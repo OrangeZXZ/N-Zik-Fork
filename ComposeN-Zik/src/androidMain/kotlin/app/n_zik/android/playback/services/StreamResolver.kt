@@ -306,18 +306,43 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
         // Mark album as completely fetched so we don't spam the API for 30 days
         // Also update its metadata while protecting manual modifications
         Database.asyncTransaction {
-            Database.albumTable.findByIdDirect(albumId)?.let { existingAlbum ->
-                Database.albumTable.upsert(existingAlbum.copy(
-                    title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.title, albumPage.title),
-                    thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.thumbnailUrl, albumPage.thumbnail?.url),
-                    authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
-                    year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
-                    shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
-                    lastFetch = System.currentTimeMillis()
-                ))
+            try {
+                Database.albumTable.findByIdDirect(albumId)?.let { existingAlbum ->
+                    Database.albumTable.upsert(existingAlbum.copy(
+                        title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.title, albumPage.title),
+                        thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.thumbnailUrl, albumPage.thumbnail?.url),
+                        authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
+                        year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
+                        shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
+                        lastFetch = System.currentTimeMillis()
+                    ))
+                }
+                Database.songAlbumMapTable.clear(albumId)
+                Database.songAlbumMapTable.upsert(songAlbumMaps)
+            } catch (e: android.database.sqlite.SQLiteConstraintException) {
+                timber.log.Timber.tag(TAG).w("Foreign key constraint failed for album $albumId. Retrying in 5s...")
+                CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                    kotlinx.coroutines.delay(5000)
+                    try {
+                        Database.asyncTransaction {
+                            Database.albumTable.findByIdDirect(albumId)?.let { existingAlbum ->
+                                Database.albumTable.upsert(existingAlbum.copy(
+                                    title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.title, albumPage.title),
+                                    thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.thumbnailUrl, albumPage.thumbnail?.url),
+                                    authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
+                                    year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
+                                    shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
+                                    lastFetch = System.currentTimeMillis()
+                                ))
+                            }
+                            Database.songAlbumMapTable.clear(albumId)
+                            Database.songAlbumMapTable.upsert(songAlbumMaps)
+                        }
+                    } catch (e2: Exception) {
+                        timber.log.Timber.tag(TAG).e("Failed to save album cache even after delay: ${e2.message}")
+                    }
+                }
             }
-            Database.songAlbumMapTable.clear(albumId)
-            Database.songAlbumMapTable.upsert(songAlbumMaps)
         }
         timber.log.Timber.tag(TAG).d("[Album Cache] Finished saving ${songs.size} songs from album $albumId with correct ordering")
     } catch (e: Exception) {
