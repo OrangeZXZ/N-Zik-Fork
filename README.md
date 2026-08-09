@@ -134,6 +134,19 @@ Join the N-Zik Discord:
 - 🎚️ **Advanced Audio Controls** – Adjust volume, playback speed, pitch, normalization, silence skipping, crossfade, volume boost and silence skipping.
 - 📺 **Wide Platform Support** – Compatible with Android Auto, Android Automotive, Android TV, and YouTube video playback.
 - 🪟 **Widgets** – New widgets for your home screen.
+
+<p align="left">
+  <!-- Compact Widgets -->
+  <img width="220" src="https://github.com/user-attachments/assets/d1ebf277-433d-4ed4-b3c7-4cff067c5cb9" alt="Compact Widget Preview 1"/> 
+  <img width="220" src="https://github.com/user-attachments/assets/60f49cd0-5e8e-47c2-b66e-aa05ba389d35" alt="Compact Widget Preview 2"/> <br>
+  <!-- Turntable Widgets -->
+  <img width="180" src="https://github.com/user-attachments/assets/cdeec72a-7263-4f2a-acf2-b009727af56e" alt="Turntable Widget Preview 1"/> 
+  <img width="180" src="https://github.com/user-attachments/assets/6bc819fa-dd9e-43cb-b527-5e1f86b4d004" alt="Turntable Widget Preview 2"/> <br>
+  <!-- Playlist Widgets -->
+  <img width="180" src="https://github.com/user-attachments/assets/d68d397d-18c8-4137-abfa-8116a9aa97e9" alt="Playlist Widget Preview 1"/> 
+  <img width="180" src="https://github.com/user-attachments/assets/d24f97d0-5e9c-45a7-9f44-1ee5be61e22a" alt="Playlist Widget Preview 2"/>
+</p>
+
 - 📤 **Media Export** – Export cached or downloaded music to external storage with full metadata (title, artist, album, cover art, copyright, etc.) powered by FFmpeg. _(Note: Not available on 32-bit builds as they drop FFmpeg)_
 - ✏️ **Metadata Editor** – Edit song metadata (title, artist, album, genre, year, cover art, and more) directly in-app. Supports both AAC and Opus codecs with automatic cover art embedding.
 - ⚙️ **Settings & Database Auto-Backup** – Save, restore, and automatically back up your complete app configuration and database with customizable intervals, retention limits, and optional YouTube/Discord credential inclusion.
