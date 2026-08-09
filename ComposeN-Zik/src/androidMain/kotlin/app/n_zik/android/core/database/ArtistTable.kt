@@ -40,7 +40,7 @@ interface ArtistTable {
         FROM Artist A
         JOIN SongArtistMap sam ON sam.artistId = A.id
         JOIN Song S ON S.id = sam.songId
-        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL
+        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL OR S.id LIKE 'local:%'
         ORDER BY A.ROWID
         LIMIT :limit
     """)
@@ -59,6 +59,26 @@ interface ArtistTable {
         LIMIT :limit
     """)
     fun allSongsInFollowing( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
+
+    /**
+     * @return all songs of artists in library (not just followed)
+     */
+    @Query("""
+        SELECT DISTINCT S.*
+        FROM SongArtistMap sam
+        JOIN Artist A ON A.id = sam.artistId
+        JOIN Song S ON S.id = sam.songId
+        WHERE A.id IN (
+            SELECT DISTINCT A2.id
+            FROM Artist A2
+            JOIN SongArtistMap sam2 ON sam2.artistId = A2.id
+            JOIN Song S2 ON S2.id = sam2.songId
+            WHERE S2.totalPlayTimeMs >= 1 OR S2.likedAt IS NOT NULL OR S2.id LIKE 'local:%'
+        )
+        ORDER BY S.ROWID
+        LIMIT :limit
+    """)
+    fun allSongsInLibrary( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * @param artistId of artist to look for

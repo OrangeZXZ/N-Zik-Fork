@@ -46,7 +46,7 @@ interface AlbumTable {
         FROM Album A
         JOIN SongAlbumMap sam ON sam.albumId = A.id
         JOIN Song S ON S.id = sam.songId
-        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL
+        WHERE S.totalPlayTimeMs >= 1 OR S.likedAt IS NOT NULL OR S.id LIKE 'local:%'
         ORDER BY A.ROWID
         LIMIT :limit
     """)
@@ -65,6 +65,26 @@ interface AlbumTable {
         LIMIT :limit
     """)
     fun allSongsInBookmarked( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
+
+    /**
+     * @return all songs of albums in library (not just bookmarked)
+     */
+    @Query("""
+        SELECT DISTINCT S.*
+        FROM SongAlbumMap sam
+        JOIN Album A ON A.id = sam.albumId
+        JOIN Song S ON S.id = sam.songId
+        WHERE A.id IN (
+            SELECT DISTINCT A2.id
+            FROM Album A2
+            JOIN SongAlbumMap sam2 ON sam2.albumId = A2.id
+            JOIN Song S2 ON S2.id = sam2.songId
+            WHERE S2.totalPlayTimeMs >= 1 OR S2.likedAt IS NOT NULL OR S2.id LIKE 'local:%'
+        )
+        ORDER BY S.ROWID
+        LIMIT :limit
+    """)
+    fun allSongsInLibrary( limit: Int = Int.MAX_VALUE ): Flow<List<Song>>
 
     /**
      * @param albumId of album to look for

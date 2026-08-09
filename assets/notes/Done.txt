@@ -108,3 +108,7 @@ Changed:
   - `AutoBackupSettingsBlock.kt`: all auto-backup settings (URI, target, credentials, max backups, interval, schedule, pre-install toggle, on DB change) grouped in one card
   - Pre-install backup toggle independent of auto-backup interval
   - URI, target, max backups shared between pre-install and scheduled backups
+- fix(database): improved shuffle logic and song counting for albums and artists
+  - AlbumTable.kt: updated llSongsInLibrary and llSongsInBookmarked to return all tracks of the album (instead of just played tracks).
+  - ArtistTable.kt: updated llInLibrary and llSongsInLibrary to include all songs from artists (including local unplayed songs and cached songs). Removed unplayed restrictions from llSongsInFollowing as well.
+  - SongTable.kt: removed 	otalPlayTimeMs > 0 filter from rtistSongs so that local artists and cached songs correctly contribute to the song count and "Play All" menu action.

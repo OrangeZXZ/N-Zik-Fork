@@ -29,7 +29,9 @@ import it.fast4x.innertube.clients.YouTubeClient
 import it.fast4x.innertube.clients.YouTubeLocale
 import it.fast4x.innertube.models.Context
 import it.fast4x.innertube.models.PlayerResponse
+import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.NextBody
+import it.fast4x.innertube.requests.albumPage
 import it.fast4x.innertube.requests.nextPage
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.appContext
@@ -172,6 +174,18 @@ suspend fun upsertSongInfo(videoId: String) {
         onSuccess = { nextPage ->
             val songItem = nextPage.itemsPage?.items?.firstOrNull() ?: return@fold
             Database.upsert(songItem)
+            timber.log.Timber.tag(TAG).d("Upserted song info for $videoId")
+
+            // Fetch complete album in parallel to fill all songs
+            val albumId = songItem.album?.endpoint?.browseId
+            if (!albumId.isNullOrBlank()) {
+                timber.log.Timber.tag(TAG).d("Album found for $videoId: $albumId, fetching album songs in parallel")
+                CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
+                    fetchAndSaveAlbumSongs(albumId)
+                }
+            } else {
+                timber.log.Timber.tag(TAG).d("No album found for $videoId, skipping album fetch")
+            }
         },
         onFailure = {
             when (it) {
@@ -180,6 +194,35 @@ suspend fun upsertSongInfo(videoId: String) {
             }
         }
     )
+}
+
+/**
+ * Fetches all songs from an album and saves them to the database.
+ * Called in parallel when streaming a song to fill the album for shuffle.
+ */
+private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
+    try {
+        timber.log.Timber.tag(TAG).d("Fetching album page for $albumId")
+        val albumPage = Innertube.albumPage(BrowseBody(browseId = albumId))?.getOrNull()
+        if (albumPage == null) {
+            timber.log.Timber.tag(TAG).w("Album page is null for $albumId")
+            return
+        }
+        val songs = albumPage.songsPage?.items
+        if (songs.isNullOrEmpty()) {
+            timber.log.Timber.tag(TAG).d("No songs found in album $albumId")
+            return
+        }
+
+        timber.log.Timber.tag(TAG).d("Saving ${songs.size} songs from album $albumId to database")
+        songs.forEach { song ->
+            Database.upsert(song)
+            timber.log.Timber.tag(TAG).d("Saved song: ${song.info?.name} (${song.info?.endpoint?.videoId}) to album $albumId")
+        }
+        timber.log.Timber.tag(TAG).d("Finished saving ${songs.size} songs from album $albumId")
+    } catch (e: Exception) {
+        timber.log.Timber.tag(TAG).w(e, "Failed to fetch album songs for $albumId")
+    }
 }
 
 /**

@@ -179,7 +179,10 @@ fun HomeArtists(
 
     }
     val shuffle = SongShuffler(
-        databaseCall = Database.artistTable::allSongsInFollowing,
+        databaseCall = when( artistType ) {
+            ArtistsType.Favorites -> Database.artistTable::allSongsInFollowing
+            ArtistsType.Library -> Database.artistTable::allSongsInLibrary
+        },
         key = arrayOf( artistType )
     )
 

@@ -187,7 +187,10 @@ fun HomeAlbums(
         override fun onClick(index: Int) = onAlbumClick( itemsOnDisplay[index] )
     }
     val shuffle = SongShuffler(
-        databaseCall = Database.albumTable::allSongsInBookmarked,
+        databaseCall = when( albumType ) {
+            AlbumsType.Favorites -> Database.albumTable::allSongsInBookmarked
+            AlbumsType.Library -> Database.albumTable::allSongsInLibrary
+        },
         key = arrayOf( albumType )
     )
 

@@ -630,7 +630,6 @@ interface SongTable {
         FROM Song S
         JOIN SongArtistMap ON S.id = SongArtistMap.songId
         WHERE SongArtistMap.artistId = :artistId
-        AND totalPlayTimeMs > 0
         ORDER BY S.ROWID DESC
     """)
     fun artistSongs(artistId: String): Flow<List<Song>>
