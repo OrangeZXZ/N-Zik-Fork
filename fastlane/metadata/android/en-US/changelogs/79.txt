@@ -1,0 +1,12 @@
+Added:
+- New custom audio device menu (switch devices, control volume/quality)
+- Intelligent background sync for artist profiles
+- Preview images for widget picker
+
+Changed:
+- Complete widget theme system rewrite with dynamic colors based on album art
+
+Fixed:
+- Eliminated redundant database writes to improve performance
+- Fixed AMOLED top bar flashing on app launch
+- Fixed widget sizing and scaling on all launchers

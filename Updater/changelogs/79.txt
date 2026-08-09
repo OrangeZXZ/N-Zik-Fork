@@ -1,0 +1,23 @@
+Added:
+- Custom audio device menu (switch devices, control volume, and select audio quality) directly from the player.
+- Intelligent background synchronization for artist profiles to keep pictures up-to-date.
+- Preview images for the widget picker to easily choose your favorite style.
+
+Changed:
+- The mini player audio output button now uses the native Android menu system.
+- The player is minimized by default on app launch.
+
+Improved:
+- The audio device menu adapts beautifully to both List and Grid styles.
+
+Fixed:
+- Eliminated redundant database writes, significantly improving performance and reducing battery usage.
+- Fixed the top bar flashing in the wrong color when launching the app in AMOLED dark mode.
+- Widgets now automatically extract and use dynamic colors based on the current album art.
+- Widget backgrounds and icons now tint correctly without visual glitches.
+- Fixed widget sizing, scaling, and cropping issues across all major launchers (MIUI, Realme, stock Android).
+- Prevented an audio volume burst when switching between devices like headphones and speakers.
+- Background album syncing no longer loops redundantly when playing a song.
+
+Other:
+- Updated backup settings to be split logically into standard and auto-backup categories.
