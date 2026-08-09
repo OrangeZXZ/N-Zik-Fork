@@ -31,6 +31,9 @@ Changed:
   - Available on Android 13+ (Tiramisu); Android 10-12 falls back to system `MEDIA_OUTPUT` panel
 
 Fixed:
+- fix(ui): top bar flashes dark theme before AMOLED at cold start
+  - `AppHeader.kt`: removed `animateColorAsState` on the background color to prevent Compose from interpolating the initial dark theme into AMOLED over 200ms at startup.
+  - Replaced with an `animateFloatAsState` alpha overlay exclusively for the Voice Search state, guaranteeing the Top Bar snaps to the AMOLED theme instantly.
 - fix(database): optimize redundant upserts when playing songs
   - Avoided rewriting `Song`, `Artist`, and `Album` entities to the database continuously if their final state matches the existing database record.
   - This prevents the "24/7 overwrite" behavior when landing on tracks, drastically reducing unnecessary database I/O overhead.

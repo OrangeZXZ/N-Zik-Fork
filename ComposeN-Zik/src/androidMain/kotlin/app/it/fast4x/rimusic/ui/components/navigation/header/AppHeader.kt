@@ -66,11 +66,15 @@ class AppHeader(
         val currentEntry by navController.currentBackStackEntryAsState()
         val isHome = currentEntry?.destination?.route?.startsWith(NavRoutes.home.name) ?: true
         val isVoiceSearchActive = VoiceSearchState.isActive
+        val themeBackground = colorPalette().background0
 
-        val backgroundColor by animateColorAsState(
-            targetValue = if (isVoiceSearchActive) Color.Black.copy(alpha = 0.85f) else colorPalette().background0,
+        // We animate only the alpha for the voice search overlay.
+        // This prevents `animateColorAsState` from incorrectly animating 
+        // the application's theme colors (e.g. Dark to AMOLED) at cold start.
+        val voiceSearchAlpha by androidx.compose.animation.core.animateFloatAsState(
+            targetValue = if (isVoiceSearchActive) 0.85f else 0f,
             animationSpec = tween(200),
-            label = "headerBg"
+            label = "voiceSearchAlpha"
         )
         
         // Animate the start padding smoothly so the logo has nice spacing when home, 
@@ -84,7 +88,8 @@ class AppHeader(
         // so the logo+title smoothly shifts as the back button slides in/out.
         Row(
             modifier = Modifier
-                .background(backgroundColor)
+                .background(themeBackground)
+                .background(Color.Black.copy(alpha = voiceSearchAlpha))
                 .windowInsetsPadding(WindowInsets.statusBars)
                 .fillMaxWidth()
                 .height(64.dp)
