@@ -252,21 +252,27 @@ suspend fun upsertSongInfo(videoId: String) {
 private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
     try {
         timber.log.Timber.tag(TAG).d("[Album Cache] Fetching album page from network for $albumId")
-        val albumPage = Innertube.albumPage(BrowseBody(browseId = albumId))?.getOrNull()
-        if (albumPage == null) {
+        val onlineAlbum = it.fast4x.innertube.YtMusic.getAlbum(albumId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX), true).getOrNull()
+        if (onlineAlbum == null) {
             timber.log.Timber.tag(TAG).w("Album page is null for $albumId")
             return
         }
-        val songs = albumPage.songsPage?.items
-        if (songs.isNullOrEmpty()) {
+        val albumPage = onlineAlbum.album
+        val songs = onlineAlbum.songs
+        if (songs.isEmpty()) {
             timber.log.Timber.tag(TAG).d("No songs found in album $albumId")
             return
         }
 
         timber.log.Timber.tag(TAG).d("[Album Cache] Saving ${songs.size} songs from album $albumId to database")
-        songs.forEach { song ->
+        val songAlbumMaps = mutableListOf<app.it.fast4x.rimusic.models.SongAlbumMap>()
+        songs.forEachIndexed { index, song ->
             Database.upsert(song)
-            timber.log.Timber.tag(TAG).d("Saved song: ${song.info?.name} (${song.info?.endpoint?.videoId}) to album $albumId")
+            val videoId = song.info?.endpoint?.videoId?.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)
+            if (videoId != null) {
+                songAlbumMaps.add(app.it.fast4x.rimusic.models.SongAlbumMap(songId = videoId, albumId = albumId, position = index))
+            }
+            timber.log.Timber.tag(TAG).d("Saved song: ${song.info?.name} ($videoId) to album $albumId at pos $index")
         }
         
         // Mark album as completely fetched so we don't spam the API for 30 days
@@ -277,11 +283,13 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
                 thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.thumbnailUrl, albumPage.thumbnail?.url),
                 authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
                 year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
-                shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, albumPage.url),
+                shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
                 lastFetch = System.currentTimeMillis()
             ))
         }
-        timber.log.Timber.tag(TAG).d("[Album Cache] Finished saving ${songs.size} songs from album $albumId")
+        Database.songAlbumMapTable.clear(albumId)
+        Database.songAlbumMapTable.upsert(songAlbumMaps)
+        timber.log.Timber.tag(TAG).d("[Album Cache] Finished saving ${songs.size} songs from album $albumId with correct ordering")
     } catch (e: Exception) {
         timber.log.Timber.tag(TAG).w(e, "[Album Cache] Failed to fetch and save album songs for $albumId")
     }
