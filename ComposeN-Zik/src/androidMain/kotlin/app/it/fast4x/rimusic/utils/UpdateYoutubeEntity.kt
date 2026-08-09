@@ -54,7 +54,8 @@ fun UpdateYoutubeArtist(browseId: String) {
                                             name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(currentArtist?.name, currentArtistPage.name) ?: currentArtistPage.name,
                                             thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(currentArtist?.thumbnailUrl, currentArtistPage.thumbnail?.url),
                                             timestamp = System.currentTimeMillis(),
-                                            bookmarkedAt = currentArtist?.bookmarkedAt
+                                            bookmarkedAt = currentArtist?.bookmarkedAt,
+                                            lastFetch = System.currentTimeMillis()
                                         )
                                     )
                                 }

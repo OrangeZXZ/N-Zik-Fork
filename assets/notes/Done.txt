@@ -37,6 +37,9 @@ Fixed:
 - fix(player): skip redundant parallel album fetches on playback
   - Added a `lastFetch` column to the `Album` database table via a Migration (v32 to v33).
   - `StreamResolver` now permanently skips fetching an album if it was already fetched within the last 30 jours, drastically reducing API spam across app restarts.
+- feat(player): intelligent background catch-up for artists
+  - Added a `lastFetch` column to the `Artist` database table via a Migration (v33 to v34).
+  - `StreamResolver` will now intelligently fetch a missing or outdated (older than 30 jours) artist profile in the background during playback, ensuring profile pictures are always complete and up-to-date.
 - fix(player): volume slider not updating on manual hardware device switch
   - Added `isUserDragging` guard to prevent `VOLUME_CHANGED_ACTION` from fighting with user slider input
   - 3-second polling loop after device switch catches delayed OS volume adjustments

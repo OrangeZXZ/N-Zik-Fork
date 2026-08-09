@@ -176,6 +176,40 @@ suspend fun upsertSongInfo(videoId: String) {
             Database.upsert(songItem)
             timber.log.Timber.tag(TAG).d("Upserted song info for $videoId")
 
+            // Intelligent background catch-up for artists
+            songItem.authors?.forEach { author ->
+                val artistId = author.endpoint?.browseId
+                if (!artistId.isNullOrBlank()) {
+                    val dbArtist = Database.artistTable.findByIdDirect(artistId)
+                    val isArtistRecentlyFetched = dbArtist?.lastFetch?.let { System.currentTimeMillis() - it < 2592000000L } == true
+
+                    if (!isArtistRecentlyFetched) {
+                        timber.log.Timber.tag(TAG).d("Artist $artistId is incomplete or outdated, fetching artist page in parallel")
+                        CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
+                            try {
+                                val artistPage = it.fast4x.innertube.requests.artistPage(
+                                    it.fast4x.innertube.models.bodies.BrowseBody(browseId = artistId)
+                                )?.getOrNull()
+                                
+                                if (artistPage != null) {
+                                    val existingArtist = Database.artistTable.findByIdDirect(artistId)
+                                    if (existingArtist != null) {
+                                        Database.artistTable.upsert(existingArtist.copy(
+                                            name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.name, artistPage.name) ?: artistPage.name,
+                                            thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.thumbnailUrl, artistPage.thumbnail?.url),
+                                            lastFetch = System.currentTimeMillis()
+                                        ))
+                                        timber.log.Timber.tag(TAG).d("Updated artist $artistId profile picture in background")
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                timber.log.Timber.tag(TAG).w(e, "Failed to fetch artist page for $artistId in background")
+                            }
+                        }
+                    }
+                }
+            }
+
             // Fetch complete album in parallel to fill all songs
             val albumId = songItem.album?.endpoint?.browseId
             if (!albumId.isNullOrBlank()) {
@@ -228,8 +262,16 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
         }
         
         // Mark album as completely fetched so we don't spam the API for 30 days
+        // Also update its metadata while protecting manual modifications
         Database.albumTable.findByIdDirect(albumId)?.let { existingAlbum ->
-            Database.albumTable.upsert(existingAlbum.copy(lastFetch = System.currentTimeMillis()))
+            Database.albumTable.upsert(existingAlbum.copy(
+                title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.title, albumPage.title),
+                thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.thumbnailUrl, albumPage.thumbnail?.url),
+                authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.joinToString(", ") { it.name }),
+                year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
+                shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, albumPage.url),
+                lastFetch = System.currentTimeMillis()
+            ))
         }
         
         timber.log.Timber.tag(TAG).d("Finished saving ${songs.size} songs from album $albumId")

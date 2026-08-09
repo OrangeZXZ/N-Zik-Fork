@@ -14,7 +14,8 @@ data class Artist(
     val timestamp: Long? = null,
     val bookmarkedAt: Long? = null,
     val isYoutubeArtist: Boolean = false,
-    val position: Int = -1
+    val position: Int = -1,
+    val lastFetch: Long? = null
 ) {
     fun cleanName() = cleanPrefix( this.name ?: "" )
 }
