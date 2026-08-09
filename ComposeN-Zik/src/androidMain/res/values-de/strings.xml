@@ -1637,6 +1637,16 @@
   <string name="auto_backup_on_change_description">Ein Backup auslösen, wenn Lieder hinzugefügt oder entfernt werden</string>
   <string name="auto_backup_max_backups">Maximale Backups zum Behalten</string>
   <string name="auto_backup_target">Backup-Ziel</string>
+  <string name="pre_install_backup">Backup before install</string>
+  <string name="pre_install_backup_description">Automatically backup data before installing an update</string>
+  <string name="pre_install_backup_running">Backup in progress</string>
+  <string name="pre_install_backup_running_description">Backing up data before installation…</string>
+  <string name="pre_install_backup_failed">Pre-install backup failed</string>
+  <string name="pre_install_backup_no_uri">Please configure a backup location first</string>
+  <string name="pre_install_ask_backup">Would you like to backup your data before installing?</string>
+  <string name="pre_install_yes_backup">Yes, backup</string>
+  <string name="pre_install_no_backup">No thanks</string>
+  <string name="pre_install_auto_backup_text">A backup will be performed automatically before installation. Proceed?</string>
   <string name="unlink">Verknüpfung aufheben</string>
   <string name="toolbar">Symbolleiste</string>
   <string name="customize_toolbar">Symbolleiste anpassen</string>
