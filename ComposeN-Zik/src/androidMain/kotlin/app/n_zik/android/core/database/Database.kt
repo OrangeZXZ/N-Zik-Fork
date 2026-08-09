@@ -67,6 +67,7 @@ import app.n_zik.android.core.database.migration.From3To4Migration
 import app.n_zik.android.core.database.migration.From7To8Migration
 import app.n_zik.android.core.database.migration.From8To9Migration
 import app.n_zik.android.core.database.migration.From27To28Migration
+import app.n_zik.android.core.database.migration.From29To30Migration
 import app.n_zik.android.core.database.migration.From30To31Migration
 import app.n_zik.android.core.database.migration.From31To32Migration
 import app.n_zik.android.core.database.migration.From32To33Migration

@@ -33,6 +33,7 @@ import it.fast4x.innertube.models.bodies.BrowseBody
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.albumPage
 import it.fast4x.innertube.requests.nextPage
+import it.fast4x.innertube.requests.artistPage
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.appContext
 import app.it.fast4x.rimusic.enums.AudioQualityFormat
@@ -65,6 +66,7 @@ import app.it.fast4x.rimusic.utils.streamClientWebCreatorEnabledKey
 import app.it.fast4x.rimusic.utils.streamClientMobileEnabledKey
 import app.it.fast4x.rimusic.utils.streamClientAndroidEnabledKey
 import app.it.fast4x.rimusic.utils.preferredStreamClientKey
+import app.it.fast4x.rimusic.utils.parseArtists
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -187,9 +189,7 @@ suspend fun upsertSongInfo(videoId: String) {
                         timber.log.Timber.tag(TAG).d("Artist $artistId is incomplete or outdated, fetching artist page in parallel")
                         CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
                             try {
-                                val artistPage = it.fast4x.innertube.requests.artistPage(
-                                    it.fast4x.innertube.models.bodies.BrowseBody(browseId = artistId)
-                                )?.getOrNull()
+                                val artistPage = Innertube.artistPage(BrowseBody(browseId = artistId))?.getOrNull()
                                 
                                 if (artistPage != null) {
                                     val existingArtist = Database.artistTable.findByIdDirect(artistId)
@@ -267,7 +267,7 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
             Database.albumTable.upsert(existingAlbum.copy(
                 title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.title, albumPage.title),
                 thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.thumbnailUrl, albumPage.thumbnail?.url),
-                authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.joinToString(", ") { it.name }),
+                authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
                 year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
                 shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, albumPage.url),
                 lastFetch = System.currentTimeMillis()

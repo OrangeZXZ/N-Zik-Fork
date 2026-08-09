@@ -40,6 +40,7 @@ Fixed:
 - feat(player): intelligent background catch-up for artists
   - Added a `lastFetch` column to the `Artist` database table via a Migration (v33 to v34).
   - `StreamResolver` will now intelligently fetch a missing or outdated (older than 30 jours) artist profile in the background during playback, ensuring profile pictures are always complete and up-to-date.
+  - Manual user modifications to Artist and Album metadata are strictly protected from being overwritten during background fetches via `PropUtils.retainIfModified`.
 - fix(player): volume slider not updating on manual hardware device switch
   - Added `isUserDragging` guard to prevent `VOLUME_CHANGED_ACTION` from fighting with user slider input
   - 3-second polling loop after device switch catches delayed OS volume adjustments

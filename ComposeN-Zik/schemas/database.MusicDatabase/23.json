@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 23,
-    "identityHash": "dcc6ba38a984b7189384000d35cb7a0a",
+    "identityHash": "cec73466e50b742a73e1a469a94f1291",
     "entities": [
       {
         "tableName": "Album",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT, `thumbnailUrl` TEXT, `year` TEXT, `authorsText` TEXT, `shareUrl` TEXT, `timestamp` INTEGER, `bookmarkedAt` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `title` TEXT, `thumbnailUrl` TEXT, `year` TEXT, `authorsText` TEXT, `shareUrl` TEXT, `timestamp` INTEGER, `bookmarkedAt` INTEGER, `lastFetch` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -48,6 +48,11 @@
             "fieldPath": "bookmarkedAt",
             "columnName": "bookmarkedAt",
             "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "lastFetch",
+            "columnName": "lastFetch",
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -59,7 +64,7 @@
       },
       {
         "tableName": "Artist",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT, `thumbnailUrl` TEXT, `timestamp` INTEGER, `bookmarkedAt` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT, `thumbnailUrl` TEXT, `timestamp` INTEGER, `bookmarkedAt` INTEGER, `lastFetch` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -85,6 +90,11 @@
           {
             "fieldPath": "bookmarkedAt",
             "columnName": "bookmarkedAt",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "lastFetch",
+            "columnName": "lastFetch",
             "affinity": "INTEGER"
           }
         ],
@@ -619,7 +629,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dcc6ba38a984b7189384000d35cb7a0a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cec73466e50b742a73e1a469a94f1291')"
     ]
   }
 }
