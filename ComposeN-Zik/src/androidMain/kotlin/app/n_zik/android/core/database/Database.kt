@@ -130,7 +130,8 @@ object Database {
                     thumbnailUrl = dbArtist?.thumbnailUrl,
                     timestamp = dbArtist?.timestamp,
                     bookmarkedAt = dbArtist?.bookmarkedAt,
-                    isYoutubeArtist = dbArtist?.isYoutubeArtist == true
+                    isYoutubeArtist = dbArtist?.isYoutubeArtist == true,
+                    lastFetch = dbArtist?.lastFetch
                 ))
             } else {
                 val dbArtistByName = artistTable.findByNameDirect(artistName)
@@ -294,7 +295,8 @@ object Database {
                     authorsText = artist.takeIf { !it.isNullOrBlank() } ?: dbAlbum.authorsText,
                     shareUrl = dbAlbum.shareUrl,
                     timestamp = dbAlbum.timestamp,
-                    bookmarkedAt = dbAlbum.bookmarkedAt
+                    bookmarkedAt = dbAlbum.bookmarkedAt,
+                    lastFetch = dbAlbum.lastFetch
                 )
             } else {
                 Album(
