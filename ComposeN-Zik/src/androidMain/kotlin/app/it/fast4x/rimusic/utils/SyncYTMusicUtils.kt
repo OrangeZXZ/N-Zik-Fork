@@ -95,7 +95,7 @@ suspend fun importYTMSubscribedChannels(): Boolean {
                 } else {
                     localArtist.copy(
                         bookmarkedAt = localArtist.bookmarkedAt ?: System.currentTimeMillis(),
-                        thumbnailUrl = remoteArtist.thumbnail?.url,
+                        thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(localArtist.thumbnailUrl, remoteArtist.thumbnail?.url) ?: localArtist.thumbnailUrl,
                         isYoutubeArtist = true
                     ).let( Database.artistTable::update )
                 }
@@ -151,7 +151,7 @@ suspend fun importYTMLikedAlbums(): Boolean {
                     localAlbum.copy(
                         isYoutubeAlbum = true,
                         bookmarkedAt = localAlbum.bookmarkedAt ?: System.currentTimeMillis(),
-                        thumbnailUrl = remoteAlbum.thumbnail?.url)
+                        thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(localAlbum.thumbnailUrl, remoteAlbum.thumbnail?.url) ?: localAlbum.thumbnailUrl)
                         .let( Database.albumTable::updateReplace )
                 }
             }

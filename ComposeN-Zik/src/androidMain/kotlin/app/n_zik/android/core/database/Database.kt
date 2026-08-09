@@ -317,11 +317,11 @@ object Database {
                                 if (!albumPage.year.isNullOrBlank()) {
                                     val updatedAlbum = Album(
                                         id = albumId,
-                                        title = albumPage.title.takeIf { !it.isNullOrBlank() } ?: mergedAlbum.title,
-                                        thumbnailUrl = albumPage.thumbnail?.url.takeIf { !it.isNullOrBlank() } ?: mergedAlbum.thumbnailUrl,
+                                        title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(mergedAlbum.title, albumPage.title.takeIf { !it.isNullOrBlank() }) ?: mergedAlbum.title,
+                                        thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(mergedAlbum.thumbnailUrl, albumPage.thumbnail?.url.takeIf { !it.isNullOrBlank() }) ?: mergedAlbum.thumbnailUrl,
                                         year = albumPage.year,
-                                        authorsText = albumPage.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() } ?: mergedAlbum.authorsText,
-                                        shareUrl = albumPage.url ?: mergedAlbum.shareUrl,
+                                        authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(mergedAlbum.authorsText, albumPage.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() }) ?: mergedAlbum.authorsText,
+                                        shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(mergedAlbum.shareUrl, albumPage.url) ?: mergedAlbum.shareUrl,
                                         timestamp = System.currentTimeMillis(),
                                         bookmarkedAt = mergedAlbum.bookmarkedAt
                                     )

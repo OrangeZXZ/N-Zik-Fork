@@ -184,7 +184,7 @@ class HomeSyncService : Service() {
                         Database.artistTable.upsert(Artist(
                             id = artist.id,
                             name = PropUtils.retainIfModified(artist.name, a.title),
-                            thumbnailUrl = a.thumbnail?.url ?: artist.thumbnailUrl,
+                            thumbnailUrl = PropUtils.retainIfModified(artist.thumbnailUrl, a.thumbnail?.url) ?: artist.thumbnailUrl,
                             timestamp = artist.timestamp,
                             bookmarkedAt = artist.bookmarkedAt,
                             isYoutubeArtist = artist.isYoutubeArtist,
