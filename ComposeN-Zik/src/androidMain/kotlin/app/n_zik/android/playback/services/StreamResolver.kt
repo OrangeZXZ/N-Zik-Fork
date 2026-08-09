@@ -183,10 +183,15 @@ suspend fun upsertSongInfo(videoId: String) {
                 val artistId = author.endpoint?.browseId
                 if (!artistId.isNullOrBlank()) {
                     val dbArtist = Database.artistTable.findByIdDirect(artistId)
-                    val isArtistRecentlyFetched = dbArtist?.lastFetch?.let { System.currentTimeMillis() - it < 2592000000L } == true
+                    val currentTime = System.currentTimeMillis()
+                    val lastFetchTime = dbArtist?.lastFetch
+                    val isArtistRecentlyFetched = lastFetchTime?.let { currentTime - it < 2592000000L } == true
 
-                    if (!isArtistRecentlyFetched) {
-                        timber.log.Timber.tag(TAG).d("Artist $artistId is incomplete or outdated, fetching artist page in parallel")
+                    if (isArtistRecentlyFetched) {
+                        val daysAgo = (currentTime - (lastFetchTime ?: currentTime)) / 86400000L
+                        timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId was fetched $daysAgo days ago, skipping network fetch.")
+                    } else {
+                        timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId is incomplete or outdated (lastFetch=$lastFetchTime), fetching artist page in parallel.")
                         CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
                             try {
                                 val artistPage = Innertube.artistPage(BrowseBody(browseId = artistId))?.getOrNull()
@@ -199,7 +204,7 @@ suspend fun upsertSongInfo(videoId: String) {
                                             thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.thumbnailUrl, artistPage.thumbnail?.url),
                                             lastFetch = System.currentTimeMillis()
                                         ))
-                                        timber.log.Timber.tag(TAG).d("Updated artist $artistId profile picture in background")
+                                        timber.log.Timber.tag(TAG).d("[Artist Cache] Updated artist $artistId metadata in background")
                                     }
                                 }
                             } catch (e: Exception) {
@@ -214,18 +219,21 @@ suspend fun upsertSongInfo(videoId: String) {
             val albumId = songItem.album?.endpoint?.browseId
             if (!albumId.isNullOrBlank()) {
                 val dbAlbum = Database.albumTable.findByIdDirect(albumId)
-                val isRecentlyFetched = dbAlbum?.lastFetch?.let { System.currentTimeMillis() - it < 2592000000L } == true
+                val currentTime = System.currentTimeMillis()
+                val lastFetchTime = dbAlbum?.lastFetch
+                val isRecentlyFetched = lastFetchTime?.let { currentTime - it < 2592000000L } == true
 
                 if (isRecentlyFetched) {
-                    timber.log.Timber.tag(TAG).d("Album $albumId was fully fetched recently (within 30 days), skipping")
+                    val daysAgo = (currentTime - (lastFetchTime ?: currentTime)) / 86400000L
+                    timber.log.Timber.tag(TAG).d("[Album Cache] $albumId was fetched $daysAgo days ago, skipping network fetch.")
                 } else {
-                    timber.log.Timber.tag(TAG).d("Album found for $videoId: $albumId, fetching album songs in parallel")
+                    timber.log.Timber.tag(TAG).d("[Album Cache] $albumId is incomplete or outdated (lastFetch=$lastFetchTime), fetching album songs in parallel.")
                     CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
                         fetchAndSaveAlbumSongs(albumId)
                     }
                 }
             } else {
-                timber.log.Timber.tag(TAG).d("No album found for $videoId, skipping album fetch")
+                timber.log.Timber.tag(TAG).d("[Album Cache] No album found for $videoId, skipping album fetch")
             }
         },
         onFailure = {
@@ -243,7 +251,7 @@ suspend fun upsertSongInfo(videoId: String) {
  */
 private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
     try {
-        timber.log.Timber.tag(TAG).d("Fetching album page for $albumId")
+        timber.log.Timber.tag(TAG).d("[Album Cache] Fetching album page from network for $albumId")
         val albumPage = Innertube.albumPage(BrowseBody(browseId = albumId))?.getOrNull()
         if (albumPage == null) {
             timber.log.Timber.tag(TAG).w("Album page is null for $albumId")
@@ -255,7 +263,7 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
             return
         }
 
-        timber.log.Timber.tag(TAG).d("Saving ${songs.size} songs from album $albumId to database")
+        timber.log.Timber.tag(TAG).d("[Album Cache] Saving ${songs.size} songs from album $albumId to database")
         songs.forEach { song ->
             Database.upsert(song)
             timber.log.Timber.tag(TAG).d("Saved song: ${song.info?.name} (${song.info?.endpoint?.videoId}) to album $albumId")
@@ -273,10 +281,9 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
                 lastFetch = System.currentTimeMillis()
             ))
         }
-        
-        timber.log.Timber.tag(TAG).d("Finished saving ${songs.size} songs from album $albumId")
+        timber.log.Timber.tag(TAG).d("[Album Cache] Finished saving ${songs.size} songs from album $albumId")
     } catch (e: Exception) {
-        timber.log.Timber.tag(TAG).w(e, "Failed to fetch album songs for $albumId")
+        timber.log.Timber.tag(TAG).w(e, "[Album Cache] Failed to fetch and save album songs for $albumId")
     }
 }
 
