@@ -1,6 +1,14 @@
 <p><b>N-Zik</b> is your ultimate, open-source, and multilingual YouTube Music client for Android! 🎵🚀</p>
 
-<p>Forked from the popular Kreate project, N-Zik takes the music experience to a whole new level. We've obsessively focused on performance optimizations, stunning UI/UX refinements, and packing the app with an extensive suite of new features—all backed by long-term support. Whether you're a casual listener or a hardcore audiophile, N-Zik gives you absolute control over your music, without compromising your privacy.</p>
+<p>As a multilingual fork of <a href="https://github.com/knighthat/Kreate">Kreate</a>, N-Zik takes the music experience to a whole new level. We've obsessively focused on performance optimizations, stunning UI/UX refinements, bug fixes, and packing the app with an extensive suite of new features—all backed by long-term support.</p>
+
+<p><b>A Note on Development & Stability:</b></p>
+<p>N-Zik is a side project originally built for myself and friends, not chasing glory. It's grown a bit since then, which is cool! However, it may not yet be as stable as the original Kreate, so feel free to use it or other solid alternatives like <a href="https://github.com/MetrolistGroup/Metrolist">Metrolist</a>, <a href="https://github.com/vivizzz007/vivi-music">VIVI Music</a>, or <a href="https://github.com/fast4x/RiPlay">RiPlay</a> if you need a more mature option.</p>
+
+<p><b>Transparent AI Usage:</b></p>
+<p>I use generative AI to assist with code, structured with the <a href="https://github.com/bmad-code-org/BMAD-METHOD">BMAD Method</a>, but everything gets reviewed and tested before it's pushed. I'm not shipping blind. If AI-assisted development isn't your thing, no hard feelings, there are plenty of great alternatives.</p>
+
+<p>Whether you're a casual listener or a hardcore audiophile, N-Zik gives you absolute control over your music, without compromising your privacy.</p>
 
 <p>✨ <b>WHY CHOOSE N-ZIK?</b> ✨</p>
 <p>Unlike standard streaming apps, N-Zik removes the limits. No ads, full background playback, offline caching, and a beautifully customizable interface. It's built for those who want a premium music experience completely for free, powered by the open-source community.</p>
@@ -64,6 +72,21 @@
   <li><b><code>android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS</code> & <code>WAKE_LOCK</code>:</b> To prevent the system from killing the music player in the background.</li>
 </ul>
 
-<p>🌍 <b>Built by the Community, for the World</b></p>
-<p>Translated into dozens of languages (English, Italian, German, Russian, French, Spanish, Czech, Turkish, Romanian, and more) by our amazing open-source community. Contributions are always welcome on <a href="https://crowdin.com/project/N-Zik">Crowdin</a>!</p>
-<p>Want to chat with other users, request features, or report bugs? Join our <a href="https://discord.gg/bneHC7QRje">Discord Community</a>.</p>
+<p>📦 <b>Available Builds</b></p>
+<ul>
+  <li><b>Full & Beta:</b> Complete build with all components (64-bit only).</li>
+  <li><b>Full32 & Beta32:</b> Complete build without FFmpeg (32-bit & 64-bit).</li>
+  <li><b>Minified:</b> Lightweight build, recommended for low-end devices (64-bit only).</li>
+  <li><b>Minified32:</b> Lightweight build without FFmpeg (32-bit & 64-bit).</li>
+  <li><b>FOSS:</b> Full build without auto-updater, suitable for alternative stores like F-Droid (64-bit only).</li>
+  <li><b>Dev & Dev32:</b> Development builds from latest commits, for testing only.</li>
+</ul>
+<p><i>ℹ️ Standard builds are 64-bit only because they bundle FFmpeg. The "32" builds drop FFmpeg to work on both architectures. (Note: Only the FOSS build is available on F-Droid).</i></p>
+
+<p>⏳ <b>Only 144 days remaining until Android Lockdown</b></p>
+
+<p>Starting in <b>January 2027</b> (<a href="https://keepandroidopen.org/en/faq/">See why the date changed here</a>), Google will require <b>identity verification for all Android developers</b>, including those distributing applications <b>outside of Google Play</b>.</p>
+
+<p>As a <b>Free and Open Source Software (FOSS)</b> project, <b>N‑Zik</b> and its <b>developer</b> opposes this requirement due to its impact on developer privacy, independent distribution, and software freedom.</p>
+
+<p>📖 <a href="https://keepandroidopen.org">Learn more</a> · ✍️ <a href="https://www.change.org/p/stop-google-from-limiting-apk-file-usage/">Sign the petition</a></p>
