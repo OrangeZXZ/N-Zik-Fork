@@ -89,6 +89,7 @@ import app.it.fast4x.rimusic.utils.checkUpdateStateKey
 import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
 import app.it.fast4x.rimusic.ui.screens.settings.SettingsDescription
 import app.it.fast4x.rimusic.utils.secondary
 import app.it.fast4x.rimusic.utils.semiBold
@@ -124,6 +125,10 @@ fun UpdateScreen(navController: NavController) {
 
     var showInstallWarningDialog by remember { mutableStateOf(false) }
     var apkPathToInstall by remember { mutableStateOf<String?>(null) }
+    var isPreInstallBackupRunning by remember { mutableStateOf(false) }
+    val preInstallBackupEnabled by rememberPreference(app.n_zik.android.core.backup.BackupManager.PREF_PRE_INSTALL, false)
+    val preInstallBackupUri by rememberPreference(app.n_zik.android.core.backup.BackupManager.PREF_URI, "")
+    val preInstallCoroutineScope = rememberCoroutineScope()
 
     // Handle back press during download - let download continue in background
     BackHandler(enabled = downloadState is UpdateDownloadManager.DownloadState.Downloading ||
@@ -271,8 +276,31 @@ fun UpdateScreen(navController: NavController) {
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .clip(uiRoundnessShape()).clickable {
-                                                apkPathToInstall = state.filePath
-                                                showInstallWarningDialog = true
+                                                val apkPath = state.filePath
+                                                if (preInstallBackupEnabled && preInstallBackupUri.isNotEmpty() && !isPreInstallBackupRunning) {
+                                                    apkPathToInstall = apkPath
+                                                    isPreInstallBackupRunning = true
+                                                    preInstallCoroutineScope.launch {
+                                                        try {
+                                                            val success = withContext(Dispatchers.IO) {
+                                                                app.n_zik.android.core.backup.BackupManager.executePreInstallBackup(context)
+                                                            }
+                                                            isPreInstallBackupRunning = false
+                                                            if (success) {
+                                                                UpdateDownloadManager.installApk(context, apkPath)
+                                                            } else {
+                                                                Toaster.e(R.string.pre_install_backup_failed)
+                                                            }
+                                                        } catch (e: Exception) {
+                                                            Timber.tag("UpdateScreen").e(e, "Pre-install backup failed with exception")
+                                                            isPreInstallBackupRunning = false
+                                                            Toaster.e(R.string.pre_install_backup_failed)
+                                                        }
+                                                    }
+                                                } else if (!isPreInstallBackupRunning) {
+                                                    apkPathToInstall = apkPath
+                                                    showInstallWarningDialog = true
+                                                }
                                             },
                                         colors = CardDefaults.cardColors(containerColor = colorPalette().accent),
                                         shape = uiRoundnessShape()
@@ -859,9 +887,49 @@ fun UpdateScreen(navController: NavController) {
             ConfirmationDialog(
                 text = stringResource(R.string.install_warning),
                 onDismiss = { showInstallWarningDialog = false },
-                onConfirm = { UpdateDownloadManager.installApk(context, apkPathToInstall!!) },
+                onConfirm = {
+                    val apkPath = apkPathToInstall
+                    showInstallWarningDialog = false
+                    if (apkPath != null) {
+                        UpdateDownloadManager.installApk(context, apkPath)
+                    }
+                },
                 confirmText = stringResource(R.string.install_yes),
                 cancelText = stringResource(R.string.install_no_backup)
+            )
+        }
+
+        if (isPreInstallBackupRunning) {
+            BackHandler {
+                isPreInstallBackupRunning = false
+                Toaster.w(R.string.download_cancelled)
+            }
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = { isPreInstallBackupRunning = false },
+                confirmButton = {},
+                title = {
+                    BasicText(
+                        text = stringResource(R.string.pre_install_backup_running),
+                        style = typography().m.bold.copy(color = colorPalette().text)
+                    )
+                },
+                text = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        CircularWavyProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = colorPalette().accent,
+                        )
+                        BasicText(
+                            text = stringResource(R.string.pre_install_backup_running_description),
+                            style = typography().s.copy(color = colorPalette().textSecondary)
+                        )
+                    }
+                },
+                containerColor = colorPalette().background0,
+                shape = uiRoundnessShape()
             )
         }
     }

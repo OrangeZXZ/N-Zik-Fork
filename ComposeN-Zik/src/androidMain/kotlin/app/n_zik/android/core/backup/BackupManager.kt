@@ -32,6 +32,7 @@ object BackupManager {
     const val PREF_TARGET = "autoBackupTargetKey"
     const val PREF_INCLUDE_YTB = "autoBackupIncludeYtbKey"
     const val PREF_INCLUDE_DISCORD = "autoBackupIncludeDiscordKey"
+    const val PREF_PRE_INSTALL = "autoBackupPreInstallKey"
 
     const val TARGET_DATABASE = 0
     const val TARGET_SETTINGS = 1
@@ -145,6 +146,21 @@ object BackupManager {
             ExistingWorkPolicy.REPLACE,
             request
         )
+    }
+
+    suspend fun executePreInstallBackup(context: Context): Boolean {
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
+        val enabled = prefs.getBoolean(PREF_PRE_INSTALL, false)
+        if (!enabled) return true
+
+        val uriString = prefs.getString(PREF_URI, "") ?: ""
+        if (uriString.isEmpty()) {
+            Timber.tag("AutoBackup").w("Pre-install backup: no URI configured")
+            return false
+        }
+
+        Timber.tag("AutoBackup").i("Pre-install backup triggered")
+        return executeBackup(context, uriString)
     }
 
     suspend fun executeBackup(context: Context, uriString: String): Boolean {

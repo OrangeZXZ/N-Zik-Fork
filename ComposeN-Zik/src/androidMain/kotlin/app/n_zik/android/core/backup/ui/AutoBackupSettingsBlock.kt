@@ -38,6 +38,7 @@ fun AutoBackupSettingsBlock() {
     var autoBackupTarget by rememberPreference(BackupManager.PREF_TARGET, BackupManager.TARGET_DATABASE)
     var autoBackupIncludeYtb by rememberPreference(BackupManager.PREF_INCLUDE_YTB, false)
     var autoBackupIncludeDiscord by rememberPreference(BackupManager.PREF_INCLUDE_DISCORD, false)
+    var autoBackupPreInstall by rememberPreference(BackupManager.PREF_PRE_INSTALL, false)
 
     var showIntervalDialog by remember { mutableStateOf(false) }
     var showMaxBackupsDialog by remember { mutableStateOf(false) }
@@ -342,6 +343,16 @@ fun AutoBackupSettingsBlock() {
             )
         }
     }
+
+    OtherSwitchSettingEntry(
+        title = stringResource(R.string.pre_install_backup),
+        text = stringResource(R.string.pre_install_backup_description),
+        isChecked = autoBackupPreInstall,
+        onCheckedChange = {
+            autoBackupPreInstall = it
+        },
+        icon = R.drawable.server
+    )
 
     if (showTargetDialog) {
         ValueSelectorDialog(
