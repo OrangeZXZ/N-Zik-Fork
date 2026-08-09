@@ -188,8 +188,9 @@ suspend fun upsertSongInfo(videoId: String) {
                     val isArtistRecentlyFetched = lastFetchTime?.let { currentTime - it < 2592000000L } == true
 
                     if (isArtistRecentlyFetched) {
-                        val daysAgo = (currentTime - (lastFetchTime ?: currentTime)) / 86400000L
-                        timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId was fetched $daysAgo days ago, skipping network fetch.")
+                        val msAgo = currentTime - (lastFetchTime ?: currentTime)
+                        val daysAgo = msAgo / 86400000L
+                        timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId was fetched $daysAgo days ago ($msAgo ms), skipping network fetch.")
                     } else {
                         timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId is incomplete or outdated (lastFetch=$lastFetchTime), fetching artist page in parallel.")
                         CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
@@ -224,8 +225,9 @@ suspend fun upsertSongInfo(videoId: String) {
                 val isRecentlyFetched = lastFetchTime?.let { currentTime - it < 2592000000L } == true
 
                 if (isRecentlyFetched) {
-                    val daysAgo = (currentTime - (lastFetchTime ?: currentTime)) / 86400000L
-                    timber.log.Timber.tag(TAG).d("[Album Cache] $albumId was fetched $daysAgo days ago, skipping network fetch.")
+                    val msAgo = currentTime - (lastFetchTime ?: currentTime)
+                    val daysAgo = msAgo / 86400000L
+                    timber.log.Timber.tag(TAG).d("[Album Cache] $albumId was fetched $daysAgo days ago ($msAgo ms), skipping network fetch.")
                 } else {
                     timber.log.Timber.tag(TAG).d("[Album Cache] $albumId is incomplete or outdated (lastFetch=$lastFetchTime), fetching album songs in parallel.")
                     CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
