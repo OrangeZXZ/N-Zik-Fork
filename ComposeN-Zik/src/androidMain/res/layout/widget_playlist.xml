@@ -222,13 +222,15 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:padding="4dp">
-                <FrameLayout android:layout_width="64dp"
-                    android:layout_height="64dp">
+                <FrameLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/widget_playlist_card_1_art"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
+                        android:layout_height="wrap_content"
+                        android:maxHeight="64dp"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
                         android:contentDescription="@null" />
                     <FrameLayout
                         android:id="@+id/widget_playlist_card_1_play_container"
@@ -261,13 +263,15 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:padding="4dp">
-                <FrameLayout android:layout_width="64dp"
-                    android:layout_height="64dp">
+                <FrameLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/widget_playlist_card_2_art"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
+                        android:layout_height="wrap_content"
+                        android:maxHeight="64dp"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
                         android:contentDescription="@null" />
                     <FrameLayout
                         android:id="@+id/widget_playlist_card_2_play_container"
@@ -300,13 +304,15 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:padding="4dp">
-                <FrameLayout android:layout_width="64dp"
-                    android:layout_height="64dp">
+                <FrameLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/widget_playlist_card_3_art"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
+                        android:layout_height="wrap_content"
+                        android:maxHeight="64dp"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
                         android:contentDescription="@null" />
                     <FrameLayout
                         android:id="@+id/widget_playlist_card_3_play_container"
@@ -339,13 +345,15 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:padding="4dp">
-                <FrameLayout android:layout_width="64dp"
-                    android:layout_height="64dp">
+                <FrameLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/widget_playlist_card_4_art"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
+                        android:layout_height="wrap_content"
+                        android:maxHeight="64dp"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
                         android:contentDescription="@null" />
                     <FrameLayout
                         android:id="@+id/widget_playlist_card_4_play_container"
@@ -388,13 +396,15 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:padding="4dp">
-                <FrameLayout android:layout_width="64dp"
-                    android:layout_height="64dp">
+                <FrameLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/widget_playlist_card_5_art"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
+                        android:layout_height="wrap_content"
+                        android:maxHeight="64dp"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
                         android:contentDescription="@null" />
                     <FrameLayout
                         android:id="@+id/widget_playlist_card_5_play_container"
@@ -427,13 +437,15 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:padding="4dp">
-                <FrameLayout android:layout_width="64dp"
-                    android:layout_height="64dp">
+                <FrameLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/widget_playlist_card_6_art"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
+                        android:layout_height="wrap_content"
+                        android:maxHeight="64dp"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
                         android:contentDescription="@null" />
                     <FrameLayout
                         android:id="@+id/widget_playlist_card_6_play_container"
@@ -466,13 +478,15 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:padding="4dp">
-                <FrameLayout android:layout_width="64dp"
-                    android:layout_height="64dp">
+                <FrameLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/widget_playlist_card_7_art"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
+                        android:layout_height="wrap_content"
+                        android:maxHeight="64dp"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
                         android:contentDescription="@null" />
                     <FrameLayout
                         android:id="@+id/widget_playlist_card_7_play_container"
@@ -505,13 +519,15 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:padding="4dp">
-                <FrameLayout android:layout_width="64dp"
-                    android:layout_height="64dp">
+                <FrameLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/widget_playlist_card_8_art"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
+                        android:layout_height="wrap_content"
+                        android:maxHeight="64dp"
+                        android:scaleType="fitCenter"
+                        android:adjustViewBounds="true"
                         android:contentDescription="@null" />
                     <FrameLayout
                         android:id="@+id/widget_playlist_card_8_play_container"

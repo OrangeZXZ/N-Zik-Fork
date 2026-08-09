@@ -4,6 +4,8 @@
     android:minHeight="122dp"
     android:minResizeWidth="200dp"
     android:minResizeHeight="122dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
     android:updatePeriodMillis="1800000"
     android:previewImage="@drawable/widget_playlist_preview"
     android:initialLayout="@layout/widget_playlist"

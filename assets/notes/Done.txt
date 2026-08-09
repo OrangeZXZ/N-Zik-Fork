@@ -84,4 +84,20 @@ Other:
   - If system theme matches app theme → uses saved palette (same colors as in-app)
   - If system theme differs → re-extracts from bitmap with correct `isDark` for system
   - Fallback: direct bitmap extraction if no saved palette exists
-  - PitchBlack mode handled correctly: saved palette includes pure black backgrounds
+   - PitchBlack mode handled correctly: saved palette includes pure black backgrounds
+
+- fix(widget): widget sizing and resize fixes for all launchers (MIUI, Realme, stock Android)
+  - `music_widget_info.xml`: minWidth reduced from 250dp to 200dp, added xml-v31 version with targetCellWidth/Height
+  - `playlist_widget_info.xml`: minWidth reduced from 250dp to 200dp, added xml-v31 with targetCell + removed max resize limits
+  - `turntable_widget_info.xml`: added xml-v31 with targetCellWidth="2" targetCellHeight="2"
+  - All widgets: resizeMode="horizontal|vertical" preserved, no max resize constraints for free resizing
+  - `xml/` (base) and `xml-v31/` (API 31+) split for proper grid cell handling
+
+- fix(widget): playlist card images no longer cropped on resize
+  - `widget_playlist.xml`: all 8 card ImageViews changed from `centerCrop` to `fitCenter` + `adjustViewBounds="true"` + `maxHeight="64dp"`
+  - FrameLayouts changed from fixed 64dp to `match_parent` width for responsive scaling
+  - Images now scale proportionally within available space instead of being cropped
+
+- fix(widget): turntable like button background fixed
+  - New `widget_turntable_like_bg.xml` drawable (oval shape) replaces rectangular `widget_turntable_nav_bg`
+  - Like button now has circular background matching the play button style

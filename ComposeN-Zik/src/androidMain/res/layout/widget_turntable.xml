@@ -133,7 +133,7 @@
                 android:id="@+id/widget_turntable_like_bg_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/widget_turntable_nav_bg"
+                android:src="@drawable/widget_turntable_like_bg"
                 android:scaleType="fitXY" />
             <ImageButton
                 android:id="@+id/widget_turntable_like_button"
