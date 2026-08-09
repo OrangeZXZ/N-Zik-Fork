@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.n_zik.android.R
 import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
-import app.it.fast4x.rimusic.ui.components.themed.InputNumericDialog
 import app.it.fast4x.rimusic.ui.screens.settings.OtherSettingsEntry
 import app.it.fast4x.rimusic.ui.screens.settings.OtherSwitchSettingEntry
 import app.it.fast4x.rimusic.ui.screens.settings.ImportantSettingsDescription
@@ -66,6 +65,69 @@ fun AutoBackupSettingsBlock() {
         }
     )
 
+    val decodedUri = runCatching { Uri.parse(autoBackupUri).lastPathSegment?.let { Uri.decode(it) } }.getOrNull() ?: autoBackupUri
+
+    OtherSettingsEntry(
+        title = stringResource(R.string.auto_backup_location),
+        text = if (autoBackupUri.isEmpty()) stringResource(R.string.auto_backup_location_not_set) else decodedUri,
+        icon = R.drawable.folder,
+        onClick = { documentTreeLauncher.launch(null) }
+    )
+
+    if (autoBackupUri.isEmpty()) {
+        ImportantSettingsDescription(text = stringResource(R.string.auto_backup_location_warning))
+    }
+
+    OtherSettingsEntry(
+        title = stringResource(R.string.auto_backup_target),
+        text = when (autoBackupTarget) {
+            BackupManager.TARGET_DATABASE -> stringResource(R.string.database)
+            BackupManager.TARGET_SETTINGS -> stringResource(R.string.settings)
+            BackupManager.TARGET_BOTH -> stringResource(R.string.export_both)
+            else -> stringResource(R.string.database)
+        },
+        icon = R.drawable.server,
+        onClick = { showTargetDialog = true }
+    )
+
+    AnimatedVisibility(visible = autoBackupTarget == BackupManager.TARGET_SETTINGS || autoBackupTarget == BackupManager.TARGET_BOTH) {
+        Column {
+            OtherSwitchSettingEntry(
+                title = stringResource(R.string.include_youtube_credentials),
+                text = "",
+                isChecked = autoBackupIncludeYtb,
+                onCheckedChange = { autoBackupIncludeYtb = it },
+                icon = R.drawable.logo_youtube,
+                modifier = Modifier.padding(start = 24.dp)
+            )
+            OtherSwitchSettingEntry(
+                title = stringResource(R.string.include_discord_credentials),
+                text = "",
+                isChecked = autoBackupIncludeDiscord,
+                onCheckedChange = { autoBackupIncludeDiscord = it },
+                icon = R.drawable.logo_discord,
+                modifier = Modifier.padding(start = 24.dp)
+            )
+        }
+    }
+
+    OtherSettingsEntry(
+        title = stringResource(R.string.auto_backup_max_backups),
+        text = if (autoBackupMaxBackups == -1) stringResource(R.string.unlimited) else autoBackupMaxBackups.toString(),
+        icon = R.drawable.server,
+        onClick = { showMaxBackupsDialog = true }
+    )
+
+    OtherSwitchSettingEntry(
+        title = stringResource(R.string.pre_install_backup),
+        text = stringResource(R.string.pre_install_backup_description),
+        isChecked = autoBackupPreInstall,
+        onCheckedChange = {
+            autoBackupPreInstall = it
+        },
+        icon = R.drawable.server
+    )
+
     OtherSettingsEntry(
         title = stringResource(R.string.auto_backup_interval),
         text = when (autoBackupInterval) {
@@ -97,7 +159,7 @@ fun AutoBackupSettingsBlock() {
                 BackupManager.scheduleBackup(context, it)
                 showIntervalDialog = false
             },
-            valueText = { 
+            valueText = {
                 when (it) {
                     BackupManager.INTERVAL_HOURLY -> stringResource(R.string.auto_backup_interval_hourly)
                     BackupManager.INTERVAL_DAILY -> stringResource(R.string.auto_backup_interval_daily)
@@ -168,7 +230,7 @@ fun AutoBackupSettingsBlock() {
                 BackupManager.scheduleBackup(context, autoBackupInterval)
                 showCustomUnitDialog = false
             },
-            valueText = { 
+            valueText = {
                 when (it) {
                     BackupManager.UNIT_MINUTES -> stringResource(R.string.auto_backup_unit_minutes)
                     BackupManager.UNIT_HOURS -> stringResource(R.string.auto_backup_unit_hours)
@@ -240,7 +302,7 @@ fun AutoBackupSettingsBlock() {
                 BackupManager.scheduleBackup(context, autoBackupInterval)
                 showScheduleDayOfWeekDialog = false
             },
-            valueText = { 
+            valueText = {
                 when (it) {
                     1 -> "Monday"; 2 -> "Tuesday"; 3 -> "Wednesday"; 4 -> "Thursday"
                     5 -> "Friday"; 6 -> "Saturday"; 7 -> "Sunday"; else -> "Monday"
@@ -279,52 +341,6 @@ fun AutoBackupSettingsBlock() {
 
     AnimatedVisibility(visible = autoBackupInterval != BackupManager.INTERVAL_NONE) {
         Column {
-            val decodedUri = runCatching { Uri.parse(autoBackupUri).lastPathSegment?.let { Uri.decode(it) } }.getOrNull() ?: autoBackupUri
-
-            OtherSettingsEntry(
-                title = stringResource(R.string.auto_backup_location),
-                text = if (autoBackupUri.isEmpty()) stringResource(R.string.auto_backup_location_not_set) else decodedUri,
-                icon = R.drawable.folder,
-                onClick = { documentTreeLauncher.launch(null) }
-            )
-
-            if (autoBackupUri.isEmpty()) {
-                ImportantSettingsDescription(text = stringResource(R.string.auto_backup_location_warning))
-            }
-
-            OtherSettingsEntry(
-                title = stringResource(R.string.auto_backup_target),
-                text = when (autoBackupTarget) {
-                    BackupManager.TARGET_DATABASE -> stringResource(R.string.database)
-                    BackupManager.TARGET_SETTINGS -> stringResource(R.string.settings)
-                    BackupManager.TARGET_BOTH -> stringResource(R.string.export_both)
-                    else -> stringResource(R.string.database)
-                },
-                icon = R.drawable.server,
-                onClick = { showTargetDialog = true }
-            )
-
-            AnimatedVisibility(visible = autoBackupTarget == BackupManager.TARGET_SETTINGS || autoBackupTarget == BackupManager.TARGET_BOTH) {
-                Column {
-                    OtherSwitchSettingEntry(
-                        title = stringResource(R.string.include_youtube_credentials),
-                        text = "",
-                        isChecked = autoBackupIncludeYtb,
-                        onCheckedChange = { autoBackupIncludeYtb = it },
-                        icon = R.drawable.logo_youtube,
-                        modifier = Modifier.padding(start = 24.dp)
-                    )
-                    OtherSwitchSettingEntry(
-                        title = stringResource(R.string.include_discord_credentials),
-                        text = "",
-                        isChecked = autoBackupIncludeDiscord,
-                        onCheckedChange = { autoBackupIncludeDiscord = it },
-                        icon = R.drawable.logo_discord,
-                        modifier = Modifier.padding(start = 24.dp)
-                    )
-                }
-            }
-
             OtherSwitchSettingEntry(
                 title = stringResource(R.string.auto_backup_on_change),
                 text = stringResource(R.string.auto_backup_on_change_description),
@@ -334,25 +350,8 @@ fun AutoBackupSettingsBlock() {
                 },
                 icon = R.drawable.sync
             )
-
-            OtherSettingsEntry(
-                title = stringResource(R.string.auto_backup_max_backups),
-                text = if (autoBackupMaxBackups == -1) stringResource(R.string.unlimited) else autoBackupMaxBackups.toString(),
-                icon = R.drawable.server,
-                onClick = { showMaxBackupsDialog = true }
-            )
         }
     }
-
-    OtherSwitchSettingEntry(
-        title = stringResource(R.string.pre_install_backup),
-        text = stringResource(R.string.pre_install_backup_description),
-        isChecked = autoBackupPreInstall,
-        onCheckedChange = {
-            autoBackupPreInstall = it
-        },
-        icon = R.drawable.server
-    )
 
     if (showTargetDialog) {
         ValueSelectorDialog(

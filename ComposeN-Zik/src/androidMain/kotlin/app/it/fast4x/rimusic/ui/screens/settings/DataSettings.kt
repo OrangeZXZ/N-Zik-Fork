@@ -472,7 +472,7 @@ fun DataSettings() {
 
         /* Removed Spacer */
 
-        // Backup and Restore Section
+        // Backup Section
         AnimatedVisibility(
             visible = true,
             enter = fadeIn(animationSpec = tween(800)) + scaleIn(
@@ -484,8 +484,6 @@ fun DataSettings() {
                 title = stringResource(R.string.title_backup_and_restore),
                 icon = R.drawable.server,
                 content = {
-                    app.n_zik.android.core.backup.ui.AutoBackupSettingsBlock()
-                    
                     ExportBackupDialog.Render()
                     ImportBackupDialog.Render()
 
@@ -524,6 +522,23 @@ fun DataSettings() {
                             onClick = importMigration::onShortClick
                         )
                     }
+                }
+            )
+        }
+
+        // Auto Backup Section
+        AnimatedVisibility(
+            visible = true,
+            enter = fadeIn(animationSpec = tween(800)) + scaleIn(
+                animationSpec = tween(800),
+                initialScale = 0.9f
+            )
+        ) {
+            SettingsSectionCard(
+                title = stringResource(R.string.auto_backup_title),
+                icon = R.drawable.history,
+                content = {
+                    app.n_zik.android.core.backup.ui.AutoBackupSettingsBlock()
                 }
             )
         }

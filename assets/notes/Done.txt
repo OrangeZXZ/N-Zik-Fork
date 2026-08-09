@@ -101,3 +101,10 @@ Other:
 - fix(widget): turntable like button background fixed
   - New `widget_turntable_like_bg.xml` drawable (oval shape) replaces rectangular `widget_turntable_nav_bg`
   - Like button now has circular background matching the play button style
+
+Changed:
+- refactor(backup): reorganized backup settings into two separate cards
+  - `DataSettings.kt`: split into "Backup" card (Export/Import) and "Auto Backup" card
+  - `AutoBackupSettingsBlock.kt`: all auto-backup settings (URI, target, credentials, max backups, interval, schedule, pre-install toggle, on DB change) grouped in one card
+  - Pre-install backup toggle independent of auto-backup interval
+  - URI, target, max backups shared between pre-install and scheduled backups
