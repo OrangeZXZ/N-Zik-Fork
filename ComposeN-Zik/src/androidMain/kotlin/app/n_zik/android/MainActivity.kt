@@ -656,6 +656,7 @@ class MainActivity :
                                         typography = appearance.typography.copy(finalPalette.text)
                                     )
                                     appearance = newAppearance
+                                    savePaletteForWidget(finalPalette)
                                 }
                             } else {
                                 withContext(Dispatchers.Main) {
@@ -1396,6 +1397,18 @@ class MainActivity :
             Timber.tag("MainActivity").e("onDestroy removeMonetColorsChangedListener ${it.stackTraceToString()}")
         }
 
+    }
+
+    private fun savePaletteForWidget(palette: app.it.fast4x.rimusic.ui.styling.ColorPalette) {
+        preferences.edit()
+            .putInt("widget_palette_accent", palette.accent.toArgb())
+            .putInt("widget_palette_background1", palette.background1.toArgb())
+            .putInt("widget_palette_background2", palette.background2.toArgb())
+            .putInt("widget_palette_text", palette.text.toArgb())
+            .putInt("widget_palette_textSecondary", palette.textSecondary.toArgb())
+            .putBoolean("widget_palette_isDark", palette.isDark)
+            .putLong("widget_palette_timestamp", System.currentTimeMillis())
+            .apply()
     }
 
     private fun setSystemBarAppearance(isDark: Boolean) {

@@ -266,19 +266,41 @@ object PlaylistWidgetManager {
 
     private fun extractPalette(context: Context, bitmap: Bitmap?): app.it.fast4x.rimusic.ui.styling.ColorPalette {
         val isSystemInDarkMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        val defaultPalette = colorPaletteOf(
+            ColorPaletteName.Dynamic,
+            if (isSystemInDarkMode) ColorPaletteMode.Dark else ColorPaletteMode.Light,
+            isSystemInDarkMode
+        )
+
+        // Try to read palette saved by the app (same bitmap = same colors)
+        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        val timestamp = prefs.getLong("widget_palette_timestamp", 0)
+        if (timestamp > 0) {
+            val savedIsDark = prefs.getBoolean("widget_palette_isDark", isSystemInDarkMode)
+            if (savedIsDark == isSystemInDarkMode) {
+                return app.it.fast4x.rimusic.ui.styling.ColorPalette(
+                    background0 = defaultPalette.background0,
+                    background1 = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_background1", defaultPalette.background1.toArgb())),
+                    background2 = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_background2", defaultPalette.background2.toArgb())),
+                    background3 = defaultPalette.background3,
+                    background4 = defaultPalette.background4,
+                    accent = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_accent", defaultPalette.accent.toArgb())),
+                    onAccent = defaultPalette.onAccent,
+                    text = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_text", defaultPalette.text.toArgb())),
+                    textSecondary = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_textSecondary", defaultPalette.textSecondary.toArgb())),
+                    textDisabled = defaultPalette.textDisabled,
+                    isDark = savedIsDark,
+                    iconButtonPlayer = defaultPalette.iconButtonPlayer,
+                )
+            }
+        }
+
+        // Fallback: extract from bitmap
         return if (bitmap != null) {
             dynamicColorPaletteOf(bitmap, isSystemInDarkMode)
-                ?: colorPaletteOf(
-                    ColorPaletteName.Dynamic,
-                    if (isSystemInDarkMode) ColorPaletteMode.Dark else ColorPaletteMode.Light,
-                    isSystemInDarkMode
-                )
+                ?: defaultPalette
         } else {
-            colorPaletteOf(
-                ColorPaletteName.Dynamic,
-                if (isSystemInDarkMode) ColorPaletteMode.Dark else ColorPaletteMode.Light,
-                isSystemInDarkMode
-            )
+            defaultPalette
         }
     }
 

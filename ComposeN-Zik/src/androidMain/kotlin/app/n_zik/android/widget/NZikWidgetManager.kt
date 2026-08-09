@@ -45,6 +45,9 @@ object NZikWidgetManager {
     private var cachedCircularAlbumArt: Bitmap? = null
 
     suspend fun updateIdleWidgets(context: Context) {
+        // Clear saved palette so widget resets to default in idle
+        context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+            .edit().remove("widget_palette_timestamp").apply()
         updateWidgets(
             context = context,
             title = context.getString(R.string.not_playing),
@@ -551,19 +554,43 @@ object NZikWidgetManager {
 
     private fun extractPalette(context: Context, albumArt: Bitmap?): app.it.fast4x.rimusic.ui.styling.ColorPalette {
         val isSystemInDarkMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        val defaultPalette = colorPaletteOf(
+            ColorPaletteName.Dynamic,
+            if (isSystemInDarkMode) ColorPaletteMode.Dark else ColorPaletteMode.Light,
+            isSystemInDarkMode
+        )
+
+        // Try to read palette saved by the app (same bitmap = same colors)
+        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        val timestamp = prefs.getLong("widget_palette_timestamp", 0)
+        if (timestamp > 0) {
+            val savedIsDark = prefs.getBoolean("widget_palette_isDark", isSystemInDarkMode)
+            // If system theme matches app theme, use saved palette directly
+            if (savedIsDark == isSystemInDarkMode) {
+                return app.it.fast4x.rimusic.ui.styling.ColorPalette(
+                    background0 = defaultPalette.background0,
+                    background1 = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_background1", defaultPalette.background1.toArgb())),
+                    background2 = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_background2", defaultPalette.background2.toArgb())),
+                    background3 = defaultPalette.background3,
+                    background4 = defaultPalette.background4,
+                    accent = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_accent", defaultPalette.accent.toArgb())),
+                    onAccent = defaultPalette.onAccent,
+                    text = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_text", defaultPalette.text.toArgb())),
+                    textSecondary = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_textSecondary", defaultPalette.textSecondary.toArgb())),
+                    textDisabled = defaultPalette.textDisabled,
+                    isDark = savedIsDark,
+                    iconButtonPlayer = defaultPalette.iconButtonPlayer,
+                )
+            }
+            // Themes differ: re-extract from bitmap with system's isDark
+        }
+
+        // Fallback: extract from bitmap
         return if (albumArt != null) {
             dynamicColorPaletteOf(albumArt, isSystemInDarkMode)
-                ?: colorPaletteOf(
-                    ColorPaletteName.Dynamic,
-                    if (isSystemInDarkMode) ColorPaletteMode.Dark else ColorPaletteMode.Light,
-                    isSystemInDarkMode
-                )
+                ?: defaultPalette
         } else {
-            colorPaletteOf(
-                ColorPaletteName.Dynamic,
-                if (isSystemInDarkMode) ColorPaletteMode.Dark else ColorPaletteMode.Light,
-                isSystemInDarkMode
-            )
+            defaultPalette
         }
     }
 

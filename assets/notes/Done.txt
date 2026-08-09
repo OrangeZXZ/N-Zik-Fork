@@ -77,3 +77,11 @@ Other:
 
 - fix(widget): `goAsync()` added to `MusicWidgetReceiver` and `TurntableWidgetReceiver`
   - Matches `PlaylistWidgetReceiver` pattern so widgets load properly on placement
+
+- fix(widget): widget palette now synced from app via SharedPreferences
+  - `MainActivity.kt`: saves palette to SharedPreferences after computing it (`widget_palette_accent`, `widget_palette_background1`, etc.)
+  - `NZikWidgetManager.extractPalette` + `PlaylistWidgetManager.extractPalette`: reads saved palette from SharedPreferences first
+  - If system theme matches app theme → uses saved palette (same colors as in-app)
+  - If system theme differs → re-extracts from bitmap with correct `isDark` for system
+  - Fallback: direct bitmap extraction if no saved palette exists
+  - PitchBlack mode handled correctly: saved palette includes pure black backgrounds
