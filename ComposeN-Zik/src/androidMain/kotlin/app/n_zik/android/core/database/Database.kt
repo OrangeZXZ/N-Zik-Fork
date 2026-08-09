@@ -67,9 +67,9 @@ import app.n_zik.android.core.database.migration.From3To4Migration
 import app.n_zik.android.core.database.migration.From7To8Migration
 import app.n_zik.android.core.database.migration.From8To9Migration
 import app.n_zik.android.core.database.migration.From27To28Migration
-import app.n_zik.android.core.database.migration.From29To30Migration
 import app.n_zik.android.core.database.migration.From30To31Migration
 import app.n_zik.android.core.database.migration.From31To32Migration
+import app.n_zik.android.core.database.migration.From32To33Migration
 import app.kreate.android.me.knighthat.utils.PropUtils
 
 object Database {
@@ -140,9 +140,17 @@ object Database {
 
         // Phase 2: Network calls (NO lock held)
         val artistsToUpsert = mutableListOf<Artist>()
+        val artistsToMap = mutableListOf<Artist>()
         for ((artistName, existingArtist) in artistDataList) {
             if (existingArtist != null) {
-                artistsToUpsert.add(existingArtist)
+                val retainedName = PropUtils.retainIfModified(existingArtist.name, artistName)
+                if (existingArtist.name != retainedName) {
+                    val updatedArtist = existingArtist.copy(name = retainedName)
+                    artistsToUpsert.add(updatedArtist)
+                    artistsToMap.add(updatedArtist)
+                } else {
+                    artistsToMap.add(existingArtist)
+                }
             } else {
                 try {
                     val searchResult: Innertube.ItemsPage<Innertube.ArtistItem>? =
@@ -157,11 +165,13 @@ object Database {
                         item.info?.name?.equals(artistName, ignoreCase = true) == true
                     } ?: searchResult?.items?.firstOrNull()
                     if (foundArtist != null && foundArtist.key != null) {
-                        artistsToUpsert.add(Artist(
+                        val newArtist = Artist(
                             id = foundArtist.key,
                             name = foundArtist.info?.name ?: artistName,
                             isYoutubeArtist = true
-                        ))
+                        )
+                        artistsToUpsert.add(newArtist)
+                        artistsToMap.add(newArtist)
                     }
                 } catch (_: Exception) { }
             }
@@ -178,7 +188,7 @@ object Database {
                 song.artistsText.isNullOrBlank() && !dbSong?.artistsText.isNullOrBlank() -> dbSong.artistsText
                 else -> PropUtils.retainIfModified(dbSong?.artistsText, song.artistsText)
             }
-            songTable.upsert(Song(
+            val finalSong = Song(
                 id = song.id,
                 title = finalTitle.orEmpty(),
                 artistsText = finalArtistsText ?: "",
@@ -187,13 +197,16 @@ object Database {
                 likedAt = dbSong?.likedAt,
                 totalPlayTimeMs = dbSong?.totalPlayTimeMs ?: 0,
                 position = dbSong?.position ?: -1
-            ))
+            )
+            if (dbSong != finalSong) {
+                songTable.upsert(finalSong)
+            }
 
             // Upsert artists
             if (artistsToUpsert.isNotEmpty()) {
                 artistTable.upsert(artistsToUpsert)
-                artistsToUpsert.forEach { mapIgnore(it, song) }
             }
+            artistsToMap.forEach { mapIgnore(it, song) }
 
             // Upsert album
             songItem.album?.let {
@@ -209,7 +222,9 @@ object Database {
                     bookmarkedAt = dbAlbum?.bookmarkedAt,
                     isYoutubeAlbum = dbAlbum?.isYoutubeAlbum == true
                 )
-                albumTable.upsert(fetchedAlbum)
+                if (dbAlbum != fetchedAlbum) {
+                    albumTable.upsert(fetchedAlbum)
+                }
                 mapIgnore(fetchedAlbum, song)
             }
         }
@@ -594,7 +609,7 @@ object Database {
     views = [
         SortedSongPlaylistMap::class
     ],
-    version = 32,
+    version = 33,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
@@ -653,7 +668,8 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
                     From27To28Migration(),
                     From29To30Migration(),
                     From30To31Migration(),
-                    From31To32Migration()
+                    From31To32Migration(),
+                    From32To33Migration()
                 )
                 .build()
             

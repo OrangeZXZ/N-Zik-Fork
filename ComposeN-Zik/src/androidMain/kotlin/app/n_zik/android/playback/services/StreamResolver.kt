@@ -179,9 +179,16 @@ suspend fun upsertSongInfo(videoId: String) {
             // Fetch complete album in parallel to fill all songs
             val albumId = songItem.album?.endpoint?.browseId
             if (!albumId.isNullOrBlank()) {
-                timber.log.Timber.tag(TAG).d("Album found for $videoId: $albumId, fetching album songs in parallel")
-                CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
-                    fetchAndSaveAlbumSongs(albumId)
+                val dbAlbum = Database.albumTable.findByIdDirect(albumId)
+                val isRecentlyFetched = dbAlbum?.lastFetch?.let { System.currentTimeMillis() - it < 2592000000L } == true
+
+                if (isRecentlyFetched) {
+                    timber.log.Timber.tag(TAG).d("Album $albumId was fully fetched recently (within 30 days), skipping")
+                } else {
+                    timber.log.Timber.tag(TAG).d("Album found for $videoId: $albumId, fetching album songs in parallel")
+                    CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
+                        fetchAndSaveAlbumSongs(albumId)
+                    }
                 }
             } else {
                 timber.log.Timber.tag(TAG).d("No album found for $videoId, skipping album fetch")
@@ -219,6 +226,12 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
             Database.upsert(song)
             timber.log.Timber.tag(TAG).d("Saved song: ${song.info?.name} (${song.info?.endpoint?.videoId}) to album $albumId")
         }
+        
+        // Mark album as completely fetched so we don't spam the API for 30 days
+        Database.albumTable.findByIdDirect(albumId)?.let { existingAlbum ->
+            Database.albumTable.upsert(existingAlbum.copy(lastFetch = System.currentTimeMillis()))
+        }
+        
         timber.log.Timber.tag(TAG).d("Finished saving ${songs.size} songs from album $albumId")
     } catch (e: Exception) {
         timber.log.Timber.tag(TAG).w(e, "Failed to fetch album songs for $albumId")

@@ -31,6 +31,12 @@ Changed:
   - Available on Android 13+ (Tiramisu); Android 10-12 falls back to system `MEDIA_OUTPUT` panel
 
 Fixed:
+- fix(database): optimize redundant upserts when playing songs
+  - Avoided rewriting `Song`, `Artist`, and `Album` entities to the database continuously if their final state matches the existing database record.
+  - This prevents the "24/7 overwrite" behavior when landing on tracks, drastically reducing unnecessary database I/O overhead.
+- fix(player): skip redundant parallel album fetches on playback
+  - Added a `lastFetch` column to the `Album` database table via a Migration (v32 to v33).
+  - `StreamResolver` now permanently skips fetching an album if it was already fetched within the last 30 jours, drastically reducing API spam across app restarts.
 - fix(player): volume slider not updating on manual hardware device switch
   - Added `isUserDragging` guard to prevent `VOLUME_CHANGED_ACTION` from fighting with user slider input
   - 3-second polling loop after device switch catches delayed OS volume adjustments

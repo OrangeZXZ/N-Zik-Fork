@@ -14,7 +14,8 @@ data class Album(
     val authorsText: String? = null,
     val shareUrl: String? = null,
     val timestamp: Long? = null,
-    val bookmarkedAt: Long? = null
+    val bookmarkedAt: Long? = null,
+    val lastFetch: Long? = null
 ) {
     fun toggleBookmark(): Album {
         return copy(

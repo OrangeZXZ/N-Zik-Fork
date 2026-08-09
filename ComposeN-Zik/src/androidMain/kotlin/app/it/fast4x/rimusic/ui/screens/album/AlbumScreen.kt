@@ -123,7 +123,8 @@ fun AlbumScreen(
                            timestamp = album?.timestamp ?: System.currentTimeMillis(),
                            bookmarkedAt = album?.bookmarkedAt,
                            isYoutubeAlbum = album?.isYoutubeAlbum == true,
-                           position = album?.position ?: -1
+                           position = album?.position ?: -1,
+                           lastFetch = System.currentTimeMillis()
                         ))
 
                          songAlbumMapTable.clear(browseId)
