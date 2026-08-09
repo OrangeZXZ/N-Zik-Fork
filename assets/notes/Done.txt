@@ -120,6 +120,11 @@ Changed:
   - Pre-install backup toggle independent of auto-backup interval
   - URI, target, max backups shared between pre-install and scheduled backups
 - fix(database): improved shuffle logic and song counting for albums and artists
-  - AlbumTable.kt: updated llSongsInLibrary and llSongsInBookmarked to return all tracks of the album (instead of just played tracks).
-  - ArtistTable.kt: updated llInLibrary and llSongsInLibrary to include all songs from artists (including local unplayed songs and cached songs). Removed unplayed restrictions from llSongsInFollowing as well.
-  - SongTable.kt: removed 	otalPlayTimeMs > 0 filter from rtistSongs so that local artists and cached songs correctly contribute to the song count and "Play All" menu action.
+  - AlbumTable.kt: updated  llSongsInLibrary and  llSongsInBookmarked to return all tracks of the album (instead of just played tracks).
+  - ArtistTable.kt: updated  llInLibrary and  llSongsInLibrary to include all songs from artists (including local unplayed songs and cached songs). Removed unplayed restrictions from  llSongsInFollowing as well.
+  - SongTable.kt: removed 	otalPlayTimeMs > 0 filter from  rtistSongs so that local artists and cached songs correctly contribute to the song count and "Play All" menu action.
+
+- fix(database): preserve album sync state and optimize background fetches
+  - Fixed a critical bug in `Database.kt` where `upsert(songItem)` would overwrite an existing album's `lastFetch` with `null`, causing an infinite loop of redundant API network requests every time a song was played.
+  - Re-engineered `StreamResolver.kt` background DB writes (Album, Artist, Format, and Song placeholders) to be safely wrapped in a 5-second retry loop on `SQLiteConstraintException` to completely eliminate race conditions.
+  - Modified `toggleBookmark` in `AlbumTable.kt` and `toggleFollow` in `ArtistTable.kt` to explicitly reset `lastFetch` to `NULL` upon bookmarking, guaranteeing an automatic background sync of the item on its next interaction.

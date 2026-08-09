@@ -210,14 +210,36 @@ suspend fun upsertSongInfo(videoId: String) {
                                 
                                 if (artistPage != null) {
                                     Database.asyncTransaction {
-                                        val existingArtist = Database.artistTable.findByIdDirect(artistId)
-                                        if (existingArtist != null) {
-                                            Database.artistTable.upsert(existingArtist.copy(
-                                                name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.name, artistPage.name) ?: artistPage.name,
-                                                thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.thumbnailUrl, artistPage.thumbnail?.url),
-                                                lastFetch = System.currentTimeMillis()
-                                            ))
-                                            timber.log.Timber.tag(TAG).d("[Artist Cache] Updated artist $artistId metadata in background")
+                                        try {
+                                            val existingArtist = Database.artistTable.findByIdDirect(artistId)
+                                            if (existingArtist != null) {
+                                                Database.artistTable.upsert(existingArtist.copy(
+                                                    name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.name, artistPage.name) ?: artistPage.name,
+                                                    thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.thumbnailUrl, artistPage.thumbnail?.url),
+                                                    lastFetch = System.currentTimeMillis()
+                                                ))
+                                                timber.log.Timber.tag(TAG).d("[Artist Cache] Updated artist $artistId metadata in background")
+                                            }
+                                        } catch (e: android.database.sqlite.SQLiteConstraintException) {
+                                            timber.log.Timber.tag(TAG).w("Foreign key constraint failed for artist $artistId. Retrying in 5s...")
+                                            CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                                                kotlinx.coroutines.delay(5000)
+                                                try {
+                                                    Database.asyncTransaction {
+                                                        val existingArtist = Database.artistTable.findByIdDirect(artistId)
+                                                        if (existingArtist != null) {
+                                                            Database.artistTable.upsert(existingArtist.copy(
+                                                                name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.name, artistPage.name) ?: artistPage.name,
+                                                                thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.thumbnailUrl, artistPage.thumbnail?.url),
+                                                                lastFetch = System.currentTimeMillis()
+                                                            ))
+                                                            timber.log.Timber.tag(TAG).d("[Artist Cache] Updated artist $artistId metadata in background after retry")
+                                                        }
+                                                    }
+                                                } catch (e2: Exception) {
+                                                    timber.log.Timber.tag(TAG).e("Failed to save artist cache even after delay: ${e2.message}")
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -498,7 +520,21 @@ private fun upsertSongFormat(
         val songExists = Database.songTable.countById(videoId) > 0
         if (!songExists) {
             Database.asyncTransaction {
-                songTable.insertIgnore(Song.makePlaceholder(videoId))
+                try {
+                    songTable.insertIgnore(Song.makePlaceholder(videoId))
+                } catch (e: android.database.sqlite.SQLiteConstraintException) {
+                    timber.log.Timber.tag(TAG).w("Foreign key constraint failed for song placeholder $videoId. Retrying in 5s...")
+                    CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                        kotlinx.coroutines.delay(5000)
+                        try {
+                            Database.asyncTransaction {
+                                songTable.insertIgnore(Song.makePlaceholder(videoId))
+                            }
+                        } catch (e2: Exception) {
+                            timber.log.Timber.tag(TAG).e("Failed to save song placeholder even after delay: ${e2.message}")
+                        }
+                    }
+                }
             }
         }
         saveFormatSafe(formatToSave)

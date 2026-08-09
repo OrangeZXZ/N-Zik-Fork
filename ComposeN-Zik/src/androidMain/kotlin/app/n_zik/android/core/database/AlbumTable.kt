@@ -225,6 +225,11 @@ interface AlbumTable {
             CASE 
                 WHEN bookmarkedAt IS NULL THEN strftime('%s', 'now') * 1000
                 ELSE NULL
+            END,
+            lastFetch = 
+            CASE 
+                WHEN bookmarkedAt IS NULL THEN NULL
+                ELSE lastFetch
             END
         WHERE id = :albumId
     """)

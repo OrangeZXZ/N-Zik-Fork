@@ -223,7 +223,8 @@ object Database {
                     shareUrl = dbAlbum?.shareUrl,
                     timestamp = dbAlbum?.timestamp,
                     bookmarkedAt = dbAlbum?.bookmarkedAt,
-                    isYoutubeAlbum = dbAlbum?.isYoutubeAlbum == true
+                    isYoutubeAlbum = dbAlbum?.isYoutubeAlbum == true,
+                    lastFetch = dbAlbum?.lastFetch
                 )
                 if (dbAlbum != fetchedAlbum) {
                     albumTable.upsert(fetchedAlbum)
