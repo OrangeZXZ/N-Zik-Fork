@@ -900,7 +900,7 @@ Volume BAS : titre précédent</string>
   <string name="error_no_internet">Pas de réseau</string>
   <string name="error_timeout">Délai de connexion expiré</string>
   <string name="error_unknown">Erreur Inconnue</string>
-  <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
+  <string name="delete_song">Voulez-vous vraiment supprimer ce titre ? Il sera supprimé de la base de données.\nCette action est irréversible.</string>
   <string name="update_album">Mise à jour de l\'album</string>
   <string name="info_check_update_now">Vérifiez maintenant</string>
   <string name="info_no_update_available">Aucune mise à jour disponible</string>
@@ -914,7 +914,7 @@ Volume BAS : titre précédent</string>
   <string name="social_github">GitHub</string>
   <string name="update">Mettre à jour</string>
   <string name="update_waveform">Mettre à jour la forme d\'onde</string>
-  <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\nThis action is irreversible.</string>
+  <string name="update_song">Voulez-vous vraiment récupérer ce titre ? La durée d\'écoute et les données mises en cache seront effacées.\nCette action est irréversible.</string>
   <string name="player_pause_listen_history_info">N\'enregistre pas les événements de lecture utilisés pour les statistiques, l\'historique et les suggestions dans la « Sélection Rapide »</string>
   <string name="vertical_widget">Widget vertical</string>
   <string name="horizontal_widget">Widget horizontal</string>
@@ -1638,11 +1638,11 @@ Volume BAS : titre précédent</string>
   <string name="auto_backup_on_change_description">Lancer une sauvegarde lorsque des titres sont ajoutés ou supprimés</string>
   <string name="auto_backup_max_backups">Nombre maximal de sauvegardes à conserver</string>
   <string name="auto_backup_target">Destination de la sauvegarde</string>
-  <string name="pre_install_backup">Backup before install</string>
-  <string name="pre_install_backup_description">Automatically backup data before installing an update</string>
-  <string name="pre_install_backup_running">Backup in progress</string>
-  <string name="pre_install_backup_running_description">Backing up data before installation…</string>
-  <string name="pre_install_backup_failed">Pre-install backup failed</string>
+  <string name="pre_install_backup">Sauvegarde avant l\'installation</string>
+  <string name="pre_install_backup_description">Sauvegarder automatiquement les données avant d\'installer une mise à jour</string>
+  <string name="pre_install_backup_running">Sauvegarde en cours</string>
+  <string name="pre_install_backup_running_description">Sauvegarder les données avant l\'installation…</string>
+  <string name="pre_install_backup_failed">Échec de la sauvegarde préalable à l\'installation</string>
   <string name="pre_install_backup_no_uri">Veuillez d\'abord configurer un emplacement de sauvegarde</string>
   <string name="pre_install_ask_backup">Souhaitez-vous sauvegarder vos données avant l\'installation ?</string>
   <string name="pre_install_yes_backup">Oui, sauvegarde</string>
