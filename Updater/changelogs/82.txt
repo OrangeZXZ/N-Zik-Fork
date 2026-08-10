@@ -1,0 +1,23 @@
+Fixed:
+- Fixed an issue where resetting or updating a song would show the wrong track when logged into YouTube.
+- Fixed a bug where new lines were displaying incorrectly in the update and delete song dialogs.
+- Fixed the navigation bar overlapping with the camera punch hole in landscape mode.
+- Fixed the top app header not fully hiding when scrolling in landscape mode.
+- Fixed the player screen content overlapping with the camera punch hole in landscape mode.
+- Fixed bottom sheets (like the player and menus) having incorrectly rounded bottom corners.
+- Fixed the action bar not being centered properly in landscape mode.
+- Fixed the bottom navigation and mini-player not fully hiding when scrolling.
+- Fixed a visual artifact behind the non-floating bottom navigation bar.
+- Fixed the landscape background color not extending fully behind the camera cutout safe area.
+- Fixed the user interface getting stuck in a hidden state after rotating the screen from landscape to portrait.
+- Fixed excessive padding around the content and top bar in landscape mode when using the ViMusic layout.
+- Fixed the ViMusic vertical navigation bar icons being placed too far apart and unintentionally scrolling with the app header.
+
+Changed:
+- Changed the background shape of checkbox items to be fully rectangular.
+- Checkbox items now support scrolling text for long descriptions.
+- Replaced the gray background for selected tabs with the theme's accent color for better contrast.
+- Replaced the gray background in the statistics time spent block with the theme's accent color for a more vibrant look.
+
+Refactor:
+- Improved internal codebase structure by removing inline fully qualified names to adhere to standard Kotlin practices.

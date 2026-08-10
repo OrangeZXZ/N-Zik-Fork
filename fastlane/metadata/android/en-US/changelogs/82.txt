@@ -1,0 +1,12 @@
+Fixed:
+- Fixed wrong song showing in reset/update dialogs when logged in.
+- Fixed new lines displaying incorrectly in dialogs.
+- Fixed multiple UI layout issues in landscape mode (camera cutout overlap, uncentered action bar).
+- Fixed UI getting stuck after rotating to portrait.
+
+Changed:
+- Improved checkbox items with scrolling text.
+- Replaced gray background in selected tabs and Statistics time block with accent color.
+
+Refactor:
+- Internal codebase improvements and cleanup.
