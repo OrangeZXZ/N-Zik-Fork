@@ -1643,11 +1643,11 @@ Volume BAS : titre précédent</string>
   <string name="pre_install_backup_running">Backup in progress</string>
   <string name="pre_install_backup_running_description">Backing up data before installation…</string>
   <string name="pre_install_backup_failed">Pre-install backup failed</string>
-  <string name="pre_install_backup_no_uri">Please configure a backup location first</string>
-  <string name="pre_install_ask_backup">Would you like to backup your data before installing?</string>
-  <string name="pre_install_yes_backup">Yes, backup</string>
-  <string name="pre_install_no_backup">No thanks</string>
-  <string name="pre_install_auto_backup_text">A backup will be performed automatically before installation. Proceed?</string>
+  <string name="pre_install_backup_no_uri">Veuillez d\'abord configurer un emplacement de sauvegarde</string>
+  <string name="pre_install_ask_backup">Souhaitez-vous sauvegarder vos données avant l\'installation ?</string>
+  <string name="pre_install_yes_backup">Oui, sauvegarde</string>
+  <string name="pre_install_no_backup">Non, merci</string>
+  <string name="pre_install_auto_backup_text">Une sauvegarde sera effectuée automatiquement avant l\'installation. Voulez-vous continuer ?</string>
   <string name="unlink">Dissocier</string>
   <string name="toolbar">Barre d\'outils</string>
   <string name="customize_toolbar">Personnaliser la barre d\'outils</string>
