@@ -899,7 +899,7 @@
   <string name="error_no_internet">Отсутствует сетевое соединение</string>
   <string name="error_timeout">Время ожидания подключения истекло</string>
   <string name="error_unknown">Неизвестная ошибка</string>
-  <string name="delete_song">Вы действительно хотите удалить эту песню? Она будет удалена из базы данных.\\nЭто действие необратимо.</string>
+  <string name="delete_song">Вы действительно хотите удалить эту песню? Она будет удалена из базы данных.\nЭто действие необратимо.</string>
   <string name="update_album">Обновить альбом</string>
   <string name="info_check_update_now">Проверить</string>
   <string name="info_no_update_available">Нет доступных обновлений</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">Обновить</string>
   <string name="update_waveform">Update waveform</string>
-  <string name="update_song">Вы действительно хотите повторить эту песню? Время воспроизведения и кэшированные данные будут удалены.\\nЭто действие необратимо.</string>
+  <string name="update_song">Вы действительно хотите повторить эту песню? Время воспроизведения и кэшированные данные будут удалены.\nЭто действие необратимо.</string>
   <string name="player_pause_listen_history_info">Не показывать и не сохранять новую историю воспроизведения</string>
   <string name="vertical_widget">Вертикальный виджет</string>
   <string name="horizontal_widget">Горизонтальный виджет</string>

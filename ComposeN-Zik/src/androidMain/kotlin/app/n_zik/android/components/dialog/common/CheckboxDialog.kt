@@ -4,6 +4,7 @@ import androidx.compose.ui.draw.clip
 
 import app.n_zik.android.uiRoundnessShape
 
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -89,7 +90,7 @@ abstract class CheckboxDialog(activeState: MutableState<Boolean>): ConfirmDialog
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding( vertical = 3.dp )
-                                   .clip(uiRoundnessShape()).clickable(
+                                   .clickable(
                                        interactionSource = remember { MutableInteractionSource() },
                                        indication = null,
                                        onClick = ::onShortClick
@@ -112,6 +113,7 @@ abstract class CheckboxDialog(activeState: MutableState<Boolean>): ConfirmDialog
                 BasicText(
                     text = menuIconTitle,
                     maxLines = 1,
+                    modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
                     style = typography().xs.copy( color = colorPalette().text )
                 )
             }

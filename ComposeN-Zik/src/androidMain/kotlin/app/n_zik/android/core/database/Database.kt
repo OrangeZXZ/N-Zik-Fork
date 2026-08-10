@@ -115,7 +115,15 @@ object Database {
         // Phase 1: Read existing data from DB (no lock held)
         val dbSong = songTable.findByIdDirect(song.id)
 
-        val artistNames = songItem.authors.parseArtists()
+        val artistNames = songItem.authors.parseArtists().filter { name ->
+            name.isNotBlank() &&
+            !name.matches(Regex("^[,&]+$")) &&
+            !name.equals("et", ignoreCase = true) &&
+            !name.equals("and", ignoreCase = true) &&
+            !name.equals("Random", ignoreCase = true) &&
+            !name.equals("YouTube Music", ignoreCase = true) &&
+            !name.equals("YouTube", ignoreCase = true)
+        }
         val artistDataList = mutableListOf<Pair<String, Artist?>>() // name -> existing DB artist
 
         for (artistName in artistNames) {

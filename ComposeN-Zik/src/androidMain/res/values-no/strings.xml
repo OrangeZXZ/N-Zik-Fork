@@ -899,7 +899,7 @@
   <string name="error_no_internet">Ingen nettverksforbindelse</string>
   <string name="error_timeout">Tidsavbrudd for tilkobling</string>
   <string name="error_unknown">Ukjent feil</string>
-  <string name="delete_song">Ønsker du virkelig å slette denne sangen? Det vil bli slettet fra databasen.\\nDenne handlingen er irreversibel.</string>
+  <string name="delete_song">Ønsker du virkelig å slette denne sangen? Det vil bli slettet fra databasen.\nDenne handlingen er irreversibel.</string>
   <string name="update_album">Updates the Album</string>
   <string name="info_check_update_now">Sjekk nå</string>
   <string name="info_no_update_available">Ingen tilgjengelige oppdateringer</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">Oppdater</string>
   <string name="update_waveform">Update waveform</string>
-  <string name="update_song">Vil du virkelig oppdatere denne sangen? Avspillingstid og mellomlagrede data blir slettet.\\nDenne handlingen er irreversibel.</string>
+  <string name="update_song">Vil du virkelig oppdatere denne sangen? Avspillingstid og mellomlagrede data blir slettet.\nDenne handlingen er irreversibel.</string>
   <string name="player_pause_listen_history_info">Lagrer ikke avspillingshendelser brukt til statistikk, historie og forslag i hurtigvalg</string>
   <string name="vertical_widget">Vertikal widget</string>
   <string name="horizontal_widget">Horisontal widget</string>

@@ -899,7 +899,7 @@
   <string name="error_no_internet">Nincs internetkapcsolat</string>
   <string name="error_timeout">Kapcsolat időtúllépés</string>
   <string name="error_unknown">Ismeretlen hiba</string>
-  <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+  <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
   <string name="update_album">Updates the Album</string>
   <string name="info_check_update_now">Check now</string>
   <string name="info_no_update_available">No updates available</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">Frissítés</string>
   <string name="update_waveform">Update waveform</string>
-  <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\\nThis action is irreversible.</string>
+  <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\nThis action is irreversible.</string>
   <string name="player_pause_listen_history_info">Nem menti el a statisztikákhoz, előzményekhez és javaslatokhoz használt lejátszási adatokat a gyors képekben.</string>
   <string name="vertical_widget">Függőleges widget</string>
   <string name="horizontal_widget">Vízszintes widget</string>

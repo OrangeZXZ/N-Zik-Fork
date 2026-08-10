@@ -899,7 +899,7 @@
   <string name="error_no_internet">ネットワーク接続なし</string>
   <string name="error_timeout">接続が時間切れです</string>
   <string name="error_unknown">不明なエラー</string>
-  <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\\nThis action is irreversible.</string>
+  <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
   <string name="update_album">アルバムを更新</string>
   <string name="info_check_update_now">今すぐチェック</string>
   <string name="info_no_update_available">利用可能なアップデートはありません</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">更新</string>
   <string name="update_waveform">Update waveform</string>
-  <string name="update_song">本当にこの曲を修正しますか？再生時間とキャッシュされたデータは消去されます。\\nこの操作は元に戻せません。</string>
+  <string name="update_song">本当にこの曲を修正しますか？再生時間とキャッシュされたデータは消去されます。\nこの操作は元に戻せません。</string>
   <string name="player_pause_listen_history_info">統計、履歴、提案に使用される再生イベントを保存しない</string>
   <string name="vertical_widget">縦向きのウィジェット</string>
   <string name="horizontal_widget">横向きのウィジェット</string>

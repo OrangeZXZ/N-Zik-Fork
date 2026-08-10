@@ -1,0 +1,21 @@
+Fixed:
+- fix(player): reset/update song shows wrong song when logged in to YouTube
+  - Root cause: `Innertube.nextPage()` sends auth cookies, YouTube returns different metadata for logged-in users
+  - Switched to `Innertube.song()` which uses `get_queue` endpoint without auth (`setLogin=false`)
+  - Applied in `ResetSongDialog.kt` and `PlayerItemMenu.kt` update button
+  - Removed `Database.upsert(songItem)` from `ResetSongDialog` that was overwriting correct song data
+  - Reference: Metrolist uses same pattern in `SongMenu.kt`
+
+- fix(strings): `\n` displaying as literal text in Update/Delete song dialogs
+  - All 41 locale `strings.xml` files had `\\n` (escaped backslash) instead of `\n` (newline escape)
+  - Fixed via batch replace across `values/` and all `values-*/` directories
+  - Both `update_song` and `delete_song` strings corrected
+
+Changed:
+- change(ui): CheckboxDialog items no longer have rounded clip shape
+  - Removed `.clip(uiRoundnessShape())` from `CheckboxDialog.kt:92`
+  - Removed unused imports `clip` and `uiRoundnessShape`
+
+- change(ui): CheckboxDialog items support marquee scrolling for long text
+  - Added `Modifier.basicMarquee(iterations = Int.MAX_VALUE)` to `BasicText` in `CheckboxDialog.kt`
+  - Prevents text truncation in Reset song dialog checkboxes

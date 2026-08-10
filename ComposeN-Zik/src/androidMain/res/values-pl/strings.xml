@@ -899,7 +899,7 @@
   <string name="error_no_internet">Brak połączenia z siecią</string>
   <string name="error_timeout">Upłynął limit czasu połączenia</string>
   <string name="error_unknown">Nieznany błąd</string>
-  <string name="delete_song">Czy na pewno chcesz usunąć tę piosenkę? Zostanie ona usunięta z bazy danych.\\nTa akcja jest nieodwracalna.</string>
+  <string name="delete_song">Czy na pewno chcesz usunąć tę piosenkę? Zostanie ona usunięta z bazy danych.\nTa akcja jest nieodwracalna.</string>
   <string name="update_album">Aktualizuje Album</string>
   <string name="info_check_update_now">Sprawdź teraz</string>
   <string name="info_no_update_available">Brak dostępnych aktualizacji</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">Aktualizacja</string>
   <string name="update_waveform">Update waveform</string>
-  <string name="update_song">Czy na pewno chcesz pobrać tę piosenkę? Czas odtwarzania i pamięć podręczna danych zostaną usunięte.\\nTa akcja jest nieodwracalna.</string>
+  <string name="update_song">Czy na pewno chcesz pobrać tę piosenkę? Czas odtwarzania i pamięć podręczna danych zostaną usunięte.\nTa akcja jest nieodwracalna.</string>
   <string name="player_pause_listen_history_info">Nie zapisuj odtworzeń do statystyk, historii i sugestii w szybkim wyborze</string>
   <string name="vertical_widget">Widget pionowy</string>
   <string name="horizontal_widget">Widget poziomy</string>

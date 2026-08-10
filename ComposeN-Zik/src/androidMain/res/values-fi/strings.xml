@@ -899,7 +899,7 @@
   <string name="error_no_internet">Ei verkkoyhteyttä</string>
   <string name="error_timeout">Yhteyden aikakatkaisu</string>
   <string name="error_unknown">Tuntematon virhe</string>
-  <string name="delete_song">Haluatko varmasti poistaa tämän kappaleen? Se poistetaan tietokannasta.\\nTämä toiminto on peruuttamaton.</string>
+  <string name="delete_song">Haluatko varmasti poistaa tämän kappaleen? Se poistetaan tietokannasta.\nTämä toiminto on peruuttamaton.</string>
   <string name="update_album">Albumin päivitys</string>
   <string name="info_check_update_now">Tarkista nyt</string>
   <string name="info_no_update_available">Ei päivityksiä saatavilla</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">Päivitä</string>
   <string name="update_waveform">Update waveform</string>
-  <string name="update_song">Haluatko varmasti palauttaa tämän kappaleen? Toistoaika ja välimuistissa olevat tiedot ovat käytössä.\\nTämä toiminto on peruuttamaton.</string>
+  <string name="update_song">Haluatko varmasti palauttaa tämän kappaleen? Toistoaika ja välimuistissa olevat tiedot ovat käytössä.\nTämä toiminto on peruuttamaton.</string>
   <string name="player_pause_listen_history_info">Ei tallenna toiston tapahtumia, joita käytetään tilastoissa, historiassa ja pikavalinnan ehdotuksissa</string>
   <string name="vertical_widget">Pystysuora widgetti</string>
   <string name="horizontal_widget">Vaakasuora widgetti</string>

@@ -899,7 +899,7 @@
   <string name="error_no_internet">Відсутнє мережеве з\'єднання</string>
   <string name="error_timeout">Час очікування підключення закінчився</string>
   <string name="error_unknown">Невідома помилка</string>
-  <string name="delete_song">Ви дійсно хочете видалити цю пісню? Її буде видалено з бази даних.\\nЦя дія незворотня.</string>
+  <string name="delete_song">Ви дійсно хочете видалити цю пісню? Її буде видалено з бази даних.\nЦя дія незворотня.</string>
   <string name="update_album">Оновити альбом</string>
   <string name="info_check_update_now">Перевірити зараз</string>
   <string name="info_no_update_available">Оновлень немає</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">Оновити</string>
   <string name="update_waveform">Update waveform</string>
-  <string name="update_song">Ви дійсно бажаєте змінити цю пісню? Час відтворення та кешовані дані буде очищено.\\nЦя дія незворотня.</string>
+  <string name="update_song">Ви дійсно бажаєте змінити цю пісню? Час відтворення та кешовані дані буде очищено.\nЦя дія незворотня.</string>
   <string name="player_pause_listen_history_info">Не показувати та не зберігати нову історію відтворення</string>
   <string name="vertical_widget">Вертикальний віджет</string>
   <string name="horizontal_widget">Горизонтальний віджет</string>

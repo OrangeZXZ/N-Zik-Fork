@@ -49,6 +49,7 @@ import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.models.bodies.NextBody
 import it.fast4x.innertube.requests.nextPage
+import it.fast4x.innertube.requests.song
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.n_zik.android.colorPalette
@@ -636,8 +637,29 @@ class PlayerItemMenu private constructor(
                     menuState.hide()
                     binder.cache.removeResource(mediaItem.mediaId)
                     binder.downloadCache.removeResource(mediaItem.mediaId)
-                    Database.asyncTransaction {
-                        Database.songTable.updateTotalPlayTime(mediaItem.mediaId, 0)
+                    val videoId = mediaItem.mediaId.split("/").lastOrNull() ?: mediaItem.mediaId
+                    CoroutineScope(Dispatchers.IO).launch {
+                        Database.asyncTransaction {
+                            Database.songTable.updateTotalPlayTime(mediaItem.mediaId, 0)
+                        }
+                        val songItem = Innertube.song(videoId)?.getOrNull()
+                        if (songItem != null) {
+                            Database.asyncTransaction {
+                                val fetchedSong = songItem.asSong
+                                val dbSong = Database.songTable.findByIdDirect(videoId)
+                                if (dbSong != null && fetchedSong != null) {
+                                    Database.songTable.updateReplace(dbSong.copy(
+                                        title = fetchedSong.title ?: dbSong.title,
+                                        artistsText = fetchedSong.artistsText ?: dbSong.artistsText,
+                                        thumbnailUrl = fetchedSong.thumbnailUrl ?: dbSong.thumbnailUrl,
+                                        durationText = fetchedSong.durationText ?: dbSong.durationText,
+                                        likedAt = dbSong.likedAt,
+                                        totalPlayTimeMs = dbSong.totalPlayTimeMs,
+                                        position = dbSong.position
+                                    ))
+                                }
+                            }
+                        }
                     }
                 }
             )

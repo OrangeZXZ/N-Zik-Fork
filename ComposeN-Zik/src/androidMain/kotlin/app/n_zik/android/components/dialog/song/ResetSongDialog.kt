@@ -11,8 +11,7 @@ import androidx.compose.ui.util.fastAny
 import androidx.media3.common.util.UnstableApi
 import app.n_zik.android.R
 import it.fast4x.innertube.Innertube
-import it.fast4x.innertube.models.bodies.NextBody
-import it.fast4x.innertube.requests.nextPage
+import it.fast4x.innertube.requests.song
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.models.Song
@@ -118,11 +117,7 @@ class ResetSongDialog private constructor(
 
             val fetchIds = arrayOf(TITLE_CHECKBOX_ID, AUTHORS_CHECKBOX_ID, THUMBNAIL_CHECKBOX_ID)
             if( items.fastAny { it.id in fetchIds && it.selected } ) {
-                val songItem = Innertube.nextPage( NextBody(videoId = song.id) )
-                                                  ?.getOrNull()
-                                                  ?.itemsPage
-                                                  ?.items
-                                                  ?.firstOrNull()
+                val songItem = Innertube.song(song.id)?.getOrNull()
 
                 if (songItem != null) {
                     val fetchedSong = songItem.asSong
@@ -140,9 +135,6 @@ class ResetSongDialog private constructor(
                         artistsText = authors ?: song.artistsText,
                         thumbnailUrl = thumbnailUrl ?: song.thumbnailUrl,
                     )
-
-                    // Also re-save artists to fix missing browse IDs
-                    Database.upsert(songItem)
                 }
             }
 
