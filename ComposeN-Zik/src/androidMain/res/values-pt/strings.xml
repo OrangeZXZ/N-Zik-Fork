@@ -899,7 +899,7 @@
   <string name="error_no_internet">Sem ligação de rede</string>
   <string name="error_timeout">Tempo de conexão esgotado</string>
   <string name="error_unknown">Erro desconhecido</string>
-  <string name="delete_song">Você realmente deseja excluir esta música? Ela será excluída do banco de dados.\nEsta ação é irreversível.</string>
+  <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
   <string name="update_album">Atualiza o álbum</string>
   <string name="info_check_update_now">Verificar agora</string>
   <string name="info_no_update_available">Não há atualizações disponíveis</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">Atualizar</string>
   <string name="update_waveform">Update waveform</string>
-  <string name="update_song">Você realmente deseja fazer referência a esta música? Tempo de reprodução e dados em cache serão apagados.\nEsta ação é irreversível.</string>
+  <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\nThis action is irreversible.</string>
   <string name="player_pause_listen_history_info">Não salva eventos de reprodução usados ​​para estatísticas, histórico e sugestões em seleções rápidas</string>
   <string name="vertical_widget">Widget vertical</string>
   <string name="horizontal_widget">Widget horizontal</string>

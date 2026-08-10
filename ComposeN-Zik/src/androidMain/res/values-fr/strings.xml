@@ -900,7 +900,7 @@ Volume BAS : titre précédent</string>
   <string name="error_no_internet">Pas de réseau</string>
   <string name="error_timeout">Délai de connexion expiré</string>
   <string name="error_unknown">Erreur Inconnue</string>
-  <string name="delete_song">Voulez-vous vraiment supprimer ce titre ? Elle sera supprimée de la base de données. Cette action est irréversible.</string>
+  <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
   <string name="update_album">Mise à jour de l\'album</string>
   <string name="info_check_update_now">Vérifiez maintenant</string>
   <string name="info_no_update_available">Aucune mise à jour disponible</string>
@@ -914,7 +914,7 @@ Volume BAS : titre précédent</string>
   <string name="social_github">GitHub</string>
   <string name="update">Mettre à jour</string>
   <string name="update_waveform">Mettre à jour la forme d\'onde</string>
-  <string name="update_song">Voulez-vous vraiment recharger ce titre ? Son temps de lecture et son cache seront effacés. Cette action est irréversible.</string>
+  <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\nThis action is irreversible.</string>
   <string name="player_pause_listen_history_info">N\'enregistre pas les événements de lecture utilisés pour les statistiques, l\'historique et les suggestions dans la « Sélection Rapide »</string>
   <string name="vertical_widget">Widget vertical</string>
   <string name="horizontal_widget">Widget horizontal</string>

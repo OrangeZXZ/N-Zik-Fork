@@ -899,7 +899,7 @@
   <string name="error_no_internet">Bez připojení k síti</string>
   <string name="error_timeout">Spojení vypršelo</string>
   <string name="error_unknown">Neznámá chyba</string>
-  <string name="delete_song">Opravdu chcete tuto skladbu smazat? Bude vymazána z databáze. Tato akce je nevratná.</string>
+  <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
   <string name="update_album">Aktualizace alba</string>
   <string name="info_check_update_now">Zkontrolovat nyní</string>
   <string name="info_no_update_available">Nejsou dostupné žádné aktualizace</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">Aktualizace</string>
   <string name="update_waveform">Update waveform</string>
-  <string name="update_song">Opravdu chceš znovu načíst tuto píseň? Čas přehrávání a data uložená v mezipaměti budou vymazána. Tato akce je nevratná.</string>
+  <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\nThis action is irreversible.</string>
   <string name="player_pause_listen_history_info">Neukládat přehrávané záznamy, které se používají pro statistiky, historii a návrhy v rychlém výběru</string>
   <string name="vertical_widget">Vertikální widget</string>
   <string name="horizontal_widget">Horizontální widget</string>

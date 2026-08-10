@@ -899,7 +899,7 @@
   <string name="error_no_internet">Keine Internetverbindung</string>
   <string name="error_timeout">Zeitüberschreitung der Verbindung</string>
   <string name="error_unknown">Unbekannter Fehler</string>
-  <string name="delete_song">Soll der Titel wirklich aus der Datenbank gelöscht werden? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+  <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
   <string name="update_album">Album aktualisieren</string>
   <string name="info_check_update_now">Jetzt überprüfen</string>
   <string name="info_no_update_available">Keine Aktualisierung verfügbar</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">Aktualisieren</string>
   <string name="update_waveform">Wellenform aktualisieren</string>
-  <string name="update_song">Soll der Titel wirklich aktualisiert werden? Die Wiedergabezeit und der Cache werden zurückgesetzt. Diese Aktion kann nicht rückgängig gemacht werden.</string>
+  <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\nThis action is irreversible.</string>
   <string name="player_pause_listen_history_info">Speichert keine Wiedergabe-Ereignisse, die für die Statistik, den Verlauf und Vorschläge in Entdecken verwendet werden</string>
   <string name="vertical_widget">Vertikales Widget</string>
   <string name="horizontal_widget">Horizontales Widget</string>

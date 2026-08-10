@@ -899,7 +899,7 @@
   <string name="error_no_internet">Ingen netværksforbindelse</string>
   <string name="error_timeout">Forbindelsen udløb</string>
   <string name="error_unknown">Ukendt fejl</string>
-  <string name="delete_song">Vil du virkelig slette denne sang? Den slettes fra databasen. Dette kan ikke fortrydes.</string>
+  <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
   <string name="update_album">Opdaterer albummet</string>
   <string name="info_check_update_now">Søg nu</string>
   <string name="info_no_update_available">Ingen opdatering tilgængelig</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">Opdater</string>
   <string name="update_waveform">Update waveform</string>
-  <string name="update_song">Vil du virkelig hente denne sang igen? Afspilningstid og cachelagrede data slettes. Denne handling kan ikke fortrydes.</string>
+  <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\nThis action is irreversible.</string>
   <string name="player_pause_listen_history_info">Gemmer ikke afspilningshændelser til statistikker, historik eller forslag i Hurtige Valg</string>
   <string name="vertical_widget">Lodret widget</string>
   <string name="horizontal_widget">Vandret widget</string>
