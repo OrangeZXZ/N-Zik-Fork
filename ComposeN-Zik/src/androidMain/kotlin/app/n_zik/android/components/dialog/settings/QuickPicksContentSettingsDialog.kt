@@ -50,6 +50,7 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import androidx.compose.ui.platform.LocalContext
 
 private val defaultSectionOrder = listOf(
     "tips",
@@ -181,7 +182,7 @@ object QuickPicksContentSettingsDialog : Dialog {
 
     @Composable
     override fun DialogBody() {
-        val context = androidx.compose.ui.platform.LocalContext.current
+        val context = LocalContext.current
         val prefs = remember { context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
         val sectionDefs = remember { buildSectionDefs() }
 

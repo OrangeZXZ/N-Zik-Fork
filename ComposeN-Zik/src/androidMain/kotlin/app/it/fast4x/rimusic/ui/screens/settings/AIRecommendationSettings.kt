@@ -66,6 +66,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import app.n_zik.android.components.tab.Search
 import app.n_zik.android.components.dialog.settings.QuickPicksContentSettingsDialog
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun DefaultAIRecommendationSettings() {
@@ -585,7 +586,7 @@ fun AIRecommendationSettings(
                     }
                     if (resetToDefault) {
                         DefaultAIRecommendationSettings()
-                        androidx.compose.runtime.LaunchedEffect(Unit) {
+                        LaunchedEffect(Unit) {
                             resetToDefault = false
                         }
                         app.kreate.android.me.knighthat.utils.Toaster.done()

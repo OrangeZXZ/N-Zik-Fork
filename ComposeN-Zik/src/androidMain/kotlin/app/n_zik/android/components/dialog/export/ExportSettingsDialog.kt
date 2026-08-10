@@ -34,12 +34,13 @@ import app.it.fast4x.rimusic.utils.ytAccountThumbnailKey
 import app.it.fast4x.rimusic.utils.ytCookieKey
 import app.it.fast4x.rimusic.utils.ytDataSyncIdKey
 import app.it.fast4x.rimusic.utils.ytVisitorDataKey
+import androidx.compose.runtime.MutableState
 
 class ExportSettingsDialog private constructor(
     private val launcher: ManagedActivityResultLauncher<String, Uri?>,
     private val context: Context,
-    private val includeYtbState: androidx.compose.runtime.MutableState<Boolean>,
-    private val includeDiscordState: androidx.compose.runtime.MutableState<Boolean>
+    private val includeYtbState: MutableState<Boolean>,
+    private val includeDiscordState: MutableState<Boolean>
 ) {
     companion object {
         private fun onExport(

@@ -134,6 +134,15 @@ import app.it.fast4x.rimusic.utils.rememberPreference
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import app.it.fast4x.rimusic.utils.disableScrollingTextKey
+import app.it.fast4x.rimusic.enums.MenuStyle
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.fadeOut
+import app.it.fast4x.rimusic.ui.components.themed.IconButton
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
+import androidx.compose.ui.window.Dialog
+import androidx.compose.animation.AnimatedVisibility
 
 data class AudioDevice(
     val name: String,
@@ -305,11 +314,11 @@ fun AudioDeviceMenu(onDismiss: () -> Unit) {
         }
     }
 
-    val menuStyle by rememberPreference(menuStyleKey, app.it.fast4x.rimusic.enums.MenuStyle.List)
+    val menuStyle by rememberPreference(menuStyleKey, MenuStyle.List)
 
-    val menuContent: @Composable (app.it.fast4x.rimusic.enums.MenuStyle) -> Unit = { style ->
+    val menuContent: @Composable (MenuStyle) -> Unit = { style ->
         if (isLoading) {
-            val configuration = androidx.compose.ui.platform.LocalConfiguration.current
+            val configuration = LocalConfiguration.current
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -317,7 +326,7 @@ fun AudioDeviceMenu(onDismiss: () -> Unit) {
                     .padding(32.dp),
                 contentAlignment = Alignment.Center
             ) {
-                androidx.compose.material3.CircularProgressIndicator(
+                CircularProgressIndicator(
                     modifier = Modifier.size(48.dp),
                     strokeWidth = 3.dp,
                     color = MaterialTheme.colorScheme.primary
@@ -344,7 +353,7 @@ fun AudioDeviceMenu(onDismiss: () -> Unit) {
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                androidx.compose.material3.Button(
+                Button(
                     onClick = {
                         errorMessage = null
                         isLoading = true
@@ -355,15 +364,15 @@ fun AudioDeviceMenu(onDismiss: () -> Unit) {
                 }
             }
         } else {
-            var audioQualityFormat by app.it.fast4x.rimusic.utils.rememberPreference(app.it.fast4x.rimusic.utils.audioQualityFormatKey, app.it.fast4x.rimusic.enums.AudioQualityFormat.Auto)
+            var audioQualityFormat by rememberPreference(audioQualityFormatKey, AudioQualityFormat.Auto)
                 val qualityOptions = listOf(
-                    app.it.fast4x.rimusic.enums.AudioQualityFormat.Auto to stringResource(R.string.audio_quality_automatic),
-                    app.it.fast4x.rimusic.enums.AudioQualityFormat.High to stringResource(R.string.audio_quality_format_high),
-                    app.it.fast4x.rimusic.enums.AudioQualityFormat.Medium to stringResource(R.string.audio_quality_format_medium),
-                    app.it.fast4x.rimusic.enums.AudioQualityFormat.Low to stringResource(R.string.audio_quality_format_low)
+                    AudioQualityFormat.Auto to stringResource(R.string.audio_quality_automatic),
+                    AudioQualityFormat.High to stringResource(R.string.audio_quality_format_high),
+                    AudioQualityFormat.Medium to stringResource(R.string.audio_quality_format_medium),
+                    AudioQualityFormat.Low to stringResource(R.string.audio_quality_format_low)
                 )
                 
-                if (style == app.it.fast4x.rimusic.enums.MenuStyle.List) {
+                if (style == MenuStyle.List) {
                     ListMenu.Menu(title = stringResource(R.string.audio_devices), showDragHandle = true) {
                         SectionTitle(stringResource(R.string.audio_output_title))
                         audioDevices.forEach { dev ->
@@ -381,7 +390,7 @@ fun AudioDeviceMenu(onDismiss: () -> Unit) {
                                             contentAlignment = Alignment.Center
                                         ) {
                                             val iconRes = getBottomSheetDeviceIcon(dev.type, dev.name)
-                                            if (iconRes is androidx.compose.ui.graphics.vector.ImageVector) {
+                                            if (iconRes is ImageVector) {
                                                 Icon(
                                                     imageVector = iconRes,
                                                     contentDescription = null,
@@ -401,15 +410,15 @@ fun AudioDeviceMenu(onDismiss: () -> Unit) {
                                     modifier = if (dev.isActive) Modifier.background(colorPalette().accent.copy(alpha = 0.1f), uiRoundnessShape()) else Modifier,
                                     subtitle = dev.batteryLevel?.let { "Battery: $it%" },
                                     trailingContent = {
-                                        androidx.compose.animation.AnimatedVisibility(
+                                        AnimatedVisibility(
                                             visible = dev.isActive,
-                                            enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.scaleIn(),
-                                            exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.scaleOut()
+                                            enter = fadeIn() + scaleIn(),
+                                            exit = fadeOut() + scaleOut()
                                         ) {
-                                            androidx.compose.material3.RadioButton(
+                                            RadioButton(
                                                 selected = true,
                                                 onClick = null,
-                                                colors = androidx.compose.material3.RadioButtonDefaults.colors(
+                                                colors = RadioButtonDefaults.colors(
                                                     selectedColor = colorPalette().accent,
                                                     unselectedColor = colorPalette().textSecondary
                                                 )
@@ -487,10 +496,10 @@ fun AudioDeviceMenu(onDismiss: () -> Unit) {
                                 modifier = if (isSelected) Modifier.background(colorPalette().accent.copy(alpha = 0.1f), uiRoundnessShape()) else Modifier,
                                 trailingContent = {
                                     if (isSelected) {
-                                        androidx.compose.material3.RadioButton(
+                                        RadioButton(
                                             selected = isSelected,
                                             onClick = null,
-                                            colors = androidx.compose.material3.RadioButtonDefaults.colors(
+                                            colors = RadioButtonDefaults.colors(
                                                 selectedColor = colorPalette().accent,
                                                 unselectedColor = colorPalette().textSecondary
                                             )
@@ -526,7 +535,7 @@ fun AudioDeviceMenu(onDismiss: () -> Unit) {
                                         contentAlignment = Alignment.Center
                                     ) {
                                         val iconRes = getBottomSheetDeviceIcon(dev.type, dev.name)
-                                        if (iconRes is androidx.compose.ui.graphics.vector.ImageVector) {
+                                        if (iconRes is ImageVector) {
                                             Icon(
                                                 imageVector = iconRes,
                                                 contentDescription = null,
@@ -545,15 +554,15 @@ fun AudioDeviceMenu(onDismiss: () -> Unit) {
                                 },
                                 subtitle = dev.batteryLevel?.let { "Battery: $it%" },
                                 trailingContent = {
-                                    androidx.compose.animation.AnimatedVisibility(
+                                    AnimatedVisibility(
                                         visible = dev.isActive,
-                                        enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.scaleIn(),
-                                        exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.scaleOut()
+                                        enter = fadeIn() + scaleIn(),
+                                        exit = fadeOut() + scaleOut()
                                     ) {
-                                        androidx.compose.material3.RadioButton(
+                                        RadioButton(
                                             selected = true,
                                             onClick = null,
-                                            colors = androidx.compose.material3.RadioButtonDefaults.colors(
+                                            colors = RadioButtonDefaults.colors(
                                                 selectedColor = colorPalette().accent,
                                                 unselectedColor = colorPalette().textSecondary
                                             )
@@ -639,15 +648,15 @@ fun AudioDeviceMenu(onDismiss: () -> Unit) {
                                     }
                                 },
                                 trailingContent = {
-                                    androidx.compose.animation.AnimatedVisibility(
+                                    AnimatedVisibility(
                                         visible = isSelected,
-                                        enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.scaleIn(),
-                                        exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.scaleOut()
+                                        enter = fadeIn() + scaleIn(),
+                                        exit = fadeOut() + scaleOut()
                                     ) {
-                                        androidx.compose.material3.RadioButton(
+                                        RadioButton(
                                             selected = true,
                                             onClick = null,
-                                            colors = androidx.compose.material3.RadioButtonDefaults.colors(
+                                            colors = RadioButtonDefaults.colors(
                                                 selectedColor = colorPalette().accent,
                                                 unselectedColor = colorPalette().textSecondary
                                             )
@@ -1002,11 +1011,11 @@ private fun VolumeDialog(
 ) {
     var dialogVolume by remember { mutableFloatStateOf(currentVolume) }
 
-    androidx.compose.ui.window.Dialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(androidx.compose.foundation.shape.RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(16.dp))
                 .background(colorPalette().background1)
                 .padding(16.dp)
         ) {
@@ -1031,7 +1040,7 @@ private fun VolumeDialog(
                     )
                 }
                 Spacer(modifier = Modifier.size(12.dp))
-                val isScrollingTextDisabled by app.it.fast4x.rimusic.utils.rememberPreference(app.it.fast4x.rimusic.utils.disableScrollingTextKey, false)
+                val isScrollingTextDisabled by rememberPreference(disableScrollingTextKey, false)
 
                 BasicText(
                     text = stringResource(R.string.volume),
@@ -1059,7 +1068,7 @@ private fun VolumeDialog(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            app.n_zik.android.components.ui.sliders.SliderControl(
+            SliderControl(
                 state = dialogVolume,
                 onSlide = { dialogVolume = it },
                 onSlideComplete = {
@@ -1078,7 +1087,7 @@ private fun VolumeDialog(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                app.it.fast4x.rimusic.ui.components.themed.IconButton(
+                IconButton(
                     onClick = onDismiss,
                     icon = R.drawable.close,
                     color = colorPalette().textSecondary,

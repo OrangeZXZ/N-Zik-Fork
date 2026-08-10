@@ -25,6 +25,7 @@ import timber.log.Timber
 import java.io.File
 import java.util.Optional
 import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
+import app.n_zik.android.appContext
 
 @UnstableApi
 open class DeleteSongDialog(
@@ -62,7 +63,7 @@ open class DeleteSongDialog(
                 songPlaylistMapTable.deleteBySongId( s.id )
                 formatTable.deleteBySongId( s.id )
                 songTable.delete( s )
-                WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), s.id)
+                WaveformExtractor.deleteWaveform(appContext(), s.id)
             }
 
             if (s.isLocal) {
@@ -78,7 +79,7 @@ open class DeleteSongDialog(
     private fun deleteLocalFile(song: Song) {
         try {
             val mediaStoreId = song.id.substringAfter(LOCAL_KEY_PREFIX).toLongOrNull() ?: return
-            val context = app.n_zik.android.appContext()
+            val context = appContext()
 
             val uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mediaStoreId)
 

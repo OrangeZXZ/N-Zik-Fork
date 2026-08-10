@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import app.it.fast4x.rimusic.enums.OnDeviceSongSortBy
 import app.kreate.android.me.knighthat.utils.getLocalSongs
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 
 class PlaylistDetailHandler : BrowseHandler {
     override fun handles(parentId: String): Boolean {
@@ -81,7 +82,7 @@ class PlaylistDetailHandler : BrowseHandler {
                     val sortOrder = context.preferences.getEnum("PlaylistSongsSortOrder_$playlistId", SortOrder.Ascending)
                     database.songPlaylistMapTable.sortSongs(playlistId.toLong(), sortBy, sortOrder)
                 } else {
-                    val playlistPage = Innertube.playlistPage(BrowseBody(browseId = playlistId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)))?.getOrNull()
+                    val playlistPage = Innertube.playlistPage(BrowseBody(browseId = playlistId.removePrefix(MODIFIED_PREFIX)))?.getOrNull()
                     val songs = playlistPage?.songsPage?.items?.toList()?.map { item -> item.asSong } ?: emptyList()
                     AutoSearchState.searchedSongs = (AutoSearchState.searchedSongs + songs).distinctBy { s -> s.id }
                     kotlinx.coroutines.flow.flowOf(songs)

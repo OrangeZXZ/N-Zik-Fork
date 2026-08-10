@@ -60,6 +60,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import app.n_zik.android.core.network.client.GlobalNetworkLogger
 import app.n_zik.android.core.network.client.NetworkClientFactory
+import androidx.compose.foundation.Image
 
 @OptIn(ExperimentalCoilApi::class)
 object ImageCacheFactory {
@@ -316,7 +317,7 @@ object ImageCacheFactory {
                 kotlinx.coroutines.delay(10000L)
                 showFallback = true
             }
-            androidx.compose.foundation.Image(
+            Image(
                 painter = painterResource(if (showFallback) R.drawable.ic_launcher_box else R.drawable.loader),
                 contentDescription = null,
                 modifier = modifier.fillMaxSize(),
@@ -490,7 +491,7 @@ object ImageCacheFactory {
                 kotlinx.coroutines.delay(10000L)
                 showFallback = true
             }
-            androidx.compose.foundation.Image(
+            Image(
                 painter = painterResource(if (showFallback) R.drawable.ic_launcher_box else R.drawable.loader),
                 contentDescription = null,
                 modifier = modifier.fillMaxSize(),
@@ -536,7 +537,7 @@ object ImageCacheFactory {
             contentScale = contentScale,
             modifier = modifier,
             loading = {
-                androidx.compose.foundation.Image(
+                Image(
                     painter = painterResource(R.drawable.loader),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
@@ -544,7 +545,7 @@ object ImageCacheFactory {
                 )
             },
             error = {
-                androidx.compose.foundation.Image(
+                Image(
                     painter = painterResource(error),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
@@ -580,7 +581,7 @@ object ImageCacheFactory {
                 kotlinx.coroutines.delay(10000L)
                 showFallback = true
             }
-            androidx.compose.foundation.Image(
+            Image(
                 painter = painterResource(if (showFallback) R.drawable.ic_launcher_box else R.drawable.loader),
                 contentDescription = null,
                 modifier = modifier.fillMaxSize(),

@@ -43,6 +43,7 @@ import app.it.fast4x.rimusic.utils.conditional
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
 import app.n_zik.android.uiRoundnessShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
 fun LyricsTextPainter(
@@ -336,7 +337,7 @@ fun LyricsTextPainter(
                         scaleY = animateSizeText
                         scaleX = animateSizeText
                     }
-                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(8.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = if (clickLyricsText) ripple(true) else null,
@@ -376,7 +377,7 @@ fun LyricsTextPainter(
                         scaleY = animateSizeText
                         scaleX = animateSizeText
                     }
-                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(8.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = if (clickLyricsText) ripple(true) else null,
@@ -386,7 +387,7 @@ fun LyricsTextPainter(
                         if (isCurrentIndex) if (lyricsHighlight == LyricsHighlight.White) Color.White.copy(0.5f)
                         else if (lyricsHighlight == LyricsHighlight.Black) Color.Black.copy(0.5f)
                         else Color.Transparent else Color.Transparent,
-                        androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                        RoundedCornerShape(8.dp)
                     )
                     .conditional(lyricsHighlight != LyricsHighlight.None) { fillMaxWidth() }
             )
@@ -420,7 +421,7 @@ fun LyricsTextPainter(
                         scaleY = animateSizeText
                         scaleX = animateSizeText
                     }
-                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(8.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = if (clickLyricsText) ripple(true) else null,

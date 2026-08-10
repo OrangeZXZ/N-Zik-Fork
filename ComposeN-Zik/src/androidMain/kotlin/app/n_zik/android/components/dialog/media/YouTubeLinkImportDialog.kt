@@ -38,6 +38,7 @@ import app.n_zik.android.uiRoundnessShape
 import androidx.core.net.toUri
 import app.n_zik.android.components.dialog.common.InputDialog
 import app.n_zik.android.components.dialog.common.InteractiveDialog
+import androidx.compose.ui.window.Dialog
 
 /**
  * Centralized YouTube link import dialog.
@@ -53,7 +54,7 @@ fun YouTubeLinkImportDialog(
 ) {
     var youTubeUrl by remember { mutableStateOf("") }
 
-    androidx.compose.ui.window.Dialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier.wrapContentSize()
                 .sizeIn(

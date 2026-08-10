@@ -14,6 +14,7 @@ import it.fast4x.innertube.requests.HomePage
 import app.it.fast4x.rimusic.models.Song
 import kotlinx.serialization.json.Json
 import timber.log.Timber
+import androidx.compose.runtime.DisposableEffect
 
 const val showVisualizerStateKey = "showVisualizerStateKey"
 const val showLyricsStateKey = "showLyricsStateKey"
@@ -754,7 +755,7 @@ fun rememberPreference(key: String, defaultValue: Boolean): MutableState<Boolean
         }
     }
     
-    androidx.compose.runtime.DisposableEffect(prefs, listener) {
+    DisposableEffect(prefs, listener) {
         prefs.registerOnSharedPreferenceChangeListener(listener)
         onDispose {
             prefs.unregisterOnSharedPreferenceChangeListener(listener)
@@ -785,7 +786,7 @@ fun rememberPreference(key: String, defaultValue: Int): MutableState<Int> {
         }
     }
     
-    androidx.compose.runtime.DisposableEffect(prefs, listener) {
+    DisposableEffect(prefs, listener) {
         prefs.registerOnSharedPreferenceChangeListener(listener)
         onDispose {
             prefs.unregisterOnSharedPreferenceChangeListener(listener)
@@ -818,7 +819,7 @@ fun rememberPreference(key: String, defaultValue: Float): MutableState<Float> {
         }
     }
     
-    androidx.compose.runtime.DisposableEffect(prefs, listener) {
+    DisposableEffect(prefs, listener) {
         prefs.registerOnSharedPreferenceChangeListener(listener)
         onDispose {
             prefs.unregisterOnSharedPreferenceChangeListener(listener)
@@ -849,7 +850,7 @@ fun rememberPreference(key: String, defaultValue: Long): MutableState<Long> {
         }
     }
     
-    androidx.compose.runtime.DisposableEffect(prefs, listener) {
+    DisposableEffect(prefs, listener) {
         prefs.registerOnSharedPreferenceChangeListener(listener)
         onDispose {
             prefs.unregisterOnSharedPreferenceChangeListener(listener)
@@ -880,7 +881,7 @@ fun rememberPreference(key: String, defaultValue: String): MutableState<String> 
         }
     }
     
-    androidx.compose.runtime.DisposableEffect(prefs, listener) {
+    DisposableEffect(prefs, listener) {
         prefs.registerOnSharedPreferenceChangeListener(listener)
         onDispose {
             prefs.unregisterOnSharedPreferenceChangeListener(listener)
@@ -911,7 +912,7 @@ inline fun <reified T : Enum<T>> rememberPreference(key: String, defaultValue: T
         }
     }
     
-    androidx.compose.runtime.DisposableEffect(prefs, listener) {
+    DisposableEffect(prefs, listener) {
         prefs.registerOnSharedPreferenceChangeListener(listener)
         onDispose {
             prefs.unregisterOnSharedPreferenceChangeListener(listener)

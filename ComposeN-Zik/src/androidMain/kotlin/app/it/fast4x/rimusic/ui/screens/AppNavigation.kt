@@ -101,6 +101,13 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.ui.layout.layout
 import timber.log.Timber
 import app.n_zik.android.updater.ui.UpdateScreen
+import androidx.compose.runtime.remember
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import app.n_zik.android.LocalTopBarOffset
+import app.n_zik.android.uiRoundnessShape
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.activity.OnBackPressedCallback
+import androidx.compose.runtime.DisposableEffect
 
 fun NavHostController.navigateClean(route: String, context: Context) {
     val disableBackStack = context.preferences.getBoolean(disableNavigationBackStackKey, false)
@@ -145,7 +152,7 @@ fun AppNavigation(
             containerColor = Color.Transparent,
             modifier = Modifier.statusBarsPadding(),
             sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false),
-            shape = app.n_zik.android.uiRoundnessShape()
+            shape = uiRoundnessShape()
         ) {
             content()
         }
@@ -204,15 +211,15 @@ fun AppNavigation(
             }
         }
 
-    val disableBackStack by rememberPreference(app.it.fast4x.rimusic.utils.disableNavigationBackStackKey, false)
+    val disableBackStack by rememberPreference(disableNavigationBackStackKey, false)
     val currentEntry by navController.currentBackStackEntryAsState()
     val isHome = currentEntry?.destination?.route?.startsWith(NavRoutes.home.name) ?: true
 
-    val backDispatcher = androidx.activity.compose.LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
-    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    val backCallback = androidx.compose.runtime.remember {
-        object : androidx.activity.OnBackPressedCallback(false) {
+    val backCallback = remember {
+        object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
                 navController.popBackStack(NavRoutes.home.name, inclusive = false)
             }
@@ -221,7 +228,7 @@ fun AppNavigation(
     
     backCallback.isEnabled = disableBackStack && !isHome
 
-    androidx.compose.runtime.LaunchedEffect(currentEntry, disableBackStack) {
+    LaunchedEffect(currentEntry, disableBackStack) {
         if (disableBackStack && !isHome) {
             backCallback.remove()
             backDispatcher?.addCallback(lifecycleOwner, backCallback)
@@ -230,7 +237,7 @@ fun AppNavigation(
         }
     }
 
-    androidx.compose.runtime.DisposableEffect(lifecycleOwner, backDispatcher) {
+    DisposableEffect(lifecycleOwner, backDispatcher) {
         onDispose { backCallback.remove() }
     }
 
@@ -240,7 +247,7 @@ fun AppNavigation(
         containerColor = androidx.compose.ui.graphics.Color.Transparent,
         contentWindowInsets = WindowInsets(0.dp)
     ) { innerPadding ->
-    val topBarOffsetState = app.n_zik.android.LocalTopBarOffset.current
+    val topBarOffsetState = LocalTopBarOffset.current
     val safeDrawingInsets = WindowInsets.safeDrawing
     NavHost(
         modifier = Modifier.fillMaxSize()

@@ -107,7 +107,7 @@ fun SeekBarStaticAudioWaves(
             val percentageToCenterPoint = ((centerPoint - distanceFromCenterPoint).toFloat() / centerPoint)
             
             // Interpolate max height from 10% at edges to 85% at center
-            val maxHeightFraction = androidx.compose.ui.util.lerp(
+            val maxHeightFraction = lerp(
                 0.1f,
                 0.85f,
                 percentageToCenterPoint

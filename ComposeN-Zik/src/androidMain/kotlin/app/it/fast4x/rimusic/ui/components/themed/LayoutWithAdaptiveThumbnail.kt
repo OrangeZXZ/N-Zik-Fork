@@ -31,6 +31,9 @@ import app.it.fast4x.rimusic.utils.thumbnailSizeDpKey
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.n_zik.android.core.coil.ImageCacheFactory
 import androidx.compose.ui.res.stringResource
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
 
 
 @Composable
@@ -62,7 +65,7 @@ fun adaptiveThumbnailContent(
 ): @Composable () -> Unit = {
     BoxWithConstraints(contentAlignment = Alignment.Center) {
         val thumbnailSizeDp = if (isLandscape) (maxHeight - 128.dp) else (maxWidth - 64.dp)
-        val thumbnailPaddingDp by rememberPreference(app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 85f)
+        val thumbnailPaddingDp by rememberPreference(thumbnailSizeDpKey, 85f)
 
         val modifier = Modifier
             //.padding(all = 16.dp)
@@ -88,8 +91,8 @@ fun adaptiveThumbnailContent(
                 modifier = modifier
             )
             if (isYoutubePlaylist) {
-                androidx.compose.foundation.Image(
-                    painter = androidx.compose.ui.res.painterResource(R.drawable.ytmusic),
+                Image(
+                    painter = painterResource(R.drawable.ytmusic),
                     colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
                         androidx.compose.ui.graphics.Color.Red.copy(0.75f)
                             .compositeOver(androidx.compose.ui.graphics.Color.White)
@@ -101,7 +104,7 @@ fun adaptiveThumbnailContent(
                         .padding(all = 5.dp)
                         .size(40.dp),
                     contentDescription = stringResource(R.string.cd_youtube_playlist),
-                    contentScale = androidx.compose.ui.layout.ContentScale.Fit
+                    contentScale = ContentScale.Fit
                 )
             }
             if(showIcon)

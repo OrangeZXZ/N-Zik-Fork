@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 
 @Composable
 fun UpdateYoutubeArtist(browseId: String) {
@@ -44,7 +45,7 @@ fun UpdateYoutubeArtist(browseId: String) {
 
                     if (artistPage == null && (currentArtist?.timestamp == null || mustFetch)) {
                         withContext(Dispatchers.IO) {
-                            Innertube.artistPage(BrowseBody(browseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)))
+                            Innertube.artistPage(BrowseBody(browseId = browseId.removePrefix(MODIFIED_PREFIX)))
                                 ?.onSuccess { currentArtistPage ->
                                     artistPage = currentArtistPage
 
@@ -83,7 +84,7 @@ fun UpdateYoutubeAlbum (browseId: String) {
 
                     if (albumPage == null && (currentAlbum?.timestamp == null || tabIndex == 1)) {
                         withContext(Dispatchers.IO) {
-                            Innertube.albumPage(BrowseBody(browseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)))
+                            Innertube.albumPage(BrowseBody(browseId = browseId.removePrefix(MODIFIED_PREFIX)))
                                 ?.onSuccess { currentAlbumPage ->
                                     albumPage = currentAlbumPage
 

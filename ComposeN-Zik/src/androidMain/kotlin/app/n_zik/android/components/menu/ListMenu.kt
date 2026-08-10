@@ -47,6 +47,7 @@ import app.n_zik.android.components.menu.MenuConstants.DRAG_HANDLE_HEIGHT
 import app.n_zik.android.components.menu.MenuConstants.DRAG_HANDLE_TOP_PADDING
 import app.n_zik.android.components.menu.MenuConstants.DRAG_HANDLE_WIDTH
 import androidx.compose.foundation.shape.CornerSize
+import app.n_zik.android.topUiRoundnessShape
 
 object ListMenu {
 
@@ -58,7 +59,7 @@ object ListMenu {
         Column(
             Modifier.heightIn( max = (screenHeight * CONTENT_HEIGHT_FRACTION).dp )
                     .fillMaxWidth()
-                    .clip(app.n_zik.android.topUiRoundnessShape())
+                    .clip(topUiRoundnessShape())
                     .background(colorPalette().background0),
             horizontalAlignment = Alignment.CenterHorizontally,
             content = {
@@ -68,7 +69,7 @@ object ListMenu {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(app.n_zik.android.topUiRoundnessShape())
+                            .clip(topUiRoundnessShape())
                             .background(colorPalette().background1)
                     ) {
                         if (showDragHandle) {
@@ -93,7 +94,7 @@ object ListMenu {
                     }
                 }
 
-                val topShape = app.n_zik.android.topUiRoundnessShape()
+                val topShape = topUiRoundnessShape()
                 // Content
                 Column(
                     modifier = Modifier

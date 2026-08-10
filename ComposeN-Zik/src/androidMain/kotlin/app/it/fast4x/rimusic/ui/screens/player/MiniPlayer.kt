@@ -1,4 +1,4 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.screens.player
 
 import app.n_zik.android.core.database.*
@@ -167,6 +167,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import app.it.fast4x.rimusic.ui.components.themed.IconButton
 import app.n_zik.android.enums.PlayerControlsColors
+import app.it.fast4x.rimusic.utils.playerControlsColorsKey
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.runtime.DisposableEffect
+import app.it.fast4x.rimusic.ui.components.MenuState
+import androidx.compose.animation.ExperimentalAnimationApi
+import app.n_zik.android.LocalIsShowingVisualizer
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.platform.LocalDensity
+import app.it.fast4x.rimusic.utils.discoverKey
+import app.n_zik.android.LocalIsShowingLyrics
+import app.it.fast4x.rimusic.utils.autoLoadSongsInQueueKey
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -356,7 +368,7 @@ fun MiniPlayer(
         }
     }
 
-    val playerControlsColors by rememberPreference(app.it.fast4x.rimusic.utils.playerControlsColorsKey, PlayerControlsColors.Monochrome)
+    val playerControlsColors by rememberPreference(playerControlsColorsKey, PlayerControlsColors.Monochrome)
     val controlsColorText = when (playerControlsColors) {
         PlayerControlsColors.Cover -> dynamicColorPalette.accent
         PlayerControlsColors.Monochrome -> Color.White
@@ -618,8 +630,8 @@ fun MiniPlayer(
                                         .rotate(rotationAngle)
                                         .align(Alignment.Center)
                                         .size(24.dp),
-                                    stroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { 2.dp.toPx() }),
-                                    trackStroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { 2.dp.toPx() })
+                                    stroke = Stroke(width = with(LocalDensity.current) { 2.dp.toPx() }),
+                                    trackStroke = Stroke(width = with(LocalDensity.current) { 2.dp.toPx() })
                                 )
                             } else {
                                 Image(
@@ -701,8 +713,8 @@ fun MiniPlayer(
     }
 }
 
-@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-@OptIn(androidx.compose.animation.ExperimentalAnimationApi::class, androidx.compose.material3.ExperimentalMaterial3Api::class, androidx.compose.foundation.ExperimentalFoundationApi::class, androidx.compose.ui.text.ExperimentalTextApi::class)
+@androidx.annotation.OptIn(UnstableApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalTextApi::class)
 @Composable
 private fun MiniPlayerSlotButton(
     button: MiniPlayerButton?,
@@ -718,9 +730,9 @@ private fun MiniPlayerSlotButton(
     effectRotationEnabled: Boolean,
     isRotated: Boolean,
     onRotatedChange: (Boolean) -> Unit,
-    menuState: app.it.fast4x.rimusic.ui.components.MenuState?,
-    pendingAction: androidx.compose.runtime.MutableState<app.n_zik.android.enums.PendingMiniPlayerAction?>?,
-    navController: androidx.navigation.NavController?,
+    menuState: MenuState?,
+    pendingAction: MutableState<PendingMiniPlayerAction?>?,
+    navController: NavController?,
     onClosePlayer: () -> Unit
 ) {
     if (button == null) return
@@ -782,7 +794,7 @@ private fun MiniPlayerSlotButton(
         MiniPlayerButton.Like -> {
             IconButton(
                 icon = if (isLiked) getLikedIcon() else getUnlikedIcon(),
-                color = app.n_zik.android.colorPalette().favoritesIcon,
+                color = colorPalette().favoritesIcon,
                 onClick = onLikeClick,
                 modifier = modifier
             )
@@ -848,12 +860,12 @@ private fun MiniPlayerSlotButton(
             )
         }
         MiniPlayerButton.AudioOutput -> {
-            val context = androidx.compose.ui.platform.LocalContext.current
+            val context = LocalContext.current
             val audioManager = remember { context.getSystemService(android.content.Context.AUDIO_SERVICE) as android.media.AudioManager }
-            val audioOutputManager = remember { app.n_zik.android.playback.services.AudioOutputManager(context, audioManager) }
+            val audioOutputManager = remember { AudioOutputManager(context, audioManager) }
             var activeDevice by remember { mutableStateOf(audioOutputManager.getAvailableDevices().firstOrNull { it.isCurrentlyActive }) }
 
-            androidx.compose.runtime.DisposableEffect(Unit) {
+            DisposableEffect(Unit) {
                 audioOutputManager.registerDeviceChanges { devices ->
                     activeDevice = devices.firstOrNull { it.isCurrentlyActive }
                 }
@@ -876,7 +888,7 @@ private fun MiniPlayerSlotButton(
             }
 
             val finalIcon = if (isExternal) iconVal else R.drawable.devices
-            if (finalIcon is androidx.compose.ui.graphics.vector.ImageVector) {
+            if (finalIcon is ImageVector) {
                 IconButton(
                     icon = finalIcon,
                     color = finalColor,
@@ -907,7 +919,7 @@ private fun MiniPlayerSlotButton(
             )
         }
         MiniPlayerButton.Lyrics -> {
-            var isLyricsActive by app.n_zik.android.LocalIsShowingLyrics.current
+            var isLyricsActive by LocalIsShowingLyrics.current
             var savedLyricsState by rememberPreference(saveLyricsStateKey, false)
             val shouldRememberLyricsState by rememberPreference(showLyricsStateKey, false)
             
@@ -928,7 +940,7 @@ private fun MiniPlayerSlotButton(
             )
         }
         MiniPlayerButton.Visualizer -> {
-            var isVisualizerActive by app.n_zik.android.LocalIsShowingVisualizer.current
+            var isVisualizerActive by LocalIsShowingVisualizer.current
             var savedVisualizerState by rememberPreference(saveVisualizerStateKey, false)
             val shouldRememberVisualizerState by rememberPreference(showVisualizerStateKey, false)
             
@@ -973,13 +985,13 @@ private fun MiniPlayerSlotButton(
             )
         }
         MiniPlayerButton.Discover -> {
-            val discoverIsEnabled by app.it.fast4x.rimusic.utils.rememberPreference(app.it.fast4x.rimusic.utils.discoverKey, false)
-            val isAutoFillEnabled by app.it.fast4x.rimusic.utils.rememberPreference(app.it.fast4x.rimusic.utils.autoLoadSongsInQueueKey, true)
+            val discoverIsEnabled by rememberPreference(discoverKey, false)
+            val isAutoFillEnabled by rememberPreference(autoLoadSongsInQueueKey, true)
             val isDiscoverClickable = binder.service.nzikRadio.isRadioActive || isAutoFillEnabled
 
             IconButton(
                 icon = R.drawable.discover,
-                color = if (discoverIsEnabled && isDiscoverClickable) app.n_zik.android.colorPalette().accent else controlsColorText,
+                color = if (discoverIsEnabled && isDiscoverClickable) colorPalette().accent else controlsColorText,
                 onClick = {
                     binder.service.nzikRadio.toggleDiscover()
                     if (effectRotationEnabled) onRotatedChange(!isRotated)

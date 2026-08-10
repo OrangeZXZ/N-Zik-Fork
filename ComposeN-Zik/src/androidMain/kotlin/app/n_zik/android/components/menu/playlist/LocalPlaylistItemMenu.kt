@@ -60,6 +60,12 @@ import app.n_zik.android.components.dialog.playlist.ChangePlaylistBrowseIdDialog
 import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
 import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
 import app.n_zik.android.core.coil.ImageCacheFactory
+import app.it.fast4x.rimusic.utils.rememberPreference
+import app.it.fast4x.rimusic.utils.disableScrollingTextKey
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import app.it.fast4x.rimusic.utils.checkFileExists
+import app.n_zik.android.components.tab.SongShuffler
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -169,7 +175,7 @@ class LocalPlaylistItemMenu private constructor(
                     Modifier.size(Dimensions.thumbnails.album / 2)
                 ) {
                     val thumbnails by remember {
-                        val customThumbnail = app.it.fast4x.rimusic.utils.checkFileExists( context, "thumbnail/playlist_${playlistPreview.playlist.id}" )
+                        val customThumbnail = checkFileExists( context, "thumbnail/playlist_${playlistPreview.playlist.id}" )
 
                         if( customThumbnail != null )
                             kotlinx.coroutines.flow.flowOf( listOf( customThumbnail ) )
@@ -183,8 +189,8 @@ class LocalPlaylistItemMenu private constructor(
                     }.collectAsState( emptyList(), kotlinx.coroutines.Dispatchers.IO )
 
                     if (thumbnails.isEmpty()) {
-                        androidx.compose.foundation.Image(
-                            painter = androidx.compose.ui.res.painterResource(R.drawable.library),
+                        Image(
+                            painter = painterResource(R.drawable.library),
                             contentDescription = null,
                             colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(colorPalette().textSecondary),
                             modifier = Modifier
@@ -224,19 +230,19 @@ class LocalPlaylistItemMenu private constructor(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     modifier = Modifier.weight(1f)
                 ) {
-                    val disableScrollingText by app.it.fast4x.rimusic.utils.rememberPreference(app.it.fast4x.rimusic.utils.disableScrollingTextKey, false)
+                    val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
                     BasicText(
                         text = playlistPreview.playlist.name,
                         style = typography().xs.semiBold.copy(color = colorPalette().text),
                         maxLines = 1,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                     )
                     BasicText(
                         text = "${playlistPreview.songCount} ${stringResource(R.string.songs)}",
                         style = typography().xs.semiBold.secondary.copy(color = colorPalette().textSecondary),
                         maxLines = 1,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                     )
                 }
@@ -341,7 +347,7 @@ class LocalPlaylistItemMenu private constructor(
             }
         }
 
-        val shuffle = app.n_zik.android.components.tab.SongShuffler { songs ?: emptyList() }
+        val shuffle = SongShuffler { songs ?: emptyList() }
 
         // Define buttons
         buttons = remember(playlistPreview) {
@@ -413,7 +419,7 @@ class LocalPlaylistItemMenu private constructor(
 
     @Composable
     private fun SectionTitle(title: String) {
-        androidx.compose.foundation.text.BasicText(
+        BasicText(
             text = title,
             style = typography().xxs.semiBold.copy(
                 color = colorPalette().accent,

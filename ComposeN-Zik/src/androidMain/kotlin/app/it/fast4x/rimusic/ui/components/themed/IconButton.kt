@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.vector.ImageVector
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -78,7 +79,7 @@ fun IconButton(
 @Composable
 fun IconButton(
     onClick: () -> Unit,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     color: Color,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,

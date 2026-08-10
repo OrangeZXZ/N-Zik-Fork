@@ -67,6 +67,8 @@ import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.ui.screens.settings.SliderSettingsEntry
 import app.n_zik.android.typography
 import app.n_zik.android.uiRoundnessShape
+import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 
 @UnstableApi
 class VisualizerSettingsMenu private constructor(
@@ -207,8 +209,8 @@ class VisualizerSettingsMenu private constructor(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        fun androidx.compose.foundation.lazy.grid.LazyGridScope.settingsGridContent() {
-            item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+        fun LazyGridScope.settingsGridContent() {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 SectionTitle(stringResource(R.string.visualizer))
             }
 
@@ -287,7 +289,7 @@ class VisualizerSettingsMenu private constructor(
                 )
             }
             
-            item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 SliderSettingsEntry(
                     title = stringResource(R.string.visualizer_line_thickness),
                     text = "",
@@ -306,7 +308,7 @@ class VisualizerSettingsMenu private constructor(
                 )
             }
             
-            item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -319,7 +321,7 @@ class VisualizerSettingsMenu private constructor(
         } else {
             GridMenu.Menu(title = stringResource(R.string.visualizer)) {
                 settingsGridContent()
-                item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(maxLineSpan) }) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
                     Spacer(modifier = Modifier.navigationBarsPadding())
                 }
             }

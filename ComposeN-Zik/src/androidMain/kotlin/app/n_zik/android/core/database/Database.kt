@@ -73,6 +73,8 @@ import app.n_zik.android.core.database.migration.From31To32Migration
 import app.n_zik.android.core.database.migration.From32To33Migration
 import app.n_zik.android.core.database.migration.From33To34Migration
 import app.kreate.android.me.knighthat.utils.PropUtils
+import app.n_zik.android.core.backup.BackupManager
+import androidx.room.InvalidationTracker
 
 object Database {
     const val FILE_NAME = "data.db"
@@ -713,11 +715,11 @@ abstract class DatabaseInitializer protected constructor() : RoomDatabase() {
                 )
                 .build()
             
-            db.invalidationTracker.addObserver(object : androidx.room.InvalidationTracker.Observer(
+            db.invalidationTracker.addObserver(object : InvalidationTracker.Observer(
                 "Song", "Playlist", "SongPlaylistMap", "Album", "Artist", "SongArtistMap", "SongAlbumMap"
             ) {
                 override fun onInvalidated(tables: Set<String>) {
-                    app.n_zik.android.core.backup.BackupManager.triggerOnChangeBackup(appContext())
+                    BackupManager.triggerOnChangeBackup(appContext())
                 }
             })
             

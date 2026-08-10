@@ -48,6 +48,12 @@ import app.n_zik.android.colorPalette
 import app.n_zik.android.uiRoundnessShape
 import app.it.fast4x.rimusic.utils.VoiceSearchState
 import app.it.fast4x.rimusic.utils.preferences
+import app.it.fast4x.rimusic.utils.disableNavigationBackStackKey
+import app.n_zik.android.LocalTopBarOffset
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.material3.LocalContentColor
 
 class AppHeader(
     val navController: NavController
@@ -77,7 +83,7 @@ class AppHeader(
         // We animate only the alpha for the voice search overlay.
         // This prevents `animateColorAsState` from incorrectly animating 
         // the application's theme colors (e.g. Dark to AMOLED) at cold start.
-        val voiceSearchAlpha by androidx.compose.animation.core.animateFloatAsState(
+        val voiceSearchAlpha by animateFloatAsState(
             targetValue = if (isVoiceSearchActive) 0.85f else 0f,
             animationSpec = tween(200),
             label = "voiceSearchAlpha"
@@ -85,12 +91,12 @@ class AppHeader(
         
         // Animate the start padding smoothly so the logo has nice spacing when home, 
         // and the back button aligns correctly when present.
-        val startPadding by androidx.compose.animation.core.animateDpAsState(
+        val startPadding by animateDpAsState(
             targetValue = if (isHome) 12.dp else 4.dp,
             animationSpec = tween(200)
         )
 
-        val topBarOffsetState = app.n_zik.android.LocalTopBarOffset.current
+        val topBarOffsetState = LocalTopBarOffset.current
 
         // Custom Row layout — responds to AnimatedVisibility size changes each frame,
         // so the logo+title smoothly shifts as the back button slides in/out.
@@ -106,8 +112,8 @@ class AppHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Restore TopAppBar's default content coloring behavior for action buttons
-            androidx.compose.runtime.CompositionLocalProvider(
-                androidx.compose.material3.LocalContentColor provides colorPalette().text
+            CompositionLocalProvider(
+                LocalContentColor provides colorPalette().text
             ) {
                 // Back button — animates in from the left, pushes title smoothly
                 AnimatedVisibility(
@@ -125,7 +131,7 @@ class AppHeader(
                             .clip(uiRoundnessShape())
                             .clickable {
                                 if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
-                                    val disableBackStack = context.preferences.getBoolean(app.it.fast4x.rimusic.utils.disableNavigationBackStackKey, false)
+                                    val disableBackStack = context.preferences.getBoolean(disableNavigationBackStackKey, false)
                                     if (disableBackStack) {
                                         navController.navigate(NavRoutes.home.name) {
                                             popUpTo(NavRoutes.home.name) { inclusive = true }

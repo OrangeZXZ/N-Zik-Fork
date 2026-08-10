@@ -108,6 +108,8 @@ import app.it.fast4x.rimusic.utils.enqueue
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.n_zik.android.components.menu.playlist.LocalPlaylistItemMenu
+import app.n_zik.android.thumbnailShape
+import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 
 
 @ExperimentalTextApi
@@ -146,7 +148,7 @@ fun StatisticsPage(
     val maxStatisticsItems by rememberPreference( maxStatisticsItemsKey, MaxStatisticsItems.`10` )
     val from = remember( statisticsType ) { statisticsType.timeStampInMillis() }
 
-    val parentalControlEnabled by rememberPreference(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false)
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     val artists by remember {
         Database.eventTable
@@ -303,7 +305,7 @@ fun StatisticsPage(
                                         modifier = Modifier
                                             .background(
                                                 color = colorPalette().accent,
-                                                shape = app.n_zik.android.thumbnailShape()
+                                                shape = thumbnailShape()
                                             )
 
                                     )
@@ -340,7 +342,7 @@ fun StatisticsPage(
                                     Box(
                                         modifier = Modifier
                                             .fillMaxSize()
-                                            .clip(app.n_zik.android.thumbnailShape())
+                                            .clip(thumbnailShape())
                                             .background(colorPalette().overlay)
                                     ) {
                                         BasicText(
@@ -392,7 +394,7 @@ fun StatisticsPage(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .clip(app.n_zik.android.thumbnailShape())
+                                        .clip(thumbnailShape())
                                         .background(colorPalette().overlay)
                                 ) {
                                     BasicText(
@@ -452,7 +454,7 @@ fun StatisticsPage(
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .clip(app.n_zik.android.thumbnailShape())
+                                        .clip(thumbnailShape())
                                         .background(colorPalette().overlay)
                                 ) {
                                     BasicText(
@@ -525,7 +527,7 @@ fun StatisticsPage(
                                     Box(
                                         modifier = Modifier
                                             .fillMaxSize()
-                                            .clip(app.n_zik.android.thumbnailShape())
+                                            .clip(thumbnailShape())
                                             .background(colorPalette().overlay)
                                     ) {
                                         BasicText(

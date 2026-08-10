@@ -121,13 +121,15 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 import androidx.compose.ui.res.stringResource
+import androidx.media3.common.util.UnstableApi
+import androidx.compose.runtime.DisposableEffect
 
 
 @ExperimentalTextApi
 @SuppressLint("SuspiciousIndentation")
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
-@androidx.media3.common.util.UnstableApi
+@UnstableApi
 @Composable
 fun Queue(
     navController: NavController,
@@ -306,7 +308,7 @@ fun Queue(
         QueueToolBarState.onBarClick = { onDismiss( repeat.type ) }
         QueueToolBarState.isVisible = if (search.isVisible) 1 else 0
 
-        androidx.compose.runtime.DisposableEffect( Unit ) {
+        DisposableEffect( Unit ) {
             onDispose { QueueToolBarState.reset() }
         }
 

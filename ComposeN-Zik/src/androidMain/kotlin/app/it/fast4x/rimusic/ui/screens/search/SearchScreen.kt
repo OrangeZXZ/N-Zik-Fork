@@ -58,6 +58,7 @@ import app.n_zik.android.components.VoiceSearchOverlay
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.colorPalette
 import app.n_zik.android.typography
+import androidx.core.content.ContextCompat
 
 @ExperimentalTextApi
 @ExperimentalFoundationApi
@@ -207,7 +208,7 @@ fun SearchScreen(
                                     isCancelling = false
                                     errorMessage = null
                                     keyboardController?.hide()
-                                    if (androidx.core.content.ContextCompat.checkSelfPermission(
+                                    if (ContextCompat.checkSelfPermission(
                                             context, Manifest.permission.RECORD_AUDIO
                                         ) == PackageManager.PERMISSION_GRANTED
                                     ) {

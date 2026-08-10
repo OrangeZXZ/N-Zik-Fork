@@ -66,6 +66,7 @@ import app.n_zik.android.components.dialog.updater.MajorUpdateWarningDialog
 import app.n_zik.android.updater.services.Updater
 import app.it.fast4x.rimusic.utils.lastVersionCodeKey
 import app.it.fast4x.rimusic.utils.lastBuildTypeKey
+import app.n_zik.android.LocalBottomBarOffset
 
 // THIS IS THE SCAFFOLD
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -86,7 +87,7 @@ fun Skeleton(
     val isMiniPlayerActive = binder?.player?.currentMediaItem != null
     val currentInsets = LocalPlayerAwareWindowInsets.current
 
-    val bottomBarOffsetState = app.n_zik.android.LocalBottomBarOffset.current
+    val bottomBarOffsetState = LocalBottomBarOffset.current
 
     val navigationBar: AbstractNavigationBar =
         if ( navigationBarPosition.isHorizontal )

@@ -71,6 +71,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 
 import app.kreate.android.me.knighthat.utils.PropUtils
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 
 
 @ExperimentalTextApi
@@ -110,11 +111,11 @@ fun AlbumScreen(
         timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("========== ALBUM DETAILS [GET ALBUM] ==========")
         timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] browseId from navigation: $browseId")
         timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] MODIFIED_PREFIX: ${app.it.fast4x.rimusic.MODIFIED_PREFIX}")
-        val cleanedBrowseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)
+        val cleanedBrowseId = browseId.removePrefix(MODIFIED_PREFIX)
         timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] Cleaned browseId: $cleanedBrowseId")
         timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] Was prefix removed? ${browseId != cleanedBrowseId}")
 
-        YtMusic.getAlbum( browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX), true, onProgress = { loadedSongsCount = it } )
+        YtMusic.getAlbum( browseId.removePrefix(MODIFIED_PREFIX), true, onProgress = { loadedSongsCount = it } )
                .onSuccess { online ->
                    val onlineAlbum = online.album
                     val authorsText: String? = onlineAlbum.authors.parseArtists().joinToString(", ")

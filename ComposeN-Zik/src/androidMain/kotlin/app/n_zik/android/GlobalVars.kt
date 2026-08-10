@@ -20,6 +20,7 @@ import app.it.fast4x.rimusic.utils.showSearchTabKey
 import app.it.fast4x.rimusic.utils.showStatsInNavbarKey
 import app.it.fast4x.rimusic.utils.ytAccountNameKey
 import app.it.fast4x.rimusic.utils.ytAccountThumbnailKey
+import androidx.compose.foundation.shape.CornerSize
 
 @Composable
 fun typography() = LocalAppearance.current.typography
@@ -74,8 +75,8 @@ fun topUiRoundnessShape(): Shape {
         RoundedCornerShape(
             topStart = shape.topStart,
             topEnd = shape.topEnd,
-            bottomEnd = androidx.compose.foundation.shape.CornerSize(0),
-            bottomStart = androidx.compose.foundation.shape.CornerSize(0)
+            bottomEnd = CornerSize(0),
+            bottomStart = CornerSize(0)
         )
     } else {
         shape

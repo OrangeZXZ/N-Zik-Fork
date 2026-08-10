@@ -60,6 +60,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.foundation.Canvas
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.Alignment
+import app.n_zik.android.appContext
+import app.n_zik.android.components.dialog.export.ExportCacheDialog
+import androidx.compose.foundation.BorderStroke
+import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.material3.ButtonDefaults
+import androidx.activity.result.IntentSenderRequest
 
 class EditMetadataDialog private constructor(
     activeState: MutableState<Boolean>,
@@ -73,7 +83,7 @@ class EditMetadataDialog private constructor(
     private var filePath: String? = null
     private var coverArtBytes: ByteArray? = null
 
-    private var writePermissionLauncher: androidx.activity.result.ActivityResultLauncher<androidx.activity.result.IntentSenderRequest>? = null
+    private var writePermissionLauncher: ActivityResultLauncher<IntentSenderRequest>? = null
     private var pendingTempFile: File? = null
     private var pendingMediaStoreUri: Uri? = null
     private var pendingSong: Song? = null
@@ -240,7 +250,7 @@ class EditMetadataDialog private constructor(
                 Text(stringResource(R.string.metadata_loading), modifier = Modifier.fillMaxWidth().padding(8.dp))
             } else {
                 val sortedFields = remember {
-                    androidx.compose.runtime.derivedStateOf {
+                    derivedStateOf {
                         fields.sortedBy { f ->
                             when {
                                 f.isCoverArt -> -2
@@ -277,7 +287,7 @@ class EditMetadataDialog private constructor(
     @Composable
     private fun CoverArtField(coverBytes: ByteArray?, onPickImage: () -> Unit) {
         Row(
-            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
@@ -300,7 +310,7 @@ class EditMetadataDialog private constructor(
                     )
                 }
             } else {
-                androidx.compose.foundation.Canvas(
+                Canvas(
                     modifier = Modifier
                         .size(56.dp)
                         .clip(RoundedCornerShape(8.dp))
@@ -315,14 +325,14 @@ class EditMetadataDialog private constructor(
                 modifier = Modifier.weight(1f)
             )
 
-            androidx.compose.material3.OutlinedButton(
+            OutlinedButton(
                 onClick = onPickImage,
                 shape = uiRoundnessShape(),
-                colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = colorPalette().accent
                 ),
-                border = androidx.compose.foundation.BorderStroke(1.dp, colorPalette().accent),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp, vertical = 4.dp)
+                border = BorderStroke(1.dp, colorPalette().accent),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
             ) {
                 Text(stringResource(R.string.pick_from_gallery))
             }
@@ -368,7 +378,7 @@ class EditMetadataDialog private constructor(
         val song = getSong() ?: return
 
         CoroutineScope(Dispatchers.IO).launch {
-            val context = app.n_zik.android.appContext()
+            val context = appContext()
             val cacheDir = context.cacheDir
             val originalFile = File(path)
             val ext = originalFile.extension
@@ -445,7 +455,7 @@ class EditMetadataDialog private constructor(
 
                 if (isOpus && coverArtBytes != null) {
                     try {
-                        val flacPicBase64 = app.n_zik.android.components.dialog.export.ExportCacheDialog.generateFlacPictureBase64(coverArtBytes!!)
+                        val flacPicBase64 = ExportCacheDialog.generateFlacPictureBase64(coverArtBytes!!)
                         commandBuilder.append("-metadata METADATA_BLOCK_PICTURE=\"$flacPicBase64\" ")
                     } catch (e: Exception) {
                         Timber.tag("EditMetadata").e(e, "Failed to build FlacPicture for Opus")
@@ -485,7 +495,7 @@ class EditMetadataDialog private constructor(
                         pendingSong = song
                         withContext(Dispatchers.Main) {
                             writePermissionLauncher?.launch(
-                                androidx.activity.result.IntentSenderRequest.Builder(e.userAction.actionIntent.intentSender).build()
+                                IntentSenderRequest.Builder(e.userAction.actionIntent.intentSender).build()
                             )
                         }
                     }

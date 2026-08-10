@@ -76,8 +76,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 
-@androidx.compose.runtime.Composable
+@Composable
 fun DefaultOtherSettings() {
 
     var isProxyEnabled by rememberPreference(isProxyEnabledKey, false)
@@ -552,9 +554,9 @@ fun OtherSettings() {
 
         
         val searchCtx_Reset = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)
-        androidx.compose.animation.AnimatedVisibility(
+        AnimatedVisibility(
             visible = searchCtx_Reset,
-            enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1100)) + androidx.compose.animation.scaleIn(animationSpec = androidx.compose.animation.core.tween(1100), initialScale = 0.9f)
+            enter = fadeIn(animationSpec = tween(1100)) + scaleIn(animationSpec = tween(1100), initialScale = 0.9f)
         ) {
             SettingsSectionCard(
                 title = stringResource(R.string.settings_reset),
@@ -576,7 +578,7 @@ fun OtherSettings() {
 
                     if (resetToDefault) {
                         DefaultOtherSettings()
-                        androidx.compose.runtime.LaunchedEffect(Unit) {
+                        LaunchedEffect(Unit) {
                             resetToDefault = false
                         }
                     }

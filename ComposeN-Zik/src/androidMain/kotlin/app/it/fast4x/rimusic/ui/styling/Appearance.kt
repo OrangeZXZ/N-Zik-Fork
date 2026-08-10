@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.geometry.Size
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.CircleShape
 
 class BoundedCornerSize(val dp: Dp, val maxFraction: Float) : CornerSize {
     override fun toPx(shapeSize: Size, density: Density): Float {
@@ -35,7 +36,7 @@ data class Appearance(
             return Appearance(
                 colorPalette = ColorPalette.restore(value[0] as List<Any>),
                 typography = Typography.restore(value[1] as List<Any>),
-                thumbnailShape = if (thumbRadius >= 48f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(BoundedCornerSize(thumbRadius.dp, 0.25f)),
+                thumbnailShape = if (thumbRadius >= 48f) CircleShape else RoundedCornerShape(BoundedCornerSize(thumbRadius.dp, 0.25f)),
                 uiRoundnessShape = RoundedCornerShape(BoundedCornerSize(uiRadius.dp, 0.4f))
             )
         }

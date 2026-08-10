@@ -1,4 +1,4 @@
-@file:kotlin.OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+@file:kotlin.OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.n_zik.android.updater.ui
 
 import app.n_zik.android.updater.services.*
@@ -99,6 +99,16 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import app.n_zik.android.uiRoundnessShape
 import app.it.fast4x.rimusic.ui.components.themed.ConfirmationDialog
+import androidx.compose.material3.LinearWavyProgressIndicator
+import app.it.fast4x.rimusic.ui.components.themed.DropdownMenu
+import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.ui.text.style.TextAlign
+import app.n_zik.android.core.backup.BackupManager
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.AlertDialog
+import app.it.fast4x.rimusic.utils.lastUpdateCheckKey
 
 @Composable
 fun UpdateScreen(navController: NavController) {
@@ -126,8 +136,8 @@ fun UpdateScreen(navController: NavController) {
     var showInstallWarningDialog by remember { mutableStateOf(false) }
     var apkPathToInstall by remember { mutableStateOf<String?>(null) }
     var isPreInstallBackupRunning by remember { mutableStateOf(false) }
-    val preInstallBackupEnabled by rememberPreference(app.n_zik.android.core.backup.BackupManager.PREF_PRE_INSTALL, false)
-    val preInstallBackupUri by rememberPreference(app.n_zik.android.core.backup.BackupManager.PREF_URI, "")
+    val preInstallBackupEnabled by rememberPreference(BackupManager.PREF_PRE_INSTALL, false)
+    val preInstallBackupUri by rememberPreference(BackupManager.PREF_URI, "")
     val preInstallCoroutineScope = rememberCoroutineScope()
 
     // Handle back press during download - let download continue in background
@@ -168,10 +178,10 @@ fun UpdateScreen(navController: NavController) {
     )
     val fileSize = try { Updater.build.readableSize } catch (_: Exception) { "" }
 
-    androidx.compose.material3.Scaffold(
+    Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = colorPalette().background0,
-        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             // Floating Action button at the bottom
             Box(
@@ -219,12 +229,12 @@ fun UpdateScreen(navController: NavController) {
                                             modifier = Modifier.padding(start = 8.dp).width(40.dp),
                                             style = typography().s.copy(
                                                 color = colorPalette().accent,
-                                                textAlign = androidx.compose.ui.text.style.TextAlign.End
+                                                textAlign = TextAlign.End
                                             )
                                         )
                                     }
                                     Spacer(modifier = Modifier.height(12.dp))
-                                    androidx.compose.material3.LinearWavyProgressIndicator(
+                                    LinearWavyProgressIndicator(
                                         progress = { state.progress },
                                         modifier = Modifier.fillMaxWidth().height(8.dp).clip(uiRoundnessShape()),
                                         color = colorPalette().accent,
@@ -283,7 +293,7 @@ fun UpdateScreen(navController: NavController) {
                                                     preInstallCoroutineScope.launch {
                                                         try {
                                                             val success = withContext(Dispatchers.IO) {
-                                                                app.n_zik.android.core.backup.BackupManager.executePreInstallBackup(context)
+                                                                BackupManager.executePreInstallBackup(context)
                                                             }
                                                             isPreInstallBackupRunning = false
                                                             if (success) {
@@ -394,7 +404,7 @@ fun UpdateScreen(navController: NavController) {
                                             },
                                         colors = CardDefaults.cardColors(containerColor = colorPalette().background1),
                                         shape = uiRoundnessShape(),
-                                        border = androidx.compose.foundation.BorderStroke(1.dp, colorPalette().accent.copy(alpha = 0.5f))
+                                        border = BorderStroke(1.dp, colorPalette().accent.copy(alpha = 0.5f))
                                     ) {
                                         Box(
                                             modifier = Modifier
@@ -436,7 +446,7 @@ fun UpdateScreen(navController: NavController) {
                                         },
                                     colors = CardDefaults.cardColors(containerColor = colorPalette().background1),
                                     shape = uiRoundnessShape(),
-                                    border = androidx.compose.foundation.BorderStroke(1.dp, colorPalette().textSecondary.copy(alpha = 0.5f))
+                                    border = BorderStroke(1.dp, colorPalette().textSecondary.copy(alpha = 0.5f))
                                 ) {
                                     Box(
                                         modifier = Modifier 
@@ -519,7 +529,7 @@ fun UpdateScreen(navController: NavController) {
                                             modifier = Modifier.size(24.dp)
                                         )
                                     }
-                                    val menu = app.it.fast4x.rimusic.ui.components.themed.DropdownMenu(
+                                    val menu = DropdownMenu(
                                         expanded = showMenu,
                                         containerColor = colorPalette().background0.copy(0.90f),
                                         onDismissRequest = { showMenu = false }
@@ -528,7 +538,7 @@ fun UpdateScreen(navController: NavController) {
                                     val isMinified = Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == UpdaterConstants.SUFFIX_CHAR_MINIFIED
                                     if (!isMinified) {
                                         menu.add(
-                                            app.it.fast4x.rimusic.ui.components.themed.DropdownMenu.Item(
+                                            DropdownMenu.Item(
                                                 iconId = R.drawable.shield_checkmark,
                                                 customText = "${stringResource(R.string.beta_updates)}: ${if (checkBetaUpdates) stringResource(R.string.on) else stringResource(R.string.off)}"
                                             ) {
@@ -542,7 +552,7 @@ fun UpdateScreen(navController: NavController) {
                                         CheckUpdateState.Disabled -> stringResource(R.string.off)
                                     }
                                     menu.add(
-                                        app.it.fast4x.rimusic.ui.components.themed.DropdownMenu.Item(
+                                        DropdownMenu.Item(
                                             iconId = R.drawable.update,
                                             customText = "${stringResource(R.string.enable_check_for_update)}: $stateStr"
                                         ) {
@@ -560,7 +570,7 @@ fun UpdateScreen(navController: NavController) {
                                     val currentDownloadUrl = "${Repository.RELEASE_DOWNLOAD_URL}$tagVersion/$apkName"
                                     
                                     menu.add(
-                                        app.it.fast4x.rimusic.ui.components.themed.DropdownMenu.Item(
+                                        DropdownMenu.Item(
                                             iconId = R.drawable.translate,
                                             customText = "${stringResource(R.string.info_translation)}: \n${otherLanguageApp.text}"
                                         ) {
@@ -570,7 +580,7 @@ fun UpdateScreen(navController: NavController) {
                                     )
                                     val downloadText = "${stringResource(R.string.redownload_update)} ($currentVersionStr)"
                                     menu.add(
-                                        app.it.fast4x.rimusic.ui.components.themed.DropdownMenu.Item(
+                                        DropdownMenu.Item(
                                             iconId = R.drawable.download,
                                             customText = downloadText
                                         ) {
@@ -590,7 +600,7 @@ fun UpdateScreen(navController: NavController) {
                                         }
                                     )
                                     menu.add(
-                                        app.it.fast4x.rimusic.ui.components.themed.DropdownMenu.Item(
+                                        DropdownMenu.Item(
                                             R.drawable.trash,
                                             R.string.update_cache_cleared
                                         ) {
@@ -647,14 +657,14 @@ fun UpdateScreen(navController: NavController) {
                                             text = if (isReinstalling) stringResource(R.string.reinstalling_update) else "$updateBuildTypeLabel ${stringResource(R.string.update_available)}",
                                             modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
                                             maxLines = 1,
-                                            style = typography().l.bold.copy(color = colorPalette().text, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                                            style = typography().l.bold.copy(color = colorPalette().text, textAlign = TextAlign.Center)
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         BasicText(
                                             text = if (isReinstalling) currentVersion else newVersion,
                                             modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
                                             maxLines = 1,
-                                            style = typography().s.copy(color = colorPalette().textSecondary, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                                            style = typography().s.copy(color = colorPalette().textSecondary, textAlign = TextAlign.Center)
                                         )
                                         if (fileSize.isNotEmpty()) {
                                             Spacer(modifier = Modifier.height(2.dp))
@@ -683,14 +693,14 @@ fun UpdateScreen(navController: NavController) {
                                             text = stringResource(R.string.up_to_date),
                                             modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
                                             maxLines = 1,
-                                            style = typography().l.bold.copy(color = colorPalette().text, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                                            style = typography().l.bold.copy(color = colorPalette().text, textAlign = TextAlign.Center)
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         BasicText(
                                             text = "${UpdaterConstants.PREFIX_VERSION}$currentVersion",
                                             modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
                                             maxLines = 1,
-                                            style = typography().s.copy(color = colorPalette().textSecondary, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                                            style = typography().s.copy(color = colorPalette().textSecondary, textAlign = TextAlign.Center)
                                         )
                                         // No file size displayed when up to date
                                     } else {
@@ -713,7 +723,7 @@ fun UpdateScreen(navController: NavController) {
                                             text = BuildConfig.APP_NAME,
                                             modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
                                             maxLines = 1,
-                                            style = typography().l.bold.copy(color = colorPalette().text, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                                            style = typography().l.bold.copy(color = colorPalette().text, textAlign = TextAlign.Center)
                                         )
                                         Spacer(modifier = Modifier.height(4.dp))
                                         val stateStr = when(checkUpdateState) {
@@ -725,10 +735,10 @@ fun UpdateScreen(navController: NavController) {
                                             text = "${UpdaterConstants.PREFIX_VERSION}$currentVersion • $stateStr",
                                             modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE),
                                             maxLines = 1,
-                                            style = typography().s.copy(color = colorPalette().textSecondary, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                                            style = typography().s.copy(color = colorPalette().textSecondary, textAlign = TextAlign.Center)
                                         )
                                     }
-                                    val lastCheckTime by rememberPreference(app.it.fast4x.rimusic.utils.lastUpdateCheckKey, 0L)
+                                    val lastCheckTime by rememberPreference(lastUpdateCheckKey, 0L)
                                     val sdf = java.text.SimpleDateFormat("dd MMM HH:mm", java.util.Locale.getDefault())
                                     val lastCheckStr = if (lastCheckTime > 0) sdf.format(java.util.Date(lastCheckTime)) else stringResource(R.string.never_checked)
                                     Spacer(modifier = Modifier.height(8.dp))
@@ -904,7 +914,7 @@ fun UpdateScreen(navController: NavController) {
                 isPreInstallBackupRunning = false
                 Toaster.w(R.string.download_cancelled)
             }
-            androidx.compose.material3.AlertDialog(
+            AlertDialog(
                 onDismissRequest = { isPreInstallBackupRunning = false },
                 confirmButton = {},
                 title = {
@@ -965,7 +975,7 @@ fun parseChangelogText(text: String): List<Pair<String, List<String>>> {
     packSection()
 
     if (sections.isEmpty() && currentChanges.isNotEmpty()) {
-        val otherTitle = app.n_zik.android.appContext().getString(R.string.other)
+        val otherTitle = appContext().getString(R.string.other)
         sections.add(otherTitle to currentChanges.toList())
     }
 
@@ -998,7 +1008,7 @@ fun ChangelogCard(rawText: String, translatedText: String?, colorPaletteMode: Co
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         displaySections.forEach { section ->
-            var expanded by remember { androidx.compose.runtime.mutableStateOf(true) }
+            var expanded by remember { mutableStateOf(true) }
             
             Card(
                 modifier = Modifier

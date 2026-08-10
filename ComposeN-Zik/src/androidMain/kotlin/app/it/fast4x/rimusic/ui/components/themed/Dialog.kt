@@ -189,6 +189,9 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.components.dialog.settings.SettingsInputDialog
+import androidx.compose.material3.CircularWavyProgressIndicator
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import app.n_zik.android.thumbnailShape
 
 
 @Composable
@@ -666,7 +669,7 @@ inline fun SelectorArtistsDialog(
         Box(
             modifier = modifier
                 .requiredSize(if (isLandscape) (0.85 * screenHeight) else (0.85 * screenWidth))
-                .clip(app.n_zik.android.thumbnailShape())
+                .clip(thumbnailShape())
                 .background(color = colorPalette().background1)
         ) {
             if (values != null) {
@@ -683,7 +686,7 @@ inline fun SelectorArtistsDialog(
                         LaunchedEffect(Unit) {
                             if (artist?.thumbnailUrl == null) {
                                 withContext(Dispatchers.IO) {
-                                    YtMusic.getArtistPage(browseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX))
+                                    YtMusic.getArtistPage(browseId = browseId.removePrefix(MODIFIED_PREFIX))
                                            .onSuccess { currentArtistPage ->
                                                artist?.copy(
                                                    thumbnailUrl = currentArtistPage.artist.thumbnail?.url
@@ -1659,14 +1662,14 @@ fun InProgressDialog(
         Spacer(modifier = Modifier.height(16.dp))
         val progress = if (total > 0) done.toFloat() / total.toFloat() else 0f
         if (total > 0) {
-            androidx.compose.material3.CircularWavyProgressIndicator(
+            CircularWavyProgressIndicator(
                 progress = { progress },
                 modifier = Modifier.size(48.dp).align(Alignment.CenterHorizontally),
                 color = colorPalette.accent,
                 trackColor = colorPalette.background2
             )
         } else {
-            androidx.compose.material3.CircularWavyProgressIndicator(
+            CircularWavyProgressIndicator(
                 modifier = Modifier.size(48.dp).align(Alignment.CenterHorizontally),
                 color = colorPalette.accent,
                 trackColor = colorPalette.background2
@@ -1696,7 +1699,7 @@ fun InProgressDialog(
                 modifier = Modifier.fillMaxWidth(0.8f).align(Alignment.CenterHorizontally)
             ) {
                 BasicText(
-                    text = androidx.compose.ui.res.stringResource(R.string.cancel),
+                    text = stringResource(R.string.cancel),
                     style = TextStyle(
                         textAlign = TextAlign.Center,
                         fontStyle = typography().s.semiBold.fontStyle,

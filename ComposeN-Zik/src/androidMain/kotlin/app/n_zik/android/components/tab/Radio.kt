@@ -11,6 +11,7 @@ import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.MenuState
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import app.n_zik.android.colorPalette
 
 @UnstableApi
 class Radio private constructor(
@@ -32,7 +33,7 @@ class Radio private constructor(
     override val iconId: Int = R.drawable.radio
     override val color: androidx.compose.ui.graphics.Color
         @Composable
-        get() = if (binder?.isRadioActive == true) app.n_zik.android.colorPalette().accent else app.n_zik.android.colorPalette().text
+        get() = if (binder?.isRadioActive == true) colorPalette().accent else colorPalette().text
     override val messageId: Int = R.string.start_radio
     override val menuIconTitle: String
         @Composable

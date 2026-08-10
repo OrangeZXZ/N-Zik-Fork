@@ -56,8 +56,10 @@ import androidx.compose.runtime.produceState
 import app.n_zik.android.core.coil.ImageCacheFactory
 import kotlinx.coroutines.delay
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.LaunchedEffect
 
-@androidx.compose.runtime.Composable
+@Composable
 fun DefaultNetworkSettings() {
 
     var isConnectionMeteredEnabled by rememberPreference(isConnectionMeteredEnabledKey, false)
@@ -98,7 +100,7 @@ fun NetworkSettings(
     navController: NavController
 ) {
     val search = Search()
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
 
 
     var isConnectionMeteredEnabled by rememberPreference(isConnectionMeteredEnabledKey, false)
@@ -410,9 +412,9 @@ fun NetworkSettings(
 
         
         val searchCtx_Reset = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)
-        androidx.compose.animation.AnimatedVisibility(
+        AnimatedVisibility(
             visible = searchCtx_Reset,
-            enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1100)) + androidx.compose.animation.scaleIn(animationSpec = androidx.compose.animation.core.tween(1100), initialScale = 0.9f)
+            enter = fadeIn(animationSpec = tween(1100)) + scaleIn(animationSpec = tween(1100), initialScale = 0.9f)
         ) {
             SettingsSectionCard(
                 title = stringResource(R.string.settings_reset),
@@ -437,7 +439,7 @@ fun NetworkSettings(
 
                     if (resetToDefault) {
                         DefaultNetworkSettings()
-                        androidx.compose.runtime.LaunchedEffect(Unit) {
+                        LaunchedEffect(Unit) {
                             resetToDefault = false
                         }
                     }

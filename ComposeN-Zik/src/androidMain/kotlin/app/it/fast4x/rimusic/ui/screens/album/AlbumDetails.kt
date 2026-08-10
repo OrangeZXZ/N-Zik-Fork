@@ -436,7 +436,7 @@ fun AlbumDetails(
 
                         var showMoreButton by remember { mutableStateOf(false) }
 
-                        androidx.compose.foundation.layout.Column(
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp, vertical = 8.dp)

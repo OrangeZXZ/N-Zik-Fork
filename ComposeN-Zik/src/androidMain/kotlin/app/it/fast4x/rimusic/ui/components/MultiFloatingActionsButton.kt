@@ -269,7 +269,7 @@ fun SmallFloatingActionButtonRow(
             )
         }
         SmallFloatingActionButton(
-            shape = app.n_zik.android.uiRoundnessShape(),
+            shape = uiRoundnessShape(),
             modifier = Modifier
                 .padding(4.dp),
             onClick = { item.onFabItemClicked() },

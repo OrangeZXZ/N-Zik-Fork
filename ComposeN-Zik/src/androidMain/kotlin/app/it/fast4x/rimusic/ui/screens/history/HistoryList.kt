@@ -86,6 +86,8 @@ import app.it.fast4x.rimusic.enums.SortOrder
 import app.n_zik.android.components.SongItem
 import app.n_zik.android.components.menu.song.SongItemMenu
 import app.it.fast4x.rimusic.utils.historySortMenuOrderKey
+import androidx.compose.foundation.text.BasicText
+import app.n_zik.android.typography
 
 @kotlin.OptIn(ExperimentalTextApi::class)
 @OptIn(UnstableApi::class)
@@ -247,9 +249,9 @@ fun HistoryList(
                 modifier = Modifier.weight(1f).fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                androidx.compose.foundation.text.BasicText(
+                BasicText(
                     text = stringResource(R.string.no_items),
-                    style = app.n_zik.android.typography().m.semiBold.copy(
+                    style = typography().m.semiBold.copy(
                         color = colorPalette().textSecondary
                     )
                 )

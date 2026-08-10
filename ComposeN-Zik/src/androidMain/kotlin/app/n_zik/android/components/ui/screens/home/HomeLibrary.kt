@@ -148,6 +148,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import app.n_zik.android.components.dialog.common.RetrySyncDialog
 import app.n_zik.android.components.dialog.settings.HomeLibraryToolbarSettingsDialog
+import androidx.compose.material3.LinearWavyProgressIndicator
+import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled
+import app.n_zik.android.thumbnailShape
+import app.it.fast4x.rimusic.utils.formatAsTime
+import app.n_zik.android.components.AppPullToRefreshBox
+import androidx.core.content.ContextCompat
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -362,7 +368,7 @@ fun HomeLibrary(
             putStringArrayListExtra(HomeSyncService.EXTRA_IDS, ids)
         }
         try {
-            androidx.core.content.ContextCompat.startForegroundService(appContext(), intent)
+            ContextCompat.startForegroundService(appContext(), intent)
         } catch (e: Exception) {
             timber.log.Timber.tag("HomeLibrary").e(e, "Failed to start HomeSyncService")
             Toaster.e("Failed to start sync service")
@@ -382,7 +388,7 @@ fun HomeLibrary(
         if (HomeSyncState.failedPlaylistsList.isNotEmpty()) retryDialog.showDialog()
     }
 
-    app.n_zik.android.components.AppPullToRefreshBox(
+    AppPullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = { refresh() }
     ) {
@@ -424,7 +430,7 @@ fun HomeLibrary(
                         when(id) {
                             "sort" -> toolbarButtons.add(sort)
                             "position_lock" -> { if (sort.sortBy == PlaylistSortBy.Custom) toolbarButtons.add(positionLock) }
-                            "sync" -> { if (app.it.fast4x.rimusic.ui.screens.settings.isYouTubeSyncEnabled()) toolbarButtons.add(sync) }
+                            "sync" -> { if (isYouTubeSyncEnabled()) toolbarButtons.add(sync) }
                             "search" -> toolbarButtons.add(search)
                             "shuffle" -> toolbarButtons.add(shuffle)
                             "new_playlist_dialog" -> toolbarButtons.add(newPlaylistDialog)
@@ -538,7 +544,7 @@ fun HomeLibrary(
                                         }
                                     }
                                 }
-                                androidx.compose.material3.LinearWavyProgressIndicator(
+                                LinearWavyProgressIndicator(
                                     progress = { HomeSyncState.playlistSyncProgress },
                                     modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                                     color = colorPalette().accent,
@@ -619,7 +625,7 @@ fun HomeLibrary(
                                             Box(
                                                 modifier = Modifier
                                                     .fillMaxSize()
-                                                    .clip(app.n_zik.android.thumbnailShape())
+                                                    .clip(thumbnailShape())
                                                     .background(colorPalette().overlay)
                                             ) {
                                                 BasicText(
@@ -635,7 +641,7 @@ fun HomeLibrary(
                                             Box(
                                                 modifier = Modifier
                                                     .fillMaxSize()
-                                                    .clip(app.n_zik.android.thumbnailShape())
+                                                    .clip(thumbnailShape())
                                                     .background(colorPalette().overlay)
                                             ) {
                                                 BasicText(
@@ -651,11 +657,11 @@ fun HomeLibrary(
                                             Box(
                                                 modifier = Modifier
                                                     .fillMaxSize()
-                                                    .clip(app.n_zik.android.thumbnailShape())
+                                                    .clip(thumbnailShape())
                                                     .background(colorPalette().overlay)
                                             ) {
                                                 BasicText(
-                                                    text = app.it.fast4x.rimusic.utils.formatAsTime(playTime),
+                                                    text = formatAsTime(playTime),
                                                     style = typography().s.semiBold.center.color(colorPalette().onOverlay),
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis,

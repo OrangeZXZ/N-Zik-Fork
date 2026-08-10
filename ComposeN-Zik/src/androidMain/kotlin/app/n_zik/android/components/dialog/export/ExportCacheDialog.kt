@@ -41,6 +41,8 @@ import androidx.compose.runtime.getValue
 import java.io.ByteArrayOutputStream
 import it.fast4x.innertube.requests.songInfo
 import it.fast4x.innertube.Innertube
+import app.it.fast4x.rimusic.models.Format
+import androidx.compose.runtime.produceState
 
 class ExportCacheDialog(
     activeState: MutableState<Boolean>,
@@ -283,7 +285,7 @@ class ExportCacheDialog(
             val isExporting = remember { mutableStateOf(false) }
             val song = getSong()
             
-            val format by androidx.compose.runtime.produceState<app.it.fast4x.rimusic.models.Format?>(initialValue = null, song.id) {
+            val format by produceState<Format?>(initialValue = null, song.id) {
                 value = Database.formatTable.findBySongId(song.id).first()
             }
             

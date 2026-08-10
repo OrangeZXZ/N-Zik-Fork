@@ -37,6 +37,9 @@ import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.components.dialog.export.ExportDatabaseDialog
 import app.n_zik.android.components.dialog.export.ExportSettingsDialog
 import app.n_zik.android.components.dialog.common.Dialog
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.animation.AnimatedVisibility
 
 object ExportBackupDialog : Dialog {
 
@@ -114,21 +117,21 @@ object ExportBackupDialog : Dialog {
                         }
                     }
                     
-                    androidx.compose.animation.AnimatedVisibility(visible = selectedOption == index && (index == 1 || index == 2)) {
+                    AnimatedVisibility(visible = selectedOption == index && (index == 1 || index == 2)) {
                         Column(modifier = Modifier.padding(start = 44.dp, bottom = 8.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                androidx.compose.material3.Checkbox(
+                                Checkbox(
                                     checked = includeYtbCredentials,
                                     onCheckedChange = { includeYtbCredentials = it },
-                                    colors = androidx.compose.material3.CheckboxDefaults.colors(checkedColor = colorPalette().text, uncheckedColor = colorPalette().textSecondary)
+                                    colors = CheckboxDefaults.colors(checkedColor = colorPalette().text, uncheckedColor = colorPalette().textSecondary)
                                 )
                                 Text(stringResource(R.string.include_youtube_credentials), style = typography().xxs, color = colorPalette().text)
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                androidx.compose.material3.Checkbox(
+                                Checkbox(
                                     checked = includeDiscordCredentials,
                                     onCheckedChange = { includeDiscordCredentials = it },
-                                    colors = androidx.compose.material3.CheckboxDefaults.colors(checkedColor = colorPalette().text, uncheckedColor = colorPalette().textSecondary)
+                                    colors = CheckboxDefaults.colors(checkedColor = colorPalette().text, uncheckedColor = colorPalette().textSecondary)
                                 )
                                 Text(stringResource(R.string.include_discord_credentials), style = typography().xxs, color = colorPalette().text)
                             }

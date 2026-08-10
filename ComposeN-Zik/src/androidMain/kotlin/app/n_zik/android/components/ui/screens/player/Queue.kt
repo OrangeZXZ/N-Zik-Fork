@@ -27,6 +27,7 @@ import app.it.fast4x.rimusic.utils.showButtonPlayerArrowKey
 import app.it.fast4x.rimusic.utils.shuffleQueue
 import app.it.fast4x.rimusic.utils.smoothScrollToTop
 import kotlinx.coroutines.launch
+import app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 
 @SuppressLint("ComposableNaming")
 @Composable
@@ -83,10 +84,10 @@ class Repeat private constructor(
 
     @Composable
     override fun ToolBarButton() {
-        app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar.Icon(
+        TabToolBar.Icon(
             icon,
             color,
-            app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar.TOOLBAR_ICON_SIZE,
+            TabToolBar.TOOLBAR_ICON_SIZE,
             true,
             androidx.compose.ui.Modifier,
             this::onShortClick

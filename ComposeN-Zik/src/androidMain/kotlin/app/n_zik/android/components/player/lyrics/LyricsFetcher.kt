@@ -602,8 +602,8 @@ private fun tryYouTubeUnsynced(
     }
 }
 
-private fun saveLyricsSafe(lyrics: app.n_zik.android.models.Lyrics) {
-    app.n_zik.android.core.database.Database.asyncTransaction {
+private fun saveLyricsSafe(lyrics: Lyrics) {
+    Database.asyncTransaction {
         try {
             lyricsTable.upsert(lyrics)
         } catch (e: android.database.sqlite.SQLiteConstraintException) {
@@ -611,7 +611,7 @@ private fun saveLyricsSafe(lyrics: app.n_zik.android.models.Lyrics) {
             kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
                 kotlinx.coroutines.delay(5000)
                 try {
-                    app.n_zik.android.core.database.Database.asyncTransaction {
+                    Database.asyncTransaction {
                         lyricsTable.upsert(lyrics)
                     }
                 } catch (e2: Exception) {

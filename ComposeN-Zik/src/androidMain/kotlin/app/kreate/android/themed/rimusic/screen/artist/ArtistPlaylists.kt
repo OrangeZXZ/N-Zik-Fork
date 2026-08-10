@@ -49,6 +49,8 @@ import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.utils.Toaster
 import io.ktor.client.statement.bodyAsText
 import timber.log.Timber
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import app.n_zik.android.components.AppPullToRefreshBox
 
 @OptIn(UnstableApi::class)
 @ExperimentalMaterial3Api
@@ -73,7 +75,7 @@ fun ArtistPlaylists(
     suspend fun fetchPlaylists() {
         Timber.tag("ArtistPlaylists").d("fetching browseId=$browseId params=${params?.take(20)}..")
         val result = runCatching {
-            var currentBrowseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)
+            var currentBrowseId = browseId.removePrefix(MODIFIED_PREFIX)
             var currentParams = params.takeIf { !it.isNullOrBlank() }
             
             var responseText = Innertube.browse(
@@ -237,7 +239,7 @@ fun ArtistPlaylists(
                 Loader()
             }
         } else {
-            app.n_zik.android.components.AppPullToRefreshBox(
+            AppPullToRefreshBox(
                 isRefreshing = isRefreshing,
                 onRefresh = {
                     isRefreshing = true

@@ -27,6 +27,7 @@ import app.n_zik.android.playback.exceptions.TimeoutException
 import app.n_zik.android.playback.exceptions.UnknownException
 import app.n_zik.android.playback.exceptions.UnplayableException
 import app.n_zik.android.playback.exceptions.VideoIdMismatchException
+import androidx.media3.datasource.HttpDataSource
 
 private const val JOB_ID = 8888
 private const val FOREGROUND_NOTIFICATION_ID = 8989
@@ -125,7 +126,7 @@ class MyDownloadService : DownloadService(
                 var rootCause: Throwable? = currentCause
                 var httpCode: Int? = null
                 while (rootCause != null) {
-                    if (rootCause is androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException) {
+                    if (rootCause is HttpDataSource.InvalidResponseCodeException) {
                         httpCode = rootCause.responseCode
                     }
                     rootCause = rootCause.cause

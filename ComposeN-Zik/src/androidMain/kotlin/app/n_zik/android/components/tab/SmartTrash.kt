@@ -24,6 +24,7 @@ import app.it.fast4x.rimusic.utils.asMediaItem
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
+import app.n_zik.android.appContext
 
 @UnstableApi
 class SmartTrash private constructor(
@@ -126,7 +127,7 @@ class SmartTrash private constructor(
                 songAlbumMapTable.deleteBySongId( song.id )
                 formatTable.deleteBySongId( song.id )
                 songTable.delete( song )
-                WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+                WaveformExtractor.deleteWaveform(appContext(), song.id)
             }
             
             // Clean up orphaned artists, albums and empty playlists
@@ -156,7 +157,7 @@ class SmartTrash private constructor(
             songs.forEach { song ->
                 binder?.cache?.removeResource( song.id )
                 binder?.downloadCache?.removeResource( song.id )
-                WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+                WaveformExtractor.deleteWaveform(appContext(), song.id)
                 formatTable.deleteBySongId( song.id )
                 formatTable.updateContentLengthOf( song.id )
             }
@@ -170,7 +171,7 @@ class SmartTrash private constructor(
             Database.asyncTransaction {
                 formatTable.deleteBySongId( song.id )
             }
-            MyDownloadHelper.removeDownload( app.n_zik.android.appContext(), song.asMediaItem )
+            MyDownloadHelper.removeDownload( appContext(), song.asMediaItem )
         }
     }
 

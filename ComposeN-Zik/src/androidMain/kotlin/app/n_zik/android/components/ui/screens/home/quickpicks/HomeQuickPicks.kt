@@ -57,6 +57,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.random.Random
+import app.n_zik.android.components.AppPullToRefreshBox
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @ExperimentalTextApi
@@ -228,7 +229,7 @@ fun HomeQuickPicks(
         }
     }
 
-    app.n_zik.android.components.AppPullToRefreshBox(
+    AppPullToRefreshBox(
         isRefreshing = state.refreshing.value,
         onRefresh = { state.refresh() }
     ) {

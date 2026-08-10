@@ -30,6 +30,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import android.net.Uri
 import androidx.compose.ui.Modifier
 import app.n_zik.android.appContext
+import app.it.fast4x.rimusic.utils.saveImageToInternalStorage
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.foundation.BorderStroke
+import app.n_zik.android.uiRoundnessShape
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import app.n_zik.android.colorPalette
 
 class ChangeArtistCoverDialog private constructor(
     activeState: MutableState<Boolean>,
@@ -89,31 +97,31 @@ class ChangeArtistCoverDialog private constructor(
             ) { uri: Uri? ->
                 if (uri != null) {
                     val artistId = getArtist()?.id ?: return@rememberLauncherForActivityResult
-                    val savedUri = app.it.fast4x.rimusic.utils.saveImageToInternalStorage(context, uri, "app_covers", "cover_$artistId.jpg")
+                    val savedUri = saveImageToInternalStorage(context, uri, "app_covers", "cover_$artistId.jpg")
                     if (savedUri != null) {
                         value = TextFieldValue(savedUri.toString())
                     }
                 }
             }
             
-            androidx.compose.material3.OutlinedButton(
+            OutlinedButton(
                 onClick = { launcher.launch("image/*") },
                 modifier = Modifier.fillMaxWidth(),
-                shape = app.n_zik.android.uiRoundnessShape(),
-                colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
-                    contentColor = app.n_zik.android.colorPalette().text
+                shape = uiRoundnessShape(),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = colorPalette().text
                 ),
-                border = androidx.compose.foundation.BorderStroke(
+                border = BorderStroke(
                     1.dp,
-                    app.n_zik.android.colorPalette().textSecondary
+                    colorPalette().textSecondary
                 )
             ) {
-                androidx.compose.material3.Icon(
+                Icon(
                     painter = icon,
                     contentDescription = null,
                     modifier = Modifier.size(24.dp).padding(end = 8.dp)
                 )
-                androidx.compose.material3.Text(stringResource(R.string.pick_from_gallery))
+                Text(stringResource(R.string.pick_from_gallery))
             }
         }
     }

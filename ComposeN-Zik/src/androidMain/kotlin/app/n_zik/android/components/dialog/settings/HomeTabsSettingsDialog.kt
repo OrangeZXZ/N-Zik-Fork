@@ -16,6 +16,7 @@ import app.it.fast4x.rimusic.utils.enableQuickPicksPageKey
 import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import androidx.compose.ui.platform.LocalContext
 
 val defaultHomeTabsOrder = listOf(
     "quickpicks",
@@ -105,7 +106,7 @@ object HomeTabsSettingsDialog : Dialog {
 
     @Composable
     override fun DialogBody() {
-        val context = androidx.compose.ui.platform.LocalContext.current
+        val context = LocalContext.current
         val prefs = remember { context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
         val tabDefs = remember { buildHomeTabDefs() }
 

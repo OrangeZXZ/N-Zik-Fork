@@ -24,6 +24,8 @@ import java.util.ArrayDeque
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.playback.utils.Shuffler
 import kotlinx.coroutines.withContext
+import app.it.fast4x.rimusic.cleanPrefix
+import app.n_zik.android.playback.services.upsertSongInfo
 
 var GlobalVolume: Float = 0.5f
 
@@ -159,7 +161,7 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
         if (targetItem != null) {
             val videoId = targetItem.mediaId.substringAfter("/").ifBlank { targetItem.mediaId }
             // Pre-fetch synchronously so the search online completes before we read the DB.
-            runCatching { app.n_zik.android.playback.services.upsertSongInfo(videoId) }
+            runCatching { upsertSongInfo(videoId) }
             // Now read the DB to populate the MediaItem.
             val enrichedItem = runCatching {
                 val dbSong = Database
@@ -182,7 +184,7 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
                                 existing.buildUpon()
                                     .setArtist(
                                         if (dbSong.artistsText.isNullOrBlank()) existing.artist?.toString()
-                                        else app.it.fast4x.rimusic.cleanPrefix(dbSong.artistsText!!)
+                                        else cleanPrefix(dbSong.artistsText!!)
                                     )
                                     .setExtras(bundle)
                                     .build()

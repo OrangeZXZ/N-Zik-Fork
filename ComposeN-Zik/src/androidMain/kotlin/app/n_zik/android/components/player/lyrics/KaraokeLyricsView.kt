@@ -55,6 +55,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import app.n_zik.android.enums.lyrics.LyricsAlignment
+import androidx.compose.ui.graphics.Path
+import androidx.compose.runtime.withFrameMillis
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.text.TextLayoutResult
 
 /** Vertical spacing (dp) for header/footer in lyrics views. */
 private val LYRICS_SPACING = 24.dp
@@ -84,8 +91,8 @@ data class KaraokeLine(
 /**
  * Helper to create a fast clipping path using bounding boxes instead of complex text glyph outlines.
  */
-fun getFastPathForRange(layout: androidx.compose.ui.text.TextLayoutResult, startIdx: Int, endIdx: Int): androidx.compose.ui.graphics.Path {
-    val path = androidx.compose.ui.graphics.Path()
+fun getFastPathForRange(layout: TextLayoutResult, startIdx: Int, endIdx: Int): Path {
+    val path = Path()
     if (startIdx > endIdx || startIdx < 0 || endIdx >= layout.layoutInput.text.length) return path
     
     val startLine = layout.getLineForOffset(startIdx)
@@ -100,7 +107,7 @@ fun getFastPathForRange(layout: androidx.compose.ui.text.TextLayoutResult, start
         if (clipStartIdx <= clipEndIdx) {
             val startBox = layout.getBoundingBox(clipStartIdx)
             val endBox = layout.getBoundingBox(clipEndIdx)
-            path.addRect(androidx.compose.ui.geometry.Rect(startBox.left, startBox.top, endBox.right, endBox.bottom))
+            path.addRect(Rect(startBox.left, startBox.top, endBox.right, endBox.bottom))
         }
     }
     return path
@@ -272,7 +279,7 @@ fun KaraokeLyricsView(
         var lastPlayerPos = currentPositionProvider()
         var lastUpdateTime = System.currentTimeMillis()
         while (isActive) {
-            androidx.compose.runtime.withFrameMillis {
+            withFrameMillis {
                 val now = System.currentTimeMillis()
                 val playerPos = currentPositionProvider()
                 if (playerPos != lastPlayerPos) {
@@ -692,8 +699,8 @@ fun KaraokeLyricsView(
                         scaleY = animateScale
                     }
                     .clickable(
-                        interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
-                        indication = if (clickLyricsText) androidx.compose.foundation.LocalIndication.current else null,
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = if (clickLyricsText) LocalIndication.current else null,
                         onClick = {
                             if (clickLyricsText) onSeekTo(line.timeMs) else onDismiss()
                         }
@@ -702,7 +709,7 @@ fun KaraokeLyricsView(
                         if (isActiveLine && !line.isBackground && lyricsHighlight == LyricsHighlight.White) Color.White.copy(0.5f)
                         else if (isActiveLine && !line.isBackground && lyricsHighlight == LyricsHighlight.Black) Color.Black.copy(0.5f)
                         else Color.Transparent,
-                        androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+                        RoundedCornerShape(8.dp)
                     ),
                 horizontalAlignment = lineAlignment
             ) {
@@ -716,19 +723,19 @@ fun KaraokeLyricsView(
                 val displayedText = translationCache[index] ?: line.text
 
                 if (line.words.isNotEmpty() && isActiveLine) {
-                    var textLayoutResult by remember { androidx.compose.runtime.mutableStateOf<androidx.compose.ui.text.TextLayoutResult?>(null) }
+                    var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
                     Box(contentAlignment = Alignment.Center) {
                         val isTextReplaced = displayedText != line.text && !showSecondLine
 
-                        val backgroundText = androidx.compose.ui.text.buildAnnotatedString {
+                        val backgroundText = buildAnnotatedString {
                             if (displayedText != line.text && showSecondLine) {
                                 val originalLen = line.text.trim().length
                                 val safeLen = originalLen.coerceAtMost(displayedText.length)
-                                withStyle(androidx.compose.ui.text.SpanStyle(color = lineInactive)) {
+                                withStyle(SpanStyle(color = lineInactive)) {
                                     append(displayedText.substring(0, safeLen))
                                 }
-                                withStyle(androidx.compose.ui.text.SpanStyle(color = lineAccent.copy(alpha = 0.85f))) {
+                                withStyle(SpanStyle(color = lineAccent.copy(alpha = 0.85f))) {
                                     append(displayedText.substring(safeLen))
                                 }
                             } else if (line.words.isNotEmpty() && !isTextReplaced) {
@@ -743,7 +750,7 @@ fun KaraokeLyricsView(
                                     // Append spaces between words
                                     val wordStartInText = line.text.indexOf(word.text, searchIdx)
                                     if (wordStartInText > searchIdx) {
-                                        withStyle(androidx.compose.ui.text.SpanStyle(color = lineInactive)) {
+                                        withStyle(SpanStyle(color = lineInactive)) {
                                             append(line.text.substring(searchIdx, wordStartInText))
                                         }
                                     }
@@ -762,30 +769,30 @@ fun KaraokeLyricsView(
                                     } else {
                                         lineInactive
                                     }
-                                    withStyle(androidx.compose.ui.text.SpanStyle(color = wordColor)) {
+                                    withStyle(SpanStyle(color = wordColor)) {
                                         append(word.text)
                                     }
                                     searchIdx = wordStartInText + word.text.length
                                 }
                                 // Remaining text
                                 if (searchIdx < line.text.length) {
-                                    withStyle(androidx.compose.ui.text.SpanStyle(color = lineInactive)) {
+                                    withStyle(SpanStyle(color = lineInactive)) {
                                         append(line.text.substring(searchIdx))
                                     }
                                 }
                             } else {
-                                withStyle(androidx.compose.ui.text.SpanStyle(color = lineInactive)) {
+                                withStyle(SpanStyle(color = lineInactive)) {
                                     append(displayedText)
                                 }
                             }
                         }
 
                         // Background (inactive) text
-                        androidx.compose.foundation.text.BasicText(
+                        BasicText(
                             text = backgroundText,
-                            style = androidx.compose.ui.text.TextStyle(
+                            style = TextStyle(
                                 fontSize = textSize,
-                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                fontWeight = FontWeight.Bold,
                                 textAlign = lineTextAlign
                             ),
                             onTextLayout = { textLayoutResult = it }
@@ -793,7 +800,7 @@ fun KaraokeLyricsView(
 
                         if (!isTextReplaced) {
                             // Unclipped Glow Layer (Restored with interpolation)
-                            val glowText = androidx.compose.ui.text.buildAnnotatedString {
+                            val glowText = buildAnnotatedString {
                                 line.words.forEachIndexed { wordIndex, word ->
                                     val isWordActive = currentPositionMs >= word.startMs && currentPositionMs < word.endMs
                                     val isWordSung = currentPositionMs >= word.endMs
@@ -815,9 +822,9 @@ fun KaraokeLyricsView(
                                         
                                         if (impactFactor > 0.01f && baseGlowRadius > 0f) {
                                             withStyle(
-                                                androidx.compose.ui.text.SpanStyle(
+                                                SpanStyle(
                                                     color = androidx.compose.ui.graphics.Color.Transparent,
-                                                    shadow = androidx.compose.ui.graphics.Shadow(
+                                                    shadow = Shadow(
                                                         color = lineAccent.copy(alpha = glowAlpha),
                                                         blurRadius = baseGlowRadius
                                                     )
@@ -826,42 +833,42 @@ fun KaraokeLyricsView(
                                                 append(word.text)
                                             }
                                         } else {
-                                            withStyle(androidx.compose.ui.text.SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) { append(word.text) }
+                                            withStyle(SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) { append(word.text) }
                                         }
                                     } else {
-                                        withStyle(androidx.compose.ui.text.SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) { append(word.text) }
+                                        withStyle(SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) { append(word.text) }
                                     }
                                     if (wordIndex < line.words.lastIndex) {
-                                        withStyle(androidx.compose.ui.text.SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) { append(" ") }
+                                        withStyle(SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) { append(" ") }
                                     }
                                 }
                                 
                                 // Preserve layout identical to displayedText by appending the translation part transparently
                                 val builtLen = this.length
                                 if (builtLen < displayedText.length) {
-                                    withStyle(androidx.compose.ui.text.SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) {
+                                    withStyle(SpanStyle(color = androidx.compose.ui.graphics.Color.Transparent)) {
                                         append(displayedText.substring(builtLen))
                                     }
                                 }
                             }
                             
-                            androidx.compose.foundation.text.BasicText(
+                            BasicText(
                                 text = glowText,
-                                style = androidx.compose.ui.text.TextStyle(
+                                style = TextStyle(
                                     fontSize = textSize,
-                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                    fontWeight = FontWeight.Bold,
                                     textAlign = lineTextAlign
                                 )
                             )
                         }
 
                         // Foreground (active) text with character-level clipping
-                        androidx.compose.foundation.text.BasicText(
+                        BasicText(
                             text = displayedText,
-                            style = androidx.compose.ui.text.TextStyle(
+                            style = TextStyle(
                                 color = lineAccent,
                                 fontSize = textSize,
-                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                                fontWeight = FontWeight.Bold,
                                 textAlign = lineTextAlign
                             ),
                             modifier = Modifier.drawWithContent {
@@ -917,7 +924,7 @@ fun KaraokeLyricsView(
                                             drawContext.canvas.scale(scaleFactor, scaleFactor)
                                             drawContext.canvas.translate(-pivotX, -pivotY)
                                             
-                                            drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
+                                            drawContext.canvas.clipRect(Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
                                             this@drawWithContent.drawContent()
                                             drawContext.canvas.restore()
                                         }
@@ -951,7 +958,7 @@ fun KaraokeLyricsView(
                                             val riseAmount = fadeFactor * with(density) { (2.5f * durFactor).dp.toPx() }
                                             
                                             drawContext.canvas.save()
-                                            drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(startBox.left - with(density) { 8.dp.toPx() }, startBox.top - waveAmplitude - riseAmount - with(density) { 8.dp.toPx() }, endBox.right + with(density) { 8.dp.toPx() }, endBox.bottom + waveAmplitude + with(density) { 8.dp.toPx() }))
+                                            drawContext.canvas.clipRect(Rect(startBox.left - with(density) { 8.dp.toPx() }, startBox.top - waveAmplitude - riseAmount - with(density) { 8.dp.toPx() }, endBox.right + with(density) { 8.dp.toPx() }, endBox.bottom + waveAmplitude + with(density) { 8.dp.toPx() }))
                                             
                                             for (charIdx in 0 until wordLen) {
                                                 val globalIdx = (word.charStartIndex + charIdx).coerceIn(0, displayedText.length - 1)
@@ -968,7 +975,7 @@ fun KaraokeLyricsView(
                                                 drawContext.canvas.translate(pivotX, pivotY + charWaveY - riseAmount)
                                                 drawContext.canvas.scale(scaleAmount, scaleAmount)
                                                 drawContext.canvas.translate(-pivotX, -pivotY)
-                                                drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
+                                                drawContext.canvas.clipRect(Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
                                                 this@drawWithContent.drawContent()
                                                 drawContext.canvas.restore()
                                             }
@@ -1001,7 +1008,7 @@ fun KaraokeLyricsView(
                                             // Fill clip: reveals accent color left-to-right
                                             val fillRight = startBox.left + (endBox.right - startBox.left) * easedProgress
                                             drawContext.canvas.save()
-                                            drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(startBox.left - with(density) { 8.dp.toPx() }, startBox.top - waveAmplitude - riseAmount - with(density) { 8.dp.toPx() }, fillRight + with(density) { 8.dp.toPx() }, endBox.bottom + waveAmplitude + with(density) { 8.dp.toPx() }))
+                                            drawContext.canvas.clipRect(Rect(startBox.left - with(density) { 8.dp.toPx() }, startBox.top - waveAmplitude - riseAmount - with(density) { 8.dp.toPx() }, fillRight + with(density) { 8.dp.toPx() }, endBox.bottom + waveAmplitude + with(density) { 8.dp.toPx() }))
                                             
                                             // Draw each character with traveling wave
                                             for (charIdx in 0 until wordLen) {
@@ -1019,7 +1026,7 @@ fun KaraokeLyricsView(
                                                 drawContext.canvas.translate(pivotX, pivotY + charWaveY - riseAmount)
                                                 drawContext.canvas.scale(scaleAmount, scaleAmount)
                                                 drawContext.canvas.translate(-pivotX, -pivotY)
-                                                drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
+                                                drawContext.canvas.clipRect(Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
                                                 this@drawWithContent.drawContent()
                                                 drawContext.canvas.restore()
                                             }
@@ -1056,7 +1063,7 @@ fun KaraokeLyricsView(
                                             drawContext.canvas.translate(-pivotX, -pivotY)
                                             
                                             drawContext.canvas.save()
-                                            drawContext.canvas.clipRect(androidx.compose.ui.geometry.Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
+                                            drawContext.canvas.clipRect(Rect(charBox.left, charBox.top, charBox.right, charBox.bottom))
                                             this@drawWithContent.drawContent()
                                             drawContext.canvas.restore()
                                             

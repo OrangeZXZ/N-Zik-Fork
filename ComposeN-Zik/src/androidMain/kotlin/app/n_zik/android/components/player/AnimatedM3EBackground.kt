@@ -140,7 +140,7 @@ fun Modifier.animatedM3EBackground(
         onDispose { sensorManager.unregisterListener(listener) }
     }
 
-    val lastLocalColor = remember { androidx.compose.runtime.mutableStateOf(V.value) }
+    val lastLocalColor = remember { mutableStateOf(V.value) }
     val mountTime = remember { System.currentTimeMillis() }
     val hasExploded = remember { mutableStateOf(false) }
 

@@ -18,6 +18,7 @@ import app.it.fast4x.rimusic.enums.BuiltInPlaylist
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import app.it.fast4x.rimusic.utils.rememberPreference
+import app.n_zik.android.uiRoundnessShape
 
 @Composable
 fun <E> ButtonsRow(
@@ -35,7 +36,7 @@ fun <E> ButtonsRow(
             FilterChip(
                 label = { Text(label) },
                 selected = currentValue == value,
-                shape = app.n_zik.android.uiRoundnessShape(),
+                shape = uiRoundnessShape(),
                 colors = FilterChipDefaults
                     .filterChipColors(
                         containerColor = colorPalette().background1,
@@ -67,7 +68,7 @@ fun ButtonsRow(
             FilterChip(
                 label = { Text( playlistType.text ) },
                 selected = currentValue == playlistType,
-                shape = app.n_zik.android.uiRoundnessShape(),
+                shape = uiRoundnessShape(),
                 colors = FilterChipDefaults
                     .filterChipColors(
                         containerColor = colorPalette().background1,

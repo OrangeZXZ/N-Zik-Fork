@@ -21,6 +21,8 @@ import app.n_zik.android.playback.services.isLocal
 import app.n_zik.android.R
 import java.io.ByteArrayOutputStream
 import java.io.File
+import app.it.fast4x.rimusic.utils.durationTextToMillis
+import app.n_zik.android.appContext
 
 @UnstableApi
 object SessionMediaItemMapper {
@@ -44,7 +46,7 @@ object SessionMediaItemMapper {
             }
             if (url.startsWith("content://")) {
                 val uri = android.net.Uri.parse(url)
-                val inputStream = app.n_zik.android.appContext().contentResolver.openInputStream(uri) ?: return null
+                val inputStream = appContext().contentResolver.openInputStream(uri) ?: return null
                 val bitmap = BitmapFactory.decodeStream(inputStream)
                 inputStream.close()
                 if (bitmap == null) return null
@@ -149,7 +151,7 @@ object SessionMediaItemMapper {
             if (artworkBytes != null) {
                 metadataBuilder.setArtworkData(artworkBytes, MediaMetadata.PICTURE_TYPE_ILLUSTRATION)
             } else {
-                metadataBuilder.setArtworkUri(drawableUri(app.n_zik.android.appContext(), R.drawable.ic_launcher_box))
+                metadataBuilder.setArtworkUri(drawableUri(appContext(), R.drawable.ic_launcher_box))
             }
         } else {
             // Load artwork via Coil (handles EXIF rotation) for Android Auto
@@ -164,7 +166,7 @@ object SessionMediaItemMapper {
 
         val extras = android.os.Bundle(metadataBuilder.build().extras ?: android.os.Bundle()).apply {
             if (!song.isLocal) {
-                putLong("android.media.metadata.DURATION", app.it.fast4x.rimusic.utils.durationTextToMillis(song.durationText.orEmpty()))
+                putLong("android.media.metadata.DURATION", durationTextToMillis(song.durationText.orEmpty()))
             }
         }
         metadataBuilder.setExtras(extras)
@@ -200,7 +202,7 @@ object SessionMediaItemMapper {
             if (artworkBytes != null) {
                 metadataBuilder.setArtworkData(artworkBytes, MediaMetadata.PICTURE_TYPE_ILLUSTRATION)
             } else {
-                metadataBuilder.setArtworkUri(drawableUri(app.n_zik.android.appContext(), R.drawable.ic_launcher_box))
+                metadataBuilder.setArtworkUri(drawableUri(appContext(), R.drawable.ic_launcher_box))
             }
         }
 

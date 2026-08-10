@@ -22,6 +22,7 @@ import app.it.fast4x.rimusic.models.SongAlbumMap
 import app.kreate.android.me.knighthat.utils.PropUtils
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 
 class AlbumDetailHandler : BrowseHandler {
     override fun handles(parentId: String): Boolean {
@@ -57,7 +58,7 @@ class AlbumDetailHandler : BrowseHandler {
             }
         }
         
-        val cleanAlbumId = albumId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)
+        val cleanAlbumId = albumId.removePrefix(MODIFIED_PREFIX)
         
         val online = YtMusic.getAlbum(cleanAlbumId, true).getOrNull()
         if (online != null) {

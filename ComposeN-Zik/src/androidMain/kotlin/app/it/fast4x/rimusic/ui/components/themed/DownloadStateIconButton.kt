@@ -30,6 +30,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.utils.DOWNLOAD_INDICATOR_SIZE_NORMAL
 import app.it.fast4x.rimusic.utils.DOWNLOAD_INDICATOR_STROKE_WIDTH
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Box
 
 @UnstableApi
 @Composable
@@ -50,7 +53,7 @@ fun DownloadStateIconButton(
                 || downloadState == Download.STATE_QUEUED
                 || downloadState == Download.STATE_RESTARTING
                 ){
-        androidx.compose.foundation.layout.Box(
+        Box(
             modifier = Modifier
                 .clip(uiRoundnessShape()).clickable(
                     indication = indication ?: ripple(bounded = false, radius = 24.dp),
@@ -59,7 +62,7 @@ fun DownloadStateIconButton(
                     onClick = onCancelButtonClicked
                 )
                 .then(modifier),
-            contentAlignment = androidx.compose.ui.Alignment.Center
+            contentAlignment = Alignment.Center
         ) {
             if (progress > 0.01f && downloadState == Download.STATE_DOWNLOADING) {
                 CircularWavyProgressIndicator(
@@ -67,16 +70,16 @@ fun DownloadStateIconButton(
                     color = colorPalette().accent,
                     trackColor = colorPalette().textDisabled,
                     modifier = Modifier.size(DOWNLOAD_INDICATOR_SIZE_NORMAL.dp),
-                    stroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
-                    trackStroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
+                    stroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
+                    trackStroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
                 )
             } else {
                 CircularWavyProgressIndicator(
                     color = colorPalette().accent,
                     trackColor = colorPalette().textDisabled,
                     modifier = Modifier.size(DOWNLOAD_INDICATOR_SIZE_NORMAL.dp),
-                    stroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
-                    trackStroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
+                    stroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
+                    trackStroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
                 )
             }
         }

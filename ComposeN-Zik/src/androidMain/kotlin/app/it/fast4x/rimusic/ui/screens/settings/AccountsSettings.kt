@@ -134,7 +134,7 @@ fun SettingIcon(@DrawableRes icon: Int) {
     }
 }
 
-@androidx.compose.runtime.Composable
+@Composable
 fun DefaultAccountsSettings() {
     var restartActivity by rememberPreference(restartActivityKey, false)
     restartActivity = false
@@ -397,7 +397,7 @@ fun AccountsSettings() {
                                 contentColor = colorPalette().background0,
                                 modifier = Modifier.fillMaxWidth().statusBarsPadding(),
                                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                                shape = app.n_zik.android.uiRoundnessShape(),
+                                shape = uiRoundnessShape(),
                                 dragHandle = {
                                     Box(
                                         modifier = Modifier
@@ -624,7 +624,7 @@ fun AccountsSettings() {
                                     contentColor = colorPalette().background0,
                                     modifier = Modifier.fillMaxWidth().statusBarsPadding(),
                                     sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                                    shape = app.n_zik.android.uiRoundnessShape(),
+                                    shape = uiRoundnessShape(),
                                     dragHandle = {
                                         Box(
                                             modifier = Modifier
@@ -656,9 +656,9 @@ fun AccountsSettings() {
 
         
         val searchCtx_Reset = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)
-        androidx.compose.animation.AnimatedVisibility(
+        AnimatedVisibility(
             visible = searchCtx_Reset,
-            enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1100)) + androidx.compose.animation.scaleIn(animationSpec = androidx.compose.animation.core.tween(1100), initialScale = 0.9f)
+            enter = fadeIn(animationSpec = tween(1100)) + scaleIn(animationSpec = tween(1100), initialScale = 0.9f)
         ) {
             SettingsSectionCard(
                 title = stringResource(R.string.settings_reset),
@@ -680,7 +680,7 @@ fun AccountsSettings() {
 
                     if (resetToDefault) {
                         DefaultAccountsSettings()
-                        androidx.compose.runtime.LaunchedEffect(Unit) {
+                        LaunchedEffect(Unit) {
                             resetToDefault = false
                         }
                     }

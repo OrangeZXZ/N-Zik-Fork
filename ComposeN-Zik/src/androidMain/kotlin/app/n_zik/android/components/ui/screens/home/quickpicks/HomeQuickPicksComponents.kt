@@ -55,6 +55,7 @@ import app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.requests.HomePage
 import kotlin.random.Random
+import app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @UnstableApi
@@ -159,8 +160,8 @@ fun YtmSectionItems(
                 
                 if (isLoading) {
                     items(3) {
-                        app.it.fast4x.rimusic.ui.components.ShimmerHost {
-                            app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder(
+                        ShimmerHost {
+                            AlbumItemPlaceholder(
                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                 modifier = Modifier.padding(horizontal = 4.dp)
                             )
@@ -286,8 +287,8 @@ fun YtmSectionItems(
                 
                 if (isLoading) {
                     items(3) {
-                        app.it.fast4x.rimusic.ui.components.ShimmerHost {
-                            app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder(
+                        ShimmerHost {
+                            AlbumItemPlaceholder(
                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                 modifier = Modifier.padding(horizontal = 4.dp)
                             )

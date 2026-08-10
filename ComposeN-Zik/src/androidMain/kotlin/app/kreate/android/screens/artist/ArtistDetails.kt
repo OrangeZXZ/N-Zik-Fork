@@ -135,6 +135,11 @@ import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.n_zik.android.components.menu.artist.OnlineArtistItemMenu
 import app.n_zik.android.components.menu.playlist.OnlinePlaylistItemMenu
 import it.fast4x.innertube.YtMusic
+import androidx.media3.common.MediaItem
+import androidx.compose.material3.CircularProgressIndicator
+import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
+import androidx.compose.ui.res.painterResource
+import androidx.compose.runtime.rememberCoroutineScope
 
 @ExperimentalFoundationApi
 @UnstableApi
@@ -158,7 +163,7 @@ fun ArtistDetails(
 
     // Settings
     val disableScrollingText by rememberPreference( disableScrollingTextKey, false )
-    val parentalControlEnabled by rememberPreference(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false)
+    val parentalControlEnabled by rememberPreference(parentalControlEnabledKey, false)
 
     val sectionTextModifier = Modifier
         .padding( horizontal = 16.dp )
@@ -184,7 +189,7 @@ fun ArtistDetails(
 
     //<editor-fold defaultstate="collapsed" desc="Buttons">
     val itemSelector = ItemSelector<Song>()
-    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
 
     suspend fun fetchAllArtistSongs(): List<Song> {
         val songsSection = artistPage.sections.fastFirstOrNull { section ->
@@ -371,7 +376,7 @@ fun ArtistDetails(
                         Spacer( Modifier.width( 5.dp ) )
 
                         if (isGlobalLoading) {
-                            androidx.compose.material3.CircularProgressIndicator(
+                            CircularProgressIndicator(
                                 modifier = Modifier.size(24.dp),
                                 strokeWidth = 2.dp,
                                 color = colorPalette().accent
@@ -503,14 +508,14 @@ fun ArtistDetails(
                         val isSectionLoading = sectionLoadingId == sectionId
 
                         if (isSectionLoading) {
-                            androidx.compose.material3.CircularProgressIndicator(
+                            CircularProgressIndicator(
                                 modifier = Modifier.padding(end = 12.dp).size(24.dp),
                                 strokeWidth = 2.dp,
                                 color = colorPalette().textSecondary
                             )
                         } else {
-                            androidx.compose.material3.Icon(
-                                painter = androidx.compose.ui.res.painterResource(R.drawable.dice),
+                            Icon(
+                                painter = painterResource(R.drawable.dice),
                                 contentDescription = null,
                                 tint = colorPalette().textSecondary,
                                 modifier = Modifier
@@ -519,7 +524,7 @@ fun ArtistDetails(
                                         scope.launch(Dispatchers.IO) {
                                             sectionLoadingId = sectionId
                                             try {
-                                                val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
+                                                val allMediaItems = mutableListOf<MediaItem>()
                                                 if (section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null) {
                                                     YtMusic.getPlaylist(section.moreEndpoint!!.browseId!!).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
                                                 }
@@ -548,8 +553,8 @@ fun ArtistDetails(
                                     }
                             )
 
-                            androidx.compose.material3.Icon(
-                                painter = androidx.compose.ui.res.painterResource(R.drawable.play),
+                            Icon(
+                                painter = painterResource(R.drawable.play),
                                 contentDescription = null,
                                 tint = colorPalette().textSecondary,
                                 modifier = Modifier
@@ -558,7 +563,7 @@ fun ArtistDetails(
                                         scope.launch(Dispatchers.IO) {
                                             sectionLoadingId = sectionId
                                             try {
-                                                val allMediaItems = mutableListOf<androidx.media3.common.MediaItem>()
+                                                val allMediaItems = mutableListOf<MediaItem>()
                                                 if (section.items.fastAll { it is Innertube.SongItem } && section.moreEndpoint?.browseId != null) {
                                                     YtMusic.getPlaylist(section.moreEndpoint!!.browseId!!).getOrNull()?.songs?.map { it.asMediaItem }?.let { allMediaItems.addAll(it) }
                                                 }

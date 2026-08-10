@@ -61,6 +61,8 @@ import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
 import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
 import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.database.Database
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import app.n_zik.android.components.tab.SongShuffler
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -256,7 +258,7 @@ class OnlinePlaylistItemMenu private constructor(
 
         LaunchedEffect(playlist.key) {
             withContext(Dispatchers.IO) {
-                val result = YtMusic.getPlaylist(playlist.key.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)).getOrNull()
+                val result = YtMusic.getPlaylist(playlist.key.removePrefix(MODIFIED_PREFIX)).getOrNull()
                 if (result != null) {
                     displayTitle = result.playlist.title.takeIf { !it.isNullOrBlank() } ?: displayTitle
                     displayAuthor = result.playlist.channel?.name.takeIf { !it.isNullOrBlank() } ?: displayAuthor
@@ -374,7 +376,7 @@ class OnlinePlaylistItemMenu private constructor(
             override fun onLongClick() {}
         }
 
-        val shuffle = app.n_zik.android.components.tab.SongShuffler { songs ?: emptyList() }
+        val shuffle = SongShuffler { songs ?: emptyList() }
         
         val list = mutableListOf<MenuIcon>()
         list.add(playNext)
@@ -443,7 +445,7 @@ class OnlinePlaylistItemMenu private constructor(
 
     @Composable
     private fun SectionTitle(title: String) {
-        androidx.compose.foundation.text.BasicText(
+        BasicText(
             text = title,
             style = typography().xxs.semiBold.copy(
                 color = colorPalette().accent,

@@ -25,6 +25,7 @@ import app.it.fast4x.rimusic.utils.medium
 import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.components.dialog.common.ConfirmDialog
 import app.n_zik.android.components.dialog.common.InteractiveDialog
+import androidx.compose.foundation.layout.Arrangement
 
 object AppearanceChangeDialog: ConfirmDialog {
 
@@ -46,7 +47,7 @@ object AppearanceChangeDialog: ConfirmDialog {
     override fun Buttons() {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
  
             BasicText(

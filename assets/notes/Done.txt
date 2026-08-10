@@ -66,3 +66,8 @@ Changed:
 
 - change(ui): Replace gray background in Statistics time spent block
   - In `StatisticsPage.kt`, updated the `SettingsEntry` block displaying the time played to use `colorPalette().accent` for its background and `colorPalette().onAccent` for the music note icon to match the new vibrant aesthetic.
+
+- refactor(codebase): remove inline fully qualified names
+  - Applied global refactor across 155 files to strip FQNs and add standard imports
+  - Followed CODE.md guidelines to strictly eliminate FQNs unless absolute naming conflicts exist
+  - Safely ignored conflicts such as `androidx.room.Database`, `androidx.compose.animation.AnimatedVisibility`, `androidx.compose.runtime.saveable.Saver`, and `Download` to prevent compile errors

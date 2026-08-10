@@ -136,7 +136,7 @@ class VerticalNavigationBar(
     @Composable
     override fun BackButton(): NavigationButton {
         val button = super.BackButton()
-        val shape = app.n_zik.android.uiRoundnessShape()
+        val shape = uiRoundnessShape()
         button.modifier {
             it.offset( 0.dp, 7.dp )
               .clip( shape )
@@ -149,7 +149,7 @@ class VerticalNavigationBar(
     @Composable
     override fun SettingsButton(): NavigationButton {
         val button = super.SettingsButton()
-        val shape = app.n_zik.android.uiRoundnessShape()
+        val shape = uiRoundnessShape()
         button.modifier {
             it.offset( 0.dp, 7.dp )
               .clip( shape )
@@ -162,7 +162,7 @@ class VerticalNavigationBar(
     @Composable
     override fun StatsButton(): NavigationButton {
         val button = super.StatsButton()
-        val shape = app.n_zik.android.uiRoundnessShape()
+        val shape = uiRoundnessShape()
         button.modifier {
             it.offset( 0.dp, 7.dp )
               .clip( shape )
@@ -175,7 +175,7 @@ class VerticalNavigationBar(
     @Composable
     override fun SearchButton(): NavigationButton {
         val button = super.SearchButton()
-        val shape = app.n_zik.android.uiRoundnessShape()
+        val shape = uiRoundnessShape()
         button.modifier {
             it.offset( 0.dp, 7.dp )
                 .clip( shape )

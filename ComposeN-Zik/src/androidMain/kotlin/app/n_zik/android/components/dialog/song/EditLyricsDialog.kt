@@ -23,6 +23,7 @@ import app.n_zik.android.components.dialog.common.InputDialogConstraints
 import app.n_zik.android.core.database.Database
 import app.n_zik.android.models.Lyrics
 import app.n_zik.android.enums.lyrics.LyricsType
+import androidx.compose.material3.Text
 
 class EditLyricsDialog private constructor(
     activeState: MutableState<Boolean>,
@@ -74,11 +75,11 @@ class EditLyricsDialog private constructor(
 
     @Composable
     override fun DialogBody() {
-        androidx.compose.material3.TextField(
+        TextField(
             value = value,
             onValueChange = { value = it },
             placeholder = { 
-                androidx.compose.material3.Text(
+                Text(
                     text = stringResource(R.string.enter_the_lyrics),
                     color = colorPalette().textDisabled
                 ) 

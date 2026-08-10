@@ -12,18 +12,19 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import androidx.compose.ui.res.stringResource
 import app.n_zik.android.R
+import app.it.fast4x.rimusic.cleanPrefix
 
 // ─── Composable fallbacks (for UI) ───
 
 @Composable
 fun MediaItem.artistTextWithFallback(): String {
-    val artist = app.it.fast4x.rimusic.cleanPrefix(mediaMetadata.artist?.toString() ?: "")
+    val artist = cleanPrefix(mediaMetadata.artist?.toString() ?: "")
     if (artist.isNotBlank() && artist != "null") return artist
     val dbSong by remember(mediaId) {
         Database.songTable.findById(mediaId)
     }.collectAsState(null, Dispatchers.IO)
     val dbText = dbSong?.artistsText
-    if (!dbText.isNullOrBlank() && dbText != "null") return app.it.fast4x.rimusic.cleanPrefix(dbText)
+    if (!dbText.isNullOrBlank() && dbText != "null") return cleanPrefix(dbText)
     return stringResource(R.string.unknown_artist)
 }
 
@@ -65,10 +66,10 @@ fun MediaItem.albumIdWithFallback(): String? {
 // ─── Non-Composable fallbacks (for services, notifications, etc.) ───
 
 fun MediaItem.artistTextOrDb(): String {
-    val artist = app.it.fast4x.rimusic.cleanPrefix(mediaMetadata.artist?.toString() ?: "")
+    val artist = cleanPrefix(mediaMetadata.artist?.toString() ?: "")
     if (artist.isNotBlank() && artist != "null") return artist
     val dbText = Database.songTable.findByIdDirect(mediaId)?.artistsText
-    if (!dbText.isNullOrBlank() && dbText != "null") return app.it.fast4x.rimusic.cleanPrefix(dbText)
+    if (!dbText.isNullOrBlank() && dbText != "null") return cleanPrefix(dbText)
     return artist
 }
 

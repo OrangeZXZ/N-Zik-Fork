@@ -45,6 +45,7 @@ import app.n_zik.android.core.coil.ImageCacheFactory
 
 import it.fast4x.innertube.models.bodies.QueueBody
 import it.fast4x.innertube.requests.queue
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalTextApi::class)
 @UnstableApi
@@ -75,7 +76,7 @@ fun ArtistScreenModern(
     var artistPage: ArtistPage? by remember { mutableStateOf( null ) }
 
     LaunchedEffect( Unit ) {
-        YtMusic.getArtistPage( browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX) )
+        YtMusic.getArtistPage( browseId.removePrefix(MODIFIED_PREFIX) )
                .onSuccess { online ->
                    artistPage = online
 

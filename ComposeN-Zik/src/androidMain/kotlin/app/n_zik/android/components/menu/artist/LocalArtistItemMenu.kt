@@ -62,6 +62,7 @@ import app.n_zik.android.components.dialog.artist.ChangeArtistCoverDialog
 import app.n_zik.android.components.dialog.artist.ChangeArtistBrowseIdDialog
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.LocalPlayerServiceBinder
+import app.n_zik.android.components.tab.SongShuffler
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -276,7 +277,7 @@ class LocalArtistItemMenu private constructor(
             override fun onLongClick() {}
         }
 
-        val shuffle = app.n_zik.android.components.tab.SongShuffler { songs }
+        val shuffle = SongShuffler { songs }
 
         buttons = mutableListOf<Button>().apply {
             add(playAll)
@@ -309,7 +310,7 @@ class LocalArtistItemMenu private constructor(
 
     @Composable
     private fun SectionTitle(title: String) {
-        androidx.compose.foundation.text.BasicText(
+        BasicText(
             text = title,
             style = typography().xxs.semiBold.copy(
                 color = colorPalette().accent,

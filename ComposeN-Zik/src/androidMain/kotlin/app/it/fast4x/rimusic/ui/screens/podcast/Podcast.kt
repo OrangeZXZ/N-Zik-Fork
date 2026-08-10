@@ -132,6 +132,8 @@ import app.it.fast4x.rimusic.utils.ExternalUris
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.playback.utils.Shuffler
 import app.n_zik.android.components.menu.song.SongItemMenu
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import app.n_zik.android.thumbnailShape
 
 
 @ExperimentalTextApi
@@ -161,7 +163,7 @@ fun Podcast(
     LaunchedEffect(Unit) {
         if (podcastPage == null) {
             podcastPage = withContext(Dispatchers.IO) {
-                Innertube.podcastPage(BrowseBody(browseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX))).getOrNull()
+                Innertube.podcastPage(BrowseBody(browseId = browseId.removePrefix(MODIFIED_PREFIX))).getOrNull()
             }
         }
     }
@@ -304,7 +306,7 @@ fun Podcast(
                                     .align(Alignment.TopEnd)
                                     .padding(top = 5.dp, end= 5.dp),
                                 onClick = {
-                                    (ExternalUris.youtubeMusicPlaylist(browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX).removePrefix("VL"))).let { url ->
+                                    (ExternalUris.youtubeMusicPlaylist(browseId.removePrefix(MODIFIED_PREFIX).removePrefix("VL"))).let { url ->
                                         val sendIntent = Intent().apply {
                                             action = Intent.ACTION_SEND
                                             type = "text/plain"
@@ -597,7 +599,7 @@ fun Podcast(
                                     .fillMaxWidth()
                                     .background(
                                         colorPalette().background4,
-                                        shape = app.n_zik.android.thumbnailShape()
+                                        shape = thumbnailShape()
                                     )
                                     .focusRequester(focusRequester)
                                     .onFocusChanged {

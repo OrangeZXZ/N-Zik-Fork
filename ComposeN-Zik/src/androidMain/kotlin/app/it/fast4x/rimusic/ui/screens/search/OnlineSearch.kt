@@ -252,7 +252,7 @@ fun OnlineSearch(
                                 .background(
                                     //colorPalette().background4,
                                     colorPalette().background1,
-                                    shape = app.n_zik.android.uiRoundnessShape()
+                                    shape = uiRoundnessShape()
                                 )
                                 .padding(horizontal = 24.dp, vertical = 16.dp)
                                 .focusRequester(focusRequester)

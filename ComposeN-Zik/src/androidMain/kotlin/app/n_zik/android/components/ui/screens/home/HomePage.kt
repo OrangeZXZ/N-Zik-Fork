@@ -57,6 +57,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import app.n_zik.android.components.AppPullToRefreshBox
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -146,7 +147,7 @@ fun HomePage(
         }
     }
 
-    app.n_zik.android.components.AppPullToRefreshBox(
+    AppPullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = ::refresh
     ) {

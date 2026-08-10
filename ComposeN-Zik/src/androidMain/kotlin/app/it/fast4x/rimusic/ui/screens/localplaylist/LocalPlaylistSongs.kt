@@ -197,6 +197,9 @@ import app.n_zik.android.components.tab.ImportPlaylistsMenu
 import app.n_zik.android.components.tab.ImportSongsFromCSV
 import app.n_zik.android.components.tab.ImportSongsFromServices
 import app.n_zik.android.core.database.ImportSong
+import app.n_zik.android.components.dialog.settings.LocalPlaylistToolbarSettingsDialog
+import app.n_zik.android.utils.getAlbumVersionFromVideo
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 
 
 @KotlinCsvExperimental
@@ -350,7 +353,7 @@ fun LocalPlaylistSongs(
         )
     }
 
-    val unmatchedExt = remember(items) { items.any { song -> song.id == (app.it.fast4x.rimusic.cleanPrefix(song.title ?: "")+(song.artistsText ?: "")).filter{it.isLetterOrDigit()} } }
+    val unmatchedExt = remember(items) { items.any { song -> song.id == (cleanPrefix(song.title ?: "")+(song.artistsText ?: "")).filter{it.isLetterOrDigit()} } }
     if (unmatchedExt && !matchRunningExt){
         matchRunningExt = true
         showGetAlbumVersionDialogueExt = true
@@ -359,7 +362,7 @@ fun LocalPlaylistSongs(
     LaunchedEffect(matchRunningExt) {
         if (!matchRunningExt) return@LaunchedEffect
         val mergedCounter = java.util.concurrent.atomic.AtomicInteger(0)
-        val matchedItemsRef = items.filter{song -> song.id == (app.it.fast4x.rimusic.cleanPrefix(song.title ?: "")+(song.artistsText ?: "")).filter{it.isLetterOrDigit()}}
+        val matchedItemsRef = items.filter{song -> song.id == (cleanPrefix(song.title ?: "")+(song.artistsText ?: "")).filter{it.isLetterOrDigit()}}
         val job = launch(Dispatchers.IO) {
             try {
                 totalSongsToMatch = matchedItemsRef.size
@@ -372,7 +375,7 @@ fun LocalPlaylistSongs(
                         var wasCancelled = false
                         try {
                             if (cancelMatchExt) return@launch
-                            app.n_zik.android.utils.getAlbumVersionFromVideo(
+                            getAlbumVersionFromVideo(
                                 song = song,
                                 playlistId = playlistId,
                                 position = index,
@@ -474,7 +477,7 @@ fun LocalPlaylistSongs(
                         var wasCancelled = false
                         try {
                             if (cancelMatchExt) return@launch
-                            app.n_zik.android.utils.getAlbumVersionFromVideo(
+                            getAlbumVersionFromVideo(
                                 song = song,
                                 playlistId = playlistId,
                                 position = index,
@@ -592,7 +595,7 @@ fun LocalPlaylistSongs(
     if (showYouTubeLinkDialog) {
         DefaultDialog(
             onDismiss = { showYouTubeLinkDialog = false },
-            modifier = Modifier.fillMaxWidth(if (app.it.fast4x.rimusic.utils.isLandscape) 0.3f else 0.8f)
+            modifier = Modifier.fillMaxWidth(if (isLandscape) 0.3f else 0.8f)
         ) {
             InputTextField(
                 onDismiss = { showYouTubeLinkDialog = false },
@@ -724,7 +727,7 @@ fun LocalPlaylistSongs(
         playlist?.let {
             CoroutineScope(Dispatchers.IO).launch {
                 val remotePlaylist = Innertube.playlistPage(
-                    BrowseBody(browseId = it.browseId?.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX) ?: "")
+                    BrowseBody(browseId = it.browseId?.removePrefix(MODIFIED_PREFIX) ?: "")
                 )?.completed()?.getOrNull()
                 remotePlaylist?.let { rp ->
                     val mediaItems = rp.songsPage
@@ -743,7 +746,7 @@ fun LocalPlaylistSongs(
     }
     val syncComponent = Synchronize { sync() }
     val listenOnYT = ListenOnYouTube {
-        val browseId = playlist?.browseId?.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)?.removePrefix( "VL" )
+        val browseId = playlist?.browseId?.removePrefix(MODIFIED_PREFIX)?.removePrefix( "VL" )
 
         binder?.player?.pause()
         uriHandler.openUri( ExternalUris.youtubePlaylist(browseId ?: "") )
@@ -1003,7 +1006,7 @@ fun LocalPlaylistSongs(
                         .padding(horizontal = 16.dp)
                         .background(
                             color = colorPalette().background1,
-                            shape = app.n_zik.android.thumbnailShape()
+                            shape = thumbnailShape()
                         )
                 ) {
 
@@ -1135,7 +1138,7 @@ fun LocalPlaylistSongs(
                     sort.sortOrder,
                     hasUnmatchedSongs
                 ) {
-                    val defaultOrder = app.n_zik.android.components.dialog.settings.LocalPlaylistToolbarSettingsDialog.allButtonIds
+                    val defaultOrder = LocalPlaylistToolbarSettingsDialog.allButtonIds
                     val order = try {
                         if (toolbarOrderPref.isBlank()) defaultOrder else {
                             val arr = org.json.JSONArray(toolbarOrderPref)
@@ -1295,8 +1298,8 @@ fun LocalPlaylistSongs(
 
                             trailingContent = {
                                 if ((song.id.length != 11 || (song.durationText == "00:00" && song.totalPlayTimeMs == 1L)) && !song.id.startsWith(LOCAL_KEY_PREFIX)) {
-                                    androidx.compose.material3.Icon(
-                                        painter = androidx.compose.ui.res.painterResource(R.drawable.alert),
+                                    Icon(
+                                        painter = painterResource(R.drawable.alert),
                                         contentDescription = stringResource(R.string.unmatched_song),
                                         tint = Color(0xFFFF9800),
                                         modifier = Modifier.padding(start = 8.dp).size(18.dp)

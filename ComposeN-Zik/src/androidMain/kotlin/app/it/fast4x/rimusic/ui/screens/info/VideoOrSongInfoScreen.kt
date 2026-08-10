@@ -36,6 +36,7 @@ import timber.log.Timber
 import app.it.fast4x.rimusic.models.Artist
 import app.it.fast4x.rimusic.models.SongArtistMap
 import app.n_zik.android.core.database.Database
+import androidx.compose.ui.text.font.FontStyle
 
 @Composable
 fun VideoOrSongInfoScreen(
@@ -310,7 +311,7 @@ fun VideoOrSongInfoScreen(
                             text = if (!desc.isNullOrBlank()) desc else stringResource(R.string.no_description_available),
                             style = typography().xs,
                             color = colorPalette().text,
-                            fontStyle = if (desc.isNullOrBlank()) androidx.compose.ui.text.font.FontStyle.Italic else null
+                            fontStyle = if (desc.isNullOrBlank()) FontStyle.Italic else null
                         )
                     }
                 }

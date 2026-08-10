@@ -258,6 +258,23 @@ import org.woheller69.freeDroidWarn.FreeDroidWarn
 import app.it.fast4x.rimusic.ui.styling.BoundedCornerSize
 import app.n_zik.android.core.network.client.NetworkClientFactory
 import app.n_zik.android.extensions.discord.DiscordUiState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
+import androidx.navigation.NavController
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.lifecycle.Lifecycle
+import app.n_zik.android.enums.PendingMiniPlayerAction
+import app.n_zik.android.core.backup.BackupManager
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.core.view.WindowInsetsCompat
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.runtime.State
+import androidx.core.view.WindowInsetsControllerCompat
+import app.it.fast4x.rimusic.ui.styling.ColorPalette
+import app.n_zik.android.core.database.Database
 
 @UnstableApi
 class MainActivity :
@@ -349,7 +366,7 @@ class MainActivity :
         checkIfAppIsRunningInBackground()
         // Verify backup location exists
         lifecycleScope.launch(Dispatchers.IO) {
-            app.n_zik.android.core.backup.BackupManager.verifyBackupLocation(this@MainActivity)
+            BackupManager.verifyBackupLocation(this@MainActivity)
         }
 
         // Fetch Invidious instances
@@ -400,10 +417,10 @@ class MainActivity :
                 }
             }
             
-            val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-            androidx.compose.runtime.DisposableEffect(lifecycleOwner, isDark) {
-                val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
-                    if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+            val lifecycleOwner = LocalLifecycleOwner.current
+            DisposableEffect(lifecycleOwner, isDark) {
+                val observer = LifecycleEventObserver { _, event ->
+                    if (event == Lifecycle.Event.ON_RESUME) {
                         (view.context as Activity).window.let { window ->
                             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
                                 !isDark
@@ -505,7 +522,7 @@ class MainActivity :
             val isSystemInDarkTheme = isSystemInDarkTheme()
             val navController = rememberNavController()
             DisposableEffect(navController) {
-                val listener = androidx.navigation.NavController.OnDestinationChangedListener { _, destination, _ ->
+                val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
                     DiscordUiState.currentRoute.value = destination.route
                 }
                 navController.addOnDestinationChangedListener(listener)
@@ -515,7 +532,7 @@ class MainActivity :
             }
             var showPlayer by rememberSaveable { mutableStateOf(false) }
             var switchToAudioPlayer by rememberSaveable { mutableStateOf(false) }
-            val pendingMiniPlayerAction = remember { mutableStateOf<app.n_zik.android.enums.PendingMiniPlayerAction?>(null) }
+            val pendingMiniPlayerAction = remember { mutableStateOf<PendingMiniPlayerAction?>(null) }
             val isShowingLyrics = rememberSaveable { mutableStateOf(false) }
             val isShowingVisualizer = rememberSaveable { mutableStateOf(false) }
             var animatedGradient by rememberPreference(animatedGradientKey, AnimatedGradient.M3EMorphingCover)
@@ -573,7 +590,7 @@ class MainActivity :
                                 applyFontPadding,
                                 fontType
                             ),
-                            thumbnailShape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)),
+                            thumbnailShape = if (thumbnailRoundnessDp >= 48f) CircleShape else RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f)),
                             uiRoundnessShape = RoundedCornerShape(BoundedCornerSize(uiRoundnessDp.dp, 0.4f))
                         )
                     )
@@ -889,12 +906,12 @@ class MainActivity :
                                 }
                             }
 
-                            app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey -> {
+                            thumbnailRoundnessDpKey -> {
                                 val thumbnailRoundnessDp =
-                                    sharedPreferences.getFloat(app.it.fast4x.rimusic.utils.thumbnailRoundnessDpKey, 12f)
+                                    sharedPreferences.getFloat(thumbnailRoundnessDpKey, 12f)
 
                                 appearance = appearance.copy(
-                                    thumbnailShape = if (thumbnailRoundnessDp >= 48f) androidx.compose.foundation.shape.CircleShape else RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))
+                                    thumbnailShape = if (thumbnailRoundnessDp >= 48f) CircleShape else RoundedCornerShape(BoundedCornerSize(thumbnailRoundnessDp.dp, 0.25f))
                                 )
                             }
 
@@ -988,13 +1005,13 @@ class MainActivity :
                 setSystemBarAppearance(finalAppearance.colorPalette.isDark)
             }
 
-            val isLandscape = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
-            val uiType by app.it.fast4x.rimusic.utils.rememberPreference(app.it.fast4x.rimusic.utils.UiTypeKey, UiType.RiMusic)
+            val isLandscape = LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+            val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
             val isViMusic = uiType == UiType.ViMusic
             
             val bottomBarHeightPx = with(LocalDensity.current) { 240.dp.roundToPx().toFloat() } // Enough to hide floating bar + miniplayer
-            var topBarOffsetHeightPx by remember { androidx.compose.runtime.mutableFloatStateOf(0f) }
-            var bottomBarOffsetHeightPx by remember { androidx.compose.runtime.mutableFloatStateOf(0f) }
+            var topBarOffsetHeightPx by remember { mutableFloatStateOf(0f) }
+            var bottomBarOffsetHeightPx by remember { mutableFloatStateOf(0f) }
             
             LaunchedEffect(isLandscape, isViMusic) {
                 topBarOffsetHeightPx = 0f
@@ -1002,11 +1019,11 @@ class MainActivity :
             }
 
             val density = LocalDensity.current
-            val safeDrawingInsets = androidx.compose.foundation.layout.WindowInsets.safeDrawing
+            val safeDrawingInsets = WindowInsets.safeDrawing
             val nestedScrollConnection = remember(isLandscape, isViMusic, density, safeDrawingInsets) {
-                object : androidx.compose.ui.input.nestedscroll.NestedScrollConnection {
-                    override fun onPreScroll(available: androidx.compose.ui.geometry.Offset, source: androidx.compose.ui.input.nestedscroll.NestedScrollSource): androidx.compose.ui.geometry.Offset {
-                        if (!isLandscape || isViMusic) return androidx.compose.ui.geometry.Offset.Zero
+                object : NestedScrollConnection {
+                    override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                        if (!isLandscape || isViMusic) return Offset.Zero
                         
                         val statusBarsTopPx = safeDrawingInsets.getTop(density)
                         val topBarHeightPx = with(density) { 64.dp.roundToPx() } + statusBarsTopPx
@@ -1020,13 +1037,13 @@ class MainActivity :
                         val newBottomOffset = bottomBarOffsetHeightPx - delta
                         bottomBarOffsetHeightPx = newBottomOffset.coerceIn(0f, bottomBarHeightPx)
                         
-                        return androidx.compose.ui.geometry.Offset(0f, topConsumed)
+                        return Offset(0f, topConsumed)
                     }
                 }
             }
 
-            val topBarOffsetState = androidx.compose.runtime.derivedStateOf { topBarOffsetHeightPx }
-            val bottomBarOffsetState = androidx.compose.runtime.derivedStateOf { bottomBarOffsetHeightPx }
+            val topBarOffsetState = derivedStateOf { topBarOffsetHeightPx }
+            val bottomBarOffsetState = derivedStateOf { bottomBarOffsetHeightPx }
 
             BoxWithConstraints(
                 modifier = Modifier
@@ -1197,12 +1214,12 @@ class MainActivity :
                                             shape = uiRoundnessShape()
                                         ) {}
                                     },
-                                    shape = (uiRoundnessShape() as? androidx.compose.foundation.shape.RoundedCornerShape)?.let {
-                                        androidx.compose.foundation.shape.RoundedCornerShape(
+                                    shape = (uiRoundnessShape() as? RoundedCornerShape)?.let {
+                                        RoundedCornerShape(
                                             topStart = it.topStart,
                                             topEnd = it.topEnd,
-                                            bottomStart = androidx.compose.foundation.shape.CornerSize(0.dp),
-                                            bottomEnd = androidx.compose.foundation.shape.CornerSize(0.dp)
+                                            bottomStart = CornerSize(0.dp),
+                                            bottomEnd = CornerSize(0.dp)
                                         )
                                     } ?: uiRoundnessShape()
                                 ) {
@@ -1230,12 +1247,12 @@ class MainActivity :
                                         shape = uiRoundnessShape()
                                     ) {}
                                 },
-                                shape = (uiRoundnessShape() as? androidx.compose.foundation.shape.RoundedCornerShape)?.let {
-                                    androidx.compose.foundation.shape.RoundedCornerShape(
+                                shape = (uiRoundnessShape() as? RoundedCornerShape)?.let {
+                                    RoundedCornerShape(
                                         topStart = it.topStart,
                                         topEnd = it.topEnd,
-                                        bottomStart = androidx.compose.foundation.shape.CornerSize(0.dp),
-                                        bottomEnd = androidx.compose.foundation.shape.CornerSize(0.dp)
+                                        bottomStart = CornerSize(0.dp),
+                                        bottomEnd = CornerSize(0.dp)
                                     )
                                 } ?: uiRoundnessShape()
                             ) {
@@ -1256,12 +1273,12 @@ class MainActivity :
                                         color = Color.Transparent,
                                     ) {}
                                 },
-                                shape = (uiRoundnessShape() as? androidx.compose.foundation.shape.RoundedCornerShape)?.let {
-                                    androidx.compose.foundation.shape.RoundedCornerShape(
+                                shape = (uiRoundnessShape() as? RoundedCornerShape)?.let {
+                                    RoundedCornerShape(
                                         topStart = it.topStart,
                                         topEnd = it.topEnd,
-                                        bottomStart = androidx.compose.foundation.shape.CornerSize(0.dp),
-                                        bottomEnd = androidx.compose.foundation.shape.CornerSize(0.dp)
+                                        bottomStart = CornerSize(0.dp),
+                                        bottomEnd = CornerSize(0.dp)
                                     )
                                 } ?: uiRoundnessShape()
                             ) {
@@ -1379,7 +1396,7 @@ class MainActivity :
 
                         "playFavorites" -> {
                             lifecycleScope.launch(Dispatchers.IO) {
-                                val favorites = app.n_zik.android.core.database.Database.songTable.allFavorites().first()
+                                val favorites = Database.songTable.allFavorites().first()
                                 if (favorites.isNotEmpty()) {
                                     val mediaItems = favorites.map { it.asMediaItem }
                                     withContext(Dispatchers.Main) {
@@ -1466,7 +1483,7 @@ class MainActivity :
 
     }
 
-    private fun savePaletteForWidget(palette: app.it.fast4x.rimusic.ui.styling.ColorPalette) {
+    private fun savePaletteForWidget(palette: ColorPalette) {
         preferences.edit()
             .putInt("widget_palette_accent", palette.accent.toArgb())
             .putInt("widget_palette_background1", palette.background1.toArgb())
@@ -1484,10 +1501,10 @@ class MainActivity :
             isAppearanceLightStatusBars = !isDark
             isAppearanceLightNavigationBars = !isDark
             if (hideStatusBar) {
-                systemBarsBehavior = androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                hide(androidx.core.view.WindowInsetsCompat.Type.statusBars())
+                systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                hide(WindowInsetsCompat.Type.statusBars())
             } else {
-                show(androidx.core.view.WindowInsetsCompat.Type.statusBars())
+                show(WindowInsetsCompat.Type.statusBars())
             }
         }
 
@@ -1549,8 +1566,8 @@ val LocalPlayerSheetState =
 
 //val LocalInternetConnected = staticCompositionLocalOf<Boolean> { error("No Network Status provided") }
 
-val LocalPendingMiniPlayerAction = androidx.compose.runtime.staticCompositionLocalOf<androidx.compose.runtime.MutableState<app.n_zik.android.enums.PendingMiniPlayerAction?>> { error("No PendingMiniPlayerAction state provided") }
-val LocalIsShowingLyrics = staticCompositionLocalOf<androidx.compose.runtime.MutableState<Boolean>> { error("No LocalIsShowingLyrics provided") }
-val LocalIsShowingVisualizer = staticCompositionLocalOf<androidx.compose.runtime.MutableState<Boolean>> { error("No LocalIsShowingVisualizer provided") }
-val LocalTopBarOffset = staticCompositionLocalOf<androidx.compose.runtime.State<Float>> { androidx.compose.runtime.mutableStateOf(0f) }
-val LocalBottomBarOffset = staticCompositionLocalOf<androidx.compose.runtime.State<Float>> { androidx.compose.runtime.mutableStateOf(0f) }
+val LocalPendingMiniPlayerAction = staticCompositionLocalOf<MutableState<PendingMiniPlayerAction?>> { error("No PendingMiniPlayerAction state provided") }
+val LocalIsShowingLyrics = staticCompositionLocalOf<MutableState<Boolean>> { error("No LocalIsShowingLyrics provided") }
+val LocalIsShowingVisualizer = staticCompositionLocalOf<MutableState<Boolean>> { error("No LocalIsShowingVisualizer provided") }
+val LocalTopBarOffset = staticCompositionLocalOf<State<Float>> { mutableStateOf(0f) }
+val LocalBottomBarOffset = staticCompositionLocalOf<State<Float>> { mutableStateOf(0f) }

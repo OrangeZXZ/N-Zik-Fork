@@ -99,6 +99,10 @@ import app.it.fast4x.rimusic.utils.addNext
 import app.n_zik.android.components.SongItem
 import app.it.fast4x.rimusic.models.Artist
 import it.fast4x.innertube.requests.ArtistPage
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.text.BasicText
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import androidx.compose.material3.Text
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -252,9 +256,9 @@ fun ArtistLocalSongs(
         }
         item {
             if (songCount > 0) {
-                androidx.compose.material3.Text(
+                Text(
                     text = stringResource(R.string.artist_songs_count_duration, songCount, totalDurationText),
-                    style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = colorPalette().text,
                     modifier = Modifier
                         .padding(top = 12.dp, bottom = 5.dp)
@@ -266,9 +270,9 @@ fun ArtistLocalSongs(
         if (songs.isNullOrEmpty()) {
             item(key = "empty") {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    androidx.compose.material3.Text(
+                    Text(
                         text = stringResource(R.string.info_no_songs_yet),
-                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyLarge,
                         color = colorPalette().textSecondary,
                         modifier = Modifier.align(Alignment.Center)
                     )
@@ -593,7 +597,7 @@ fun ArtistHeader(
                     .conditional(!disableScrollingText) { basicMarquee(iterations = Int.MAX_VALUE) }
                     .align(Alignment.CenterHorizontally)
             )
-            androidx.compose.foundation.text.BasicText(
+            BasicText(
                 text = artistPage?.subscribers.orEmpty(),
                 style = typography().s.copy(colorPalette().textSecondary),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -608,7 +612,7 @@ fun ArtistHeader(
                 .align(Alignment.TopEnd)
                 .padding(top = 5.dp, end = 5.dp),
             onClick = {
-                val url = ExternalUris.youtubeMusicChannel(localArtist.id.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX))
+                val url = ExternalUris.youtubeMusicChannel(localArtist.id.removePrefix(MODIFIED_PREFIX))
                 val sendIntent = Intent().apply {
                     action = Intent.ACTION_SEND
                     type = "text/plain"

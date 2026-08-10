@@ -263,7 +263,7 @@ fun AlbumPlaceholder(
         Row( Modifier.fillMaxWidth() ) {
             Box(
                 Modifier.size( thumbnailSizeDp )
-                        .clip( app.n_zik.android.thumbnailShape() )
+                        .clip( thumbnailShape() )
                         .shimmerEffect()
             )
         }

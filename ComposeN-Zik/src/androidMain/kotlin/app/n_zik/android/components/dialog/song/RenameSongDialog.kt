@@ -31,6 +31,7 @@ import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.it.fast4x.rimusic.hasExplicitPrefix
 import app.n_zik.android.colorPalette
 import kotlinx.coroutines.flow.first
+import app.it.fast4x.rimusic.cleanPrefix
 
 class RenameSongDialog private constructor(
     activeState: MutableState<Boolean>,
@@ -84,7 +85,7 @@ class RenameSongDialog private constructor(
                 committedExplicit = (dbTitle ?: song?.title ?: "").hasExplicitPrefix()
                 isExplicit = committedExplicit
                 value = TextFieldValue((dbTitle ?: song?.title ?: "").let { t ->
-                    app.it.fast4x.rimusic.cleanPrefix(t)
+                    cleanPrefix(t)
                 })
             }
         }

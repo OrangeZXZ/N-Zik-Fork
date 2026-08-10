@@ -16,18 +16,20 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.kreate.android.me.knighthat.utils.Toaster
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import app.it.fast4x.rimusic.ui.components.LocalMenuState
+import app.it.fast4x.rimusic.ui.components.MenuState
 
 @UnstableApi
 class SongShuffler private constructor(
     private val binder: PlayerServiceModern.Binder?,
-    private val menuState: app.it.fast4x.rimusic.ui.components.MenuState?,
+    private val menuState: MenuState?,
     private val songs: () -> List<Song>
 ): MenuIcon, Descriptive {
 
     companion object {
         @Composable
         operator fun invoke( songs: () -> List<Song> ) =
-            SongShuffler( LocalPlayerServiceBinder.current, app.it.fast4x.rimusic.ui.components.LocalMenuState.current, songs )
+            SongShuffler( LocalPlayerServiceBinder.current, LocalMenuState.current, songs )
 
         @Composable
         operator fun invoke(
@@ -38,7 +40,7 @@ class SongShuffler private constructor(
                 databaseCall( Int.MAX_VALUE )
             }.collectAsState( emptyList(), Dispatchers.IO )
 
-            return SongShuffler( LocalPlayerServiceBinder.current, app.it.fast4x.rimusic.ui.components.LocalMenuState.current ) { songsToShuffle }
+            return SongShuffler( LocalPlayerServiceBinder.current, LocalMenuState.current ) { songsToShuffle }
         }
 
         fun playShuffled(

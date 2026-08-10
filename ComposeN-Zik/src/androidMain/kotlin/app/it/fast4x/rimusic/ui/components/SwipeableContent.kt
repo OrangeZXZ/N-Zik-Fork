@@ -71,6 +71,7 @@ import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.sync.YouTubeSync
 import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.R
+import androidx.compose.ui.platform.LocalDensity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -129,8 +130,8 @@ fun SwipeableContent(
                             color = colorPalette().accent,
                             trackColor = colorPalette().textDisabled,
                             modifier = Modifier.size(DOWNLOAD_INDICATOR_SIZE_SWIPE.dp),
-                            stroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
-                            trackStroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
+                            stroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
+                            trackStroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
                         )
                     } else if (iconId != null) {
                         Icon(
@@ -300,7 +301,7 @@ fun SwipeablePlaylistItem(
 
 }
 
-@OptIn(androidx.media3.common.util.UnstableApi::class)
+@OptIn(UnstableApi::class)
 @Composable
 fun SwipeableAlbumItem(
     albumItem: Innertube.AlbumItem,

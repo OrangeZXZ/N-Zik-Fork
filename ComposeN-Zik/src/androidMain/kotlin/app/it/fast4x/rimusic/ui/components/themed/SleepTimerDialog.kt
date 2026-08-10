@@ -40,6 +40,8 @@ import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.formatAsDuration
 import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.uiRoundnessShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 
 private const val MINUTES_TO_MILLIS = 60 * 1000L
 private const val STEP_MINUTES = 5
@@ -194,7 +196,7 @@ fun SleepTimerDialog(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            androidx.compose.material3.Button(
+                            Button(
                                 onClick = onDismiss,
                                 modifier = Modifier.weight(1f),
                                 colors = ButtonDefaults.buttonColors(
@@ -203,13 +205,13 @@ fun SleepTimerDialog(
                                 ),
                                 shape = uiRoundnessShape()
                             ) {
-                                androidx.compose.material3.Text(
+                                Text(
                                     text = stringResource(R.string.cancel),
                                     style = typography().s.semiBold
                                 )
                             }
 
-                            androidx.compose.material3.Button(
+                            Button(
                                 enabled = amount > 0,
                                 onClick = {
                                     onStartSleepTimer(amount * STEP_MINUTES * MINUTES_TO_MILLIS)
@@ -222,7 +224,7 @@ fun SleepTimerDialog(
                                 ),
                                 shape = uiRoundnessShape()
                             ) {
-                                androidx.compose.material3.Text(
+                                Text(
                                     text = stringResource(R.string.confirm),
                                     style = typography().s.semiBold
                                 )

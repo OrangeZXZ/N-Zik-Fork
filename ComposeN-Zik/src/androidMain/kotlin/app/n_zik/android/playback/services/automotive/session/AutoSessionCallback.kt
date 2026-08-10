@@ -103,6 +103,12 @@ import it.fast4x.innertube.models.NavigationEndpoint
 import kotlinx.coroutines.flow.Flow
 import app.n_zik.android.playback.services.automotive.browse.AutoBrowseTree
 import app.it.fast4x.rimusic.enums.OnDeviceSongSortBy
+import app.it.fast4x.rimusic.utils.maxSongsInQueueAndroidAutoKey
+import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
+import androidx.media3.session.MediaConstants
+import app.it.fast4x.rimusic.enums.MaxSongs
+import app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn
+import androidx.media3.common.Player
 @UnstableApi
 class AutoSessionCallback(
     val context: Context,
@@ -150,9 +156,9 @@ class AutoSessionCallback(
                 .add(AutoSessionConstants.CommandSearch)
                 .build(),
             connectionResult.availablePlayerCommands.buildUpon()
-                .add(androidx.media3.common.Player.COMMAND_PLAY_PAUSE)
-                .add(androidx.media3.common.Player.COMMAND_PREPARE)
-                .add(androidx.media3.common.Player.COMMAND_STOP)
+                .add(Player.COMMAND_PLAY_PAUSE)
+                .add(Player.COMMAND_PREPARE)
+                .add(Player.COMMAND_STOP)
                 .build()
         )
     }
@@ -264,7 +270,7 @@ class AutoSessionCallback(
         startPositionMs: Long,
     ): ListenableFuture<MediaSession.MediaItemsWithStartPosition> = scope.future {
         val result = onSetMediaItemsInternal(mediaSession, controller, mediaItems, startIndex, startPositionMs)
-        val maxSongs = context.preferences.getEnum(app.it.fast4x.rimusic.utils.maxSongsInQueueAndroidAutoKey, app.it.fast4x.rimusic.enums.MaxSongs.Unlimited).toInt()
+        val maxSongs = context.preferences.getEnum(maxSongsInQueueAndroidAutoKey, MaxSongs.Unlimited).toInt()
         
         if (result.mediaItems.size <= maxSongs) return@future result
         
@@ -382,7 +388,7 @@ val allSongs = database.formatTable.sortAllWithSongs(sortBy, sortOrder).first().
                     val relatedSongs = if (trending.isNotEmpty()) {
                         Innertube.relatedPage(NextBody(videoId = trending.first().id))?.getOrNull()?.songs?.map { it.asSong } ?: emptyList()
                     } else emptyList()
-                    val ytmQuickPicks = if (app.it.fast4x.rimusic.ui.screens.settings.isYouTubeLoggedIn()) {
+                    val ytmQuickPicks = if (isYouTubeLoggedIn()) {
                         YtMusic.getQuickPicks(setLogin = true).getOrNull()?.map { it.asSong } ?: emptyList()
                     } else emptyList()
                     Timber.tag("AutoSessionCallback").d("Quick picks play list loaded -> trending: ${trending.size}, related: ${relatedSongs.size}, ytb: ${ytmQuickPicks.size}")
@@ -436,11 +442,11 @@ val allSongs = database.formatTable.sortAllWithSongs(sortBy, sortOrder).first().
         controller: MediaSession.ControllerInfo,
         mediaItems: MutableList<MediaItem>
     ): ListenableFuture<MutableList<MediaItem>> = scope.future(Dispatchers.IO) {
-        val parentalControlEnabled = try { context.preferences.getBoolean(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false) } catch (e: Exception) { false }
+        val parentalControlEnabled = try { context.preferences.getBoolean(parentalControlEnabledKey, false) } catch (e: Exception) { false }
         val mappedItems = mediaItems.fastMap { item ->
             val songId = item.mediaId.split("/").lastOrNull() ?: item.mediaId
             database.songTable.findById(songId).first()?.asMediaItem ?: item.buildUpon().setMediaId(songId).build()
-        }.filter { !parentalControlEnabled || it.mediaMetadata.extras?.getBoolean(androidx.media3.session.MediaConstants.EXTRAS_KEY_IS_EXPLICIT) != true }.toMutableList()
+        }.filter { !parentalControlEnabled || it.mediaMetadata.extras?.getBoolean(MediaConstants.EXTRAS_KEY_IS_EXPLICIT) != true }.toMutableList()
         mappedItems
     }
 

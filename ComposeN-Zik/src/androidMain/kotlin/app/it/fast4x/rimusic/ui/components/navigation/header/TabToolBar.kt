@@ -24,6 +24,9 @@ import androidx.compose.ui.unit.dp
 import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.EllipsisMenuComponent
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ripple
+import androidx.compose.animation.AnimatedContent
 
 object TabToolBar {
 
@@ -59,7 +62,7 @@ object TabToolBar {
             canDisplay = (availableWidth / sizeWithSpacing).toInt()
         }
 
-        androidx.compose.animation.AnimatedContent(
+        AnimatedContent(
             targetState = buttons,
             label = "ToolbarButtonsAnimation",
             modifier = modifier.fillMaxWidth()
@@ -130,7 +133,7 @@ object TabToolBar {
             onClick = onClick,
             enabled = enabled
         ) {
-            androidx.compose.material3.Icon(
+            Icon(
                 painter = icon,
                 null,
                 modifier.size( size )
@@ -158,7 +161,7 @@ object TabToolBar {
                 .clip(uiRoundnessShape())
                 .combinedClickable(
                     interactionSource = interactionSource,
-                    indication = androidx.compose.material3.ripple(
+                    indication = ripple(
                         bounded = false,
                         radius = 20.dp
                     ),
@@ -168,7 +171,7 @@ object TabToolBar {
                 ),
             contentAlignment = Alignment.Center
         ) {
-            androidx.compose.material3.Icon(
+            Icon(
                 painter = icon,
                 contentDescription = null,
                 modifier = Modifier
@@ -192,7 +195,7 @@ object TabToolBar {
             onClick = onClick,
             enabled = enabled
         ) {
-            androidx.compose.material3.Icon(
+            Icon(
                 painter = painterResource( iconId ),
                 tint = tint,
                 contentDescription = null,
@@ -221,7 +224,7 @@ object TabToolBar {
                 .clip(uiRoundnessShape())
                 .combinedClickable(
                     interactionSource = interactionSource,
-                    indication = androidx.compose.material3.ripple(
+                    indication = ripple(
                         bounded = false,
                         radius = 20.dp
                     ),
@@ -231,7 +234,7 @@ object TabToolBar {
                 ),
             contentAlignment = Alignment.Center
         ) {
-            androidx.compose.material3.Icon(
+            Icon(
                 painter = painterResource(iconId),
                 contentDescription = null,
                 modifier = Modifier
@@ -280,7 +283,7 @@ object TabToolBar {
                 .clip(uiRoundnessShape())
                 .combinedClickable(
                     interactionSource = interactionSource,
-                    indication = androidx.compose.material3.ripple(
+                    indication = ripple(
                         bounded = false,
                         radius = 20.dp
                     ),
@@ -289,7 +292,7 @@ object TabToolBar {
                 ),
             contentAlignment = Alignment.Center
         ) {
-            androidx.compose.material3.Icon(
+            Icon(
                 painter = painterResource(if (toggleCondition) onIconId else offIconId),
                 contentDescription = null,
                 modifier = Modifier
@@ -341,7 +344,7 @@ object TabToolBar {
                 .clip(uiRoundnessShape())
                 .combinedClickable(
                     interactionSource = interactionSource,
-                    indication = androidx.compose.material3.ripple(
+                    indication = ripple(
                         bounded = false,
                         radius = 20.dp
                     ),
@@ -351,7 +354,7 @@ object TabToolBar {
                 ),
             contentAlignment = Alignment.Center
         ) {
-            androidx.compose.material3.Icon(
+            Icon(
                 painter = painterResource(iconId),
                 contentDescription = null,
                 modifier = Modifier

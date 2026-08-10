@@ -60,6 +60,16 @@ import app.kreate.android.themed.rimusic.component.playlist.PositionLock
 import app.n_zik.android.components.dialog.settings.HomeSongsToolbarSettingsDialog
 import app.n_zik.android.components.dialog.tab.DownloadAllSongsDialog
 import app.n_zik.android.components.dialog.tab.DeleteAllDownloadedSongsDialog
+import app.n_zik.android.components.song.PeriodSelector
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import app.it.fast4x.rimusic.enums.SongSortBy
+import app.it.fast4x.rimusic.utils.homeSongsDownloadedToolbarOrderKey
+import app.it.fast4x.rimusic.utils.homeSongsToolbarOrderKey
+import app.it.fast4x.rimusic.utils.homeSongsFavoritesToolbarOrderKey
+import app.it.fast4x.rimusic.utils.homeSongsOnDeviceToolbarOrderKey
+import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
+import app.it.fast4x.rimusic.utils.homeSongsTopToolbarOrderKey
+import app.it.fast4x.rimusic.utils.homeSongsOfflineToolbarOrderKey
 
 @RequiresApi(Build.VERSION_CODES.O)
 @UnstableApi
@@ -351,7 +361,7 @@ fun HomeSongsScreen(navController: NavController ) {
         else -> Sort( Preference.HOME_SONGS_SORT_BY, Preference.HOME_SONGS_SORT_ORDER, homeSongsAllSortMenuOrderKey, "all" )
     }
     val positionLock = remember( songSort.sortOrder ) { PositionLock(songSort.sortOrder) }
-    val topPlaylists = app.n_zik.android.components.song.PeriodSelector( Preference.HOME_SONGS_TOP_PLAYLIST_PERIOD )
+    val topPlaylists = PeriodSelector( Preference.HOME_SONGS_TOP_PLAYLIST_PERIOD )
     val downloadAllDialog = DownloadAllSongsDialog( ::getSongs )
     val deleteDownloadsDialog = DeleteAllDownloadedSongsDialog( ::getSongs )
 
@@ -362,7 +372,7 @@ fun HomeSongsScreen(navController: NavController ) {
     }
 
     val localMatchButton = remember {
-        object : app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon, app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive {
+        object : MenuIcon, Descriptive {
             override val iconId: Int = R.drawable.alert
             override val messageId: Int = R.string.match_album_audio_version
             @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
@@ -371,12 +381,12 @@ fun HomeSongsScreen(navController: NavController ) {
         }
     }
 
-    val homeSongsToolbarOrderPrefAll by rememberPreference( app.it.fast4x.rimusic.utils.homeSongsToolbarOrderKey, "" )
-    val homeSongsToolbarOrderPrefFavorites by rememberPreference( app.it.fast4x.rimusic.utils.homeSongsFavoritesToolbarOrderKey, "" )
-    val homeSongsToolbarOrderPrefOffline by rememberPreference( app.it.fast4x.rimusic.utils.homeSongsOfflineToolbarOrderKey, "" )
-    val homeSongsToolbarOrderPrefDownloaded by rememberPreference( app.it.fast4x.rimusic.utils.homeSongsDownloadedToolbarOrderKey, "" )
-    val homeSongsToolbarOrderPrefTop by rememberPreference( app.it.fast4x.rimusic.utils.homeSongsTopToolbarOrderKey, "" )
-    val homeSongsToolbarOrderPrefOnDevice by rememberPreference( app.it.fast4x.rimusic.utils.homeSongsOnDeviceToolbarOrderKey, "" )
+    val homeSongsToolbarOrderPrefAll by rememberPreference( homeSongsToolbarOrderKey, "" )
+    val homeSongsToolbarOrderPrefFavorites by rememberPreference( homeSongsFavoritesToolbarOrderKey, "" )
+    val homeSongsToolbarOrderPrefOffline by rememberPreference( homeSongsOfflineToolbarOrderKey, "" )
+    val homeSongsToolbarOrderPrefDownloaded by rememberPreference( homeSongsDownloadedToolbarOrderKey, "" )
+    val homeSongsToolbarOrderPrefTop by rememberPreference( homeSongsTopToolbarOrderKey, "" )
+    val homeSongsToolbarOrderPrefOnDevice by rememberPreference( homeSongsOnDeviceToolbarOrderKey, "" )
 
     val currentToolbarOrderPref = when(builtInPlaylist) {
         BuiltInPlaylist.All -> homeSongsToolbarOrderPrefAll
@@ -397,11 +407,11 @@ fun HomeSongsScreen(navController: NavController ) {
             }
         } catch (_: Exception) { defaultToolbarOrder }
 
-        val list = mutableStateListOf<app.it.fast4x.rimusic.ui.components.tab.toolbar.Button>()
+        val list = mutableStateListOf<Button>()
         order.forEach { id ->
             when (id) {
                 "sort" -> list.add( if( builtInPlaylist == BuiltInPlaylist.Top ) topPlaylists else songSort )
-                "position_lock" -> if ( builtInPlaylist != BuiltInPlaylist.Top && songSort.sortBy == app.it.fast4x.rimusic.enums.SongSortBy.Custom ) list.add( positionLock )
+                "position_lock" -> if ( builtInPlaylist != BuiltInPlaylist.Top && songSort.sortBy == SongSortBy.Custom ) list.add( positionLock )
                 "search" -> {
                     if ( hasUnmatchedSongs && builtInPlaylist != BuiltInPlaylist.OnDevice ) list.add( localMatchButton )
                     list.add( search )

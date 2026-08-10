@@ -40,6 +40,7 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Icon as ToolbarIcon
 import app.it.fast4x.rimusic.ui.styling.Dimensions
 import app.it.fast4x.rimusic.utils.isLandscape
+import app.n_zik.android.topUiRoundnessShape
 
 object QueueToolBarState {
     var mediaItemCount by mutableIntStateOf(0)
@@ -68,7 +69,7 @@ fun QueueToolBar(
         modifier = modifier
             .fillMaxWidth()
             .clickable { QueueToolBarState.onBarClick() }
-            .background(colorPalette().background1, app.n_zik.android.topUiRoundnessShape())
+            .background(colorPalette().background1, topUiRoundnessShape())
             .height(60.dp)
     ) {
         if (!isLandscape) {

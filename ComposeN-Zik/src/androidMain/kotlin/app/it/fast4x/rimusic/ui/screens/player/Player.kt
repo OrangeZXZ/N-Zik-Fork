@@ -281,6 +281,13 @@ import kotlin.math.sqrt
 import androidx.compose.ui.res.stringResource
 import app.n_zik.android.components.player.lyrics.LyricsScreen
 import app.n_zik.android.playback.services.PlayerServiceModern
+import app.it.fast4x.rimusic.utils.thumbnailSizeDpKey
+import app.n_zik.android.topUiRoundnessShape
+import app.n_zik.android.LocalIsShowingVisualizer
+import androidx.compose.ui.platform.LocalView
+import app.n_zik.android.LocalIsShowingLyrics
+import androidx.media3.common.C
+import androidx.compose.ui.graphics.RectangleShape
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -304,8 +311,8 @@ fun Player(
     val disablePlayerHorizontalSwipe by rememberPreference(disablePlayerHorizontalSwipeKey, false)
     val showlyricsthumbnail by rememberPreference(showlyricsthumbnailKey, true)
     val effectRotationEnabled by rememberPreference(effectRotationKey, false)
-    val thumbnailSizeDp by rememberPreference( app.it.fast4x.rimusic.utils.thumbnailSizeDpKey, 90f )
-    val thumbnailSizeLDp by rememberPreference( app.it.fast4x.rimusic.utils.thumbnailSizeLDpKey, 30f )
+    val thumbnailSizeDp by rememberPreference( thumbnailSizeDpKey, 90f )
+    val thumbnailSizeLDp by rememberPreference( thumbnailSizeLDpKey, 30f )
     val showvisthumbnail by rememberPreference(showvisthumbnailKey, true)
     var thumbnailSpacing  by rememberPreference( thumbnailSpacingKey, 0f )
     var thumbnailSpacingL  by rememberPreference( thumbnailSpacingLKey, 0f )
@@ -378,9 +385,9 @@ fun Player(
     val showSearchEntityState = rememberSaveable { mutableStateOf( false ) }
     var showSearchEntity by showSearchEntityState
 
-    val showVisualizerState = app.n_zik.android.LocalIsShowingVisualizer.current
+    val showVisualizerState = LocalIsShowingVisualizer.current
     var isShowingVisualizer by showVisualizerState
-    val showLyricsState = app.n_zik.android.LocalIsShowingLyrics.current
+    val showLyricsState = LocalIsShowingLyrics.current
     var isShowingLyrics by showLyricsState
     
     val showSleepTimerState = rememberSaveable { mutableStateOf( false ) }
@@ -582,7 +589,7 @@ fun Player(
 
     val timeRemainingState = remember(durationState, positionAndDurationState) {
         derivedStateOf { 
-            if (durationState.value == androidx.media3.common.C.TIME_UNSET) 0
+            if (durationState.value == C.TIME_UNSET) 0
             else durationState.value.toInt() - positionAndDurationState.value.first.toInt() 
         }
     }
@@ -709,7 +716,7 @@ fun Player(
         }
     }
 
-    val view = androidx.compose.ui.platform.LocalView.current
+    val view = LocalView.current
     val globalIsDark = color.isDark
     
     fun getWindow(): android.view.Window? {
@@ -1400,7 +1407,7 @@ fun Player(
                                  val fling = PagerDefaults.flingBehavior(state = pagerState,snapPositionalThreshold = 0.25f)
                                  val pageSpacing = thumbnailSpacingL.toInt()*0.01*(screenWidth) - (2.5*((100f - thumbnailSizeLDp) * 0.5f).dp)
 
-                                 val context = androidx.compose.ui.platform.LocalContext.current
+                                 val context = LocalContext.current
                                  LaunchedEffect(playerUpdateTrigger) {
                                      val targetIndex = binder.player.currentMediaItemIndex
                                      if (pagerState.currentPage != targetIndex || pagerState.targetPage != targetIndex) {
@@ -1471,12 +1478,12 @@ fun Player(
                                          }
                                          .conditional(thumbnailType == ThumbnailType.Modern) {
                                              doubleShadowDrop(
-                                                 if (showCoverThumbnailAnimation) CircleShape else app.n_zik.android.thumbnailShape(),
+                                                 if (showCoverThumbnailAnimation) CircleShape else thumbnailShape(),
                                                  4.dp,
                                                  8.dp
                                              )
                                          }
-                                         .clip(app.n_zik.android.thumbnailShape())
+                                         .clip(thumbnailShape())
                                          .combinedClickable(
                                              interactionSource = remember { MutableInteractionSource() },
                                              indication = null,
@@ -2063,12 +2070,12 @@ fun Player(
                                          }
                                          .conditional(thumbnailType == ThumbnailType.Modern) {
                                              doubleShadowDrop(
-                                                 if (showCoverThumbnailAnimation) CircleShape else app.n_zik.android.thumbnailShape(),
+                                                 if (showCoverThumbnailAnimation) CircleShape else thumbnailShape(),
                                                  4.dp,
                                                  8.dp
                                              )
                                          }
-                                         .clip(app.n_zik.android.thumbnailShape())
+                                         .clip(thumbnailShape())
                                          .combinedClickable(
                                              interactionSource = remember { MutableInteractionSource() },
                                              indication = null,
@@ -2359,7 +2366,7 @@ fun Player(
                     .background(queuePanelBackground)
                     .padding(WindowInsets.navigationBars.asPaddingValues())
                     .align(Alignment.BottomCenter)
-                    .clip(app.n_zik.android.topUiRoundnessShape())
+                    .clip(topUiRoundnessShape())
             ) {
                 // Queue content - padding top for drag handle, overscroll to close
                 Box(
@@ -2385,7 +2392,7 @@ fun Player(
                         .fillMaxWidth()
                         .height(48.dp)
                         .align(Alignment.TopCenter)
-                        .clip(app.n_zik.android.topUiRoundnessShape())
+                        .clip(topUiRoundnessShape())
                         .background(colorPalette().background0.copy(alpha = handleAlpha))
                         .pointerInput(Unit) {
                                 detectVerticalDragGestures(
@@ -2460,10 +2467,10 @@ fun Player(
                 Surface(
                     modifier = Modifier.padding(vertical = 0.dp),
                     color = colorPalette().background0,
-                    shape = app.n_zik.android.uiRoundnessShape()
+                    shape = uiRoundnessShape()
                 ) {}
             },
-            shape = androidx.compose.ui.graphics.RectangleShape
+            shape = RectangleShape
         ) {
             SearchYoutubeEntity(
                 navController = navController,
@@ -2486,7 +2493,7 @@ fun PagerState.LaunchedEffectScrollToPage(
     appRunningInBackground: Boolean
 ) {
     val pagerState = this
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
     LaunchedEffect(playerUpdateTrigger, index) {
         val targetIndex = binder.player.currentMediaItemIndex
         if (pagerState.currentPage != targetIndex || pagerState.targetPage != targetIndex) {

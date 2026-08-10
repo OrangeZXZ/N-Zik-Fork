@@ -78,6 +78,7 @@ import app.it.fast4x.rimusic.utils.transparentBackgroundPlayerActionBarKey
 import kotlinx.coroutines.Dispatchers
 import kotlin.math.roundToInt
 import timber.log.Timber
+import androidx.compose.ui.geometry.Offset
 
 @SuppressLint("LongLogTag")
 @UnstableApi
@@ -111,7 +112,7 @@ fun StatsForNerds(
             mutableStateOf(binder.downloadCache.getCachedBytes(cleanMediaId, 0, -1))
         }
 
-        var format by remember(cleanMediaId) { mutableStateOf<app.it.fast4x.rimusic.models.Format?>(null) }
+        var format by remember(cleanMediaId) { mutableStateOf<Format?>(null) }
         LaunchedEffect(cleanMediaId) {
             while (true) {
                 playbackDataCache[cleanMediaId]?.let { if (it != playbackData) playbackData = it }
@@ -166,11 +167,11 @@ fun StatsForNerds(
     if (showThumbnail && (!statsForNerds || playerType == PlayerType.Essential)) {
         val scrollConnection = remember {
             object : NestedScrollConnection {
-                override fun onPreScroll(available: androidx.compose.ui.geometry.Offset, source: NestedScrollSource): androidx.compose.ui.geometry.Offset {
-                    return if (source == NestedScrollSource.UserInput) available.copy(x = 0f) else androidx.compose.ui.geometry.Offset.Zero
+                override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                    return if (source == NestedScrollSource.UserInput) available.copy(x = 0f) else Offset.Zero
                 }
-                override fun onPostScroll(consumed: androidx.compose.ui.geometry.Offset, available: androidx.compose.ui.geometry.Offset, source: NestedScrollSource): androidx.compose.ui.geometry.Offset {
-                    return if (source == NestedScrollSource.UserInput) available.copy(x = 0f) else androidx.compose.ui.geometry.Offset.Zero
+                override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
+                    return if (source == NestedScrollSource.UserInput) available.copy(x = 0f) else Offset.Zero
                 }
             }
         }

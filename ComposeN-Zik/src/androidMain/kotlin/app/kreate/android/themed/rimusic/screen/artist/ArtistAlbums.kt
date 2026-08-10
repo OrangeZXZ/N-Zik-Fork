@@ -53,6 +53,8 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import app.n_zik.android.components.menu.album.OnlineAlbumItemMenu
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import app.n_zik.android.components.AppPullToRefreshBox
 
 @ExperimentalMaterial3Api
 @Composable
@@ -75,7 +77,7 @@ fun ArtistAlbums(
     val albums = remember { mutableStateListOf<Innertube.AlbumItem>() }
     suspend fun fetchAlbums() {
         val response = runCatching {
-            Innertube.browse( browseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX), params = params ).body<BrowseResponse>()
+            Innertube.browse( browseId = browseId.removePrefix(MODIFIED_PREFIX), params = params ).body<BrowseResponse>()
         }
 
         response.fold(
@@ -119,7 +121,7 @@ fun ArtistAlbums(
                 Loader()
             }
         } else {
-            app.n_zik.android.components.AppPullToRefreshBox(
+            AppPullToRefreshBox(
                 isRefreshing = isRefreshing,
                 onRefresh = {
                     isRefreshing = true

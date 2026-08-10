@@ -58,6 +58,7 @@ import app.it.fast4x.rimusic.utils.semiBold
 import app.it.fast4x.rimusic.utils.showRemainingSongTimeKey
 import app.it.fast4x.rimusic.utils.textoutlineKey
 import kotlinx.coroutines.delay
+import app.it.fast4x.rimusic.utils.showSkipTimeButtonsKey
 
 /**
  * Adjust timeline based on provided values.
@@ -165,7 +166,7 @@ fun DurationIndicator(
         modifier = Modifier.padding( horizontal = 10.dp )
                            .fillMaxWidth()
     ) {
-        val showSkipTimeButtons by app.it.fast4x.rimusic.utils.rememberPreference( app.it.fast4x.rimusic.utils.showSkipTimeButtonsKey, true )
+        val showSkipTimeButtons by rememberPreference( showSkipTimeButtonsKey, true )
         if (showSkipTimeButtons) {
             SkipTimeButton(
                 binder, position, Long::minus, ::maxOf, 0, stringResource(R.string.rewind), stringResource(R.string.rewind_5_seconds), stringResource(R.string.rewind_30_seconds), Modifier.rotate( 180f )

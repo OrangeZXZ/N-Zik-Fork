@@ -106,6 +106,10 @@ import java.util.Optional
 import app.it.fast4x.rimusic.ui.components.themed.InProgressDialog
 import app.it.fast4x.rimusic.ui.screens.info.VideoOrSongInfoScreen
 import kotlinx.coroutines.Dispatchers
+import app.n_zik.android.BuildConfig
+import androidx.compose.foundation.text.BasicText
+import app.it.fast4x.rimusic.enums.PlayerTimelineType
+import app.it.fast4x.rimusic.enums.DownloadedStateMedia
 
 @UnstableApi
 @ExperimentalFoundationApi
@@ -270,12 +274,12 @@ class SongItemMenu private constructor(
         val context = LocalContext.current
         val binder = LocalPlayerServiceBinder.current
 
-        val playerTimelineType by rememberPreference(playerTimelineTypeKey, app.it.fast4x.rimusic.enums.PlayerTimelineType.Wavy)
+        val playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
         val downloadStateMediaState = rememberUpdatedState(
-            binder?.let { getDownloadStateMedia(it, song.id) } ?: app.it.fast4x.rimusic.enums.DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED
+            binder?.let { getDownloadStateMedia(it, song.id) } ?: DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED
         )
         
-        refreshBtn = if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
+        refreshBtn = if (playerTimelineType == PlayerTimelineType.AudioWaves) {
             remember {
                 object : MenuIcon, Descriptive, Clickable {
                     override val iconId: Int = R.drawable.playing_indicator
@@ -285,11 +289,11 @@ class SongItemMenu private constructor(
                     
                     override val modifier: Modifier
                         get() = Modifier.alpha(
-                            if (downloadStateMediaState.value == app.it.fast4x.rimusic.enums.DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) 0.5f else 1f
+                            if (downloadStateMediaState.value == DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) 0.5f else 1f
                         )
 
                     override fun onShortClick() {
-                        if (downloadStateMediaState.value == app.it.fast4x.rimusic.enums.DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) {
+                        if (downloadStateMediaState.value == DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) {
                             Toaster.w(R.string.error_music_not_fully_cached)
                         } else {
                             Toaster.i(R.string.updating_waveform_in_progress)
@@ -396,7 +400,7 @@ class SongItemMenu private constructor(
         buttons = mutableListOf<Button>().apply {
             add( infoButton )
             if (song.isLocal) {
-                if (app.n_zik.android.BuildConfig.ENABLE_FFMPEG) add( editMetadata )
+                if (BuildConfig.ENABLE_FFMPEG) add( editMetadata )
             } else {
                 add( renameSong )
                 add( changeAuthor )
@@ -479,7 +483,7 @@ class SongItemMenu private constructor(
             if (!song.isLocal) {
                 add( deleteSongDialog )
             }
-            if (app.n_zik.android.BuildConfig.ENABLE_FFMPEG) add( exportCacheDialog )
+            if (BuildConfig.ENABLE_FFMPEG) add( exportCacheDialog )
         }
         //</editor-fold>
 
@@ -587,7 +591,7 @@ class SongItemMenu private constructor(
 
     @Composable
     private fun SectionTitle(title: String) {
-        androidx.compose.foundation.text.BasicText(
+        BasicText(
             text = title,
             style = typography().xxs.semiBold.copy(
                 color = colorPalette().accent,

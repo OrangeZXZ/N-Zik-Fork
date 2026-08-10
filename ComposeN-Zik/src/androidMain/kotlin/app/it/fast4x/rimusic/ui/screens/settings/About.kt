@@ -67,10 +67,13 @@ import androidx.compose.foundation.basicMarquee
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import app.it.fast4x.rimusic.utils.lastUpdateCheckKey
+import androidx.navigation.NavController
+import app.it.fast4x.rimusic.utils.checkBetaUpdatesKey
 
 @ExperimentalAnimationApi
 @Composable
-fun About(navController: androidx.navigation.NavController) {
+fun About(navController: NavController) {
     // Function to extract the version suffix
     fun extractVersionSuffix(versionStr: String): String {
         val parts = versionStr.removePrefix("v").split("-")
@@ -381,7 +384,7 @@ fun About(navController: androidx.navigation.NavController) {
                                     )
                                 }
                                 
-                                val lastCheckTime by rememberPreference(app.it.fast4x.rimusic.utils.lastUpdateCheckKey, 0L)
+                                val lastCheckTime by rememberPreference(lastUpdateCheckKey, 0L)
                                 val sdf = java.text.SimpleDateFormat("dd MMM HH:mm", java.util.Locale.getDefault())
                                 val lastCheckStr = if (lastCheckTime > 0) sdf.format(java.util.Date(lastCheckTime)) else stringResource(R.string.never_checked)
                                 BasicText(
@@ -403,8 +406,8 @@ fun About(navController: androidx.navigation.NavController) {
                                     .fillMaxWidth()
                                     .height(36.dp)
                                     .clip(uiRoundnessShape()).clickable {
-                                        val prefs = app.n_zik.android.appContext().getSharedPreferences("settings", 0)
-                                        val checkBeta = prefs.getBoolean(app.it.fast4x.rimusic.utils.checkBetaUpdatesKey, Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == "b")
+                                        val prefs = appContext().getSharedPreferences("settings", 0)
+                                        val checkBeta = prefs.getBoolean(checkBetaUpdatesKey, Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == "b")
                                         Toaster.i(R.string.checking_for_updates)
                                         Updater.checkForUpdate(isForced = true, checkBetaUpdates = checkBeta, showDialog = false)
                                         navController.navigate(NavRoutes.updater.name)

@@ -35,6 +35,9 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Button
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Menu
 import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
+import app.it.fast4x.rimusic.utils.menuStyleKey
+import androidx.compose.runtime.remember
+import app.it.fast4x.rimusic.utils.rememberPreference
 
 class ImportPlaylistsMenu(
     private val onImportNzik: () -> Unit,
@@ -69,12 +72,12 @@ class ImportPlaylistsMenu(
 
     @Composable
     private fun ImportOptionsContent(menuState: MenuState) {
-        val styleState = app.it.fast4x.rimusic.utils.rememberPreference(
-            app.it.fast4x.rimusic.utils.menuStyleKey, 
+        val styleState = rememberPreference(
+            menuStyleKey, 
             MenuStyle.List
         )
         
-        val menu = androidx.compose.runtime.remember {
+        val menu = remember {
             object : Menu {
                 override val menuState = menuState
                 override var menuStyle: MenuStyle by styleState

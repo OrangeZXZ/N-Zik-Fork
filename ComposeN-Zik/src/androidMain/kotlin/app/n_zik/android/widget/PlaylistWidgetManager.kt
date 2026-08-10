@@ -35,6 +35,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentHashMap
+import app.it.fast4x.rimusic.ui.styling.ColorPalette
+import app.it.fast4x.rimusic.cleanPrefix
 
 object PlaylistWidgetManager {
 
@@ -227,7 +229,7 @@ object PlaylistWidgetManager {
         isLiked: Boolean,
         duration: Long = 0,
         currentPosition: Long = 0,
-        palette: app.it.fast4x.rimusic.ui.styling.ColorPalette? = null,
+        palette: ColorPalette? = null,
     ) {
         lastWidgetState = WidgetState(
             title = title,
@@ -264,7 +266,7 @@ object PlaylistWidgetManager {
         }
     }
 
-    private fun extractPalette(context: Context, bitmap: Bitmap?): app.it.fast4x.rimusic.ui.styling.ColorPalette {
+    private fun extractPalette(context: Context, bitmap: Bitmap?): ColorPalette {
         val isSystemInDarkMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         val defaultPalette = colorPaletteOf(
             ColorPaletteName.Dynamic,
@@ -278,7 +280,7 @@ object PlaylistWidgetManager {
         if (timestamp > 0) {
             val savedIsDark = prefs.getBoolean("widget_palette_isDark", isSystemInDarkMode)
             if (savedIsDark == isSystemInDarkMode) {
-                return app.it.fast4x.rimusic.ui.styling.ColorPalette(
+                return ColorPalette(
                     background0 = defaultPalette.background0,
                     background1 = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_background1", defaultPalette.background1.toArgb())),
                     background2 = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_background2", defaultPalette.background2.toArgb())),
@@ -314,11 +316,11 @@ object PlaylistWidgetManager {
         isLiked: Boolean,
         duration: Long,
         currentPosition: Long,
-        palette: app.it.fast4x.rimusic.ui.styling.ColorPalette,
+        palette: ColorPalette,
     ): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_playlist)
 
-        val cleaned = app.it.fast4x.rimusic.cleanPrefix(title)
+        val cleaned = cleanPrefix(title)
         val finalTitle = if (title.startsWith("e:", true) || title.startsWith("\uD83C\uDD74")) {
             "\uD83C\uDD74 $cleaned"
         } else {
@@ -409,7 +411,7 @@ object PlaylistWidgetManager {
             if (i < quickPicks.size) {
                 val pick = quickPicks[i]
                 views.setViewVisibility(cardIds[i], View.VISIBLE)
-                val cleanedPick = app.it.fast4x.rimusic.cleanPrefix(pick.title)
+                val cleanedPick = cleanPrefix(pick.title)
             val finalPickTitle = if (pick.title.startsWith("e:", true) || pick.title.startsWith("\uD83C\uDD74")) {
                 "\uD83C\uDD74 $cleanedPick"
             } else {
@@ -515,7 +517,7 @@ object PlaylistWidgetManager {
         val currentPosition: Long,
     )
 
-    private fun applyWidgetTheme(context: Context, views: RemoteViews, palette: app.it.fast4x.rimusic.ui.styling.ColorPalette, titleIds: List<Int>, cardIds: List<Int>) {
+    private fun applyWidgetTheme(context: Context, views: RemoteViews, palette: ColorPalette, titleIds: List<Int>, cardIds: List<Int>) {
         val isSystemInDarkMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         val black = android.graphics.Color.BLACK
         val textPrimaryArgb = if (isSystemInDarkMode) palette.text.toArgb() else black

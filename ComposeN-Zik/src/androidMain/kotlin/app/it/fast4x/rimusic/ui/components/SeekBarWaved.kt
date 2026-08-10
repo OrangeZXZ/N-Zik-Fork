@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.PI
 import kotlin.math.sin
+import androidx.compose.ui.graphics.StrokeCap
 
 @Composable
 fun SeekBarWaved(
@@ -225,7 +226,7 @@ private fun SeekBarContent(
                     color,
                     style = Stroke(
                         width = 15f,
-                        cap = androidx.compose.ui.graphics.StrokeCap.Round
+                        cap = StrokeCap.Round
                     )
                 )
             }

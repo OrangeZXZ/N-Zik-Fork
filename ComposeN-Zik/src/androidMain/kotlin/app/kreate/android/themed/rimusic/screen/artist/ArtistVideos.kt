@@ -48,6 +48,8 @@ import app.it.fast4x.rimusic.utils.playVideo
 import app.it.fast4x.rimusic.utils.preferences
 import app.it.fast4x.rimusic.utils.rememberPreference
 import app.it.fast4x.rimusic.utils.showButtonPlayerVideoKey
+import app.it.fast4x.compose.persist.persist
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 
 @OptIn(ExperimentalFoundationApi::class)
 @UnstableApi
@@ -71,7 +73,7 @@ fun ArtistVideos(
     val thumbnailHeightDp = 72.dp
     val thumbnailWidthDp = 128.dp
 
-    val itemsPage by app.it.fast4x.compose.persist.persist<Innertube.ItemsPage<Innertube.Item>?>("artist/$browseId/videos")
+    val itemsPage by persist<Innertube.ItemsPage<Innertube.Item>?>("artist/$browseId/videos")
 
     Skeleton(
         navController = navController,
@@ -149,7 +151,7 @@ fun ArtistVideos(
             },
             itemsPageProvider = { continuation ->
                 if (continuation == null) {
-                    YtMusic.getArtistItemsPage(BrowseEndpoint(browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX), params)).map {
+                    YtMusic.getArtistItemsPage(BrowseEndpoint(browseId.removePrefix(MODIFIED_PREFIX), params)).map {
                         Innertube.ItemsPage(it.items, it.continuation, it.title)
                     }
                 } else {

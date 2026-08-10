@@ -20,6 +20,7 @@ import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
+import app.n_zik.android.appContext
 
 @UnstableApi
 class ResetCache private constructor(
@@ -56,7 +57,7 @@ class ResetCache private constructor(
             getSongs().forEach { song ->
                 binder?.cache?.removeResource( song.id )
                 binder?.downloadCache?.removeResource( song.id )
-                WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+                WaveformExtractor.deleteWaveform(appContext(), song.id)
                 formatTable.deleteBySongId( song.id )
                 formatTable.updateContentLengthOf( song.id )
             }

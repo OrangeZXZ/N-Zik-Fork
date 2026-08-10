@@ -30,6 +30,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 
 @OptIn(UnstableApi::class)
 fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
@@ -37,7 +38,7 @@ fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             // Network call OUTSIDE transaction
             val remotePlaylist = plist.browseId?.let {
-                YtMusic.getPlaylist(playlistId = it.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)).completed().getOrNull()
+                YtMusic.getPlaylist(playlistId = it.removePrefix(MODIFIED_PREFIX)).completed().getOrNull()
             }
             remotePlaylist?.let { rp ->
                 Timber.tag("SyncYTMusicUtils").d("ytmPrivatePlaylistSync Remote playlist editable: ${rp.isEditable}")

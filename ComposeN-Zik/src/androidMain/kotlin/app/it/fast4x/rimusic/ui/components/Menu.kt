@@ -24,6 +24,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.runtime.mutableStateListOf
 
 val LocalMenuState = staticCompositionLocalOf { MenuState() }
 
@@ -35,7 +36,7 @@ class MenuState {
     var transitionKey by mutableStateOf(0)
         private set
 
-    private val contentStack = androidx.compose.runtime.mutableStateListOf<@Composable () -> Unit>()
+    private val contentStack = mutableStateListOf<@Composable () -> Unit>()
 
     val contentState: Pair<Int, @Composable () -> Unit>
         get() = transitionKey to (contentStack.lastOrNull() ?: {})

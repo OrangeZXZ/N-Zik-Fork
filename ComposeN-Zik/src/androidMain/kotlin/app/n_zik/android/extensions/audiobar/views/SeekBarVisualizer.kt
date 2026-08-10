@@ -54,6 +54,11 @@ import androidx.compose.ui.unit.dp
 import utils.VisualizerHelper
 import timber.log.Timber
 import app.n_zik.android.LocalPlayerServiceBinder
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.Animatable
+import androidx.media3.common.Player
+import androidx.compose.runtime.DisposableEffect
 
 private const val waveWidthPercentOfSpaceAvailable = 0.5f
 
@@ -78,8 +83,8 @@ fun SeekBarVisualizer(
         val binder = LocalPlayerServiceBinder.current
         var localIsPlaying by remember(binder, isPlaying) { mutableStateOf(binder?.player?.isPlaying ?: isPlaying) }
 
-        androidx.compose.runtime.DisposableEffect(binder) {
-            val listener = object : androidx.media3.common.Player.Listener {
+        DisposableEffect(binder) {
+            val listener = object : Player.Listener {
                 override fun onIsPlayingChanged(isPlayingChanged: Boolean) {
                     localIsPlaying = isPlayingChanged
                 }
@@ -314,7 +319,7 @@ private fun AudioWavePill(
         }
     }
     
-    val animatedHeight = remember { androidx.compose.animation.core.Animatable(minWaveHeightFraction) }
+    val animatedHeight = remember { Animatable(minWaveHeightFraction) }
     
     LaunchedEffect(height) {
         if (height >= animatedHeight.value) {
@@ -322,9 +327,9 @@ private fun AudioWavePill(
         } else {
             animatedHeight.animateTo(
                 targetValue = height,
-                animationSpec = androidx.compose.animation.core.tween(
+                animationSpec = tween(
                     durationMillis = 90, 
-                    easing = androidx.compose.animation.core.LinearEasing
+                    easing = LinearEasing
                 )
             )
         }

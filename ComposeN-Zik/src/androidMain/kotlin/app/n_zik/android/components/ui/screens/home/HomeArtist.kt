@@ -132,6 +132,11 @@ import timber.log.Timber
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.components.dialog.common.RetrySyncDialog
 import app.n_zik.android.components.dialog.settings.HomeArtistsToolbarSettingsDialog
+import androidx.compose.material3.LinearWavyProgressIndicator
+import app.n_zik.android.thumbnailShape
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import app.n_zik.android.components.AppPullToRefreshBox
+import androidx.core.content.ContextCompat
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -244,7 +249,7 @@ fun HomeArtists(
             withContext(Dispatchers.IO) {
                 items.filter { it.thumbnailUrl == null }.forEach { artist ->
                     coroutineScope.launch(Dispatchers.IO) {
-                        val artistThumbnail = YtMusic.getArtistPage(artist.id.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)).getOrNull()?.artist?.thumbnail?.url
+                        val artistThumbnail = YtMusic.getArtistPage(artist.id.removePrefix(MODIFIED_PREFIX)).getOrNull()?.artist?.thumbnail?.url
                         Database.asyncTransaction {
                             artistTable.update( artist.copy(thumbnailUrl = artistThumbnail) )
                         }
@@ -276,7 +281,7 @@ fun HomeArtists(
             putStringArrayListExtra(HomeSyncService.EXTRA_IDS, ids)
         }
         try {
-            androidx.core.content.ContextCompat.startForegroundService(appContext(), intent)
+            ContextCompat.startForegroundService(appContext(), intent)
         } catch (e: Exception) {
             timber.log.Timber.e(e, "Failed to start HomeSyncService")
             Toaster.e("Failed to start sync service")
@@ -303,7 +308,7 @@ fun HomeArtists(
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
-    app.n_zik.android.components.AppPullToRefreshBox(
+    AppPullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = { refresh() }
     ) {
@@ -479,7 +484,7 @@ fun HomeArtists(
                                         }
                                     }
                                 }
-                                androidx.compose.material3.LinearWavyProgressIndicator(
+                                LinearWavyProgressIndicator(
                                     progress = { HomeSyncState.artistSyncProgress },
                                     modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                                     color = colorPalette.accent,
@@ -548,7 +553,7 @@ fun HomeArtists(
                                             Box(
                                                 modifier = Modifier
                                                     .fillMaxSize()
-                                                    .clip(app.n_zik.android.thumbnailShape())
+                                                    .clip(thumbnailShape())
                                                     .background(colorPalette().overlay)
                                             ) {
                                                 BasicText(
@@ -564,7 +569,7 @@ fun HomeArtists(
                                             Box(
                                                 modifier = Modifier
                                                     .fillMaxSize()
-                                                    .clip(app.n_zik.android.thumbnailShape())
+                                                    .clip(thumbnailShape())
                                                     .background(colorPalette().overlay)
                                             ) {
                                                 BasicText(

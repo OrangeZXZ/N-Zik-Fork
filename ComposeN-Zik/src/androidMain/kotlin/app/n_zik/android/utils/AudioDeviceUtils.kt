@@ -6,6 +6,7 @@ import android.media.AudioManager
 import android.os.Build
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import app.n_zik.android.components.menu.player.AudioDeviceType
 
 /**
  * Checks if Bluetooth headphones (A2DP or SCO) are currently connected.
@@ -115,11 +116,11 @@ fun getAudioDeviceIcon(type: Int, name: String?): Any {
  * Returns the appropriate Compose ImageVector based on the bottom sheet's AudioDeviceType and name.
  */
 fun getBottomSheetDeviceIcon(
-    type: app.n_zik.android.components.menu.player.AudioDeviceType,
+    type: AudioDeviceType,
     name: String?
 ): Any {
     return when (type) {
-        app.n_zik.android.components.menu.player.AudioDeviceType.BLUETOOTH -> {
+        AudioDeviceType.BLUETOOTH -> {
             val deviceName = name ?: ""
             when {
                 isBuds(deviceName) -> app.n_zik.android.R.drawable.buds
@@ -127,10 +128,10 @@ fun getBottomSheetDeviceIcon(
                 else -> Icons.Filled.Bluetooth
             }
         }
-        app.n_zik.android.components.menu.player.AudioDeviceType.WIRED_HEADPHONES -> Icons.Filled.Headphones
-        app.n_zik.android.components.menu.player.AudioDeviceType.USB_HEADSET -> Icons.Filled.Usb
-        app.n_zik.android.components.menu.player.AudioDeviceType.HDMI -> Icons.Filled.Tv
-        app.n_zik.android.components.menu.player.AudioDeviceType.EXTERNAL_SPEAKER -> Icons.Filled.Speaker
-        app.n_zik.android.components.menu.player.AudioDeviceType.PHONE_SPEAKER -> Icons.Filled.PhoneAndroid
+        AudioDeviceType.WIRED_HEADPHONES -> Icons.Filled.Headphones
+        AudioDeviceType.USB_HEADSET -> Icons.Filled.Usb
+        AudioDeviceType.HDMI -> Icons.Filled.Tv
+        AudioDeviceType.EXTERNAL_SPEAKER -> Icons.Filled.Speaker
+        AudioDeviceType.PHONE_SPEAKER -> Icons.Filled.PhoneAndroid
     }
 }

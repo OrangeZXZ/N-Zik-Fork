@@ -94,6 +94,7 @@ import app.n_zik.android.components.dialog.album.ChangeAlbumCoverDialog
 import app.n_zik.android.components.dialog.album.ChangeAlbumBrowseIdDialog
 import app.n_zik.android.components.dialog.artist.ChangeArtistBrowseIdDialog
 import app.n_zik.android.components.song.GoToArtist
+import app.n_zik.android.components.tab.SongShuffler
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -358,7 +359,7 @@ class AlbumItemMenu private constructor(
             onDismiss = { openMenu() }
         )
 
-        val shuffle = app.n_zik.android.components.tab.SongShuffler { songs }
+        val shuffle = SongShuffler { songs }
 
         buttons = mutableListOf<Button>().apply {
             add(shuffle)
@@ -452,7 +453,7 @@ class AlbumItemMenu private constructor(
 
     @Composable
     private fun SectionTitle(title: String) {
-        androidx.compose.foundation.text.BasicText(
+        BasicText(
             text = title,
             style = typography().xxs.semiBold.copy(
                 color = colorPalette().accent,

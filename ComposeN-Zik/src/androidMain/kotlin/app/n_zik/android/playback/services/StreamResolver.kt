@@ -86,6 +86,11 @@ import io.ktor.client.call.body
 import timber.log.Timber
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.it.fast4x.rimusic.LOCAL_KEY_PREFIX
+import app.it.fast4x.rimusic.models.Album
+import app.it.fast4x.rimusic.models.Artist
+import app.n_zik.android.core.security.potoken.PoTokenResult
+import app.it.fast4x.rimusic.models.SongAlbumMap
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 
 private const val TAG = "StreamResolver"
 private const val CHUNK_LENGTH = 512 * 1024L
@@ -192,8 +197,8 @@ suspend fun upsertSongInfo(videoId: String) {
             yield()
 
             // Read IDs from DB (retry up to 3 times if empty)
-            var artistIdsFromDb = emptyList<app.it.fast4x.rimusic.models.Artist>()
-            var albumFromDb: app.it.fast4x.rimusic.models.Album? = null
+            var artistIdsFromDb = emptyList<Artist>()
+            var albumFromDb: Album? = null
             for (attempt in 1..3) {
                 kotlinx.coroutines.delay(3000L * attempt)
                 artistIdsFromDb = Database.songArtistMapTable.findArtistsOf(videoId).firstOrNull().orEmpty()
@@ -294,7 +299,7 @@ suspend fun upsertSongInfo(videoId: String) {
 private suspend fun fetchAndSaveAlbumSongs(albumId: String): Int {
     try {
         timber.log.Timber.tag(TAG).d("[Album Cache] Fetching album page from network for $albumId")
-        val onlineAlbum = it.fast4x.innertube.YtMusic.getAlbum(albumId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX), true).getOrNull()
+        val onlineAlbum = it.fast4x.innertube.YtMusic.getAlbum(albumId.removePrefix(MODIFIED_PREFIX), true).getOrNull()
         if (onlineAlbum == null) {
             timber.log.Timber.tag(TAG).w("Album page is null for $albumId")
             return 0
@@ -307,12 +312,12 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String): Int {
         }
 
         timber.log.Timber.tag(TAG).d("[Album Cache] Saving ${songs.size} songs from album $albumId to database")
-        val songAlbumMaps = mutableListOf<app.it.fast4x.rimusic.models.SongAlbumMap>()
+        val songAlbumMaps = mutableListOf<SongAlbumMap>()
         songs.forEachIndexed { index, song ->
             Database.upsert(song)
-            val videoId = song.info?.endpoint?.videoId?.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)
+            val videoId = song.info?.endpoint?.videoId?.removePrefix(MODIFIED_PREFIX)
             if (videoId != null) {
-                songAlbumMaps.add(app.it.fast4x.rimusic.models.SongAlbumMap(songId = videoId, albumId = albumId, position = index))
+                songAlbumMaps.add(SongAlbumMap(songId = videoId, albumId = albumId, position = index))
             }
             timber.log.Timber.tag(TAG).d("Saved song: ${song.info?.name} ($videoId) to album $albumId at pos $index")
         }
@@ -373,7 +378,7 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String): Int {
  * (song not yet committed when format arrives) and retrying after 5 s.
  * Mirrors [saveLyricsSafe] in LyricsFetcher.
  */
-private fun saveFormatSafe(format: app.it.fast4x.rimusic.models.Format) {
+private fun saveFormatSafe(format: Format) {
     Database.asyncTransaction {
         try {
             formatTable.upsert(format)
@@ -443,7 +448,7 @@ private fun fetchFormatIfMissing(videoId: String) {
             val finalSampleRate = existing?.sampleRate ?: api.audioSampleRate
             val finalChannels = existing?.audioChannels ?: api.audioChannels
 
-            val formatToSave = app.it.fast4x.rimusic.models.Format(
+            val formatToSave = Format(
                 songId = videoId,
                 itag = existing?.itag ?: api.itag,
                 mimeType = existing?.mimeType ?: api.mimeType,
@@ -788,7 +793,7 @@ private suspend fun resolveStreamUriInternal(
     Timber.tag(TAG).d("signatureTimestamp resolved: cipher=$cipherSts newpipe=$newPipeSts -> using $signatureTimestamp, isAgeRestricted=$isAgeRestricted")
 
     // 2. Generate PoToken for WEB_REMIX (web clients only)
-    val poTokenResult: app.n_zik.android.core.security.potoken.PoTokenResult? = runCatching {
+    val poTokenResult: PoTokenResult? = runCatching {
         val sessionId = Store.getIosVisitorData() ?: ""
         poTokenGenerator.getWebClientPoToken(videoId, sessionId)
     }.getOrNull()
@@ -1345,7 +1350,7 @@ fun PlayerServiceModern.createDataSourceFactory(): DataSource.Factory {
 
     return ResolvingDataSource.Factory(finalCacheFactory) { dataSpec ->
         val videoId = dataSpec.key ?: dataSpec.uri.toString().substringAfter("watch?v=")
-        val parentalControlEnabled = appContext().preferences.getBoolean(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false)
+        val parentalControlEnabled = appContext().preferences.getBoolean(parentalControlEnabledKey, false)
         if (parentalControlEnabled) {
             val isExplicit = Database.songTable.findByIdDirect(videoId)?.title?.startsWith(EXPLICIT_PREFIX, true) == true
             if (isExplicit) {

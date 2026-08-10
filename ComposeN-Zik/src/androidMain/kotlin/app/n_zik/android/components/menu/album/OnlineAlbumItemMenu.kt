@@ -68,6 +68,8 @@ import app.it.fast4x.rimusic.models.SongAlbumMap
 import app.it.fast4x.rimusic.ui.components.themed.Enqueue
 import app.it.fast4x.rimusic.ui.components.themed.PlayNext
 import it.fast4x.innertube.models.bodies.BrowseBody
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import app.n_zik.android.components.tab.SongShuffler
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -324,7 +326,7 @@ class OnlineAlbumItemMenu private constructor(
                     return@withContext
                 }
                 
-                val result = Innertube.albumPage(BrowseBody(browseId = album.key.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)))?.getOrNull()
+                val result = Innertube.albumPage(BrowseBody(browseId = album.key.removePrefix(MODIFIED_PREFIX)))?.getOrNull()
                 if (result != null) {
                     displayTitle = result.title.takeIf { !it.isNullOrBlank() } ?: displayTitle
                     displayAuthors = result.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() } ?: displayAuthors
@@ -429,14 +431,14 @@ class OnlineAlbumItemMenu private constructor(
             override val iconId: Int = R.drawable.shuffle
             override val color: androidx.compose.ui.graphics.Color
                 @Composable
-                get() = app.n_zik.android.colorPalette().text
+                get() = colorPalette().text
             override val messageId: Int = R.string.shuffle
             @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
             override fun onShortClick() {
                 if (songs == null) {
                     Toaster.w(R.string.opening_url)
                 } else if (songs!!.isNotEmpty()) {
-                    app.n_zik.android.components.tab.SongShuffler.playShuffled(binder ?: return, songs!!)
+                    SongShuffler.playShuffled(binder ?: return, songs!!)
                     menuState.hide()
                 } else {
                     Toaster.e(R.string.no_song_found)
@@ -504,7 +506,7 @@ class OnlineAlbumItemMenu private constructor(
 
     @Composable
     private fun SectionTitle(title: String) {
-        androidx.compose.foundation.text.BasicText(
+        BasicText(
             text = title,
             style = typography().xxs.semiBold.copy(
                 color = colorPalette().accent,

@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.util.Optional
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 
 class GoToAlbum(
     private val navController: NavController,
@@ -51,7 +52,7 @@ class GoToAlbum(
                     .first()
                     ?.id
                     
-            val isValid = id != null && id.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX).let { it.length > 11 && it.matches("^[A-Za-z0-9_-]+\$".toRegex()) }
+            val isValid = id != null && id.removePrefix(MODIFIED_PREFIX).let { it.length > 11 && it.matches("^[A-Za-z0-9_-]+\$".toRegex()) }
             
             kotlinx.coroutines.withContext(Dispatchers.Main) {
                 if (isValid) {

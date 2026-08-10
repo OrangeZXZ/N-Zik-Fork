@@ -94,6 +94,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
 import app.n_zik.android.uiRoundnessShape
 import timber.log.Timber
+import androidx.compose.ui.platform.LocalDensity
 
 
 @UnstableApi
@@ -674,7 +675,7 @@ fun SongItem(
                             || downloadState == Download.STATE_RESTARTING
                             )
                     && downloadedStateMedia == DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) {
-                    androidx.compose.foundation.layout.Box(
+                    Box(
                         modifier = Modifier
                             .size(20.dp)
                             .clip(uiRoundnessShape()).clickable(
@@ -696,16 +697,16 @@ fun SongItem(
                                 color = colorPalette().accent,
                                 trackColor = colorPalette().textDisabled,
                                 modifier = Modifier.size(DOWNLOAD_INDICATOR_SIZE_NORMAL.dp),
-                                stroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
-                                trackStroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
+                                stroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
+                                trackStroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
                             )
                         } else {
                             CircularWavyProgressIndicator(
                                 color = colorPalette().accent,
                                 trackColor = colorPalette().textDisabled,
                                 modifier = Modifier.size(DOWNLOAD_INDICATOR_SIZE_NORMAL.dp),
-                                stroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
-                                trackStroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
+                                stroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
+                                trackStroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
                             )
                         }
                     }

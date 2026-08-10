@@ -40,6 +40,13 @@ import app.n_zik.android.components.menu.GridMenu
 import app.n_zik.android.components.menu.ListMenu
 import app.kreate.android.me.knighthat.enums.TextView
 import org.json.JSONArray
+import androidx.compose.animation.fadeOut
+import androidx.compose.material3.RadioButton
+import androidx.compose.animation.fadeIn
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
 
 open class Sort<T: Enum<T>> (
     override val menuState: MenuState,
@@ -177,15 +184,15 @@ open class Sort<T: Enum<T>> (
                     },
                     modifier = if (isSelected) Modifier.background(colorPalette().accent.copy(alpha = 0.1f), uiRoundnessShape()) else Modifier,
                     trailingContent = {
-                        androidx.compose.animation.AnimatedVisibility(
+                        AnimatedVisibility(
                             visible = isSelected,
-                            enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.scaleIn(),
-                            exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.scaleOut()
+                            enter = fadeIn() + scaleIn(),
+                            exit = fadeOut() + scaleOut()
                         ) {
-                            androidx.compose.material3.RadioButton(
+                            RadioButton(
                                 selected = true,
                                 onClick = null,
-                                colors = androidx.compose.material3.RadioButtonDefaults.colors(
+                                colors = RadioButtonDefaults.colors(
                                     selectedColor = colorPalette().accent,
                                     unselectedColor = colorPalette().textSecondary
                                 )
@@ -235,15 +242,15 @@ open class Sort<T: Enum<T>> (
                         }
                     },
                     trailingContent = {
-                        androidx.compose.animation.AnimatedVisibility(
+                        AnimatedVisibility(
                             visible = isSelected,
-                            enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.scaleIn(),
-                            exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.scaleOut()
+                            enter = fadeIn() + scaleIn(),
+                            exit = fadeOut() + scaleOut()
                         ) {
-                            androidx.compose.material3.RadioButton(
+                            RadioButton(
                                 selected = true,
                                 onClick = null,
-                                colors = androidx.compose.material3.RadioButtonDefaults.colors(
+                                colors = RadioButtonDefaults.colors(
                                     selectedColor = colorPalette().accent,
                                     unselectedColor = colorPalette().textSecondary
                                 )

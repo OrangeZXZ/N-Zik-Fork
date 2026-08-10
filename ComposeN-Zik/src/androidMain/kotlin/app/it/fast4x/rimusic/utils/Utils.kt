@@ -67,6 +67,7 @@ import kotlin.time.Duration.Companion.minutes
 import timber.log.Timber
 import app.n_zik.android.enums.lyrics.LyricsType
 import app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper
+import app.n_zik.android.playback.services.ArtworkContentProvider
 
 const val EXPLICIT_BUNDLE_TAG = "is_explicit"
 
@@ -206,7 +207,7 @@ val Song.asMediaItem: MediaItem
         }
         val cleanedArtist = cleanPrefix(artistsText ?: "")
         val cleanedThumbnail = thumbnailUrl?.let { cleanPrefix(it) }
-        val artworkUri = cleanedThumbnail?.thumbnail(1200)?.toUri() ?: AutoMediaItemMapper.drawableUri(app.n_zik.android.appContext(), R.drawable.ic_launcher_box)
+        val artworkUri = cleanedThumbnail?.thumbnail(1200)?.toUri() ?: AutoMediaItemMapper.drawableUri(appContext(), R.drawable.ic_launcher_box)
 
         val safeTitle = if (cleanedTitle == "null") "" else cleanedTitle
         val safeArtist = if (cleanedArtist == "null") "" else cleanedArtist
@@ -239,7 +240,7 @@ val Song.asMediaItem: MediaItem
                         // Set content:// URI via exported ArtworkContentProvider (AA requires exported)
                         val contentUri = android.net.Uri.Builder()
                             .scheme(android.content.ContentResolver.SCHEME_CONTENT)
-                            .authority(app.n_zik.android.playback.services.ArtworkContentProvider.AUTHORITY)
+                            .authority(ArtworkContentProvider.AUTHORITY)
                             .appendPath(id)
                             .build()
                         metadataBuilder.setArtworkUri(contentUri)

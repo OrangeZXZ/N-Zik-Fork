@@ -67,6 +67,8 @@ import app.n_zik.android.LocalPlayerServiceBinder
 import app.it.fast4x.rimusic.models.Artist
 import it.fast4x.innertube.YtMusic
 import it.fast4x.innertube.requests.ArtistPage
+import app.n_zik.android.playback.utils.Shuffler
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -283,7 +285,7 @@ class OnlineArtistItemMenu private constructor(
                 if (artist.key.startsWith("LOCAL_ARTIST_")) {
                     artistPage = null
                 } else {
-                    artistPage = YtMusic.getArtistPage(artist.key.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)).getOrNull()
+                    artistPage = YtMusic.getArtistPage(artist.key.removePrefix(MODIFIED_PREFIX)).getOrNull()
                 }
             }
             isFetching = false
@@ -293,7 +295,7 @@ class OnlineArtistItemMenu private constructor(
             override val iconId: Int = R.drawable.radio
             override val color: androidx.compose.ui.graphics.Color
                 @Composable
-                get() = if (binder?.isRadioActive == true) app.n_zik.android.colorPalette().accent else app.n_zik.android.colorPalette().text
+                get() = if (binder?.isRadioActive == true) colorPalette().accent else colorPalette().text
             override val messageId: Int = R.string.start_radio
             @get:Composable override val menuIconTitle: String get() = stringResource(binder?.radioActionTextRes ?: messageId)
             override fun onShortClick() {
@@ -326,7 +328,7 @@ class OnlineArtistItemMenu private constructor(
             override val iconId: Int = R.drawable.shuffle
             override val color: androidx.compose.ui.graphics.Color
                 @Composable
-                get() = app.n_zik.android.colorPalette().text
+                get() = colorPalette().text
             override val messageId: Int = R.string.shuffle
             @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
             override fun onShortClick() {
@@ -344,7 +346,7 @@ class OnlineArtistItemMenu private constructor(
                         }
                     }
                     if (allMediaItems.isNotEmpty()) {
-                        app.n_zik.android.playback.utils.Shuffler.play(binder ?: return, allMediaItems)
+                        Shuffler.play(binder ?: return, allMediaItems)
                         menuState.hide()
                     } else {
                         Toaster.e(R.string.no_song_found)
@@ -386,7 +388,7 @@ class OnlineArtistItemMenu private constructor(
 
     @Composable
     private fun SectionTitle(title: String) {
-        androidx.compose.foundation.text.BasicText(
+        BasicText(
             text = title,
             style = typography().xxs.semiBold.copy(
                 color = colorPalette().accent,

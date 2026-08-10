@@ -60,6 +60,7 @@ import app.it.fast4x.rimusic.utils.colorPaletteModeKey
 import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.uiRoundnessShape
 import app.n_zik.android.BuildConfig
+import app.it.fast4x.rimusic.utils.checkBetaUpdatesKey
 
 object CheckForUpdateDialog {
 
@@ -78,7 +79,7 @@ object CheckForUpdateDialog {
 
         var checkUpdateState by rememberPreference(checkUpdateStateKey, CheckUpdateState.Enabled)
         var colorPaletteMode by rememberPreference(colorPaletteModeKey, ColorPaletteMode.System)
-        val checkBetaUpdates by rememberPreference(app.it.fast4x.rimusic.utils.checkBetaUpdatesKey, Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == UpdaterConstants.SUFFIX_BETA.removePrefix("-"))
+        val checkBetaUpdates by rememberPreference(checkBetaUpdatesKey, Updater.extractVersionSuffix(BuildConfig.VERSION_NAME) == UpdaterConstants.SUFFIX_BETA.removePrefix("-"))
 
         Dialog(onDismissRequest = { onDismiss() }) {
             Column(

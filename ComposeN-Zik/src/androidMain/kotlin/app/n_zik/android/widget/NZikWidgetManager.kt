@@ -28,6 +28,8 @@ import app.it.fast4x.rimusic.enums.ColorPaletteName
 import app.it.fast4x.rimusic.enums.ColorPaletteMode
 import androidx.compose.ui.graphics.toArgb
 import android.content.res.Configuration
+import app.it.fast4x.rimusic.ui.styling.ColorPalette
+import app.it.fast4x.rimusic.cleanPrefix
 
 object NZikWidgetManager {
 
@@ -151,7 +153,7 @@ object NZikWidgetManager {
         isLiked: Boolean,
         duration: Long,
         currentPosition: Long,
-        palette: app.it.fast4x.rimusic.ui.styling.ColorPalette
+        palette: ColorPalette
     ): RemoteViews {
         val minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
         val minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
@@ -178,11 +180,11 @@ object NZikWidgetManager {
         isLiked: Boolean,
         duration: Long = 0,
         currentPosition: Long = 0,
-        palette: app.it.fast4x.rimusic.ui.styling.ColorPalette
+        palette: ColorPalette
     ): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_music_player)
 
-        val cleaned = app.it.fast4x.rimusic.cleanPrefix(title)
+        val cleaned = cleanPrefix(title)
         val finalTitle = if (title.startsWith("e:", true) || title.startsWith("\uD83C\uDD74")) {
             "\uD83C\uDD74 $cleaned"
         } else {
@@ -303,7 +305,7 @@ object NZikWidgetManager {
         context: Context,
         albumArt: Bitmap?,
         isPlaying: Boolean,
-        palette: app.it.fast4x.rimusic.ui.styling.ColorPalette
+        palette: ColorPalette
     ): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_compact_square)
 
@@ -335,7 +337,7 @@ object NZikWidgetManager {
         albumArt: Bitmap?,
         isPlaying: Boolean,
         isLiked: Boolean,
-        palette: app.it.fast4x.rimusic.ui.styling.ColorPalette
+        palette: ColorPalette
     ): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_compact_wide)
 
@@ -373,7 +375,7 @@ object NZikWidgetManager {
         isLiked: Boolean,
         duration: Long = 0,
         currentPosition: Long = 0,
-        palette: app.it.fast4x.rimusic.ui.styling.ColorPalette
+        palette: ColorPalette
     ): RemoteViews {
         val views = RemoteViews(context.packageName, R.layout.widget_turntable)
 
@@ -552,7 +554,7 @@ object NZikWidgetManager {
         )
     }
 
-    private fun extractPalette(context: Context, albumArt: Bitmap?): app.it.fast4x.rimusic.ui.styling.ColorPalette {
+    private fun extractPalette(context: Context, albumArt: Bitmap?): ColorPalette {
         val isSystemInDarkMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         val defaultPalette = colorPaletteOf(
             ColorPaletteName.Dynamic,
@@ -567,7 +569,7 @@ object NZikWidgetManager {
             val savedIsDark = prefs.getBoolean("widget_palette_isDark", isSystemInDarkMode)
             // If system theme matches app theme, use saved palette directly
             if (savedIsDark == isSystemInDarkMode) {
-                return app.it.fast4x.rimusic.ui.styling.ColorPalette(
+                return ColorPalette(
                     background0 = defaultPalette.background0,
                     background1 = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_background1", defaultPalette.background1.toArgb())),
                     background2 = androidx.compose.ui.graphics.Color(prefs.getInt("widget_palette_background2", defaultPalette.background2.toArgb())),
@@ -594,7 +596,7 @@ object NZikWidgetManager {
         }
     }
 
-    private fun applyWidgetTheme(context: Context, views: RemoteViews, palette: app.it.fast4x.rimusic.ui.styling.ColorPalette) {
+    private fun applyWidgetTheme(context: Context, views: RemoteViews, palette: ColorPalette) {
         val isSystemInDarkMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
         val bgArgb = palette.background1.toArgb()

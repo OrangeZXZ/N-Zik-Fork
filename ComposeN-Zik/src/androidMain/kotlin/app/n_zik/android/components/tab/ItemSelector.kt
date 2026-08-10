@@ -10,6 +10,7 @@ import app.it.fast4x.rimusic.ui.components.LocalMenuState
 import app.it.fast4x.rimusic.ui.components.MenuState
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.MenuIcon
+import app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar
 
 /**
  * Behaves exactly like a [MutableList] but with extra functions on top.
@@ -55,10 +56,10 @@ class ItemSelector<E> private constructor(
 
     @Composable
     override fun ToolBarButton() {
-        app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar.Icon(
+        TabToolBar.Icon(
             icon,
             color,
-            app.it.fast4x.rimusic.ui.components.navigation.header.TabToolBar.TOOLBAR_ICON_SIZE,
+            TabToolBar.TOOLBAR_ICON_SIZE,
             true,
             androidx.compose.ui.Modifier,
             this::onShortClick

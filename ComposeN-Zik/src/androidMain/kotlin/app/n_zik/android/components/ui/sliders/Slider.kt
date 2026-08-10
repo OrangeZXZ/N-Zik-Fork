@@ -26,6 +26,10 @@ import app.n_zik.android.exactUiRoundnessShape
 import kotlin.math.abs
 import kotlin.math.round
 import kotlin.math.roundToInt
+import androidx.compose.animation.core.Spring
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.foundation.Canvas
+import androidx.compose.material3.Slider
 
 /**
  * THE unique Slider component of the application.
@@ -64,16 +68,16 @@ fun Slider(
     val thumbWidth by animateDpAsState(
         targetValue = if (isInteracting) 12.dp else 4.dp,
         animationSpec = spring(
-            dampingRatio = androidx.compose.animation.core.Spring.DampingRatioMediumBouncy,
-            stiffness = androidx.compose.animation.core.Spring.StiffnessLow
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
         )
     )
 
     val thumbHeight by animateDpAsState(
         targetValue = if (isInteracting) 24.dp else 32.dp,
         animationSpec = spring(
-            dampingRatio = androidx.compose.animation.core.Spring.DampingRatioMediumBouncy,
-            stiffness = androidx.compose.animation.core.Spring.StiffnessLow
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
         )
     )
 
@@ -90,8 +94,8 @@ fun Slider(
     val animatedValue by animateFloatAsState(
         targetValue = state,
         animationSpec = spring(
-            dampingRatio = androidx.compose.animation.core.Spring.DampingRatioMediumBouncy,
-            stiffness = androidx.compose.animation.core.Spring.StiffnessLow
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
         )
     )
 
@@ -102,7 +106,7 @@ fun Slider(
             .coerceIn(range.start, range.endInclusive)
     }
 
-    androidx.compose.material3.Slider(
+    Slider(
         enabled = isEnabled,
         value = animatedValue,
         onValueChange = { newValue ->
@@ -165,7 +169,7 @@ fun Slider(
                     val accentColor = colorPalette().accent
                     val passedColor = colorPalette().text.copy(alpha = 0.5f)
                     
-                    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxWidth().height(4.dp)) {
+                    Canvas(modifier = Modifier.fillMaxWidth().height(4.dp)) {
                         val currentFraction = if (range.endInclusive > range.start) {
                             (state - range.start) / (range.endInclusive - range.start)
                         } else 0f
@@ -197,7 +201,7 @@ fun Slider(
                                 drawCircle(
                                     color = if (isPassed) passedColor else accentColor,
                                     radius = 2.dp.toPx(),
-                                    center = androidx.compose.ui.geometry.Offset(x = x, y = size.height / 2)
+                                    center = Offset(x = x, y = size.height / 2)
                                 )
                             }
                         }
@@ -206,7 +210,7 @@ fun Slider(
                     val accentColor = colorPalette().accent
                     val passedColor = colorPalette().text.copy(alpha = 0.5f)
                     
-                    androidx.compose.foundation.Canvas(modifier = Modifier.fillMaxWidth().height(4.dp)) {
+                    Canvas(modifier = Modifier.fillMaxWidth().height(4.dp)) {
                         val currentFraction = if (range.endInclusive > range.start) {
                             (state - range.start) / (range.endInclusive - range.start)
                         } else 0f
@@ -227,7 +231,7 @@ fun Slider(
                             drawCircle(
                                 color = if (isPassed) passedColor else accentColor,
                                 radius = 2.dp.toPx(),
-                                center = androidx.compose.ui.geometry.Offset(x = x, y = size.height / 2)
+                                center = Offset(x = x, y = size.height / 2)
                             )
                         }
                     }

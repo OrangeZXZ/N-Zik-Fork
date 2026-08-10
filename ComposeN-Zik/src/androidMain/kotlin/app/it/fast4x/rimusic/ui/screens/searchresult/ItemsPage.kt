@@ -57,6 +57,8 @@ import androidx.compose.ui.res.stringResource
 import app.n_zik.android.R
 import kotlinx.coroutines.delay
 import timber.log.Timber
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
+import androidx.compose.ui.unit.Dp
 
 
 @ExperimentalAnimationApi
@@ -244,7 +246,7 @@ inline fun <T : Innertube.Item> ItemsPage(
 inline fun <T : Innertube.Item> ItemsGridPage(
     tag: String,
     crossinline headerContent: @Composable (textButton: (@Composable () -> Unit)?) -> Unit,
-    noinline itemContent: @Composable androidx.compose.foundation.lazy.grid.LazyGridItemScope.(T) -> Unit,
+    noinline itemContent: @Composable LazyGridItemScope.(T) -> Unit,
     noinline itemPlaceholderContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     initialPlaceholderCount: Int = 8,
@@ -252,7 +254,7 @@ inline fun <T : Innertube.Item> ItemsGridPage(
     emptyItemsText: String = "",
     filterContentType: ContentType = ContentType.All,
     noinline itemsPageProvider: (suspend (String?) -> Result<Innertube.ItemsPage<T>?>?)? = null,
-    thumbnailSizeDp: androidx.compose.ui.unit.Dp
+    thumbnailSizeDp: Dp
 ) {
     val updatedItemsPageProvider by rememberUpdatedState(itemsPageProvider)
     val lazyGridState = rememberLazyGridState()

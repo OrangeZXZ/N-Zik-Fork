@@ -93,6 +93,11 @@ import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.components.menu.song.SongItemMenu
 import app.n_zik.android.components.tab.ItemSelector
 import app.n_zik.android.uiRoundnessShape
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.material3.ripple
+import androidx.compose.material3.Icon
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 
 
 private interface SongIndicator: Icon {
@@ -114,7 +119,7 @@ private interface SongIndicator: Icon {
                 .clip(uiRoundnessShape())
                 .combinedClickable(
                     interactionSource = interactionSource,
-                    indication = androidx.compose.material3.ripple(
+                    indication = ripple(
                         bounded = false,
                         radius = 20.dp
                     ),
@@ -127,8 +132,8 @@ private interface SongIndicator: Icon {
                 ),
             contentAlignment = Alignment.Center
         ) {
-            androidx.compose.material3.Icon(
-                painter = androidx.compose.ui.res.painterResource(iconId),
+            Icon(
+                painter = painterResource(iconId),
                 contentDescription = null,
                 modifier = Modifier.size(sizeDp),
                 tint = if (isEnabled) color else color.copy(alpha = 0.5f)
@@ -240,7 +245,7 @@ fun SongItem(
                 }
                 
                 val isCustomImage = displaySong.thumbnailUrl?.let {
-                    it.startsWith("file://") || it.contains("app_covers") || it.startsWith(app.it.fast4x.rimusic.MODIFIED_PREFIX)
+                    it.startsWith("file://") || it.contains("app_covers") || it.startsWith(MODIFIED_PREFIX)
                 } == true
 
                 ImageCacheFactory.Thumbnail(
@@ -370,16 +375,16 @@ fun SongItem(
                                     color = colorPalette().accent,
                                     trackColor = colorPalette().textDisabled,
                                     modifier = Modifier.size(DOWNLOAD_INDICATOR_SIZE_NORMAL.dp),
-                                    stroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
-                                    trackStroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
+                                    stroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
+                                    trackStroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
                                 )
                             } else {
                                 CircularWavyProgressIndicator(
                                     color = colorPalette().accent,
                                     trackColor = colorPalette().textDisabled,
                                     modifier = Modifier.size(DOWNLOAD_INDICATOR_SIZE_NORMAL.dp),
-                                    stroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
-                                    trackStroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
+                                    stroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() }),
+                                    trackStroke = Stroke(width = with(LocalDensity.current) { DOWNLOAD_INDICATOR_STROKE_WIDTH.dp.toPx() })
                                 )
                             }
                         }

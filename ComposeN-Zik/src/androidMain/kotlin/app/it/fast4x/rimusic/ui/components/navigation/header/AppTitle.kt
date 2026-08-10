@@ -77,7 +77,7 @@ private fun AppLogo(
 ) {
     val countToReveal = remember { mutableIntStateOf(0) }
     val modifier = Modifier
-        .clip(app.n_zik.android.uiRoundnessShape())
+        .clip(uiRoundnessShape())
         .combinedClickable(
             onClick = { appIconClickAction(navController, countToReveal, context) },
             onLongClick = { appIconLongClickAction(navController, context) }
@@ -106,7 +106,7 @@ private fun AppLogoText(navController: NavController) {
             color = AppBar.contentColor()
         ),
         modifier = Modifier
-            .clip(app.n_zik.android.uiRoundnessShape())
+            .clip(uiRoundnessShape())
             .clickable { iconTextClick() }
             .padding(horizontal = 8.dp)
     )

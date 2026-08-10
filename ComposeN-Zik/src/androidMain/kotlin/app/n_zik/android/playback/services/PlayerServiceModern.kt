@@ -239,6 +239,13 @@ import app.n_zik.android.core.security.cipher.CipherDeobfuscator
 import app.n_zik.android.playback.utils.PlaybackDispatchers
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
+import androidx.media3.datasource.HttpDataSource
+import app.it.fast4x.rimusic.utils.crossfadeGaplessKey
+import app.it.fast4x.rimusic.utils.crossfadeDurationKey
+import androidx.compose.runtime.Stable
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import app.n_zik.android.widget.NZikWidgetManager
+import app.it.fast4x.rimusic.utils.crossfadeEnabledKey
 
 
 const val LOCAL_KEY_PREFIX = "local:"
@@ -873,7 +880,7 @@ class PlayerServiceModern : MediaLibraryService(),
                         
                         val existingAlbum = Database.albumTable.findBySongIdDirect(songId)
                         // Skip if album exists AND has a real YouTube album ID (valid Base64URL)
-                        val hasValidAlbum = existingAlbum?.id != null && existingAlbum.id.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX).let { it.length > 11 && it.matches("^[A-Za-z0-9_-]+\$".toRegex()) }
+                        val hasValidAlbum = existingAlbum?.id != null && existingAlbum.id.removePrefix(MODIFIED_PREFIX).let { it.length > 11 && it.matches("^[A-Za-z0-9_-]+\$".toRegex()) }
                         if (hasValidAlbum) return@launch
                         
                         val dbSong = Database.songTable.findByIdDirect(songId) ?: return@launch
@@ -1052,9 +1059,9 @@ class PlayerServiceModern : MediaLibraryService(),
 
     private fun getHttpResponseCode(error: PlaybackException): Int? {
         val rootCause = generateSequence<Throwable>(error) { it.cause }.firstOrNull {
-            it is androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException
+            it is HttpDataSource.InvalidResponseCodeException
         }
-        return (rootCause as? androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException)?.responseCode
+        return (rootCause as? HttpDataSource.InvalidResponseCodeException)?.responseCode
     }
 
     private fun isExpiredUrlError(error: PlaybackException): Boolean = getHttpResponseCode(error) == 403
@@ -1861,12 +1868,12 @@ class PlayerServiceModern : MediaLibraryService(),
         widgetUpdateJob?.cancel()
     }
 
-    @androidx.annotation.MainThread
+    @MainThread
     fun updateWidgets() {
         val currentMediaId = binder.player.currentMediaItem?.mediaId
         if (currentMediaId == null) {
             CoroutineScope(Dispatchers.IO).launch {
-                app.n_zik.android.widget.NZikWidgetManager.updateIdleWidgets(applicationContext)
+                NZikWidgetManager.updateIdleWidgets(applicationContext)
             }
             return
         }
@@ -1899,7 +1906,7 @@ class PlayerServiceModern : MediaLibraryService(),
             val currentSong = if (songId != null) Database.songTable.findByIdDirect(songId) else null
             val isLiked = currentSong?.likedAt != null
 
-            app.n_zik.android.widget.NZikWidgetManager.updateWidgets(
+            NZikWidgetManager.updateWidgets(
                 context = applicationContext,
                 title = status.first,
                 artist = status.second,
@@ -2253,7 +2260,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
     }
 
-    @androidx.compose.runtime.Stable
+    @Stable
     open inner class Binder : AndroidBinder() {
         val service: PlayerServiceModern
             get() = this@PlayerServiceModern
@@ -2464,16 +2471,16 @@ class PlayerServiceModern : MediaLibraryService(),
     private var isInternalCrossfadeSeek = false
 
     private val crossfadeDuration: Int
-        get() = preferences.getInt(app.it.fast4x.rimusic.utils.crossfadeDurationKey, 3000)
+        get() = preferences.getInt(crossfadeDurationKey, 3000)
 
     private val crossfadeGapless: Boolean
-        get() = preferences.getBoolean(app.it.fast4x.rimusic.utils.crossfadeGaplessKey, false)
+        get() = preferences.getBoolean(crossfadeGaplessKey, false)
 
     private val crossfadeEnabled: Boolean
-        get() = preferences.getBoolean(app.it.fast4x.rimusic.utils.crossfadeEnabledKey, false)
+        get() = preferences.getBoolean(crossfadeEnabledKey, false)
 
     private val secondaryPlayerListener = object : Player.Listener {
-        override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+        override fun onPlayerError(error: PlaybackException) {
             cleanupCrossfade()
         }
     }
@@ -2584,7 +2591,7 @@ class PlayerServiceModern : MediaLibraryService(),
             .setRenderersFactory(createRendersFactory())
             .setWakeMode(C.WAKE_MODE_NETWORK)
             .setAudioAttributes(
-                androidx.media3.common.AudioAttributes.Builder()
+                AudioAttributes.Builder()
                     .setUsage(C.USAGE_MEDIA)
                     .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                     .build(),
@@ -2594,7 +2601,7 @@ class PlayerServiceModern : MediaLibraryService(),
             .build()
     }
 
-    private fun createForwardingPlayer(targetPlayer: androidx.media3.common.Player): ForwardingPlayer {
+    private fun createForwardingPlayer(targetPlayer: Player): ForwardingPlayer {
         return object : ForwardingPlayer(targetPlayer) {
             override fun getAvailableCommands(): Player.Commands {
                 return super.getAvailableCommands()
@@ -2617,7 +2624,7 @@ class PlayerServiceModern : MediaLibraryService(),
         secPlayer.addAnalyticsListener(PlaybackStatsListener(false, this@PlayerServiceModern))
 
         val itemCount = player.mediaItemCount
-        val items = mutableListOf<androidx.media3.common.MediaItem>()
+        val items = mutableListOf<MediaItem>()
         for (i in 0 until itemCount) {
             items.add(player.getMediaItemAt(i))
         }

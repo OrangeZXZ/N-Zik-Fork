@@ -32,6 +32,7 @@ import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.medium
 import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.uiRoundnessShape
+import androidx.compose.ui.window.Dialog
 
 /**
  * Centralized match results dialog showing matched/failed counts
@@ -53,7 +54,7 @@ fun MatchResultsDialog(
     onRetry: (() -> Unit)? = null,
     onDismiss: () -> Unit
 ) {
-    androidx.compose.ui.window.Dialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier
                 .fillMaxWidth(if (isLandscape) 0.5f else 0.9f)

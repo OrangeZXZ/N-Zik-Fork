@@ -48,6 +48,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import java.net.UnknownHostException
 import java.nio.channels.UnresolvedAddressException
+import androidx.media3.datasource.HttpDataSource
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -88,7 +89,7 @@ fun PlayerError(error: PlaybackException) {
         var httpCode: Int? = null
         var currentCause: Throwable? = error.cause
         while (currentCause != null) {
-            if (currentCause is androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException) {
+            if (currentCause is HttpDataSource.InvalidResponseCodeException) {
                 httpCode = currentCause.responseCode
                 break
             }

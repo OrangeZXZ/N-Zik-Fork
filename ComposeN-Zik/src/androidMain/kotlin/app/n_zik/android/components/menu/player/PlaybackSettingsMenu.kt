@@ -69,6 +69,9 @@ import app.it.fast4x.rimusic.utils.setDeviceVolume
 import app.it.fast4x.rimusic.utils.volumeBoostLevelKey
 import app.it.fast4x.rimusic.utils.volumeNormalizationKey
 import app.n_zik.android.uiRoundnessShape
+import androidx.media3.common.PlaybackParameters
+import androidx.compose.ui.window.Dialog
+import androidx.compose.foundation.text.BasicText
 
 @UnstableApi
 class PlaybackSettingsMenu private constructor(
@@ -138,7 +141,7 @@ class PlaybackSettingsMenu private constructor(
                     val rounded = kotlin.math.round(it * 10f) / 10f
                     playbackSpeed = rounded
                     binder.player.playbackParameters =
-                        androidx.media3.common.PlaybackParameters(rounded, playbackPitch)
+                        PlaybackParameters(rounded, playbackPitch)
                 },
                 valueRange = 0.1f..10f,
                 displayValue = { "%.1fx".format(it).replace(",", ".") },
@@ -148,7 +151,7 @@ class PlaybackSettingsMenu private constructor(
                 onReset = {
                     playbackSpeed = 1f
                     binder.player.playbackParameters =
-                        androidx.media3.common.PlaybackParameters(playbackSpeed, playbackPitch)
+                        PlaybackParameters(playbackSpeed, playbackPitch)
                 }
             )
 
@@ -161,7 +164,7 @@ class PlaybackSettingsMenu private constructor(
                     val rounded = kotlin.math.round(it * 10f) / 10f
                     playbackPitch = rounded
                     binder.player.playbackParameters =
-                        androidx.media3.common.PlaybackParameters(playbackSpeed, rounded)
+                        PlaybackParameters(playbackSpeed, rounded)
                 },
                 valueRange = 0.1f..5f,
                 displayValue = { "%.1fx".format(it).replace(",", ".") },
@@ -171,7 +174,7 @@ class PlaybackSettingsMenu private constructor(
                 onReset = {
                     playbackPitch = 1f
                     binder.player.playbackParameters =
-                        androidx.media3.common.PlaybackParameters(playbackSpeed, playbackPitch)
+                        PlaybackParameters(playbackSpeed, playbackPitch)
                 }
             )
 
@@ -358,7 +361,7 @@ class PlaybackSettingsMenu private constructor(
                         val rounded = kotlin.math.round(it * 10f) / 10f
                         playbackSpeed = rounded
                         binder.player.playbackParameters =
-                            androidx.media3.common.PlaybackParameters(rounded, playbackPitch)
+                            PlaybackParameters(rounded, playbackPitch)
                     },
                     valueRange = 0.1f..10f,
                     stepSize = 0f,
@@ -367,7 +370,7 @@ class PlaybackSettingsMenu private constructor(
                     onReset = {
                         playbackSpeed = 1f
                         binder.player.playbackParameters =
-                            androidx.media3.common.PlaybackParameters(1f, playbackPitch)
+                            PlaybackParameters(1f, playbackPitch)
                     }
                 )
             }
@@ -382,7 +385,7 @@ class PlaybackSettingsMenu private constructor(
                         val rounded = kotlin.math.round(it * 10f) / 10f
                         playbackPitch = rounded
                         binder.player.playbackParameters =
-                            androidx.media3.common.PlaybackParameters(playbackSpeed, rounded)
+                            PlaybackParameters(playbackSpeed, rounded)
                     },
                     valueRange = 0.1f..5f,
                     stepSize = 0f,
@@ -391,7 +394,7 @@ class PlaybackSettingsMenu private constructor(
                     onReset = {
                         playbackPitch = 1f
                         binder.player.playbackParameters =
-                            androidx.media3.common.PlaybackParameters(playbackSpeed, 1f)
+                            PlaybackParameters(playbackSpeed, 1f)
                     }
                 )
             }
@@ -547,7 +550,7 @@ class PlaybackSettingsMenu private constructor(
 
     @Composable
     private fun SectionTitle(title: String) {
-        androidx.compose.foundation.text.BasicText(
+        BasicText(
             text = title,
             style = typography().xxs.semiBold.copy(
                 color = colorPalette().accent,
@@ -627,7 +630,7 @@ class PlaybackSettingsMenu private constructor(
 
             val isScrollingTextDisabled by rememberPreference(disableScrollingTextKey, false)
 
-            androidx.compose.foundation.text.BasicText(
+            BasicText(
                 text = title,
                 maxLines = 1,
                 style = typography().s.semiBold.copy(color = colorPalette().text),
@@ -639,7 +642,7 @@ class PlaybackSettingsMenu private constructor(
                     }
             )
 
-            androidx.compose.foundation.text.BasicText(
+            BasicText(
                 text = displayValue(value),
                 style = typography().xxs.semiBold.copy(color = colorPalette().accent),
                 modifier = Modifier.padding(end = 8.dp)
@@ -728,7 +731,7 @@ class PlaybackSettingsMenu private constructor(
     ) {
         var currentValue by remember { mutableFloatStateOf(value) }
 
-        androidx.compose.ui.window.Dialog(onDismissRequest = onDismiss) {
+        Dialog(onDismissRequest = onDismiss) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -745,7 +748,7 @@ class PlaybackSettingsMenu private constructor(
                     Spacer(modifier = Modifier.size(12.dp))
                     val isScrollingTextDisabled by rememberPreference(disableScrollingTextKey, false)
 
-                    androidx.compose.foundation.text.BasicText(
+                    BasicText(
                         text = title,
                         maxLines = 1,
                         style = typography().s.semiBold.copy(
@@ -762,7 +765,7 @@ class PlaybackSettingsMenu private constructor(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Value display
-                androidx.compose.foundation.text.BasicText(
+                BasicText(
                     text = toDisplay(currentValue),
                     style = typography().l.semiBold.copy(
                         color = colorPalette().accent

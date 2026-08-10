@@ -49,6 +49,8 @@ import app.it.fast4x.rimusic.enums.ContentType
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import app.it.fast4x.rimusic.utils.Preference
+import app.it.fast4x.rimusic.utils.filterContentTypeKey
+import app.n_zik.android.uiRoundnessShape
 
 
 fun String.toBooleanArray(): BooleanArray = this.map { it == '1' }.toBooleanArray()
@@ -79,7 +81,7 @@ fun SearchResultScreen(
 
     val disableScrollingText by rememberPreference(disableScrollingTextKey, false)
 
-    val (filterContentType, onFilterContentTypeChanged) = rememberPreference(app.it.fast4x.rimusic.utils.filterContentTypeKey, ContentType.All)
+    val (filterContentType, onFilterContentTypeChanged) = rememberPreference(filterContentTypeKey, ContentType.All)
     val showFilterMenu = remember { mutableStateOf(false) }
 
     val (gridStatesPref, onGridStatesPrefChanged) = rememberPreference(Preference.SEARCH_RESULT_GRID_STATES.key, Preference.SEARCH_RESULT_GRID_STATES.default)
@@ -119,7 +121,7 @@ fun SearchResultScreen(
                             expanded = showFilterMenu.value,
                             containerColor = colorPalette().background0,
                             onDismissRequest = { showFilterMenu.value = false },
-                            shape = app.n_zik.android.uiRoundnessShape()
+                            shape = uiRoundnessShape()
                         ) {
                             ContentType.entries.forEach { type ->
                                 DropdownMenuItem(

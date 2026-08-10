@@ -196,6 +196,9 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import app.it.fast4x.rimusic.enums.SearchDisplayOrder
 import app.it.fast4x.rimusic.utils.lastThumbnailSizeDpKey
 import app.it.fast4x.rimusic.utils.searchDisplayOrderKey
+import androidx.compose.ui.text.style.TextAlign
+import app.it.fast4x.rimusic.utils.disableNavigationBackStackKey
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun DefaultUiSettings() {
@@ -452,7 +455,7 @@ fun DefaultUiSettings() {
     searchDisplayOrder = SearchDisplayOrder.SuggestionsFirst
     var customColor by rememberPreference(customColorKey, Color.Green.hashCode())
     customColor = Color.Green.hashCode()
-    var disableBackStack by rememberPreference(app.it.fast4x.rimusic.utils.disableNavigationBackStackKey, false)
+    var disableBackStack by rememberPreference(disableNavigationBackStackKey, false)
     disableBackStack = false
     var showCachedPlaylist by rememberPreference(showCachedPlaylistKey, true)
     showCachedPlaylist = true
@@ -507,7 +510,7 @@ fun UiSettings(
     var showFloatingIcon by rememberPreference(showFloatingIconKey, false)
     var menuStyle by rememberPreference(menuStyleKey, MenuStyle.List)
     var transitionEffect by rememberPreference(transitionEffectKey, TransitionEffect.Fade)
-    var disableBackStack by rememberPreference(app.it.fast4x.rimusic.utils.disableNavigationBackStackKey, false)
+    var disableBackStack by rememberPreference(disableNavigationBackStackKey, false)
 
 
     var showPinnedPlaylists by rememberPreference(showPinnedPlaylistsKey, true)
@@ -685,7 +688,7 @@ fun UiSettings(
         SettingsDescription(
             text = stringResource(R.string.ui_settings_description),
             modifier = Modifier.fillMaxWidth(),
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            textAlign = TextAlign.Center
         )
         /* Removed Spacer */
 
@@ -1747,16 +1750,16 @@ if (search.inputValue.isBlank() || stringResource(R.string.queue_and_local_playl
 
         
         val searchCtx_Reset = search.inputValue.isBlank() || stringResource(R.string.settings_reset).contains(search.inputValue, true) || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true)
-        androidx.compose.animation.AnimatedVisibility(
+        AnimatedVisibility(
             visible = searchCtx_Reset,
-            enter = androidx.compose.animation.fadeIn(animationSpec = androidx.compose.animation.core.tween(1100)) + androidx.compose.animation.scaleIn(animationSpec = androidx.compose.animation.core.tween(1100), initialScale = 0.9f)
+            enter = fadeIn(animationSpec = tween(1100)) + scaleIn(animationSpec = tween(1100), initialScale = 0.9f)
         ) {
             SettingsSectionCard(
                 title = stringResource(R.string.settings_reset),
                 icon = R.drawable.refresh,
                 content = {
                     var resetToDefault by remember { mutableStateOf(false) }
-                    val context = androidx.compose.ui.platform.LocalContext.current
+                    val context = LocalContext.current
                     if (search.inputValue.isBlank() || stringResource(R.string.settings_restore_default_settings).contains(search.inputValue, true) || stringResource(R.string.settings_reset).contains(search.inputValue, true)) {
                         OtherSettingsEntry(
                             title = stringResource(R.string.settings_reset),
@@ -1790,7 +1793,7 @@ if (search.inputValue.isBlank() || stringResource(R.string.queue_and_local_playl
 
                     if (resetToDefault) {
                         DefaultUiSettings()
-                        androidx.compose.runtime.LaunchedEffect(Unit) {
+                        LaunchedEffect(Unit) {
                             resetToDefault = false
                         }
                     }

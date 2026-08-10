@@ -38,6 +38,7 @@ import app.it.fast4x.rimusic.utils.visualizerEnabledKey
 import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import androidx.compose.ui.platform.LocalContext
 
 private val defaultButtonOrder = listOf(
     "skip_back",
@@ -150,7 +151,7 @@ object MiniPlayerButtonsSettingsDialog : Dialog {
 
     @Composable
     override fun DialogBody() {
-        val context = androidx.compose.ui.platform.LocalContext.current
+        val context = LocalContext.current
         val prefs = remember { context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
         val buttonDefs = remember { buildButtonDefs() }
         val maxChecked = 4

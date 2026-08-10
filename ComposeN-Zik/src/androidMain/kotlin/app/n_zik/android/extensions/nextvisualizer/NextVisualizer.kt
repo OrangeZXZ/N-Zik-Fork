@@ -98,6 +98,12 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import app.n_zik.android.components.menu.visualizer.VisualizerSettingsMenu
 import app.it.fast4x.rimusic.ui.components.LocalMenuState
+import app.it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
+import androidx.compose.foundation.shape.CircleShape
+import app.it.fast4x.rimusic.utils.visualizerLineThicknessKey
+import app.it.fast4x.rimusic.utils.visualizerWhiteColorOptionKey
+import app.it.fast4x.rimusic.utils.visualizerCustomColorKey
+import androidx.palette.graphics.Palette
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -163,19 +169,19 @@ fun NextVisualizer() {
 
             var bitmapCover by remember { mutableStateOf(APP_ICON_BITMAP) }
             var circleBitmap by remember { mutableStateOf(Icon.getCircledBitmap(APP_ICON_BITMAP)) }
-            val visualizerWhiteColorOption by rememberPreference(app.it.fast4x.rimusic.utils.visualizerWhiteColorOptionKey, enums.VisualizerWhiteColorOption.White)
-            val visualizerCustomColor by rememberPreference(app.it.fast4x.rimusic.utils.visualizerCustomColorKey, android.graphics.Color.WHITE)
+            val visualizerWhiteColorOption by rememberPreference(visualizerWhiteColorOptionKey, enums.VisualizerWhiteColorOption.White)
+            val visualizerCustomColor by rememberPreference(visualizerCustomColorKey, android.graphics.Color.WHITE)
             var dominantColor by remember { mutableStateOf(android.graphics.Color.WHITE) }
             
             val isDarkTheme = colorPalette().isDark
             LaunchedEffect(bitmapCover, isDarkTheme) {
                 kotlinx.coroutines.withContext(Dispatchers.Default) {
                     try {
-                        val dynPalette = app.it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf(bitmapCover, isDarkTheme)
+                        val dynPalette = dynamicColorPaletteOf(bitmapCover, isDarkTheme)
                         if (dynPalette != null) {
                             dominantColor = dynPalette.accent.toArgb()
                         } else {
-                            val palette = androidx.palette.graphics.Palette.from(bitmapCover).generate()
+                            val palette = Palette.from(bitmapCover).generate()
                             dominantColor = palette.getDominantColor(android.graphics.Color.WHITE)
                         }
                     } catch (e: Exception) {
@@ -248,7 +254,7 @@ fun NextVisualizer() {
                 }
             }
             
-            val visualizerLineThickness by rememberPreference(app.it.fast4x.rimusic.utils.visualizerLineThicknessKey, 6f)
+            val visualizerLineThickness by rememberPreference(visualizerLineThicknessKey, 6f)
             
             val visualizersList = remember(bitmapCover, circleBitmap, color, visualizerLineThickness) {
                 createVisualizersList(bitmapCover, circleBitmap, color, visualizerLineThickness)
@@ -303,11 +309,11 @@ fun NextVisualizer() {
                     modifier = Modifier.align(Alignment.BottomCenter)
                 ) {
                     Row(
-                        horizontalArrangement = if (app.n_zik.android.thumbnailShape() == androidx.compose.foundation.shape.CircleShape) Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally) else Arrangement.SpaceEvenly,
+                        horizontalArrangement = if (thumbnailShape() == CircleShape) Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally) else Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .padding(
-                                bottom = if (app.n_zik.android.thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 16.dp else 0.dp
+                                bottom = if (thumbnailShape() == CircleShape) 16.dp else 0.dp
                             )
                             .fillMaxWidth()
                             .height(50.dp)

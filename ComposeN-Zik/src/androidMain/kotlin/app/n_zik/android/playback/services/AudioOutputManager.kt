@@ -10,6 +10,7 @@ import android.os.Looper
 import android.content.Context
 import android.media.MediaRouter2
 import timber.log.Timber
+import app.n_zik.android.utils.getAudioDeviceIcon
 
 class AudioOutputManager(private val context: Context, private val audioManager: AudioManager) {
 
@@ -20,7 +21,7 @@ class AudioOutputManager(private val context: Context, private val audioManager:
         val isCurrentlyActive: Boolean
     ) {
         val icon: Any
-            get() = app.n_zik.android.utils.getAudioDeviceIcon(type, name)
+            get() = getAudioDeviceIcon(type, name)
     }
 
     private val handler = Handler(Looper.getMainLooper())

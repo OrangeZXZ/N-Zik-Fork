@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import app.it.fast4x.rimusic.utils.doubleShadowDrop
 import app.n_zik.android.uiRoundnessShape
+import androidx.compose.material3.ripple
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -56,14 +57,14 @@ fun CustomElevatedButton(
                 if (onLongClick != null) {
                     it.combinedClickable(
                         interactionSource = interSource,
-                        indication = androidx.compose.material3.ripple(),
+                        indication = ripple(),
                         onClick = onClick,
                         onLongClick = onLongClick
                     )
                 } else {
                     it.clickable(
                         interactionSource = interSource,
-                        indication = androidx.compose.material3.ripple(),
+                        indication = ripple(),
                         onClick = onClick
                     )
                 }

@@ -89,6 +89,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import app.n_zik.android.components.player.lyrics.LyricsScreen
 import app.n_zik.android.playback.exceptions.ExplicitContentException
+import androidx.media3.datasource.HttpDataSource
 
 @ExperimentalAnimationApi
 @UnstableApi
@@ -361,14 +362,14 @@ fun Thumbnail(
                     )
                 }
 
-                androidx.compose.runtime.LaunchedEffect(error) {
+                LaunchedEffect(error) {
                     if (error != null) {
                         timber.log.Timber.tag("Thumbnail").e("Playback error: ${error?.cause?.cause}")
                         
                         var httpCode: Int? = null
                         var currentCause: Throwable? = error?.cause
                         while (currentCause != null) {
-                            if (currentCause is androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException) {
+                            if (currentCause is HttpDataSource.InvalidResponseCodeException) {
                                 httpCode = currentCause.responseCode
                                 break
                             }

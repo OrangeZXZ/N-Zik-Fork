@@ -56,6 +56,15 @@ import kotlin.Float.Companion.POSITIVE_INFINITY
 import app.n_zik.android.components.menu.lyrics.LyricsSettingsMenu
 import app.n_zik.android.components.dialog.player.ShowOffsetDialog
 import dev.rebelonion.translator.Translator
+import androidx.compose.animation.fadeOut
+import app.it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.animation.AnimatedVisibility
+import app.it.fast4x.rimusic.utils.getBitmapFromUrl
+import androidx.compose.animation.scaleIn
 
 
 @UnstableApi
@@ -207,7 +216,7 @@ fun LyricsScreen(
         LaunchedEffect(mediaMetadata.artworkUri) {
             kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
                 bitmapCover = try {
-                    app.it.fast4x.rimusic.utils.getBitmapFromUrl(context, mediaMetadata.artworkUri.toString())
+                    getBitmapFromUrl(context, mediaMetadata.artworkUri.toString())
                 } catch (_: Exception) {
                     // Custom cover (content:// URI) or network failure – fall back to no bitmap
                     null
@@ -216,7 +225,7 @@ fun LyricsScreen(
         }
         LaunchedEffect(bitmapCover, lightTheme) {
             val palette = try {
-                bitmapCover?.let { app.it.fast4x.rimusic.ui.styling.dynamicColorPaletteOf(it, !lightTheme) }
+                bitmapCover?.let { dynamicColorPaletteOf(it, !lightTheme) }
             } catch (_: Exception) {
                 null
             }
@@ -288,7 +297,7 @@ fun LyricsScreen(
                 exit = slideOutVertically { -it },
                 modifier = Modifier.align(Alignment.TopCenter)
             ) {
-                androidx.compose.foundation.text.BasicText(
+                BasicText(
                     text = stringResource(R.string.an_error_has_occurred_while_fetching_the_lyrics),
                     style = typography().xs.center.medium.color(PureBlackColorPalette.text),
                     modifier = Modifier
@@ -414,7 +423,7 @@ fun LyricsScreen(
                         .align(Alignment.Center)
                         .padding(horizontal = 32.dp)
                 ) {
-                    androidx.compose.foundation.text.BasicText(
+                    BasicText(
                         text = stringResource(R.string.lyrics_not_available),
                         style = typography().s.center.medium.color(PureBlackColorPalette.text),
                         modifier = Modifier.fillMaxWidth()
@@ -470,7 +479,7 @@ fun LyricsScreen(
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 80.dp else 0.dp)
+                        .padding(bottom = if (thumbnailShape() == CircleShape) 80.dp else 0.dp)
                         .fillMaxWidth(0.4f)
                 ) {
                     trailingContent()
@@ -480,8 +489,8 @@ fun LyricsScreen(
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 16.dp else 0.dp)
-                    .fillMaxWidth(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 0.5f else if (trailingContent == null) 0.30f else 0.22f)
+                    .padding(bottom = if (thumbnailShape() == CircleShape) 16.dp else 0.dp)
+                    .fillMaxWidth(if (thumbnailShape() == CircleShape) 0.5f else if (trailingContent == null) 0.30f else 0.22f)
             ) {
                 if (isLandscape && !showlyricsthumbnail)
                     IconButton(
@@ -589,21 +598,21 @@ fun LyricsScreen(
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(bottom = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 16.dp else 0.dp)
-                    .fillMaxWidth(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 0.5f else 0.35f)
+                    .padding(bottom = if (thumbnailShape() == CircleShape) 16.dp else 0.dp)
+                    .fillMaxWidth(if (thumbnailShape() == CircleShape) 0.5f else 0.35f)
             ) {
 
                 Row(
                     modifier = Modifier
-                        .align(if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) Alignment.BottomStart else Alignment.BottomEnd)
-                        .padding(start = if (thumbnailShape() == androidx.compose.foundation.shape.CircleShape) 48.dp else 0.dp),
+                        .align(if (thumbnailShape() == CircleShape) Alignment.BottomStart else Alignment.BottomEnd)
+                        .padding(start = if (thumbnailShape() == CircleShape) 48.dp else 0.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    androidx.compose.animation.AnimatedVisibility(
+                    AnimatedVisibility(
                         visible = !isAutoScrollEnabled,
-                        enter = androidx.compose.animation.fadeIn() + androidx.compose.animation.scaleIn(),
-                        exit = androidx.compose.animation.fadeOut() + androidx.compose.animation.scaleOut()
+                        enter = fadeIn() + scaleIn(),
+                        exit = fadeOut() + scaleOut()
                     ) {
                         Image(
                             painter = painterResource(R.drawable.locate),

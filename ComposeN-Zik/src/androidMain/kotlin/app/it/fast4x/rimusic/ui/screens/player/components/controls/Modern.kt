@@ -1,4 +1,4 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3ExpressiveApi::class)
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
 package app.it.fast4x.rimusic.ui.screens.player.components.controls
 
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -95,6 +95,8 @@ import app.kreate.android.me.knighthat.sync.YouTubeSync
 import app.n_zik.android.uiRoundnessShape
 import app.it.fast4x.rimusic.ui.styling.ColorPalette
 import app.n_zik.android.enums.PlayerControlsColors
+import androidx.compose.ui.platform.LocalDensity
+import app.it.fast4x.rimusic.utils.playerControlsColorsKey
 
 
 @UnstableApi
@@ -395,7 +397,7 @@ fun ControlsModern(
     onShowSpeedPlayerDialog: () -> Unit,
     dynamicColorPalette: ColorPalette
 ) {
-    val playerControlsColors by rememberPreference(app.it.fast4x.rimusic.utils.playerControlsColorsKey, PlayerControlsColors.Monochrome)
+    val playerControlsColors by rememberPreference(playerControlsColorsKey, PlayerControlsColors.Monochrome)
     val controlsColorText = when (playerControlsColors) {
         PlayerControlsColors.Cover -> dynamicColorPalette.accent
         PlayerControlsColors.Monochrome -> Color.White
@@ -480,7 +482,7 @@ fun ControlsModern(
                   modifier = Modifier
                       .rotate(rotationAngle)
                       .dropShadow(
-                          app.n_zik.android.uiRoundnessShape(),
+                          uiRoundnessShape(),
                           if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) Color.Black.copy(0.75f) else Color.Transparent,
                           6.dp,
                           0.dp,
@@ -499,8 +501,8 @@ fun ControlsModern(
                       modifier = Modifier
                           .align(Alignment.Center)
                           .size(30.dp),
-                      stroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { 4.dp.toPx() }),
-                      trackStroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { 4.dp.toPx() })
+                      stroke = Stroke(width = with(LocalDensity.current) { 4.dp.toPx() }),
+                      trackStroke = Stroke(width = with(LocalDensity.current) { 4.dp.toPx() })
                   )
               } else {
                   Image(
@@ -561,8 +563,8 @@ fun ControlsModern(
                       modifier = Modifier
                           .align(Alignment.Center)
                           .size(30.dp),
-                      stroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { 4.dp.toPx() }),
-                      trackStroke = Stroke(width = with(androidx.compose.ui.platform.LocalDensity.current) { 4.dp.toPx() })
+                      stroke = Stroke(width = with(LocalDensity.current) { 4.dp.toPx() }),
+                      trackStroke = Stroke(width = with(LocalDensity.current) { 4.dp.toPx() })
                   )
               } else {
                   Image(

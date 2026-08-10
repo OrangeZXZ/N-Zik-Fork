@@ -103,6 +103,13 @@ import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
 import app.n_zik.android.download.utils.MyDownloadHelper
 import app.n_zik.android.components.dialog.album.ChangeAlbumBrowseIdDialog
 import app.n_zik.android.components.dialog.artist.ChangeArtistBrowseIdDialog
+import app.it.fast4x.rimusic.enums.PlayerTimelineType
+import app.it.fast4x.rimusic.utils.playerTimelineTypeKey
+import app.it.fast4x.rimusic.utils.getDownloadStateMedia
+import app.n_zik.android.typography
+import app.n_zik.android.BuildConfig
+import app.it.fast4x.rimusic.enums.DownloadedStateMedia
+import androidx.compose.foundation.text.BasicText
 
 @UnstableApi
 @ExperimentalFoundationApi
@@ -146,7 +153,7 @@ class PlayerItemMenu private constructor(
     @Composable
     override fun ListMenu() {
         val song = remember(mediaItem) { mediaItem.asSong }
-        val playerTimelineType by rememberPreference(app.it.fast4x.rimusic.utils.playerTimelineTypeKey, app.it.fast4x.rimusic.enums.PlayerTimelineType.Wavy)
+        val playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
         ListMenu.Menu(title = null, showDragHandle = false) {
             // Section: Information
             SectionTitle(stringResource(R.string.information))
@@ -158,7 +165,7 @@ class PlayerItemMenu private constructor(
             buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
             SectionTitle(stringResource(R.string.playback))
-            if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
+            if (playerTimelineType == PlayerTimelineType.AudioWaves) {
                 buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
             }
             buttons.getOrNull(3)?.let { if (it is MenuIcon) it.ListMenuItem() }
@@ -179,7 +186,7 @@ class PlayerItemMenu private constructor(
             buttons.getOrNull(7)?.let { if (it is MenuIcon) it.ListMenuItem() }
 
             SectionTitle(stringResource(R.string.management))
-            if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
+            if (playerTimelineType == PlayerTimelineType.AudioWaves) {
                 buttons.getOrNull(1)?.let { if (it is MenuIcon) it.ListMenuItem() }
             }
             buttons.getOrNull(2)?.let { if (it is MenuIcon) it.ListMenuItem() }
@@ -205,7 +212,7 @@ class PlayerItemMenu private constructor(
     @Composable
     override fun GridMenu() {
         val song = remember(mediaItem) { mediaItem.asSong }
-        val playerTimelineType by rememberPreference(app.it.fast4x.rimusic.utils.playerTimelineTypeKey, app.it.fast4x.rimusic.enums.PlayerTimelineType.Wavy)
+        val playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
         GridMenu.Menu(title = null, showDragHandle = false) {
             // Section: Information
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -222,7 +229,7 @@ class PlayerItemMenu private constructor(
             item(span = { GridItemSpan(maxLineSpan) }) {
                 SectionTitle(stringResource(R.string.playback))
             }
-            if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
+            if (playerTimelineType == PlayerTimelineType.AudioWaves) {
                 buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
             }
             buttons.getOrNull(3)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
@@ -246,7 +253,7 @@ class PlayerItemMenu private constructor(
             item(span = { GridItemSpan(maxLineSpan) }) {
                 SectionTitle(stringResource(R.string.management))
             }
-            if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
+            if (playerTimelineType == PlayerTimelineType.AudioWaves) {
                 buttons.getOrNull(1)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
             }
             buttons.getOrNull(2)?.let { item { if (it is MenuIcon) it.GridMenuItem() } }
@@ -277,7 +284,7 @@ class PlayerItemMenu private constructor(
         val uriHandler = LocalUriHandler.current
         val coroutineScope = rememberCoroutineScope()
         val song = remember(mediaItem) { mediaItem.asSong }
-        val playerTimelineType by rememberPreference(app.it.fast4x.rimusic.utils.playerTimelineTypeKey, app.it.fast4x.rimusic.enums.PlayerTimelineType.Wavy)
+        val playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
 
         // Reactively collect Album and Artists (like the old menu)
         val albumData by remember(mediaItem.mediaId) {
@@ -353,7 +360,7 @@ class PlayerItemMenu private constructor(
             }
         }
 
-        val downloadStateMedia = app.it.fast4x.rimusic.utils.getDownloadStateMedia(binder, mediaItem.mediaId)
+        val downloadStateMedia = getDownloadStateMedia(binder, mediaItem.mediaId)
         val downloadStateMediaState = rememberUpdatedState(downloadStateMedia)
 
         // Refresh Audio Waves
@@ -366,12 +373,12 @@ class PlayerItemMenu private constructor(
                 
                 override val modifier: Modifier
                     get() = Modifier.alpha(
-                        if (downloadStateMediaState.value == app.it.fast4x.rimusic.enums.DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) 0.5f else 1f
+                        if (downloadStateMediaState.value == DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) 0.5f else 1f
                     )
 
                 override fun onShortClick() {
                     // Check state through rememberUpdatedState which holds the latest composition value
-                    if (downloadStateMediaState.value == app.it.fast4x.rimusic.enums.DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) {
+                    if (downloadStateMediaState.value == DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) {
                         Toaster.w(R.string.error_music_not_fully_cached)
                     } else {
                         // Toast info refresh in progress
@@ -482,7 +489,7 @@ class PlayerItemMenu private constructor(
 
                 if (song.isLocal) {
                     // Local songs: editMetadata, then player controls, then favorites/playlist, then export
-                    if (app.n_zik.android.BuildConfig.ENABLE_FFMPEG) add(editMetadata)        // 2
+                    if (BuildConfig.ENABLE_FFMPEG) add(editMetadata)        // 2
                     add(equalizerButton)     // 3
                     add(sleepTimerButton)    // 4
                     add(addToFavorite)       // 5
@@ -491,7 +498,7 @@ class PlayerItemMenu private constructor(
                     add(changeAlbumId)       // 7
                     add(changeArtistId)      // 8
                     
-                    if (app.n_zik.android.BuildConfig.ENABLE_FFMPEG) add(exportCacheDialog)
+                    if (BuildConfig.ENABLE_FFMPEG) add(exportCacheDialog)
                 } else {
                     // Remote songs
                     add(renameSong)          // 2
@@ -752,10 +759,10 @@ class PlayerItemMenu private constructor(
 
     @Composable
     private fun SectionTitle(title: String) {
-        androidx.compose.foundation.text.BasicText(
+        BasicText(
             text = title,
-            style = app.n_zik.android.typography().xxs.semiBold.copy(
-                color = app.n_zik.android.colorPalette().accent,
+            style = typography().xxs.semiBold.copy(
+                color = colorPalette().accent,
                 textAlign = TextAlign.Start
             ),
             modifier = Modifier

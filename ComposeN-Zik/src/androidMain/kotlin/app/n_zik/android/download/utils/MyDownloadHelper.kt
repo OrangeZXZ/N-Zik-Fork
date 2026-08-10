@@ -72,6 +72,7 @@ import kotlin.io.path.createTempDirectory
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.n_zik.android.R
 import kotlinx.coroutines.cancel
+import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 
 @UnstableApi
 object MyDownloadHelper {
@@ -299,7 +300,7 @@ object MyDownloadHelper {
             return
         }
 
-        val parentalControlEnabled = context.preferences.getBoolean(app.it.fast4x.rimusic.utils.parentalControlEnabledKey, false)
+        val parentalControlEnabled = context.preferences.getBoolean(parentalControlEnabledKey, false)
         if (parentalControlEnabled) {
             val isExplicit = mediaItem.mediaMetadata.title?.startsWith(EXPLICIT_PREFIX, true) == true
             if (isExplicit) {

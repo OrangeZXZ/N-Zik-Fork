@@ -25,6 +25,7 @@ import app.it.fast4x.rimusic.utils.bold
 import app.it.fast4x.rimusic.utils.isLandscape
 import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.uiRoundnessShape
+import androidx.compose.ui.window.Dialog
 
 interface Dialog {
 
@@ -105,7 +106,7 @@ interface Dialog {
         val maxHeight =
             if( isLandscape ) MAX_HEIGHT_LANDSCAPE else MAX_HEIGHT_PORTRAIT
 
-        androidx.compose.ui.window.Dialog( ::hideDialog ) dialogComp@ {
+        Dialog( ::hideDialog ) dialogComp@ {
             Card(
                 modifier = Modifier.wrapContentSize()
                                    .sizeIn(
@@ -138,7 +139,7 @@ interface Dialog {
 
                     Spacer( Modifier.height( SPACE_BETWEEN_SECTIONS.dp ) )
 
-                    androidx.compose.foundation.layout.Box(modifier = Modifier.weight(1f, fill = false)) {
+                    Box(modifier = Modifier.weight(1f, fill = false)) {
                         DialogBody()
                     }
 

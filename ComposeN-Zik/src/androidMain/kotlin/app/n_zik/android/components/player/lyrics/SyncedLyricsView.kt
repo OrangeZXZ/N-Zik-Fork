@@ -50,6 +50,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import app.n_zik.android.components.player.lyrics.utils.HtmlDecoder
+import androidx.compose.animation.core.tween
 
 /** Minimum silence duration (ms) between two lines required to show the interval indicator. */
 private const val GAP_THRESHOLD_MS = 4000L
@@ -377,7 +378,7 @@ fun SyncedLyricsView(
                         if (kotlin.math.abs(offset) > 10) {
                             lazyListState.animateScrollBy(
                                 value = offset.toFloat(),
-                                animationSpec = androidx.compose.animation.core.tween(durationMillis = 800)
+                                animationSpec = tween(durationMillis = 800)
                             )
                         }
                     } else {

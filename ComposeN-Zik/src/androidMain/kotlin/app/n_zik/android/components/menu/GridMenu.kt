@@ -48,6 +48,7 @@ import app.n_zik.android.components.menu.MenuConstants.DRAG_HANDLE_CORNER_RADIUS
 import app.n_zik.android.components.menu.MenuConstants.DRAG_HANDLE_HEIGHT
 import app.n_zik.android.components.menu.MenuConstants.DRAG_HANDLE_TOP_PADDING
 import app.n_zik.android.components.menu.MenuConstants.DRAG_HANDLE_WIDTH
+import app.n_zik.android.topUiRoundnessShape
 
 object GridMenu {
 
@@ -59,7 +60,7 @@ object GridMenu {
         Column(
             Modifier.heightIn( max = (screenHeight * CONTENT_HEIGHT_FRACTION).dp )
                        .fillMaxWidth()
-                       .clip(app.n_zik.android.topUiRoundnessShape())
+                       .clip(topUiRoundnessShape())
                        .background(colorPalette().background0),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -69,7 +70,7 @@ object GridMenu {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(app.n_zik.android.topUiRoundnessShape())
+                        .clip(topUiRoundnessShape())
                         .background(colorPalette().background1)
                 ) {
                     if (showDragHandle) {
@@ -106,7 +107,7 @@ object GridMenu {
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .clip(if (!hasHeader) app.n_zik.android.topUiRoundnessShape() else RoundedCornerShape(0.dp))
+                    .clip(if (!hasHeader) topUiRoundnessShape() else RoundedCornerShape(0.dp))
                     .background(colorPalette().background0),
                 content = content
             )

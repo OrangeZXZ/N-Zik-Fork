@@ -26,6 +26,7 @@ import it.fast4x.innertube.utils.from
 import io.ktor.client.call.body
 import kotlinx.coroutines.flow.first
 import timber.log.Timber
+import app.it.fast4x.rimusic.MODIFIED_PREFIX
 
 class ArtistDetailHandler : BrowseHandler {
     override fun handles(parentId: String): Boolean {
@@ -48,7 +49,7 @@ class ArtistDetailHandler : BrowseHandler {
         if (artistId.startsWith(LOCAL_KEY_PREFIX) || artistId.startsWith("LOCAL_ARTIST_")) {
             return database.songArtistMapTable.allSongsBy(artistId).first().map { song -> SessionMediaItemMapper.mapSongToMediaItem(song, actualParentId) }
         } else {
-            val cleanArtistId = artistId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)
+            val cleanArtistId = artistId.removePrefix(MODIFIED_PREFIX)
             val sectionItems = mutableListOf<MediaItem>()
             if (parts.size == 2) {
                 val artistPage = YtMusic.getArtistPage(cleanArtistId).getOrNull()

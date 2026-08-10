@@ -25,6 +25,7 @@ import kotlin.random.Random
 import timber.log.Timber
 import app.it.fast4x.rimusic.models.Artist
 import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
+import app.n_zik.android.appContext
 
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.concurrent.atomic.AtomicInteger? = null) {
@@ -129,7 +130,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
                     Timber.tag("MatchGlobal").d("MERGE: transferred likedAt")
                 }
                 songTable.delete(song)
-                WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+                WaveformExtractor.deleteWaveform(appContext(), song.id)
                 mergedCounter?.incrementAndGet()
                 Timber.tag("MatchGlobal").d("MERGED '${song.title}' into '${existingSong.id}'")
                 return@transaction
@@ -140,7 +141,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
             Timber.tag("MatchGlobal").d("BDD: saving ${playlistMappings.size} playlist mappings before delete")
             // Delete old song
             songTable.delete(song)
-            WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+            WaveformExtractor.deleteWaveform(appContext(), song.id)
             Timber.tag("MatchGlobal").d("BDD: deleted old song id='${song.id}'")
             // Insert with new YouTube ID and pre-calculated position
             songTable.upsert(newSong.copy(
@@ -186,7 +187,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
                 songArtistMapTable.updateSongId(oldId, notFound.id)
                 eventTable.updateSongId(oldId, notFound.id)
                 songTable.delete(song)
-                WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+                WaveformExtractor.deleteWaveform(appContext(), song.id)
                 Timber.tag("MatchGlobal").d("NOT FOUND - shuffled to id='${notFound.id}'")
             }
         }
@@ -321,7 +322,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
                     Timber.tag("MatchPlaylist").d("MERGE: transferred likedAt")
                 }
                 songTable.delete(song)
-                WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+                WaveformExtractor.deleteWaveform(appContext(), song.id)
                 mergedCounter?.incrementAndGet()
                 Timber.tag("MatchPlaylist").d("MERGED '${song.title}' into '${existingSong.id}'")
                 return@transaction
@@ -330,7 +331,7 @@ suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int
             val playlistMappings = songPlaylistMapTable.getAllForSong(song.id)
             Timber.tag("MatchPlaylist").d("BDD: saving ${playlistMappings.size} playlist mappings before delete")
             songTable.delete(song)
-            WaveformExtractor.deleteWaveform(app.n_zik.android.appContext(), song.id)
+            WaveformExtractor.deleteWaveform(appContext(), song.id)
             Timber.tag("MatchPlaylist").d("BDD: deleted old song id='${song.id}'")
             songTable.upsert(newSong.copy(
                 title = PropUtils.retainIfModified(song.title, newSong.title).orEmpty(),

@@ -55,6 +55,12 @@ import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.requests.HomePage
 import app.it.fast4x.rimusic.models.PlaylistPreview
 import timber.log.Timber
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.material3.Text
+import app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder
+import app.it.fast4x.rimusic.ui.components.ShimmerHost
 
 @Composable
 fun QuickPicksHeader(
@@ -93,19 +99,19 @@ fun QuickPicksHeader(
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 12.dp)
         ) {
-            androidx.compose.material3.Text(
+            Text(
                 text = stringResource(R.string.tips),
-                style = androidx.compose.ui.text.TextStyle(
+                style = TextStyle(
                     fontSize = typography().l.semiBold.fontSize,
                     fontWeight = typography().l.semiBold.fontWeight,
                     color = colorPalette().text,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Start
+                    textAlign = TextAlign.Start
                 ),
                 modifier = Modifier.weight(1f)
             )
             
             if (isLoading) {
-                androidx.compose.material3.CircularProgressIndicator(
+                CircularProgressIndicator(
                     modifier = Modifier.padding(end = 12.dp).size(24.dp),
                     strokeWidth = 2.dp,
                     color = colorPalette().textSecondary
@@ -264,10 +270,10 @@ fun YtmSectionByTitle(
                 onClick = null,
                 verticalPadding = 16.dp
             )
-            androidx.compose.foundation.lazy.LazyRow(contentPadding = endPaddingValues) {
+            LazyRow(contentPadding = endPaddingValues) {
                 items(5) {
-                    app.it.fast4x.rimusic.ui.components.ShimmerHost {
-                        app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder(
+                    ShimmerHost {
+                        AlbumItemPlaceholder(
                             thumbnailSizeDp = albumThumbnailSizeDp,
                             modifier = Modifier.padding(horizontal = 4.dp)
                         )
@@ -969,8 +975,8 @@ fun GenericYtmSections(
                 
                 if (isLoading) {
                     items(3) {
-                        app.it.fast4x.rimusic.ui.components.ShimmerHost {
-                            app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder(
+                        ShimmerHost {
+                            AlbumItemPlaceholder(
                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                 modifier = Modifier.padding(horizontal = 4.dp)
                             )
@@ -1046,7 +1052,7 @@ fun GenericYtmSections(
                                         else
                                             binder?.player?.forcePlay(item.asMediaItem)
                                     },
-                                    onLongClick = { menuState.display { app.n_zik.android.components.menu.video.VideoItemMenu(navController = navController, song = item.asSong).MenuComponent() } }
+                                    onLongClick = { menuState.display { VideoItemMenu(navController = navController, song = item.asSong).MenuComponent() } }
                                 )
                             )
                         }
@@ -1056,8 +1062,8 @@ fun GenericYtmSections(
                 
                 if (isLoading) {
                     items(3) {
-                        app.it.fast4x.rimusic.ui.components.ShimmerHost {
-                            app.it.fast4x.rimusic.ui.items.AlbumItemPlaceholder(
+                        ShimmerHost {
+                            AlbumItemPlaceholder(
                                 thumbnailSizeDp = albumThumbnailSizeDp,
                                 modifier = Modifier.padding(horizontal = 4.dp)
                             )

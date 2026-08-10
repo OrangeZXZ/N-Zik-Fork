@@ -23,6 +23,8 @@ import app.n_zik.android.colorPalette
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.ui.components.themed.Button
 import app.it.fast4x.rimusic.ui.styling.favoritesIcon
+import app.it.fast4x.rimusic.utils.disableNavigationBackStackKey
+import app.it.fast4x.rimusic.utils.rememberPreference
 
 val LocalIsManyButtons = staticCompositionLocalOf { false }
 
@@ -35,12 +37,12 @@ abstract class AbstractNavigationBar(
 
     @Composable
     internal open fun BackButton(): NavigationButton {
-        val disableBackStack by app.it.fast4x.rimusic.utils.rememberPreference(app.it.fast4x.rimusic.utils.disableNavigationBackStackKey, false)
+        val disableBackStack by rememberPreference(disableNavigationBackStackKey, false)
         val button = NavigationButton( navController, R.drawable.chevron_back, colorPalette().favoritesIcon )
         button.clickEvent {
             if ( navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED ) {
                 if (disableBackStack) {
-                    navController.popBackStack(app.it.fast4x.rimusic.enums.NavRoutes.home.name, inclusive = false)
+                    navController.popBackStack(NavRoutes.home.name, inclusive = false)
                 } else {
                     navController.popBackStack()
                 }

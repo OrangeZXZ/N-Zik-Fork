@@ -96,6 +96,9 @@ import timber.log.Timber
 import app.it.fast4x.rimusic.enums.NavRoutes
 import app.it.fast4x.rimusic.ui.screens.info.VideoOrSongInfoScreen
 import app.n_zik.android.components.song.GoToArtist
+import app.it.fast4x.rimusic.enums.PlayerTimelineType
+import app.it.fast4x.rimusic.enums.DownloadedStateMedia
+import androidx.compose.foundation.text.BasicText
 
 @UnstableApi
 @ExperimentalFoundationApi
@@ -197,12 +200,12 @@ class VideoItemMenu private constructor(
         val uriHandler = LocalUriHandler.current
         val binder = LocalPlayerServiceBinder.current
 
-        val playerTimelineType by rememberPreference(playerTimelineTypeKey, app.it.fast4x.rimusic.enums.PlayerTimelineType.Wavy)
+        val playerTimelineType by rememberPreference(playerTimelineTypeKey, PlayerTimelineType.Wavy)
         val downloadStateMediaState = rememberUpdatedState(
-            binder?.let { getDownloadStateMedia(it, song.id) } ?: app.it.fast4x.rimusic.enums.DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED
+            binder?.let { getDownloadStateMedia(it, song.id) } ?: DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED
         )
         
-        refreshBtn = if (playerTimelineType == app.it.fast4x.rimusic.enums.PlayerTimelineType.AudioWaves) {
+        refreshBtn = if (playerTimelineType == PlayerTimelineType.AudioWaves) {
             remember {
                 object : MenuIcon, Descriptive, Clickable {
                     override val iconId: Int = R.drawable.playing_indicator
@@ -212,11 +215,11 @@ class VideoItemMenu private constructor(
                     
                     override val modifier: Modifier
                         get() = Modifier.alpha(
-                            if (downloadStateMediaState.value == app.it.fast4x.rimusic.enums.DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) 0.5f else 1f
+                            if (downloadStateMediaState.value == DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) 0.5f else 1f
                         )
 
                     override fun onShortClick() {
-                        if (downloadStateMediaState.value == app.it.fast4x.rimusic.enums.DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) {
+                        if (downloadStateMediaState.value == DownloadedStateMedia.NOT_CACHED_OR_DOWNLOADED) {
                             Toaster.w(R.string.error_music_not_fully_cached)
                         } else {
                             Toaster.i(R.string.updating_waveform_in_progress)
@@ -489,11 +492,11 @@ class VideoItemMenu private constructor(
 
     @Composable
     private fun SectionTitle(title: String) {
-        androidx.compose.foundation.text.BasicText(
+        BasicText(
             text = title,
-            style = app.n_zik.android.typography().xxs.semiBold.copy(
-                color = app.n_zik.android.colorPalette().accent,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Start
+            style = typography().xxs.semiBold.copy(
+                color = colorPalette().accent,
+                textAlign = TextAlign.Start
             ),
             modifier = Modifier
                 .fillMaxWidth()

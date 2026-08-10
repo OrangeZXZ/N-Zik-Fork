@@ -142,6 +142,9 @@ import timber.log.Timber
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.components.dialog.common.RetrySyncDialog
 import app.n_zik.android.components.dialog.settings.HomeAlbumsToolbarSettingsDialog
+import androidx.compose.material3.LinearWavyProgressIndicator
+import app.n_zik.android.components.AppPullToRefreshBox
+import androidx.core.content.ContextCompat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -304,7 +307,7 @@ fun HomeAlbums(
             putStringArrayListExtra(HomeSyncService.EXTRA_IDS, ids)
         }
         try {
-            androidx.core.content.ContextCompat.startForegroundService(appContext(), intent)
+            ContextCompat.startForegroundService(appContext(), intent)
         } catch (e: Exception) {
             timber.log.Timber.tag("HomeAlbum").e(e, "Failed to start HomeSyncService")
             Toaster.e("Failed to start sync service")
@@ -330,7 +333,7 @@ fun HomeAlbums(
         if (HomeSyncState.failedAlbumsList.isNotEmpty()) retryDialog.showDialog()
     }
 
-    app.n_zik.android.components.AppPullToRefreshBox(
+    AppPullToRefreshBox(
         isRefreshing = refreshing,
         onRefresh = { refresh() }
     ) {
@@ -505,7 +508,7 @@ fun HomeAlbums(
                                         }
                                     }
                                 }
-                                androidx.compose.material3.LinearWavyProgressIndicator(
+                                LinearWavyProgressIndicator(
                                     progress = { HomeSyncState.albumSyncProgress },
                                     modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                                     color = colorPalette.accent,
@@ -599,7 +602,7 @@ fun HomeAlbums(
                                     Box(
                                         modifier = Modifier
                                             .fillMaxSize()
-                                            .clip(app.n_zik.android.thumbnailShape())
+                                            .clip(thumbnailShape())
                                             .background(colorPalette().overlay)
                                     ) {
                                         BasicText(
@@ -615,7 +618,7 @@ fun HomeAlbums(
                                     Box(
                                         modifier = Modifier
                                             .fillMaxSize()
-                                            .clip(app.n_zik.android.thumbnailShape())
+                                            .clip(thumbnailShape())
                                             .background(colorPalette().overlay)
                                     ) {
                                         BasicText(
