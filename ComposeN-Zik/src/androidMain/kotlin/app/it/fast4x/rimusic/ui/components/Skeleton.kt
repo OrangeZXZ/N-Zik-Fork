@@ -156,15 +156,17 @@ fun Skeleton(
                     Modifier
                         .padding(
                             top = scaffoldPadding.calculateTopPadding(),
-                            bottom = 0.dp,
-                            start = scaffoldPadding.calculateStartPadding(LocalLayoutDirection.current),
-                            end = scaffoldPadding.calculateEndPadding(LocalLayoutDirection.current)
+                            bottom = 0.dp
                         )
                         .fillMaxSize()
                 ) {
                     Row(
                         Modifier
                             .background(colorPalette().background0)
+                            .padding(
+                                start = scaffoldPadding.calculateStartPadding(LocalLayoutDirection.current),
+                                end = scaffoldPadding.calculateEndPadding(LocalLayoutDirection.current)
+                            )
                             .fillMaxSize()
                     ) {
                         if( NavigationBarPosition.Left.isCurrent() )

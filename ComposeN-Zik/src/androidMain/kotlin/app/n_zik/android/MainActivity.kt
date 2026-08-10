@@ -253,6 +253,7 @@ import java.util.Locale
 
 import kotlin.system.exitProcess
 import androidx.compose.foundation.shape.RoundedCornerShape
+import app.it.fast4x.rimusic.enums.UiType
 import org.woheller69.freeDroidWarn.FreeDroidWarn
 import app.it.fast4x.rimusic.ui.styling.BoundedCornerSize
 import app.n_zik.android.core.network.client.NetworkClientFactory
@@ -988,16 +989,24 @@ class MainActivity :
             }
 
             val isLandscape = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+            val uiType by app.it.fast4x.rimusic.utils.rememberPreference(app.it.fast4x.rimusic.utils.UiTypeKey, UiType.RiMusic)
+            val isViMusic = uiType == UiType.ViMusic
+            
             val bottomBarHeightPx = with(LocalDensity.current) { 240.dp.roundToPx().toFloat() } // Enough to hide floating bar + miniplayer
             var topBarOffsetHeightPx by remember { androidx.compose.runtime.mutableFloatStateOf(0f) }
             var bottomBarOffsetHeightPx by remember { androidx.compose.runtime.mutableFloatStateOf(0f) }
+            
+            LaunchedEffect(isLandscape, isViMusic) {
+                topBarOffsetHeightPx = 0f
+                bottomBarOffsetHeightPx = 0f
+            }
 
             val density = LocalDensity.current
             val safeDrawingInsets = androidx.compose.foundation.layout.WindowInsets.safeDrawing
-            val nestedScrollConnection = remember(isLandscape, density, safeDrawingInsets) {
+            val nestedScrollConnection = remember(isLandscape, isViMusic, density, safeDrawingInsets) {
                 object : androidx.compose.ui.input.nestedscroll.NestedScrollConnection {
                     override fun onPreScroll(available: androidx.compose.ui.geometry.Offset, source: androidx.compose.ui.input.nestedscroll.NestedScrollSource): androidx.compose.ui.geometry.Offset {
-                        if (!isLandscape) return androidx.compose.ui.geometry.Offset.Zero
+                        if (!isLandscape || isViMusic) return androidx.compose.ui.geometry.Offset.Zero
                         
                         val statusBarsTopPx = safeDrawingInsets.getTop(density)
                         val topBarHeightPx = with(density) { 64.dp.roundToPx() } + statusBarsTopPx

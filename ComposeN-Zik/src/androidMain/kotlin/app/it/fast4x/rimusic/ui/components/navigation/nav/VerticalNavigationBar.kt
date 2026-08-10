@@ -59,6 +59,7 @@ class VerticalNavigationBar(
     @OptIn(UnstableApi::class)
     @Composable
     override fun add(buttons: @Composable (@Composable (Int, String, Int) -> Unit) -> Unit ) {
+        buttonList.clear()
         val transition = updateTransition( targetState = tabIndex, label = null )
         val isLandscape: Boolean = isLandscape
 
@@ -218,11 +219,7 @@ class VerticalNavigationBar(
             // setting is turned on
 
             if( UiType.ViMusic.isCurrent() ) {
-                val iconSize: Dp =
-                    if( isLandscape )
-                        Dimensions.navigationRailWidthLandscape
-                    else
-                        Dimensions.navigationRailWidth
+                val iconSize: Dp = Dimensions.navigationRailWidth
                 //val iconHeight: Dp = Dimensions.halfheaderHeight
                 if ( showSearchIconInNav() )
                     Box(

@@ -42,3 +42,21 @@ Changed:
 - fix(ui): Non-floating bottom navigation bar has rounded bottom corners and redundant background
   - Removed the double-drawing `.background` modifier in `Skeleton.kt` which was causing an ugly visual artifact behind the navigation bar.
   - Changed `HorizontalNavigationBar.kt` to use `topUiRoundnessShape()` instead of `uiRoundnessShape()` when the position is `Bottom` (non-floating), so only the top corners are rounded while the bottom ones remain flat against the screen edge.
+
+- fix(ui): Landscape background color does not extend behind the camera cutout safe area
+  - In `Skeleton.kt`, moved `scaffoldPadding.calculateStartPadding` and `calculateEndPadding` from the outer `Box` container to the inner `Row` component, *after* the `background` modifier. This ensures the background spans edge-to-edge (including the punch hole/status bar area) while keeping the navigation bar and content safely padded inwards.
+
+- fix(ui): UI gets stuck in hidden state after rotating screen from landscape to portrait
+  - Android config changes in the manifest (`orientation`) prevent the `MainActivity` from being recreated on rotation, preserving `topBarOffsetHeightPx` and `bottomBarOffsetHeightPx` state.
+  - Added a `LaunchedEffect(isLandscape)` inside `MainActivity.kt` to automatically reset scroll offsets to `0f` whenever the orientation changes, preventing the navigation and top bars from being permanently hidden if the user had scrolled down in landscape mode before rotating.
+
+- fix(ui): Double padding around content and top bar in landscape mode (ViMusic theme)
+  - Since `Skeleton.kt` now applies horizontal safe padding to the main content wrapper (`Row`), nested components were applying it a second time.
+  - Removed `windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal))` from `AppHeader.kt` (kept Top only).
+  - Removed custom left and right inset layout paddings from the `NavHost` custom `layout` modifier in `AppNavigation.kt`.
+  - Fixes the huge gap between the Vertical Navigation Bar and the content area in landscape mode when using the ViMusic layout.
+
+- fix(ui): ViMusic Vertical Navigation Bar icons too far apart and bar scrolls with app header
+  - The `iconSize` for Search, Stats, and Settings icons was incorrectly set to `Dimensions.navigationRailWidthLandscape` (128.dp) in landscape, creating huge vertical spacing between them. Changed to use `Dimensions.navigationRailWidth` (50.dp) consistently.
+  - Allowed `VerticalNavigationBar.kt` to scroll normally if screen is small by restoring `.verticalScroll()`.
+  - In `MainActivity.kt`, modified the `nestedScrollConnection` to NOT hide the top app header when in `ViMusic` mode (`isViMusic`). This is simpler and prevents scrolling on the navigation bar from unintentionally hiding the app header!

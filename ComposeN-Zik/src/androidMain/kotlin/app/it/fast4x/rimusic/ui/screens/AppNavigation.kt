@@ -249,19 +249,14 @@ fun AppNavigation(
             val offsetPx = topBarOffsetState.value.toInt()
             val effectivePadding = (topPaddingPx + offsetPx).coerceAtLeast(0)
             
-            val leftInsetPx = safeDrawingInsets.getLeft(this, layoutDirection)
-            val rightInsetPx = safeDrawingInsets.getRight(this, layoutDirection)
-            
             val placeable = measurable.measure(
                 constraints.copy(
-                    minWidth = (constraints.minWidth - leftInsetPx - rightInsetPx).coerceAtLeast(0),
-                    maxWidth = (constraints.maxWidth - leftInsetPx - rightInsetPx).coerceAtLeast(0),
                     minHeight = (constraints.minHeight - effectivePadding).coerceAtLeast(0),
                     maxHeight = (constraints.maxHeight - effectivePadding).coerceAtLeast(0)
                 )
             )
             layout(constraints.maxWidth, constraints.maxHeight) {
-                placeable.place(leftInsetPx, effectivePadding)
+                placeable.place(0, effectivePadding)
             }
         },
         navController = navController,
