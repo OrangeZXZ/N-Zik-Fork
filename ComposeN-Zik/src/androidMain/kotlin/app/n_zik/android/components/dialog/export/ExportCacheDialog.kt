@@ -43,6 +43,11 @@ import it.fast4x.innertube.requests.songInfo
 import it.fast4x.innertube.Innertube
 import app.it.fast4x.rimusic.models.Format
 import androidx.compose.runtime.produceState
+import com.arthenica.ffmpegkit.FFprobeKit
+import java.nio.ByteOrder
+import java.nio.ByteBuffer
+import android.graphics.BitmapFactory
+import android.util.Base64
 
 class ExportCacheDialog(
     activeState: MutableState<Boolean>,
@@ -105,7 +110,7 @@ class ExportCacheDialog(
                     var actualIsOpus = isOpus
                     if (!isOpus) {
                         try {
-                            val probeSession = com.arthenica.ffmpegkit.FFprobeKit.getMediaInformation(rawFile.absolutePath)
+                            val probeSession = FFprobeKit.getMediaInformation(rawFile.absolutePath)
                             val codec = probeSession.mediaInformation?.streams?.firstOrNull()?.codec
                             Timber.tag("ExportCache").i("Detected codec from raw file: $codec")
                             if (codec?.contains("opus", ignoreCase = true) == true) {
@@ -164,8 +169,8 @@ class ExportCacheDialog(
                     commandBuilder.append("-y -nostdin -i \"${rawFile.absolutePath}\" ")
                     
                     if (artworkData != null && !actualIsOpus) {
-                        val imgOpts = android.graphics.BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                        android.graphics.BitmapFactory.decodeByteArray(artworkData, 0, artworkData.size, imgOpts)
+                        val imgOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                        BitmapFactory.decodeByteArray(artworkData, 0, artworkData.size, imgOpts)
                         val imgCodec = when {
                             imgOpts.outMimeType?.contains("png") == true -> "png"
                             imgOpts.outMimeType?.contains("webp") == true -> "webp"
@@ -366,8 +371,8 @@ class ExportCacheDialog(
         }
 
         internal fun generateFlacPictureBase64(imageData: ByteArray): String {
-            val options = android.graphics.BitmapFactory.Options().apply { inJustDecodeBounds = true }
-            android.graphics.BitmapFactory.decodeByteArray(imageData, 0, imageData.size, options)
+            val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeByteArray(imageData, 0, imageData.size, options)
             val width = options.outWidth.takeIf { it > 0 } ?: 0
             val height = options.outHeight.takeIf { it > 0 } ?: 0
             val mimeType = options.outMimeType ?: "image/jpeg"
@@ -376,7 +381,7 @@ class ExportCacheDialog(
             val descBytes = ByteArray(0)
             
             val size = 4 + 4 + mimeBytes.size + 4 + descBytes.size + 4 + 4 + 4 + 4 + 4 + imageData.size
-            val buffer = java.nio.ByteBuffer.allocate(size).order(java.nio.ByteOrder.BIG_ENDIAN)
+            val buffer = ByteBuffer.allocate(size).order(ByteOrder.BIG_ENDIAN)
             
             buffer.putInt(3) // Picture Type: 3 = Front Cover
             buffer.putInt(mimeBytes.size)
@@ -390,7 +395,7 @@ class ExportCacheDialog(
             buffer.putInt(imageData.size)
             buffer.put(imageData)
             
-            return android.util.Base64.encodeToString(buffer.array(), android.util.Base64.NO_WRAP)
+            return Base64.encodeToString(buffer.array(), Base64.NO_WRAP)
         }
     }
 

@@ -63,6 +63,7 @@ import app.n_zik.android.core.coil.ImageCacheFactory
 import app.n_zik.android.core.database.Database
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
 import app.n_zik.android.components.tab.SongShuffler
+import android.net.Uri
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -412,7 +413,7 @@ class OnlinePlaylistItemMenu private constructor(
                 override fun onShortClick() {
                     menuState.hide()
                     val intent = Intent(Intent.ACTION_VIEW).apply {
-                        data = android.net.Uri.parse("https://music.youtube.com/playlist?list=${playlist.key}")
+                        data = Uri.parse("https://music.youtube.com/playlist?list=${playlist.key}")
                     }
                     context.startActivity(intent)
                 }

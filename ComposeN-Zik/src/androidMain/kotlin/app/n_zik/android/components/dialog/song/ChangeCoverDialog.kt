@@ -36,6 +36,7 @@ import app.n_zik.android.uiRoundnessShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import app.n_zik.android.colorPalette
+import java.io.File
 
 class ChangeCoverDialog private constructor(
     activeState: MutableState<Boolean>,
@@ -97,7 +98,7 @@ class ChangeCoverDialog private constructor(
                 if (uri != null) {
                     val songId = getSong()?.id ?: return@rememberLauncherForActivityResult
                     // Delete old cached file before saving new one
-                    val oldFile = java.io.File(context.filesDir, "app_covers/cover_$songId.jpg")
+                    val oldFile = File(context.filesDir, "app_covers/cover_$songId.jpg")
                     val oldUrl = oldFile.absolutePath
                     if (oldFile.exists()) oldFile.delete()
 

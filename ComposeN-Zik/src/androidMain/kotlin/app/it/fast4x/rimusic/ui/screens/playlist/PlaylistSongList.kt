@@ -165,6 +165,7 @@ import app.it.fast4x.rimusic.ui.components.themed.ValueSelectorDialog
 import timber.log.Timber
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
 import app.n_zik.android.thumbnailShape
+import java.util.Locale
 
 
 @ExperimentalTextApi
@@ -271,7 +272,7 @@ fun PlaylistSongList(
 
     val translator = Translator(NetworkClientFactory.getTranslatorClient())
     var otherLanguageApp by rememberPreference(otherLanguageAppPlaylistKey, Languages.System)
-    val appLang = java.util.Locale.getDefault().language
+    val appLang = Locale.getDefault().language
     val activeTranslateLang = remember(otherLanguageApp, appLang) {
         if (otherLanguageApp != Languages.System) otherLanguageApp
         else Languages.entries.firstOrNull { it.code == appLang } ?: Languages.English

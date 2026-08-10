@@ -28,6 +28,8 @@ import app.n_zik.android.playback.exceptions.UnknownException
 import app.n_zik.android.playback.exceptions.UnplayableException
 import app.n_zik.android.playback.exceptions.VideoIdMismatchException
 import androidx.media3.datasource.HttpDataSource
+import java.net.UnknownHostException
+import java.nio.channels.UnresolvedAddressException
 
 private const val JOB_ID = 8888
 private const val FOREGROUND_NOTIFICATION_ID = 8989
@@ -134,8 +136,8 @@ class MyDownloadService : DownloadService(
                 
                 val specificCause = generateSequence<Throwable>(currentCause) { it.cause }.firstOrNull { 
                     it is ExplicitContentException || 
-                    it is java.nio.channels.UnresolvedAddressException || 
-                    it is java.net.UnknownHostException || 
+                    it is UnresolvedAddressException || 
+                    it is UnknownHostException || 
                     it is PlayableFormatNotFoundException || 
                     it is UnplayableException || 
                     it is LoginRequiredException || 
@@ -152,7 +154,7 @@ class MyDownloadService : DownloadService(
                     val errorMessage = if (httpCode == 403) {
                         context.getString(R.string.error_this_song_cannot_be_played_due_to_server_restrictions)
                     } else when (specificCause) {
-                        is java.nio.channels.UnresolvedAddressException, is java.net.UnknownHostException -> context.getString(R.string.error_a_network_error_has_occurred)
+                        is UnresolvedAddressException, is UnknownHostException -> context.getString(R.string.error_a_network_error_has_occurred)
                         is PlayableFormatNotFoundException -> context.getString(R.string.error_couldn_t_find_a_playable_audio_format)
                         is UnplayableException -> context.getString(R.string.error_the_original_video_source_of_this_song_has_been_deleted)
                         is LoginRequiredException -> context.getString(R.string.error_this_song_cannot_be_played_due_to_server_restrictions)

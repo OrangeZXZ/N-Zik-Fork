@@ -203,7 +203,7 @@ fun SongItem(
 
     val dbSong by remember(song.id) {
         Database.songTable.findById(song.id)
-    }.collectAsState(initial = null, context = kotlinx.coroutines.Dispatchers.IO)
+    }.collectAsState(initial = null, context = Dispatchers.IO)
     val displaySong = dbSong ?: song
 
     val menu = if( navController != null && onLongClick == null ) SongItemMenu( navController, displaySong ) else null

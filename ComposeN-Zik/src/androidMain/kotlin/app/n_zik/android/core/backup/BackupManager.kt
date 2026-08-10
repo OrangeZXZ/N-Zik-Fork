@@ -18,6 +18,7 @@ import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
 import app.it.fast4x.rimusic.utils.*
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
+import java.time.Year
 
 object BackupManager {
     const val PREF_INTERVAL = "autoBackupIntervalKey"
@@ -102,12 +103,12 @@ object BackupManager {
                 val dayOfMonth = prefs.getInt(PREF_SCHEDULE_DAY_OF_MONTH, 1)
                 targetTime = now.withHour(hour).withMinute(0).withSecond(0).withNano(0)
                 
-                val maxDays = targetTime.month.length(java.time.Year.isLeap(targetTime.year.toLong()))
+                val maxDays = targetTime.month.length(Year.isLeap(targetTime.year.toLong()))
                 targetTime = targetTime.withDayOfMonth(minOf(dayOfMonth, maxDays))
                 
                 if (!targetTime.isAfter(now)) {
                     targetTime = targetTime.plusMonths(1)
-                    val nextMaxDays = targetTime.month.length(java.time.Year.isLeap(targetTime.year.toLong()))
+                    val nextMaxDays = targetTime.month.length(Year.isLeap(targetTime.year.toLong()))
                     targetTime = targetTime.withDayOfMonth(minOf(dayOfMonth, nextMaxDays))
                 }
             }

@@ -6,6 +6,7 @@ import java.io.PrintWriter
 import java.time.LocalDateTime
 import kotlin.system.exitProcess
 import timber.log.Timber
+import android.os.Process
 
 class CaptureCrash (private val LOG_PATH: String) : Thread.UncaughtExceptionHandler {
 
@@ -14,7 +15,7 @@ class CaptureCrash (private val LOG_PATH: String) : Thread.UncaughtExceptionHand
         saveCrashLog(throwable)
 
         // Terminate the app or perform any other necessary action
-        android.os.Process.killProcess(android.os.Process.myPid());
+        Process.killProcess(Process.myPid());
         exitProcess(1)
     }
 

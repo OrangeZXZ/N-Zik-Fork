@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import app.kreate.android.me.knighthat.utils.PropUtils
 
 @Composable
 fun UpdateYoutubeArtist(browseId: String) {
@@ -52,8 +53,8 @@ fun UpdateYoutubeArtist(browseId: String) {
                                     Database.artistTable.upsert(
                                         Artist(
                                             id = browseId,
-                                            name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(currentArtist?.name, currentArtistPage.name) ?: currentArtistPage.name,
-                                            thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(currentArtist?.thumbnailUrl, currentArtistPage.thumbnail?.url),
+                                            name = PropUtils.retainIfModified(currentArtist?.name, currentArtistPage.name) ?: currentArtistPage.name,
+                                            thumbnailUrl = PropUtils.retainIfModified(currentArtist?.thumbnailUrl, currentArtistPage.thumbnail?.url),
                                             timestamp = System.currentTimeMillis(),
                                             bookmarkedAt = currentArtist?.bookmarkedAt,
                                             lastFetch = System.currentTimeMillis()
@@ -93,10 +94,10 @@ fun UpdateYoutubeAlbum (browseId: String) {
                                     Database.albumTable.upsert(
                                         Album(
                                             id = browseId,
-                                            title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(album?.title, currentAlbumPage.title),
-                                            thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(album?.thumbnailUrl, currentAlbumPage.thumbnail?.url),
+                                            title = PropUtils.retainIfModified(album?.title, currentAlbumPage.title),
+                                            thumbnailUrl = PropUtils.retainIfModified(album?.thumbnailUrl, currentAlbumPage.thumbnail?.url),
                                             year = currentAlbumPage.year,
-                                            authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(album?.authorsText, currentAlbumPage.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() }),
+                                            authorsText = PropUtils.retainIfModified(album?.authorsText, currentAlbumPage.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() }),
                                             shareUrl = currentAlbumPage.url,
                                             timestamp = System.currentTimeMillis(),
                                             bookmarkedAt = album?.bookmarkedAt

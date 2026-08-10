@@ -23,6 +23,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import androidx.compose.ui.unit.dp
+import android.content.Context
 
 object HomeLibrarySortSettingsDialog : Dialog {
 
@@ -77,7 +78,7 @@ object HomeLibrarySortSettingsDialog : Dialog {
     @Composable
     override fun DialogBody() {
         val ctx = LocalContext.current
-        val prefs = remember { ctx.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
+        val prefs = remember { ctx.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
         var selectedTabIndex by remember { mutableStateOf(0) }
 
         fun getKey(tab: LibraryTab): String = when (tab) {
@@ -147,8 +148,8 @@ object HomeLibrarySortSettingsDialog : Dialog {
         }
     }
 
-    fun reset(context: android.content.Context) {
-        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+    fun reset(context: Context) {
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         val edit = prefs.edit()
         tabs.forEach { tab ->
             val p = when (tab) {

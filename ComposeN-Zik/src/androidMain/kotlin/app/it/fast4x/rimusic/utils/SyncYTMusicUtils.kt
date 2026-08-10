@@ -31,6 +31,7 @@ import kotlinx.coroutines.withContext
 import app.kreate.android.me.knighthat.utils.Toaster
 import timber.log.Timber
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import app.kreate.android.me.knighthat.utils.PropUtils
 
 @OptIn(UnstableApi::class)
 fun ytmPrivatePlaylistSync(playlist: Playlist, playlistId: Long) {
@@ -96,7 +97,7 @@ suspend fun importYTMSubscribedChannels(): Boolean {
                 } else {
                     localArtist.copy(
                         bookmarkedAt = localArtist.bookmarkedAt ?: System.currentTimeMillis(),
-                        thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(localArtist.thumbnailUrl, remoteArtist.thumbnail?.url) ?: localArtist.thumbnailUrl,
+                        thumbnailUrl = PropUtils.retainIfModified(localArtist.thumbnailUrl, remoteArtist.thumbnail?.url) ?: localArtist.thumbnailUrl,
                         isYoutubeArtist = true
                     ).let( Database.artistTable::update )
                 }
@@ -152,7 +153,7 @@ suspend fun importYTMLikedAlbums(): Boolean {
                     localAlbum.copy(
                         isYoutubeAlbum = true,
                         bookmarkedAt = localAlbum.bookmarkedAt ?: System.currentTimeMillis(),
-                        thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(localAlbum.thumbnailUrl, remoteAlbum.thumbnail?.url) ?: localAlbum.thumbnailUrl)
+                        thumbnailUrl = PropUtils.retainIfModified(localAlbum.thumbnailUrl, remoteAlbum.thumbnail?.url) ?: localAlbum.thumbnailUrl)
                         .let( Database.albumTable::updateReplace )
                 }
             }

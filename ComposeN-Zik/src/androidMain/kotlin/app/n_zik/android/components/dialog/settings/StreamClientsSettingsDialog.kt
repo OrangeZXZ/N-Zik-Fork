@@ -32,6 +32,7 @@ import app.n_zik.android.playback.services.clearStreamCaches
 import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import android.content.Context
 
 private val defaultClientOrder = listOf(
     "web_remix",
@@ -111,7 +112,7 @@ object StreamClientsSettingsDialog : Dialog {
     override fun DialogBody() {
         val context = LocalContext.current
         val binder = LocalPlayerServiceBinder.current
-        val prefs = remember { context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
+        val prefs = remember { context.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
         val clientDefs = remember { buildClientDefs() }
 
         val initial = remember {
@@ -204,8 +205,8 @@ object StreamClientsSettingsDialog : Dialog {
         )
     }
 
-    fun reset(context: android.content.Context) {
-        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+    fun reset(context: Context) {
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         val editor = prefs.edit()
         editor.putString(streamClientsOrderKey, serializeOrder(defaultClientOrder))
         buildClientDefs().forEach { (_, def) ->

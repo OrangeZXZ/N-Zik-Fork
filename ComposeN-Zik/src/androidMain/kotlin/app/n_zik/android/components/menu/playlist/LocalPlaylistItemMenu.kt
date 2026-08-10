@@ -66,6 +66,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
 import app.it.fast4x.rimusic.utils.checkFileExists
 import app.n_zik.android.components.tab.SongShuffler
+import android.net.Uri
 
 @UnstableApi
 @OptIn(ExperimentalFoundationApi::class)
@@ -186,7 +187,7 @@ class LocalPlaylistItemMenu private constructor(
                                     .map { list: List<Song> ->
                                         list.mapNotNull( Song::thumbnailUrl ).takeLast( 4 )
                                     }
-                    }.collectAsState( emptyList(), kotlinx.coroutines.Dispatchers.IO )
+                    }.collectAsState( emptyList(), Dispatchers.IO )
 
                     if (thumbnails.isEmpty()) {
                         Image(
@@ -276,7 +277,7 @@ class LocalPlaylistItemMenu private constructor(
         var songs by remember { mutableStateOf<List<Song>?>(null) }
         
         LaunchedEffect(playlistPreview.playlist.id) {
-            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            kotlinx.coroutines.withContext(Dispatchers.IO) {
                 songs = Database.songPlaylistMapTable.allSongsOf(playlistPreview.playlist.id).firstOrNull() ?: emptyList()
             }
         }
@@ -372,7 +373,7 @@ class LocalPlaylistItemMenu private constructor(
                     @get:Composable override val menuIconTitle: String get() = stringResource(messageId)
                     override fun onShortClick() {
                         menuState.hide()
-                        coroutineScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                        coroutineScope.launch(Dispatchers.IO) {
                             Database.playlistTable.delete(playlistPreview.playlist)
                         }
                         Toaster.done()
@@ -390,7 +391,7 @@ class LocalPlaylistItemMenu private constructor(
                         menuState.hide()
                         val browseId = playlistPreview.playlist.browseId ?: return
                         val intent = Intent(Intent.ACTION_VIEW).apply {
-                            data = android.net.Uri.parse("https://music.youtube.com/playlist?list=$browseId")
+                            data = Uri.parse("https://music.youtube.com/playlist?list=$browseId")
                         }
                         context.startActivity(intent)
                     }

@@ -27,6 +27,7 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import app.n_zik.android.core.network.client.NetworkClientFactory
+import okhttp3.Request
 
 class PoTokenWebView private constructor(
     context: Context,
@@ -300,7 +301,7 @@ class PoTokenWebView private constructor(
             url: String,
             body: String,
         ): Result<String> = runCatching {
-            val requestBuilder = okhttp3.Request.Builder()
+            val requestBuilder = Request.Builder()
                 .post(body.toRequestBody())
                 .headers(mapOf(
                     "User-Agent" to PoTokenWebView.USER_AGENT,

@@ -11,6 +11,7 @@ import android.os.ParcelFileDescriptor
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
+import android.graphics.Bitmap
 
 class ArtworkContentProvider : ContentProvider() {
 
@@ -42,7 +43,7 @@ class ArtworkContentProvider : ContentProvider() {
                 }
                 if (rotation != 0f) {
                     val matrix = Matrix().apply { postRotate(rotation) }
-                    val rotated = android.graphics.Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                    val rotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
                     if (rotated !== bitmap) { bitmap.recycle(); bitmap = rotated }
                 }
             } catch (_: Exception) {}
@@ -51,13 +52,13 @@ class ArtworkContentProvider : ContentProvider() {
             val size = minOf(bitmap.width, bitmap.height)
             val x = (bitmap.width - size) / 2
             val y = (bitmap.height - size) / 2
-            val cropped = android.graphics.Bitmap.createBitmap(bitmap, x, y, size, size)
+            val cropped = Bitmap.createBitmap(bitmap, x, y, size, size)
             if (cropped !== bitmap) bitmap.recycle()
 
             val tempFile = File.createTempFile("artwork_", ".jpg", context?.cacheDir)
             tempFile.deleteOnExit()
             FileOutputStream(tempFile).use { out ->
-                cropped.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, out)
+                cropped.compress(Bitmap.CompressFormat.JPEG, 85, out)
             }
             cropped.recycle()
 

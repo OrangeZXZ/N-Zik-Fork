@@ -91,6 +91,18 @@ import app.it.fast4x.rimusic.models.Artist
 import app.n_zik.android.core.security.potoken.PoTokenResult
 import app.it.fast4x.rimusic.models.SongAlbumMap
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import java.util.concurrent.ConcurrentHashMap
+import app.kreate.android.me.knighthat.utils.PropUtils
+import org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager
+import it.fast4x.innertube.YtMusic
+import io.ktor.client.plugins.ResponseException
+import java.util.Locale
+import android.database.sqlite.SQLiteConstraintException
+import it.fast4x.innertube.strategy.ContentAwareFallbackStrategy
+import it.fast4x.innertube.utils.NewPipeUtils
+import it.fast4x.innertube.strategy.ContentHints
+import okhttp3.Request
+import io.ktor.http.URLBuilder
 
 private const val TAG = "StreamResolver"
 private const val CHUNK_LENGTH = 512 * 1024L
@@ -101,7 +113,7 @@ private const val INITIAL_RETRY_DELAY_MS = 1500L
 private val poTokenGenerator = PoTokenGenerator()
 
 // Content-aware fallback: selects client order based on content type (live, explicit, kids, uploaded)
-private val contentFallbackStrategy = it.fast4x.innertube.strategy.ContentAwareFallbackStrategy()
+private val contentFallbackStrategy = ContentAwareFallbackStrategy()
 
 // Full client list for fallback when content-aware list is exhausted
 // VISIONOS: CDN URL has no spc throttle gate, streams whole songs with no poToken/cipher
@@ -129,13 +141,13 @@ private val WEB_CLIENTS = setOf("WEB", "WEB_REMIX", "WEB_CREATOR", "TVHTML5", "T
 private val AGE_RESTRICTED_STATUSES = setOf("AGE_CHECK_REQUIRED", "AGE_VERIFICATION_REQUIRED", "LOGIN_REQUIRED", "CONTENT_CHECK_REQUIRED")
 
 // Track videoIds already fetched by fetchFormatIfMissing (avoid redundant API calls)
-private val fetchedFormatIds = java.util.Collections.synchronizedSet(mutableSetOf<String>())
-private val webRemixFailedIds = java.util.Collections.synchronizedSet(mutableSetOf<String>())
+private val fetchedFormatIds = Collections.synchronizedSet(mutableSetOf<String>())
+private val webRemixFailedIds = Collections.synchronizedSet(mutableSetOf<String>())
 
 // Track ongoing background fetches to prevent concurrent duplicate API calls
-private val fetchingSongInfos = java.util.Collections.synchronizedSet(mutableSetOf<String>())
-private val fetchingArtists = java.util.Collections.synchronizedSet(mutableSetOf<String>())
-private val fetchingAlbums = java.util.Collections.synchronizedSet(mutableSetOf<String>())
+private val fetchingSongInfos = Collections.synchronizedSet(mutableSetOf<String>())
+private val fetchingArtists = Collections.synchronizedSet(mutableSetOf<String>())
+private val fetchingAlbums = Collections.synchronizedSet(mutableSetOf<String>())
 
 // Warmup video ID for PoToken pre-generation (first YouTube video)
 private const val POTOKEN_WARMUP_VIDEO_ID = "jNQXAC9IVRw"
@@ -185,7 +197,7 @@ private val jsonParser = Json {
 suspend fun upsertSongInfo(videoId: String) {
     if (videoId == justInserted) return
     if (!fetchingSongInfos.add(videoId)) {
-        timber.log.Timber.tag(TAG).d("upsertSongInfo already in progress for $videoId, skipping duplicate.")
+        Timber.tag(TAG).d("upsertSongInfo already in progress for $videoId, skipping duplicate.")
         return
     }
 
@@ -204,10 +216,10 @@ suspend fun upsertSongInfo(videoId: String) {
                 artistIdsFromDb = Database.songArtistMapTable.findArtistsOf(videoId).firstOrNull().orEmpty()
                 albumFromDb = Database.songAlbumMapTable.findAlbumOf(videoId).firstOrNull()
                 if (artistIdsFromDb.isNotEmpty() || albumFromDb != null) break
-                timber.log.Timber.tag(TAG).d("[IDs] attempt $attempt/3: no artist/album IDs for $videoId, retrying...")
+                Timber.tag(TAG).d("[IDs] attempt $attempt/3: no artist/album IDs for $videoId, retrying...")
             }
             if (artistIdsFromDb.isEmpty() && albumFromDb == null) {
-                timber.log.Timber.tag(TAG).w("[IDs] No artist/album IDs for $videoId after 3 retries, skipping.")
+                Timber.tag(TAG).w("[IDs] No artist/album IDs for $videoId after 3 retries, skipping.")
             }
 
             // Artist cache — read IDs from DB
@@ -222,9 +234,9 @@ suspend fun upsertSongInfo(videoId: String) {
                     if (isArtistRecentlyFetched) {
                         val msAgo = currentTime - (lastFetchTime ?: currentTime)
                         val daysAgo = msAgo / 86400000L
-                        timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId was fetched $daysAgo days ago ($msAgo ms), skipping.")
+                        Timber.tag(TAG).d("[Artist Cache] $artistId was fetched $daysAgo days ago ($msAgo ms), skipping.")
                     } else if (fetchingArtists.add(artistId)) {
-                        timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId outdated, fetching in background.")
+                        Timber.tag(TAG).d("[Artist Cache] $artistId outdated, fetching in background.")
                         CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
                             try {
                                 val artistPage = Innertube.artistPage(BrowseBody(browseId = artistId))?.getOrNull()
@@ -233,15 +245,15 @@ suspend fun upsertSongInfo(videoId: String) {
                                         val existing = Database.artistTable.findByIdDirect(artistId)
                                         if (existing != null) {
                                             Database.artistTable.upsert(existing.copy(
-                                                name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existing.name, artistPage.name) ?: artistPage.name,
-                                                thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existing.thumbnailUrl, artistPage.thumbnail?.url),
+                                                name = PropUtils.retainIfModified(existing.name, artistPage.name) ?: artistPage.name,
+                                                thumbnailUrl = PropUtils.retainIfModified(existing.thumbnailUrl, artistPage.thumbnail?.url),
                                                 lastFetch = System.currentTimeMillis()
                                             ))
                                         }
                                     }
                                 }
                             } catch (e: Exception) {
-                                timber.log.Timber.tag(TAG).w(e, "Failed to fetch artist $artistId")
+                                Timber.tag(TAG).w(e, "Failed to fetch artist $artistId")
                             } finally {
                                 fetchingArtists.remove(artistId)
                             }
@@ -262,14 +274,14 @@ suspend fun upsertSongInfo(videoId: String) {
                 if (isRecentlyFetched) {
                     val msAgo = currentTime - (lastFetchTime ?: currentTime)
                     val daysAgo = msAgo / 86400000L
-                    timber.log.Timber.tag(TAG).d("[Album Cache] $albumId fetched $daysAgo days ago ($msAgo ms), skipping.")
+                    Timber.tag(TAG).d("[Album Cache] $albumId fetched $daysAgo days ago ($msAgo ms), skipping.")
                 } else if (fetchingAlbums.add(albumId)) {
-                    timber.log.Timber.tag(TAG).d("[Album Cache] $albumId outdated, fetching songs.")
+                    Timber.tag(TAG).d("[Album Cache] $albumId outdated, fetching songs.")
                     CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
                         try {
                             val savedCount = fetchAndSaveAlbumSongs(albumId)
                             if (savedCount < 2) {
-                                timber.log.Timber.tag(TAG).w("[Album Cache] $albumId: only $savedCount songs saved")
+                                Timber.tag(TAG).w("[Album Cache] $albumId: only $savedCount songs saved")
                             }
                         } finally {
                             fetchingAlbums.remove(albumId)
@@ -277,13 +289,13 @@ suspend fun upsertSongInfo(videoId: String) {
                     }
                 }
             } else {
-                timber.log.Timber.tag(TAG).d("[Album Cache] No album found for $videoId, skipping album fetch")
+                Timber.tag(TAG).d("[Album Cache] No album found for $videoId, skipping album fetch")
             }
         },
         onFailure = {
             when (it) {
-                is java.net.UnknownHostException -> justInserted = videoId
-                else -> timber.log.Timber.tag(TAG).w(it, "Failed to upsert song info for $videoId")
+                is UnknownHostException -> justInserted = videoId
+                else -> Timber.tag(TAG).w(it, "Failed to upsert song info for $videoId")
             }
         }
     )
@@ -298,20 +310,20 @@ suspend fun upsertSongInfo(videoId: String) {
  */
 private suspend fun fetchAndSaveAlbumSongs(albumId: String): Int {
     try {
-        timber.log.Timber.tag(TAG).d("[Album Cache] Fetching album page from network for $albumId")
-        val onlineAlbum = it.fast4x.innertube.YtMusic.getAlbum(albumId.removePrefix(MODIFIED_PREFIX), true).getOrNull()
+        Timber.tag(TAG).d("[Album Cache] Fetching album page from network for $albumId")
+        val onlineAlbum = YtMusic.getAlbum(albumId.removePrefix(MODIFIED_PREFIX), true).getOrNull()
         if (onlineAlbum == null) {
-            timber.log.Timber.tag(TAG).w("Album page is null for $albumId")
+            Timber.tag(TAG).w("Album page is null for $albumId")
             return 0
         }
         val albumPage = onlineAlbum.album
         val songs = onlineAlbum.songs
         if (songs.isEmpty()) {
-            timber.log.Timber.tag(TAG).d("No songs found in album $albumId")
+            Timber.tag(TAG).d("No songs found in album $albumId")
             return 0
         }
 
-        timber.log.Timber.tag(TAG).d("[Album Cache] Saving ${songs.size} songs from album $albumId to database")
+        Timber.tag(TAG).d("[Album Cache] Saving ${songs.size} songs from album $albumId to database")
         val songAlbumMaps = mutableListOf<SongAlbumMap>()
         songs.forEachIndexed { index, song ->
             Database.upsert(song)
@@ -319,7 +331,7 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String): Int {
             if (videoId != null) {
                 songAlbumMaps.add(SongAlbumMap(songId = videoId, albumId = albumId, position = index))
             }
-            timber.log.Timber.tag(TAG).d("Saved song: ${song.info?.name} ($videoId) to album $albumId at pos $index")
+            Timber.tag(TAG).d("Saved song: ${song.info?.name} ($videoId) to album $albumId at pos $index")
         }
         
         // Mark album as completely fetched so we don't spam the API for 30 days
@@ -328,29 +340,29 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String): Int {
             try {
                 Database.albumTable.findByIdDirect(albumId)?.let { existingAlbum ->
                     Database.albumTable.upsert(existingAlbum.copy(
-                        title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.title, albumPage.title),
-                        thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.thumbnailUrl, albumPage.thumbnail?.url),
-                        authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
-                        year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
-                        shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
+                        title = PropUtils.retainIfModified(existingAlbum.title, albumPage.title),
+                        thumbnailUrl = PropUtils.retainIfModified(existingAlbum.thumbnailUrl, albumPage.thumbnail?.url),
+                        authorsText = PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
+                        year = PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
+                        shareUrl = PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
                         lastFetch = System.currentTimeMillis()
                     ))
                 }
                 Database.songAlbumMapTable.clear(albumId)
                 Database.songAlbumMapTable.upsert(songAlbumMaps)
-            } catch (e: android.database.sqlite.SQLiteConstraintException) {
-                timber.log.Timber.tag(TAG).w("Foreign key constraint failed for album $albumId. Retrying in 5s...")
-                CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+            } catch (e: SQLiteConstraintException) {
+                Timber.tag(TAG).w("Foreign key constraint failed for album $albumId. Retrying in 5s...")
+                CoroutineScope(Dispatchers.IO).launch {
                     kotlinx.coroutines.delay(5000)
                     try {
                         Database.asyncTransaction {
                             Database.albumTable.findByIdDirect(albumId)?.let { existingAlbum ->
                                 Database.albumTable.upsert(existingAlbum.copy(
-                                    title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.title, albumPage.title),
-                                    thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.thumbnailUrl, albumPage.thumbnail?.url),
-                                    authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
-                                    year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
-                                    shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
+                                    title = PropUtils.retainIfModified(existingAlbum.title, albumPage.title),
+                                    thumbnailUrl = PropUtils.retainIfModified(existingAlbum.thumbnailUrl, albumPage.thumbnail?.url),
+                                    authorsText = PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
+                                    year = PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
+                                    shareUrl = PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
                                     lastFetch = System.currentTimeMillis()
                                 ))
                             }
@@ -358,17 +370,17 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String): Int {
                             Database.songAlbumMapTable.upsert(songAlbumMaps)
                         }
                     } catch (e2: Exception) {
-                        timber.log.Timber.tag(TAG).e("Failed to save album cache even after delay: ${e2.message}")
+                        Timber.tag(TAG).e("Failed to save album cache even after delay: ${e2.message}")
                     }
                 }
             }
         }
-        timber.log.Timber.tag(TAG).d("[Album Cache] Finished saving ${songs.size} songs from album $albumId with correct ordering")
+        Timber.tag(TAG).d("[Album Cache] Finished saving ${songs.size} songs from album $albumId with correct ordering")
         return songs.size
-    } catch (e: kotlinx.coroutines.CancellationException) {
+    } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
-        timber.log.Timber.tag(TAG).w(e, "[Album Cache] Failed to fetch and save album songs for $albumId")
+        Timber.tag(TAG).w(e, "[Album Cache] Failed to fetch and save album songs for $albumId")
         return 0
     }
 }
@@ -382,7 +394,7 @@ private fun saveFormatSafe(format: Format) {
     Database.asyncTransaction {
         try {
             formatTable.upsert(format)
-        } catch (e: android.database.sqlite.SQLiteConstraintException) {
+        } catch (e: SQLiteConstraintException) {
             Timber.tag(TAG).w("Foreign key constraint failed for songId ${format.songId}. Retrying in 5 s...")
             CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
                 delay(5000)
@@ -436,7 +448,7 @@ private fun fetchFormatIfMissing(videoId: String) {
                 ?: api.contentLength?.takeIf { it > 0 }
                 ?: runCatching {
                     val streamUri = resolveFormatUrl(videoId, api, "WEB_REMIX") ?: return@runCatching null
-                    val headRequest = okhttp3.Request.Builder().head().url(streamUri.toString()).build()
+                    val headRequest = Request.Builder().head().url(streamUri.toString()).build()
                     NetworkClientFactory.getCachelessClient().newCall(headRequest).execute().use { resp ->
                         resp.header("Content-Length")?.toLongOrNull()
                     }
@@ -523,16 +535,16 @@ private fun upsertSongFormat(
             Database.asyncTransaction {
                 try {
                     songTable.insertIgnore(Song.makePlaceholder(videoId))
-                } catch (e: android.database.sqlite.SQLiteConstraintException) {
-                    timber.log.Timber.tag(TAG).w("Foreign key constraint failed for song placeholder $videoId. Retrying in 5s...")
-                    CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                } catch (e: SQLiteConstraintException) {
+                    Timber.tag(TAG).w("Foreign key constraint failed for song placeholder $videoId. Retrying in 5s...")
+                    CoroutineScope(Dispatchers.IO).launch {
                         kotlinx.coroutines.delay(5000)
                         try {
                             Database.asyncTransaction {
                                 songTable.insertIgnore(Song.makePlaceholder(videoId))
                             }
                         } catch (e2: Exception) {
-                            timber.log.Timber.tag(TAG).e("Failed to save song placeholder even after delay: ${e2.message}")
+                            Timber.tag(TAG).e("Failed to save song placeholder even after delay: ${e2.message}")
                         }
                     }
                 }
@@ -657,16 +669,16 @@ private suspend fun resolveFormatUrl(
             val deobfuscated = CipherDeobfuscator.deobfuscateStreamUrl(sigCipher, videoId)
             if (deobfuscated != null) {
                 Timber.tag(TAG).d("CipherDeobfuscator success for $videoId")
-                android.net.Uri.parse(deobfuscated)
+                Uri.parse(deobfuscated)
             } else {
                 Timber.tag(TAG).w("CipherDeobfuscator returned null, trying NewPipe getStreamUrl")
                 // Dedicated NewPipe step: try NewPipeUtils.getStreamUrl first
                 val newPipeStreamUrl = runCatching {
-                    it.fast4x.innertube.utils.NewPipeUtils.getStreamUrl(format, videoId).getOrNull()
+                    NewPipeUtils.getStreamUrl(format, videoId).getOrNull()
                 }.getOrNull()
                 if (newPipeStreamUrl != null) {
                     Timber.tag(TAG).d("NewPipe getStreamUrl success for $videoId")
-                    android.net.Uri.parse(newPipeStreamUrl)
+                    Uri.parse(newPipeStreamUrl)
                 } else {
                     Timber.tag(TAG).w("NewPipe getStreamUrl failed, trying manual cipher decode")
                     val newPipeUrl = runCatching {
@@ -674,14 +686,14 @@ private suspend fun resolveFormatUrl(
                         val s = params["s"] ?: throw Exception("No signature")
                         val sp = params["sp"] ?: throw Exception("No signature parameter")
                         val urlParam = params["url"] ?: throw Exception("No url")
-                        val urlBuilder = io.ktor.http.URLBuilder(urlParam)
-                        urlBuilder.parameters[sp] = org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager.deobfuscateSignature(videoId, s)
+                        val urlBuilder = URLBuilder(urlParam)
+                        urlBuilder.parameters[sp] = YoutubeJavaScriptPlayerManager.deobfuscateSignature(videoId, s)
                         val decUrl = urlBuilder.buildString()
-                        org.schabi.newpipe.extractor.services.youtube.YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated(videoId, decUrl)
+                        YoutubeJavaScriptPlayerManager.getUrlWithThrottlingParameterDeobfuscated(videoId, decUrl)
                     }.onFailure {
                         Timber.tag(TAG).e(it, "Manual NewPipe fallback failed")
                     }.getOrNull()
-                    newPipeUrl?.let { android.net.Uri.parse(it) }
+                    newPipeUrl?.let { Uri.parse(it) }
                 }
             }
         } catch (e: Exception) {
@@ -689,7 +701,7 @@ private suspend fun resolveFormatUrl(
             null
         }
     } else if (formatUrl != null) {
-        android.net.Uri.parse(formatUrl)
+        Uri.parse(formatUrl)
     } else {
         null
     }
@@ -698,8 +710,8 @@ private suspend fun resolveFormatUrl(
     if (resolvedUri != null && clientName in WEB_CLIENTS) {
         return try {
             val transformed = CipherDeobfuscator.transformNParamInUrl(resolvedUri.toString())
-            android.net.Uri.parse(transformed)
-        } catch (e: kotlinx.coroutines.CancellationException) {
+            Uri.parse(transformed)
+        } catch (e: CancellationException) {
             throw e // request superseded/cancelled — propagate
         } catch (e: Exception) {
             Timber.tag(TAG).w(e, "N-transform failed for $clientName, using original URL")
@@ -762,8 +774,8 @@ private suspend fun resolveStreamUriInternal(
     connectionMetered: Boolean
 ): Uri {
     val locale = YouTubeLocale(
-        gl = java.util.Locale.getDefault().country.takeIf { it.isNotEmpty() } ?: "US",
-        hl = java.util.Locale.getDefault().language.takeIf { it.isNotEmpty() } ?: "en"
+        gl = Locale.getDefault().country.takeIf { it.isNotEmpty() } ?: "US",
+        hl = Locale.getDefault().language.takeIf { it.isNotEmpty() } ?: "en"
     )
     val visitorData = Store.getIosVisitorData() ?: Innertube.DEFAULT_VISITOR_DATA
     val parentalControlEnabled = appContext().preferences.getBoolean(parentalControlEnabledKey, false)
@@ -777,7 +789,7 @@ private suspend fun resolveStreamUriInternal(
     // NewPipe STS as fallback + age-restriction detection
     var isAgeRestricted = false
     val newPipeSts = runCatching {
-        it.fast4x.innertube.utils.NewPipeUtils.getSignatureTimestamp(videoId).getOrThrow()
+        NewPipeUtils.getSignatureTimestamp(videoId).getOrThrow()
     }.onFailure { error ->
         val ageRestricted = error.message?.contains("age-restricted", ignoreCase = true) == true ||
             error.cause?.message?.contains("age-restricted", ignoreCase = true) == true
@@ -834,7 +846,7 @@ private suspend fun resolveStreamUriInternal(
     // Content-aware client ordering: reorder based on content type hints
     // This ensures live streams, kids content, explicit, and uploaded tracks get optimal client order
     val contentAwareBase = contentFallbackStrategy.resolveClients(
-        it.fast4x.innertube.strategy.ContentHints(
+        ContentHints(
             isExplicit = parentalControlEnabled,
             isLive = false,
             isKidsContent = false,
@@ -966,7 +978,7 @@ private suspend fun resolveStreamUriInternal(
                 null
             } else {
                 runCatching {
-                    it.fast4x.innertube.utils.NewPipeUtils.enrichWithNewPipe(videoId, playerResponse)
+                    NewPipeUtils.enrichWithNewPipe(videoId, playerResponse)
                 }.getOrNull()
             }
             val responseToUse = enrichedResponse ?: playerResponse
@@ -1022,7 +1034,7 @@ private suspend fun resolveStreamUriInternal(
             // Append streamingDataPoToken as pot= for web clients
             if (ytClient.useWebPoTokens && poTokenResult?.streamingDataPoToken != null) {
                 val separator = if ("?" in uri.toString()) "&" else "?"
-                uri = android.net.Uri.parse("${uri}${separator}pot=${android.net.Uri.encode(poTokenResult.streamingDataPoToken)}")
+                uri = Uri.parse("${uri}${separator}pot=${android.net.Uri.encode(poTokenResult.streamingDataPoToken)}")
                 Timber.tag(TAG).d("Appended pot= parameter for ${ytClient.clientName}")
             }
 
@@ -1102,7 +1114,7 @@ private suspend fun resolveStreamUriInternal(
 
             // Resolve content-length via HEAD if not available
             val contentLength = format.contentLength ?: runCatching {
-                val headRequest = okhttp3.Request.Builder()
+                val headRequest = Request.Builder()
                     .head()
                     .url(uri.toString())
                     .build()
@@ -1121,7 +1133,7 @@ private suspend fun resolveStreamUriInternal(
             lastFailureReason = "${ytClient.clientName}: ${e.message ?: appContext().resources.getString(R.string.login_required)}"
             Timber.tag(TAG).w(lastFailureReason)
             continue
-        } catch (e: io.ktor.client.plugins.ResponseException) {
+        } catch (e: ResponseException) {
             lastFailureReason = "${ytClient.clientName}: HTTP ${e.response.status}"
             Timber.tag(TAG).w(lastFailureReason)
             continue
@@ -1154,7 +1166,7 @@ private suspend fun resolveStreamUriInternal(
     // Last resort: try NewPipe extractor for full stream info
     Timber.tag(TAG).w("All clients exhausted, trying NewPipe extractor as last resort for $videoId")
     val newPipeStreams = runCatching {
-        it.fast4x.innertube.utils.NewPipeUtils.newPipePlayer(videoId)
+        NewPipeUtils.newPipePlayer(videoId)
     }.getOrNull()
     if (!newPipeStreams.isNullOrEmpty()) {
         // Try to match the requested itag first, then fall back to any audio stream
@@ -1164,7 +1176,7 @@ private suspend fun resolveStreamUriInternal(
         } else null
         val (itag, streamUrl) = matchedStream ?: newPipeStreams.first()
         Timber.tag(TAG).d("NewPipe fallback success: itag=$itag (requested=$requestedItag) for $videoId")
-        return android.net.Uri.parse(streamUrl)
+        return Uri.parse(streamUrl)
     }
 
     // All clients exhausted - throw with the last meaningful reason
@@ -1186,7 +1198,7 @@ internal val formatCache = mutableMapOf<String, Uri>()
  * Cache of PlaybackData by videoId.
  * Stores enriched metadata (audioConfig, videoDetails, playbackTracking) from stream resolution.
  */
-internal val playbackDataCache = java.util.concurrent.ConcurrentHashMap<String, PlaybackData>()
+internal val playbackDataCache = ConcurrentHashMap<String, PlaybackData>()
 
 /**
  * Clear all stream caches when stream client settings change.
@@ -1230,8 +1242,8 @@ suspend fun playerResponseForMetadata(
         poToken = poToken?.playerRequestPoToken,
         context = YouTubeClient.WEB_REMIX.toContext(
             locale = YouTubeLocale(
-                gl = java.util.Locale.getDefault().country.takeIf { it.isNotEmpty() } ?: "US",
-                hl = java.util.Locale.getDefault().language.takeIf { it.isNotEmpty() } ?: "en"
+                gl = Locale.getDefault().country.takeIf { it.isNotEmpty() } ?: "US",
+                hl = Locale.getDefault().language.takeIf { it.isNotEmpty() } ?: "en"
             ),
             visitorData = sessionId,
         )

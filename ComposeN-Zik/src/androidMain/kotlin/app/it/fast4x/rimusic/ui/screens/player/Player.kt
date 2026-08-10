@@ -288,6 +288,11 @@ import androidx.compose.ui.platform.LocalView
 import app.n_zik.android.LocalIsShowingLyrics
 import androidx.media3.common.C
 import androidx.compose.ui.graphics.RectangleShape
+import android.app.Activity
+import android.view.Window
+import android.content.ContextWrapper
+import kotlinx.coroutines.CoroutineScope
+import app.kreate.android.me.knighthat.sync.YouTubeSync
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -719,10 +724,10 @@ fun Player(
     val view = LocalView.current
     val globalIsDark = color.isDark
     
-    fun getWindow(): android.view.Window? {
+    fun getWindow(): Window? {
         var context = view.context
-        while (context is android.content.ContextWrapper) {
-            if (context is android.app.Activity) return context.window
+        while (context is ContextWrapper) {
+            if (context is Activity) return context.window
             context = context.baseContext
         }
         return null
@@ -1058,8 +1063,8 @@ fun Player(
                     currentMediaItem
                         ?.takeIf { it.mediaId == mediaItem.mediaId }
                         ?.let { item ->
-                            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-                                app.kreate.android.me.knighthat.sync.YouTubeSync.toggleSongLike(context, item)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                YouTubeSync.toggleSongLike(context, item)
                             }
                         }
                     if (effectRotationEnabled) isRotated = !isRotated

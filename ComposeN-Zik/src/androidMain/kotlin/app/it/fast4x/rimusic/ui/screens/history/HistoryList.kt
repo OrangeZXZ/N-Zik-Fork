@@ -88,6 +88,10 @@ import app.n_zik.android.components.menu.song.SongItemMenu
 import app.it.fast4x.rimusic.utils.historySortMenuOrderKey
 import androidx.compose.foundation.text.BasicText
 import app.n_zik.android.typography
+import java.time.ZoneId
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+import java.time.LocalDate
 
 @kotlin.OptIn(ExperimentalTextApi::class)
 @OptIn(UnstableApi::class)
@@ -121,13 +125,13 @@ fun HistoryList(
                     }
                     when (sort.sortBy) {
                         HistorySortOrder.DATE -> {
-                            val today = java.time.LocalDate.now()
+                            val today = LocalDate.now()
                             val yesterday = today.minusDays(1)
                             sorted.groupBy { event ->
-                                val eventDate = java.time.Instant.ofEpochMilli(event.event.timestamp)
-                                    .atZone(java.time.ZoneId.systemDefault())
+                                val eventDate = Instant.ofEpochMilli(event.event.timestamp)
+                                    .atZone(ZoneId.systemDefault())
                                     .toLocalDate()
-                                val daysBetween = java.time.temporal.ChronoUnit.DAYS.between(eventDate, today)
+                                val daysBetween = ChronoUnit.DAYS.between(eventDate, today)
                                 when {
                                     eventDate.isEqual(today) -> context.getString(R.string.today)
                                     eventDate.isEqual(yesterday) -> context.getString(R.string.yesterday)

@@ -70,6 +70,7 @@ import androidx.compose.runtime.setValue
 import app.n_zik.android.core.backup.ui.AutoBackupSettingsBlock
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import java.io.File
 
 
 @Composable
@@ -185,7 +186,7 @@ fun DataSettings() {
                         cache.removeResource(song)
                     }
                 }
-                java.io.File(context.filesDir, "waveforms").deleteRecursively()
+                File(context.filesDir, "waveforms").deleteRecursively()
                 WaveformExtractor.refreshSignal.tryEmit(System.currentTimeMillis())
                 cleanCacheOfflineSongs = false
                 cacheCleanedCounter++
@@ -216,7 +217,7 @@ fun DataSettings() {
                         }
                     }
                 }
-                java.io.File(context.filesDir, "waveforms").deleteRecursively()
+                File(context.filesDir, "waveforms").deleteRecursively()
                 cleanDownloadCache = false
                 cacheCleanedCounter++
             }
@@ -623,7 +624,7 @@ fun DataSettings() {
                                 Database.asyncTransaction {
                                     eventTable.deleteAll()
                                 }
-                                java.io.File(context.filesDir, "waveforms").deleteRecursively()
+                                File(context.filesDir, "waveforms").deleteRecursively()
                                 WaveformExtractor.refreshSignal.tryEmit(System.currentTimeMillis())
                                 Toaster.done()
                             }
@@ -654,7 +655,7 @@ fun DataSettings() {
                             icon = R.drawable.refresh,
                             onClick = { 
                                 resetToDefault = true
-                                app.kreate.android.me.knighthat.utils.Toaster.done()
+                                Toaster.done()
                             }
                         )
                     }

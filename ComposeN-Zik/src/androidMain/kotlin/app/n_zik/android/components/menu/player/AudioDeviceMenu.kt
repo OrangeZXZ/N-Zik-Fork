@@ -143,6 +143,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.ui.window.Dialog
 import androidx.compose.animation.AnimatedVisibility
+import android.media.AudioDeviceCallback
 
 data class AudioDevice(
     val name: String,
@@ -261,11 +262,11 @@ fun AudioDeviceMenu(onDismiss: () -> Unit) {
         val handler = Handler(Looper.getMainLooper())
 
         val audioDeviceCallback = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            object : android.media.AudioDeviceCallback() {
-                override fun onAudioDevicesAdded(addedDevices: Array<out android.media.AudioDeviceInfo>?) {
+            object : AudioDeviceCallback() {
+                override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>?) {
                     refreshDevices()
                 }
-                override fun onAudioDevicesRemoved(removedDevices: Array<out android.media.AudioDeviceInfo>?) {
+                override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>?) {
                     refreshDevices()
                 }
             }
@@ -794,7 +795,7 @@ private fun loadDevices(
                                 ) {
                                     btDevice?.let { device ->
                                         try {
-                                            val method = android.bluetooth.BluetoothDevice::class.java.getMethod(
+                                            val method = BluetoothDevice::class.java.getMethod(
                                                 "getBatteryLevel"
                                             )
                                             val level = method.invoke(device) as? Int

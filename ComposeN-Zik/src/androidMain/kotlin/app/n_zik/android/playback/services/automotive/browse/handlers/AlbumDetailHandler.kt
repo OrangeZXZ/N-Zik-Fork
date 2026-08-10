@@ -23,6 +23,8 @@ import app.kreate.android.me.knighthat.utils.PropUtils
 import it.fast4x.innertube.Innertube
 import it.fast4x.innertube.YtMusic
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 class AlbumDetailHandler : BrowseHandler {
     override fun handles(parentId: String): Boolean {
@@ -66,7 +68,7 @@ class AlbumDetailHandler : BrowseHandler {
             val authorsText: String? = onlineAlbum.authors.parseArtists().joinToString(", ")
             onlineSongs = online.songs.map { it.asSong }
             
-            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 val album = database.albumTable.findById(albumId).first()
                 database.asyncTransaction {
                     albumTable.upsert(

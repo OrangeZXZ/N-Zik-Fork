@@ -51,6 +51,7 @@ import io.ktor.client.statement.bodyAsText
 import timber.log.Timber
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
 import app.n_zik.android.components.AppPullToRefreshBox
+import kotlinx.serialization.json.Json
 
 @OptIn(UnstableApi::class)
 @ExperimentalMaterial3Api
@@ -83,7 +84,7 @@ fun ArtistPlaylists(
                 params = currentParams
             ).bodyAsText()
             
-            val jsonParser = kotlinx.serialization.json.Json { ignoreUnknownKeys = true; explicitNulls = false }
+            val jsonParser = Json { ignoreUnknownKeys = true; explicitNulls = false }
             var response = jsonParser.decodeFromString<BrowseResponse>(responseText)
             
             var contents = response.contents

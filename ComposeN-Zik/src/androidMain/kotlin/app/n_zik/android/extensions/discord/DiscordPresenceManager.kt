@@ -22,6 +22,9 @@ import kotlinx.coroutines.withContext
 import okhttp3.Request
 import timber.log.Timber
 import app.n_zik.android.core.network.client.NetworkClientFactory
+import java.io.IOException
+import com.metrolist.music.discordrpc.SuperProperties
+import android.os.Build
 
 
 class DiscordPresenceManager(
@@ -105,7 +108,7 @@ class DiscordPresenceManager(
                 null // Treat as network error to retry later
             } else {
                 Timber.tag("DiscordPresence").e(exception, "Error validating token: ${exception.message}")
-                if (exception is java.io.IOException) {
+                if (exception is IOException) {
                     null
                 } else {
                     false
@@ -132,9 +135,9 @@ class DiscordPresenceManager(
                 token = token,
                 os = "Android",
                 browser = "Discord Android",
-                device = android.os.Build.DEVICE,
-                userAgent = com.metrolist.music.discordrpc.SuperProperties.userAgent,
-                superPropertiesBase64 = com.metrolist.music.discordrpc.SuperProperties.superPropertiesBase64
+                device = Build.DEVICE,
+                userAgent = SuperProperties.userAgent,
+                superPropertiesBase64 = SuperProperties.superPropertiesBase64
             )
             lastToken = token
         }
@@ -271,9 +274,9 @@ class DiscordPresenceManager(
                 token = token,
                 os = "Android",
                 browser = "Discord Android",
-                device = android.os.Build.DEVICE,
-                userAgent = com.metrolist.music.discordrpc.SuperProperties.userAgent,
-                superPropertiesBase64 = com.metrolist.music.discordrpc.SuperProperties.superPropertiesBase64
+                device = Build.DEVICE,
+                userAgent = SuperProperties.userAgent,
+                superPropertiesBase64 = SuperProperties.superPropertiesBase64
             )
             lastToken = token
         }

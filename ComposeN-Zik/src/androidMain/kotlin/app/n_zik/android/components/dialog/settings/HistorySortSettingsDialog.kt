@@ -16,6 +16,7 @@ import app.it.fast4x.rimusic.utils.*
 import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import android.content.Context
 
 object HistorySortSettingsDialog : Dialog {
 
@@ -52,7 +53,7 @@ object HistorySortSettingsDialog : Dialog {
     @Composable
     override fun DialogBody() {
         val ctx = LocalContext.current
-        val prefs = remember { ctx.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
+        val prefs = remember { ctx.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
 
         var workingOrder by remember { mutableStateOf(parseOrder(prefs.getString(historySortMenuOrderKey, "") ?: "").toMutableList()) }
         var workingToggles by remember {

@@ -673,7 +673,7 @@ fun AccountsSettings() {
                             icon = R.drawable.refresh,
                             onClick = { 
                                 resetToDefault = true
-                                app.kreate.android.me.knighthat.utils.Toaster.done()
+                                Toaster.done()
                             }
                         )
                     }

@@ -364,7 +364,7 @@ fun Thumbnail(
 
                 LaunchedEffect(error) {
                     if (error != null) {
-                        timber.log.Timber.tag("Thumbnail").e("Playback error: ${error?.cause?.cause}")
+                        Timber.tag("Thumbnail").e("Playback error: ${error?.cause?.cause}")
                         
                         var httpCode: Int? = null
                         var currentCause: Throwable? = error?.cause
@@ -381,7 +381,7 @@ fun Thumbnail(
                         else if (httpCode == 403)
                             songnotplayabledueserverrestrictionerror
                         else when (error?.cause?.cause) {
-                            is java.nio.channels.UnresolvedAddressException, is java.net.UnknownHostException -> networkerror
+                            is UnresolvedAddressException, is UnknownHostException -> networkerror
                             is PlayableFormatNotFoundException -> notfindplayableaudioformaterror
                             is UnplayableException -> originalvideodeletederror
                             is LoginRequiredException -> songnotplayabledueserverrestrictionerror

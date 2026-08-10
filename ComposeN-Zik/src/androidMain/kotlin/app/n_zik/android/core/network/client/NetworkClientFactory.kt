@@ -12,6 +12,7 @@ import timber.log.Timber
 import java.io.File
 import java.net.Proxy
 import java.util.concurrent.TimeUnit
+import okhttp3.Request
 
 object NetworkClientFactory {
     @Volatile
@@ -114,7 +115,7 @@ object NetworkClientFactory {
         return try {
             val client = getClientWithTimeout(3, 3)
                 
-            val builder = okhttp3.Request.Builder()
+            val builder = Request.Builder()
                 .url(streamUrl)
                 .head()
                 

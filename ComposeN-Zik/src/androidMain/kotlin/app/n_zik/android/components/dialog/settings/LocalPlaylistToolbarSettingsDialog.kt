@@ -16,6 +16,7 @@ import app.it.fast4x.rimusic.utils.*
 import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import android.content.Context
 
 object LocalPlaylistToolbarSettingsDialog : Dialog {
 
@@ -52,7 +53,7 @@ object LocalPlaylistToolbarSettingsDialog : Dialog {
     @Composable
     override fun DialogBody() {
         val ctx = LocalContext.current
-        val prefs = remember { ctx.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
+        val prefs = remember { ctx.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
 
         var workingOrder by remember { mutableStateOf(parseOrder(prefs.getString(localPlaylistToolbarOrderKey, "") ?: "").toMutableList()) }
         var workingToggles by remember {
@@ -146,8 +147,8 @@ object LocalPlaylistToolbarSettingsDialog : Dialog {
         )
     }
 
-    fun reset(context: android.content.Context) {
-        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+    fun reset(context: Context) {
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         val edit = prefs.edit()
         allButtonIds.forEach { id -> edit.putBoolean("pl_ts_$id", true) }
         edit.putString(localPlaylistToolbarOrderKey, serializeOrder(allButtonIds))

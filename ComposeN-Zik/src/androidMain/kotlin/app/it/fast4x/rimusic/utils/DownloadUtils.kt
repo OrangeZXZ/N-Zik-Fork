@@ -24,6 +24,7 @@ import app.n_zik.android.playback.services.isLocal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import androidx.compose.ui.unit.dp
+import android.content.Context
 
 const val DOWNLOAD_INDICATOR_SIZE_NORMAL = 18
 const val DOWNLOAD_INDICATOR_SIZE_SWIPE = 20
@@ -100,7 +101,7 @@ fun getDownloadStateMedia(
 
 @UnstableApi
 fun manageDownload(
-    context: android.content.Context,
+    context: Context,
     mediaItem: MediaItem,
     downloadState: Boolean = false
 ) {

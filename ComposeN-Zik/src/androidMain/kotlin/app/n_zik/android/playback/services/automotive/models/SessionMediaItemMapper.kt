@@ -23,6 +23,8 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import app.it.fast4x.rimusic.utils.durationTextToMillis
 import app.n_zik.android.appContext
+import android.net.Uri
+import android.os.Bundle
 
 @UnstableApi
 object SessionMediaItemMapper {
@@ -45,7 +47,7 @@ object SessionMediaItemMapper {
                 return stream.toByteArray()
             }
             if (url.startsWith("content://")) {
-                val uri = android.net.Uri.parse(url)
+                val uri = Uri.parse(url)
                 val inputStream = appContext().contentResolver.openInputStream(uri) ?: return null
                 val bitmap = BitmapFactory.decodeStream(inputStream)
                 inputStream.close()
@@ -164,7 +166,7 @@ object SessionMediaItemMapper {
 
 
 
-        val extras = android.os.Bundle(metadataBuilder.build().extras ?: android.os.Bundle()).apply {
+        val extras = Bundle(metadataBuilder.build().extras ?: Bundle()).apply {
             if (!song.isLocal) {
                 putLong("android.media.metadata.DURATION", durationTextToMillis(song.durationText.orEmpty()))
             }
@@ -186,8 +188,8 @@ object SessionMediaItemMapper {
 
     fun mapSongToMediaItem(song: Song, isFromPersistentQueue: Boolean = false): MediaItem {
         val mediaItem = song.asMediaItem
-        val existingExtras = mediaItem.mediaMetadata.extras ?: android.os.Bundle()
-        val bundle = android.os.Bundle(existingExtras).apply {
+        val existingExtras = mediaItem.mediaMetadata.extras ?: Bundle()
+        val bundle = Bundle(existingExtras).apply {
             putBoolean(persistentQueueKey, isFromPersistentQueue)
         }
 

@@ -42,6 +42,7 @@ import app.n_zik.android.components.dialog.common.Dialog
 import app.it.fast4x.rimusic.utils.streamClientRestartNeededKey
 import app.n_zik.android.playback.services.clearStreamCaches
 import app.kreate.android.me.knighthat.utils.Toaster
+import android.content.Context
 
 object PreferredStreamClientDialog : Dialog {
 
@@ -55,7 +56,7 @@ object PreferredStreamClientDialog : Dialog {
     override fun DialogBody() {
         val context = LocalContext.current
         val binder = LocalPlayerServiceBinder.current
-        val prefs = remember { context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
+        val prefs = remember { context.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
         val savedPref = remember { prefs.getString(preferredStreamClientKey, "WEB_REMIX") ?: "WEB_REMIX" }
 
         // Local state - not saved until OK is clicked
@@ -182,8 +183,8 @@ object PreferredStreamClientDialog : Dialog {
         }
     }
 
-    fun reset(context: android.content.Context) {
-        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+    fun reset(context: Context) {
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         prefs.edit().putString(preferredStreamClientKey, "WEB_REMIX").apply()
     }
 }

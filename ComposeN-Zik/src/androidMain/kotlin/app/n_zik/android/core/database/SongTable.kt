@@ -153,12 +153,12 @@ interface SongTable {
      *
      * ### Standalone use
      *
-     * When error occurs and [android.database.SQLException] is thrown,
+     * When error occurs and [SQLException] is thrown,
      * data inside database will be replaced by provided [song].
      *
      * ### Transaction use
      *
-     * When error occurs and [android.database.SQLException] is thrown,
+     * When error occurs and [SQLException] is thrown,
      * data inside database will be replaced by provided [song]
      * and transaction continues.
      *

@@ -55,6 +55,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import org.schabi.newpipe.extractor.NewPipe
 
 class MainApplication : Application(), SingletonImageLoader.Factory {
 
@@ -116,7 +117,7 @@ class MainApplication : Application(), SingletonImageLoader.Factory {
             }
 
             runCatching {
-                org.schabi.newpipe.extractor.NewPipe.init(
+                NewPipe.init(
                     NewPipeDownloaderImpl {
                         NetworkClientFactory.getClient()
                     }

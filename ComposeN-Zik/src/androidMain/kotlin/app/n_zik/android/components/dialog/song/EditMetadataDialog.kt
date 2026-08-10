@@ -70,6 +70,15 @@ import androidx.compose.foundation.BorderStroke
 import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.material3.ButtonDefaults
 import androidx.activity.result.IntentSenderRequest
+import com.arthenica.ffmpegkit.ReturnCode
+import android.app.Activity
+import com.arthenica.ffmpegkit.FFprobeKit
+import java.nio.ByteOrder
+import android.app.RecoverableSecurityException
+import java.nio.ByteBuffer
+import com.arthenica.ffmpegkit.FFmpegKit
+import android.content.Context
+import android.util.Base64
 
 class EditMetadataDialog private constructor(
     activeState: MutableState<Boolean>,
@@ -177,7 +186,7 @@ class EditMetadataDialog private constructor(
             EditMetadataDialog(remember { mutableStateOf(false) }, getSong)
     }
 
-    private fun resolveFilePath(context: android.content.Context, songId: String): String? {
+    private fun resolveFilePath(context: Context, songId: String): String? {
         val mediaStoreId = songId.substringAfter(LOCAL_KEY_PREFIX).toLongOrNull() ?: return null
         val uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mediaStoreId)
         context.contentResolver.query(uri, arrayOf(MediaStore.Audio.Media.DATA), null, null, null)?.use { cursor ->
@@ -217,7 +226,7 @@ class EditMetadataDialog private constructor(
         val writePermLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.StartIntentSenderForResult()
         ) { result ->
-            if (result.resultCode == android.app.Activity.RESULT_OK) {
+            if (result.resultCode == Activity.RESULT_OK) {
                 performWriteToMediaStore(context)
             }
         }
@@ -399,7 +408,7 @@ class EditMetadataDialog private constructor(
 
                 if (!isOpus) {
                     try {
-                        val probeSession = com.arthenica.ffmpegkit.FFprobeKit.getMediaInformation(originalFile.absolutePath)
+                        val probeSession = FFprobeKit.getMediaInformation(originalFile.absolutePath)
                         val codec = probeSession.mediaInformation?.streams?.firstOrNull()?.codec
                         Timber.tag("EditMetadata").i("Probed codec: $codec")
                         if (codec?.contains("opus", ignoreCase = true) == true) {
@@ -467,9 +476,9 @@ class EditMetadataDialog private constructor(
                 val command = commandBuilder.toString()
                 Timber.tag("EditMetadata").i("Executing FFmpeg: $command")
 
-                val session = com.arthenica.ffmpegkit.FFmpegKit.execute(command)
+                val session = FFmpegKit.execute(command)
                 val returnCode = session.returnCode
-                if (!com.arthenica.ffmpegkit.ReturnCode.isSuccess(returnCode)) {
+                if (!ReturnCode.isSuccess(returnCode)) {
                     val logs = session.allLogsAsString
                     Timber.tag("EditMetadata").e("FFmpeg failed with return code $returnCode. Logs: $logs")
                     throw Exception("FFmpeg failed to write tags: $logs")
@@ -488,7 +497,7 @@ class EditMetadataDialog private constructor(
                         }
                         Timber.tag("EditMetadata").i("MediaStore write successful")
                         onWriteSuccess(song, tempFile)
-                    } catch (e: android.app.RecoverableSecurityException) {
+                    } catch (e: RecoverableSecurityException) {
                         Timber.tag("EditMetadata").w("RecoverableSecurityException, requesting permission")
                         pendingTempFile = tempFile
                         pendingMediaStoreUri = mediaStoreUri
@@ -519,7 +528,7 @@ class EditMetadataDialog private constructor(
         }
     }
 
-    private fun performWriteToMediaStore(context: android.content.Context) {
+    private fun performWriteToMediaStore(context: Context) {
         val tempFile = pendingTempFile ?: return
         val uri = pendingMediaStoreUri ?: return
         val song = pendingSong ?: return
@@ -562,7 +571,7 @@ class EditMetadataDialog private constructor(
         val fields: List<EditableField>
     )
 
-    private fun readTagsFromFile(context: android.content.Context, song: Song): ReadResult {
+    private fun readTagsFromFile(context: Context, song: Song): ReadResult {
         val path = resolveFilePath(context, song.id)
             ?: return ReadResult(null, null, listOf(
                 EditableField("TITLE", "TITLE", TextFieldValue(cleanPrefix(song.title)), true),
@@ -587,7 +596,7 @@ class EditMetadataDialog private constructor(
             }
 
             try {
-                val session = com.arthenica.ffmpegkit.FFprobeKit.getMediaInformation(path)
+                val session = FFprobeKit.getMediaInformation(path)
                 val info = session.mediaInformation
                 val tags = mutableMapOf<String, String>()
 
@@ -659,12 +668,12 @@ class EditMetadataDialog private constructor(
                 try {
                     val isOpusPath = path.endsWith(".opus", ignoreCase = true) || path.endsWith(".ogg", ignoreCase = true)
                     if (isOpusPath) {
-                        val session = com.arthenica.ffmpegkit.FFprobeKit.getMediaInformation(path)
+                        val session = FFprobeKit.getMediaInformation(path)
                         val mbpTag = session.mediaInformation?.tags?.optString("METADATA_BLOCK_PICTURE", null)
                             ?: session.mediaInformation?.streams?.firstOrNull()?.tags?.optString("METADATA_BLOCK_PICTURE", null)
                         if (mbpTag != null) {
-                            val decoded = android.util.Base64.decode(mbpTag, android.util.Base64.DEFAULT)
-                            val buf = java.nio.ByteBuffer.wrap(decoded).order(java.nio.ByteOrder.BIG_ENDIAN)
+                            val decoded = Base64.decode(mbpTag, Base64.DEFAULT)
+                            val buf = ByteBuffer.wrap(decoded).order(ByteOrder.BIG_ENDIAN)
                             if (buf.remaining() < 32) throw Exception("METADATA_BLOCK_PICTURE too short")
                             buf.getInt() // picture type
                             val mimeLen = buf.getInt()

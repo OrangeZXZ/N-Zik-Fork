@@ -36,6 +36,9 @@ import app.it.fast4x.rimusic.utils.semiBold
 import app.kreate.android.me.knighthat.utils.Toaster
 import java.io.File
 import app.n_zik.android.components.dialog.common.Dialog
+import android.content.Context
+import android.content.ClipboardManager
+import android.content.ClipData
 
 object CopyLogsDialog : Dialog {
 
@@ -169,9 +172,9 @@ object CopyLogsDialog : Dialog {
         }
     }
 
-    private fun textCopyToClipboard(text: String, context: android.content.Context) {
-        val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-        val clip = android.content.ClipData.newPlainText("Logs", text)
+    private fun textCopyToClipboard(text: String, context: Context) {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Logs", text)
         clipboard.setPrimaryClip(clip)
         Toaster.i(R.string.logs_copied)
     }

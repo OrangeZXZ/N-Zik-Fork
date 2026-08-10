@@ -58,6 +58,8 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.random.Random
 import app.n_zik.android.components.AppPullToRefreshBox
+import android.content.Context
+import org.json.JSONArray
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @ExperimentalTextApi
@@ -583,13 +585,13 @@ private val defaultQuickPicksSectionOrder = listOf(
 private fun rememberQuickPicksSectionOrder(): List<String> {
     val context = LocalContext.current
     return remember {
-        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         val orderSerialized = prefs.getString(quickPicksSectionOrderKey, "") ?: ""
         if (orderSerialized.isBlank()) {
             defaultQuickPicksSectionOrder
         } else {
             try {
-                val arr = org.json.JSONArray(orderSerialized)
+                val arr = JSONArray(orderSerialized)
                 val list = mutableListOf<String>()
                 for (i in 0 until arr.length()) {
                     list.add(arr.getString(i))

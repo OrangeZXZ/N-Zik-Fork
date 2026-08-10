@@ -39,6 +39,8 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import androidx.compose.ui.platform.LocalContext
+import android.content.Context
+import android.content.SharedPreferences
 
 private val defaultButtonOrder = listOf(
     "skip_back",
@@ -125,7 +127,7 @@ object MiniPlayerButtonsSettingsDialog : Dialog {
         return arr.toString()
     }
 
-    private fun loadPrefs(prefs: android.content.SharedPreferences): Pair<MutableList<String>, MutableList<Boolean>> {
+    private fun loadPrefs(prefs: SharedPreferences): Pair<MutableList<String>, MutableList<Boolean>> {
         val orderSerialized = prefs.getString(miniPlayerButtonOrderKey, "") ?: ""
         val order = parseOrder(orderSerialized).toMutableList()
         val toggles = order.map { id ->
@@ -135,7 +137,7 @@ object MiniPlayerButtonsSettingsDialog : Dialog {
         return order to toggles
     }
 
-    private fun savePrefs(prefs: android.content.SharedPreferences, order: List<String>, toggles: Map<String, Boolean>) {
+    private fun savePrefs(prefs: SharedPreferences, order: List<String>, toggles: Map<String, Boolean>) {
         val editor = prefs.edit()
         editor.putString(miniPlayerButtonOrderKey, serializeOrder(order))
         buildButtonDefs().forEach { (id, def) ->
@@ -152,7 +154,7 @@ object MiniPlayerButtonsSettingsDialog : Dialog {
     @Composable
     override fun DialogBody() {
         val context = LocalContext.current
-        val prefs = remember { context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
+        val prefs = remember { context.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
         val buttonDefs = remember { buildButtonDefs() }
         val maxChecked = 4
 
@@ -223,8 +225,8 @@ object MiniPlayerButtonsSettingsDialog : Dialog {
             }
         )
     }
-    fun reset(context: android.content.Context) {
-        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+    fun reset(context: Context) {
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         val defaultToggles = buildButtonDefs().mapValues { it.value.defaultValue }
         savePrefs(prefs, defaultButtonOrder, defaultToggles)
     }

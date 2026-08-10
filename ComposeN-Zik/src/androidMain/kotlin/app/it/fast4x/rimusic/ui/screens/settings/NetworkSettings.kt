@@ -58,6 +58,7 @@ import kotlinx.coroutines.delay
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.LaunchedEffect
+import app.kreate.android.me.knighthat.utils.Toaster
 
 @Composable
 fun DefaultNetworkSettings() {
@@ -432,7 +433,7 @@ fun NetworkSettings(
                                 restartService = true
                                 PreferredStreamClientDialog.reset(context)
                                 StreamClientsSettingsDialog.reset(context)
-                                app.kreate.android.me.knighthat.utils.Toaster.done()
+                                Toaster.done()
                             }
                         )
                     }

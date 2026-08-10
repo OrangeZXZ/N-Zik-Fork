@@ -116,7 +116,7 @@ fun SongItem(
         thumbnailSizeDp = thumbnailSizeDp,
         modifier = modifier,
         onDownloadClick = {
-            CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 Database.upsert( song )
             }
             onDownloadClick()

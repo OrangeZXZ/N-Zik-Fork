@@ -27,6 +27,8 @@ import kotlinx.coroutines.delay
 import app.n_zik.android.components.ImportFromFile
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.n_zik.android.core.database.ImportSong
+import timber.log.Timber
+import android.provider.OpenableColumns
 
 class ImportSongsFromServices private constructor(
     launcher: ManagedActivityResultLauncher<Array<String>, Uri?>
@@ -44,7 +46,7 @@ class ImportSongsFromServices private constructor(
             val context = appContext()
             var fileName = uri.lastPathSegment ?: context.getString(R.string.imported_playlist)
             context.applicationContext.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-                val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
                 if (cursor.moveToFirst() && nameIndex != -1) {
                     fileName = cursor.getString(nameIndex)
                 }
@@ -183,7 +185,7 @@ class ImportSongsFromServices private constructor(
                                 // Insert the song directly here (within the active transaction)
                                 songTable.insertIgnore( song )
                                 importedCount++
-                                timber.log.Timber.tag("Import").d("ADDED song '${song.title}' id='${song.id}' duration='${song.durationText}' (isRiplayFormat=$isRiplayFormat)")
+                                Timber.tag("Import").d("ADDED song '${song.title}' id='${song.id}' duration='${song.durationText}' (isRiplayFormat=$isRiplayFormat)")
 
                                 // Save import position for match system
                                 Database.importSongTable.insert(
@@ -193,7 +195,7 @@ class ImportSongsFromServices private constructor(
                                         playlistId = currentPlaylistId.takeIf { it > 0L }
                                     )
                                 )
-                                timber.log.Timber.tag("Import").d("ImportSong entry created: originalId='${song.id}', position=$finalPosition, playlistId=${currentPlaylistId.takeIf { it > 0L }}")
+                                Timber.tag("Import").d("ImportSong entry created: originalId='${song.id}', position=$finalPosition, playlistId=${currentPlaylistId.takeIf { it > 0L }}")
 
                                 // If a target playlist is set, map immediately
                                 if (currentPlaylistId > 0L) {

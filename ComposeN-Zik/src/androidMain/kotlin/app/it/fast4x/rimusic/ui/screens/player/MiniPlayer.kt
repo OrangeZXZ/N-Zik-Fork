@@ -179,6 +179,11 @@ import androidx.compose.ui.platform.LocalDensity
 import app.it.fast4x.rimusic.utils.discoverKey
 import app.n_zik.android.LocalIsShowingLyrics
 import app.it.fast4x.rimusic.utils.autoLoadSongsInQueueKey
+import android.media.AudioDeviceInfo
+import android.media.AudioManager
+import android.os.Build
+import org.json.JSONArray
+import android.content.Context
 
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -266,7 +271,7 @@ fun MiniPlayer(
     fun parseMiniPlayerOrder(serialized: String): List<String> {
         if (serialized.isBlank()) return defaultMiniPlayerButtonOrder
         return try {
-            val arr = org.json.JSONArray(serialized)
+            val arr = JSONArray(serialized)
             val list = mutableListOf<String>()
             for (i in 0 until arr.length()) {
                 list.add(arr.getString(i))
@@ -654,12 +659,12 @@ fun MiniPlayer(
                             onLikeClick = ::toggleLike,
                             onAudioOutputClick = {
                                 when {
-                                    android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU -> {
+                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
                                         menuState.display {
                                             AudioDeviceMenu(onDismiss = menuState::hide)
                                         }
                                     }
-                                    android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q -> {
+                                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
                                         val intent = Intent("android.settings.panel.action.MEDIA_OUTPUT").apply {
                                             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                         }
@@ -725,7 +730,7 @@ private fun MiniPlayerSlotButton(
     onAudioOutputClick: () -> Unit,
     onShowPlayer: () -> Unit,
     mediaItem: MediaItem?,
-    context: android.content.Context,
+    context: Context,
     binder: PlayerServiceModern.Binder,
     effectRotationEnabled: Boolean,
     isRotated: Boolean,
@@ -836,11 +841,11 @@ private fun MiniPlayerSlotButton(
                 color = controlsColorText,
                 onClick = {
                     mediaItem?.let { item ->
-                        val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                        val intent = Intent(Intent.ACTION_SEND).apply {
                             type = "text/plain"
-                            putExtra(android.content.Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=${item.mediaId}")
+                            putExtra(Intent.EXTRA_TEXT, "https://music.youtube.com/watch?v=${item.mediaId}")
                         }
-                        context.startActivity(android.content.Intent.createChooser(intent, null))
+                        context.startActivity(Intent.createChooser(intent, null))
                     }
                     if (effectRotationEnabled) onRotatedChange(!isRotated)
                 },
@@ -861,7 +866,7 @@ private fun MiniPlayerSlotButton(
         }
         MiniPlayerButton.AudioOutput -> {
             val context = LocalContext.current
-            val audioManager = remember { context.getSystemService(android.content.Context.AUDIO_SERVICE) as android.media.AudioManager }
+            val audioManager = remember { context.getSystemService(Context.AUDIO_SERVICE) as AudioManager }
             val audioOutputManager = remember { AudioOutputManager(context, audioManager) }
             var activeDevice by remember { mutableStateOf(audioOutputManager.getAvailableDevices().firstOrNull { it.isCurrentlyActive }) }
 
@@ -874,11 +879,11 @@ private fun MiniPlayerSlotButton(
                 }
             }
 
-            val isExternal = activeDevice != null && activeDevice?.type != android.media.AudioDeviceInfo.TYPE_BUILTIN_SPEAKER && activeDevice?.type != android.media.AudioDeviceInfo.TYPE_BUILTIN_EARPIECE
+            val isExternal = activeDevice != null && activeDevice?.type != AudioDeviceInfo.TYPE_BUILTIN_SPEAKER && activeDevice?.type != AudioDeviceInfo.TYPE_BUILTIN_EARPIECE
             
             val iconVal = activeDevice?.icon ?: R.drawable.devices
 
-            val isAudioOutputEnabled = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
+            val isAudioOutputEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
             val finalColor = if (!isAudioOutputEnabled) {
                 controlsColorText.copy(alpha = 0.3f)
             } else if (isExternal) {
@@ -996,7 +1001,7 @@ private fun MiniPlayerSlotButton(
                     binder.service.nzikRadio.toggleDiscover()
                     if (effectRotationEnabled) onRotatedChange(!isRotated)
                 },
-                onLongClick = { app.kreate.android.me.knighthat.utils.Toaster.i(R.string.discoverinfo) },
+                onLongClick = { Toaster.i(R.string.discoverinfo) },
                 modifier = modifier.alpha(if (isDiscoverClickable) 1f else 0.4f)
             )
         }

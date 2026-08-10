@@ -250,7 +250,7 @@ class OnlineArtistItemMenu private constructor(
 
     @Composable
     override fun MenuComponent() {
-        val dbArtist by Database.artistTable.findById(artist.key).collectAsState(initial = null, context = kotlinx.coroutines.Dispatchers.IO)
+        val dbArtist by Database.artistTable.findById(artist.key).collectAsState(initial = null, context = Dispatchers.IO)
 
         var displayTitle by remember { mutableStateOf(artist.info?.name) }
         var displayThumbnailUrl by remember { mutableStateOf(artist.thumbnail?.url) }
@@ -281,7 +281,7 @@ class OnlineArtistItemMenu private constructor(
         var isFetching by remember { mutableStateOf(true) }
 
         LaunchedEffect(artist.key) {
-            withContext(kotlinx.coroutines.Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
                 if (artist.key.startsWith("LOCAL_ARTIST_")) {
                     artistPage = null
                 } else {

@@ -73,6 +73,7 @@ import app.it.fast4x.rimusic.EXPLICIT_PREFIX
 import app.n_zik.android.R
 import kotlinx.coroutines.cancel
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
+import java.util.Collections
 
 @UnstableApi
 object MyDownloadHelper {
@@ -100,7 +101,7 @@ object MyDownloadHelper {
     lateinit var audioQualityFormat: AudioQualityFormat
 
     // URL cache with LRU eviction (max 500 entries): videoId -> (url, expiryTimestamp)
-    internal val songUrlCache = java.util.Collections.synchronizedMap(
+    internal val songUrlCache = Collections.synchronizedMap(
         object : LinkedHashMap<String, Pair<String, Long>>(0, 0.75f, true) {
             override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, Pair<String, Long>>): Boolean {
                 return size > 500

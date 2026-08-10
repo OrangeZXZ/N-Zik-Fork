@@ -17,6 +17,8 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import androidx.compose.ui.platform.LocalContext
+import android.content.Context
+import android.content.SharedPreferences
 
 val defaultHomeTabsOrder = listOf(
     "quickpicks",
@@ -75,7 +77,7 @@ object HomeTabsSettingsDialog : Dialog {
         return arr.toString()
     }
 
-    fun loadPrefs(prefs: android.content.SharedPreferences): Pair<MutableList<String>, MutableList<Boolean>> {
+    fun loadPrefs(prefs: SharedPreferences): Pair<MutableList<String>, MutableList<Boolean>> {
         val orderSerialized = prefs.getString(homeTabsOrderKey, "") ?: ""
         val order = parseOrder(orderSerialized).toMutableList()
         val toggles = order.map { id ->
@@ -91,7 +93,7 @@ object HomeTabsSettingsDialog : Dialog {
         return order to toggles
     }
 
-    private fun savePrefs(prefs: android.content.SharedPreferences, order: List<String>, toggles: Map<String, Boolean>) {
+    private fun savePrefs(prefs: SharedPreferences, order: List<String>, toggles: Map<String, Boolean>) {
         val editor = prefs.edit()
         editor.putString(homeTabsOrderKey, serializeOrder(order))
         buildHomeTabDefs().forEach { (id, def) ->
@@ -107,7 +109,7 @@ object HomeTabsSettingsDialog : Dialog {
     @Composable
     override fun DialogBody() {
         val context = LocalContext.current
-        val prefs = remember { context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
+        val prefs = remember { context.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
         val tabDefs = remember { buildHomeTabDefs() }
 
         val initial = remember { loadPrefs(prefs) }
@@ -175,8 +177,8 @@ object HomeTabsSettingsDialog : Dialog {
             }
         )
     }
-    fun reset(context: android.content.Context) {
-        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+    fun reset(context: Context) {
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         val defaultToggles = buildHomeTabDefs().mapValues { it.value.defaultValue }
         savePrefs(prefs, defaultHomeTabsOrder, defaultToggles)
     }

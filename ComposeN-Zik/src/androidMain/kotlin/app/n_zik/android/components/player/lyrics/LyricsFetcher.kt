@@ -31,6 +31,9 @@ import kotlin.time.Duration.Companion.milliseconds
 import timber.log.Timber
 
 import app.n_zik.android.enums.lyrics.LyricsType
+import com.metrolist.music.betterlyrics.BetterLyrics
+import android.database.sqlite.SQLiteConstraintException
+import android.content.Context
 
 private const val TAG = "LyricsFetcher"
 
@@ -344,7 +347,7 @@ fun LyricsFetcher(
 
                     if (wantKaraoke) {
                         kotlin.runCatching {
-                            com.metrolist.music.betterlyrics.BetterLyrics.getLyrics(
+                            BetterLyrics.getLyrics(
                                 title = cleanPrefix(title ?: ""),
                                 artist = artistName ?: "",
                                 duration = duration.milliseconds.inWholeSeconds.toInt(),
@@ -556,25 +559,25 @@ private fun tryYouTubeUnsynced(
     onCheckedInnertubeUpdated: (Boolean) -> Unit,
     onLyricsUpdated: (Lyrics?) -> Unit,
     currentLyrics: Lyrics?,
-    context: android.content.Context
+    context: Context
 ) {
     coroutineScope.launch {
         kotlin.runCatching {
             Innertube.lyrics(NextBody(videoId = mediaId))
                 ?.onSuccess { fixedLyrics ->
                     if (fixedLyrics?.isNotEmpty() == true && playerEnableLyricsPopupMessage) {
-                        kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                        kotlinx.coroutines.withContext(Dispatchers.Main) {
                             Toaster.s(
                                 R.string.info_lyrics_found_on_s,
                                 context.getString(R.string.source_youtube_unsynced)
                             )
                         }
                     } else if (playerEnableLyricsPopupMessage) {
-                        kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                        kotlinx.coroutines.withContext(Dispatchers.Main) {
                             Toaster.e(
                                 R.string.info_lyrics_not_found_on_s,
                                 context.getString(R.string.source_youtube_unsynced),
-                                duration = android.widget.Toast.LENGTH_LONG
+                                duration = Toast.LENGTH_LONG
                             )
                         }
                     }
@@ -606,20 +609,20 @@ private fun saveLyricsSafe(lyrics: Lyrics) {
     Database.asyncTransaction {
         try {
             lyricsTable.upsert(lyrics)
-        } catch (e: android.database.sqlite.SQLiteConstraintException) {
-            timber.log.Timber.tag("LyricsFetcher").w("Foreign key constraint failed for songId ${lyrics.songId}. Retrying in 5 seconds...")
-            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+        } catch (e: SQLiteConstraintException) {
+            Timber.tag("LyricsFetcher").w("Foreign key constraint failed for songId ${lyrics.songId}. Retrying in 5 seconds...")
+            CoroutineScope(Dispatchers.IO).launch {
                 kotlinx.coroutines.delay(5000)
                 try {
                     Database.asyncTransaction {
                         lyricsTable.upsert(lyrics)
                     }
                 } catch (e2: Exception) {
-                    timber.log.Timber.tag("LyricsFetcher").e("Failed to save lyrics even after delay: ${e2.message}")
+                    Timber.tag("LyricsFetcher").e("Failed to save lyrics even after delay: ${e2.message}")
                 }
             }
         } catch (e: Exception) {
-            timber.log.Timber.tag("LyricsFetcher").e("Error saving lyrics: ${e.message}")
+            Timber.tag("LyricsFetcher").e("Error saving lyrics: ${e.message}")
         }
     }
 }

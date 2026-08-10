@@ -246,6 +246,9 @@ import androidx.compose.runtime.Stable
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
 import app.n_zik.android.widget.NZikWidgetManager
 import app.it.fast4x.rimusic.utils.crossfadeEnabledKey
+import java.net.UnknownHostException
+import java.net.ConnectException
+import java.nio.channels.UnresolvedAddressException
 
 
 const val LOCAL_KEY_PREFIX = "local:"
@@ -271,7 +274,7 @@ class PlayerServiceModern : MediaLibraryService(),
         AutoSessionCallback(this, Database, MyDownloadHelper)
     private var sessionController: MediaController? = null
     lateinit var player: ExoPlayer
-    val playerUpdateTrigger = kotlinx.coroutines.flow.MutableStateFlow(0)
+    val playerUpdateTrigger = MutableStateFlow(0)
     lateinit var cache: Cache
     lateinit var downloadCache: Cache
     private lateinit var audioVolumeObserver: AudioVolumeObserver
@@ -1099,8 +1102,8 @@ class PlayerServiceModern : MediaLibraryService(),
         return error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED ||
             error.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT ||
             error.errorCode == PlaybackException.ERROR_CODE_IO_INVALID_HTTP_CONTENT_TYPE ||
-            error.cause is java.net.ConnectException ||
-            error.cause is java.net.UnknownHostException ||
+            error.cause is ConnectException ||
+            error.cause is UnknownHostException ||
             (error.cause as? PlaybackException)?.errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
     }
 
@@ -1168,8 +1171,8 @@ class PlayerServiceModern : MediaLibraryService(),
 
         // check if error is caused by internet connection
         val isConnectionError = (error.cause?.cause is PlaybackException && (error.cause?.cause as PlaybackException).errorCode in playbackConnectionExeptionList)
-                || error.cause is java.net.UnknownHostException
-                || error.cause is java.nio.channels.UnresolvedAddressException
+                || error.cause is UnknownHostException
+                || error.cause is UnresolvedAddressException
 
         if (!isNetworkAvailable.value || isConnectionError) {
             waitingForNetwork.value = true
@@ -1850,7 +1853,7 @@ class PlayerServiceModern : MediaLibraryService(),
 
     private fun showSmartMessage( message: String ) = Toaster.i(message)
 
-    private var widgetUpdateJob: kotlinx.coroutines.Job? = null
+    private var widgetUpdateJob: Job? = null
 
     private fun startWidgetUpdates() {
         widgetUpdateJob?.cancel()
@@ -2278,7 +2281,7 @@ class PlayerServiceModern : MediaLibraryService(),
         val player: ExoPlayer
             get() = this@PlayerServiceModern.player
             
-        val playerUpdateTrigger: kotlinx.coroutines.flow.StateFlow<Int>
+        val playerUpdateTrigger: StateFlow<Int>
             get() = this@PlayerServiceModern.playerUpdateTrigger
 
         val cache: Cache
@@ -2464,8 +2467,8 @@ class PlayerServiceModern : MediaLibraryService(),
 
     // --- Crossfade Logic ---
     private var isCrossfading = false
-    private var crossfadeJob: kotlinx.coroutines.Job? = null
-    private var crossfadeTriggerJob: kotlinx.coroutines.Job? = null
+    private var crossfadeJob: Job? = null
+    private var crossfadeTriggerJob: Job? = null
     private var fadingPlayer: ExoPlayer? = null
     private var secondaryPlayer: ExoPlayer? = null
     private var isInternalCrossfadeSeek = false
@@ -2528,7 +2531,7 @@ class PlayerServiceModern : MediaLibraryService(),
         } else null
 
         crossfadeTriggerJob =
-            coroutineScope.launch(kotlinx.coroutines.Dispatchers.Main) {
+            coroutineScope.launch(Dispatchers.Main) {
                 delay(delayUntilPreload)
                 if (isActive && player.isPlaying && player.currentMediaItem?.mediaId == targetMediaId) {
                     preloadCrossfade(triggerTime)
@@ -2704,7 +2707,7 @@ class PlayerServiceModern : MediaLibraryService(),
         // Swap complete, allow listener callbacks again
         isInternalCrossfadeSeek = false
 
-        crossfadeJob = coroutineScope.launch(kotlinx.coroutines.Dispatchers.Main) {
+        crossfadeJob = coroutineScope.launch(Dispatchers.Main) {
             try {
                 val steps = 50
                 val durationMs = crossfadeDuration.toLong()

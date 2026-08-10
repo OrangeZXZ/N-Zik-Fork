@@ -109,6 +109,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.AlertDialog
 import app.it.fast4x.rimusic.utils.lastUpdateCheckKey
+import java.util.Locale
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @Composable
 fun UpdateScreen(navController: NavController) {
@@ -125,7 +128,7 @@ fun UpdateScreen(navController: NavController) {
     var checkBetaUpdates by rememberPreference(checkBetaUpdatesKey, currentSuffix == UpdaterConstants.SUFFIX_CHAR_BETA)
 
     var otherLanguageApp by rememberPreference(otherLanguageAppUpdateKey, Languages.System)
-    val appLang = java.util.Locale.getDefault().language
+    val appLang = Locale.getDefault().language
     val activeTranslateLang = remember(otherLanguageApp, appLang) {
         if (otherLanguageApp != Languages.System) otherLanguageApp
         else Languages.entries.firstOrNull { it.code == appLang } ?: Languages.English
@@ -739,8 +742,8 @@ fun UpdateScreen(navController: NavController) {
                                         )
                                     }
                                     val lastCheckTime by rememberPreference(lastUpdateCheckKey, 0L)
-                                    val sdf = java.text.SimpleDateFormat("dd MMM HH:mm", java.util.Locale.getDefault())
-                                    val lastCheckStr = if (lastCheckTime > 0) sdf.format(java.util.Date(lastCheckTime)) else stringResource(R.string.never_checked)
+                                    val sdf = SimpleDateFormat("dd MMM HH:mm", Locale.getDefault())
+                                    val lastCheckStr = if (lastCheckTime > 0) sdf.format(Date(lastCheckTime)) else stringResource(R.string.never_checked)
                                     Spacer(modifier = Modifier.height(8.dp))
                                     BasicText(
                                         text = if (lastCheckTime > 0) stringResource(R.string.last_check, lastCheckStr) else stringResource(R.string.never_checked),

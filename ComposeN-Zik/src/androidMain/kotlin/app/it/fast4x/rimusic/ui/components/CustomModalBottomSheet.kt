@@ -46,6 +46,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.graphics.ColorUtils
 import androidx.compose.runtime.DisposableEffect
 import androidx.core.view.WindowInsetsControllerCompat
+import android.view.View
+import android.view.WindowManager
+import android.os.Build
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -115,8 +118,8 @@ fun CustomModalBottomSheet(
                         val isLightBackground = luminance > 0.5 
 
                         val applyInsets = {
-                            window.addFlags(android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                 window.statusBarColor = android.graphics.Color.TRANSPARENT
                                 window.navigationBarColor = android.graphics.Color.TRANSPARENT
                             }
@@ -138,12 +141,12 @@ fun CustomModalBottomSheet(
                             view.post { applyInsets() }
                         }
 
-                        val listener = object : android.view.View.OnAttachStateChangeListener {
-                            override fun onViewAttachedToWindow(v: android.view.View) {
+                        val listener = object : View.OnAttachStateChangeListener {
+                            override fun onViewAttachedToWindow(v: View) {
                                 applyInsets()
                                 view.post { applyInsets() }
                             }
-                            override fun onViewDetachedFromWindow(v: android.view.View) {}
+                            override fun onViewDetachedFromWindow(v: View) {}
                         }
                         view.addOnAttachStateChangeListener(listener)
 

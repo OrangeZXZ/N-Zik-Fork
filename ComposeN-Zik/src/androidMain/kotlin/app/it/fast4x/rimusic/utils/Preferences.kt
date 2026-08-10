@@ -745,7 +745,7 @@ fun rememberPreference(key: String, defaultValue: Boolean): MutableState<Boolean
     }
     
     val listener = remember(prefs, key) {
-        android.content.SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
+        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
             if (changedKey == key) {
                 val newValue = sharedPreferences.getBoolean(key, defaultValue)
                 if (state.value != newValue) {
@@ -776,7 +776,7 @@ fun rememberPreference(key: String, defaultValue: Int): MutableState<Int> {
     }
     
     val listener = remember(prefs, key) {
-        android.content.SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
+        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
             if (changedKey == key) {
                 val newValue = sharedPreferences.getInt(key, defaultValue)
                 if (state.value != newValue) {
@@ -809,7 +809,7 @@ fun rememberPreference(key: String, defaultValue: Float): MutableState<Float> {
     }
     
     val listener = remember(prefs, key) {
-        android.content.SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
+        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
             if (changedKey == key) {
                 val newValue = sharedPreferences.getFloat(key, defaultValue)
                 if (state.value != newValue) {
@@ -840,7 +840,7 @@ fun rememberPreference(key: String, defaultValue: Long): MutableState<Long> {
     }
     
     val listener = remember(prefs, key) {
-        android.content.SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
+        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
             if (changedKey == key) {
                 val newValue = sharedPreferences.getLong(key, defaultValue)
                 if (state.value != newValue) {
@@ -871,7 +871,7 @@ fun rememberPreference(key: String, defaultValue: String): MutableState<String> 
     }
     
     val listener = remember(prefs, key) {
-        android.content.SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
+        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
             if (changedKey == key) {
                 val newValue = sharedPreferences.getString(key, null) ?: defaultValue
                 if (state.value != newValue) {
@@ -902,7 +902,7 @@ inline fun <reified T : Enum<T>> rememberPreference(key: String, defaultValue: T
     }
 
     val listener = remember(prefs, key) {
-        android.content.SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
+        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, changedKey ->
             if (changedKey == key) {
                 val newValue = sharedPreferences.getEnum(key, defaultValue)
                 if (state.value != newValue) {

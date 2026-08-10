@@ -26,6 +26,7 @@ import app.n_zik.android.playback.utils.Shuffler
 import kotlinx.coroutines.withContext
 import app.it.fast4x.rimusic.cleanPrefix
 import app.n_zik.android.playback.services.upsertSongInfo
+import android.os.Bundle
 
 var GlobalVolume: Float = 0.5f
 
@@ -174,7 +175,7 @@ fun Player.forcePlayAtIndex(mediaItems: List<MediaItem>, mediaItemIndex: Int) {
                         val existing = targetItem.mediaMetadata
                         val artistNames = ArrayList<String>().apply { addAll(dbArtists.mapNotNull { it.name }) }
                         val artistIds = ArrayList<String>().apply { addAll(dbArtists.map { it.id }) }
-                        val bundle = (existing.extras ?: android.os.Bundle()).apply {
+                        val bundle = (existing.extras ?: Bundle()).apply {
                             putStringArrayList("artistNames", artistNames)
                             putStringArrayList("artistIds", artistIds)
                             dbAlbum?.id?.let { putString("albumId", it) }

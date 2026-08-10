@@ -20,6 +20,7 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import androidx.annotation.RequiresApi
+import android.os.Build
 
 /**
  * WebView-based cipher executor for YouTube stream URL deobfuscation
@@ -135,7 +136,7 @@ class CipherWebView private constructor(
         }
 
         webView.webViewClient = object : WebViewClient() {
-            @RequiresApi(android.os.Build.VERSION_CODES.O)
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
                 val didCrash = runCatching { detail.didCrash() }.getOrNull()
                 Timber.tag(TAG).e("=== RENDER PROCESS GONE === didCrash=$didCrash")

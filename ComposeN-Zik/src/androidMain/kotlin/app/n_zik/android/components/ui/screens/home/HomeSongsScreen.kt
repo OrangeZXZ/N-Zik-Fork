@@ -70,6 +70,7 @@ import app.it.fast4x.rimusic.utils.homeSongsOnDeviceToolbarOrderKey
 import app.it.fast4x.rimusic.ui.components.tab.toolbar.Descriptive
 import app.it.fast4x.rimusic.utils.homeSongsTopToolbarOrderKey
 import app.it.fast4x.rimusic.utils.homeSongsOfflineToolbarOrderKey
+import java.util.concurrent.atomic.AtomicInteger
 
 @RequiresApi(Build.VERSION_CODES.O)
 @UnstableApi
@@ -233,7 +234,7 @@ fun HomeSongsScreen(navController: NavController ) {
 
     LaunchedEffect(matchRunning) {
         if (!matchRunning) return@LaunchedEffect
-        val mergedCounter = java.util.concurrent.atomic.AtomicInteger(0)
+        val mergedCounter = AtomicInteger(0)
         val job = launch(Dispatchers.IO) {
             try {
                 val unmatched = if (retryMatchMode && retryMatchSongs.isNotEmpty()) {
@@ -402,7 +403,7 @@ fun HomeSongsScreen(navController: NavController ) {
         val defaultToolbarOrder = HomeSongsToolbarSettingsDialog.tabAvailableIds[builtInPlaylist] ?: HomeSongsToolbarSettingsDialog.allButtonIds
         val order = try {
             if (currentToolbarOrderPref.isBlank()) defaultToolbarOrder else {
-                val arr = org.json.JSONArray(currentToolbarOrderPref)
+                val arr = JSONArray(currentToolbarOrderPref)
                 (0 until arr.length()).map { arr.getString(it) }.distinct()
             }
         } catch (_: Exception) { defaultToolbarOrder }

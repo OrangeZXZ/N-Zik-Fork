@@ -120,9 +120,10 @@ import androidx.compose.runtime.LaunchedEffect
 import app.it.fast4x.rimusic.utils.crossfadeEnabledKey
 import app.it.fast4x.rimusic.utils.crossfadeGaplessKey
 import androidx.compose.animation.scaleIn
+import android.content.Context
 
 @Composable
-fun DefaultGeneralSettings(context: android.content.Context) {
+fun DefaultGeneralSettings(context: Context) {
     var languageApp by rememberPreference(languageAppKey, Languages.System)
     languageApp = Languages.System
     var exoPlayerMinTimeForEvent by rememberPreference(exoPlayerMinTimeForEventKey, ExoPlayerMinTimeForEvent.`20s`)

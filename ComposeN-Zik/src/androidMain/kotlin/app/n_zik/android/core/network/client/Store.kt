@@ -23,6 +23,7 @@ import org.schabi.newpipe.extractor.services.youtube.InnertubeClientRequestInfo
 import org.schabi.newpipe.extractor.services.youtube.YoutubeParsingHelper
 import timber.log.Timber
 import java.io.IOException
+import java.util.Locale
 
 /**
  * Centralized store for network tokens and cookies.
@@ -85,7 +86,7 @@ object Store {
             visitorMutex.withLock {
                 iosVisitorData?.let { return@withLock it }
 
-                val currentLocale = java.util.Locale.getDefault()
+                val currentLocale = Locale.getDefault()
                 val localization = Localization(currentLocale.language)
                 val contentCountry = ContentCountry(currentLocale.country)
 

@@ -17,6 +17,7 @@ import app.it.fast4x.rimusic.utils.homeArtistsOrderKey
 import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import android.content.Context
 
 private val artistsDefaultOrder = listOf("all", "favorites")
 
@@ -33,7 +34,7 @@ object HomeArtistsSettingsDialog : Dialog {
     @Composable
     override fun DialogBody() {
         val ctx = LocalContext.current
-        val prefs = remember { ctx.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
+        val prefs = remember { ctx.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
         var workingOrder by remember { mutableStateOf(parseOrder(prefs.getString(homeArtistsOrderKey, "") ?: "").toMutableList()) }
 
         val prefKeys = mapOf(
@@ -95,8 +96,8 @@ object HomeArtistsSettingsDialog : Dialog {
         )
     }
 
-    fun reset(context: android.content.Context) {
-        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+    fun reset(context: Context) {
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         prefs.edit()
             .putString(homeArtistsOrderKey, serializeOrder(artistsDefaultOrder))
             .putBoolean(showFavoritesArtistKey, true)

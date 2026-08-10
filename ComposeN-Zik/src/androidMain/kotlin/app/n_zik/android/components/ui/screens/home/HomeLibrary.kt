@@ -154,6 +154,8 @@ import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.utils.formatAsTime
 import app.n_zik.android.components.AppPullToRefreshBox
 import androidx.core.content.ContextCompat
+import java.util.ArrayList
+import android.content.Intent
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -361,16 +363,16 @@ fun HomeLibrary(
             return
         }
         val targetPlaylists = itemsToRefresh ?: itemsOnDisplay
-        val ids = java.util.ArrayList(targetPlaylists.map { it.playlist.id.toString() })
+        val ids = ArrayList(targetPlaylists.map { it.playlist.id.toString() })
         
-        val intent = android.content.Intent(appContext(), HomeSyncService::class.java).apply {
+        val intent = Intent(appContext(), HomeSyncService::class.java).apply {
             action = HomeSyncService.ACTION_SYNC_PLAYLISTS
             putStringArrayListExtra(HomeSyncService.EXTRA_IDS, ids)
         }
         try {
             ContextCompat.startForegroundService(appContext(), intent)
         } catch (e: Exception) {
-            timber.log.Timber.tag("HomeLibrary").e(e, "Failed to start HomeSyncService")
+            Timber.tag("HomeLibrary").e(e, "Failed to start HomeSyncService")
             Toaster.e("Failed to start sync service")
         }
     }

@@ -275,6 +275,8 @@ import androidx.compose.runtime.State
 import androidx.core.view.WindowInsetsControllerCompat
 import app.it.fast4x.rimusic.ui.styling.ColorPalette
 import app.n_zik.android.core.database.Database
+import android.Manifest
+import kotlinx.coroutines.Job
 
 @UnstableApi
 class MainActivity :
@@ -380,7 +382,7 @@ class MainActivity :
 
         // Ask for notification permission if necessary
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
 
@@ -518,7 +520,7 @@ class MainActivity :
 //            if (internetConnected) downloadHelper.resumeDownloads(this)
 
             val coroutineScope = rememberCoroutineScope()
-            val paletteJob = remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
+            val paletteJob = remember { mutableStateOf<Job?>(null) }
             val isSystemInDarkTheme = isSystemInDarkTheme()
             val navController = rememberNavController()
             DisposableEffect(navController) {
@@ -1005,7 +1007,7 @@ class MainActivity :
                 setSystemBarAppearance(finalAppearance.colorPalette.isDark)
             }
 
-            val isLandscape = LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+            val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
             val uiType by rememberPreference(UiTypeKey, UiType.RiMusic)
             val isViMusic = uiType == UiType.ViMusic
             

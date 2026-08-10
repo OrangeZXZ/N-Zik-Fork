@@ -30,6 +30,7 @@ import app.n_zik.android.components.dialog.common.ToggleListDialog
 import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import android.content.Context
 
 private val defaultButtonOrder = listOf(
     "video", "start_radio", "discover", "download", "add_to_playlist",
@@ -98,7 +99,7 @@ object PlayerActionBarSettingsDialog : Dialog {
     @Composable
     override fun DialogBody() {
         val context = LocalContext.current
-        val prefs = remember { context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
+        val prefs = remember { context.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
         val buttonDefs = remember { buildButtonDefs() }
 
         val initial = remember {
@@ -175,8 +176,8 @@ object PlayerActionBarSettingsDialog : Dialog {
         )
     }
 
-    fun reset(context: android.content.Context) {
-        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+    fun reset(context: Context) {
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         val editor = prefs.edit()
         editor.putString(playerActionBarButtonOrderKey, serializeOrder(defaultButtonOrder))
         buildButtonDefs().forEach { (_, def) ->

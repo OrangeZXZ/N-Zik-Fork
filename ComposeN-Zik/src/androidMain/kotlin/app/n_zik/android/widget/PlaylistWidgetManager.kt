@@ -37,6 +37,8 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentHashMap
 import app.it.fast4x.rimusic.ui.styling.ColorPalette
 import app.it.fast4x.rimusic.cleanPrefix
+import android.net.Uri
+import android.os.SystemClock
 
 object PlaylistWidgetManager {
 
@@ -105,7 +107,7 @@ object PlaylistWidgetManager {
 
         val likedIntent = Intent(context, MainActivity::class.java).apply {
             action = Intent.ACTION_VIEW
-            data = android.net.Uri.parse("nzik://app/playFavorites")
+            data = Uri.parse("nzik://app/playFavorites")
         }
         val likedPendingIntent = PendingIntent.getActivity(context, "Favorites".hashCode(), likedIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         items.add(QuickPick(context.getString(R.string.favorites), getLikedBitmap(context, accentArgb), likedPendingIntent))
@@ -116,7 +118,7 @@ object PlaylistWidgetManager {
             val artworkUri = firstSong?.thumbnailUrl
             val intent = Intent(context, MainActivity::class.java).apply {
                 action = Intent.ACTION_VIEW
-                data = android.net.Uri.parse("nzik://app/localPlaylist/${p.playlist.id}")
+                data = Uri.parse("nzik://app/localPlaylist/${p.playlist.id}")
             }
             val pendingIntent = PendingIntent.getActivity(context, p.playlist.id.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             items.add(QuickPick(p.playlist.name, loadBitmap(context, artworkUri), pendingIntent))
@@ -127,7 +129,7 @@ object PlaylistWidgetManager {
         (followingArtists + libraryArtists).distinctBy { it.id }.forEach { a ->
             val intent = Intent(context, MainActivity::class.java).apply {
                 action = Intent.ACTION_VIEW
-                data = android.net.Uri.parse("nzik://app/channel/${a.id}")
+                data = Uri.parse("nzik://app/channel/${a.id}")
             }
             val pendingIntent = PendingIntent.getActivity(context, a.id.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             items.add(QuickPick(a.name ?: "Unknown", loadBitmap(context, a.thumbnailUrl), pendingIntent))
@@ -138,7 +140,7 @@ object PlaylistWidgetManager {
         (bookmarkedAlbums + libraryAlbums).distinctBy { it.id }.forEach { a ->
             val intent = Intent(context, MainActivity::class.java).apply {
                 action = Intent.ACTION_VIEW
-                data = android.net.Uri.parse("nzik://app/album/${a.id}")
+                data = Uri.parse("nzik://app/album/${a.id}")
             }
             val pendingIntent = PendingIntent.getActivity(context, a.id.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             items.add(QuickPick(a.title ?: "Unknown", loadBitmap(context, a.thumbnailUrl), pendingIntent))
@@ -148,7 +150,7 @@ object PlaylistWidgetManager {
         randomSongs.forEach { s ->
             val intent = Intent(context, MainActivity::class.java).apply {
                 action = Intent.ACTION_VIEW
-                data = android.net.Uri.parse("nzik://app/watch?v=${s.id}")
+                data = Uri.parse("nzik://app/watch?v=${s.id}")
             }
             val pendingIntent = PendingIntent.getActivity(context, s.id.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             items.add(QuickPick(s.title, loadBitmap(context, s.thumbnailUrl), pendingIntent))
@@ -158,7 +160,7 @@ object PlaylistWidgetManager {
         val restItems = items.drop(1).shuffled()
         val picks = listOf(firstItem) + restItems.take(7)
 
-        val now = android.os.SystemClock.elapsedRealtime()
+        val now = SystemClock.elapsedRealtime()
         cachedQuickPicks = picks
         lastQuickPicksUpdateTime = now
         picks
@@ -275,7 +277,7 @@ object PlaylistWidgetManager {
         )
 
         // Try to read palette saved by the app (same bitmap = same colors)
-        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         val timestamp = prefs.getLong("widget_palette_timestamp", 0)
         if (timestamp > 0) {
             val savedIsDark = prefs.getBoolean("widget_palette_isDark", isSystemInDarkMode)
@@ -354,7 +356,7 @@ object PlaylistWidgetManager {
             views.setViewVisibility(R.id.widget_playlist_total_duration, View.VISIBLE)
             views.setViewVisibility(R.id.widget_progress_track, View.VISIBLE)
             views.setViewVisibility(R.id.widget_playlist_progress_fill, View.VISIBLE)
-            val baseTime = android.os.SystemClock.elapsedRealtime() - currentPosition
+            val baseTime = SystemClock.elapsedRealtime() - currentPosition
             views.setChronometer(R.id.widget_playlist_chronometer, baseTime, null, isPlaying)
             views.setTextViewText(R.id.widget_playlist_total_duration, " / ${formatDuration(duration)}")
         } else {

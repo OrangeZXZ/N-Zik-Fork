@@ -35,6 +35,7 @@ import app.n_zik.android.download.utils.MyDownloadHelper
 import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
 import kotlinx.coroutines.isActive
 import kotlin.math.abs
+import java.util.Random
 
 @Composable
 fun SeekBarStaticAudioWaves(
@@ -98,7 +99,7 @@ fun SeekBarStaticAudioWaves(
 
     val displayAmplitudes = amplitudes ?: remember(uiMedia?.id) {
         val seed = uiMedia?.id?.hashCode()?.toLong() ?: System.currentTimeMillis()
-        val random = java.util.Random(seed)
+        val random = Random(seed)
         
         List(150) { i ->
             val wavePosition = i + 1

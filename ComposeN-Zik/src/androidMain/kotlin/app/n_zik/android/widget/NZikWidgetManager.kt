@@ -30,6 +30,8 @@ import androidx.compose.ui.graphics.toArgb
 import android.content.res.Configuration
 import app.it.fast4x.rimusic.ui.styling.ColorPalette
 import app.it.fast4x.rimusic.cleanPrefix
+import android.view.View
+import android.os.SystemClock
 
 object NZikWidgetManager {
 
@@ -48,7 +50,7 @@ object NZikWidgetManager {
 
     suspend fun updateIdleWidgets(context: Context) {
         // Clear saved palette so widget resets to default in idle
-        context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
             .edit().remove("widget_palette_timestamp").apply()
         updateWidgets(
             context = context,
@@ -214,18 +216,18 @@ object NZikWidgetManager {
         }
 
         if (duration > 0) {
-            views.setViewVisibility(R.id.widget_chronometer, android.view.View.VISIBLE)
-            views.setViewVisibility(R.id.widget_total_duration, android.view.View.VISIBLE)
-            views.setViewVisibility(R.id.widget_progress_track, android.view.View.VISIBLE)
-            views.setViewVisibility(R.id.widget_progress_fill, android.view.View.VISIBLE)
-            val baseTime = android.os.SystemClock.elapsedRealtime() - currentPosition
+            views.setViewVisibility(R.id.widget_chronometer, View.VISIBLE)
+            views.setViewVisibility(R.id.widget_total_duration, View.VISIBLE)
+            views.setViewVisibility(R.id.widget_progress_track, View.VISIBLE)
+            views.setViewVisibility(R.id.widget_progress_fill, View.VISIBLE)
+            val baseTime = SystemClock.elapsedRealtime() - currentPosition
             views.setChronometer(R.id.widget_chronometer, baseTime, null, isPlaying)
             views.setTextViewText(R.id.widget_total_duration, " / ${formatDuration(duration)}")
         } else {
-            views.setViewVisibility(R.id.widget_chronometer, android.view.View.GONE)
-            views.setViewVisibility(R.id.widget_total_duration, android.view.View.GONE)
-            views.setViewVisibility(R.id.widget_progress_track, android.view.View.GONE)
-            views.setViewVisibility(R.id.widget_progress_fill, android.view.View.GONE)
+            views.setViewVisibility(R.id.widget_chronometer, View.GONE)
+            views.setViewVisibility(R.id.widget_total_duration, View.GONE)
+            views.setViewVisibility(R.id.widget_progress_track, View.GONE)
+            views.setViewVisibility(R.id.widget_progress_fill, View.GONE)
         }
 
         views.setOnClickPendingIntent(R.id.widget_album_art, getOpenAppIntent(context))
@@ -392,14 +394,14 @@ object NZikWidgetManager {
         views.setImageViewResource(R.id.widget_turntable_like_button, likeIcon)
 
         if (duration > 0) {
-            views.setViewVisibility(R.id.widget_turntable_chronometer, android.view.View.VISIBLE)
-            views.setViewVisibility(R.id.widget_turntable_total_duration, android.view.View.VISIBLE)
-            val baseTime = android.os.SystemClock.elapsedRealtime() - currentPosition
+            views.setViewVisibility(R.id.widget_turntable_chronometer, View.VISIBLE)
+            views.setViewVisibility(R.id.widget_turntable_total_duration, View.VISIBLE)
+            val baseTime = SystemClock.elapsedRealtime() - currentPosition
             views.setChronometer(R.id.widget_turntable_chronometer, baseTime, null, isPlaying)
             views.setTextViewText(R.id.widget_turntable_total_duration, formatDuration(duration))
         } else {
-            views.setViewVisibility(R.id.widget_turntable_chronometer, android.view.View.GONE)
-            views.setViewVisibility(R.id.widget_turntable_total_duration, android.view.View.GONE)
+            views.setViewVisibility(R.id.widget_turntable_chronometer, View.GONE)
+            views.setViewVisibility(R.id.widget_turntable_total_duration, View.GONE)
         }
 
         views.setOnClickPendingIntent(R.id.widget_turntable_album_art, getOpenAppIntent(context))
@@ -563,7 +565,7 @@ object NZikWidgetManager {
         )
 
         // Try to read palette saved by the app (same bitmap = same colors)
-        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         val timestamp = prefs.getLong("widget_palette_timestamp", 0)
         if (timestamp > 0) {
             val savedIsDark = prefs.getBoolean("widget_palette_isDark", isSystemInDarkMode)

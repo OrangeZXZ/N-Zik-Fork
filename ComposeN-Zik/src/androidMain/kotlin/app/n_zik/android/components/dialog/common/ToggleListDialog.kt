@@ -46,6 +46,7 @@ import app.it.fast4x.rimusic.utils.medium
 import app.it.fast4x.rimusic.utils.semiBold
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.ReorderableLazyListState
+import android.content.Context
 
 data class ToggleItem(
     val id: String,
@@ -241,7 +242,7 @@ private fun ToggleRow(
                             if (useLocalState) {
                                 onCheckedChange?.invoke(!isChecked)
                             } else {
-                                val prefs = ctx.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+                                val prefs = ctx.getSharedPreferences("preferences", Context.MODE_PRIVATE)
                                 prefs.edit().putBoolean(preferenceKey, !isChecked).apply()
                             }
                         }

@@ -37,6 +37,8 @@ import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import androidx.annotation.RequiresApi
+import okhttp3.Request
+import android.os.Build
 
 class PoTokenWebView private constructor(
     context: Context,
@@ -125,7 +127,7 @@ class PoTokenWebView private constructor(
         webView.webViewClient = object : WebViewClient() {
             // API 26+ callback; on providers that don't deliver it the withTimeout nets in
             // getNewPoTokenGenerator()/generatePoToken() carry the recovery.
-            @RequiresApi(android.os.Build.VERSION_CODES.O)
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
                 val didCrash = runCatching { detail.didCrash() }.getOrNull()
                 Timber.tag(TAG).e("PoToken WebView render process gone (didCrash=$didCrash)")
@@ -378,7 +380,7 @@ class PoTokenWebView private constructor(
         handleResponseBody: (String) -> Unit,
     ) {
         scope.launch(exceptionHandler) {
-            val requestBuilder = okhttp3.Request.Builder()
+            val requestBuilder = Request.Builder()
                 .post(data.toRequestBody())
                 .headers(mapOf(
                     "User-Agent" to USER_AGENT,

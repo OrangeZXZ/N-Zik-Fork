@@ -137,6 +137,8 @@ import app.n_zik.android.thumbnailShape
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
 import app.n_zik.android.components.AppPullToRefreshBox
 import androidx.core.content.ContextCompat
+import java.util.ArrayList
+import android.content.Intent
 
 @ExperimentalMaterial3Api
 @UnstableApi
@@ -273,17 +275,17 @@ fun HomeArtists(
             return
         }
         val targetItems = itemsToRefresh ?: itemsOnDisplay
-        val ids = java.util.ArrayList(targetItems.map { it.id })
+        val ids = ArrayList(targetItems.map { it.id })
         if (ids.isEmpty()) return
         
-        val intent = android.content.Intent(appContext(), HomeSyncService::class.java).apply {
+        val intent = Intent(appContext(), HomeSyncService::class.java).apply {
             action = HomeSyncService.ACTION_SYNC_ARTISTS
             putStringArrayListExtra(HomeSyncService.EXTRA_IDS, ids)
         }
         try {
             ContextCompat.startForegroundService(appContext(), intent)
         } catch (e: Exception) {
-            timber.log.Timber.e(e, "Failed to start HomeSyncService")
+            Timber.e(e, "Failed to start HomeSyncService")
             Toaster.e("Failed to start sync service")
         }
     }

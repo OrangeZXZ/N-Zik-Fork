@@ -70,6 +70,8 @@ import androidx.compose.runtime.setValue
 import app.it.fast4x.rimusic.utils.lastUpdateCheckKey
 import androidx.navigation.NavController
 import app.it.fast4x.rimusic.utils.checkBetaUpdatesKey
+import java.util.Locale
+import java.util.Date
 
 @ExperimentalAnimationApi
 @Composable
@@ -385,8 +387,8 @@ fun About(navController: NavController) {
                                 }
                                 
                                 val lastCheckTime by rememberPreference(lastUpdateCheckKey, 0L)
-                                val sdf = java.text.SimpleDateFormat("dd MMM HH:mm", java.util.Locale.getDefault())
-                                val lastCheckStr = if (lastCheckTime > 0) sdf.format(java.util.Date(lastCheckTime)) else stringResource(R.string.never_checked)
+                                val sdf = SimpleDateFormat("dd MMM HH:mm", Locale.getDefault())
+                                val lastCheckStr = if (lastCheckTime > 0) sdf.format(Date(lastCheckTime)) else stringResource(R.string.never_checked)
                                 BasicText(
                                     text = if (lastCheckTime > 0) stringResource(R.string.last_check, lastCheckStr) else stringResource(R.string.never_checked),
                                     style = typography().xxs.secondary.copy(

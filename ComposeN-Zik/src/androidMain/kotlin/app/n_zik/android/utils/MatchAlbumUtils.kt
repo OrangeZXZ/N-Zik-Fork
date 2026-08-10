@@ -26,9 +26,10 @@ import timber.log.Timber
 import app.it.fast4x.rimusic.models.Artist
 import app.n_zik.android.extensions.audiobar.utils.WaveformExtractor
 import app.n_zik.android.appContext
+import java.util.concurrent.atomic.AtomicInteger
 
 @RequiresApi(Build.VERSION_CODES.O)
-suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.concurrent.atomic.AtomicInteger? = null) {
+suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: AtomicInteger? = null) {
     Timber.tag("MatchGlobal").d("START match for '${song.title}' (id='${song.id}', duration='${song.durationText}')")
     val random4Digit = Random.nextInt(1000, 10000)
 
@@ -194,7 +195,7 @@ suspend fun getAlbumVersionFromVideoGlobal(song: Song, mergedCounter: java.util.
     }
 }
 
-suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int, playlist: Playlist?, mergedCounter: java.util.concurrent.atomic.AtomicInteger? = null) {
+suspend fun getAlbumVersionFromVideo(song: Song, playlistId: Long, position: Int, playlist: Playlist?, mergedCounter: AtomicInteger? = null) {
     Timber.tag("MatchPlaylist").d("START match for '${song.title}' (id='${song.id}', duration='${song.durationText}', playlistId=$playlistId)")
     val isExtPlaylist = (song.thumbnailUrl.isNullOrEmpty()) && (song.durationText != "0:00")
     var songNotFound: Song

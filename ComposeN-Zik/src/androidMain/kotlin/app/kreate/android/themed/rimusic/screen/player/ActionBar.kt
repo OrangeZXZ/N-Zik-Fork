@@ -144,6 +144,7 @@ import app.n_zik.android.core.coil.ImageCacheFactory
 import app.kreate.android.me.knighthat.utils.Toaster
 import app.n_zik.android.uiRoundnessShape
 import androidx.compose.ui.res.stringResource
+import org.json.JSONArray
 
 private class PagerViewPort(
     private val showSongsState: MutableState<SongsNumber>,
@@ -475,7 +476,7 @@ fun BoxScope.ActionBar(
             val buttonOrderSerialized by rememberPreference( playerActionBarButtonOrderKey, "" )
             val buttonOrder = remember(buttonOrderSerialized) {
                 try {
-                    val arr = org.json.JSONArray(buttonOrderSerialized)
+                    val arr = JSONArray(buttonOrderSerialized)
                     val list = mutableListOf<String>()
                     for (i in 0 until arr.length()) list.add(arr.getString(i))
                     list

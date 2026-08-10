@@ -131,6 +131,7 @@ import dev.rebelonion.translator.Language
 import dev.rebelonion.translator.Translator
 import timber.log.Timber
 import app.it.fast4x.rimusic.EXPLICIT_PREFIX
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -246,7 +247,7 @@ fun AlbumDetails(
     val translate = Translate.init(onLongClick = { showTranslateLanguageDialog = true })
     val translator = Translator(NetworkClientFactory.getTranslatorClient())
     var otherLanguageApp by rememberPreference(otherLanguageAppAlbumKey, Languages.System)
-    val appLangAlbum = java.util.Locale.getDefault().language
+    val appLangAlbum = Locale.getDefault().language
     val activeTranslateLang = remember(otherLanguageApp, appLangAlbum) {
         if (otherLanguageApp != Languages.System) otherLanguageApp
         else Languages.entries.firstOrNull { it.code == appLangAlbum } ?: Languages.English

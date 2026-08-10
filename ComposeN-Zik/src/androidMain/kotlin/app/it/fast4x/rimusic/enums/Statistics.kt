@@ -6,6 +6,8 @@ import app.n_zik.android.R
 import app.kreate.android.me.knighthat.enums.TextView
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
+import java.time.ZoneId
+import java.time.LocalDate
 
 enum class StatisticsType(
     val duration: Duration,
@@ -36,8 +38,8 @@ enum class StatisticsType(
      * @return real timestamp in millis.
      */
     fun timeStampInMillis(): Long {
-        val zone = java.time.ZoneId.systemDefault()
-        val today = java.time.LocalDate.now(zone)
+        val zone = ZoneId.systemDefault()
+        val today = LocalDate.now(zone)
         return when (this) {
             Today -> today.atStartOfDay(zone).toInstant().toEpochMilli()
             OneWeek -> today.minusDays(6).atStartOfDay(zone).toInstant().toEpochMilli() // 7 days including today

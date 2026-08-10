@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.future
 import app.n_zik.android.R
+import android.content.ContentResolver
 
 @UnstableApi
 class CoilBitmapLoader(
@@ -34,7 +35,7 @@ class CoilBitmapLoader(
         scope.future(Dispatchers.IO) {
             var bitmap = ImageCacheFactory.loadBitmap(uri.toString(), allowHardware = false)
             
-            if (bitmap == null && (uri.scheme == android.content.ContentResolver.SCHEME_CONTENT || uri.scheme == android.content.ContentResolver.SCHEME_FILE)) {
+            if (bitmap == null && (uri.scheme == ContentResolver.SCHEME_CONTENT || uri.scheme == ContentResolver.SCHEME_FILE)) {
                 val drawable = ContextCompat.getDrawable(context, R.drawable.ic_launcher_box)
                 if (drawable is BitmapDrawable) {
                     bitmap = drawable.bitmap

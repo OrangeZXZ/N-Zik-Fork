@@ -11,6 +11,10 @@ import android.content.Context
 import android.media.MediaRouter2
 import timber.log.Timber
 import app.n_zik.android.utils.getAudioDeviceIcon
+import android.media.MediaRoute2Info
+import android.media.AudioPlaybackConfiguration
+import android.media.RouteDiscoveryPreference
+import android.media.MediaRouter
 
 class AudioOutputManager(private val context: Context, private val audioManager: AudioManager) {
 
@@ -63,13 +67,13 @@ class AudioOutputManager(private val context: Context, private val audioManager:
 
         // Fallback to legacy MediaRouter if no active playback (API 24+)
         val mediaRouterDeviceType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val mediaRouter = context.getSystemService(Context.MEDIA_ROUTER_SERVICE) as android.media.MediaRouter
-            mediaRouter.getSelectedRoute(android.media.MediaRouter.ROUTE_TYPE_LIVE_AUDIO)?.deviceType
+            val mediaRouter = context.getSystemService(Context.MEDIA_ROUTER_SERVICE) as MediaRouter
+            mediaRouter.getSelectedRoute(MediaRouter.ROUTE_TYPE_LIVE_AUDIO)?.deviceType
         } else null
 
         if (activeRouteId == null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             when (mediaRouterDeviceType) {
-                android.media.MediaRouter.RouteInfo.DEVICE_TYPE_BLUETOOTH -> {
+                MediaRouter.RouteInfo.DEVICE_TYPE_BLUETOOTH -> {
                     activeRouteId = devices.firstOrNull { 
                         it.type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP || 
                         it.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO ||
@@ -77,7 +81,7 @@ class AudioOutputManager(private val context: Context, private val audioManager:
                     }?.id
                     if (activeRouteId != null) routeSource = "MediaRouterLegacy(BT)"
                 }
-                android.media.MediaRouter.RouteInfo.DEVICE_TYPE_SPEAKER -> {
+                MediaRouter.RouteInfo.DEVICE_TYPE_SPEAKER -> {
                     activeRouteId = devices.firstOrNull { it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER }?.id
                     if (activeRouteId != null) routeSource = "MediaRouterLegacy(SPEAKER)"
                 }
@@ -131,7 +135,7 @@ class AudioOutputManager(private val context: Context, private val audioManager:
         var mr2IsSystem = false
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val mr2 = android.media.MediaRouter2.getInstance(context)
+            val mr2 = MediaRouter2.getInstance(context)
             val mr2Route = mr2.systemController.selectedRoutes.firstOrNull()
             
             mr2RouteId = mr2Route?.id
@@ -195,7 +199,7 @@ class AudioOutputManager(private val context: Context, private val audioManager:
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val pbCallback = object : AudioManager.AudioPlaybackCallback() {
-                override fun onPlaybackConfigChanged(configs: MutableList<android.media.AudioPlaybackConfiguration>?) {
+                override fun onPlaybackConfigChanged(configs: MutableList<AudioPlaybackConfiguration>?) {
                     Timber.tag("AudioOutputManager").d("onPlaybackConfigChanged - configs=${configs?.size}")
                     callback(getAvailableDevices())
                 }
@@ -216,15 +220,15 @@ class AudioOutputManager(private val context: Context, private val audioManager:
             mr2.registerControllerCallback(context.mainExecutor, mr2Callback)
 
             val routeCallback = object : MediaRouter2.RouteCallback() {
-                override fun onRoutesAdded(routes: MutableList<android.media.MediaRoute2Info>) { callback(getAvailableDevices()) }
-                override fun onRoutesRemoved(routes: MutableList<android.media.MediaRoute2Info>) { callback(getAvailableDevices()) }
-                override fun onRoutesChanged(routes: MutableList<android.media.MediaRoute2Info>) { callback(getAvailableDevices()) }
+                override fun onRoutesAdded(routes: MutableList<MediaRoute2Info>) { callback(getAvailableDevices()) }
+                override fun onRoutesRemoved(routes: MutableList<MediaRoute2Info>) { callback(getAvailableDevices()) }
+                override fun onRoutesChanged(routes: MutableList<MediaRoute2Info>) { callback(getAvailableDevices()) }
             }
             mediaRouter2RouteCallback = routeCallback
             mr2.registerRouteCallback(
                 context.mainExecutor,
                 routeCallback,
-                android.media.RouteDiscoveryPreference.Builder(listOf(android.media.MediaRoute2Info.FEATURE_LIVE_AUDIO), true).build()
+                RouteDiscoveryPreference.Builder(listOf(MediaRoute2Info.FEATURE_LIVE_AUDIO), true).build()
             )
         }
     }

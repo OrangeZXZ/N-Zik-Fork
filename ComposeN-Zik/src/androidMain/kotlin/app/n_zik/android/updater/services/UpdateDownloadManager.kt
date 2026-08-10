@@ -32,6 +32,7 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import okhttp3.CacheControl
 
 /**
  * Manages APK downloads for in-app updates.
@@ -106,7 +107,7 @@ object UpdateDownloadManager {
             try {
                 val request = Request.Builder()
                     .url(apkUrl)
-                    .cacheControl(okhttp3.CacheControl.FORCE_NETWORK)
+                    .cacheControl(CacheControl.FORCE_NETWORK)
                     .build()
 
                 val call = NetworkClientFactory.getClient().newCall(request)

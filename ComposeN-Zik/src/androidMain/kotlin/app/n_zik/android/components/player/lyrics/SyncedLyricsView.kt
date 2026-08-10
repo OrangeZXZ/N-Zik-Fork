@@ -51,6 +51,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import app.n_zik.android.components.player.lyrics.utils.HtmlDecoder
 import androidx.compose.animation.core.tween
+import kotlinx.coroutines.CancellationException
 
 /** Minimum silence duration (ms) between two lines required to show the interval indicator. */
 private const val GAP_THRESHOLD_MS = 4000L
@@ -356,7 +357,7 @@ fun SyncedLyricsView(
             try {
                 val targetIndex = synchronizedLyrics.index + 1
                 lazyListState.scrollToItem(targetIndex, -finalFixedCenter)
-            } catch (e: kotlinx.coroutines.CancellationException) {
+            } catch (e: CancellationException) {
                 if (!isActive) throw e
             }
         }
@@ -384,7 +385,7 @@ fun SyncedLyricsView(
                     } else {
                         lazyListState.scrollToItem(targetIndex, -finalFixedCenter)
                     }
-                } catch (e: kotlinx.coroutines.CancellationException) {
+                } catch (e: CancellationException) {
                     if (!isActive) throw e
                 }
             }

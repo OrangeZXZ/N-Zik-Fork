@@ -200,6 +200,8 @@ import app.n_zik.android.core.database.ImportSong
 import app.n_zik.android.components.dialog.settings.LocalPlaylistToolbarSettingsDialog
 import app.n_zik.android.utils.getAlbumVersionFromVideo
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import java.util.concurrent.atomic.AtomicInteger
+import org.json.JSONArray
 
 
 @KotlinCsvExperimental
@@ -361,14 +363,14 @@ fun LocalPlaylistSongs(
     }
     LaunchedEffect(matchRunningExt) {
         if (!matchRunningExt) return@LaunchedEffect
-        val mergedCounter = java.util.concurrent.atomic.AtomicInteger(0)
+        val mergedCounter = AtomicInteger(0)
         val matchedItemsRef = items.filter{song -> song.id == (cleanPrefix(song.title ?: "")+(song.artistsText ?: "")).filter{it.isLetterOrDigit()}}
         val job = launch(Dispatchers.IO) {
             try {
                 totalSongsToMatch = matchedItemsRef.size
                 songsMatched = 0
 
-                val jobs = mutableListOf<kotlinx.coroutines.Job>()
+                val jobs = mutableListOf<Job>()
                 matchedItemsRef.forEachIndexed { index, song ->
                     ensureActive()
                     jobs.add(launch(Dispatchers.IO) {
@@ -382,7 +384,7 @@ fun LocalPlaylistSongs(
                                 playlist = playlist,
                                 mergedCounter = mergedCounter
                             )
-                        } catch (e: kotlinx.coroutines.CancellationException) {
+                        } catch (e: CancellationException) {
                             wasCancelled = true
                             throw e
                         } catch (e: Exception) {
@@ -394,7 +396,7 @@ fun LocalPlaylistSongs(
                     kotlinx.coroutines.delay(800) // Space out requests to avoid YouTube rate limiting (403 Error)
                 }
                 jobs.forEach { it.join() }
-            } catch (e: kotlinx.coroutines.CancellationException) {
+            } catch (e: CancellationException) {
                 // Expected on cancel - cleanup happens in finally
             } finally {
                 withContext(NonCancellable) {
@@ -459,7 +461,7 @@ fun LocalPlaylistSongs(
 
     LaunchedEffect(matchRunning) {
         if (!matchRunning) return@LaunchedEffect
-        val mergedCounter = java.util.concurrent.atomic.AtomicInteger(0)
+        val mergedCounter = AtomicInteger(0)
         val unmatched = if (retryMatchMode && retryMatchSongs.isNotEmpty()) {
             retryMatchSongs
         } else {
@@ -470,7 +472,7 @@ fun LocalPlaylistSongs(
                 totalSongsToMatch = unmatched.size
                 songsMatched = 0
 
-                val jobs = mutableListOf<kotlinx.coroutines.Job>()
+                val jobs = mutableListOf<Job>()
                 unmatched.forEachIndexed { index, song ->
                     ensureActive()
                     jobs.add(launch(Dispatchers.IO) {
@@ -484,7 +486,7 @@ fun LocalPlaylistSongs(
                                 playlist = playlist,
                                 mergedCounter = mergedCounter
                             )
-                        } catch (e: kotlinx.coroutines.CancellationException) {
+                        } catch (e: CancellationException) {
                             wasCancelled = true
                             throw e
                         } catch (e: Exception) {
@@ -496,7 +498,7 @@ fun LocalPlaylistSongs(
                     kotlinx.coroutines.delay(800)
                 }
                 jobs.forEach { it.join() }
-            } catch (e: kotlinx.coroutines.CancellationException) {
+            } catch (e: CancellationException) {
                 // Expected on cancel - cleanup happens in finally
             } finally {
                 withContext(NonCancellable) {
@@ -604,7 +606,7 @@ fun LocalPlaylistSongs(
                 placeholder = "https://youtube.com/playlist?list=...",
                 setValue = { url ->
                     showYouTubeLinkDialog = false
-                    coroutineScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                    coroutineScope.launch(Dispatchers.IO) {
                         val urlPlaylistId = listOf(
                             "https://www.youtube.com/playlist?",
                             "https://youtube.com/playlist?",
@@ -1141,7 +1143,7 @@ fun LocalPlaylistSongs(
                     val defaultOrder = LocalPlaylistToolbarSettingsDialog.allButtonIds
                     val order = try {
                         if (toolbarOrderPref.isBlank()) defaultOrder else {
-                            val arr = org.json.JSONArray(toolbarOrderPref)
+                            val arr = JSONArray(toolbarOrderPref)
                             (0 until arr.length()).map { arr.getString(it) }.distinct()
                         }
                     } catch (_: Exception) { defaultOrder }

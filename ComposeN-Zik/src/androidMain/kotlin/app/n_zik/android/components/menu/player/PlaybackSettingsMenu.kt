@@ -72,6 +72,10 @@ import app.n_zik.android.uiRoundnessShape
 import androidx.media3.common.PlaybackParameters
 import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.text.BasicText
+import android.content.Context
+import android.content.BroadcastReceiver
+import android.content.IntentFilter
+import android.content.Intent
 
 @UnstableApi
 class PlaybackSettingsMenu private constructor(
@@ -112,14 +116,14 @@ class PlaybackSettingsMenu private constructor(
         var playbackDuration by rememberPreference(playbackDurationKey, 0f)
 
         DisposableEffect(Unit) {
-            val receiver = object : android.content.BroadcastReceiver() {
-                override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
+            val receiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
                     if (intent?.action == "android.media.VOLUME_CHANGED_ACTION") {
                         playbackDeviceVolume = getDeviceVolume(context!!)
                     }
                 }
             }
-            context.registerReceiver(receiver, android.content.IntentFilter("android.media.VOLUME_CHANGED_ACTION"))
+            context.registerReceiver(receiver, IntentFilter("android.media.VOLUME_CHANGED_ACTION"))
             onDispose { context.unregisterReceiver(receiver) }
         }
         var blurStrength by rememberPreference(blurStrengthKey, 25f)
@@ -333,14 +337,14 @@ class PlaybackSettingsMenu private constructor(
         var volumeBoostLevel by rememberPreference(volumeBoostLevelKey, 0f)
 
         DisposableEffect(Unit) {
-            val receiver = object : android.content.BroadcastReceiver() {
-                override fun onReceive(context: android.content.Context?, intent: android.content.Intent?) {
+            val receiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
                     if (intent?.action == "android.media.VOLUME_CHANGED_ACTION") {
                         playbackDeviceVolume = getDeviceVolume(context!!)
                     }
                 }
             }
-            context.registerReceiver(receiver, android.content.IntentFilter("android.media.VOLUME_CHANGED_ACTION"))
+            context.registerReceiver(receiver, IntentFilter("android.media.VOLUME_CHANGED_ACTION"))
             onDispose { context.unregisterReceiver(receiver) }
         }
 

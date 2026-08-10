@@ -37,6 +37,7 @@ import app.n_zik.android.typography
 import app.it.fast4x.rimusic.utils.semiBold
 import app.n_zik.android.uiRoundnessShape
 import timber.log.Timber
+import android.view.ViewGroup
 
 
 @Composable
@@ -110,9 +111,9 @@ fun YoutubePlayer(
 
                 YouTubePlayerView(context = it).apply {
                     enableAutomaticInitialization = false
-                    layoutParams = android.view.ViewGroup.LayoutParams(
-                        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
-                        android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                    layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
                     )
                     lifecycleOwner.lifecycle.addObserver(this)
                     initialize(listener, true, iFramePlayerOptions)

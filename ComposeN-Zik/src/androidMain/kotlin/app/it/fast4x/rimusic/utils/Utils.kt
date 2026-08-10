@@ -68,6 +68,12 @@ import timber.log.Timber
 import app.n_zik.android.enums.lyrics.LyricsType
 import app.n_zik.android.playback.services.automotive.models.AutoMediaItemMapper
 import app.n_zik.android.playback.services.ArtworkContentProvider
+import android.graphics.Bitmap
+import android.media.ExifInterface
+import android.content.ContentResolver
+import android.graphics.Matrix
+import android.graphics.BitmapFactory
+import java.io.ByteArrayOutputStream
 
 const val EXPLICIT_BUNDLE_TAG = "is_explicit"
 
@@ -231,35 +237,35 @@ val Song.asMediaItem: MediaItem
             .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
 
         // For local file:// URIs, set content:// via ArtworkContentProvider + artworkData for AA
-        if (artworkUri.scheme == android.content.ContentResolver.SCHEME_FILE) {
+        if (artworkUri.scheme == ContentResolver.SCHEME_FILE) {
             try {
                 val path = artworkUri.path
                 if (path != null) {
-                    val file = java.io.File(path)
+                    val file = File(path)
                     if (file.exists()) {
                         // Set content:// URI via exported ArtworkContentProvider (AA requires exported)
-                        val contentUri = android.net.Uri.Builder()
-                            .scheme(android.content.ContentResolver.SCHEME_CONTENT)
+                        val contentUri = Uri.Builder()
+                            .scheme(ContentResolver.SCHEME_CONTENT)
                             .authority(ArtworkContentProvider.AUTHORITY)
                             .appendPath(id)
                             .build()
                         metadataBuilder.setArtworkUri(contentUri)
                         // artworkData for AA (queue, list, player)
-                        var bitmap = android.graphics.BitmapFactory.decodeFile(path)
+                        var bitmap = BitmapFactory.decodeFile(path)
                         if (bitmap != null) {
                             // Apply EXIF rotation
                             try {
-                                val exif = android.media.ExifInterface(path)
-                                val orientation = exif.getAttributeInt(android.media.ExifInterface.TAG_ORIENTATION, android.media.ExifInterface.ORIENTATION_NORMAL)
+                                val exif = ExifInterface(path)
+                                val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
                                 val rotation = when (orientation) {
-                                    android.media.ExifInterface.ORIENTATION_ROTATE_90 -> 90f
-                                    android.media.ExifInterface.ORIENTATION_ROTATE_180 -> 180f
-                                    android.media.ExifInterface.ORIENTATION_ROTATE_270 -> 270f
+                                    ExifInterface.ORIENTATION_ROTATE_90 -> 90f
+                                    ExifInterface.ORIENTATION_ROTATE_180 -> 180f
+                                    ExifInterface.ORIENTATION_ROTATE_270 -> 270f
                                     else -> 0f
                                 }
                                 if (rotation != 0f) {
-                                    val matrix = android.graphics.Matrix().apply { postRotate(rotation) }
-                                    val rotated = android.graphics.Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+                                    val matrix = Matrix().apply { postRotate(rotation) }
+                                    val rotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
                                     if (rotated !== bitmap) { bitmap.recycle(); bitmap = rotated }
                                 }
                             } catch (_: Exception) {}
@@ -267,10 +273,10 @@ val Song.asMediaItem: MediaItem
                             val size = minOf(bitmap.width, bitmap.height)
                             val x = (bitmap.width - size) / 2
                             val y = (bitmap.height - size) / 2
-                            val cropped = android.graphics.Bitmap.createBitmap(bitmap, x, y, size, size)
+                            val cropped = Bitmap.createBitmap(bitmap, x, y, size, size)
                             if (cropped !== bitmap) bitmap.recycle()
-                            val stream = java.io.ByteArrayOutputStream()
-                            cropped.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, stream)
+                            val stream = ByteArrayOutputStream()
+                            cropped.compress(Bitmap.CompressFormat.JPEG, 85, stream)
                             cropped.recycle()
                             metadataBuilder.setArtworkData(stream.toByteArray(), MediaMetadata.PICTURE_TYPE_ILLUSTRATION)
                         }

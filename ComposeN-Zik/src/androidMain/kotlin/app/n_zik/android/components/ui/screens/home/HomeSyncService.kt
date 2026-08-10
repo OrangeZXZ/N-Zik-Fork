@@ -34,6 +34,8 @@ import kotlinx.coroutines.flow.first
 import app.kreate.android.me.knighthat.utils.Toaster
 import androidx.core.app.NotificationCompat
 import app.it.fast4x.rimusic.MODIFIED_PREFIX
+import java.net.UnknownHostException
+import java.net.ConnectException
 
 class HomeSyncService : Service() {
 
@@ -197,7 +199,7 @@ class HomeSyncService : Service() {
                     status = 1
                 }.onFailure {
                     Timber.tag("HomeSyncService").e(it, "[ARTIST|YT_DIRECT] ✗ Failed attempt $attempt: ${artist.name}")
-                    if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
+                    if (it is UnknownHostException || it is ConnectException) status = 3
                 }
                 if (status != 0) break
             }
@@ -246,7 +248,7 @@ class HomeSyncService : Service() {
                         status = 1
                     }.onFailure {
                         Timber.tag("HomeSyncService").e(it, "[ARTIST|$method] ✗ Failed attempt $attempt: ${artist.name}")
-                        if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
+                        if (it is UnknownHostException || it is ConnectException) status = 3
                     }
                 } else {
                     val query = artist.name?.trim()
@@ -278,7 +280,7 @@ class HomeSyncService : Service() {
                                 successCount++
                                 status = 1
                             }.onFailure {
-                                if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
+                                if (it is UnknownHostException || it is ConnectException) status = 3
                             }
                         } else {
                             Timber.tag("HomeSyncService").d("[ARTIST|FALLBACK_SEARCH] ✗ No match found for '$query'")
@@ -286,7 +288,7 @@ class HomeSyncService : Service() {
                         }
                     } catch (it: Exception) {
                         Timber.tag("HomeSyncService").e(it, "[ARTIST|FALLBACK_SEARCH] ✗ Search failed attempt $attempt: $query")
-                        if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
+                        if (it is UnknownHostException || it is ConnectException) status = 3
                     }
                 }
                 if (status != 0) break
@@ -408,7 +410,7 @@ class HomeSyncService : Service() {
                     status = 1
                 }.onFailure {
                     Timber.tag("HomeSyncService").e(it, "[ALBUM|YT_DIRECT] ✗ Failed attempt $attempt: ${album.title}")
-                    if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
+                    if (it is UnknownHostException || it is ConnectException) status = 3
                 }
                 if (status != 0) break
             }
@@ -468,7 +470,7 @@ class HomeSyncService : Service() {
                         status = 1
                     }.onFailure {
                         Timber.tag("HomeSyncService").e(it, "[ALBUM|$method] ✗ Failed attempt $attempt: ${album.title}")
-                        if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
+                        if (it is UnknownHostException || it is ConnectException) status = 3
                     }
                 } else {
                     val query = album.title?.trim()
@@ -513,7 +515,7 @@ class HomeSyncService : Service() {
                                 successCount++
                                 status = 1
                             }.onFailure {
-                                if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
+                                if (it is UnknownHostException || it is ConnectException) status = 3
                             }
                         } else {
                             Timber.tag("HomeSyncService").d("[ALBUM|FALLBACK_SEARCH] ✗ No match found for '$query'")
@@ -521,7 +523,7 @@ class HomeSyncService : Service() {
                         }
                     } catch (it: Exception) {
                         Timber.tag("HomeSyncService").e(it, "[ALBUM|FALLBACK_SEARCH] ✗ Search failed attempt $attempt: $query")
-                        if (it is java.net.UnknownHostException || it is java.net.ConnectException) status = 3
+                        if (it is UnknownHostException || it is ConnectException) status = 3
                     }
                 }
                 if (status != 0) break

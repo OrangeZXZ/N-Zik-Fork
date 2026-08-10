@@ -51,6 +51,8 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import androidx.compose.ui.platform.LocalContext
+import android.content.Context
+import android.content.SharedPreferences
 
 private val defaultSectionOrder = listOf(
     "tips",
@@ -161,7 +163,7 @@ object QuickPicksContentSettingsDialog : Dialog {
         return arr.toString()
     }
 
-    private fun loadPrefs(prefs: android.content.SharedPreferences): Pair<MutableList<String>, MutableList<Boolean>> {
+    private fun loadPrefs(prefs: SharedPreferences): Pair<MutableList<String>, MutableList<Boolean>> {
         val orderSerialized = prefs.getString(quickPicksSectionOrderKey, "") ?: ""
         val order = parseOrder(orderSerialized).toMutableList()
         val toggles = order.map { id ->
@@ -171,7 +173,7 @@ object QuickPicksContentSettingsDialog : Dialog {
         return order to toggles
     }
 
-    private fun savePrefs(prefs: android.content.SharedPreferences, order: List<String>, toggles: Map<String, Boolean>) {
+    private fun savePrefs(prefs: SharedPreferences, order: List<String>, toggles: Map<String, Boolean>) {
         val editor = prefs.edit()
         editor.putString(quickPicksSectionOrderKey, serializeOrder(order))
         buildSectionDefs().forEach { (id, def) ->
@@ -183,7 +185,7 @@ object QuickPicksContentSettingsDialog : Dialog {
     @Composable
     override fun DialogBody() {
         val context = LocalContext.current
-        val prefs = remember { context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
+        val prefs = remember { context.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
         val sectionDefs = remember { buildSectionDefs() }
 
         val initial = remember { loadPrefs(prefs) }
@@ -251,8 +253,8 @@ object QuickPicksContentSettingsDialog : Dialog {
             }
         )
     }
-    fun reset(context: android.content.Context) {
-        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+    fun reset(context: Context) {
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         val defaultToggles = buildSectionDefs().mapValues { it.value.defaultValue }
         savePrefs(prefs, defaultSectionOrder, defaultToggles)
     }

@@ -49,6 +49,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import android.graphics.Color as AndroidColor
 import app.n_zik.android.uiRoundnessShape
+import android.graphics.LinearGradient
 
 
 @Composable
@@ -146,14 +147,14 @@ fun SatValPanel(
         val cornerRadius = 12.dp.toPx()
         val satValSize = size
         val bitmap = Bitmap.createBitmap(size.width.toInt(), size.height.toInt(), Bitmap.Config.ARGB_8888)
-        val canvas = android.graphics.Canvas(bitmap)
+        val canvas = Canvas(bitmap)
         val satValPanel = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
         val rgb = AndroidColor.HSVToColor(floatArrayOf(hue, 1f, 1f))
-        val satShader = android.graphics.LinearGradient(
+        val satShader = LinearGradient(
             satValPanel.left, satValPanel.top, satValPanel.right, satValPanel.top,
             -0x1, rgb, Shader.TileMode.CLAMP
         )
-        val valShader = android.graphics.LinearGradient(
+        val valShader = LinearGradient(
             satValPanel.left, satValPanel.top, satValPanel.left, satValPanel.bottom,
             -0x1, -0x1000000, Shader.TileMode.CLAMP
         )

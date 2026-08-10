@@ -22,6 +22,7 @@ import app.kreate.android.me.knighthat.utils.Toaster
 import org.json.JSONArray
 import sh.calvin.reorderable.rememberReorderableLazyListState
 import androidx.compose.ui.unit.dp
+import android.content.Context
 object HomeSongsToolbarSettingsDialog : Dialog {
 
     val allButtonIds = listOf(
@@ -77,7 +78,7 @@ object HomeSongsToolbarSettingsDialog : Dialog {
     @Composable
     override fun DialogBody() {
         val ctx = LocalContext.current
-        val prefs = remember { ctx.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
+        val prefs = remember { ctx.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
 
         val tabs = listOf(
             BuiltInPlaylist.All to homeSongsToolbarOrderKey,
@@ -230,8 +231,8 @@ object HomeSongsToolbarSettingsDialog : Dialog {
         }
     }
 
-    fun reset(context: android.content.Context) {
-        val prefs = context.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE)
+    fun reset(context: Context) {
+        val prefs = context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         val edit = prefs.edit()
         val tabs = listOf(
             BuiltInPlaylist.All to homeSongsToolbarOrderKey,

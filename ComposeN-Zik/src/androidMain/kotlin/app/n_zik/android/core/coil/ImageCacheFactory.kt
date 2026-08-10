@@ -54,13 +54,15 @@ import app.it.fast4x.rimusic.utils.preferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import okhttp3.OkHttpClient
 import okio.Path.Companion.toOkioPath
-// import timber.log.Timber
+// import Timber
 import java.security.MessageDigest
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 import app.n_zik.android.core.network.client.GlobalNetworkLogger
 import app.n_zik.android.core.network.client.NetworkClientFactory
 import androidx.compose.foundation.Image
+import okhttp3.Request
+import timber.log.Timber
 
 @OptIn(ExperimentalCoilApi::class)
 object ImageCacheFactory {
@@ -193,7 +195,7 @@ object ImageCacheFactory {
             .diskCache(DISK_CACHE)
             .components {
                 add(OkHttpNetworkFetcherFactory(
-                    callFactory = { request: okhttp3.Request ->
+                    callFactory = { request: Request ->
                         NetworkClientFactory.getClient().newCall(request)
                     }
                 ))

@@ -19,6 +19,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.intellij.lang.annotations.MagicConstant
+import android.view.Gravity
 
 /**
  * This singleton handles displaying **toast** to users.
@@ -100,7 +101,7 @@ object Toaster {
                 val density = appContext().resources.displayMetrics.density
                 val offsetPx = (FLOATING_BAR_HEIGHT_DP * density).toInt()
                 toast.setGravity(
-                    android.view.Gravity.BOTTOM or android.view.Gravity.CENTER_HORIZONTAL,
+                    Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
                     0,
                     offsetPx
                 )

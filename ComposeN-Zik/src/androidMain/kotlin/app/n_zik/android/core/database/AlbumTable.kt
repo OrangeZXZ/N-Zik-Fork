@@ -133,12 +133,12 @@ interface AlbumTable {
      *
      * ### Standalone use
      *
-     * When error occurs and [android.database.SQLException] is thrown,
+     * When error occurs and [SQLException] is thrown,
      * data inside database will be replaced by provided [album].
      *
      * ### Transaction use
      *
-     * When error occurs and [android.database.SQLException] is thrown,
+     * When error occurs and [SQLException] is thrown,
      * data inside database will be replaced by provided [album]
      * and transaction continues.
      *

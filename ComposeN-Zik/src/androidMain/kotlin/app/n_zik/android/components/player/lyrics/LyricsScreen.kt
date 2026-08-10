@@ -65,6 +65,10 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.animation.AnimatedVisibility
 import app.it.fast4x.rimusic.utils.getBitmapFromUrl
 import androidx.compose.animation.scaleIn
+import kotlinx.coroutines.Dispatchers
+import dev.rebelonion.translator.Language
+import java.util.Locale
+import android.graphics.Bitmap
 
 
 @UnstableApi
@@ -142,8 +146,8 @@ fun LyricsScreen(
             if (otherLanguageApp != Languages.System) {
                 otherLanguageApp.translatorLanguage
             } else {
-                val systemCode = java.util.Locale.getDefault().language
-                Languages.entries.find { it.code == systemCode }?.translatorLanguage ?: dev.rebelonion.translator.Language.ENGLISH
+                val systemCode = Locale.getDefault().language
+                Languages.entries.find { it.code == systemCode }?.translatorLanguage ?: Language.ENGLISH
             }
         }
 
@@ -210,11 +214,11 @@ fun LyricsScreen(
         }
 
         var lyricsCustomColor by rememberPreference(lyricsCustomColorKey, android.graphics.Color.WHITE)
-        var bitmapCover by remember { mutableStateOf<android.graphics.Bitmap?>(null) }
+        var bitmapCover by remember { mutableStateOf<Bitmap?>(null) }
         var dominantColor by remember { mutableStateOf(android.graphics.Color.DKGRAY) }
 
         LaunchedEffect(mediaMetadata.artworkUri) {
-            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            kotlinx.coroutines.withContext(Dispatchers.IO) {
                 bitmapCover = try {
                     getBitmapFromUrl(context, mediaMetadata.artworkUri.toString())
                 } catch (_: Exception) {

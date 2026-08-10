@@ -140,6 +140,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import app.it.fast4x.rimusic.utils.parentalControlEnabledKey
 import androidx.compose.ui.res.painterResource
 import androidx.compose.runtime.rememberCoroutineScope
+import java.util.Locale
 
 @ExperimentalFoundationApi
 @UnstableApi
@@ -265,7 +266,7 @@ fun ArtistDetails(
     val translate = Translate.init()
     val translator = Translator(NetworkClientFactory.getTranslatorClient())
     val otherLanguageApp by rememberPreference(otherLanguageAppArtistKey, Languages.System)
-    val appLang = java.util.Locale.getDefault().language
+    val appLang = Locale.getDefault().language
     val activeTranslateLang = remember(otherLanguageApp, appLang) {
         if (otherLanguageApp != Languages.System) otherLanguageApp
         else Languages.entries.firstOrNull { it.code == appLang } ?: Languages.English

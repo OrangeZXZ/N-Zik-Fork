@@ -75,6 +75,8 @@ import app.n_zik.android.core.database.migration.From33To34Migration
 import app.kreate.android.me.knighthat.utils.PropUtils
 import app.n_zik.android.core.backup.BackupManager
 import androidx.room.InvalidationTracker
+import timber.log.Timber
+import android.database.sqlite.SQLiteDatabaseLockedException
 
 object Database {
     const val FILE_NAME = "data.db"
@@ -260,7 +262,7 @@ object Database {
                                     }
                                 }
                         } catch (e: Exception) {
-                            timber.log.Timber.tag("Database").e(e, "Failed to fetch album page for year update")
+                            Timber.tag("Database").e(e, "Failed to fetch album page for year update")
                         }
                     }
                 }
@@ -356,11 +358,11 @@ object Database {
                                 if (!albumPage.year.isNullOrBlank()) {
                                     val updatedAlbum = Album(
                                         id = albumId,
-                                        title = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(mergedAlbum.title, albumPage.title.takeIf { !it.isNullOrBlank() }) ?: mergedAlbum.title,
-                                        thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(mergedAlbum.thumbnailUrl, albumPage.thumbnail?.url.takeIf { !it.isNullOrBlank() }) ?: mergedAlbum.thumbnailUrl,
+                                        title = PropUtils.retainIfModified(mergedAlbum.title, albumPage.title.takeIf { !it.isNullOrBlank() }) ?: mergedAlbum.title,
+                                        thumbnailUrl = PropUtils.retainIfModified(mergedAlbum.thumbnailUrl, albumPage.thumbnail?.url.takeIf { !it.isNullOrBlank() }) ?: mergedAlbum.thumbnailUrl,
                                         year = albumPage.year,
-                                        authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(mergedAlbum.authorsText, albumPage.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() }) ?: mergedAlbum.authorsText,
-                                        shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(mergedAlbum.shareUrl, albumPage.url) ?: mergedAlbum.shareUrl,
+                                        authorsText = PropUtils.retainIfModified(mergedAlbum.authorsText, albumPage.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() }) ?: mergedAlbum.authorsText,
+                                        shareUrl = PropUtils.retainIfModified(mergedAlbum.shareUrl, albumPage.url) ?: mergedAlbum.shareUrl,
                                         timestamp = System.currentTimeMillis(),
                                         bookmarkedAt = mergedAlbum.bookmarkedAt
                                     )
@@ -368,7 +370,7 @@ object Database {
                                 }
                             }
                     } catch (e: Exception) {
-                        timber.log.Timber.tag("Database").e(e, "Failed to fetch album page for year update")
+                        Timber.tag("Database").e(e, "Failed to fetch album page for year update")
                     }
                 }
             }
@@ -559,15 +561,15 @@ object Database {
                 try {
                     this.block()
                     return@execute
-                } catch (e: android.database.sqlite.SQLiteDatabaseLockedException) {
+                } catch (e: SQLiteDatabaseLockedException) {
                     attempt++
                     if (attempt >= retries) {
-                        timber.log.Timber.tag("Database").e(e, "Transaction FAILED after $retries attempts")
+                        Timber.tag("Database").e(e, "Transaction FAILED after $retries attempts")
                         return@execute
                     }
                     Thread.sleep(200L * attempt)
                 } catch (e: Exception) {
-                    timber.log.Timber.tag("Database").e(e, "asyncTransaction unexpected exception, aborting")
+                    Timber.tag("Database").e(e, "asyncTransaction unexpected exception, aborting")
                     return@execute
                 }
             }

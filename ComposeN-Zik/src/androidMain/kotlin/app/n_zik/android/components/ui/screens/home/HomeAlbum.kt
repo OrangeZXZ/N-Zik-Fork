@@ -145,6 +145,8 @@ import app.n_zik.android.components.dialog.settings.HomeAlbumsToolbarSettingsDia
 import androidx.compose.material3.LinearWavyProgressIndicator
 import app.n_zik.android.components.AppPullToRefreshBox
 import androidx.core.content.ContextCompat
+import java.util.ArrayList
+import android.content.Intent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalTextApi
@@ -299,17 +301,17 @@ fun HomeAlbums(
             return
         }
         val targetItems = itemsToRefresh ?: itemsOnDisplay
-        val ids = java.util.ArrayList(targetItems.map { it.id })
+        val ids = ArrayList(targetItems.map { it.id })
         if (ids.isEmpty()) return
         
-        val intent = android.content.Intent(appContext(), HomeSyncService::class.java).apply {
+        val intent = Intent(appContext(), HomeSyncService::class.java).apply {
             action = HomeSyncService.ACTION_SYNC_ALBUMS
             putStringArrayListExtra(HomeSyncService.EXTRA_IDS, ids)
         }
         try {
             ContextCompat.startForegroundService(appContext(), intent)
         } catch (e: Exception) {
-            timber.log.Timber.tag("HomeAlbum").e(e, "Failed to start HomeSyncService")
+            Timber.tag("HomeAlbum").e(e, "Failed to start HomeSyncService")
             Toaster.e("Failed to start sync service")
         }
     }

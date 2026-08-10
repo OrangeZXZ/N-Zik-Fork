@@ -589,7 +589,7 @@ fun AIRecommendationSettings(
                         LaunchedEffect(Unit) {
                             resetToDefault = false
                         }
-                        app.kreate.android.me.knighthat.utils.Toaster.done()
+                        Toaster.done()
                     }
                 }
             )

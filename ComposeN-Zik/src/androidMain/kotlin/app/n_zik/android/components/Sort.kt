@@ -47,6 +47,7 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
+import android.content.Context
 
 open class Sort<T: Enum<T>> (
     override val menuState: MenuState,
@@ -104,7 +105,7 @@ open class Sort<T: Enum<T>> (
             return getEnumConstants()
         }
         val ctx = LocalContext.current
-        val prefs = remember(ctx) { ctx.getSharedPreferences("preferences", android.content.Context.MODE_PRIVATE) }
+        val prefs = remember(ctx) { ctx.getSharedPreferences("preferences", Context.MODE_PRIVATE) }
         val savedOrderJson = remember(prefs, sortMenuOrderKey) {
             prefs.getString(sortMenuOrderKey, "") ?: ""
         }

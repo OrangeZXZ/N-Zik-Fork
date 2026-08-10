@@ -39,6 +39,7 @@ import okhttp3.Request
 import org.json.JSONObject
 import timber.log.Timber
 import app.n_zik.android.core.network.client.NetworkClientFactory
+import android.os.Build
 
     /**
      * Get the discord user
@@ -154,7 +155,7 @@ fun DiscordLoginAndGetToken(
                     }
                     settings.javaScriptEnabled = true
                     settings.domStorageEnabled = true
-                    if (android.os.Build.MANUFACTURER.equals(MOTOROLA, ignoreCase = true)) {
+                    if (Build.MANUFACTURER.equals(MOTOROLA, ignoreCase = true)) {
                         settings.userAgentString = SAMSUNG_USER_AGENT
                     }
                     val cookieManager = CookieManager.getInstance()

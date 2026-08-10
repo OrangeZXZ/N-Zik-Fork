@@ -21,6 +21,8 @@ import java.io.FileOutputStream
 import timber.log.Timber
 import kotlin.math.abs
 import kotlin.math.pow
+import java.nio.ByteBuffer
+import java.io.IOException
 
 object WaveformExtractor {
 
@@ -144,7 +146,7 @@ object WaveformExtractor {
                     Timber.tag(TAG).w("EXTRACT [$mediaId] Only got ${amplitudes.size} samples (need ${TARGET_SAMPLES - 2}), extraction incomplete")
                 }
             } catch (e: Exception) {
-                if (e is java.io.IOException && e.message?.contains("PlaceholderDataSource") == true) {
+                if (e is IOException && e.message?.contains("PlaceholderDataSource") == true) {
                     Timber.tag(TAG).d("EXTRACT [$mediaId] PlaceholderDataSource -> song not fully cached yet")
                 } else {
                     Timber.tag(TAG).e(e, "EXTRACT [$mediaId] Extraction FAILED: ${e.message}")
@@ -306,7 +308,7 @@ object WaveformExtractor {
             if (durationUs <= 0) return mutableListOf()
 
             // Count total frames approximately or just seek through
-            val buffer = java.nio.ByteBuffer.allocate(1024 * 64)
+            val buffer = ByteBuffer.allocate(1024 * 64)
             val intervalUs = durationUs / TARGET_SAMPLES
 
             for (i in 0 until TARGET_SAMPLES) {
