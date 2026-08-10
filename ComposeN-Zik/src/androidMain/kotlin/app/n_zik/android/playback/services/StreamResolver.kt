@@ -328,7 +328,7 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String): Int {
                         authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
                         year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
                         shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
-                        lastFetch = if (songs.size >= 2) System.currentTimeMillis() else null
+                        lastFetch = System.currentTimeMillis()
                     ))
                 }
                 Database.songAlbumMapTable.clear(albumId)
@@ -346,7 +346,7 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String): Int {
                                     authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
                                     year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
                                     shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
-                                    lastFetch = if (songs.size >= 2) System.currentTimeMillis() else null
+                                    lastFetch = System.currentTimeMillis()
                                 ))
                             }
                             Database.songAlbumMapTable.clear(albumId)

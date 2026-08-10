@@ -4,6 +4,7 @@ Hotfix:
 Fixed:
 - Album year auto-fetch from YouTube when missing
 - Artist/album IDs retry up to 3 times if empty after upsert
+- EPs with 1 song now properly cache their last sync timestamp
 
 Improved:
 - Album cache skip log shows milliseconds for debugging
