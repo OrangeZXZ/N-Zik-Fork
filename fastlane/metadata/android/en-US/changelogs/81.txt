@@ -1,0 +1,9 @@
+Hotfix:
+- Fixes for inconveniences from v7.4.0
+
+Fixed:
+- Album year auto-fetch from YouTube when missing
+- Artist/album IDs retry up to 3 times if empty after upsert
+
+Improved:
+- Album cache skip log shows milliseconds for debugging

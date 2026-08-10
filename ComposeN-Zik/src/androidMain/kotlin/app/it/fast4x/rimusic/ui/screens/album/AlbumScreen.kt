@@ -107,10 +107,29 @@ fun AlbumScreen(
     var description by rememberSaveable { mutableStateOf("") }
     var loadedSongsCount by remember { mutableIntStateOf(0) }
     LaunchedEffect( Unit ) {
+        timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("========== ALBUM DETAILS [GET ALBUM] ==========")
+        timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] browseId from navigation: $browseId")
+        timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] MODIFIED_PREFIX: ${app.it.fast4x.rimusic.MODIFIED_PREFIX}")
+        val cleanedBrowseId = browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX)
+        timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] Cleaned browseId: $cleanedBrowseId")
+        timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] Was prefix removed? ${browseId != cleanedBrowseId}")
+
         YtMusic.getAlbum( browseId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX), true, onProgress = { loadedSongsCount = it } )
                .onSuccess { online ->
                    val onlineAlbum = online.album
                     val authorsText: String? = onlineAlbum.authors.parseArtists().joinToString(", ")
+
+                   timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] Result: SUCCESS")
+                   timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] Album title: ${onlineAlbum.title}")
+                   timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] Album year: ${onlineAlbum.year}")
+                   timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] Album authors: ${onlineAlbum.authors?.map { it.name }}")
+                   timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] Album thumbnail: ${onlineAlbum.thumbnail?.url}")
+                   timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] Songs count: ${online.songs.size}")
+                   timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] Album URL: ${online.url}")
+                   online.songs.forEachIndexed { index, song ->
+                       timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("[GET ALBUM] Song[$index]: ${song.info?.name} (${song.info?.endpoint?.videoId})")
+                   }
+                   timber.log.Timber.tag("ALBUM-DETAILS-DEBUG").w("========== END ALBUM DETAILS [GET ALBUM] ==========")
 
                    Database.asyncTransaction {
                        albumTable.upsert(Album(

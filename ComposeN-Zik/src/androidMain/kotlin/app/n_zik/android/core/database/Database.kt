@@ -229,6 +229,35 @@ object Database {
                 if (dbAlbum != fetchedAlbum) {
                     albumTable.upsert(fetchedAlbum)
                 }
+
+                if (fetchedAlbum.year.isNullOrBlank()) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            Innertube.albumPage(BrowseBody(browseId = browseId))
+                                ?.getOrNull()
+                                ?.let { albumPage ->
+                                    if (!albumPage.year.isNullOrBlank()) {
+                                        val updatedAlbum = Album(
+                                            id = browseId,
+                                            title = PropUtils.retainIfModified(fetchedAlbum.title, albumPage.title.takeIf { !it.isNullOrBlank() }) ?: fetchedAlbum.title,
+                                            thumbnailUrl = PropUtils.retainIfModified(fetchedAlbum.thumbnailUrl, albumPage.thumbnail?.url.takeIf { !it.isNullOrBlank() }) ?: fetchedAlbum.thumbnailUrl,
+                                            year = albumPage.year,
+                                            authorsText = PropUtils.retainIfModified(fetchedAlbum.authorsText, albumPage.authors.parseArtists().joinToString(", ").takeIf { it.isNotBlank() }) ?: fetchedAlbum.authorsText,
+                                            shareUrl = PropUtils.retainIfModified(fetchedAlbum.shareUrl, albumPage.url) ?: fetchedAlbum.shareUrl,
+                                            timestamp = System.currentTimeMillis(),
+                                            bookmarkedAt = fetchedAlbum.bookmarkedAt,
+                                            isYoutubeAlbum = fetchedAlbum.isYoutubeAlbum,
+                                            lastFetch = fetchedAlbum.lastFetch
+                                        )
+                                        albumTable.upsert(updatedAlbum)
+                                    }
+                                }
+                        } catch (e: Exception) {
+                            timber.log.Timber.tag("Database").e(e, "Failed to fetch album page for year update")
+                        }
+                    }
+                }
+
                 mapIgnore(fetchedAlbum, song)
             }
         }

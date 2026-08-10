@@ -73,6 +73,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import java.io.IOException
 import kotlinx.serialization.json.Json
@@ -187,11 +189,25 @@ suspend fun upsertSongInfo(videoId: String) {
             onSuccess = { nextPage ->
             val songItem = nextPage.itemsPage?.items?.firstOrNull() ?: return@fold
             Database.upsert(songItem)
-            timber.log.Timber.tag(TAG).d("Upserted song info for $videoId")
+            yield()
 
-            // Intelligent background catch-up for artists
-            songItem.authors?.forEach { author ->
-                val artistId = author.endpoint?.browseId
+            // Read IDs from DB (retry up to 3 times if empty)
+            var artistIdsFromDb = emptyList<app.it.fast4x.rimusic.models.Artist>()
+            var albumFromDb: app.it.fast4x.rimusic.models.Album? = null
+            for (attempt in 1..3) {
+                kotlinx.coroutines.delay(3000L * attempt)
+                artistIdsFromDb = Database.songArtistMapTable.findArtistsOf(videoId).firstOrNull().orEmpty()
+                albumFromDb = Database.songAlbumMapTable.findAlbumOf(videoId).firstOrNull()
+                if (artistIdsFromDb.isNotEmpty() || albumFromDb != null) break
+                timber.log.Timber.tag(TAG).d("[IDs] attempt $attempt/3: no artist/album IDs for $videoId, retrying...")
+            }
+            if (artistIdsFromDb.isEmpty() && albumFromDb == null) {
+                timber.log.Timber.tag(TAG).w("[IDs] No artist/album IDs for $videoId after 3 retries, skipping.")
+            }
+
+            // Artist cache — read IDs from DB
+            artistIdsFromDb?.forEach { artist ->
+                val artistId = artist.id
                 if (!artistId.isNullOrBlank()) {
                     val dbArtist = Database.artistTable.findByIdDirect(artistId)
                     val currentTime = System.currentTimeMillis()
@@ -201,62 +217,37 @@ suspend fun upsertSongInfo(videoId: String) {
                     if (isArtistRecentlyFetched) {
                         val msAgo = currentTime - (lastFetchTime ?: currentTime)
                         val daysAgo = msAgo / 86400000L
-                        timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId was fetched $daysAgo days ago ($msAgo ms), skipping network fetch.")
+                        timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId was fetched $daysAgo days ago ($msAgo ms), skipping.")
                     } else if (fetchingArtists.add(artistId)) {
-                        timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId is incomplete or outdated (lastFetch=$lastFetchTime), fetching artist page in parallel.")
+                        timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId outdated, fetching in background.")
                         CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
                             try {
                                 val artistPage = Innertube.artistPage(BrowseBody(browseId = artistId))?.getOrNull()
-                                
                                 if (artistPage != null) {
                                     Database.asyncTransaction {
-                                        try {
-                                            val existingArtist = Database.artistTable.findByIdDirect(artistId)
-                                            if (existingArtist != null) {
-                                                Database.artistTable.upsert(existingArtist.copy(
-                                                    name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.name, artistPage.name) ?: artistPage.name,
-                                                    thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.thumbnailUrl, artistPage.thumbnail?.url),
-                                                    lastFetch = System.currentTimeMillis()
-                                                ))
-                                                timber.log.Timber.tag(TAG).d("[Artist Cache] Updated artist $artistId metadata in background")
-                                            }
-                                        } catch (e: android.database.sqlite.SQLiteConstraintException) {
-                                            timber.log.Timber.tag(TAG).w("Foreign key constraint failed for artist $artistId. Retrying in 5s...")
-                                            CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-                                                kotlinx.coroutines.delay(5000)
-                                                try {
-                                                    Database.asyncTransaction {
-                                                        val existingArtist = Database.artistTable.findByIdDirect(artistId)
-                                                        if (existingArtist != null) {
-                                                            Database.artistTable.upsert(existingArtist.copy(
-                                                                name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.name, artistPage.name) ?: artistPage.name,
-                                                                thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingArtist.thumbnailUrl, artistPage.thumbnail?.url),
-                                                                lastFetch = System.currentTimeMillis()
-                                                            ))
-                                                            timber.log.Timber.tag(TAG).d("[Artist Cache] Updated artist $artistId metadata in background after retry")
-                                                        }
-                                                    }
-                                                } catch (e2: Exception) {
-                                                    timber.log.Timber.tag(TAG).e("Failed to save artist cache even after delay: ${e2.message}")
-                                                }
-                                            }
+                                        val existing = Database.artistTable.findByIdDirect(artistId)
+                                        if (existing != null) {
+                                            Database.artistTable.upsert(existing.copy(
+                                                name = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existing.name, artistPage.name) ?: artistPage.name,
+                                                thumbnailUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existing.thumbnailUrl, artistPage.thumbnail?.url),
+                                                lastFetch = System.currentTimeMillis()
+                                            ))
                                         }
                                     }
                                 }
                             } catch (e: Exception) {
-                                timber.log.Timber.tag(TAG).w(e, "Failed to fetch artist page for $artistId in background")
+                                timber.log.Timber.tag(TAG).w(e, "Failed to fetch artist $artistId")
                             } finally {
                                 fetchingArtists.remove(artistId)
                             }
                         }
-                    } else {
-                        timber.log.Timber.tag(TAG).d("[Artist Cache] $artistId fetch already in progress, skipping duplicate.")
                     }
                 }
             }
 
-            // Fetch complete album in parallel to fill all songs
-            val albumId = songItem.album?.endpoint?.browseId
+            // Album cache — use browseId from DB (navigation)
+            val albumId = albumFromDb?.id
+
             if (!albumId.isNullOrBlank()) {
                 val dbAlbum = Database.albumTable.findByIdDirect(albumId)
                 val currentTime = System.currentTimeMillis()
@@ -266,18 +257,19 @@ suspend fun upsertSongInfo(videoId: String) {
                 if (isRecentlyFetched) {
                     val msAgo = currentTime - (lastFetchTime ?: currentTime)
                     val daysAgo = msAgo / 86400000L
-                    timber.log.Timber.tag(TAG).d("[Album Cache] $albumId was fetched $daysAgo days ago ($msAgo ms), skipping network fetch.")
+                    timber.log.Timber.tag(TAG).d("[Album Cache] $albumId fetched $daysAgo days ago ($msAgo ms), skipping.")
                 } else if (fetchingAlbums.add(albumId)) {
-                    timber.log.Timber.tag(TAG).d("[Album Cache] $albumId is incomplete or outdated (lastFetch=$lastFetchTime), fetching album songs in parallel.")
+                    timber.log.Timber.tag(TAG).d("[Album Cache] $albumId outdated, fetching songs.")
                     CoroutineScope(PlaybackDispatchers.STREAM_RESOLVER).launch {
                         try {
-                            fetchAndSaveAlbumSongs(albumId)
+                            val savedCount = fetchAndSaveAlbumSongs(albumId)
+                            if (savedCount < 2) {
+                                timber.log.Timber.tag(TAG).w("[Album Cache] $albumId: only $savedCount songs saved")
+                            }
                         } finally {
                             fetchingAlbums.remove(albumId)
                         }
                     }
-                } else {
-                    timber.log.Timber.tag(TAG).d("[Album Cache] $albumId fetch already in progress, skipping duplicate.")
                 }
             } else {
                 timber.log.Timber.tag(TAG).d("[Album Cache] No album found for $videoId, skipping album fetch")
@@ -299,19 +291,19 @@ suspend fun upsertSongInfo(videoId: String) {
  * Fetches all songs from an album and saves them to the database.
  * Called in parallel when streaming a song to fill the album for shuffle.
  */
-private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
+private suspend fun fetchAndSaveAlbumSongs(albumId: String): Int {
     try {
         timber.log.Timber.tag(TAG).d("[Album Cache] Fetching album page from network for $albumId")
         val onlineAlbum = it.fast4x.innertube.YtMusic.getAlbum(albumId.removePrefix(app.it.fast4x.rimusic.MODIFIED_PREFIX), true).getOrNull()
         if (onlineAlbum == null) {
             timber.log.Timber.tag(TAG).w("Album page is null for $albumId")
-            return
+            return 0
         }
         val albumPage = onlineAlbum.album
         val songs = onlineAlbum.songs
         if (songs.isEmpty()) {
             timber.log.Timber.tag(TAG).d("No songs found in album $albumId")
-            return
+            return 0
         }
 
         timber.log.Timber.tag(TAG).d("[Album Cache] Saving ${songs.size} songs from album $albumId to database")
@@ -336,7 +328,7 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
                         authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
                         year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
                         shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
-                        lastFetch = System.currentTimeMillis()
+                        lastFetch = if (songs.size >= 2) System.currentTimeMillis() else null
                     ))
                 }
                 Database.songAlbumMapTable.clear(albumId)
@@ -354,7 +346,7 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
                                     authorsText = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.authorsText, albumPage.authors?.parseArtists()?.joinToString(", ")?.takeIf { it.isNotBlank() }),
                                     year = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.year, albumPage.year),
                                     shareUrl = app.kreate.android.me.knighthat.utils.PropUtils.retainIfModified(existingAlbum.shareUrl, onlineAlbum.url),
-                                    lastFetch = System.currentTimeMillis()
+                                    lastFetch = if (songs.size >= 2) System.currentTimeMillis() else null
                                 ))
                             }
                             Database.songAlbumMapTable.clear(albumId)
@@ -367,8 +359,12 @@ private suspend fun fetchAndSaveAlbumSongs(albumId: String) {
             }
         }
         timber.log.Timber.tag(TAG).d("[Album Cache] Finished saving ${songs.size} songs from album $albumId with correct ordering")
+        return songs.size
+    } catch (e: kotlinx.coroutines.CancellationException) {
+        throw e
     } catch (e: Exception) {
         timber.log.Timber.tag(TAG).w(e, "[Album Cache] Failed to fetch and save album songs for $albumId")
+        return 0
     }
 }
 
