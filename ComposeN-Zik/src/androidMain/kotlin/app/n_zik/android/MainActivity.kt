@@ -51,7 +51,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.union
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -77,6 +79,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -984,10 +987,43 @@ class MainActivity :
                 setSystemBarAppearance(finalAppearance.colorPalette.isDark)
             }
 
+            val isLandscape = androidx.compose.ui.platform.LocalConfiguration.current.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+            val bottomBarHeightPx = with(LocalDensity.current) { 240.dp.roundToPx().toFloat() } // Enough to hide floating bar + miniplayer
+            var topBarOffsetHeightPx by remember { androidx.compose.runtime.mutableFloatStateOf(0f) }
+            var bottomBarOffsetHeightPx by remember { androidx.compose.runtime.mutableFloatStateOf(0f) }
+
+            val density = LocalDensity.current
+            val safeDrawingInsets = androidx.compose.foundation.layout.WindowInsets.safeDrawing
+            val nestedScrollConnection = remember(isLandscape, density, safeDrawingInsets) {
+                object : androidx.compose.ui.input.nestedscroll.NestedScrollConnection {
+                    override fun onPreScroll(available: androidx.compose.ui.geometry.Offset, source: androidx.compose.ui.input.nestedscroll.NestedScrollSource): androidx.compose.ui.geometry.Offset {
+                        if (!isLandscape) return androidx.compose.ui.geometry.Offset.Zero
+                        
+                        val statusBarsTopPx = safeDrawingInsets.getTop(density)
+                        val topBarHeightPx = with(density) { 64.dp.roundToPx() } + statusBarsTopPx
+                        
+                        val delta = available.y
+                        val previousTopOffset = topBarOffsetHeightPx
+                        val newTopOffset = topBarOffsetHeightPx + delta
+                        topBarOffsetHeightPx = newTopOffset.coerceIn(-topBarHeightPx.toFloat(), 0f)
+                        val topConsumed = topBarOffsetHeightPx - previousTopOffset
+                        
+                        val newBottomOffset = bottomBarOffsetHeightPx - delta
+                        bottomBarOffsetHeightPx = newBottomOffset.coerceIn(0f, bottomBarHeightPx)
+                        
+                        return androidx.compose.ui.geometry.Offset(0f, topConsumed)
+                    }
+                }
+            }
+
+            val topBarOffsetState = androidx.compose.runtime.derivedStateOf { topBarOffsetHeightPx }
+            val bottomBarOffsetState = androidx.compose.runtime.derivedStateOf { bottomBarOffsetHeightPx }
+
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(finalAppearance.colorPalette.background0)
+                    .nestedScroll(nestedScrollConnection)
             ) {
 
 
@@ -1082,6 +1118,8 @@ class MainActivity :
                             LocalPendingMiniPlayerAction provides pendingMiniPlayerAction,
                             LocalIsShowingLyrics provides isShowingLyrics,
                             LocalIsShowingVisualizer provides isShowingVisualizer,
+                            LocalTopBarOffset provides topBarOffsetState,
+                            LocalBottomBarOffset provides bottomBarOffsetState
                             //LocalInternetConnected provides internetConnected
                         ) {
 
@@ -1150,7 +1188,14 @@ class MainActivity :
                                             shape = uiRoundnessShape()
                                         ) {}
                                     },
-                                    shape = androidx.compose.ui.graphics.RectangleShape
+                                    shape = (uiRoundnessShape() as? androidx.compose.foundation.shape.RoundedCornerShape)?.let {
+                                        androidx.compose.foundation.shape.RoundedCornerShape(
+                                            topStart = it.topStart,
+                                            topEnd = it.topEnd,
+                                            bottomStart = androidx.compose.foundation.shape.CornerSize(0.dp),
+                                            bottomEnd = androidx.compose.foundation.shape.CornerSize(0.dp)
+                                        )
+                                    } ?: uiRoundnessShape()
                                 ) {
                                     Player( navController ) { 
                                         coroutineScope.launch {
@@ -1176,7 +1221,14 @@ class MainActivity :
                                         shape = uiRoundnessShape()
                                     ) {}
                                 },
-                                shape = androidx.compose.ui.graphics.RectangleShape
+                                shape = (uiRoundnessShape() as? androidx.compose.foundation.shape.RoundedCornerShape)?.let {
+                                    androidx.compose.foundation.shape.RoundedCornerShape(
+                                        topStart = it.topStart,
+                                        topEnd = it.topEnd,
+                                        bottomStart = androidx.compose.foundation.shape.CornerSize(0.dp),
+                                        bottomEnd = androidx.compose.foundation.shape.CornerSize(0.dp)
+                                    )
+                                } ?: uiRoundnessShape()
                             ) {
                                 youtubePlayer()
                             }
@@ -1193,10 +1245,16 @@ class MainActivity :
                                     Surface(
                                         modifier = Modifier.padding(vertical = 0.dp),
                                         color = Color.Transparent,
-                                        //shape = uiRoundnessShape()
                                     ) {}
                                 },
-                                shape = uiRoundnessShape()
+                                shape = (uiRoundnessShape() as? androidx.compose.foundation.shape.RoundedCornerShape)?.let {
+                                    androidx.compose.foundation.shape.RoundedCornerShape(
+                                        topStart = it.topStart,
+                                        topEnd = it.topEnd,
+                                        bottomStart = androidx.compose.foundation.shape.CornerSize(0.dp),
+                                        bottomEnd = androidx.compose.foundation.shape.CornerSize(0.dp)
+                                    )
+                                } ?: uiRoundnessShape()
                             ) {
                                 AnimatedContent(
                                     targetState = menuState.contentState,
@@ -1485,3 +1543,5 @@ val LocalPlayerSheetState =
 val LocalPendingMiniPlayerAction = androidx.compose.runtime.staticCompositionLocalOf<androidx.compose.runtime.MutableState<app.n_zik.android.enums.PendingMiniPlayerAction?>> { error("No PendingMiniPlayerAction state provided") }
 val LocalIsShowingLyrics = staticCompositionLocalOf<androidx.compose.runtime.MutableState<Boolean>> { error("No LocalIsShowingLyrics provided") }
 val LocalIsShowingVisualizer = staticCompositionLocalOf<androidx.compose.runtime.MutableState<Boolean>> { error("No LocalIsShowingVisualizer provided") }
+val LocalTopBarOffset = staticCompositionLocalOf<androidx.compose.runtime.State<Float>> { androidx.compose.runtime.mutableStateOf(0f) }
+val LocalBottomBarOffset = staticCompositionLocalOf<androidx.compose.runtime.State<Float>> { androidx.compose.runtime.mutableStateOf(0f) }

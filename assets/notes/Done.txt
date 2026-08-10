@@ -19,3 +19,26 @@ Changed:
 - change(ui): CheckboxDialog items support marquee scrolling for long text
   - Added `Modifier.basicMarquee(iterations = Int.MAX_VALUE)` to `BasicText` in `CheckboxDialog.kt`
   - Prevents text truncation in Reset song dialog checkboxes
+
+- fix(ui): Landscape NavHost overlaps with camera cutout/punch hole
+  - Added `windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))` to `NavHost` in `AppNavigation.kt`
+
+- fix(ui): AppHeader does not fully hide when scrolling in landscape mode
+  - Changed `NestedScrollConnection` in `MainActivity.kt` to dynamically read `WindowInsets.safeDrawing.getTop(density)` instead of using a static initial value.
+  - Increased `offsetRange` for `miniPlayerOffset` to ensure the miniplayer and bottom bar fully hide off-screen when scrolling down.
+
+- fix(ui): Player screen content overlaps with camera cutout in landscape
+  - Applied `windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))` to the main `Row` and `Column` wrappers inside `Player.kt` so content stays clear of the camera punch hole while the blurred background spans the entire screen.
+
+- fix(ui): Bottom sheets (Player, Menu) have rounded bottom corners
+  - Updated `CustomModalBottomSheet` usages in `MainActivity.kt` to override `bottomStart` and `bottomEnd` to `0.dp`, ensuring bottom sheets rest flat against the screen's bottom edge while keeping the top corners rounded according to `uiRoundnessShape()`.
+
+- fix(ui): ActionBar is not centered in landscape mode
+  - Adjusted width modifiers and removed redundant inset paddings in the bottom ActionBar to ensure proper horizontal centering relative to player controls in landscape.
+
+- fix(ui): Bottom Navigation and MiniPlayer not fully hiding on scroll
+  - Increased the `bottomBarHeightPx` scroll limit from 160.dp to 240.dp in `MainActivity.kt` to ensure the entire mini-player and navigation bar shift completely off-screen when scrolling down in landscape mode.
+
+- fix(ui): Non-floating bottom navigation bar has rounded bottom corners and redundant background
+  - Removed the double-drawing `.background` modifier in `Skeleton.kt` which was causing an ugly visual artifact behind the navigation bar.
+  - Changed `HorizontalNavigationBar.kt` to use `topUiRoundnessShape()` instead of `uiRoundnessShape()` when the position is `Bottom` (non-floating), so only the top corners are rounded while the bottom ones remain flat against the screen edge.

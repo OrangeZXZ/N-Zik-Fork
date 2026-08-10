@@ -18,9 +18,15 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.ui.unit.IntOffset
+import kotlin.math.roundToInt
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
@@ -84,13 +90,16 @@ class AppHeader(
             animationSpec = tween(200)
         )
 
+        val topBarOffsetState = app.n_zik.android.LocalTopBarOffset.current
+
         // Custom Row layout — responds to AnimatedVisibility size changes each frame,
         // so the logo+title smoothly shifts as the back button slides in/out.
         Row(
             modifier = Modifier
+                .offset { IntOffset(0, topBarOffsetState.value.roundToInt()) }
                 .background(themeBackground)
                 .background(Color.Black.copy(alpha = voiceSearchAlpha))
-                .windowInsetsPadding(WindowInsets.statusBars)
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal))
                 .fillMaxWidth()
                 .height(64.dp)
                 .padding(start = startPadding, end = 4.dp),

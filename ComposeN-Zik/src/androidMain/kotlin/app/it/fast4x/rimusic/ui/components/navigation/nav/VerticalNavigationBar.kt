@@ -194,25 +194,8 @@ class VerticalNavigationBar(
                 .width(Dimensions.navigationRailWidth)
                 .verticalScroll( rememberScrollState() )
         ) {
-            val boxPadding: Dp =
-                if( UiType.ViMusic.isCurrent() )
-                    50.dp
-                else
-                    Dp.Hairline
             Box(
-                contentAlignment = Alignment.TopCenter,
-                modifier = Modifier
-                    /*
-                    .height(
-                        if( UiType.ViMusic.isCurrent() )
-                            if ( showStatsIconInNav() )
-                                Dimensions.headerHeight
-                            else
-                                Dimensions.halfheaderHeight
-                        else 0.dp
-                    )*/
-                    .padding( top = boxPadding )
-
+                contentAlignment = Alignment.TopCenter
             ) {
                 // Show settings and statistics buttons in homepage
                 // Show back button in other screens

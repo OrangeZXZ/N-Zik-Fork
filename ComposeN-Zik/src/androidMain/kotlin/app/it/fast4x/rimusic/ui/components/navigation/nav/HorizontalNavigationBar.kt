@@ -17,9 +17,13 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -164,21 +168,21 @@ class HorizontalNavigationBar(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom,
-            modifier = modifier.padding( top = topPadding(), bottom = bottomPadding() )
+            modifier = modifier.padding( top = topPadding(), bottom = if (isFloating) bottomPadding() else 0.dp )
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceAround,
                 modifier = Modifier
                     .then(if (isFloating) Modifier.fillMaxWidth(widthFraction) else Modifier.fillMaxWidth())
-                    .height(if (isFloating) floatingHeight else Dimensions.navigationBarHeight - 10.dp)
+                    .height(if (isFloating) floatingHeight else (Dimensions.navigationBarHeight - 10.dp) + bottomPadding())
             ) {
 
                 val scrollState = rememberScrollState()
-                val roundedCornerShape = when {
-                    isFloating -> uiRoundnessShape()
-                    NavigationBarPosition.Bottom.isCurrent() -> uiRoundnessShape()
-                    else -> uiRoundnessShape()
+                val roundedCornerShape = if (isFloating) {
+                    uiRoundnessShape()
+                } else {
+                    app.n_zik.android.topUiRoundnessShape()
                 }
 
                 // Settings button only visible when
@@ -204,6 +208,8 @@ class HorizontalNavigationBar(
                             .fillMaxSize()
                             .padding(horizontal = if (isFloating && buttonList.size > 5) 8.dp else 16.dp)
                             .padding(vertical = if (isFloating) 6.dp else 0.dp)
+                            .padding(bottom = if (!isFloating) bottomPadding() else 0.dp)
+                            .then(if (!isFloating) Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)) else Modifier)
                             .horizontalScroll(scrollState),
                         content = { 
                             val isManyButtons = buttonList.size > 5

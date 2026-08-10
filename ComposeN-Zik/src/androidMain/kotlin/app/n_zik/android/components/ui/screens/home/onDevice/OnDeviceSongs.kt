@@ -88,6 +88,7 @@ fun OnDeviceSong(
     buttons: MutableList<Button>,
     itemsOnDisplay: MutableList<Song>,
     getSongs: () -> List<Song>,
+    header: @Composable () -> Unit = {}
 ) {
     // Essentials
     val context = LocalContext.current
@@ -231,6 +232,8 @@ fun OnDeviceSong(
         userScrollEnabled = songsOnDevice.isNotEmpty(),
         contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
     ) {
+        item { header() }
+
         if( showFolder4LocalSongs && songsOnDevice.isNotEmpty() ) {
             item( "folder_paths" ) {
                 PathUtils.AddressBar(

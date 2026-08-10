@@ -342,10 +342,6 @@ fun HomeAlbums(
         ) {
 
             Column( Modifier.fillMaxSize() ) {
-                // Sticky tab's title
-                TabHeader(R.string.albums) {
-                    HeaderInfo(items.size.toString(), R.drawable.album)
-                }
 
                 val homeAlbumsToolbarOrderPrefLibrary by rememberPreference(homeAlbumsLibraryToolbarOrderKey, "")
                 val homeAlbumsToolbarOrderPrefFavorites by rememberPreference(homeAlbumsFavoritesToolbarOrderKey, "")
@@ -380,7 +376,6 @@ fun HomeAlbums(
                     }
                 }
 
-                TabToolBar.Buttons( toolbarButtons )
 
                 val hapticFeedback = LocalHapticFeedback.current
                 val reorderableLazyGridState = rememberReorderableLazyGridState(
@@ -398,8 +393,6 @@ fun HomeAlbums(
                 }
 
 
-                // Sticky search bar
-                search.SearchBar( this )
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     LazyVerticalGrid(
@@ -409,6 +402,19 @@ fun HomeAlbums(
                                        .fillMaxSize(),
                     contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
                 ) {
+                    item(
+                        key = "header",
+                        span = { GridItemSpan(maxLineSpan) }
+                    ) {
+                        Column {
+                            TabHeader(R.string.albums) {
+                                HeaderInfo(items.size.toString(), R.drawable.album)
+                            }
+                            TabToolBar.Buttons( toolbarButtons )
+                            search.SearchBar( this )
+                        }
+                    }
+
                     item(
                         key = "separator",
                         span = { GridItemSpan(maxLineSpan) }

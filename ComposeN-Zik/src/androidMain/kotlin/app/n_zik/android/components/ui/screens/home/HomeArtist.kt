@@ -315,10 +315,6 @@ fun HomeArtists(
         ) {
 
             Column( Modifier.fillMaxSize() ) {
-                // Sticky tab's title
-                TabHeader( R.string.artists ) {
-                    HeaderInfo(items.size.toString(), R.drawable.people)
-                }
 
                 val homeArtistsToolbarOrderPrefLibrary by rememberPreference(homeArtistsLibraryToolbarOrderKey, "")
                 val homeArtistsToolbarOrderPrefFavorites by rememberPreference(homeArtistsFavoritesToolbarOrderKey, "")
@@ -353,7 +349,6 @@ fun HomeArtists(
                     }
                 }
 
-                TabToolBar.Buttons( toolbarButtons )
 
                 val hapticFeedback = LocalHapticFeedback.current
                 val reorderableLazyGridState = rememberReorderableLazyGridState(
@@ -371,8 +366,6 @@ fun HomeArtists(
                 }
 
 
-                // Sticky search bar
-                search.SearchBar( this )
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     LazyVerticalGrid(
@@ -382,6 +375,19 @@ fun HomeArtists(
                                        .fillMaxSize(),
                     contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
                 ) {
+                    item(
+                        key = "header",
+                        span = { GridItemSpan(maxLineSpan) }
+                    ) {
+                        Column {
+                            TabHeader( R.string.artists ) {
+                                HeaderInfo(items.size.toString(), R.drawable.people)
+                            }
+                            TabToolBar.Buttons( toolbarButtons )
+                            search.SearchBar( this )
+                        }
+                    }
+
                     item(
                         key = "separator",
                         span = { GridItemSpan(maxLineSpan) }

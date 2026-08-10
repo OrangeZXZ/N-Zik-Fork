@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -196,10 +198,10 @@ fun BoxScope.ActionBar(
     var isShowingLyrics by showLyricsState
 
     Row(
-        modifier = Modifier.padding( WindowInsets.navigationBars.asPaddingValues() )
+        modifier = Modifier.padding( WindowInsets.navigationBars.only(WindowInsetsSides.Bottom).asPaddingValues() )
                            .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
                            .requiredHeight(if (showNextSongsInPlayer && (showLyricsThumbnail || (!isShowingLyrics || miniQueueExpanded))) 90.dp else 50.dp)
-                           .fillMaxWidth(if (isLandscape) 0.8f else 1f)
+                           .fillMaxWidth()
                            .clip(uiRoundnessShape()).clickable( enabled = tapQueue ) {
                                showQueue = true
                            }

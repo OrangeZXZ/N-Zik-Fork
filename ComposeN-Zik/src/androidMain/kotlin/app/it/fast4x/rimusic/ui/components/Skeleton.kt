@@ -21,6 +21,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import app.n_zik.android.BuildConfig
@@ -32,6 +35,12 @@ import app.n_zik.android.LocalPlayerAwareWindowInsets
 import app.n_zik.android.LocalPlayerServiceBinder
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.offset
+import androidx.compose.ui.unit.IntOffset
+import kotlin.math.roundToInt
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.graphics.Color
@@ -77,6 +86,8 @@ fun Skeleton(
     val isMiniPlayerActive = binder?.player?.currentMediaItem != null
     val currentInsets = LocalPlayerAwareWindowInsets.current
 
+    val bottomBarOffsetState = app.n_zik.android.LocalBottomBarOffset.current
+
     val navigationBar: AbstractNavigationBar =
         if ( navigationBarPosition.isHorizontal )
             HorizontalNavigationBar( tabIndex, onTabChanged, navController )
@@ -95,14 +106,12 @@ fun Skeleton(
             if (isFloating) {
                 val barHeight = if (hasNavBar) (if (isIconOnly) Dimensions.floatingNavBarIconOnlyHeight else Dimensions.floatingNavBarHeight) else 0.dp
                 val visualGap = 10.dp
-                val desiredBottom = if (isMiniPlayerActive) {
-                    barHeight + navBarBottomPadding + miniPlayerHeight + visualGap
-                } else {
-                    barHeight + navBarBottomPadding + visualGap
-                }
-                currentInsets.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
-                    .add(WindowInsets(bottom = desiredBottom))
-            } else currentInsets
+                val extraBottom = barHeight + navBarBottomPadding + visualGap
+                currentInsets.add(WindowInsets(bottom = extraBottom))
+            } else {
+                val barHeight = if (hasNavBar) (Dimensions.navigationBarHeight - 10.dp) else 0.dp
+                currentInsets.add(WindowInsets(bottom = barHeight))
+            }
         }
     }
 
@@ -130,8 +139,8 @@ fun Skeleton(
                     if (!isFloating) {
                         Box(
                             modifier = Modifier
+                                .offset { IntOffset(0, bottomBarOffsetState.value.roundToInt()) }
                                 .fillMaxWidth()
-                                .background(colorPalette().background1, app.n_zik.android.uiRoundnessShape())
                         ) {
                             navigationBar.Draw()
                         }
@@ -147,7 +156,9 @@ fun Skeleton(
                     Modifier
                         .padding(
                             top = scaffoldPadding.calculateTopPadding(),
-                            bottom = if (NavigationBarPosition.Bottom.isCurrent() && !isFloating) scaffoldPadding.calculateBottomPadding() else 0.dp
+                            bottom = 0.dp,
+                            start = scaffoldPadding.calculateStartPadding(LocalLayoutDirection.current),
+                            end = scaffoldPadding.calculateEndPadding(LocalLayoutDirection.current)
                         )
                         .fillMaxSize()
                 ) {
@@ -159,13 +170,12 @@ fun Skeleton(
                         if( NavigationBarPosition.Left.isCurrent() )
                             navigationBar.Draw()
 
-                        val topPadding = if ( UiType.ViMusic.isCurrent() ) 30.dp else 0.dp
                         AnimatedContent(
                             targetState = tabIndex,
                             transitionSpec = transition(),
                             content = content,
                             label = "",
-                            modifier = Modifier.weight(1f).fillMaxHeight().padding( top = topPadding )
+                            modifier = Modifier.weight(1f).fillMaxHeight()
                         )
 
                         if( NavigationBarPosition.Right.isCurrent() )
@@ -174,7 +184,9 @@ fun Skeleton(
                 }
 
                 // Floating UI Overlay (Sync with screen bottom, NOT scaffold content)
-                Box(Modifier.fillMaxSize()) {
+                Box(Modifier.fillMaxSize()
+                    .offset { IntOffset(0, bottomBarOffsetState.value.roundToInt()) }
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))) {
                     if ( isFloating ) {
                         Box(
                             modifier = Modifier.align(Alignment.BottomCenter)

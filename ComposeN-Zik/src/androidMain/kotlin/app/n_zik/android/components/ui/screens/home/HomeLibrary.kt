@@ -395,10 +395,6 @@ fun HomeLibrary(
         ) {
 
             Column( Modifier.fillMaxSize() ) {
-                // Sticky tab's title
-                TabHeader( R.string.playlists ) {
-                    HeaderInfo( items.size.toString(), R.drawable.playlist )
-                }
 
                 val homeLibraryToolbarOrderPrefLibrary by rememberPreference(homeLibraryToolbarOrderKey, "")
                 val homeLibraryToolbarOrderPrefYT by rememberPreference(homeLibraryYTPlaylistToolbarOrderKey, "")
@@ -438,9 +434,6 @@ fun HomeLibrary(
                     }
                 }
 
-                TabToolBar.Buttons( toolbarButtons )
-
-                search.SearchBar( this )
 
                 val listPrefix =
                     when( playlistType ) {
@@ -488,6 +481,19 @@ fun HomeLibrary(
                         .fillMaxSize(),
                     contentPadding = PaddingValues( bottom = Dimensions.bottomSpacer )
                 ) {
+                    item(
+                        key = "header",
+                        span = { GridItemSpan(maxLineSpan) }
+                    ) {
+                        Column {
+                            TabHeader( R.string.playlists ) {
+                                HeaderInfo( items.size.toString(), R.drawable.playlist )
+                            }
+                            TabToolBar.Buttons( toolbarButtons )
+                            search.SearchBar( this )
+                        }
+                    }
+
                     item(
                         key = "separator",
                         contentType = 0,

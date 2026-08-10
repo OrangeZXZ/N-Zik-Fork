@@ -48,7 +48,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import app.it.fast4x.rimusic.ui.components.navigation.header.AppHeader
 import app.kreate.android.themed.rimusic.screen.artist.ArtistAlbums
@@ -87,13 +92,13 @@ import app.it.fast4x.rimusic.utils.disableNavigationBackStackKey
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.union
+import androidx.compose.ui.layout.layout
 import timber.log.Timber
 import app.n_zik.android.updater.ui.UpdateScreen
 
@@ -232,10 +237,33 @@ fun AppNavigation(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { AppHeader(navController).Draw() },
-        containerColor = androidx.compose.ui.graphics.Color.Transparent
+        containerColor = androidx.compose.ui.graphics.Color.Transparent,
+        contentWindowInsets = WindowInsets(0.dp)
     ) { innerPadding ->
+    val topBarOffsetState = app.n_zik.android.LocalTopBarOffset.current
+    val safeDrawingInsets = WindowInsets.safeDrawing
     NavHost(
-        modifier = Modifier.fillMaxSize().padding(top = innerPadding.calculateTopPadding()),
+        modifier = Modifier.fillMaxSize()
+            .layout { measurable, constraints ->
+            val topPaddingPx = innerPadding.calculateTopPadding().roundToPx()
+            val offsetPx = topBarOffsetState.value.toInt()
+            val effectivePadding = (topPaddingPx + offsetPx).coerceAtLeast(0)
+            
+            val leftInsetPx = safeDrawingInsets.getLeft(this, layoutDirection)
+            val rightInsetPx = safeDrawingInsets.getRight(this, layoutDirection)
+            
+            val placeable = measurable.measure(
+                constraints.copy(
+                    minWidth = (constraints.minWidth - leftInsetPx - rightInsetPx).coerceAtLeast(0),
+                    maxWidth = (constraints.maxWidth - leftInsetPx - rightInsetPx).coerceAtLeast(0),
+                    minHeight = (constraints.minHeight - effectivePadding).coerceAtLeast(0),
+                    maxHeight = (constraints.maxHeight - effectivePadding).coerceAtLeast(0)
+                )
+            )
+            layout(constraints.maxWidth, constraints.maxHeight) {
+                placeable.place(leftInsetPx, effectivePadding)
+            }
+        },
         navController = navController,
         startDestination = NavRoutes.home.name,
         enterTransition = enterTransition,

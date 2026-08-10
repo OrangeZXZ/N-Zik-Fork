@@ -100,6 +100,7 @@ fun HomeSongs(
     isRecommendationEnabled: Boolean = false,
     refreshKey: Int = 0,
     onMatchClick: () -> Unit = {},
+    header: @Composable () -> Unit = {}
 ) {
     val binder = LocalPlayerServiceBinder.current
     val context = LocalContext.current
@@ -350,6 +351,8 @@ fun HomeSongs(
                 .background(colorPalette().background0)
                 .fillMaxSize()
         ) {
+            item { header() }
+
             if( isLoading ) {
                 items(
                     count = 20,
