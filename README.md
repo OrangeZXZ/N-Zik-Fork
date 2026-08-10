@@ -171,6 +171,7 @@ Join the N-Zik Discord:
     <img alt="Home (AMOLED)" src="assets/design/preview/img/homeamoled.png" height="300px" />
     <img alt="Playlist" src="assets/design/preview/img/playlist.png" height="300px" />
     <img alt="Player Queue" src="assets/design/preview/img/queue.png" height="300px" />
+    <img alt="Player Queue2" src="assets/design/preview/img/queue2.png" height="300px" />
     <img alt="Stats" src="assets/design/preview/img/stats.png" height="300px" />
     <img alt="History" src="assets/design/preview/img/history.png" height="300px" />
     <img alt="YouTube Integration" src="assets/design/preview/img/compte1youtube.png" height="300px" />
