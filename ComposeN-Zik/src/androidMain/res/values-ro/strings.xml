@@ -899,7 +899,7 @@
   <string name="error_no_internet">Fără conexiune la rețea</string>
   <string name="error_timeout">Conexiune expirată</string>
   <string name="error_unknown">Eroare necunoscută</string>
-  <string name="delete_song">Sigur vrei să ștergi această melodie? Va fi ștearsă din baza de date.\nAceastă acțiune este ireversibilă.</string>
+  <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
   <string name="update_album">Actualizează Albumul</string>
   <string name="info_check_update_now">Verifică acum</string>
   <string name="info_no_update_available">Nu sunt actualizări disponibile</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">Actualizează</string>
   <string name="update_waveform">Update waveform</string>
-  <string name="update_song">Sigur vrei să reîncarci această melodie? Timpul de redare și datele cache vor fi șterse.\nAceastă acțiune este ireversibilă.</string>
+  <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\nThis action is irreversible.</string>
   <string name="player_pause_listen_history_info">Nu salvează evenimentele de redare utilizate pentru statistici, istoric și sugestii în „Selecții rapide”</string>
   <string name="vertical_widget">Widget vertical</string>
   <string name="horizontal_widget">Widget orizontal</string>
