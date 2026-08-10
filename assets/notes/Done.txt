@@ -60,3 +60,9 @@ Changed:
   - The `iconSize` for Search, Stats, and Settings icons was incorrectly set to `Dimensions.navigationRailWidthLandscape` (128.dp) in landscape, creating huge vertical spacing between them. Changed to use `Dimensions.navigationRailWidth` (50.dp) consistently.
   - Allowed `VerticalNavigationBar.kt` to scroll normally if screen is small by restoring `.verticalScroll()`.
   - In `MainActivity.kt`, modified the `nestedScrollConnection` to NOT hide the top app header when in `ViMusic` mode (`isViMusic`). This is simpler and prevents scrolling on the navigation bar from unintentionally hiding the app header!
+
+- change(ui): Replace gray background for selected tabs with accent color
+  - In `ButtonsRow.kt`, updated the `FilterChip` configuration to use `colorPalette().accent` for `selectedContainerColor` instead of dark gray, and `colorPalette().onAccent` for the selected label text for better contrast.
+
+- change(ui): Replace gray background in Statistics time spent block
+  - In `StatisticsPage.kt`, updated the `SettingsEntry` block displaying the time played to use `colorPalette().accent` for its background and `colorPalette().onAccent` for the music note icon to match the new vibrant aesthetic.

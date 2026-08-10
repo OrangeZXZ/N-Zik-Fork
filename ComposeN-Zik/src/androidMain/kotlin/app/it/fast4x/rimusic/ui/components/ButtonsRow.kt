@@ -40,12 +40,8 @@ fun <E> ButtonsRow(
                     .filterChipColors(
                         containerColor = colorPalette().background1,
                         labelColor = colorPalette().text,
-                        selectedContainerColor = when (colorPaletteMode) {
-                            ColorPaletteMode.Dark, ColorPaletteMode.PitchBlack
-                                -> colorPalette().textDisabled
-                            else -> colorPalette().background3
-                        } ,
-                        selectedLabelColor = colorPalette().text,
+                        selectedContainerColor = colorPalette().accent,
+                        selectedLabelColor = colorPalette().onAccent,
                     ),
                 onClick = { onValueUpdate(value) }
             )
@@ -76,12 +72,8 @@ fun ButtonsRow(
                     .filterChipColors(
                         containerColor = colorPalette().background1,
                         labelColor = colorPalette().text,
-                        selectedContainerColor = when (colorPaletteMode) {
-                            ColorPaletteMode.Dark, ColorPaletteMode.PitchBlack
-                                -> colorPalette().textDisabled
-                            else -> colorPalette().background3
-                        } ,
-                        selectedLabelColor = colorPalette().text,
+                        selectedContainerColor = colorPalette().accent,
+                        selectedLabelColor = colorPalette().onAccent,
                     ),
                 onClick = { onValueUpdate(playlistType) }
             )

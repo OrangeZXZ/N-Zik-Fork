@@ -295,14 +295,14 @@ fun StatisticsPage(
                                             Image(
                                                 painter = painterResource(R.drawable.musical_notes),
                                                 contentDescription = null,
-                                                colorFilter = ColorFilter.tint(colorPalette().shimmer),
+                                                colorFilter = ColorFilter.tint(colorPalette().onAccent),
                                                 modifier = Modifier
                                                     .size(34.dp)
                                             )
                                         },
                                         modifier = Modifier
                                             .background(
-                                                color = colorPalette().background4,
+                                                color = colorPalette().accent,
                                                 shape = app.n_zik.android.thumbnailShape()
                                             )
 
