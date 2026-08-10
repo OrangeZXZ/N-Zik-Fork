@@ -899,7 +899,7 @@
   <string name="error_no_internet">Nessuna connessione internet</string>
   <string name="error_timeout">Sospensione connessione</string>
   <string name="error_unknown">Errore sconosciuto</string>
-  <string name="delete_song">Vuoi davvero eliminare questa canzone? Sarà cancellata dal database.\\nQuesta azione è irreversibile.</string>
+  <string name="delete_song">Vuoi davvero eliminare questa canzone? Sarà cancellata dal database.\nQuesta azione è irreversibile.</string>
   <string name="update_album">Aggiorna l\'album</string>
   <string name="info_check_update_now">Controlla ora</string>
   <string name="info_no_update_available">Nessun aggiornamento disponibile</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">Aggiornamento</string>
   <string name="update_waveform">Update waveform</string>
-  <string name="update_song">Vuoi davvero riprovare questa canzone? Il tempo di riproduzione e i dati memorizzati nella cache verranno cancellati.\\nQuesta azione è irreversibile.</string>
+  <string name="update_song">Vuoi davvero riprovare questa canzone? Il tempo di riproduzione e i dati memorizzati nella cache verranno cancellati.\nQuesta azione è irreversibile.</string>
   <string name="player_pause_listen_history_info">Non salva gli eventi di riproduzione usati per statistiche, cronologia e suggerimenti nelle scelte rapide</string>
   <string name="vertical_widget">Widget verticale</string>
   <string name="horizontal_widget">Widget orizzontale</string>
