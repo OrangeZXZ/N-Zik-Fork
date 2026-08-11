@@ -177,18 +177,17 @@ object NZikWidgetManager {
         // Responsive scaling (Android 12+)
         val maxWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
         val maxHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
-        val isNarrow = maxWidth in 1..299
+        val isNarrow = minWidth < 340
         val isCompactWide = minWidth >= 180 && minHeight < 100
         val isFullWidget = minHeight >= 100
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (isFullWidget) {
-                // Album art scaling based on available height/width
                 val artSize = when {
-                    maxHeight >= 280 -> 130f
-                    maxHeight >= 200 -> 110f
-                    isNarrow -> 56f
-                    else -> 88f
+                    isNarrow -> 56f // Must be checked FIRST so narrow tall widgets don't break
+                    maxHeight >= 280 -> 110f
+                    maxHeight >= 200 -> 96f
+                    else -> 80f // Reduced default from 88f
                 }
                 views.setViewLayoutWidth(R.id.widget_album_art_container, artSize, TypedValue.COMPLEX_UNIT_DIP)
                 views.setViewLayoutWidth(R.id.widget_album_art, artSize, TypedValue.COMPLEX_UNIT_DIP)
