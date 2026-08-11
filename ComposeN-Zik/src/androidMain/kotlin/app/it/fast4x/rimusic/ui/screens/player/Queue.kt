@@ -320,10 +320,7 @@ fun Queue(
             LazyColumn(
                 state = lazyListState,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                contentPadding = windowInsets
-                    .only(WindowInsetsSides.Horizontal)
-                    .add( WindowInsets(bottom = Dimensions.bottomSpacer) )
-                    .asPaddingValues(),
+                contentPadding = WindowInsets(bottom = Dimensions.bottomSpacer).asPaddingValues(),
                 modifier = Modifier.weight( 1f )
                                    .background(
                                        colorPalette().background0.copy( alpha = backgroundAlpha )

@@ -2369,7 +2369,11 @@ fun Player(
                     .fillMaxWidth()
                     .fillMaxHeight(queuePanelHeightFraction.value)
                     .background(queuePanelBackground)
-                    .padding(WindowInsets.navigationBars.asPaddingValues())
+                    .padding(
+                        WindowInsets.navigationBars.union(
+                            WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)
+                        ).asPaddingValues()
+                    )
                     .align(Alignment.BottomCenter)
                     .clip(topUiRoundnessShape())
             ) {

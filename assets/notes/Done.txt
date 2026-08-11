@@ -1,0 +1,1 @@
+- Fix: The queue panel now correctly avoids overlapping the camera cutout (displayCutout) in landscape mode. Fixed by applying horizontal cutout padding to the Player's queue panel container and removing redundant padding from Queue.kt.
