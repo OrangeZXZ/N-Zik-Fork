@@ -11,3 +11,6 @@ Fixed:
 
 - Fixed Android Auto infinite loading by making getLocalSongs a cold flow and doing codec extraction asynchronously.
 - Fixed empty album art in Android Auto by properly checking artwork existence and assigning fallback drawable for all songs.
+
+Update:
+depedencies
