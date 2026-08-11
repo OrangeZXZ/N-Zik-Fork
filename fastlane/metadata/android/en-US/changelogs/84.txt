@@ -1,6 +1,8 @@
 Hotfix:
 - Improved car detection icon and UI behavior under Android Auto.
+- Fixed Android Auto infinite loading and empty album art.
 - Renamed active phone speaker to "Android Auto" in the device list.
 - Fixed battery level display when connected to a car.
 - Added smooth transitions and animations in the audio output menu.
-- Prevented volume and source switching during Android Auto to ensure stability.
+- Prevented volume and source switching during Android Auto.
+- Updated dependencies.
