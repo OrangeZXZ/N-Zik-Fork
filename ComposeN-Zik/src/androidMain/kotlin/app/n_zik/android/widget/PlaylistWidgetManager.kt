@@ -39,6 +39,8 @@ import app.it.fast4x.rimusic.ui.styling.ColorPalette
 import app.it.fast4x.rimusic.cleanPrefix
 import android.net.Uri
 import android.os.SystemClock
+import android.util.TypedValue
+import android.os.Build
 
 object PlaylistWidgetManager {
 
@@ -386,7 +388,38 @@ object PlaylistWidgetManager {
 
         // Unhide quick picks (let them be visible by default)
         views.setViewVisibility(R.id.widget_playlist_quick_picks_section, View.VISIBLE)
-        views.setViewVisibility(R.id.widget_playlist_row_2, View.VISIBLE)
+        
+        // Responsive layout based on available height:
+        // ~320dp needed for player + 2 rows, ~220dp for player + 1 row, ~120dp for player only
+        // Real device values: Pixel large=345, Xiaomi large=291, Pixel small=226, Xiaomi small=189
+        val widgetMaxHeight = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT) ?: 0
+        
+        when {
+            widgetMaxHeight >= 320 -> {
+                // Large widget (Pixel 4x3 = 345dp): show both rows
+                views.setViewVisibility(R.id.widget_playlist_row_2, View.VISIBLE)
+            }
+            else -> {
+                // Medium/small widget: show row 1 only
+                views.setViewVisibility(R.id.widget_playlist_row_2, View.GONE)
+            }
+        }
+        
+        // Responsive width: shrink player controls when widget is narrow
+        // Xiaomi narrow = maxW 255dp, controls need ~170dp but only ~227dp available with padding
+        val widgetMaxWidth = options?.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH) ?: 0
+        if (widgetMaxWidth in 1..299 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val smallBtn = 28f
+            val playBtn = 36f
+            views.setViewLayoutWidth(R.id.widget_playlist_prev_container, smallBtn, TypedValue.COMPLEX_UNIT_DIP)
+            views.setViewLayoutHeight(R.id.widget_playlist_prev_container, smallBtn, TypedValue.COMPLEX_UNIT_DIP)
+            views.setViewLayoutWidth(R.id.widget_playlist_play_pause_container, playBtn, TypedValue.COMPLEX_UNIT_DIP)
+            views.setViewLayoutHeight(R.id.widget_playlist_play_pause_container, smallBtn, TypedValue.COMPLEX_UNIT_DIP)
+            views.setViewLayoutWidth(R.id.widget_playlist_next_container, smallBtn, TypedValue.COMPLEX_UNIT_DIP)
+            views.setViewLayoutHeight(R.id.widget_playlist_next_container, smallBtn, TypedValue.COMPLEX_UNIT_DIP)
+            views.setViewLayoutWidth(R.id.widget_playlist_like_container, smallBtn, TypedValue.COMPLEX_UNIT_DIP)
+            views.setViewLayoutHeight(R.id.widget_playlist_like_container, smallBtn, TypedValue.COMPLEX_UNIT_DIP)
+        }
         
         // Use pre-extracted accent color for Favorites icon
         val accentArgb = palette.accent.toArgb()

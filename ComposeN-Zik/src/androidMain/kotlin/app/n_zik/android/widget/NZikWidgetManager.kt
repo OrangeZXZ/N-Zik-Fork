@@ -32,6 +32,8 @@ import app.it.fast4x.rimusic.ui.styling.ColorPalette
 import app.it.fast4x.rimusic.cleanPrefix
 import android.view.View
 import android.os.SystemClock
+import android.os.Build
+import android.util.TypedValue
 
 object NZikWidgetManager {
 
@@ -160,7 +162,7 @@ object NZikWidgetManager {
         val minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
         val minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
 
-        return when {
+        val views = when {
             minWidth < 180 && minHeight < 100 -> {
                 createCompactSquareRemoteViews(context, albumArt, isPlaying, palette)
             }
@@ -171,6 +173,58 @@ object NZikWidgetManager {
                 createRemoteViews(context, title, artist, albumArt, isPlaying, isLiked, duration, currentPosition, palette)
             }
         }
+
+        // Responsive scaling (Android 12+)
+        val maxWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH)
+        val maxHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT)
+        val isNarrow = maxWidth in 1..299
+        val isCompactWide = minWidth >= 180 && minHeight < 100
+        val isFullWidget = minHeight >= 100
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (isFullWidget) {
+                // Album art scaling based on available height/width
+                val artSize = when {
+                    maxHeight >= 280 -> 130f
+                    maxHeight >= 200 -> 110f
+                    isNarrow -> 56f
+                    else -> 88f
+                }
+                views.setViewLayoutWidth(R.id.widget_album_art_container, artSize, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutWidth(R.id.widget_album_art, artSize, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutHeight(R.id.widget_album_art, artSize, TypedValue.COMPLEX_UNIT_DIP)
+
+                // Controls scaling for narrow vs wide
+                val smallBtn = if (isNarrow) 30f else 38f
+                val playBtn = if (isNarrow) 38f else 48f
+                
+                views.setViewLayoutWidth(R.id.widget_prev_container, smallBtn, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutHeight(R.id.widget_prev_container, smallBtn, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutWidth(R.id.widget_play_pause_container, playBtn, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutHeight(R.id.widget_play_pause_container, playBtn, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutWidth(R.id.widget_next_container, smallBtn, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutHeight(R.id.widget_next_container, smallBtn, TypedValue.COMPLEX_UNIT_DIP)
+            } else if (isCompactWide) {
+                // Compact wide scaling
+                val artSize = if (isNarrow) 32f else 48f
+                views.setViewLayoutWidth(R.id.widget_wide_album_art, artSize, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutHeight(R.id.widget_wide_album_art, artSize, TypedValue.COMPLEX_UNIT_DIP)
+                
+                val btnSize = if (isNarrow) 24f else 32f
+                val playSize = if (isNarrow) 28f else 36f
+                
+                views.setViewLayoutWidth(R.id.widget_wide_like_container, btnSize, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutHeight(R.id.widget_wide_like_container, btnSize, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutWidth(R.id.widget_wide_prev_container, btnSize, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutHeight(R.id.widget_wide_prev_container, btnSize, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutWidth(R.id.widget_wide_play_container, playSize, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutHeight(R.id.widget_wide_play_container, playSize, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutWidth(R.id.widget_wide_next_container, btnSize, TypedValue.COMPLEX_UNIT_DIP)
+                views.setViewLayoutHeight(R.id.widget_wide_next_container, btnSize, TypedValue.COMPLEX_UNIT_DIP)
+            }
+        }
+
+        return views
     }
 
     private fun createRemoteViews(

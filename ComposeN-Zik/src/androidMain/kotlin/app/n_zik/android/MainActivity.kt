@@ -1421,14 +1421,15 @@ class MainActivity :
                             Innertube.song(videoId)?.getOrNull()?.let { song ->
                                 val binder = snapshotFlow { binder }.filterNotNull().first()
                                 withContext(Dispatchers.Main) {
-                                    if (!song.explicit && !preferences.getBoolean(
+                                    if (song.explicit && preferences.getBoolean(
                                             parentalControlEnabledKey,
                                             false
                                         )
-                                    )
-                                        binder?.player?.forcePlay(song.asMediaItem)
-                                    else
+                                    ) {
                                         Toaster.w( R.string.parental_control_is_enabled )
+                                    } else {
+                                        binder?.player?.forcePlay(song.asMediaItem)
+                                    }
                                 }
                             }
                         }
