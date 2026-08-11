@@ -1,0 +1,6 @@
+Fixed:
+- Queue panel no longer overlaps the camera cutout in landscape mode.
+- Playlist widget album art no longer gets clipped on Xiaomi/HyperOS launchers.
+- Playlist widget's second row only shows when there's enough space, fixing clipping on Xiaomi.
+- Playlist widget default size increased to avoid an overly small widget on Xiaomi.
+- Player widget controls now shrink on narrow widgets so the like button isn't cropped.

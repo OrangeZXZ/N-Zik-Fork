@@ -1,0 +1,6 @@
+Fixed:
+- Queue panel no longer overlaps the camera cutout in landscape mode. The queue panel container now gets horizontal padding that accounts for the cutout, and redundant padding was removed from Queue.kt.
+- Playlist widget album card images no longer get clipped on Xiaomi/HyperOS launchers. The image height is now fixed at 64dp with proper scaling, instead of relying on a sizing behavior that was ambiguous on some devices.
+- Playlist widget's second row of items only shows when there's enough vertical space (a Pixel-sized widget), and stays hidden on smaller widget sizes (like on Xiaomi). This prevents content from being clipped.
+- Playlist widget's default size was increased so the widget isn't too small out of the box, especially on Xiaomi devices.
+- Playlist and Music widget player controls (previous, play/pause, next, like) now shrink automatically on narrow widgets, so the like button no longer gets cut off on devices like Xiaomi.

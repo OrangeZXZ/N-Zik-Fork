@@ -1,5 +1,0 @@
-- Fix: The queue panel now correctly avoids overlapping the camera cutout (displayCutout) in landscape mode. Fixed by applying horizontal cutout padding to the Player's queue panel container and removing redundant padding from Queue.kt.
-- Fix: Playlist widget album card images now use fixed 64dp height with fitCenter (removed wrap_content + adjustViewBounds ambiguity that caused clipping on Xiaomi/HyperOS launchers).
-- Fix: Playlist widget responsive row visibility — row 2 only shows when maxHeight ≥ 320dp (Pixel 4x3), hidden otherwise (Xiaomi 4x3 = 291dp, all 4x2 sizes). Prevents content clipping on all devices.
-- Fix: Playlist widget default size changed from 4x2 to 4x3 (targetCellHeight=3) and minResizeHeight raised to 200dp to prevent excessively small widget on Xiaomi.
-- Fix: Playlist widget and Music widget player controls (prev, play/pause, next, like) dynamically shrink when widget width < 300dp (Xiaomi narrow = 255dp) to prevent like button from being cropped.
