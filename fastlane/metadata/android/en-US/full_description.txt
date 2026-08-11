@@ -1,92 +1,57 @@
-<p><b>N-Zik</b> is your ultimate, open-source, and multilingual YouTube Music client for Android! 🎵🚀</p>
+<b>N-Zik</b> is your ultimate, open-source, multilingual YouTube Music client for Android! 🎵🚀
 
-<p>As a multilingual fork of <a href="https://github.com/knighthat/Kreate">Kreate</a>, N-Zik takes the music experience to a whole new level. We've obsessively focused on performance optimizations, stunning UI/UX refinements, bug fixes, and packing the app with an extensive suite of new features—all backed by long-term support.</p>
+A multilingual fork of <a href="https://github.com/knighthat/Kreate">Kreate</a>, focused on performance, UI/UX polish, bug fixes, and new features with long-term support.
 
-<p><b>A Note on Development & Stability:</b></p>
-<p>N-Zik is a side project originally built for myself and friends, not chasing glory. It's grown a bit since then, which is cool! However, it may not yet be as stable as the original Kreate, so feel free to use it or other solid alternatives like <a href="https://github.com/MetrolistGroup/Metrolist">Metrolist</a>, <a href="https://github.com/vivizzz007/vivi-music">VIVI Music</a>, or <a href="https://github.com/fast4x/RiPlay">RiPlay</a> if you need a more mature option.</p>
+<b>Development & Stability:</b> N-Zik started as a side project for myself and friends. It may not be as stable as Kreate yet — check out <a href="https://github.com/MetrolistGroup/Metrolist">Metrolist</a>, <a href="https://github.com/vivizzz007/vivi-music">VIVI Music</a>, or <a href="https://github.com/fast4x/RiPlay">RiPlay</a> for something more mature.
 
-<p><b>Transparent AI Usage:</b></p>
-<p>I use generative AI to assist with code, structured with the <a href="https://github.com/bmad-code-org/BMAD-METHOD">BMAD Method</a>, but everything gets reviewed and tested before it's pushed. I'm not shipping blind. If AI-assisted development isn't your thing, no hard feelings, there are plenty of great alternatives.</p>
+<b>Transparent AI Usage:</b> I use generative AI to assist with code (via the <a href="https://github.com/bmad-code-org/BMAD-METHOD">BMAD Method</a>), but everything is reviewed and tested before shipping. Not your thing? No hard feelings — plenty of great alternatives exist.
 
-<p>Whether you're a casual listener or a hardcore audiophile, N-Zik gives you absolute control over your music, without compromising your privacy.</p>
+Whether you're a casual listener or a hardcore audiophile, N-Zik gives you absolute control over your music, without compromising your privacy.
 
-<p>✨ <b>WHY CHOOSE N-ZIK?</b> ✨</p>
-<p>Unlike standard streaming apps, N-Zik removes the limits. No ads, full background playback, offline caching, and a beautifully customizable interface. It's built for those who want a premium music experience completely for free, powered by the open-source community.</p>
+✨ <b>WHY CHOOSE N-ZIK?</b> No ads, full background playback, offline caching, and a fully customizable interface — free, always.
 
-<p>🎨 <b>Stunning & Customizable UI</b></p>
-<ul>
-  <li><b>Jetpack Compose Magic:</b> A flawlessly smooth, modern, and intuitive interface.</li>
-  <li><b>Classic UI Toggle:</b> Feeling nostalgic? Seamlessly switch between the modern N-Zik experience and the classic ViMusic interface. 🌓</li>
-  <li><b>Custom Themes:</b> Personalize your vibe with carefully crafted presets. Choose between a battery-saving True AMOLED mode, Deep Dark, Crisp Light themes, and beautifully tinted accents.</li>
-  <li><b>3D Carousel Player:</b> Experience your music playback with a visually breathtaking 3D carousel view! 🎠</li>
-  <li><b>Home Screen Widgets:</b> Control your music right from your launcher with multiple beautiful and customizable new widgets. 🪟</li>
-  <li><b>Detailed Artist Profiles & News Feed:</b> Dive deep into comprehensive artist pages. Explore top tracks, albums, and similar artists. Discover new moods, genres, and latest releases directly from the News Feed! 📰</li>
-  <li><b>Experimental Widgets:</b> Access upcoming UI features and experimental widgets before they become stable! 🧪</li>
-</ul>
+🎨 <b>Customizable UI</b>
+- Jetpack Compose UI with a Classic ViMusic mode toggle 🌓
+- Custom themes: True AMOLED, Deep Dark, Crisp Light + tinted accents
+- 3D Carousel Player 🎠 and customizable home screen widgets 🪟
+- Detailed artist profiles, News Feed, and experimental widgets 🧪
 
-<p>🎵 <b>Unmatched Audio Experience</b></p>
-<ul>
-  <li><b>High-Quality Audio:</b> Connect a YouTube Music Premium account and select the Web Remix client to unlock pure Premium streaming quality on N-Zik! 🔊</li>
-  <li><b>Advanced Lyrics:</b> Sing your heart out! Fetch, display word by word, sync and unsync lyrics with smart fallback mechanisms, edit, and translate them in real-time! 🎤</li>
-  <li><b>Immersive Audio Visualizer:</b> Watch your music come alive with real-time visual effects perfectly synchronized to every beat. 🎇</li>
-  <li><b>Pro Audio Controls:</b> Take command with advanced controls: adjust volume, playback speed, pitch, audio normalization, silence skipping, crossfade, and volume boost. 🎚️</li>
-</ul>
+🎵 <b>Audio Experience</b>
+- Premium quality audio via YouTube Music Premium (Web Remix client) 🔊
+- Advanced synced lyrics with editing & real-time translation 🎤
+- Real-time audio visualizer 🎇 and pro controls: speed, pitch, normalization, crossfade, volume boost 🎚️
 
-<p>💾 <b>True Offline, Metadata & Privacy</b></p>
-<ul>
-  <li><b>Smart Offline Caching & Downloads:</b> Automatically cache your listening queue or permanently download individual tracks and entire playlists for offline access. Enjoy your library even without an internet connection! 📡</li>
-  <li><b>Media Export (FFmpeg Powered):</b> Export cached or downloaded music directly to your external storage with full embedded metadata (title, artist, album, cover art, copyright, etc.). 📤 <i>(Note: Requires standard 64-bit builds with FFmpeg).</i></li>
-  <li><b>In-App Metadata Editor:</b> Edit song metadata (title, artist, album, genre, year, cover art, and more) directly in the app! Full support for AAC and Opus codecs with automatic cover art embedding. ✏️</li>
-  <li><b>100% Local Privacy & Stats:</b> Your listening statistics, top tracks, and playback history are stored strictly locally on your device. 📊</li>
-  <li><b>Auto-Backup System:</b> Save, restore, and automatically back up your complete app configuration and database with customizable intervals, retention limits, and optional YouTube/Discord credential inclusion. ⚙️</li>
-</ul>
+💾 <b>Offline, Metadata & Privacy</b>
+- Smart offline caching & downloads for tracks and playlists 📡
+- FFmpeg-powered export with full embedded metadata 📤 (64-bit builds only)
+- In-app metadata editor (AAC/Opus, cover art) ✏️
+- 100% local listening stats & history 📊
+- Auto-backup with custom intervals & retention ⚙️
 
-<p>🔗 <b>Seamless Integrations</b></p>
-<ul>
-  <li><b>YouTube Integration:</b> Sign in to your YouTube account to seamlessly sync your recommendations and profile-related content. Switch instantly between audio and video playback! 📺</li>
-  <li><b>Discord Rich Presence:</b> Show off your musical taste! Broadcast the track you're currently jamming to directly onto your Discord profile. 🎮</li>
-  <li><b>Playlist Import & Export:</b> Easily back up, share, and restore playlists. You can natively import playlists from RiPlay, Spotify (via Exportify), YouTube Music, and N-Zik! 🔄</li>
-</ul>
+🔗 <b>Integrations</b>
+- YouTube sign-in for recommendations & audio/video switching 📺
+- Discord Rich Presence 🎮
+- Playlist import/export: RiPlay, Spotify (Exportify), YouTube Music, N-Zik 🔄
 
-<p>📱 <b>Play Anywhere, Anytime</b></p>
-<ul>
-  <li><b>Cross-Device Mastery:</b> Take your tunes on the road and to the big screen. N-Zik natively supports Android Auto, Android Automotive, Android TV, and Android Tablets. 🚗📺</li>
-</ul>
+📱 <b>Play Anywhere:</b> Android Auto, Automotive, TV, and Tablets 🚗📺
 
-<p>🛠️ <b>Power User Features</b></p>
-<ul>
-  <li><b>Search & Voice Search:</b> Find exactly what you're looking for—fast. Use text or your voice. 🎙️</li>
-  <li><b>Over-The-Air (OTA) Updates:</b> Receive automatic in-app updates directly from GitHub without needing to reinstall manually! ⬇️</li>
-  <li><b>Sleep Timer & Background Playback:</b> Automatically stop playback after a configurable duration, and keep the music playing while using other apps. 💤</li>
-</ul>
+🛠️ <b>Power User Features</b>
+- Text & voice search 🎙️
+- OTA updates from GitHub ⬇️
+- Sleep timer & background playback 💤
 
-<p>🛡️ <b>Transparency & Open Source</b></p>
-<p>N-Zik is 100% open-source (FOSS). Here is exactly why we request the following Android permissions:</p>
-<ul>
-  <li><b><code>android.permission.INTERNET</code> & <code>ACCESS_NETWORK_STATE</code>:</b> To stream music, fetch lyrics, and check for updates.</li>
-  <li><b><code>android.permission.RECORD_AUDIO</code>:</b> STRICTLY for the real-time audio visualizer to sync effects with the music. It is disabled by default and only asked if you enable the visualizer. We do NOT listen to you!</li>
-  <li><b><code>android.permission.READ/WRITE_EXTERNAL_STORAGE</code> & <code>READ_MEDIA_AUDIO</code>:</b> To export downloaded songs, cache files, and manage your local database backups.</li>
-  <li><b><code>android.permission.FOREGROUND_SERVICE</code> & <code>POST_NOTIFICATIONS</code>:</b> To show the media player in your notification drawer and ensure music keeps playing smoothly in the background.</li>
-  <li><b><code>android.permission.REQUEST_INSTALL_PACKAGES</code>:</b> Required exclusively for the OTA update feature.</li>
-  <li><b><code>android.permission.BLUETOOTH</code> & <code>MODIFY_AUDIO_SETTINGS</code>:</b> To connect to wireless headphones/car and allow advanced audio adjustments.</li>
-  <li><b><code>android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS</code> & <code>WAKE_LOCK</code>:</b> To prevent the system from killing the music player in the background.</li>
-</ul>
+🛡️ N-Zik is 100% open-source (FOSS). Key permissions: INTERNET (streaming/lyrics/updates), RECORD_AUDIO (visualizer only, opt-in, never listens), STORAGE (exports/backups), FOREGROUND_SERVICE/NOTIFICATIONS (playback), REQUEST_INSTALL_PACKAGES (OTA), BLUETOOTH (wireless audio), WAKE_LOCK (keep playback alive).
 
-<p>📦 <b>Available Builds</b></p>
-<ul>
-  <li><b>Full & Beta:</b> Complete build with all components (64-bit only).</li>
-  <li><b>Full32 & Beta32:</b> Complete build without FFmpeg (32-bit & 64-bit).</li>
-  <li><b>Minified:</b> Lightweight build, recommended for low-end devices (64-bit only).</li>
-  <li><b>Minified32:</b> Lightweight build without FFmpeg (32-bit & 64-bit).</li>
-  <li><b>FOSS:</b> Full build without auto-updater, suitable for alternative stores like F-Droid (64-bit only).</li>
-  <li><b>Dev & Dev32:</b> Development builds from latest commits, for testing only.</li>
-</ul>
-<p><i>ℹ️ Standard builds are 64-bit only because they bundle FFmpeg. The "32" builds drop FFmpeg to work on both architectures. (Note: Only the FOSS build is available on F-Droid).</i></p>
+📦 <b>Available Builds</b>
+- Full & Beta: Complete build with all components (64-bit only)
+- Full32 & Beta32: Complete build without FFmpeg (32-bit & 64-bit)
+- Minified: Lightweight build, recommended for low-end devices (64-bit only)
+- Minified32: Lightweight build without FFmpeg (32-bit & 64-bit)
+- FOSS: Full build without auto-updater, for F-Droid (64-bit only)
+- Dev & Dev32: Development builds from latest commits, testing only
 
-<p>⏳ <b>Only 144 days remaining until Android Lockdown</b></p>
+Standard builds are 64-bit only because they bundle FFmpeg; "32" builds drop FFmpeg to work on both architectures. Only the FOSS build is on F-Droid.
 
-<p>Starting in <b>January 2027</b> (<a href="https://keepandroidopen.org/en/faq/">See why the date changed here</a>), Google will require <b>identity verification for all Android developers</b>, including those distributing applications <b>outside of Google Play</b>.</p>
+Starting <b>January 2027</b> (<a href="https://keepandroidopen.org/en/faq/">why the date changed</a>), Google will require identity verification for all Android developers, even outside Google Play. As a Free and Open Source Software (FOSS) project, N-Zik and its developer oppose this requirement due to its impact on developer privacy, independent distribution, and software freedom.
 
-<p>As a <b>Free and Open Source Software (FOSS)</b> project, <b>N‑Zik</b> and its <b>developer</b> opposes this requirement due to its impact on developer privacy, independent distribution, and software freedom.</p>
-
-<p>📖 <a href="https://keepandroidopen.org">Learn more</a> · ✍️ <a href="https://www.change.org/p/stop-google-from-limiting-apk-file-usage/">Sign the petition</a></p>
+📖 <a href="https://keepandroidopen.org">Learn more</a> · ✍️ <a href="https://www.change.org/p/stop-google-from-limiting-apk-file-usage/">Sign the petition</a>
