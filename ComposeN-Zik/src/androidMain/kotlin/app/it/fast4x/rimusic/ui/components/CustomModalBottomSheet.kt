@@ -82,9 +82,7 @@ fun CustomModalBottomSheet(
         if (showSheet) {
             isComposing = true
         } else {
-            if (sheetState.isVisible) {
-                sheetState.hide()
-            }
+            sheetState.hide()
             isComposing = false
         }
     }

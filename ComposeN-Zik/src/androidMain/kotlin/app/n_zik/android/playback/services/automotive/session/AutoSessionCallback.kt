@@ -255,9 +255,9 @@ class AutoSessionCallback(
         val songId = mediaId.split("/").lastOrNull() ?: mediaId
         database.songTable.findByIdDirect(songId)?.let { song -> 
             if (mediaId.contains("/")) {
-                SessionMediaItemMapper.mapSongToMediaItem(song, mediaId.substringBeforeLast("/"))
+                SessionMediaItemMapper.mapSongToMediaItem(song, mediaId.substringBeforeLast("/"), loadArtwork = true)
             } else {
-                SessionMediaItemMapper.mapSongToMediaItem(song)
+                SessionMediaItemMapper.mapSongToMediaItem(song, loadArtwork = true)
             }
         }?.let { LibraryResult.ofItem(it, null) } ?: LibraryResult.ofError(SessionError.ERROR_UNKNOWN)
     }

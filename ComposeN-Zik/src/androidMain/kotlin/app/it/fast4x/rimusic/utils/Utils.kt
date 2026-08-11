@@ -280,9 +280,17 @@ val Song.asMediaItem: MediaItem
                             cropped.recycle()
                             metadataBuilder.setArtworkData(stream.toByteArray(), MediaMetadata.PICTURE_TYPE_ILLUSTRATION)
                         }
+                    } else {
+                        metadataBuilder.setArtworkUri(AutoMediaItemMapper.drawableUri(appContext(), R.drawable.ic_launcher_box))
                     }
                 }
             } catch (_: Exception) {}
+        } else if (artworkUri.scheme == ContentResolver.SCHEME_CONTENT) {
+            try {
+                appContext().contentResolver.openInputStream(artworkUri)?.close()
+            } catch (e: Exception) {
+                metadataBuilder.setArtworkUri(AutoMediaItemMapper.drawableUri(appContext(), R.drawable.ic_launcher_box))
+            }
         }
 
         return MediaItem.Builder()

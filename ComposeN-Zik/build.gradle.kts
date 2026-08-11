@@ -328,6 +328,7 @@ dependencies {
     implementation(libs.github.jeziellago.compose.markdown)
     implementation(libs.compose.reorderable)
     implementation(libs.work.runtime.ktx)
+    implementation(libs.androidx.car.app)
 
     implementation(libs.room)
     add("kspAndroid", libs.room.compiler)

@@ -15,6 +15,8 @@ import android.media.MediaRoute2Info
 import android.media.AudioPlaybackConfiguration
 import android.media.RouteDiscoveryPreference
 import android.media.MediaRouter
+import androidx.car.app.connection.CarConnection
+import androidx.lifecycle.Observer
 
 class AudioOutputManager(private val context: Context, private val audioManager: AudioManager) {
 
@@ -22,16 +24,23 @@ class AudioOutputManager(private val context: Context, private val audioManager:
         val id: Int,
         val type: Int,
         val name: String?,
-        val isCurrentlyActive: Boolean
+        val isCurrentlyActive: Boolean,
+        val isCar: Boolean = false
     ) {
         val icon: Any
-            get() = getAudioDeviceIcon(type, name)
+            get() = getAudioDeviceIcon(type, name, isCar)
     }
 
     private val handler = Handler(Looper.getMainLooper())
     private var deviceCallback: AudioDeviceCallback? = null
     private var playbackCallback: Any? = null // AudioManager.AudioPlaybackCallback
     private var mediaRouter2Callback: Any? = null // MediaRouter2.ControllerCallback
+    private var carConnectionObserver: Observer<Int>? = null
+    private var currentCarConnectionType: Int = try {
+        CarConnection(context).type.value ?: CarConnection.CONNECTION_TYPE_NOT_CONNECTED
+    } catch (_: Exception) {
+        CarConnection.CONNECTION_TYPE_NOT_CONNECTED
+    }
 
     @SuppressLint("NewApi", "deprecation")
     fun getAvailableDevices(): List<AudioDevice> {
@@ -172,12 +181,16 @@ class AudioOutputManager(private val context: Context, private val audioManager:
 
         Timber.tag("AudioOutputManager").d("getAvailableDevices() - source=$routeSource, mediaRouterLegacyType=$mediaRouterDeviceType, isA2dpOn=$isA2dpOn, isWiredOn=$isWiredOn, activeRouteId=$activeRouteId")
 
+        val isCarProjectionActive = currentCarConnectionType == CarConnection.CONNECTION_TYPE_PROJECTION || currentCarConnectionType == CarConnection.CONNECTION_TYPE_NATIVE
+
         return devices.map { device ->
+            val isCurrentlyActive = device.id == activeRouteId
             AudioDevice(
                 id = device.id,
                 type = device.type,
                 name = device.productName?.toString(),
-                isCurrentlyActive = device.id == activeRouteId
+                isCurrentlyActive = isCurrentlyActive,
+                isCar = isCurrentlyActive && isCarProjectionActive
             )
         }.sortedByDescending { it.isCurrentlyActive }
     }
@@ -196,6 +209,18 @@ class AudioOutputManager(private val context: Context, private val audioManager:
             }
         }
         audioManager.registerAudioDeviceCallback(deviceCallback, handler)
+
+        val observer = Observer<Int> { type ->
+            Timber.tag("AudioOutputManager").d("CarConnection type changed: $type")
+            currentCarConnectionType = type
+            callback(getAvailableDevices())
+        }
+        carConnectionObserver = observer
+        try {
+            CarConnection(context).type.observeForever(observer)
+        } catch (e: Exception) {
+            Timber.tag("AudioOutputManager").e(e, "Failed to observe CarConnection")
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val pbCallback = object : AudioManager.AudioPlaybackCallback() {
@@ -239,6 +264,15 @@ class AudioOutputManager(private val context: Context, private val audioManager:
     fun unregisterDeviceChanges() {
         deviceCallback?.let { audioManager.unregisterAudioDeviceCallback(it) }
         deviceCallback = null
+
+        carConnectionObserver?.let {
+            try {
+                CarConnection(context).type.removeObserver(it)
+            } catch (e: Exception) {
+                Timber.tag("AudioOutputManager").e(e, "Failed to remove CarConnection observer")
+            }
+        }
+        carConnectionObserver = null
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             (playbackCallback as? AudioManager.AudioPlaybackCallback)?.let {

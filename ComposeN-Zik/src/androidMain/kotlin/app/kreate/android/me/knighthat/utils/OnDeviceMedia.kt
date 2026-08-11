@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import timber.log.Timber
@@ -94,6 +95,7 @@ fun Context.getLocalSongs(
     val selection = "${MediaStore.Audio.Media.IS_MUSIC} > 0"
     val order = "${sortBy.value} COLLATE NOCASE ${sortOrder.asSqlString}"
 
+    val toProbe = mutableListOf<Pair<Long, Format>>()
     contentResolver.query( uri, PROJECTION, selection, null, order )?.use { cursor ->
         val idColumn = cursor.getColumnIndex( MediaStore.Audio.Media._ID )
         val nameColumn = cursor.getColumnIndex( MediaStore.Audio.Media.DISPLAY_NAME )
@@ -141,34 +143,8 @@ fun Context.getLocalSongs(
             val fileSize = cursor.getLong( fileSizeColumn )
             val dateModified = cursor.getLong( dateModifiedColumn )
 
-            var sampleRate: Int? = null
-            var audioChannels: Int? = null
-            var codec: String? = null
-            try {
-                val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
-                val extractor = MediaExtractor()
-                try {
-                    extractor.setDataSource(this@getLocalSongs, contentUri, null)
-                    for (i in 0 until extractor.trackCount) {
-                        val trackFormat = extractor.getTrackFormat(i)
-                        val mime = trackFormat.getString(MediaFormat.KEY_MIME)
-                        if (mime?.startsWith("audio/") == true) {
-                            sampleRate = trackFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE).takeIf { it > 0 }
-                            audioChannels = trackFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT).takeIf { it > 0 }
-                            codec = mime.substringAfter("/", "").takeIf { it.isNotEmpty() }
-                            break
-                        }
-                    }
-                } finally {
-                    extractor.release()
-                }
-                Timber.tag("OnDeviceMedia").d("Probed local:%d → sampleRate=%s, channels=%s, codec=%s", id, sampleRate, audioChannels, codec)
-            } catch (e: Exception) {
-                Timber.tag("OnDeviceMedia").d(e, "Failed to probe audio format for local:$id")
-            }
-
             val format = Format( song.id, 0, mimeType, bitrate, fileSize, dateModified,
-                sampleRate = sampleRate, audioChannels = audioChannels, codecs = codec )
+                sampleRate = null, audioChannels = null, codecs = null )
 
             Database.asyncTransaction {
                 songTable.insertIgnore( song )
@@ -176,11 +152,52 @@ fun Context.getLocalSongs(
             }
 
             results[song] = relPath
+            toProbe.add(id to format)
         }
     }
 
+    // Emit the base data immediately so the UI and Android Auto do not hang
     emit( results )
-}.stateIn( CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, mapOf() )
+
+    // Asynchronously probe the media files for codec, sample rate, and channels
+    if (toProbe.isNotEmpty()) {
+        CoroutineScope(Dispatchers.IO).launch {
+            for ((id, baseFormat) in toProbe) {
+                var sampleRate: Int? = null
+                var audioChannels: Int? = null
+                var codec: String? = null
+                try {
+                    val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id)
+                    val extractor = MediaExtractor()
+                    try {
+                        extractor.setDataSource(this@getLocalSongs, contentUri, null)
+                        for (i in 0 until extractor.trackCount) {
+                            val trackFormat = extractor.getTrackFormat(i)
+                            val mime = trackFormat.getString(MediaFormat.KEY_MIME)
+                            if (mime?.startsWith("audio/") == true) {
+                                sampleRate = trackFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE).takeIf { it > 0 }
+                                audioChannels = trackFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT).takeIf { it > 0 }
+                                codec = mime.substringAfter("/", "").takeIf { it.isNotEmpty() }
+                                break
+                            }
+                        }
+                    } finally {
+                        extractor.release()
+                    }
+                    if (sampleRate != null || codec != null || audioChannels != null) {
+                        Database.asyncTransaction {
+                            formatTable.upsert(baseFormat.copy(sampleRate = sampleRate, audioChannels = audioChannels, codecs = codec))
+                        }
+                        Timber.tag("OnDeviceMedia").d("Probed local:%d → sampleRate=%s, channels=%s, codec=%s", id, sampleRate, audioChannels, codec)
+                    }
+                } catch (e: Exception) {
+                    Timber.tag("OnDeviceMedia").d(e, "Failed to probe audio format for local:$id")
+                }
+                kotlinx.coroutines.yield() // allow cancellation and don't hog the thread
+            }
+        }
+    }
+}
 
 
 

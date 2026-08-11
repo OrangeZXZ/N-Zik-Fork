@@ -85,10 +85,28 @@ fun isSpeaker(name: String?): Boolean {
 }
 
 /**
+ * Returns true if the device name suggests it is a car infotainment system.
+ */
+fun isCar(name: String?): Boolean {
+    if (name == null) return false
+    val lowerName = name.lowercase()
+    val carKeywords = listOf(
+        "car", "bt_auto", "toyota", "vw", "audi", "ford", "honda", "hyundai", "nissan", "kia",
+        "mazda", "renault", "peugeot", "citroen", "fiat", "bmw", "mercedes", "volvo", "subaru",
+        "jeep", "dodge", "chevrolet", "buick", "cadillac", "gmc", "tesla", "porsche", "ferrari",
+        "lamborghini", "maserati", "bentley", "rolls-royce", "lexus", "acura", "infiniti", "genesis",
+        "bt-auto", "auto", "vehicle", "infotainment", "uconnect", "sync", "mycar", "blue&me", "hand-free"
+    )
+    return carKeywords.any { lowerName.contains(it) }
+}
+
+/**
  * Returns the appropriate icon (either a drawable resource ID or a Compose ImageVector)
  * based on the audio device type and name.
  */
-fun getAudioDeviceIcon(type: Int, name: String?): Any {
+fun getAudioDeviceIcon(type: Int, name: String?, isCarForced: Boolean = false): Any {
+    if (isCarForced) return app.n_zik.android.R.drawable.car
+    
     return when (type) {
         AudioDeviceInfo.TYPE_BLUETOOTH_A2DP,
         AudioDeviceInfo.TYPE_BLUETOOTH_SCO,
@@ -97,6 +115,7 @@ fun getAudioDeviceIcon(type: Int, name: String?): Any {
             when {
                 isBuds(deviceName) -> app.n_zik.android.R.drawable.buds
                 isSpeaker(deviceName) -> Icons.Filled.SpeakerGroup
+                isCar(deviceName) -> app.n_zik.android.R.drawable.car
                 else -> Icons.Filled.Headphones
             }
         }
@@ -104,7 +123,11 @@ fun getAudioDeviceIcon(type: Int, name: String?): Any {
         AudioDeviceInfo.TYPE_WIRED_HEADSET,
         AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
         AudioDeviceInfo.TYPE_USB_HEADSET,
-        AudioDeviceInfo.TYPE_USB_DEVICE -> app.n_zik.android.R.drawable.headphones
+        AudioDeviceInfo.TYPE_USB_DEVICE -> {
+            val deviceName = name ?: ""
+            if (isCar(deviceName)) app.n_zik.android.R.drawable.car
+            else app.n_zik.android.R.drawable.headphones
+        }
         
         AudioDeviceInfo.TYPE_BUS -> app.n_zik.android.R.drawable.car
         
@@ -117,14 +140,18 @@ fun getAudioDeviceIcon(type: Int, name: String?): Any {
  */
 fun getBottomSheetDeviceIcon(
     type: AudioDeviceType,
-    name: String?
+    name: String?,
+    isCarForced: Boolean = false
 ): Any {
+    if (isCarForced) return app.n_zik.android.R.drawable.car
+    
     return when (type) {
         AudioDeviceType.BLUETOOTH -> {
             val deviceName = name ?: ""
             when {
                 isBuds(deviceName) -> app.n_zik.android.R.drawable.buds
                 isSpeaker(deviceName) -> Icons.Filled.SpeakerGroup
+                isCar(deviceName) -> app.n_zik.android.R.drawable.car
                 else -> Icons.Filled.Bluetooth
             }
         }

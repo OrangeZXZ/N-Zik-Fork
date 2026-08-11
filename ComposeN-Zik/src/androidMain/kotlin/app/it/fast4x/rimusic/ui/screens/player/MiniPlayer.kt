@@ -879,7 +879,7 @@ private fun MiniPlayerSlotButton(
                 }
             }
 
-            val isExternal = activeDevice != null && activeDevice?.type != AudioDeviceInfo.TYPE_BUILTIN_SPEAKER && activeDevice?.type != AudioDeviceInfo.TYPE_BUILTIN_EARPIECE
+            val isExternal = (activeDevice != null && activeDevice?.type != AudioDeviceInfo.TYPE_BUILTIN_SPEAKER && activeDevice?.type != AudioDeviceInfo.TYPE_BUILTIN_EARPIECE) || activeDevice?.isCar == true
             
             val iconVal = activeDevice?.icon ?: R.drawable.devices
 

@@ -67,6 +67,22 @@ object SessionMediaItemMapper {
         }
     }
 
+    private fun isArtworkAvailable(url: String?): Boolean {
+        if (url.isNullOrBlank()) return false
+        if (url.startsWith("content://")) {
+            return try {
+                appContext().contentResolver.openInputStream(Uri.parse(url))?.close()
+                true
+            } catch (e: Exception) {
+                false
+            }
+        }
+        if (url.startsWith("file://") || url.startsWith("/")) {
+            return File(url.removePrefix("file://")).exists()
+        }
+        return true
+    }
+
     private fun applyExifRotation(path: String, bitmap: Bitmap): Bitmap {
         return try {
             val exif = ExifInterface(path)
@@ -95,11 +111,12 @@ object SessionMediaItemMapper {
         name: String,
         thumbnailUrl: String?,
         subtext: String? = null,
-        searchPath: String = ""
+        searchPath: String = "",
+        loadArtwork: Boolean = false
     ): MediaItem {
         val cleanUrl = thumbnailUrl?.let { cleanPrefix(it) }
         val iconUri = cleanUrl?.thumbnail(250)?.toUri()
-        val artworkBytes = loadArtworkBytes(cleanUrl)
+        val artworkBytes = if (loadArtwork) loadArtworkBytes(cleanUrl) else null
         val item = browsableMediaItem(
             id = "$parentId/$id",
             title = name,
@@ -121,11 +138,12 @@ object SessionMediaItemMapper {
         title: String,
         authorsText: String?,
         thumbnailUrl: String?,
-        searchPath: String = ""
+        searchPath: String = "",
+        loadArtwork: Boolean = false
     ): MediaItem {
         val cleanUrl = thumbnailUrl?.let { cleanPrefix(it) }
         val iconUri = cleanUrl?.thumbnail(250)?.toUri()
-        val artworkBytes = loadArtworkBytes(cleanUrl)
+        val artworkBytes = if (loadArtwork) loadArtworkBytes(cleanUrl) else null
         val item = browsableMediaItem(
             id = "$parentId/$id",
             title = title,
@@ -142,25 +160,40 @@ object SessionMediaItemMapper {
     }
 
 
-    fun mapSongToMediaItem(song: Song, path: String): MediaItem {
+    fun mapSongToMediaItem(song: Song, path: String, loadArtwork: Boolean = false): MediaItem {
         val baseItem = song.asMediaItem
         var metadataBuilder = baseItem.mediaMetadata.buildUpon()
 
-        if (song.isLocal) {
-            // Load artwork from media store for on-device songs
-            val artworkUrl = song.thumbnailUrl?.let { cleanPrefix(it) }
-            val artworkBytes = loadArtworkBytes(artworkUrl)
-            if (artworkBytes != null) {
-                metadataBuilder.setArtworkData(artworkBytes, MediaMetadata.PICTURE_TYPE_ILLUSTRATION)
+        if (loadArtwork) {
+            if (song.isLocal) {
+                // Load artwork from media store for on-device songs
+                val artworkUrl = song.thumbnailUrl?.let { cleanPrefix(it) }
+                val artworkBytes = loadArtworkBytes(artworkUrl)
+                if (artworkBytes != null) {
+                    metadataBuilder.setArtworkData(artworkBytes, MediaMetadata.PICTURE_TYPE_ILLUSTRATION)
+                } else {
+                    metadataBuilder.setArtworkUri(drawableUri(appContext(), R.drawable.ic_launcher_box))
+                }
             } else {
-                metadataBuilder.setArtworkUri(drawableUri(appContext(), R.drawable.ic_launcher_box))
+                // Load artwork via Coil (handles EXIF rotation) for Android Auto
+                val artworkUrl = song.thumbnailUrl?.let { cleanPrefix(it) }
+                val artworkBytes = loadArtworkBytes(artworkUrl)
+                if (artworkBytes != null) {
+                    metadataBuilder.setArtworkData(artworkBytes, MediaMetadata.PICTURE_TYPE_ILLUSTRATION)
+                } else {
+                    metadataBuilder.setArtworkUri(drawableUri(appContext(), R.drawable.ic_launcher_box))
+                }
             }
         } else {
-            // Load artwork via Coil (handles EXIF rotation) for Android Auto
             val artworkUrl = song.thumbnailUrl?.let { cleanPrefix(it) }
-            val artworkBytes = loadArtworkBytes(artworkUrl)
-            if (artworkBytes != null) {
-                metadataBuilder.setArtworkData(artworkBytes, MediaMetadata.PICTURE_TYPE_ILLUSTRATION)
+            if (artworkUrl != null) {
+                if (!isArtworkAvailable(artworkUrl)) {
+                    metadataBuilder.setArtworkUri(drawableUri(appContext(), R.drawable.ic_launcher_box))
+                } else {
+                    metadataBuilder.setArtworkUri(Uri.parse(artworkUrl))
+                }
+            } else {
+                metadataBuilder.setArtworkUri(drawableUri(appContext(), R.drawable.ic_launcher_box))
             }
         }
 
@@ -186,7 +219,7 @@ object SessionMediaItemMapper {
         }
     }
 
-    fun mapSongToMediaItem(song: Song, isFromPersistentQueue: Boolean = false): MediaItem {
+    fun mapSongToMediaItem(song: Song, isFromPersistentQueue: Boolean = false, loadArtwork: Boolean = false): MediaItem {
         val mediaItem = song.asMediaItem
         val existingExtras = mediaItem.mediaMetadata.extras ?: Bundle()
         val bundle = Bundle(existingExtras).apply {
@@ -197,12 +230,25 @@ object SessionMediaItemMapper {
             .buildUpon()
             .setExtras(bundle)
 
-        // Load artwork for queue display (needed for on-device in AA)
-        if (song.isLocal) {
+        if (loadArtwork) {
+            // Load artwork for queue display (needed for on-device in AA)
+            if (song.isLocal) {
+                val artworkUrl = song.thumbnailUrl?.let { cleanPrefix(it) }
+                val artworkBytes = loadArtworkBytes(artworkUrl)
+                if (artworkBytes != null) {
+                    metadataBuilder.setArtworkData(artworkBytes, MediaMetadata.PICTURE_TYPE_ILLUSTRATION)
+                } else {
+                    metadataBuilder.setArtworkUri(drawableUri(appContext(), R.drawable.ic_launcher_box))
+                }
+            }
+        } else {
             val artworkUrl = song.thumbnailUrl?.let { cleanPrefix(it) }
-            val artworkBytes = loadArtworkBytes(artworkUrl)
-            if (artworkBytes != null) {
-                metadataBuilder.setArtworkData(artworkBytes, MediaMetadata.PICTURE_TYPE_ILLUSTRATION)
+            if (artworkUrl != null) {
+                if (!isArtworkAvailable(artworkUrl)) {
+                    metadataBuilder.setArtworkUri(drawableUri(appContext(), R.drawable.ic_launcher_box))
+                } else {
+                    metadataBuilder.setArtworkUri(Uri.parse(artworkUrl))
+                }
             } else {
                 metadataBuilder.setArtworkUri(drawableUri(appContext(), R.drawable.ic_launcher_box))
             }
