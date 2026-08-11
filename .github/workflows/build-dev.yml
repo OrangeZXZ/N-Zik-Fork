@@ -19,12 +19,30 @@ jobs:
     outputs:
       should-build: ${{ steps.check.outputs.should-build }}
     steps:
-      - name: Check author
+      - name: Check author and commit message
         id: check
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          ACTOR="${{ github.actor }}"
+          
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "should-build=true" >> $GITHUB_OUTPUT
-          elif [ "${{ github.actor }}" = "NEVARLeVrai" ]; then
+          elif [[ "$COMMIT_MSG" == *"crowdin"* ]] || [[ "$COMMIT_MSG" == *"Crowdin"* ]]; then
+            echo "should-build=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Crowdin commit detected, skipping build"
+          elif [[ "$COMMIT_MSG" == *"update stats and chart"* ]]; then
+            echo "should-build=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Stats/chart update commit detected, skipping build"
+          elif [[ "$COMMIT_MSG" == *"update Android lockdown countdown"* ]]; then
+            echo "should-build=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Lockdown countdown commit detected, skipping build"
+          elif [[ "$COMMIT_MSG" == *"In-app contributors list updated"* ]]; then
+            echo "should-build=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Contributor list update commit detected, skipping build"
+          elif [ "$ACTOR" = "github-actions[bot]" ]; then
+            echo "should-build=false" >> $GITHUB_OUTPUT
+            echo "⚠️ github-actions[bot] commit detected, skipping build"
+          elif [ "$ACTOR" = "NEVARLeVrai" ]; then
             echo "should-build=true" >> $GITHUB_OUTPUT
           else
             echo "should-build=false" >> $GITHUB_OUTPUT
