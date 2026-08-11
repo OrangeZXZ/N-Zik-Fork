@@ -899,7 +899,7 @@
   <string name="error_no_internet">Ağ bağlantısı yok</string>
   <string name="error_timeout">Bağlantı zaman aşımı</string>
   <string name="error_unknown">Bilinmeyen hata</string>
-  <string name="delete_song">Do you really want to delete this song? It will be deleted from database.\nThis action is irreversible.</string>
+  <string name="delete_song">Bu şarkıyı gerçekten silmek istiyor musunuz? Veritabanından silinecek. Bu işlem geri alınamaz.</string>
   <string name="update_album">Albümü günceller</string>
   <string name="info_check_update_now">Şimdi kontrol et</string>
   <string name="info_no_update_available">Güncelleme yok</string>
@@ -913,7 +913,7 @@
   <string name="social_github">GitHub</string>
   <string name="update">Güncelle</string>
   <string name="update_waveform">Waveform\'u güncelle</string>
-  <string name="update_song">Do you really want to refetch this song? Playback time and cached data will be wiped.\nThis action is irreversible.</string>
+  <string name="update_song">Bu şarkıyı gerçekten yeniden getirmek istiyor musunuz? Çalma süresi ve önbelleğe alınan veriler silinecek. Bu işlem geri alınamaz.</string>
   <string name="player_pause_listen_history_info">İstatistikler, geçmiş ve hızlı resimlerdeki öneriler için kullanılan çalma olaylarını kaydetmez</string>
   <string name="vertical_widget">Dikey widget</string>
   <string name="horizontal_widget">Yatay widget</string>

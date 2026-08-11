@@ -6,7 +6,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 00 */3 * *' 
+    - cron: '0 0 * * *'
 
 concurrency:
   group: 'dev-deploy'
@@ -69,32 +69,34 @@ jobs:
         run: |
           TODAY_TAG=$(date +'%Y%m%d')
           TODAY_DISPLAY=$(date +'%Y-%m-%d')
-          
-          # Force gh cli to act non-interactively
+
           export GH_PROMPT_DISABLED=1
-          
-          # We use mapfile to safely capture output without triggering exit codes on empty results
+
           ALREADY_BUILT=$(gh release list --limit 15 | grep -e "-dev-$TODAY_TAG" || echo "")
-          
+
           if [ ! -z "$ALREADY_BUILT" ]; then
             echo "changed=false" >> $GITHUB_OUTPUT
             echo "⏭️ A dev build has already been released today ($TODAY_DISPLAY). Skipping build."
             exit 0
           fi
 
-          # If no build occurred today:
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            # For the cron job, check if there are new commits in the last 3 days
-            COMMITS=$(git log --since="3 days ago" --oneline)
-            if [ ! -z "$COMMITS" ]; then
+            SINCE=$(date -u -d '1 day ago' +%Y-%m-%dT%H:%M:%SZ)
+
+            COMMITS=$(gh api "repos/${{ github.repository }}/commits?since=$SINCE&author=NEVARLeVrai" \
+              --jq '.[] | [.sha, (.commit.message | split("\n")[0])] | @tsv')
+
+            RELEVANT=$(echo "$COMMITS" | grep -viE 'crowdin|update stats and chart|update Android lockdown countdown|In-app contributors list updated' || true)
+
+            if [ ! -z "$RELEVANT" ]; then
               echo "changed=true" >> $GITHUB_OUTPUT
-              echo "✅ New commits in the last 3 days. Building."
+              echo "✅ New relevant commits from NEVARLeVrai in the last day. Building."
+              echo "$RELEVANT"
             else
               echo "changed=false" >> $GITHUB_OUTPUT
-              echo "⏭️ No changes in the last 3 days."
+              echo "⏭️ No relevant commits from NEVARLeVrai in the last day (or only excluded ones)."
             fi
           else
-            # It's a push or a workflow_dispatch (manual trigger)
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "✅ Push or manual trigger detected. Launching first build of the day."
           fi
