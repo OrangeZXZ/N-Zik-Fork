@@ -1,0 +1,57 @@
+<b>N-Zik</b> – tai jūsų geriausias atvirojo kodo daugiakalbis „YouTube Music“ klientas „Android“ įrenginiams! 🎵🚀
+
+Tai daugiakalbė <a href="https://github.com/knighthat/Kreate">Kreate</a> atšaka, orientuota į našumą, UI/UX šlifavimą, klaidų taisymą ir naujas funkcijas su ilgalaikiu palaikymu.
+
+<b>Kūrimas ir stabilumas:</b> N-Zik prasidėjo kaip šalutinis projektas man pačiam ir draugams. Jis dar gali būti ne toks stabilus kaip „Kreate“ – norėdami rasti brandesnių sprendimų, peržiūrėkite <a href="https://github.com/MetrolistGroup/Metrolist">Metrolist</a>, <a href="https://github.com/vivizzz007/vivi-music">VIVI Music</a> arba <a href="https://github.com/fast4x/RiPlay">RiPlay</a>.
+
+<b>Skaidrus AI naudojimas:</b> Kodui rašyti naudoju generatyvinį AI (per <a href="https://github.com/bmad-code-org/BMAD-METHOD">BMAD metodą</a>), tačiau viskas prieš išleidžiant yra peržiūrima ir išbandoma. Tai ne jums? Nieko tokio – yra daugybė puikių alternatyvų.
+
+Nesvarbu, ar esate atsitiktinis klausytojas, ar užkietėjęs melomanas, N-Zik suteikia jums visišką muzikos kontrolę, neaukojant jūsų privatumo.
+
+✨ <b>KODĖL VERTA RINKTIS N-ZIK?</b> Jokių reklamų, pilnas atkūrimas fone, neprisijungus pasiekiamas podėlis (cache) ir visiškai pritaikoma sąsaja – visada nemokamai.
+
+🎨 <b>Pritaikoma sąsaja</b>
+- „Jetpack Compose“ sąsaja su klasikinio „ViMusic“ režimo perjungikliu 🌓
+- Pasirinktinės temos: „True AMOLED“, „Deep Dark“, „Crisp Light“ + spalvoti akcentai
+- 3D karuselinis grotuvas 🎠 ir pritaikomi pagrindinio ekrano valdikliai 🪟
+- Išsamūs atlikėjų profiliai, naujienų srautas ir eksperimentiniai valdikliai 🧪
+
+🎵 <b>Garso patirtis</b>
+- Aukščiausios kokybės garsas per „YouTube Music Premium“ („Web Remix“ klientas) 🔊
+- Pažangūs sinchronizuoti dainų žodžiai su redagavimu ir vertimu realiuoju laiku 🎤
+- Realiojo laiko garso vizualizatorius 🎇 ir profesionalūs valdikliai: greitis, tonas, normalizavimas, „crossfade“, garso sustiprinimas 🎚️
+
+💾 <b>Neprisijungus, metaduomenys ir privatumas</b>
+- Išmanusis neprisijungus pasiekiamas podėlis ir dainų bei grojaraščių atsisiuntimai 📡
+- „FFmpeg“ pagrindu veikiantis eksportavimas su visais įterptais metaduomenimis 📤 (tik 64 bitų versijose)
+- Metaduomenų redaktorius programėlėje (AAC/Opus, viršelio menas) ✏️
+- 100 % vietinė klausymosi statistika ir istorija 📊
+- Automatinis atsarginių kopijų kūrimas su pasirinktiniais intervalais ir saugojimu ⚙️
+
+🔗 <b>Integracijos</b>
+- Prisijungimas prie „YouTube“ rekomendacijoms ir garso / vaizdo perjungimui 📺
+- „Discord Rich Presence“ 🎮
+- Grojaraščių importas / eksportas: „RiPlay“, „Spotify“ („Exportify“), „YouTube Music“, „N-Zik“ 🔄
+
+📱 <b>Klausykitės bet kur:</b> „Android Auto“, „Automotive“, TV ir planšetiniuose kompiuteriuose 🚗📺
+
+🛠️ <b>Funkcijos pažengusiems vartotojams</b>
+- Tekstinė ir balso paieška 🎙️
+- OTA atnaujinimai iš „GitHub“ ⬇️
+- Miego laikmatis ir atkūrimas fone 💤
+
+🛡️ N-Zik yra 100 % atvirojo kodo (FOSS). Svarbiausi leidimai: INTERNETAS (srautinis siuntimas / žodžiai / atnaujinimai), RECORD_AUDIO (tik vizualizatoriui, pasirinktinai, niekada nesiklauso), STORAGE (eksportas / atsarginės kopijos), FOREGROUND_SERVICE / NOTIFICATIONS (atkūrimas), REQUEST_INSTALL_PACKAGES (OTA), BLUETOOTH (belaidis garsas), WAKE_LOCK (kad atkūrimas nenutrūktų).
+
+📦 <b>Galimos versijos</b>
+- Full & Beta: pilna versija su visais komponentais (tik 64 bitų)
+- Full32 & Beta32: pilna versija be „FFmpeg“ (32 bitų ir 64 bitų)
+- Minified: lengva versija, rekomenduojama silpnesniems įrenginiams (tik 64 bitų)
+- Minified32: lengva versija be „FFmpeg“ (32 bitų ir 64 bitų)
+- FOSS: pilna versija be automatinio atnaujinimo, skirta „F-Droid“ (tik 64 bitų)
+- Dev & Dev32: kūrimo versijos iš naujausių pakeitimų, tik testavimui
+
+Standartinės versijos yra tik 64 bitų, nes jose yra „FFmpeg“; „32“ versijose „FFmpeg“ atsisakyta, kad jos veiktų abiejose architektūrose. Tik FOSS versija yra „F-Droid“ parduotuvėje.
+
+Nuo <b>2027 m. sausio mėn.</b> (<a href="https://keepandroidopen.org/en/faq/">kodėl pasikeitė data</a>), „Google“ reikalaus tapatybės patvirtinimo iš visų „Android“ kūrėjų, net ir už „Google Play“ ribų. Kaip nemokamos ir atvirojo kodo programinės įrangos (FOSS) projektas, N-Zik ir jo kūrėjas nepritaria šiam reikalavimui dėl jo poveikio kūrėjų privatumui, nepriklausomam platinimui ir programinės įrangos laisvei.
+
+📖 <a href="https://keepandroidopen.org">Sužinokite daugiau</a> · ✍️ <a href="https://www.change.org/p/stop-google-from-limiting-apk-file-usage/">Pasirašykite peticiją</a>

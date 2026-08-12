@@ -1,0 +1,57 @@
+<b>N-Zik</b>, Android için nihai, açık kaynaklı ve çok dilli YouTube Music istemcinizdir! 🎵🚀
+
+Performansa, UI/UX iyileştirmesine, hata düzeltmelerine ve uzun süreli destekli yeni özelliklere odaklanan, <a href="https://github.com/knighthat/Kreate">Kreate</a>'in çok dilli bir çatalıdır (fork).
+
+<b>Geliştirme ve Kararlılık:</b> N-Zik, kendim ve arkadaşlarım için bir yan proje olarak başladı. Henüz Kreate kadar kararlı olmayabilir; daha olgun bir seçenek için <a href="https://github.com/MetrolistGroup/Metrolist">Metrolist</a>, <a href="https://github.com/vivizzz007/vivi-music">VIVI Music</a> veya <a href="https://github.com/fast4x/RiPlay">RiPlay</a>'e göz atabilirsiniz.
+
+<b>Şeffaf Yapay Zeka Kullanımı:</b> Kodlama konusunda yardımcı olması için üretken yapay zeka kullanıyorum (<a href="https://github.com/bmad-code-org/BMAD-METHOD">BMAD Yöntemi</a> aracılığıyla), ancak her şey yayınlanmadan önce gözden geçirilir ve test edilir. Size göre değil mi? Sorun değil, pek çok harika alternatif mevcut.
+
+İster sıradan bir dinleyici ister sıkı bir odyofil olun, N-Zik gizliliğinizden ödün vermeden müziğiniz üzerinde mutlak kontrol sağlar.
+
+✨ <b>NEDEN N-ZIK'İ SEÇMELİSİNİZ?</b> Reklam yok, tam arka plan oynatma, çevrimdışı önbelleğe alma ve tamamen ayarlanabilir bir arayüz; her zaman ücretsiz.
+
+🎨 <b>Özelleştirilebilir Kullanıcı Arayüzü (UI)</b>
+- Klasik ViMusic modu geçişli Jetpack Compose kullanıcı arayüzü 🌓
+- Özel temalar: Gerçek AMOLED, Derin Karanlık, Net Aydınlık + renkli vurgular
+- 3D Karusel Oynatıcı 🎠 ve özelleştirilebilir ana ekran widget'ları 🪟
+- Ayrıntılı sanatçı profilleri, Haber Akışı ve deneysel widget'lar 🧪
+
+🎵 <b>Ses Deneyimi</b>
+- YouTube Music Premium (Web Remix istemcisi) aracılığıyla birinci sınıf kalitede ses 🔊
+- Düzenleme ve gerçek zamanlı çeviri ile gelişmiş senkronize şarkı sözleri 🎤
+- Gerçek zamanlı ses görselleştirici 🎇 ve profesyonel kontroller: hız, perde, normalleştirme, geçişli geçiş (crossfade), ses artırma 🎚️
+
+💾 <b>Çevrimdışı, Meta Veriler ve Gizlilik</b>
+- Parçalar ve çalma listeleri için akıllı çevrimdışı önbelleğe alma ve indirme 📡
+- Tam gömülü meta verilerle FFmpeg destekli dışa aktarma 📤 (yalnızca 64 bit yapılar)
+- Uygulama içi meta veri düzenleyici (AAC/Opus, kapak resmi) ✏️
+- %100 yerel dinleme istatistikleri ve geçmişi 📊
+- Özel aralıklar ve saklama süresi ile otomatik yedekleme ⚙️
+
+🔗 <b>Entegrasyonlar</b>
+- Öneriler ve ses/video geçişi için YouTube girişi 📺
+- Discord Rich Presence 🎮
+- Çalma listesi içe/dışa aktarma: RiPlay, Spotify (Exportify), YouTube Music, N-Zik 🔄
+
+📱 <b>Her Yerde Oynatın:</b> Android Auto, Automotive, TV ve Tabletler 🚗📺
+
+🛠️ <b>İleri Düzey Kullanıcı Özellikleri</b>
+- Metin ve sesli arama 🎙️
+- GitHub üzerinden OTA güncellemeleri ⬇️
+- Uyku zamanlayıcısı ve arka planda oynatma 💤
+
+🛡️ N-Zik %100 açık kaynaklıdır (FOSS). Temel izinler: İNTERNET (akış/şarkı sözleri/güncellemeler), RECORD_AUDIO (yalnızca görselleştirici, isteğe bağlı, asla dinlemez), STORAGE (dışa aktarma/yedekleme), FOREGROUND_SERVICE/NOTIFICATIONS (oynatma), REQUEST_INSTALL_PACKAGES (OTA), BLUETOOTH (kablosuz ses), WAKE_LOCK (oynatmayı sürdürme).
+
+📦 <b>Mevcut Yapılar</b>
+- Full & Beta: Tüm bileşenleri içeren tam yapı (yalnızca 64 bit)
+- Full32 & Beta32: FFmpeg içermeyen tam yapı (32 bit ve 64 bit)
+- Minified: Düşük kaliteli cihazlar için önerilen hafif yapı (yalnızca 64 bit)
+- Minified32: FFmpeg içermeyen hafif yapı (32 bit ve 64 bit)
+- FOSS: F-Droid için otomatik güncelleyici içermeyen tam yapı (yalnızca 64 bit)
+- Dev & Dev32: En son commit'lerden geliştirme yapıları, yalnızca test amaçlıdır
+
+Standart yapılar FFmpeg içerdiği için yalnızca 64 bittir; "32" yapılar her iki mimaride de çalışması için FFmpeg'i içermez. Yalnızca FOSS yapısı F-Droid üzerindedir.
+
+<b>Ocak 2027</b>'den itibaren (<a href="https://keepandroidopen.org/en/faq/">tarihin neden değiştiği</a>), Google, Google Play dışındaki Android geliştiricileri de dahil olmak üzere tüm geliştiricilerden kimlik doğrulaması isteyecektir. Özgür ve Açık Kaynaklı Yazılım (FOSS) projesi olarak N-Zik ve geliştiricisi; geliştirici gizliliği, bağımsız dağıtım ve yazılım özgürlüğü üzerindeki etkisi nedeniyle bu gerekliliğe karşı çıkmaktadır.
+
+📖 <a href="https://keepandroidopen.org">Daha fazla bilgi edinin</a> · ✍️ <a href="https://www.change.org/p/stop-google-from-limiting-apk-file-usage/">İmza kampanyasına katılın</a>
