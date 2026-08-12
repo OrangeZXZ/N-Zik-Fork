@@ -1,5 +1,8 @@
 name: Build & Sign Full Flavor Only (TEST)
 
+env:
+  TZ: Europe/Paris
+
 on:
   workflow_dispatch:
 

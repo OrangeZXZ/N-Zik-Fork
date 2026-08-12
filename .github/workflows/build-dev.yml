@@ -1,5 +1,8 @@
 name: Build Dev
 
+env:
+  TZ: Europe/Paris
+
 on:
   workflow_dispatch:
   schedule:

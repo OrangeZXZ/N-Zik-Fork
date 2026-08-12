@@ -1,5 +1,8 @@
 name: Build Full and Minified
 
+env:
+  TZ: Europe/Paris
+
 on:
   schedule:
     - cron: '0 0 * * 0'  # Every Sunday at 0AM

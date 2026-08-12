@@ -1,5 +1,8 @@
 name: Update Project Stats and Chart
 
+env:
+  TZ: Europe/Paris
+
 on:
   release:
     types: [published]

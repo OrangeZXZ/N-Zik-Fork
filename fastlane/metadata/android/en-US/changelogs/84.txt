@@ -6,3 +6,4 @@ Hotfix:
 - Added smooth transitions and animations in the audio output menu.
 - Prevented volume and source switching during Android Auto.
 - Updated dependencies.
+- Updates are suspended until September.
