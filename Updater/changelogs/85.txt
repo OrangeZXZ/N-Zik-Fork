@@ -1,0 +1,2 @@
+Hotfix:
+- Temporary revert media3 to 1.10.1
